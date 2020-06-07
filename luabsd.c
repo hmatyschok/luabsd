@@ -59,6 +59,44 @@ typedef struct {
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
+static table_t db_open_flags = {
+    .field = "db_o_flags",
+    .entries = {
+        { "DB_LOCK",    DB_LOCK },
+        { "DB_SHMEM",   DB_SHMEM },
+        { "DB_TXN", DB_TXN },
+        { NULL, 0 }
+    }
+};
+
+static table_t db_routine_flags = {
+    .field = "db_r_flags",
+    .entries = {
+        { "R_CURSOR",   R_CURSOR },
+        { "__R_UNUSED", __R_UNUSED },
+        { "R_FIRST",    R_FIRST },
+        { "R_IAFTER",   R_IAFTER },
+        { "R_IBEFORE",  R_IBEFORE },
+        { "R_LAST", R_LAST },
+        { "R_NEXT", R_NEXT },
+        { "R_NOOVERWRITE",  R_NOOVERWRITE },
+        { "R_PREV", R_PREV },
+        { "R_SETCURSOR",    R_SETCURSOR },
+        { "R_RECNOSYNC",    R_RECNOSYNC },
+        { NULL, 0 }
+    }
+};
+
+static table_t db_type = {
+    .field = "db_type",
+    .entries = {
+        { "DB_BTREE",   DB_BTREE },
+        { "DB_HASH",    DB_HASH },
+        { "DB_RECNO",   DB_RECNO },
+        { NULL, 0 }
+    }
+};
+
 static table_t f_lock_operation = {
     .field = "flock_ops",
     .entries = {
@@ -132,44 +170,6 @@ static table_t f_status_flags = {
     }
 };
 
-static table_t db_open_flags = {
-    .field = "db_o_flags",
-    .entries = {
-        { "DB_LOCK",    DB_LOCK },
-        { "DB_SHMEM",   DB_SHMEM },
-        { "DB_TXN", DB_TXN },
-        { NULL, 0 }
-    }
-};
-
-static table_t db_routine_flags = {
-    .field = "db_r_flags",
-    .entries = {
-        { "R_CURSOR",   R_CURSOR },
-        { "__R_UNUSED", __R_UNUSED },
-        { "R_FIRST",    R_FIRST },
-        { "R_IAFTER",   R_IAFTER },
-        { "R_IBEFORE",  R_IBEFORE },
-        { "R_LAST", R_LAST },
-        { "R_NEXT", R_NEXT },
-        { "R_NOOVERWRITE",  R_NOOVERWRITE },
-        { "R_PREV", R_PREV },
-        { "R_SETCURSOR",    R_SETCURSOR },
-        { "R_RECNOSYNC",    R_RECNOSYNC },
-        { NULL, 0 }
-    }
-};
-
-static table_t db_type = {
-    .field = "db_type",
-    .entries = {
-        { "DB_BTREE",   DB_BTREE },
-        { "DB_HASH",    DB_HASH },
-        { "DB_RECNO",   DB_RECNO },
-        { NULL, 0 }
-    }
-};
-
 static void
 newtable(lua_State *L, table_t *descr)
 {
@@ -184,6 +184,20 @@ newtable(lua_State *L, table_t *descr)
     lua_setfield(L, 1, descr->field);
 }
 
+/*
+ * arc4random(3)
+ */
+ 
+static int
+bsd_arc4random(lua_State *L)
+{
+    uint32_t n = arc4random();
+    
+    lua_pushinteger(L, n);
+    
+    return 1;    
+} 
+ 
 /*
  * Interface against db(3).
  */
@@ -508,8 +522,9 @@ bsd_uuidgen(lua_State *L)
 }
 
 static const luaL_Reg bsdlib[] = {
-    { "uuidgen",    bsd_uuidgen },
+    { "arc4random", bsd_arc4random },
     { "dbopen", bsd_dbopen },
+    { "uuidgen",    bsd_uuidgen },
     { NULL, NULL }
 };
 
