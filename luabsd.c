@@ -197,7 +197,18 @@ bsd_arc4random(lua_State *L)
     
     return 1;    
 } 
- 
+
+static int
+bsd_arc4random_uniform(lua_State *L)
+{
+    uint32_t ub = luaL_checkinteger(L, 1);
+    uint32_t n = arc4random_uniform(ub);
+
+    lua_pushinteger(L, n);
+    
+    return 1;
+}
+
 /*
  * Interface against db(3).
  */
@@ -523,6 +534,7 @@ bsd_uuidgen(lua_State *L)
 
 static const luaL_Reg bsdlib[] = {
     { "arc4random", bsd_arc4random },
+    { "bsd_arc4random_uniform", bsd_arc4random_uniform },
     { "dbopen", bsd_dbopen },
     { "uuidgen",    bsd_uuidgen },
     { NULL, NULL }
