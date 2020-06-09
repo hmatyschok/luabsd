@@ -3,7 +3,7 @@ libluabsd
 =========
 
 This library provides an easy customizable interface against on arc4random(3), 
-db(3) and uuidgen(2) components. As an example, This interface may used as 
+db(3) and uuidgen(2) components. As an example, this interface may used as 
 described in db(3) or dbopen(3): 
 
 
