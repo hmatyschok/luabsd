@@ -25,9 +25,11 @@ described in db(3) or dbopen(3):
     )
     local _type = lib.db_type.DB_BTREE    
 
-creates or opens a database.
+creates or opens a database
 
     local db = lib.dbopen(_fname, _flags, _mode, _type)
+
+data are stored 
 
     local key = lib.uuidgen()
     local value = "Hello world!"
