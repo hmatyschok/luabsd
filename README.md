@@ -3,7 +3,9 @@ libluabsd
 =========
 
 This library provides an easy customizable interface against on arc4random(3), 
-db(3) and uuidgen(2) components. As an example,
+db(3) and uuidgen(2) components. As an example, This interface may used as 
+described in db(3) or dbopen(3): 
+
 
     local lib = require("bsd")
         
@@ -26,8 +28,6 @@ db(3) and uuidgen(2) components. As an example,
 creates or opens a database.
 
     local db = lib.dbopen(_fname, _flags, _mode, _type)
-
-This interface may used as described in db(3) or dbopen(3): 
 
     local key = lib.uuidgen()
     local value = "Hello world!"
