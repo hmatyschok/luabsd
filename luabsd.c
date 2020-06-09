@@ -534,7 +534,7 @@ bsd_uuidgen(lua_State *L)
 
 static const luaL_Reg bsdlib[] = {
     { "arc4random", bsd_arc4random },
-    { "bsd_arc4random_uniform", bsd_arc4random_uniform },
+    { "arc4random_uniform", bsd_arc4random_uniform },
     { "dbopen", bsd_dbopen },
     { "uuidgen",    bsd_uuidgen },
     { NULL, NULL }
