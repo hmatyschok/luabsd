@@ -38,7 +38,7 @@ data are stored
     
 or retrieved by
 
-    local record = db:get(key, 0)
+    local record, err = db:get(key, 0)
 
 and so on.
 
