@@ -259,9 +259,9 @@ db_pusherror(lua_State *L, int status)
 {
     int saved_errno = errno;
 
-    lua_pushstring(L, strerror(saved_errno));
     lua_pushinteger(L, status);
-
+    lua_pushstring(L, strerror(saved_errno));
+    
     return 2;
 }
 
@@ -329,8 +329,8 @@ db_get(lua_State *L)
     if ((status = (sc->db->get)(sc->db, &k, &v, flags)) != 0)
         return db_pusherror(L, status);
 
-    lua_pushlstring(L, v.data, v.size);
     lua_pushinteger(L, status);
+    lua_pushlstring(L, v.data, v.size);
 
     free(k.data);
 
@@ -384,10 +384,10 @@ db_seq(lua_State *L)
     if ((status = (sc->db->seq)(sc->db, &k, &v, flags)) != 0)
         return db_pusherror(L, status);
 
+    lua_pushinteger(L, status);
     lua_pushlstring(L, k.data, k.size);
     lua_pushlstring(L, v.data, v.size);
-    lua_pushinteger(L, status);
-
+    
     return 3;
 }
 
@@ -502,8 +502,8 @@ bsd_dbopen(lua_State *L)
     sc->db = NULL;
     luaL_setmetatable(L, LUABSD_DB);
 
-    if ((sc->db = dbopen(fname, flags, mode, type, NULL)) == NULL)
-        return luaL_error(L, "dbopen (%s)", strerror(errno));
+    if ((sc->db = dbopen(fname, flags, mode, type, NULL)) == NULL) 
+        lua_pushnil(L);
 
     return 1;
 }
