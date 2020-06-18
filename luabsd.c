@@ -487,9 +487,6 @@ static const luaL_Reg dblib[] = {
     { NULL, NULL }
 };
 
-/*
- * Wrapper for dbopen(3).
- */
 static int
 bsd_dbopen(lua_State *L)
 {
@@ -532,6 +529,7 @@ bsd_uuidgen(lua_State *L)
     return 1;
 }
 
+/* method-table */
 static const luaL_Reg bsdlib[] = {
     { "arc4random", bsd_arc4random },
     { "arc4random_uniform", bsd_arc4random_uniform },
