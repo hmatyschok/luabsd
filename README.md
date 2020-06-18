@@ -6,7 +6,6 @@ This library provides an easy customizable interface against on arc4random(3),
 db(3) and uuidgen(2) components. As an example, this interface may used as 
 described in db(3) or dbopen(3): 
 
-
     local lib = require("bsd")
         
     local _fname = "example.db"
@@ -38,7 +37,7 @@ data are stored
     
 or retrieved by
 
-    local record, err = db:get(key, 0)
+    local err, record = db:get(key, 0)
 
 and so on.
 

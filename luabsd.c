@@ -55,7 +55,7 @@ typedef struct {
     DB  *db;
 } db_softc_t;
 
-#define todb(L, narg)	((db_softc_t *)luaL_checkudata(L, narg, LUABSD_DB))
+#define todb(L, narg)   ((db_softc_t *)luaL_checkudata(L, narg, LUABSD_DB))
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
@@ -171,7 +171,7 @@ static table_t f_status_flags = {
 };
 
 static void
-newtable(lua_State *L, table_t *descr)
+luab_newtable(lua_State *L, table_t *descr)
 {
     tok_t *param;
 
@@ -184,19 +184,30 @@ newtable(lua_State *L, table_t *descr)
     lua_setfield(L, 1, descr->field);
 }
 
+static int
+luab_pusherr(lua_State *L, int status)
+{
+    int saved_errno = errno;
+
+    lua_pushinteger(L, status);
+    lua_pushstring(L, strerror(saved_errno));
+
+    return 2;
+}
+
 /*
  * arc4random(3)
  */
- 
+
 static int
 bsd_arc4random(lua_State *L)
 {
     uint32_t n = arc4random();
-    
+
     lua_pushinteger(L, n);
-    
-    return 1;    
-} 
+
+    return 1;
+}
 
 static int
 bsd_arc4random_uniform(lua_State *L)
@@ -205,7 +216,7 @@ bsd_arc4random_uniform(lua_State *L)
     uint32_t n = arc4random_uniform(ub);
 
     lua_pushinteger(L, n);
-    
+
     return 1;
 }
 
@@ -255,27 +266,16 @@ db_isclosed(db_softc_t *sc)
 }
 
 static int
-db_pusherror(lua_State *L, int status)
-{
-    int saved_errno = errno;
-
-    lua_pushinteger(L, status);
-    lua_pushstring(L, strerror(saved_errno));
-    
-    return 2;
-}
-
-static int
 db_close(lua_State *L)
 {
     db_softc_t *sc = todb(L, 1);
     int status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     if ((status = (sc->db->close)(sc->db)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
 
@@ -293,15 +293,15 @@ db_del(lua_State *L)
     int status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     flags = luaL_checkinteger(L, 3);
 
     if ((status = (sc->db->del)(sc->db, &k, flags)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
 
@@ -319,15 +319,15 @@ db_get(lua_State *L)
     int status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     flags = luaL_checkinteger(L, 3);
 
     if ((status = (sc->db->get)(sc->db, &k, &v, flags)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
     lua_pushlstring(L, v.data, v.size);
@@ -346,19 +346,19 @@ db_put(lua_State *L)
     int status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     if ((status = db_newbuf(L, 3, &v)) != 0) {
         free(k.data);
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
     }
     flags = luaL_checkinteger(L, 4);
 
     if ((status = (sc->db->put)(sc->db, &k, &v, flags)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
 
@@ -377,17 +377,17 @@ db_seq(lua_State *L)
     int status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     flags = luaL_checkinteger(L, 2);
 
     if ((status = (sc->db->seq)(sc->db, &k, &v, flags)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
     lua_pushlstring(L, k.data, k.size);
     lua_pushlstring(L, v.data, v.size);
-    
+
     return 3;
 }
 
@@ -399,12 +399,12 @@ db_sync(lua_State *L)
     int status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     flags = luaL_checkinteger(L, 2);
 
     if ((status = (sc->db->sync)(sc->db, flags)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
 
@@ -418,10 +418,10 @@ db_fd(lua_State *L)
     int fd, status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     if ((fd = (sc->db->fd)(sc->db)) < 0)
-        return db_pusherror(L, fd);
+        return luab_pusherr(L, fd);
 
     lua_pushinteger(L, fd);
 
@@ -436,13 +436,13 @@ db_flock(lua_State *L)
     int fd, status;
 
     if ((status = db_isclosed(sc)) != 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     if ((fd = (sc->db->fd)(sc->db)) < 0)
-        return db_pusherror(L, fd);
+        return luab_pusherr(L, fd);
 
     if ((status = flock(fd, op)) < 0)
-        return db_pusherror(L, status);
+        return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
 
@@ -502,14 +502,14 @@ bsd_dbopen(lua_State *L)
     sc->db = NULL;
     luaL_setmetatable(L, LUABSD_DB);
 
-    if ((sc->db = dbopen(fname, flags, mode, type, NULL)) == NULL) 
+    if ((sc->db = dbopen(fname, flags, mode, type, NULL)) == NULL)
         lua_pushnil(L);
 
     return 1;
 }
 
 /*
- * Wrapper for uuidgen(2), derived from implementation of uuidgen(1).
+ * Interface against uuidgen(2), derived from implementation of uuidgen(1).
  */
 static int
 bsd_uuidgen(lua_State *L)
@@ -547,14 +547,14 @@ LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
     luaL_newlib(L, bsdlib);
-    
-    newtable(L, &db_open_flags);
-    newtable(L, &db_routine_flags);
-    newtable(L, &db_type);
-    
-    newtable(L, &f_lock_operation);
-    newtable(L, &f_open_flags);
-    newtable(L, &f_status_flags);
+
+    luab_newtable(L, &db_open_flags);
+    luab_newtable(L, &db_routine_flags);
+    luab_newtable(L, &db_type);
+
+    luab_newtable(L, &f_lock_operation);
+    luab_newtable(L, &f_open_flags);
+    luab_newtable(L, &f_status_flags);
 
     luaL_newmetatable(L, LUABSD_DB);
     lua_pushvalue(L, -1);
