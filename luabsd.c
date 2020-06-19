@@ -26,7 +26,6 @@
 
 #include <sys/file.h>
 #include <sys/stat.h>
-#include <sys/time.h>
 #include <sys/types.h>
 
 #include <db.h>
@@ -522,7 +521,6 @@ bsd_uuidgen(lua_State *L)
     uuid_to_string(&uuid, &buf, &status);
 
     if (status != uuid_s_ok) {
-        free(buf);
         errno = ENOMEM;
         return luab_pusherr(L, status);
     }
