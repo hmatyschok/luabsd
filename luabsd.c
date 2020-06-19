@@ -26,6 +26,7 @@
 
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
 
 #include <db.h>
@@ -516,12 +517,15 @@ bsd_uuidgen(lua_State *L)
     uint32_t status;
 
     if ((status = uuidgen(&uuid, 1)) != 0)
-        return luaL_error(L, "unable to generate a UUID");
+        return luab_pusherr(L, status);
 
     uuid_to_string(&uuid, &buf, &status);
 
-    if (status != uuid_s_ok)
-        return luaL_error(L, "cannot stringify a UUID");
+    if (status != uuid_s_ok) {
+        free(buf);
+        errno = ENOMEM;
+        return luab_pusherr(L, status);
+    }
 
     lua_pushlstring(L, buf, strlen(buf));
     free(buf);
@@ -553,7 +557,7 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, &f_lock_operation);
     luab_newtable(L, &f_open_flags);
     luab_newtable(L, &f_status_flags);
-
+    
     luaL_newmetatable(L, LUABSD_DB);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
