@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/event.h>
 #include <sys/file.h>
 #include <sys/stat.h>
 #include <sys/time.h>
@@ -585,7 +584,7 @@ static void
 callback_rtn(lua_State *L, lua_Debug *ar __unused)
 {
     L = saved_L;
-    
+
     lua_sethook(L, h, h_msk, h_cnt);
     lua_getfield(L, LUA_REGISTRYINDEX, "l_callback");
 
@@ -607,11 +606,11 @@ signal_rtn(void *arg __unused)
         case SIGALRM:
         case SIGVTALRM:
         case SIGPROF:
-            
+
             h = lua_gethook(saved_L);
             h_msk = lua_gethookmask(saved_L);
             h_cnt = lua_gethookcount(saved_L);
-            
+
             lua_sethook(saved_L, callback_rtn, mask, 1);
             goto out;
         default:
