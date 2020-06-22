@@ -42,7 +42,7 @@ Therefore
     
     local err, record = db:get(key, 0)
 
-and so on. A timeout may implemented as follows:
+and so on. A callout may implemented as follows:
 
     local expired = false
 
