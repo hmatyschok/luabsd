@@ -629,11 +629,8 @@ bsd_setitimer(lua_State *L)
     int narg = lua_gettop(L), status;
     struct itimerval itv;
 
-    if (lua_type(L, narg) != LUA_TFUNCTION) {
-        errno = EINVAL;
-        status = -1;
-        return luab_pusherr(L, status);
-    }
+    if (lua_type(L, narg) != LUA_TFUNCTION)
+        lua_error(L);
 
     lua_settop(L, narg);
     lua_setfield(L, LUA_REGISTRYINDEX, "l_callback");
