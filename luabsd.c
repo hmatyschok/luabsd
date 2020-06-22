@@ -187,13 +187,13 @@ static table_t i_timer_setting = {
 static void
 luab_newtable(lua_State *L, table_t *descr)
 {
-    tok_t *param;
+    tok_t *tok;
 
     lua_newtable(L);
 
-    for (param = descr->entries; param->key; param++) {
-        lua_pushinteger(L, param->value);
-        lua_setfield(L, -2, param->key);
+    for (tok = descr->entries; tok->key; tok++) {
+        lua_pushinteger(L, tok->value);
+        lua_setfield(L, -2, tok->key);
     }
     lua_setfield(L, 1, descr->field);
 }
@@ -667,12 +667,12 @@ bsd_getitimer(lua_State *L)
     int which = luaL_checkinteger(L, 1);
     struct itimerval itv;
     int status;
-    
+
     if ((status = getitimer(which, &itv)) != 0)
         return luab_pusherr(L, status);
-    
+
     lua_pushinteger(L, itv.it_value.tv_sec);
-    
+
     return 1;
 }
 
