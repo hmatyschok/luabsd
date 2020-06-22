@@ -24,8 +24,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/event.h>
 #include <sys/file.h>
 #include <sys/stat.h>
+#include <sys/time.h>
 #include <sys/types.h>
 
 #include <db.h>
@@ -35,8 +37,11 @@
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
+#include <pthread.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 #include <uuid.h>
 
 #define LUABSD_DB   "DB*"
@@ -166,6 +171,16 @@ static table_t f_status_flags = {
         { "S_IFSOCK",   S_IFSOCK },
         { "S_ISVTX",    S_ISVTX },
         { "S_IFWHT",    S_IFWHT },
+        { NULL, 0 }
+    }
+};
+
+static table_t i_timer_setting = {
+    .field = "i_timer",
+    .entries = {
+        { "ITIMER_REAL",    ITIMER_REAL },
+        { "ITIMER_VIRTUAL",    ITIMER_VIRTUAL },
+        { "ITIMER_PROF",    ITIMER_PROF },
         { NULL, 0 }
     }
 };
@@ -441,7 +456,7 @@ db_flock(lua_State *L)
     if ((fd = (sc->db->fd)(sc->db)) < 0)
         return luab_pusherr(L, fd);
 
-    if ((status = flock(fd, op)) < 0)
+    if ((status = flock(fd, op)) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -506,6 +521,29 @@ bsd_dbopen(lua_State *L)
 }
 
 /*
+ * Interface against get[p]pid(2).
+ */
+static int
+bsd_getpid(lua_State *L)
+{
+    pid_t pid = getpid();
+
+    lua_pushinteger(L, pid);
+
+    return 1;
+}
+
+static int
+bsd_getppid(lua_State *L)
+{
+    pid_t pid = getppid();
+
+    lua_pushinteger(L, pid);
+
+    return 1;
+}
+
+/*
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
  */
 static int
@@ -531,11 +569,107 @@ bsd_uuidgen(lua_State *L)
     return 1;
 }
 
+/*
+ * Interface against setitimer(2).
+ */
+static sigset_t nsigset;
+static pthread_t tid;
+
+static lua_State *saved_L;
+static lua_Hook h;
+
+static int h_msk;
+static int h_cnt;
+
+static void
+callback_rtn(lua_State *L, lua_Debug *ar __unused)
+{
+    L = saved_L;
+    
+    lua_sethook(L, h, h_msk, h_cnt);
+    lua_getfield(L, LUA_REGISTRYINDEX, "l_callback");
+
+    if (lua_pcall(L, 0, 0, 0) != 0)
+        lua_error(L);
+}
+
+static void *
+signal_rtn(void *arg __unused)
+{
+    int mask = LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT;
+    int sig;
+
+    for (;;) {
+        if (sigwait(&nsigset, &sig) != 0)
+            goto out;   /* XXX up-call */
+
+        switch (sig) {
+        case SIGALRM:
+        case SIGVTALRM:
+        case SIGPROF:
+            
+            h = lua_gethook(saved_L);
+            h_msk = lua_gethookmask(saved_L);
+            h_cnt = lua_gethookcount(saved_L);
+            
+            lua_sethook(saved_L, callback_rtn, mask, 1);
+            goto out;
+        default:
+            break;
+        }
+    }
+out:
+    pthread_exit(NULL);
+}
+
+static int
+bsd_setitimer(lua_State *L)
+{
+    int which = luaL_checkinteger(L, 1);
+    time_t sec = luaL_checkinteger(L, 2);
+    int narg = lua_gettop(L), status;
+    struct itimerval itv;
+
+    if (lua_type(L, narg) != LUA_TFUNCTION) {
+        errno = EINVAL;
+        status = -1;
+        return luab_pusherr(L, status);
+    }
+
+    lua_settop(L, narg);
+    lua_setfield(L, LUA_REGISTRYINDEX, "l_callback");
+
+    saved_L = L;
+
+    if ((status = sigfillset(&nsigset)) != 0)
+        return luab_pusherr(L, status);
+
+    if ((status = pthread_sigmask(SIG_BLOCK, &nsigset, NULL)) != 0)
+        return luab_pusherr(L, status);
+
+    if ((status = pthread_create(&tid, NULL, signal_rtn, NULL)) != 0)
+        return luab_pusherr(L, status);
+
+    bzero(&itv, sizeof(itv));
+    itv.it_value.tv_sec = sec;
+
+    if ((status = setitimer(which, &itv, NULL)) != 0) {
+        pthread_cancel(tid);
+        return luab_pusherr(L, status);
+    }
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
 /* method-table */
 static const luaL_Reg bsdlib[] = {
     { "arc4random", bsd_arc4random },
     { "arc4random_uniform", bsd_arc4random_uniform },
     { "dbopen", bsd_dbopen },
+    { "getpid", bsd_getpid },
+    { "getppid",    bsd_getppid },
+    { "setitimer",  bsd_setitimer },
     { "uuidgen",    bsd_uuidgen },
     { NULL, NULL }
 };
@@ -555,7 +689,9 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, &f_lock_operation);
     luab_newtable(L, &f_open_flags);
     luab_newtable(L, &f_status_flags);
-    
+
+    luab_newtable(L, &i_timer_setting);
+
     luaL_newmetatable(L, LUABSD_DB);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");

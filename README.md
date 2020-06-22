@@ -1,10 +1,17 @@
 <pre><code>
-libluabsd
-=========
+libluabsd - toolbox for implementing web-based software for embedded systems
+============================================================================
 
-This library provides an easy customizable interface against on arc4random(3), 
-db(3) and uuidgen(2) components. As an example, this interface may used as 
-described in db(3) or dbopen(3): 
+This library provides an easy customizable interface as extension for Lua 
+against commen APIs those are common at the FreeBSD Operating System:
+
+ o arc4random(3),
+ o db(3),
+ o getp[p]id(2),
+ o setitimer(2),
+ o uuidgen(2).
+
+As an example, a database may created, as described in db(3):
 
     local lib = require("bsd")
         
@@ -24,19 +31,15 @@ described in db(3) or dbopen(3):
     )
     local _type = lib.db_type.DB_BTREE    
 
-creates or opens a database
-
     local db = lib.dbopen(_fname, _flags, _mode, _type)
 
-data are stored 
+Therefore
 
     local key = lib.uuidgen()
     local value = "Hello world!"
     
     db:put(key, value, lib.db_r_flags.R_NOOVERWRITE)
     
-or retrieved by
-
     local err, record = db:get(key, 0)
 
 and so on.
