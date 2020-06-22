@@ -520,7 +520,7 @@ bsd_dbopen(lua_State *L)
 }
 
 /*
- * Interface against get[p]pid(2).
+ * Interface against getp[p]id(2).
  */
 static int
 bsd_getpid(lua_State *L)
@@ -569,7 +569,7 @@ bsd_uuidgen(lua_State *L)
 }
 
 /*
- * Interface against setitimer(2).
+ * Interface against [gs]etitimer(2).
  */
 static sigset_t nsigset;
 static pthread_t tid;
@@ -661,6 +661,21 @@ bsd_setitimer(lua_State *L)
     return 1;
 }
 
+static int
+bsd_getitimer(lua_State *L)
+{
+    int which = luaL_checkinteger(L, 1);
+    struct itimerval itv;
+    int status;
+    
+    if ((status = getitimer(which, &itv)) != 0)
+        return luab_pusherr(L, status);
+    
+    lua_pushinteger(L, itv.it_value.tv_sec);
+    
+    return 1;
+}
+
 /* method-table */
 static const luaL_Reg bsdlib[] = {
     { "arc4random", bsd_arc4random },
@@ -668,6 +683,7 @@ static const luaL_Reg bsdlib[] = {
     { "dbopen", bsd_dbopen },
     { "getpid", bsd_getpid },
     { "getppid",    bsd_getppid },
+    { "getitimer",  bsd_getitimer },
     { "setitimer",  bsd_setitimer },
     { "uuidgen",    bsd_uuidgen },
     { NULL, NULL }
