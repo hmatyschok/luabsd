@@ -595,7 +595,7 @@ callback_rtn(lua_State *L, lua_Debug *ar __unused)
 static void *
 signal_rtn(void *arg __unused)
 {
-    int mask = LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT;
+    int l_msk = LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT;
     int sig;
 
     for (;;) {
@@ -611,7 +611,7 @@ signal_rtn(void *arg __unused)
             h_msk = lua_gethookmask(saved_L);
             h_cnt = lua_gethookcount(saved_L);
 
-            lua_sethook(saved_L, callback_rtn, mask, 1);
+            lua_sethook(saved_L, callback_rtn, l_msk, 1);
             goto out;
         default:
             break;
