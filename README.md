@@ -42,6 +42,21 @@ Therefore
     
     local err, record = db:get(key, 0)
 
-and so on.
+and so on. A timeout may implemented as follows:
+
+    local expired = false
+
+    local function callback ()
+        expired = true
+        print("Hello world!")
+    end
+
+    lib.setitimer(lib.i_timer.ITIMER_REAL, 3, callback)
+
+    while true do -- yes, this is bad style ^^ 
+        if expired then
+            break
+        end
+    end
 
 </code></pre>
