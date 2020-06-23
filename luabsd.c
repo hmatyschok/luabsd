@@ -520,8 +520,25 @@ bsd_dbopen(lua_State *L)
 }
 
 /*
- * Interface against getp[p]id(2).
+ * Interface against 
+ * 
+ *  o fork(2),
+ *  o getp[p]id(2),
+ *  o getsid(2).
  */
+static int
+bsd_fork(lua_State *L)
+{
+    pid_t pid;
+    
+    if ((pid = fork()) < 0)
+        return luab_pusherr(L, pid);
+    
+    lua_pushinteger(L, pid);
+    
+    return 1;
+}
+
 static int
 bsd_getpid(lua_State *L)
 {
@@ -539,6 +556,20 @@ bsd_getppid(lua_State *L)
 
     lua_pushinteger(L, pid);
 
+    return 1;
+}
+
+static int
+bsd_getsid(lua_State *L)
+{
+    pid_t pid = luaL_checkinteger(L, 1);
+    pid_t sid;
+    
+    if ((sid = getsid(pid)) < 0)
+        return luab_pusherr(L, sid);
+    
+    lua_pushinteger(L, sid);
+    
     return 1;
 }
 
@@ -581,7 +612,7 @@ static int h_msk;
 static int h_cnt;
 
 static void
-callback_rtn(lua_State *L, lua_Debug *ar __unused)
+callback_rtn(lua_State *L, lua_Debug *arg __unused)
 {
     L = saved_L;
 
@@ -681,8 +712,10 @@ static const luaL_Reg bsdlib[] = {
     { "arc4random", bsd_arc4random },
     { "arc4random_uniform", bsd_arc4random_uniform },
     { "dbopen", bsd_dbopen },
+    { "fork",   bsd_fork },
     { "getpid", bsd_getpid },
     { "getppid",    bsd_getppid },
+    { "getsid", bsd_getsid },
     { "getitimer",  bsd_getitimer },
     { "setitimer",  bsd_setitimer },
     { "uuidgen",    bsd_uuidgen },
