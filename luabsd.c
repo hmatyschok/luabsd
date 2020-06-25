@@ -371,9 +371,11 @@ db_put(lua_State *L)
     }
     flags = luaL_checkinteger(L, 4);
 
-    if ((status = (sc->db->put)(sc->db, &k, &v, flags)) != 0)
+    if ((status = (sc->db->put)(sc->db, &k, &v, flags)) != 0) {
+        free(k.data);
+        free(v.data);
         return luab_pusherr(L, status);
-
+    }
     lua_pushinteger(L, status);
 
     free(k.data);
