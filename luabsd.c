@@ -524,6 +524,7 @@ bsd_dbopen(lua_State *L)
  * 
  *  o fork(2),
  *  o getp[p]id(2),
+ *  o getpgrp(2),
  *  o getsid(2).
  */
 static int
@@ -560,6 +561,30 @@ bsd_getppid(lua_State *L)
 }
 
 static int
+bsd_getpgrp(lua_State *L)
+{
+    pid_t pgrp = getpgrp();
+    
+    lua_pushinteger(L, pgrp);
+    
+    return 1;
+}
+     
+static int
+bsd_getpgid(lua_State *L)
+{
+    pid_t pid = luaL_checkinteger(L, 1);
+    pid_t pgrp;
+    
+    if ((pgrp = getpgid(pid)) < 0)
+        return luab_pusherr(L, pgrp);
+    
+    lua_pushinteger(L, pgrp);
+    
+    return 1;
+}
+
+static int
 bsd_getsid(lua_State *L)
 {
     pid_t pid = luaL_checkinteger(L, 1);
@@ -571,6 +596,20 @@ bsd_getsid(lua_State *L)
     lua_pushinteger(L, sid);
     
     return 1;
+}
+
+static int
+bsd_setsid(lua_State *L)
+{
+    pid_t sid;
+    
+    if ((sid = setsid()) < 0)
+        return luab_pusherr(L, sid);
+    
+    lua_pushinteger(L, sid);
+    
+    return 1;
+    
 }
 
 /*
@@ -715,7 +754,10 @@ static const luaL_Reg bsdlib[] = {
     { "fork",   bsd_fork },
     { "getpid", bsd_getpid },
     { "getppid",    bsd_getppid },
+    { "getpgid",    bsd_getpgid },
+    { "getpgrp",    bsd_getpgrp },
     { "getsid", bsd_getsid },
+    { "setsid", bsd_setsid },
     { "getitimer",  bsd_getitimer },
     { "setitimer",  bsd_setitimer },
     { "uuidgen",    bsd_uuidgen },
