@@ -3,21 +3,7 @@ libluabsd - toolbox for implementing web-based software for embedded systems
 ============================================================================
 
 This library provides an easy customizable interface as extension of Lua
-language against APIs those are common at the FreeBSD Operating System:
-
-  o arc4random(3),
-  o db(3),
-  o fork(2),
-  o getpid(2),
-  o getppid(2),
-  o getpgid(2),
-  o getpgrp(2),
-  o getsid(2),
-  o setpgid(2),
-  o setpgrp(2),
-  o setsid(2).,
-  o setitimer(2),
-  o uuidgen(2).
+language against APIs those are common at the FreeBSD Operating System.
 
 As an example, a database may created, as described in db(3):
 
