@@ -839,7 +839,7 @@ static luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("S_ISVTX",    S_ISVTX),
     LUABSD_INT("S_IFWHT",    S_IFWHT),
     LUABSD_INT("ACCESSPERMS",   ACCESSPERMS),
-	LUABSD_INT("ALLPERMS",  ALLPERMS),
+    LUABSD_INT("ALLPERMS",  ALLPERMS),
     LUABSD_INT("DEFFILEMODE",   DEFFILEMODE),
     LUABSD_INT("UF_SETTABLE",   UF_SETTABLE),
     LUABSD_INT("UF_NODUMP", UF_NODUMP),
@@ -847,6 +847,10 @@ static luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("UF_APPEND", UF_APPEND),
     LUABSD_INT("UF_OPAQUE", UF_OPAQUE),
     LUABSD_INT("UF_NOUNLINK",   UF_NOUNLINK),
+#if 0
+    LUABSD_INT("UF_COMPRESSED", UF_COMPRESSED),
+    LUABSD_INT("UF_TRACKED",    UF_TRACKED),
+#endif
     LUABSD_INT(NULL, 0)
 };
 

@@ -3,7 +3,8 @@ libluabsd - toolbox for implementing web-based software for embedded systems
 ============================================================================
 
 This library provides an easy customizable interface as extension of Lua
-language against APIs those are common at the FreeBSD Operating System.
+language against APIs those are common on unixoid Operating Systems (e. g.
+the FreeBSD OS).
 
 As an example, a database may created, as described in db(3):
 
