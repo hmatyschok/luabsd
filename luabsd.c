@@ -391,7 +391,7 @@ db_tostring(lua_State *L)
     return 1;
 }
 
-static luaL_Reg luab_db_db[] = {
+static luaL_Reg luab_dblib[] = {
     { "close",  db_close },
     { "del",    db_del },
     { "get",    db_get },
@@ -976,7 +976,7 @@ luaopen_bsd(lua_State *L)
     luaL_newmetatable(L, LUABSD_DB);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, luab_db_db, 0);
+    luaL_setfuncs(L, luab_dblib, 0);
     lua_pop(L, 1);
 
     return 1;
