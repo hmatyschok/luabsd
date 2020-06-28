@@ -44,13 +44,17 @@
 #include <unistd.h>
 #include <uuid.h>
 
+#define luab_checklstring(L, narg, len) \
+    (luaL_checklstring(L, narg, &((size_t){len})))
+
 #define LUABSD_DB   "DB*"
 
 typedef struct {
     DB  *db;
 } db_softc_t;
 
-#define todb(L, narg)   ((db_softc_t *)luaL_checkudata(L, narg, LUABSD_DB))
+#define todb(L, narg) \
+    ((db_softc_t *)luaL_checkudata(L, narg, LUABSD_DB))
 
 typedef union {
     lua_Integer x_i;
@@ -112,7 +116,73 @@ luab_pusherr(lua_State *L, int status)
 }
 
 /*
- * arc4random(3)
+ * Components or service primitives on sys/stat.h.
+ */
+
+static int
+luab_chflags(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    u_long flags = luaL_checkinteger(L, 2);
+    int status;
+
+    if ((status = chflags(path, flags)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_lchflags(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    u_long flags = luaL_checkinteger(L, 2);
+    int status;
+
+    if ((status = lchflags(path, flags)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_fchflags(lua_State *L)
+{
+    int fd = luaL_checkinteger(L, 1);
+    u_long flags = luaL_checkinteger(L, 2);
+    int status;
+
+    if ((status = fchflags(fd, flags)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_chflagsat(lua_State *L)
+{
+    int fd = luaL_checkinteger(L, 1);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    u_long flags = luaL_checkinteger(L, 3);
+    int atflag = luaL_checkinteger(L, 4);
+    int status;
+
+    if ((status = chflagsat(fd, path, flags, atflag)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+/*
+ * Components or service primitives on stdlib.h.
  */
 
 static int
@@ -424,7 +494,7 @@ luab_dbopen(lua_State *L)
 }
 
 /*
- * Interface against service primitives on <unistd.h>.
+ * Interface against components or service primitives on unistd.h.
  */
 static int
 luab_fork(lua_State *L)
@@ -595,7 +665,7 @@ luab_setgid(lua_State *L)
 static int
 luab_setlogin(lua_State *L)
 {
-    const char *name = luaL_checklstring(L, 1, &((size_t){MAXLOGNAME}));
+    const char *name = luab_checklstring(L, 1, MAXLOGNAME);
     int status;
 
     if ((status = setlogin(name)) != 0)
@@ -690,7 +760,7 @@ luab_uuidgen(lua_State *L)
 }
 
 /*
- * Interface against [gs]etitimer(2).
+ * Interface against components or service primitives on sys/time.h.
  */
 static sigset_t nsigset;
 static pthread_t tid;
@@ -857,7 +927,11 @@ static luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("SF_APPEND", SF_APPEND),
     LUABSD_INT("SF_NOUNLINK",   SF_NOUNLINK),
     LUABSD_INT("SF_SNAPSHOT",   SF_SNAPSHOT),
-    LUABSD_INT(NULL, 0)
+    LUABSD_FUNC("chflags",  luab_chflags),
+    LUABSD_FUNC("lchflags", luab_lchflags),
+    LUABSD_FUNC("fchflags", luab_fchflags),
+    LUABSD_FUNC("chflagsat", luab_chflagsat),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 static luab_table_t luab_sys_time[] = { /* sys/time.h */
