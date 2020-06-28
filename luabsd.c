@@ -181,6 +181,68 @@ luab_chflagsat(lua_State *L)
     return 1;
 }
 
+static int
+luab_chmod(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode_t mode = luaL_checkinteger(L, 2);
+    int status;
+
+    if ((status = chmod(path, mode)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_fchmod(lua_State *L)
+{
+    int fd = luaL_checkinteger(L, 1);
+    mode_t mode = luaL_checkinteger(L, 2);
+    int status;
+
+    if ((status = fchmod(fd, mode)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_lchmod(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode_t mode = luaL_checkinteger(L, 2);
+    int status;
+
+    if ((status = lchmod(path, mode)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_fchmodat(lua_State *L)
+{
+    int fd = luaL_checkinteger(L, 1);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode_t mode = luaL_checkinteger(L, 3);
+    int flag = luaL_checkinteger(L, 4);
+    int status;
+
+    if ((status = fchmodat(fd, path, mode, flag)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
 /*
  * Components or service primitives on stdlib.h.
  */
@@ -928,9 +990,13 @@ static luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("SF_NOUNLINK",   SF_NOUNLINK),
     LUABSD_INT("SF_SNAPSHOT",   SF_SNAPSHOT),
     LUABSD_FUNC("chflags",  luab_chflags),
-    LUABSD_FUNC("lchflags", luab_lchflags),
-    LUABSD_FUNC("fchflags", luab_fchflags),
     LUABSD_FUNC("chflagsat", luab_chflagsat),
+    LUABSD_FUNC("chmod",    luab_chmod),
+    LUABSD_FUNC("fchflags", luab_fchflags),
+    LUABSD_FUNC("fchmod",   luab_fchmod),
+    LUABSD_FUNC("fchmodat", luab_fchmodat),
+    LUABSD_FUNC("lchflags", luab_lchflags),
+    LUABSD_FUNC("lchmod",   luab_lchmod),
     LUABSD_FUNC(NULL, NULL)
 };
 
