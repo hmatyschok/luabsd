@@ -16,12 +16,12 @@ As an example, a database may created, as described in db(3):
         lib.fcntl.O_RDWR
     )
     local _mode = bit32.bor(
-        lib.sys_stat.S_IRUSR,
-        lib.sys_stat.S_IWUSR,
-        lib.sys_stat.S_IRGRP,
-        lib.sys_stat.S_IWGRP,
-        lib.sys_stat.S_IROTH,
-        lib.sys_stat.S_IWOTH
+        lib.sys.stat.S_IRUSR,
+        lib.sys.stat.S_IWUSR,
+        lib.sys.stat.S_IRGRP,
+        lib.sys.stat.S_IWGRP,
+        lib.sys.stat.S_IROTH,
+        lib.sys.stat.S_IWOTH
     )
     local _type = lib.db.DB_BTREE
 
@@ -45,7 +45,7 @@ and so on. A callout may implemented as follows:
         print("Hello world!")
     end
 
-    lib.sys_time.setitimer(lib.sys_time.ITIMER_REAL, 3, callback)
+    lib.sys.time.setitimer(lib.sys.time.ITIMER_REAL, 3, callback)
 
     while true do -- yes, this is bad style ^^
         if expired then

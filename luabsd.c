@@ -801,7 +801,7 @@ luab_getitimer(lua_State *L)
  * Service primitives.
  */
 
-static luab_table_t luab_sys_file[] = { /* XXX sys/file.h */
+static luab_table_t luab_sys_file[] = { /* sys/file.h */
     LUABSD_INT("LOCK_SH",   LOCK_SH),
     LUABSD_INT("LOCK_EX",   LOCK_EX),
     LUABSD_INT("LOCK_NB",   LOCK_NB),
@@ -809,7 +809,7 @@ static luab_table_t luab_sys_file[] = { /* XXX sys/file.h */
     LUABSD_INT(NULL, 0)
 };
 
-static luab_table_t luab_sys_stat[] = { /* XXX sys/stat.h */
+static luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("S_ISUID",    S_ISUID),
     LUABSD_INT("S_ISGID",    S_ISGID),
     LUABSD_INT("S_ISTXT",    S_ISTXT),
@@ -841,7 +841,7 @@ static luab_table_t luab_sys_stat[] = { /* XXX sys/stat.h */
     LUABSD_INT(NULL, 0)
 };
 
-static luab_table_t luab_sys_time[] = { /* XXX sys/time.h */
+static luab_table_t luab_sys_time[] = { /* sys/time.h */
     LUABSD_INT("ITIMER_REAL",    ITIMER_REAL),
     LUABSD_INT("ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
     LUABSD_INT("ITIMER_PROF",    ITIMER_PROF),
@@ -938,9 +938,13 @@ luaopen_bsd(lua_State *L)
 {
     lua_newtable(L);
 
-    luab_newtable(L, luab_sys_file, "sys_file");    /* XXX */
-    luab_newtable(L, luab_sys_stat, "sys_stat");
-    luab_newtable(L, luab_sys_time, "sys_time");
+    lua_newtable(L);
+
+    luab_newtable(L, luab_sys_file, "file");
+    luab_newtable(L, luab_sys_stat, "stat");
+    luab_newtable(L, luab_sys_time, "time");
+
+    lua_setfield(L, -2, "sys");
 
     luab_newtable(L, luab_db, "db");
     luab_newtable(L, luab_fcntl, "fcntl");
