@@ -46,6 +46,12 @@
 
 #define LUABSD_DB   "DB*"
 
+typedef struct {
+    DB  *db;
+} db_softc_t;
+
+#define todb(L, narg)   ((db_softc_t *)luaL_checkudata(L, narg, LUABSD_DB))
+
 typedef union {
     lua_Integer x_i;
     lua_CFunction   x_f;
@@ -58,19 +64,9 @@ typedef struct {
     const char    *key;
     luab_un_t   val;
 } luab_table_t;
-#define LUABSD_INT(f, k, v) \
-    { .func = (f), .key = (k), .val.x_i = (v) }
-#define LUABSD_FUNC(f, k, v) \
-    { .func = (f), .key = (k), .val.x_f = (v) }
-
-typedef struct {
-    DB  *db;
-} db_softc_t;
-
-#define todb(L, narg)   ((db_softc_t *)luaL_checkudata(L, narg, LUABSD_DB))
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
-
+    
 static void
 luab_pushinteger(lua_State *L, luab_un_t *x)
 {
@@ -82,6 +78,13 @@ luab_pushcfunction(lua_State *L, luab_un_t *x)
 {
     lua_pushcfunction(L, x->x_f);
 }
+
+#define LUABSD_REG(f, k, v) \
+    { .func = f, .key = k, v }
+#define LUABSD_INT(k, v) \
+    LUABSD_REG(luab_pushinteger, k, .val.x_i = v)
+#define LUABSD_FUNC(k, v) \
+    LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
 static void
 luab_newtable(lua_State *L, luab_table_t *reg, const char *name)
@@ -795,149 +798,149 @@ luab_getitimer(lua_State *L)
 }
 /* Constants. */
 static luab_table_t luab_db_open_flags[] = {
-    LUABSD_INT(luab_pushinteger, "DB_LOCK",    DB_LOCK),
-    LUABSD_INT(luab_pushinteger, "DB_SHMEM",   DB_SHMEM),
-    LUABSD_INT(luab_pushinteger, "DB_TXN", DB_TXN),
-    LUABSD_INT(NULL, NULL, 0)
+    LUABSD_INT("DB_LOCK",    DB_LOCK),
+    LUABSD_INT("DB_SHMEM",   DB_SHMEM),
+    LUABSD_INT("DB_TXN", DB_TXN),
+    LUABSD_INT(NULL, 0)
 };
 
 static luab_table_t luab_db_routine_flags[] = {
-    LUABSD_INT(luab_pushinteger, "R_CURSOR",   R_CURSOR),
-    LUABSD_INT(luab_pushinteger, "__R_UNUSED", __R_UNUSED),
-    LUABSD_INT(luab_pushinteger, "R_FIRST",    R_FIRST),
-    LUABSD_INT(luab_pushinteger, "R_IAFTER",   R_IAFTER),
-    LUABSD_INT(luab_pushinteger, "R_IBEFORE",  R_IBEFORE),
-    LUABSD_INT(luab_pushinteger, "R_LAST", R_LAST),
-    LUABSD_INT(luab_pushinteger, "R_NEXT", R_NEXT),
-    LUABSD_INT(luab_pushinteger, "R_NOOVERWRITE",  R_NOOVERWRITE),
-    LUABSD_INT(luab_pushinteger, "R_PREV", R_PREV),
-    LUABSD_INT(luab_pushinteger, "R_SETCURSOR",    R_SETCURSOR),
-    LUABSD_INT(luab_pushinteger, "R_RECNOSYNC",    R_RECNOSYNC),
-    LUABSD_INT(NULL, NULL, 0)
+    LUABSD_INT("R_CURSOR",   R_CURSOR),
+    LUABSD_INT("__R_UNUSED", __R_UNUSED),
+    LUABSD_INT("R_FIRST",    R_FIRST),
+    LUABSD_INT("R_IAFTER",   R_IAFTER),
+    LUABSD_INT("R_IBEFORE",  R_IBEFORE),
+    LUABSD_INT("R_LAST", R_LAST),
+    LUABSD_INT("R_NEXT", R_NEXT),
+    LUABSD_INT("R_NOOVERWRITE",  R_NOOVERWRITE),
+    LUABSD_INT("R_PREV", R_PREV),
+    LUABSD_INT("R_SETCURSOR",    R_SETCURSOR),
+    LUABSD_INT("R_RECNOSYNC",    R_RECNOSYNC),
+    LUABSD_INT(NULL, 0)
 };
 
 static luab_table_t luab_db_type[] = {
-    LUABSD_INT(luab_pushinteger, "DB_BTREE",   DB_BTREE),
-    LUABSD_INT(luab_pushinteger, "DB_HASH",    DB_HASH),
-    LUABSD_INT(luab_pushinteger, "DB_RECNO",   DB_RECNO),
-    LUABSD_INT(NULL, NULL, 0)
+    LUABSD_INT("DB_BTREE",   DB_BTREE),
+    LUABSD_INT("DB_HASH",    DB_HASH),
+    LUABSD_INT("DB_RECNO",   DB_RECNO),
+    LUABSD_INT(NULL, 0)
 };
 
 static luab_table_t luab_f_lock_operation[] = {
-    LUABSD_INT(luab_pushinteger, "LOCK_SH",   LOCK_SH),
-    LUABSD_INT(luab_pushinteger, "LOCK_EX",   LOCK_EX),
-    LUABSD_INT(luab_pushinteger, "LOCK_NB",   LOCK_NB),
-    LUABSD_INT(luab_pushinteger, "LOCK_UN",   LOCK_UN),
-    LUABSD_INT(NULL, NULL, 0)
+    LUABSD_INT("LOCK_SH",   LOCK_SH),
+    LUABSD_INT("LOCK_EX",   LOCK_EX),
+    LUABSD_INT("LOCK_NB",   LOCK_NB),
+    LUABSD_INT("LOCK_UN",   LOCK_UN),
+    LUABSD_INT(NULL, 0)
 };
 
 static luab_table_t luab_f_open_flags[] = {
-    LUABSD_INT(luab_pushinteger, "O_RDONLY",   O_RDONLY),
-    LUABSD_INT(luab_pushinteger, "O_WRONLY",   O_WRONLY),
-    LUABSD_INT(luab_pushinteger, "O_RDWR", O_RDWR),
-    LUABSD_INT(luab_pushinteger, "O_EXEC", O_EXEC),
-    LUABSD_INT(luab_pushinteger, "O_NONBLOCK", O_NONBLOCK),
-    LUABSD_INT(luab_pushinteger, "O_APPEND",   O_APPEND),
-    LUABSD_INT(luab_pushinteger, "O_CREAT",    O_CREAT),
-    LUABSD_INT(luab_pushinteger, "O_TRUNC",    O_TRUNC),
-    LUABSD_INT(luab_pushinteger, "O_EXCL", O_EXCL),
-    LUABSD_INT(luab_pushinteger, "O_SHLOCK",   O_SHLOCK),
-    LUABSD_INT(luab_pushinteger, "O_EXLOCK",   O_EXLOCK),
-    LUABSD_INT(luab_pushinteger, "O_DIRECT",   O_DIRECT),
-    LUABSD_INT(luab_pushinteger, "O_FSYNC",    O_FSYNC),
-    LUABSD_INT(luab_pushinteger, "O_SYNC", O_SYNC),
-    LUABSD_INT(luab_pushinteger, "O_NOFOLLOW", O_NOFOLLOW),
-    LUABSD_INT(luab_pushinteger, "O_NOCTTY",   O_NOCTTY),
-    LUABSD_INT(luab_pushinteger, "O_TTY_INIT", O_TTY_INIT),
-    LUABSD_INT(luab_pushinteger, "O_DIRECTORY", O_DIRECTORY),
-    LUABSD_INT(luab_pushinteger, "O_CLOEXEC",  O_CLOEXEC),
-    LUABSD_INT(luab_pushinteger, "O_VERIFY",   O_VERIFY),
-    LUABSD_INT(NULL, NULL, 0)
+    LUABSD_INT("O_RDONLY",   O_RDONLY),
+    LUABSD_INT("O_WRONLY",   O_WRONLY),
+    LUABSD_INT("O_RDWR", O_RDWR),
+    LUABSD_INT("O_EXEC", O_EXEC),
+    LUABSD_INT("O_NONBLOCK", O_NONBLOCK),
+    LUABSD_INT("O_APPEND",   O_APPEND),
+    LUABSD_INT("O_CREAT",    O_CREAT),
+    LUABSD_INT("O_TRUNC",    O_TRUNC),
+    LUABSD_INT("O_EXCL", O_EXCL),
+    LUABSD_INT("O_SHLOCK",   O_SHLOCK),
+    LUABSD_INT("O_EXLOCK",   O_EXLOCK),
+    LUABSD_INT("O_DIRECT",   O_DIRECT),
+    LUABSD_INT("O_FSYNC",    O_FSYNC),
+    LUABSD_INT("O_SYNC", O_SYNC),
+    LUABSD_INT("O_NOFOLLOW", O_NOFOLLOW),
+    LUABSD_INT("O_NOCTTY",   O_NOCTTY),
+    LUABSD_INT("O_TTY_INIT", O_TTY_INIT),
+    LUABSD_INT("O_DIRECTORY", O_DIRECTORY),
+    LUABSD_INT("O_CLOEXEC",  O_CLOEXEC),
+    LUABSD_INT("O_VERIFY",   O_VERIFY),
+    LUABSD_INT(NULL, 0)
 };
 
 static luab_table_t luab_f_status_flags[] = {
-    LUABSD_INT(luab_pushinteger, "S_ISUID",    S_ISUID),
-    LUABSD_INT(luab_pushinteger, "S_ISGID",    S_ISGID),
-    LUABSD_INT(luab_pushinteger, "S_ISTXT",    S_ISTXT),
-    LUABSD_INT(luab_pushinteger, "S_IRWXU",    S_IRWXU),
-    LUABSD_INT(luab_pushinteger, "S_IRUSR",    S_IRUSR),
-    LUABSD_INT(luab_pushinteger, "S_IWUSR",    S_IWUSR),
-    LUABSD_INT(luab_pushinteger, "S_IXUSR",    S_IXUSR),
-    LUABSD_INT(luab_pushinteger, "S_IREAD",    S_IREAD),
-    LUABSD_INT(luab_pushinteger, "S_IWRITE",   S_IWRITE),
-    LUABSD_INT(luab_pushinteger, "S_IEXEC",    S_IEXEC),
-    LUABSD_INT(luab_pushinteger, "S_IRWXG",    S_IRWXG),
-    LUABSD_INT(luab_pushinteger, "S_IRGRP",    S_IRGRP),
-    LUABSD_INT(luab_pushinteger, "S_IWGRP",    S_IWGRP),
-    LUABSD_INT(luab_pushinteger, "S_IXGRP",    S_IXGRP),
-    LUABSD_INT(luab_pushinteger, "S_IRWXO",    S_IRWXO),
-    LUABSD_INT(luab_pushinteger, "S_IROTH",    S_IROTH),
-    LUABSD_INT(luab_pushinteger, "S_IWOTH",    S_IWOTH),
-    LUABSD_INT(luab_pushinteger, "S_IXOTH",    S_IXOTH),
-    LUABSD_INT(luab_pushinteger, "S_IFMT", S_IFMT),
-    LUABSD_INT(luab_pushinteger, "S_IFIFO",    S_IFIFO),
-    LUABSD_INT(luab_pushinteger, "S_IFCHR",    S_IFCHR),
-    LUABSD_INT(luab_pushinteger, "S_IFDIR",    S_IFDIR),
-    LUABSD_INT(luab_pushinteger, "S_IFBLK",    S_IFBLK),
-    LUABSD_INT(luab_pushinteger, "S_IFREG",    S_IFREG),
-    LUABSD_INT(luab_pushinteger, "S_IFLNK",    S_IFLNK),
-    LUABSD_INT(luab_pushinteger, "S_IFSOCK",   S_IFSOCK),
-    LUABSD_INT(luab_pushinteger, "S_ISVTX",    S_ISVTX),
-    LUABSD_INT(luab_pushinteger, "S_IFWHT",    S_IFWHT),
-    LUABSD_INT(NULL, NULL, 0)
+    LUABSD_INT("S_ISUID",    S_ISUID),
+    LUABSD_INT("S_ISGID",    S_ISGID),
+    LUABSD_INT("S_ISTXT",    S_ISTXT),
+    LUABSD_INT("S_IRWXU",    S_IRWXU),
+    LUABSD_INT("S_IRUSR",    S_IRUSR),
+    LUABSD_INT("S_IWUSR",    S_IWUSR),
+    LUABSD_INT("S_IXUSR",    S_IXUSR),
+    LUABSD_INT("S_IREAD",    S_IREAD),
+    LUABSD_INT("S_IWRITE",   S_IWRITE),
+    LUABSD_INT("S_IEXEC",    S_IEXEC),
+    LUABSD_INT("S_IRWXG",    S_IRWXG),
+    LUABSD_INT("S_IRGRP",    S_IRGRP),
+    LUABSD_INT("S_IWGRP",    S_IWGRP),
+    LUABSD_INT("S_IXGRP",    S_IXGRP),
+    LUABSD_INT("S_IRWXO",    S_IRWXO),
+    LUABSD_INT("S_IROTH",    S_IROTH),
+    LUABSD_INT("S_IWOTH",    S_IWOTH),
+    LUABSD_INT("S_IXOTH",    S_IXOTH),
+    LUABSD_INT("S_IFMT", S_IFMT),
+    LUABSD_INT("S_IFIFO",    S_IFIFO),
+    LUABSD_INT("S_IFCHR",    S_IFCHR),
+    LUABSD_INT("S_IFDIR",    S_IFDIR),
+    LUABSD_INT("S_IFBLK",    S_IFBLK),
+    LUABSD_INT("S_IFREG",    S_IFREG),
+    LUABSD_INT("S_IFLNK",    S_IFLNK),
+    LUABSD_INT("S_IFSOCK",   S_IFSOCK),
+    LUABSD_INT("S_ISVTX",    S_ISVTX),
+    LUABSD_INT("S_IFWHT",    S_IFWHT),
+    LUABSD_INT(NULL, 0)
 };
 
 static luab_table_t luab_i_timer_setting[] = {
-    LUABSD_INT(luab_pushinteger, "ITIMER_REAL",    ITIMER_REAL),
-    LUABSD_INT(luab_pushinteger, "ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
-    LUABSD_INT(luab_pushinteger, "ITIMER_PROF",    ITIMER_PROF),
-    LUABSD_INT(NULL, NULL, 0)
+    LUABSD_INT("ITIMER_REAL",    ITIMER_REAL),
+    LUABSD_INT("ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
+    LUABSD_INT("ITIMER_PROF",    ITIMER_PROF),
+    LUABSD_INT(NULL, 0)
 };
 
 /* method-table */
 static luab_table_t luab_stdlib[] = {
-    LUABSD_FUNC(luab_pushcfunction,   "arc4random", luab_arc4random),
-    LUABSD_FUNC(luab_pushcfunction,   "arc4random_uniform", luab_arc4random_uniform),
-    LUABSD_FUNC(NULL, NULL, NULL)
+    LUABSD_FUNC("arc4random", luab_arc4random),
+    LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 static luab_table_t luab_db[] = {
-    LUABSD_FUNC(luab_pushcfunction,   "dbopen", luab_dbopen),
-    LUABSD_FUNC(NULL, NULL, NULL)
+    LUABSD_FUNC("dbopen", luab_dbopen),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 static luab_table_t luab_unistd[] = {
-    LUABSD_FUNC(luab_pushcfunction,   "fork",   luab_fork),
-    LUABSD_FUNC(luab_pushcfunction,   "getegid",    luab_getegid),
-    LUABSD_FUNC(luab_pushcfunction,   "geteuid",    luab_geteuid),
-    LUABSD_FUNC(luab_pushcfunction,   "getgid",    luab_getgid),
-    LUABSD_FUNC(luab_pushcfunction,   "getlogin",   luab_getlogin),
-    LUABSD_FUNC(luab_pushcfunction,   "getpid", luab_getpid),
-    LUABSD_FUNC(luab_pushcfunction,   "getppid",    luab_getppid),
-    LUABSD_FUNC(luab_pushcfunction,   "getpgid",    luab_getpgid),
-    LUABSD_FUNC(luab_pushcfunction,   "getpgrp",    luab_getpgrp),
-    LUABSD_FUNC(luab_pushcfunction,   "getuid", luab_getuid),
-    LUABSD_FUNC(luab_pushcfunction,   "getsid", luab_getsid),
-    LUABSD_FUNC(luab_pushcfunction,   "setegid",    luab_setegid),
-    LUABSD_FUNC(luab_pushcfunction,   "seteuid",    luab_seteuid),
-    LUABSD_FUNC(luab_pushcfunction,   "setgid",    luab_setgid),
-    LUABSD_FUNC(luab_pushcfunction,   "setlogin",   luab_setlogin),
-    LUABSD_FUNC(luab_pushcfunction,   "setpgid",    luab_setpgid),
-    LUABSD_FUNC(luab_pushcfunction,   "setpgrp",    luab_setpgrp),
-    LUABSD_FUNC(luab_pushcfunction,   "setsid", luab_setsid),
-    LUABSD_FUNC(luab_pushcfunction,   "setuid", luab_setuid),
-    LUABSD_FUNC(NULL, NULL, NULL)
+    LUABSD_FUNC("fork",   luab_fork),
+    LUABSD_FUNC("getegid",    luab_getegid),
+    LUABSD_FUNC("geteuid",    luab_geteuid),
+    LUABSD_FUNC("getgid",    luab_getgid),
+    LUABSD_FUNC("getlogin",   luab_getlogin),
+    LUABSD_FUNC("getpid", luab_getpid),
+    LUABSD_FUNC("getppid",    luab_getppid),
+    LUABSD_FUNC("getpgid",    luab_getpgid),
+    LUABSD_FUNC("getpgrp",    luab_getpgrp),
+    LUABSD_FUNC("getuid", luab_getuid),
+    LUABSD_FUNC("getsid", luab_getsid),
+    LUABSD_FUNC("setegid",    luab_setegid),
+    LUABSD_FUNC("seteuid",    luab_seteuid),
+    LUABSD_FUNC("setgid",    luab_setgid),
+    LUABSD_FUNC("setlogin",   luab_setlogin),
+    LUABSD_FUNC("setpgid",    luab_setpgid),
+    LUABSD_FUNC("setpgrp",    luab_setpgrp),
+    LUABSD_FUNC("setsid", luab_setsid),
+    LUABSD_FUNC("setuid", luab_setuid),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 static luab_table_t luab_time[] = { /* XXX sys/time */
-    LUABSD_FUNC(luab_pushcfunction,   "getitimer",  luab_getitimer),
-    LUABSD_FUNC(luab_pushcfunction,   "setitimer",  luab_setitimer),
-    LUABSD_FUNC(NULL, NULL, NULL)
+    LUABSD_FUNC("getitimer",  luab_getitimer),
+    LUABSD_FUNC("setitimer",  luab_setitimer),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 static luab_table_t luab_uuid[] = {
-    LUABSD_FUNC(luab_pushcfunction,   "uuidgen",    luab_uuidgen),
-    LUABSD_FUNC(NULL, NULL, NULL)
+    LUABSD_FUNC("uuidgen",    luab_uuidgen),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 /*
