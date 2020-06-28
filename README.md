@@ -25,11 +25,11 @@ As an example, a database may created, as described in db(3):
     )
     local _type = lib.db_type.DB_BTREE
 
-    local db = lib.dbopen(_fname, _flags, _mode, _type)
+    local db = lib.db.dbopen(_fname, _flags, _mode, _type)
 
 Therefore
 
-    local key = lib.uuidgen()
+    local key = lib.uuid.uuidgen()
     local value = "Hello world!"
 
     db:put(key, value, lib.db_r_flags.R_NOOVERWRITE)
@@ -45,7 +45,7 @@ and so on. A callout may implemented as follows:
         print("Hello world!")
     end
 
-    lib.setitimer(lib.i_timer.ITIMER_REAL, 3, callback)
+    lib.time.setitimer(lib.i_timer.ITIMER_REAL, 3, callback)
 
     while true do -- yes, this is bad style ^^
         if expired then
