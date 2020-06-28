@@ -52,11 +52,6 @@ typedef struct {
 } luab_itable_t;
 
 typedef struct {
-    const char    *key;
-    lua_CFunction   value;
-} luab_mtable_t;
-
-typedef struct {
     DB  *db;
 } db_softc_t;
 
@@ -64,14 +59,14 @@ typedef struct {
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
-static luab_itable_t bsd_db_open_flags[] = {
+static luab_itable_t luab_db_open_flags[] = {
     { "DB_LOCK",    DB_LOCK },
     { "DB_SHMEM",   DB_SHMEM },
     { "DB_TXN", DB_TXN },
     { NULL, 0 }
 };
 
-static luab_itable_t bsd_db_routine_flags[] = {
+static luab_itable_t luab_db_routine_flags[] = {
     { "R_CURSOR",   R_CURSOR },
     { "__R_UNUSED", __R_UNUSED },
     { "R_FIRST",    R_FIRST },
@@ -86,14 +81,14 @@ static luab_itable_t bsd_db_routine_flags[] = {
     { NULL, 0 }
 };
 
-static luab_itable_t bsd_db_type[] = {
+static luab_itable_t luab_db_type[] = {
     { "DB_BTREE",   DB_BTREE },
     { "DB_HASH",    DB_HASH },
     { "DB_RECNO",   DB_RECNO },
     { NULL, 0 }
 };
 
-static luab_itable_t bsd_bsd_f_lock_operation[] = {
+static luab_itable_t luab_luab_f_lock_operation[] = {
     { "LOCK_SH",   LOCK_SH },
     { "LOCK_EX",   LOCK_EX },
     { "LOCK_NB",   LOCK_NB },
@@ -101,7 +96,7 @@ static luab_itable_t bsd_bsd_f_lock_operation[] = {
     { NULL, 0 }
 };
 
-static luab_itable_t bsd_f_open_flags[] = {
+static luab_itable_t luab_f_open_flags[] = {
     { "O_RDONLY",   O_RDONLY },
     { "O_WRONLY",   O_WRONLY },
     { "O_RDWR", O_RDWR },
@@ -125,7 +120,7 @@ static luab_itable_t bsd_f_open_flags[] = {
     { NULL, 0 }
 };
 
-static luab_itable_t bsd_f_status_flags[] = {
+static luab_itable_t luab_f_status_flags[] = {
     { "S_ISUID",    S_ISUID },
     { "S_ISGID",    S_ISGID },
     { "S_ISTXT",    S_ISTXT },
@@ -157,7 +152,7 @@ static luab_itable_t bsd_f_status_flags[] = {
     { NULL, 0 }
 };
 
-static luab_itable_t bsd_i_timer_setting[] = {
+static luab_itable_t luab_i_timer_setting[] = {
     { "ITIMER_REAL",    ITIMER_REAL },
     { "ITIMER_VIRTUAL",    ITIMER_VIRTUAL },
     { "ITIMER_PROF",    ITIMER_PROF },
@@ -179,17 +174,17 @@ luab_newitable(lua_State *L, luab_itable_t *reg, const char *name)
 }
 
 static void
-luab_newmtable(lua_State *L, luab_mtable_t *reg, const char *name)
+luab_newmtable(lua_State *L, luaL_Reg *reg, const char *name)
 {
-    luab_mtable_t *tok;
+    luaL_Reg *tok;
 
     lua_newtable(L);
 
-    for (tok = reg; tok->key; tok++) {
-        lua_pushcfunction(L, tok->value);
-        lua_setfield(L, -2, tok->key);
+    for (tok = reg; tok->name; tok++) {
+        lua_pushcfunction(L, tok->func);
+        lua_setfield(L, -2, tok->name);
     }
-    lua_setfield(L, -2, name);  /* 1 */
+    lua_setfield(L, -2, name);
 }
 
 static int
@@ -208,7 +203,7 @@ luab_pusherr(lua_State *L, int status)
  */
 
 static int
-bsd_arc4random(lua_State *L)
+luab_arc4random(lua_State *L)
 {
     uint32_t n = arc4random();
 
@@ -218,7 +213,7 @@ bsd_arc4random(lua_State *L)
 }
 
 static int
-bsd_arc4random_uniform(lua_State *L)
+luab_arc4random_uniform(lua_State *L)
 {
     uint32_t ub = luaL_checkinteger(L, 1);
     uint32_t n = arc4random_uniform(ub);
@@ -483,7 +478,7 @@ db_tostring(lua_State *L)
     return 1;
 }
 
-static const luaL_Reg dblib[] = {
+static luaL_Reg luab_db_db[] = {
     { "close",  db_close },
     { "del",    db_del },
     { "get",    db_get },
@@ -498,7 +493,7 @@ static const luaL_Reg dblib[] = {
 };
 
 static int
-bsd_dbopen(lua_State *L)
+luab_dbopen(lua_State *L)
 {
     const char *fname = db_fname(L, 1);
     int flags = luaL_checkinteger(L, 2);
@@ -519,7 +514,7 @@ bsd_dbopen(lua_State *L)
  * Interface against service primitives on <unistd.h>.
  */
 static int
-bsd_fork(lua_State *L)
+luab_fork(lua_State *L)
 {
     pid_t pid;
 
@@ -532,7 +527,7 @@ bsd_fork(lua_State *L)
 }
 
 static int
-bsd_getegid(lua_State *L)
+luab_getegid(lua_State *L)
 {
     gid_t egid = getegid();
 
@@ -542,7 +537,7 @@ bsd_getegid(lua_State *L)
 }
 
 static int
-bsd_geteuid(lua_State *L)
+luab_geteuid(lua_State *L)
 {
     uid_t euid = geteuid();
 
@@ -552,7 +547,7 @@ bsd_geteuid(lua_State *L)
 }
 
 static int
-bsd_getgid(lua_State *L)
+luab_getgid(lua_State *L)
 {
     gid_t gid = getgid();
 
@@ -562,7 +557,7 @@ bsd_getgid(lua_State *L)
 }
 
 static int
-bsd_getlogin(lua_State *L)
+luab_getlogin(lua_State *L)
 {
     char *p;
 
@@ -575,7 +570,7 @@ bsd_getlogin(lua_State *L)
 }
 
 static int
-bsd_getpid(lua_State *L)
+luab_getpid(lua_State *L)
 {
     pid_t pid = getpid();
 
@@ -585,7 +580,7 @@ bsd_getpid(lua_State *L)
 }
 
 static int
-bsd_getppid(lua_State *L)
+luab_getppid(lua_State *L)
 {
     pid_t pid = getppid();
 
@@ -595,7 +590,7 @@ bsd_getppid(lua_State *L)
 }
 
 static int
-bsd_getpgrp(lua_State *L)
+luab_getpgrp(lua_State *L)
 {
     pid_t pgrp = getpgrp();
 
@@ -605,7 +600,7 @@ bsd_getpgrp(lua_State *L)
 }
 
 static int
-bsd_getpgid(lua_State *L)
+luab_getpgid(lua_State *L)
 {
     pid_t pid = luaL_checkinteger(L, 1);
     pid_t pgrp;
@@ -619,7 +614,7 @@ bsd_getpgid(lua_State *L)
 }
 
 static int
-bsd_getuid(lua_State *L)
+luab_getuid(lua_State *L)
 {
     uid_t uid = getuid();
 
@@ -629,7 +624,7 @@ bsd_getuid(lua_State *L)
 }
 
 static int
-bsd_getsid(lua_State *L)
+luab_getsid(lua_State *L)
 {
     pid_t pid = luaL_checkinteger(L, 1);
     pid_t sid;
@@ -643,7 +638,7 @@ bsd_getsid(lua_State *L)
 }
 
 static int
-bsd_setegid(lua_State *L)
+luab_setegid(lua_State *L)
 {
     gid_t egid = luaL_checkinteger(L, 1);
     int status;
@@ -657,7 +652,7 @@ bsd_setegid(lua_State *L)
 }
 
 static int
-bsd_seteuid(lua_State *L)
+luab_seteuid(lua_State *L)
 {
     uid_t euid = luaL_checkinteger(L, 1);
     int status;
@@ -671,7 +666,7 @@ bsd_seteuid(lua_State *L)
 }
 
 static int
-bsd_setgid(lua_State *L)
+luab_setgid(lua_State *L)
 {
     gid_t gid = luaL_checkinteger(L, 1);
     int status;
@@ -685,7 +680,7 @@ bsd_setgid(lua_State *L)
 }
 
 static int
-bsd_setlogin(lua_State *L)
+luab_setlogin(lua_State *L)
 {
     const char *name = luaL_checklstring(L, 1, &((size_t){MAXLOGNAME}));
     int status;
@@ -699,7 +694,7 @@ bsd_setlogin(lua_State *L)
 }
 
 static int
-bsd_setpgid(lua_State *L)
+luab_setpgid(lua_State *L)
 {
     pid_t pid = luaL_checkinteger(L, 1);
     pid_t pgrp = luaL_checkinteger(L, 2);
@@ -714,7 +709,7 @@ bsd_setpgid(lua_State *L)
 }
 
 static int
-bsd_setpgrp(lua_State *L)
+luab_setpgrp(lua_State *L)
 {
     pid_t pid = luaL_checkinteger(L, 1);
     pid_t pgrp = luaL_checkinteger(L, 2);
@@ -729,7 +724,7 @@ bsd_setpgrp(lua_State *L)
 }
 
 static int
-bsd_setsid(lua_State *L)
+luab_setsid(lua_State *L)
 {
     pid_t sid;
 
@@ -742,7 +737,7 @@ bsd_setsid(lua_State *L)
 }
 
 static int
-bsd_setuid(lua_State *L)
+luab_setuid(lua_State *L)
 {
     uid_t uid = luaL_checkinteger(L, 1);
     int status;
@@ -759,7 +754,7 @@ bsd_setuid(lua_State *L)
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
  */
 static int
-bsd_uuidgen(lua_State *L)
+luab_uuidgen(lua_State *L)
 {
     uuid_t uuid;
     char *buf;
@@ -835,7 +830,7 @@ out:
 }
 
 static int
-bsd_setitimer(lua_State *L)
+luab_setitimer(lua_State *L)
 {
     int which = luaL_checkinteger(L, 1);
     time_t sec = luaL_checkinteger(L, 2);
@@ -875,7 +870,7 @@ bsd_setitimer(lua_State *L)
 }
 
 static int
-bsd_getitimer(lua_State *L)
+luab_getitimer(lua_State *L)
 {
     int which = luaL_checkinteger(L, 1);
     struct itimerval itv;
@@ -890,48 +885,48 @@ bsd_getitimer(lua_State *L)
 }
 
 /* method-table */
-static luab_mtable_t bsd_stdlib[] = {
-    { "arc4random", bsd_arc4random },
-    { "arc4random_uniform", bsd_arc4random_uniform },
+static luaL_Reg luab_stdlib[] = {
+    { "arc4random", luab_arc4random },
+    { "arc4random_uniform", luab_arc4random_uniform },
     { NULL, NULL }
 };
 
-static luab_mtable_t bsd_db[] = {
-    { "dbopen", bsd_dbopen },
+static luaL_Reg luab_db[] = {
+    { "dbopen", luab_dbopen },
     { NULL, NULL }
 };
 
-static luab_mtable_t bsd_unistd[] = {
-    { "fork",   bsd_fork },
-    { "getegid",    bsd_getegid },
-    { "geteuid",    bsd_geteuid },
-    { "getgid",    bsd_getgid },
-    { "getlogin",   bsd_getlogin },
-    { "getpid", bsd_getpid },
-    { "getppid",    bsd_getppid },
-    { "getpgid",    bsd_getpgid },
-    { "getpgrp",    bsd_getpgrp },
-    { "getuid", bsd_getuid },
-    { "getsid", bsd_getsid },
-    { "setegid",    bsd_setegid },
-    { "seteuid",    bsd_seteuid },
-    { "setgid",    bsd_setgid },
-    { "setlogin",   bsd_setlogin },
-    { "setpgid",    bsd_setpgid },
-    { "setpgrp",    bsd_setpgrp },
-    { "setsid", bsd_setsid },
-    { "setuid", bsd_setuid },
+static luaL_Reg luab_unistd[] = {
+    { "fork",   luab_fork },
+    { "getegid",    luab_getegid },
+    { "geteuid",    luab_geteuid },
+    { "getgid",    luab_getgid },
+    { "getlogin",   luab_getlogin },
+    { "getpid", luab_getpid },
+    { "getppid",    luab_getppid },
+    { "getpgid",    luab_getpgid },
+    { "getpgrp",    luab_getpgrp },
+    { "getuid", luab_getuid },
+    { "getsid", luab_getsid },
+    { "setegid",    luab_setegid },
+    { "seteuid",    luab_seteuid },
+    { "setgid",    luab_setgid },
+    { "setlogin",   luab_setlogin },
+    { "setpgid",    luab_setpgid },
+    { "setpgrp",    luab_setpgrp },
+    { "setsid", luab_setsid },
+    { "setuid", luab_setuid },
     { NULL, NULL }
 };
 
-static luab_mtable_t bsd_time[] = { /* XXX sys/time */
-    { "getitimer",  bsd_getitimer },
-    { "setitimer",  bsd_setitimer },
+static luaL_Reg luab_time[] = { /* XXX sys/time */
+    { "getitimer",  luab_getitimer },
+    { "setitimer",  luab_setitimer },
     { NULL, NULL }
 };
 
-static luab_mtable_t bsd_uuid[] = {
-    { "uuidgen",    bsd_uuidgen },
+static luaL_Reg luab_uuid[] = {
+    { "uuidgen",    luab_uuidgen },
     { NULL, NULL }
 };
 
@@ -943,28 +938,28 @@ luaopen_bsd(lua_State *L)
 {
     lua_newtable(L);
 
-    luab_newitable(L, bsd_db_open_flags, "db_o_flags");
-    luab_newitable(L, bsd_db_routine_flags, "db_r_flags");
-    luab_newitable(L, bsd_db_type, "db_type");
+    luab_newitable(L, luab_db_open_flags, "db_o_flags");
+    luab_newitable(L, luab_db_routine_flags, "db_r_flags");
+    luab_newitable(L, luab_db_type, "db_type");
 
-    luab_newitable(L, bsd_bsd_f_lock_operation, "f_lock_ops");
-    luab_newitable(L, bsd_f_open_flags, "f_o_flags");
-    luab_newitable(L, bsd_f_status_flags, "f_s_flags");
+    luab_newitable(L, luab_luab_f_lock_operation, "f_lock_ops");
+    luab_newitable(L, luab_f_open_flags, "f_o_flags");
+    luab_newitable(L, luab_f_status_flags, "f_s_flags");
 
-    luab_newitable(L, bsd_i_timer_setting, "i_timer");
+    luab_newitable(L, luab_i_timer_setting, "i_timer");
 
-    luab_newmtable(L, bsd_stdlib, "stdlib");
-    luab_newmtable(L, bsd_db, "db");
-    luab_newmtable(L, bsd_unistd, "unistd");
-    luab_newmtable(L, bsd_time, "time");
-    luab_newmtable(L, bsd_uuid, "uuid");
+    luab_newmtable(L, luab_stdlib, "stdlib");
+    luab_newmtable(L, luab_db, "db");
+    luab_newmtable(L, luab_unistd, "unistd");
+    luab_newmtable(L, luab_time, "time");
+    luab_newmtable(L, luab_uuid, "uuid");
 
     lua_pushvalue(L, -1);
 
     luaL_newmetatable(L, LUABSD_DB);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, dblib, 0);
+    luaL_setfuncs(L, luab_db_db, 0);
     lua_pop(L, 1);
 
     return 1;
