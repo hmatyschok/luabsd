@@ -838,6 +838,9 @@ static luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("S_IFSOCK",   S_IFSOCK),
     LUABSD_INT("S_ISVTX",    S_ISVTX),
     LUABSD_INT("S_IFWHT",    S_IFWHT),
+    LUABSD_INT("ACCESSPERMS",   ACCESSPERMS),
+	LUABSD_INT("ALLPERMS",  ALLPERMS),
+    LUABSD_INT("DEFFILEMODE",   DEFFILEMODE),
     LUABSD_INT(NULL, 0)
 };
 
