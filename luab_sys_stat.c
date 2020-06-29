@@ -256,6 +256,19 @@ luab_mkfifoat(lua_State *L)
     return 1;
 }
 
+static int
+luab_umask(lua_State *L)
+{
+    mode_t numask = luaL_checkinteger(L, 1);
+    mode_t oumask;
+
+    oumask = umask(numask);
+
+    lua_pushinteger(L, oumask);
+
+    return 1;
+}
+
 luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("S_ISUID",    S_ISUID),
     LUABSD_INT("S_ISGID",    S_ISGID),
@@ -318,5 +331,6 @@ luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_FUNC("mkfifoat",   luab_mkfifoat),
     LUABSD_FUNC("mknod",    luab_mknod),
     LUABSD_FUNC("mknodat",    luab_mknodat),
+    LUABSD_FUNC("umask",    luab_umask),
     LUABSD_FUNC(NULL, NULL)
 };
