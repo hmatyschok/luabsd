@@ -74,7 +74,6 @@ extern luab_table_t luab_uuid[];
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
-
 __END_DECLS
 
 #endif /* _LUABSD_H_ */

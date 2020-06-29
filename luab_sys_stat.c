@@ -225,6 +225,37 @@ luab_mknodat(lua_State *L)
     return 1;
 }
 
+static int
+luab_mkfifo(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode_t mode = luaL_checkinteger(L, 2);
+    int status;
+
+    if ((status = mkfifo(path, mode)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_mkfifoat(lua_State *L)
+{
+    int fd = luaL_checkinteger(L, 1);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode_t mode = luaL_checkinteger(L, 3);
+    int status;
+
+    if ((status = mkfifoat(fd, path, mode)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
 luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_INT("S_ISUID",    S_ISUID),
     LUABSD_INT("S_ISGID",    S_ISGID),
@@ -283,6 +314,8 @@ luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_FUNC("lchmod",   luab_lchmod),
     LUABSD_FUNC("mkdir",   luab_mkdir),
     LUABSD_FUNC("mkdirat",   luab_mkdirat),
+    LUABSD_FUNC("mkfifo",   luab_mkfifo),
+    LUABSD_FUNC("mkfifoat",   luab_mkfifoat),
     LUABSD_FUNC("mknod",    luab_mknod),
     LUABSD_FUNC("mknodat",    luab_mknodat),
     LUABSD_FUNC(NULL, NULL)
