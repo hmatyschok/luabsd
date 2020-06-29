@@ -274,6 +274,39 @@ luab_mkdirat(lua_State *L)
     return 1;
 }
 
+static int
+luab_mknod(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode_t mode = luaL_checkinteger(L, 2);
+    dev_t dev = luaL_checkinteger(L, 3);
+    int status;
+
+    if ((status = mknod(path, mode, dev)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_mknodat(lua_State *L)
+{
+    int fd = luaL_checkinteger(L, 1);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode_t mode = luaL_checkinteger(L, 3);
+    dev_t dev = luaL_checkinteger(L, 4);
+    int status;
+
+    if ((status = mknodat(fd, path, mode, dev)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
 /*
  * Components or service primitives on stdlib.h.
  */
@@ -1030,6 +1063,8 @@ static luab_table_t luab_sys_stat[] = { /* sys/stat.h */
     LUABSD_FUNC("lchmod",   luab_lchmod),
     LUABSD_FUNC("mkdir",   luab_mkdir),
     LUABSD_FUNC("mkdirat",   luab_mkdirat),
+    LUABSD_FUNC("mknod",    luab_mknod),
+    LUABSD_FUNC("mknodat",    luab_mknodat),
     LUABSD_FUNC(NULL, NULL)
 };
 
