@@ -262,7 +262,7 @@ luab_umask(lua_State *L)
     mode_t numask = luaL_checkinteger(L, 1);
     mode_t oumask;
 
-    oumask = umask(numask);
+    oumask = umask(numask & ALLPERMS);
 
     lua_pushinteger(L, oumask);
 
