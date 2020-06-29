@@ -59,5 +59,6 @@ luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("FNONBLOCK", FNONBLOCK),
     LUABSD_INT("FNDELAY",   FNDELAY),
     LUABSD_INT("O_NDELAY",  O_NDELAY),
+    LUABSD_INT("FRDAHEAD",  FRDAHEAD),
     LUABSD_INT(NULL, 0)
 };
