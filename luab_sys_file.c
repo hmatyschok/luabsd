@@ -33,9 +33,6 @@
 #include "luabsd.h"
 
 luab_table_t luab_sys_file[] = { /* sys/file.h */
-    LUABSD_INT("LOCK_SH",   LOCK_SH),
-    LUABSD_INT("LOCK_EX",   LOCK_EX),
-    LUABSD_INT("LOCK_NB",   LOCK_NB),
-    LUABSD_INT("LOCK_UN",   LOCK_UN),
+
     LUABSD_INT(NULL, 0)
 };

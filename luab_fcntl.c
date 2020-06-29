@@ -90,5 +90,9 @@ luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("F_WRLCK",   F_WRLCK),
     LUABSD_INT("F_UNLCKSYS",    F_UNLCKSYS),
     LUABSD_INT("F_CANCEL",  F_CANCEL),
+    LUABSD_INT("LOCK_SH",   LOCK_SH),
+    LUABSD_INT("LOCK_EX",   LOCK_EX),
+    LUABSD_INT("LOCK_NB",   LOCK_NB),
+    LUABSD_INT("LOCK_UN",   LOCK_UN),
     LUABSD_INT(NULL, 0)
 };
