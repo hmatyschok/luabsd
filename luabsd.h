@@ -42,11 +42,8 @@ typedef struct {
     luab_un_t   val;
 } luab_table_t;
 
-void    luab_pushinteger(lua_State *, luab_un_t *);
 void    luab_pushcfunction(lua_State *, luab_un_t *);
-
-int luab_pusherr(lua_State *, int);
-void    luab_newtable(lua_State *, luab_table_t *, const char *);
+void    luab_pushinteger(lua_State *, luab_un_t *);
 
 #define LUABSD_REG(f, k, v) \
     { .func = f, .key = k, v }
@@ -55,8 +52,16 @@ void    luab_newtable(lua_State *, luab_table_t *, const char *);
 #define LUABSD_FUNC(k, v) \
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
+void    luab_newtable(lua_State *, luab_table_t *, const char *);
+
 #define luab_checklstring(L, narg, len) \
     (luaL_checklstring(L, narg, &((size_t){len})))
+
+int luab_pusherr(lua_State *, int);
+
+#define LUABSD_DB   "DB*"
+
+extern luaL_Reg luab_dblib[];
 
 extern luab_table_t luab_db[];
 extern luab_table_t luab_fcntl[];
@@ -67,11 +72,8 @@ extern luab_table_t luab_sys_time[];
 extern luab_table_t luab_unistd[];
 extern luab_table_t luab_uuid[];
 
-#define LUABSD_DB   "DB*"
-
-extern luaL_Reg luab_dblib[];
-
 LUAMOD_API int  luaopen_bsd(lua_State *);
+
 
 __END_DECLS
 
