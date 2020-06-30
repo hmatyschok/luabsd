@@ -25,6 +25,8 @@
  */
 
 #include <sys/limits.h>
+#include <sys/param.h>
+#include <sys/stat.h>
 
 #include <errno.h>
 #include <fcntl.h>
@@ -43,6 +45,49 @@ typedef struct {
 
 #define luab_toflock(L, narg) \
     ((luab_db_t *)luaL_checkudata(L, narg, LUABSD_FLOCK))
+
+static int
+luab_open(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int flags = luab_checkinteger(L, 2, INT_MAX);
+    int narg = lua_gettop(L), fd;
+    mode_t mode;
+
+    if (narg == 3 && (flags & O_CREAT) != 0)
+        mode = luab_checkinteger(L, narg, ALLPERMS);
+    else
+        mode = 0;
+
+    if ((fd = open(path, flags, mode)) < 0)
+        return luab_pusherr(L, fd);
+
+    lua_pushinteger(L, fd);
+
+    return 1;
+}
+
+static int
+luab_openat(lua_State *L)
+{
+    int dirfd = luab_checkinteger(L, 1, INT_MAX);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    int flags = luab_checkinteger(L, 3, INT_MAX);
+    int narg = lua_gettop(L), fd;
+    mode_t mode;
+
+    if (narg == 4 && (flags & O_CREAT) != 0)
+        mode = luab_checkinteger(L, narg, ALLPERMS);
+    else
+        mode = 0;
+
+    if ((fd = openat(dirfd, path, flags, mode)) < 0)
+        return luab_pusherr(L, fd);
+
+    lua_pushinteger(L, fd);
+
+    return 1;
+}
 
 static int
 luab_posix_fadvise(lua_State *L)
@@ -141,6 +186,8 @@ luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("POSIX_FADV_WILLNEED",   POSIX_FADV_WILLNEED),
     LUABSD_INT("POSIX_FADV_DONTNEED",   POSIX_FADV_DONTNEED),
     LUABSD_INT("POSIX_FADV_NOREUSE",    POSIX_FADV_NOREUSE),
+    LUABSD_FUNC("open", luab_open),
+    LUABSD_FUNC("openat",   luab_openat),
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
     LUABSD_FUNC(NULL, NULL)
