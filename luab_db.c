@@ -25,6 +25,7 @@
  */
 
 #include <sys/file.h>
+#include <sys/limits.h>
 
 #include <db.h>
 #include <errno.h>
@@ -122,7 +123,7 @@ db_del(lua_State *L)
     if ((status = db_newbuf(L, 2, &k)) != 0)
         return luab_pusherr(L, status);
 
-    flags = luaL_checkinteger(L, 3);
+    flags = luab_checkinteger(L, 3, UINT_MAX);
 
     if ((status = (sc->db->del)(sc->db, &k, flags)) != 0)
         return luab_pusherr(L, status);
@@ -148,7 +149,7 @@ db_get(lua_State *L)
     if ((status = db_newbuf(L, 2, &k)) != 0)
         return luab_pusherr(L, status);
 
-    flags = luaL_checkinteger(L, 3);
+    flags = luab_checkinteger(L, 3, UINT_MAX);
 
     if ((status = (sc->db->get)(sc->db, &k, &v, flags)) != 0)
         return luab_pusherr(L, status);
@@ -179,7 +180,7 @@ db_put(lua_State *L)
         free(k.data);
         return luab_pusherr(L, status);
     }
-    flags = luaL_checkinteger(L, 4);
+    flags = luab_checkinteger(L, 4, UINT_MAX);
 
     if ((status = (sc->db->put)(sc->db, &k, &v, flags)) != 0) {
         free(k.data);
@@ -205,7 +206,7 @@ db_seq(lua_State *L)
     if ((status = db_isclosed(sc)) != 0)
         return luab_pusherr(L, status);
 
-    flags = luaL_checkinteger(L, 2);
+    flags = luab_checkinteger(L, 2, UINT_MAX);
 
     if ((status = (sc->db->seq)(sc->db, &k, &v, flags)) != 0)
         return luab_pusherr(L, status);
@@ -227,7 +228,7 @@ db_sync(lua_State *L)
     if ((status = db_isclosed(sc)) != 0)
         return luab_pusherr(L, status);
 
-    flags = luaL_checkinteger(L, 2);
+    flags = luab_checkinteger(L, 2, UINT_MAX);
 
     if ((status = (sc->db->sync)(sc->db, flags)) != 0)
         return luab_pusherr(L, status);
@@ -258,7 +259,7 @@ static int
 db_flock(lua_State *L)
 {
     luab_db_t *sc = luab_todb(L, 1);
-    int op = luaL_checkinteger(L, 2);
+    int op = luab_checkinteger(L, 2, INT_MAX);
     int fd, status;
 
     if ((status = db_isclosed(sc)) != 0)
@@ -317,9 +318,9 @@ static int
 luab_dbopen(lua_State *L)
 {
     const char *fname = db_fname(L, 1);
-    int flags = luaL_checkinteger(L, 2);
-    int mode = luaL_checkinteger(L, 3);
-    int type = luaL_checkinteger(L, 4);
+    int flags = luab_checkinteger(L, 2, INT_MAX);
+    int mode = luab_checkinteger(L, 3, INT_MAX);
+    int type = luab_checkinteger(L, 4, INT_MAX);
     luab_db_t *sc = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
 
     sc->db = NULL;

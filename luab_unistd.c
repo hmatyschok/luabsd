@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/limits.h>
 #include <sys/param.h>
 
 #include <unistd.h>
@@ -127,7 +128,7 @@ luab_getpgrp(lua_State *L)
 static int
 luab_getpgid(lua_State *L)
 {
-    pid_t pid = luaL_checkinteger(L, 1);
+    pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
     pid_t pgrp;
 
     if ((pgrp = getpgid(pid)) < 0)
@@ -151,7 +152,7 @@ luab_getuid(lua_State *L)
 static int
 luab_getsid(lua_State *L)
 {
-    pid_t pid = luaL_checkinteger(L, 1);
+    pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
     pid_t sid;
 
     if ((sid = getsid(pid)) < 0)
