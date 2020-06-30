@@ -42,14 +42,12 @@ typedef struct {
     struct flock    info;
 } luab_flock_t;
 
-#define LUABSD_FLOCK    "FLOCK*"    /* XXX */
-#define luab_toflock(L, narg) \
-    ((luab_flock_t *)luaL_checkudata(L, narg, LUABSD_FLOCK))
+#define LUABSD_FLOCK    "FLOCK*"
 
 static int
 flock_l_start(lua_State *L)
 {
-    luab_flock_t *sc = luab_toflock(L, 1);
+    luab_flock_t *sc = luab_todata(L, 1, LUABSD_FLOCK, luab_flock_t *);
     off_t l_start = luab_checkinteger(L, 2, LONG_MAX);
 
     sc->info.l_start = l_start;
@@ -60,7 +58,7 @@ flock_l_start(lua_State *L)
 static int
 flock_l_len(lua_State *L)
 {
-    luab_flock_t *sc = luab_toflock(L, 1);
+    luab_flock_t *sc = luab_todata(L, 1, LUABSD_FLOCK, luab_flock_t *);
     off_t l_len = luab_checkinteger(L, 2, LONG_MAX);
 
     sc->info.l_len = l_len;
@@ -71,7 +69,7 @@ flock_l_len(lua_State *L)
 static int
 flock_l_pid(lua_State *L)
 {
-    luab_flock_t *sc = luab_toflock(L, 1);
+    luab_flock_t *sc = luab_todata(L, 1, LUABSD_FLOCK, luab_flock_t *);
     pid_t l_pid = luab_checkinteger(L, 2, UINT_MAX);
 
     sc->info.l_pid = l_pid;
@@ -82,7 +80,7 @@ flock_l_pid(lua_State *L)
 static int
 flock_l_type(lua_State *L)
 {
-    luab_flock_t *sc = luab_toflock(L, 1);
+    luab_flock_t *sc = luab_todata(L, 1, LUABSD_FLOCK, luab_flock_t *);
     int l_type = luab_checkinteger(L, 2, SHRT_MAX);
 
     sc->info.l_type = (short)l_type;
@@ -93,7 +91,7 @@ flock_l_type(lua_State *L)
 static int
 flock_l_whence(lua_State *L)
 {
-    luab_flock_t *sc = luab_toflock(L, 1);
+    luab_flock_t *sc = luab_todata(L, 1, LUABSD_FLOCK, luab_flock_t *);
     int l_whence = luab_checkinteger(L, 2, SHRT_MAX);
 
     sc->info.l_whence = (short)l_whence;
@@ -104,7 +102,7 @@ flock_l_whence(lua_State *L)
 static int
 flock_l_sysid(lua_State *L)
 {
-    luab_flock_t *sc = luab_toflock(L, 1);
+    luab_flock_t *sc = luab_todata(L, 1, LUABSD_FLOCK, luab_flock_t *);
     int l_sysid = luab_checkinteger(L, 2, INT_MAX);
 
     sc->info.l_sysid = l_sysid;
@@ -115,7 +113,7 @@ flock_l_sysid(lua_State *L)
 static int
 flock_tostring(lua_State *L)
 {
-    luab_flock_t *sc = luab_toflock(L, 1);
+    luab_flock_t *sc = luab_todata(L, 1, LUABSD_FLOCK, luab_flock_t *);
     lua_pushfstring(L, "flock (%p)", sc);
 
     return 1;

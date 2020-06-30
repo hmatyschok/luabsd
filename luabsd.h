@@ -65,6 +65,9 @@ typedef struct {
     size_t  size;
 } luab_udata_t;
 
+#define luab_todata(L, narg, id, t) \
+    ((t)luaL_checkudata((L), (narg), (id)))
+
 extern luab_udata_t db_type;
 extern luab_udata_t flock_type;
 
