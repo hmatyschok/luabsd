@@ -32,6 +32,8 @@
 
 #include "luabsd.h"
 
+#define LUABSD_FLOCK    "FLOCK*"
+
 typedef struct {
     struct flock    fl;
 } luab_flock_t;
