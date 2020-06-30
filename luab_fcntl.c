@@ -24,6 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/limits.h>
+
+#include <errno.h>
 #include <fcntl.h>
 
 #include <lua.h>
@@ -40,6 +43,21 @@ typedef struct {
 
 #define luab_toflock(L, narg) \
     ((luab_db_t *)luaL_checkudata(L, narg, LUABSD_FLOCK))
+
+static int
+luab_posix_fadvise(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    off_t offset = luab_checkinteger(L, 2, UINT_MAX);
+    off_t len = luab_checkinteger(L, 3, UINT_MAX);
+    int advice = luab_checkinteger(L, 4, INT_MAX);
+
+    if ((errno = posix_fadvise(fd, offset, len, advice)) != 0)
+        return luab_pusherr(L, errno);
+
+    lua_pushinteger(L, errno);
+    return 1;
+}
 
 luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("O_RDONLY",   O_RDONLY),
@@ -109,5 +127,6 @@ luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("POSIX_FADV_WILLNEED",   POSIX_FADV_WILLNEED),
     LUABSD_INT("POSIX_FADV_DONTNEED",   POSIX_FADV_DONTNEED),
     LUABSD_INT("POSIX_FADV_NOREUSE",    POSIX_FADV_NOREUSE),
-    LUABSD_INT(NULL, 0)
+    LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
+    LUABSD_FUNC(NULL, NULL)
 };
