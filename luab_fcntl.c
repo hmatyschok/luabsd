@@ -59,6 +59,20 @@ luab_posix_fadvise(lua_State *L)
     return 1;
 }
 
+static int
+luab_posix_fallocate(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    off_t offset = luab_checkinteger(L, 2, UINT_MAX);
+    off_t len = luab_checkinteger(L, 3, UINT_MAX);
+
+    if ((errno = posix_fallocate(fd, offset, len)) != 0)
+        return luab_pusherr(L, errno);
+
+    lua_pushinteger(L, errno);
+    return 1;
+}
+
 luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("O_RDONLY",   O_RDONLY),
     LUABSD_INT("O_WRONLY",   O_WRONLY),
@@ -128,5 +142,6 @@ luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("POSIX_FADV_DONTNEED",   POSIX_FADV_DONTNEED),
     LUABSD_INT("POSIX_FADV_NOREUSE",    POSIX_FADV_NOREUSE),
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
+    LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
     LUABSD_FUNC(NULL, NULL)
 };
