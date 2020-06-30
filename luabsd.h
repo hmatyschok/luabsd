@@ -52,6 +52,7 @@ void    luab_pushinteger(lua_State *, luab_un_t *);
 #define LUABSD_FUNC(k, v) \
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
+void    luab_newmetatable(lua_State *, luaL_Reg *, const char *);
 void    luab_newtable(lua_State *, luab_table_t *, const char *);
 
 #define luab_checklstring(L, narg, len) \

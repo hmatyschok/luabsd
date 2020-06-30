@@ -71,6 +71,16 @@ luab_newtable(lua_State *L, luab_table_t *reg, const char *name)
     lua_setfield(L, -2, name);
 }
 
+void
+luab_newmetatable(lua_State *L, luaL_Reg *reg, const char *tname)
+{
+    luaL_newmetatable(L, tname);
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -2, "__index");
+    luaL_setfuncs(L, reg, 0);
+    lua_pop(L, 1);
+}
+
 /*
  * Called, when package.loadlib takes place.
  */
@@ -95,11 +105,7 @@ luaopen_bsd(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    luaL_newmetatable(L, LUABSD_DB);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, luab_dblib, 0);
-    lua_pop(L, 1);
+    luab_newmetatable(L, luab_dblib, LUABSD_DB);
 
     return 1;
 }
