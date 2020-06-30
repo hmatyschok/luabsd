@@ -166,7 +166,7 @@ luab_getsid(lua_State *L)
 static int
 luab_setegid(lua_State *L)
 {
-    gid_t egid = luaL_checkinteger(L, 1);
+    gid_t egid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
     if ((status = setegid(egid)) != 0)
@@ -180,7 +180,7 @@ luab_setegid(lua_State *L)
 static int
 luab_seteuid(lua_State *L)
 {
-    uid_t euid = luaL_checkinteger(L, 1);
+    uid_t euid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
     if ((status = seteuid(euid)) != 0)
@@ -194,7 +194,7 @@ luab_seteuid(lua_State *L)
 static int
 luab_setgid(lua_State *L)
 {
-    gid_t gid = luaL_checkinteger(L, 1);
+    gid_t gid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
     if ((status = setgid(gid)) != 0)
@@ -222,8 +222,8 @@ luab_setlogin(lua_State *L)
 static int
 luab_setpgid(lua_State *L)
 {
-    pid_t pid = luaL_checkinteger(L, 1);
-    pid_t pgrp = luaL_checkinteger(L, 2);
+    pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
+    pid_t pgrp = luab_checkinteger(L, 2, UINT_MAX);
     int status;
 
     if ((status = setpgid(pid, pgrp)) != 0)
@@ -237,8 +237,8 @@ luab_setpgid(lua_State *L)
 static int
 luab_setpgrp(lua_State *L)
 {
-    pid_t pid = luaL_checkinteger(L, 1);
-    pid_t pgrp = luaL_checkinteger(L, 2);
+    pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
+    pid_t pgrp = luab_checkinteger(L, 2, UINT_MAX);
     int status;
 
     if ((status = setpgrp(pid, pgrp)) != 0)
@@ -265,7 +265,7 @@ luab_setsid(lua_State *L)
 static int
 luab_setuid(lua_State *L)
 {
-    uid_t uid = luaL_checkinteger(L, 1);
+    uid_t uid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
     if ((status = setuid(uid)) != 0)
