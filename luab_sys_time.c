@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/limits.h>
 #include <sys/time.h>
 
 #include <pthread.h>
@@ -93,8 +94,8 @@ out:
 static int
 luab_setitimer(lua_State *L)
 {
-    int which = luaL_checkinteger(L, 1);
-    time_t sec = luaL_checkinteger(L, 2);
+    int which = luab_checkinteger(L, 1, INT_MAX);
+    time_t sec = luab_checkinteger(L, 2, LONG_MAX); /* LP64 */
     int narg = lua_gettop(L), status;
     struct itimerval itv;
 
@@ -133,7 +134,7 @@ luab_setitimer(lua_State *L)
 static int
 luab_getitimer(lua_State *L)
 {
-    int which = luaL_checkinteger(L, 1);
+    int which = luab_checkinteger(L, 1, INT_MAX);
     struct itimerval itv;
     int status;
 
