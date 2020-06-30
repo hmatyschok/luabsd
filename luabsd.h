@@ -52,21 +52,21 @@ void    luab_pushinteger(lua_State *, luab_un_t *);
 #define LUABSD_FUNC(k, v) \
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
-void    luab_newmetatable(lua_State *, luaL_Reg *, const char *);
-void    luab_newtable(lua_State *, luab_table_t *, const char *);
-
+int luab_pusherr(lua_State *, int);
+    
 #define luab_checklstring(L, narg, len) \
     (luaL_checklstring(L, narg, &((size_t){len})))
 #define luab_checkinteger(L, narg, msk) \
     (luaL_checkinteger(L, narg) & (msk))
 
-int luab_pusherr(lua_State *, int);
+typedef struct {
+    const char  *name;
+    luaL_Reg    *reg;
+    size_t  size;
+} luab_udata_t;
 
-#define LUABSD_DB   "DB*"
-extern luaL_Reg luab_dblib[];
-
-#define LUABSD_FLOCK    "FLOCK*"
-extern luaL_Reg luab_flocklib[];
+extern luab_udata_t db_type;
+extern luab_udata_t flock_type;
 
 extern luab_table_t luab_db[];
 extern luab_table_t luab_fcntl[];
@@ -76,6 +76,9 @@ extern luab_table_t luab_sys_stat[];
 extern luab_table_t luab_sys_time[];
 extern luab_table_t luab_unistd[];
 extern luab_table_t luab_uuid[];
+
+void    luab_newtable(lua_State *, luab_table_t *, const char *);
+void    luab_newmetatable(lua_State *, luab_udata_t *);
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 

@@ -42,6 +42,7 @@ typedef struct {
     DB  *db;
 } luab_db_t;
 
+#define LUABSD_DB   "DB*"       /* XXX */
 #define luab_todb(L, narg) \
     ((luab_db_t *)luaL_checkudata(L, narg, LUABSD_DB))
 
@@ -300,7 +301,7 @@ db_tostring(lua_State *L)
     return 1;
 }
 
-luaL_Reg luab_dblib[] = {
+static luaL_Reg db_methods[] = {
     { "close",  db_close },
     { "del",    db_del },
     { "get",    db_get },
@@ -312,6 +313,11 @@ luaL_Reg luab_dblib[] = {
     { "__gc",   db_gc },
     { "__tostring", db_tostring },
     { NULL, NULL }
+};
+
+luab_udata_t db_type = {
+    .name = LUABSD_DB,
+    .reg = db_methods,
 };
 
 static int

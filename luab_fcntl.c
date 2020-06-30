@@ -42,6 +42,7 @@ typedef struct {
     struct flock    info;
 } luab_flock_t;
 
+#define LUABSD_FLOCK    "FLOCK*"    /* XXX */
 #define luab_toflock(L, narg) \
     ((luab_flock_t *)luaL_checkudata(L, narg, LUABSD_FLOCK))
 
@@ -120,7 +121,7 @@ flock_tostring(lua_State *L)
     return 1;
 }
 
-luaL_Reg luab_flocklib[] = {    /* XXX incomplete */
+static luaL_Reg flock_methods[] = {    /* XXX incomplete */
     { "l_start",    flock_l_start },
     { "l_len",  flock_l_len },
     { "l_pid",  flock_l_pid },
@@ -129,6 +130,11 @@ luaL_Reg luab_flocklib[] = {    /* XXX incomplete */
     { "l_sysid",    flock_l_sysid },
     { "__tostring", flock_tostring },
     { NULL, NULL }
+};
+
+luab_udata_t flock_type = {
+    .name = LUABSD_FLOCK,
+    .reg = flock_methods,
 };
 
 static int

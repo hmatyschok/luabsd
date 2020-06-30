@@ -74,12 +74,12 @@ luab_newtable(lua_State *L, luab_table_t *reg, const char *name)
 }
 
 void
-luab_newmetatable(lua_State *L, luaL_Reg *reg, const char *tname)
+luab_newmetatable(lua_State *L, luab_udata_t *ud)
 {
-    luaL_newmetatable(L, tname);
+    luaL_newmetatable(L, ud->name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, reg, 0);
+    luaL_setfuncs(L, ud->reg, 0);
     lua_pop(L, 1);
 }
 
@@ -107,8 +107,8 @@ luaopen_bsd(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    luab_newmetatable(L, luab_dblib, LUABSD_DB);
-    luab_newmetatable(L, luab_flocklib, LUABSD_FLOCK);
+    luab_newmetatable(L, &db_type);
+    luab_newmetatable(L, &flock_type);
 
     return 1;
 }
