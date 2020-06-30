@@ -90,6 +90,21 @@ luab_openat(lua_State *L)
 }
 
 static int
+luab_creat(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
+    int fd;
+
+    if ((fd = creat(path, mode)) < 0)
+        return luab_pusherr(L, fd);
+
+    lua_pushinteger(L, fd);
+
+    return 1;
+}
+
+static int
 luab_posix_fadvise(lua_State *L)
 {
     int fd = luab_checkinteger(L, 1, INT_MAX);
@@ -187,6 +202,7 @@ luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("POSIX_FADV_DONTNEED",   POSIX_FADV_DONTNEED),
     LUABSD_INT("POSIX_FADV_NOREUSE",    POSIX_FADV_NOREUSE),
     LUABSD_FUNC("open", luab_open),
+    LUABSD_FUNC("creat",    luab_creat),
     LUABSD_FUNC("openat",   luab_openat),
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
