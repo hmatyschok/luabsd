@@ -50,9 +50,11 @@ int
 luab_pusherr(lua_State *L, int status)
 {
     int saved_errno = errno;
+    char *msg;
 
     lua_pushinteger(L, status);
-    lua_pushstring(L, strerror(saved_errno));
+    msg = strerror(saved_errno);
+    lua_pushstring(L, msg);
 
     return 2;
 }
