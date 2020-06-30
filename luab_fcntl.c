@@ -32,6 +32,13 @@
 
 #include "luabsd.h"
 
+typedef struct {
+    struct flock    fl;
+} luab_flock_t;
+
+#define luab_toflock(L, narg) \
+    ((luab_db_t *)luaL_checkudata(L, narg, LUABSD_FLOCK))
+
 luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_INT("O_RDONLY",   O_RDONLY),
     LUABSD_INT("O_WRONLY",   O_WRONLY),
