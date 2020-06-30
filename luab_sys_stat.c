@@ -103,7 +103,7 @@ static int
 luab_chmod(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 2);
+    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
     if ((status = chmod(path, mode)) != 0)
@@ -118,7 +118,7 @@ static int
 luab_fchmod(lua_State *L)
 {
     int fd = luaL_checkinteger(L, 1);
-    mode_t mode = luaL_checkinteger(L, 2);
+    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
     if ((status = fchmod(fd, mode)) != 0)
@@ -133,7 +133,7 @@ static int
 luab_lchmod(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 2);
+    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
     if ((status = lchmod(path, mode)) != 0)
@@ -149,7 +149,7 @@ luab_fchmodat(lua_State *L)
 {
     int fd = luaL_checkinteger(L, 1);
     const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 3);
+    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
     int flag = luaL_checkinteger(L, 4);
     int status;
 
@@ -165,7 +165,7 @@ static int
 luab_mkdir(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 2);
+    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
     if ((status = mkdir(path, mode)) != 0)
@@ -181,7 +181,7 @@ luab_mkdirat(lua_State *L)
 {
     int fd = luaL_checkinteger(L, 1);
     const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 3);
+    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
     int status;
 
     if ((status = mkdirat(fd, path, mode)) != 0)
@@ -196,7 +196,7 @@ static int
 luab_mknod(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 2);
+    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     dev_t dev = luaL_checkinteger(L, 3);
     int status;
 
@@ -213,7 +213,7 @@ luab_mknodat(lua_State *L)
 {
     int fd = luaL_checkinteger(L, 1);
     const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 3);
+    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
     dev_t dev = luaL_checkinteger(L, 4);
     int status;
 
@@ -229,7 +229,7 @@ static int
 luab_mkfifo(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 2);
+    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
     if ((status = mkfifo(path, mode)) != 0)
@@ -245,7 +245,7 @@ luab_mkfifoat(lua_State *L)
 {
     int fd = luaL_checkinteger(L, 1);
     const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luaL_checkinteger(L, 3);
+    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
     int status;
 
     if ((status = mkfifoat(fd, path, mode)) != 0)
@@ -259,10 +259,10 @@ luab_mkfifoat(lua_State *L)
 static int
 luab_umask(lua_State *L)
 {
-    mode_t numask = luaL_checkinteger(L, 1);
+    mode_t numask = luab_checkinteger(L, 1, ALLPERMS);
     mode_t oumask;
 
-    oumask = umask(numask & ALLPERMS);
+    oumask = umask(numask);
 
     lua_pushinteger(L, oumask);
 

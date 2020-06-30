@@ -56,6 +56,8 @@ void    luab_newtable(lua_State *, luab_table_t *, const char *);
 
 #define luab_checklstring(L, narg, len) \
     (luaL_checklstring(L, narg, &((size_t){len})))
+#define luab_checkinteger(L, narg, msk) \
+    (luaL_checkinteger(L, narg) & (msk))
 
 int luab_pusherr(lua_State *, int);
 
