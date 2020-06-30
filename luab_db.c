@@ -39,10 +39,10 @@
 
 typedef struct {
     DB  *db;
-} db_softc_t;
+} luab_db_t;
 
-#define todb(L, narg) \
-    ((db_softc_t *)luaL_checkudata(L, narg, LUABSD_DB))
+#define luab_todb(L, narg) \
+    ((luab_db_t *)luaL_checkudata(L, narg, LUABSD_DB))
 
 /*
  * Interface against db(3).
@@ -76,7 +76,7 @@ db_newbuf(lua_State *L, int narg, DBT *dst)
 }
 
 static int
-db_isclosed(db_softc_t *sc)
+db_isclosed(luab_db_t *sc)
 {
     int status;
 
@@ -92,7 +92,7 @@ db_isclosed(db_softc_t *sc)
 static int
 db_close(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     int status;
 
     if ((status = db_isclosed(sc)) != 0)
@@ -111,7 +111,7 @@ db_close(lua_State *L)
 static int
 db_del(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     DBT k;
     u_int flags;
     int status;
@@ -137,7 +137,7 @@ db_del(lua_State *L)
 static int
 db_get(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     DBT k, v;
     u_int flags;
     int status;
@@ -164,7 +164,7 @@ db_get(lua_State *L)
 static int
 db_put(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     DBT k, v;
     u_int flags;
     int status;
@@ -197,7 +197,7 @@ db_put(lua_State *L)
 static int
 db_seq(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     DBT k, v;
     u_int flags;
     int status;
@@ -220,7 +220,7 @@ db_seq(lua_State *L)
 static int
 db_sync(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     u_int flags;
     int status;
 
@@ -240,7 +240,7 @@ db_sync(lua_State *L)
 static int
 db_fd(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     int fd, status;
 
     if ((status = db_isclosed(sc)) != 0)
@@ -257,7 +257,7 @@ db_fd(lua_State *L)
 static int
 db_flock(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
     int op = luaL_checkinteger(L, 2);
     int fd, status;
 
@@ -278,7 +278,7 @@ db_flock(lua_State *L)
 static int
 db_gc(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
 
     if (db_isclosed(sc) != 0)
         db_close(L);
@@ -289,7 +289,7 @@ db_gc(lua_State *L)
 static int
 db_tostring(lua_State *L)
 {
-    db_softc_t *sc = todb(L, 1);
+    luab_db_t *sc = luab_todb(L, 1);
 
     if (db_isclosed(sc) != 0)
         lua_pushliteral(L, "db (closed)");
@@ -320,7 +320,7 @@ luab_dbopen(lua_State *L)
     int flags = luaL_checkinteger(L, 2);
     int mode = luaL_checkinteger(L, 3);
     int type = luaL_checkinteger(L, 4);
-    db_softc_t *sc = (db_softc_t *)lua_newuserdata(L, sizeof(db_softc_t));
+    luab_db_t *sc = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
 
     sc->db = NULL;
     luaL_setmetatable(L, LUABSD_DB);
