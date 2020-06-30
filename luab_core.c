@@ -108,6 +108,7 @@ luaopen_bsd(lua_State *L)
     lua_pushvalue(L, -1);
 
     luab_newmetatable(L, luab_dblib, LUABSD_DB);
+    luab_newmetatable(L, luab_flocklib, LUABSD_FLOCK);
 
     return 1;
 }

@@ -30,6 +30,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
+#include <strings.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -37,14 +38,109 @@
 
 #include "luabsd.h"
 
-#define LUABSD_FLOCK    "FLOCK*"
-
 typedef struct {
-    struct flock    fl;
+    struct flock    info;
 } luab_flock_t;
 
 #define luab_toflock(L, narg) \
-    ((luab_db_t *)luaL_checkudata(L, narg, LUABSD_FLOCK))
+    ((luab_flock_t *)luaL_checkudata(L, narg, LUABSD_FLOCK))
+
+static int
+flock_l_start(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+    off_t l_start = luab_checkinteger(L, 2, LONG_MAX);
+
+    sc->info.l_start = l_start;
+
+    return 0;
+}
+
+static int
+flock_l_len(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+    off_t l_len = luab_checkinteger(L, 2, LONG_MAX);
+
+    sc->info.l_len = l_len;
+
+    return 0;
+}
+
+static int
+flock_l_pid(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+    pid_t l_pid = luab_checkinteger(L, 2, UINT_MAX);
+
+    sc->info.l_pid = l_pid;
+
+    return 0;
+}
+
+static int
+flock_l_type(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+    int l_type = luab_checkinteger(L, 2, SHRT_MAX);
+
+    sc->info.l_type = (short)l_type;
+
+    return 0;
+}
+
+static int
+flock_l_whence(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+    int l_whence = luab_checkinteger(L, 2, SHRT_MAX);
+
+    sc->info.l_whence = (short)l_whence;
+
+    return 0;
+}
+
+static int
+flock_l_sysid(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+    int l_sysid = luab_checkinteger(L, 2, INT_MAX);
+
+    sc->info.l_sysid = l_sysid;
+
+    return 0;
+}
+
+static int
+flock_tostring(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+    lua_pushfstring(L, "flock (%p)", sc);
+
+    return 1;
+}
+
+luaL_Reg luab_flocklib[] = {    /* XXX incomplete */
+    { "l_start",    flock_l_start },
+    { "l_len",  flock_l_len },
+    { "l_pid",  flock_l_pid },
+    { "l_type", flock_l_type },
+    { "l_whence",   flock_l_whence },
+    { "l_sysid",    flock_l_sysid },
+    { "__tostring", flock_tostring },
+    { NULL, NULL }
+};
+
+static int
+luab_new_flock(lua_State *L)
+{
+    luab_flock_t *sc = (luab_flock_t *)lua_newuserdata(L, sizeof(luab_flock_t));
+
+    bzero(&sc->info, sizeof(struct flock));
+    luaL_setmetatable(L, LUABSD_FLOCK);
+
+    return 1;
+}
 
 static int
 luab_open(lua_State *L)
@@ -206,5 +302,6 @@ luab_table_t luab_fcntl[] = {    /* fcntl.h */
     LUABSD_FUNC("openat",   luab_openat),
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
+    LUABSD_FUNC("new_flock", luab_new_flock),
     LUABSD_FUNC(NULL, NULL)
 };

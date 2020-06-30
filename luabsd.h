@@ -63,8 +63,10 @@ void    luab_newtable(lua_State *, luab_table_t *, const char *);
 int luab_pusherr(lua_State *, int);
 
 #define LUABSD_DB   "DB*"
-
 extern luaL_Reg luab_dblib[];
+
+#define LUABSD_FLOCK    "FLOCK*"
+extern luaL_Reg luab_flocklib[];
 
 extern luab_table_t luab_db[];
 extern luab_table_t luab_fcntl[];
