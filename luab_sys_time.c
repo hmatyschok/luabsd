@@ -54,7 +54,7 @@ static int h_msk;
 static int h_cnt;
 
 static void
-callback_rtn(lua_State *L, lua_Debug *arg __unused)
+h_callback(lua_State *L, lua_Debug *arg __unused)
 {
     L = saved_L;
 
@@ -66,7 +66,7 @@ callback_rtn(lua_State *L, lua_Debug *arg __unused)
 }
 
 static void *
-signal_rtn(void *arg __unused)
+h_signal(void *arg __unused)
 {
     int l_msk = (LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT);
     int sig;
@@ -84,7 +84,7 @@ signal_rtn(void *arg __unused)
             h_msk = lua_gethookmask(saved_L);
             h_cnt = lua_gethookcount(saved_L);
 
-            lua_sethook(saved_L, callback_rtn, l_msk, 1);
+            lua_sethook(saved_L, h_callback, l_msk, 1);
             goto out;
         default:
             break;
@@ -119,7 +119,7 @@ luab_setitimer(lua_State *L)
     if ((status = pthread_sigmask(SIG_BLOCK, &nsigset, NULL)) != 0)
         return luab_pusherr(L, status);
 
-    if ((status = pthread_create(&tid, NULL, signal_rtn, NULL)) != 0)
+    if ((status = pthread_create(&tid, NULL, h_signal, NULL)) != 0)
         return luab_pusherr(L, status);
 
     bzero(&itv, sizeof(itv));

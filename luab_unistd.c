@@ -28,6 +28,7 @@
 #include <sys/param.h>
 
 #include <unistd.h>
+#include <signal.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -37,6 +38,62 @@
 
 #define LUABSD_UNISTD_LIB_ID    1593623310
 #define LUABSD_UNISTD_LIB_KEY   "unistd"
+
+static lua_State *saved_L;
+static lua_Hook h;
+
+static int h_msk;
+static int h_cnt;
+
+static void
+h_callback(lua_State *L, lua_Debug *arg __unused)
+{
+    L = saved_L;
+
+    lua_sethook(L, h, h_msk, h_cnt);
+    lua_getfield(L, LUA_REGISTRYINDEX, "l_callback");
+
+    if (lua_pcall(L, 0, 0, 0) != 0)
+        lua_error(L);
+}
+
+static void
+h_signal(int arg __unused)
+{
+    int l_msk = (LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT);
+
+    h = lua_gethook(saved_L);
+    h_msk = lua_gethookmask(saved_L);
+    h_cnt = lua_gethookcount(saved_L);
+
+    lua_sethook(saved_L, h_callback, l_msk, 1);
+}
+
+static int
+luab_alarm(lua_State *L)
+{
+    u_int seconds = luab_checkinteger(L, 1, UINT_MAX);
+    int narg = lua_gettop(L);
+    u_int status;
+
+    if (seconds > 0) {
+        if (lua_type(L, narg) != LUA_TFUNCTION)
+            return luaL_error(L, "Missing callout handler.");
+
+        lua_settop(L, narg);
+        lua_setfield(L, LUA_REGISTRYINDEX, "l_callback");
+
+        saved_L = L;
+
+        if (signal(SIGALRM, h_signal) == SIG_ERR)
+            return luab_pusherr(L, -1);
+    }
+    status = alarm(seconds);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
 
 /*
  * Interface against components or service primitives on unistd.h.
@@ -515,6 +572,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LIBS",    _CS_POSIX_V6_LPBIG_OFFBIG_LIBS),
     LUABSD_INT("_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS",    _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS),
     LUABSD_FUNC("access",   luab_access),
+    LUABSD_FUNC("alarm",    luab_alarm),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fork",   luab_fork),
