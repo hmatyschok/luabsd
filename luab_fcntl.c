@@ -189,12 +189,10 @@ luab_open(lua_State *L)
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
     int flags = luab_checkinteger(L, 2, INT_MAX);
     int narg = lua_gettop(L), fd;
-    mode_t mode;
+    mode_t mode = 0;
 
     if (narg == 3 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
-    else
-        mode = 0;
 
     if ((fd = open(path, flags, mode)) < 0)
         return luab_pusherr(L, fd);
