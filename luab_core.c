@@ -59,7 +59,7 @@ luab_pusherr(lua_State *L, int status)
     return 2;
 }
 
-void
+static void
 luab_newtable(lua_State *L, luab_table_t *reg, const char *name)
 {
     luab_table_t *tok;
@@ -73,7 +73,7 @@ luab_newtable(lua_State *L, luab_table_t *reg, const char *name)
     lua_setfield(L, -2, name);
 }
 
-void
+static void
 luab_newmetatable(lua_State *L, luab_type_t *ud)
 {
     luaL_newmetatable(L, ud->name);

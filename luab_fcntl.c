@@ -113,6 +113,36 @@ flock_l_sysid(lua_State *L)
 }
 
 static int
+flock_get(lua_State *L)
+{
+    luab_flock_t *sc = luab_toflock(L, 1);
+
+    lua_newtable(L);   /* XXX */
+
+    lua_pushinteger(L, sc->info.l_start);
+    lua_setfield(L, -2, "l_start");
+
+    lua_pushinteger(L, sc->info.l_len);
+    lua_setfield(L, -2, "l_len");
+
+    lua_pushinteger(L, sc->info.l_pid);
+    lua_setfield(L, -2, "l_pid");
+
+    lua_pushinteger(L, sc->info.l_type);
+    lua_setfield(L, -2, "l_type");
+
+    lua_pushinteger(L, sc->info.l_whence);
+    lua_setfield(L, -2, "l_whence");
+
+    lua_pushinteger(L, sc->info.l_sysid);
+    lua_setfield(L, -2, "l_sysid");
+
+    lua_pushvalue(L, -1);
+
+    return 1;
+}
+
+static int
 flock_tostring(lua_State *L)
 {
     luab_flock_t *sc = luab_toflock(L, 1);
@@ -128,6 +158,7 @@ static luaL_Reg flock_methods[] = {
     { "l_type", flock_l_type },
     { "l_whence",   flock_l_whence },
     { "l_sysid",    flock_l_sysid },
+    { "get",    flock_get },
     { "__tostring", flock_tostring },
     { NULL, NULL }
 };
@@ -212,17 +243,17 @@ luab_fcntl(lua_State *L)
     int fd = luab_checkinteger(L, 1, INT_MAX);
     int cmd = luab_checkinteger(L, 2, INT_MAX);
     int narg = lua_gettop(L), arg = 0, res;
-    luab_flock_t *sc = NULL;
+    luab_flock_t *argp = NULL;
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
-            sc = luab_toflock(L, narg);
+            argp = luab_toflock(L, narg);
         else
             arg = luab_checkinteger(L, narg, INT_MAX);
     }
 
-    if (sc != NULL)
-        res = fcntl(fd, cmd, &sc->info);
+    if (argp != NULL)
+        res = fcntl(fd, cmd, &argp->info);
     else
         res = fcntl(fd, cmd, arg);
 

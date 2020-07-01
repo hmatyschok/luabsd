@@ -82,9 +82,6 @@ extern luab_table_t luab_stdlib_lib[];
 extern luab_table_t luab_unistd_lib[];
 extern luab_table_t luab_uuid_lib[];
 
-void    luab_newtable(lua_State *, luab_table_t *, const char *);
-void    luab_newmetatable(lua_State *, luab_type_t *);
-
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 __END_DECLS
