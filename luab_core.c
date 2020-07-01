@@ -96,6 +96,7 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, luab_sys_file_lib, "file");
     luab_newtable(L, luab_sys_stat_lib, "stat");
     luab_newtable(L, luab_sys_time_lib, "time");
+    luab_newtable(L, luab_sys_unistd_lib, "unistd");
 
     lua_setfield(L, -2, "sys");
 

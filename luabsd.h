@@ -53,7 +53,7 @@ void    luab_pushinteger(lua_State *, luab_un_t *);
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
 int luab_pusherr(lua_State *, int);
-    
+
 #define luab_checklstring(L, narg, len) \
     (luaL_checklstring((L), (narg), &((size_t){(len)})))
 #define luab_checkinteger(L, narg, msk) \
@@ -71,12 +71,14 @@ typedef struct {
 extern luab_type_t db_type;
 extern luab_type_t flock_type;
 
-extern luab_table_t luab_db_lib[];
-extern luab_table_t luab_fcntl_lib[];
-extern luab_table_t luab_stdlib_lib[];
 extern luab_table_t luab_sys_file_lib[];
 extern luab_table_t luab_sys_stat_lib[];
 extern luab_table_t luab_sys_time_lib[];
+extern luab_table_t luab_sys_unistd_lib[];
+
+extern luab_table_t luab_db_lib[];
+extern luab_table_t luab_fcntl_lib[];
+extern luab_table_t luab_stdlib_lib[];
 extern luab_table_t luab_unistd_lib[];
 extern luab_table_t luab_uuid_lib[];
 
