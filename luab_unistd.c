@@ -35,7 +35,8 @@
 
 #include "luabsd.h"
 
-#define LUABSD_UNISTD_LIB_COOKIE    1593623310
+#define LUABSD_UNISTD_LIB_ID    1593623310
+#define LUABSD_UNISTD_LIB_KEY   "unistd"
 
 /*
  * Interface against components or service primitives on unistd.h.
@@ -302,7 +303,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 };
 
 luab_module_t luab_unistd_lib = {
-    .id = LUABSD_UNISTD_LIB_COOKIE,
-    .name = "unistd",
+    .cookie = LUABSD_UNISTD_LIB_ID,
+    .name = LUABSD_UNISTD_LIB_KEY,
     .vec = luab_unistd_vec,
 };

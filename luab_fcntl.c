@@ -38,8 +38,9 @@
 
 #include "luabsd.h"
 
-#define LUABSD_FCNTL_LIB_COOKIE    1593623310
-#define LUABSD_FLOCK_TYPE_COOKIE    1593623399
+#define LUABSD_FCNTL_LIB_ID    1593623310
+#define LUABSD_FCNTL_LIB_KEY    "fcntl"
+#define LUABSD_FLOCK_ID    1593623399
 
 typedef struct {
     struct flock    info;
@@ -167,7 +168,7 @@ static luab_table_t flock_methods[] = {
 };
 
 luab_module_t flock_type = {
-    .id = LUABSD_FLOCK_TYPE_COOKIE,
+    .cookie = LUABSD_FLOCK_ID,
     .name = LUABSD_FLOCK,
     .vec = flock_methods,
 };
@@ -372,7 +373,7 @@ static luab_table_t luab_fcntl_vec[] = {    /* fcntl.h */
 };
 
 luab_module_t luab_fcntl_lib = {
-    .id = LUABSD_FCNTL_LIB_COOKIE,
-    .name = "fcntl",
+    .cookie = LUABSD_FCNTL_LIB_ID,
+    .name = LUABSD_FCNTL_LIB_KEY,
     .vec = luab_fcntl_vec,
 };

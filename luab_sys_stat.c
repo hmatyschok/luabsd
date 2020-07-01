@@ -34,7 +34,8 @@
 
 #include "luabsd.h"
 
-#define LUABSD_SYS_STAT_LIB_COOKIE    1593623310
+#define LUABSD_SYS_STAT_LIB_ID    1593623310
+#define LUABSD_SYS_STAT_LIB_KEY    "stat"
 
 /*
  * Components or service primitives on sys/stat.h.
@@ -339,7 +340,7 @@ static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
 };
 
 luab_module_t luab_sys_stat_lib = {
-    .id = LUABSD_SYS_STAT_LIB_COOKIE,
-    .name = "stat",
+    .cookie = LUABSD_SYS_STAT_LIB_ID,
+    .name = LUABSD_SYS_STAT_LIB_KEY,
     .vec = luab_sys_stat_vec,
 };

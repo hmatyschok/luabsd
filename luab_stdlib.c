@@ -34,7 +34,8 @@
 
 #include "luabsd.h"
 
-#define LUABSD_STDLIB_LIB_COOKIE    1593623310
+#define LUABSD_STDLIB_LIB_ID    1593623310
+#define LUABSD_STDLIB_LIB_KEY    "stdlib"
 
 /*
  * Components or service primitives on stdlib.h.
@@ -68,7 +69,7 @@ static luab_table_t luab_stdlib_vec[] = {   /* stdlib.h */
 };
 
 luab_module_t luab_stdlib_lib = {
-    .id = LUABSD_STDLIB_LIB_COOKIE,
-    .name = "stdlib",
+    .cookie = LUABSD_STDLIB_LIB_ID,
+    .name = LUABSD_STDLIB_LIB_KEY,
     .vec = luab_stdlib_vec,
 };

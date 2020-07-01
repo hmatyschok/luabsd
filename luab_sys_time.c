@@ -37,7 +37,8 @@
 
 #include "luabsd.h"
 
-#define LUABSD_SYS_TIME_LIB_COOKIE    1593623310
+#define LUABSD_SYS_TIME_LIB_ID    1593623310
+#define LUABSD_SYS_TIME_LIB_KEY    "time"
 
 /*
  * Interface against components or service primitives on sys/time.h.
@@ -158,7 +159,7 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
 };
 
 luab_module_t luab_sys_time_lib = {
-    .id = LUABSD_SYS_TIME_LIB_COOKIE,
-    .name = "time",
+    .cookie = LUABSD_SYS_TIME_LIB_ID,
+    .name = LUABSD_SYS_TIME_LIB_KEY,
     .vec = luab_sys_time_vec,
 };

@@ -32,7 +32,8 @@
 
 #include "luabsd.h"
 
-#define LUABSD_SYS_UNISTD_LIB_COOKIE    1593623310
+#define LUABSD_SYS_UNISTD_LIB_ID    1593623310
+#define LUABSD_SYS_UNISTD_LIB_KEY   "unistd"
 
 static luab_table_t luab_sys_unistd_vec[] = {   /* sys/unistd.h */
     LUABSD_INT("_POSIX_ADVISORY_INFO",  _POSIX_ADVISORY_INFO),
@@ -132,7 +133,7 @@ static luab_table_t luab_sys_unistd_vec[] = {   /* sys/unistd.h */
 };
 
 luab_module_t luab_sys_unistd_lib = {
-    .id = LUABSD_SYS_UNISTD_LIB_COOKIE,
-    .name = "unistd",
+    .cookie = LUABSD_SYS_UNISTD_LIB_ID,
+    .name = LUABSD_SYS_UNISTD_LIB_KEY,
     .vec = luab_sys_unistd_vec,
 };

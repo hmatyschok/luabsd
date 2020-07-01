@@ -60,7 +60,7 @@ int luab_pusherr(lua_State *, int);
     (luaL_checkinteger((L), (narg)) & (msk))
 
 typedef struct {
-    long   id;        /*  date -u +'%s' */
+    long   cookie;        /*  date -u +'%s' */
     const char  *name;
     luab_table_t    *vec;
 } luab_module_t;
