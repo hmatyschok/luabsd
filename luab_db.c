@@ -78,11 +78,11 @@ db_newbuf(lua_State *L, int narg, DBT *dst)
 }
 
 static int
-db_isclosed(luab_db_t *sc)
+db_isclosed(luab_db_t *self)
 {
     int status;
 
-    if (sc->db == NULL) {
+    if (self->db == NULL) {
         errno = EBADF;
         status = -1;
     } else
@@ -94,18 +94,18 @@ db_isclosed(luab_db_t *sc)
 static int
 db_close(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     int status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
-    if ((status = (sc->db->close)(sc->db)) != 0)
+    if ((status = (self->db->close)(self->db)) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
 
-    sc->db = NULL;
+    self->db = NULL;
 
     return 1;
 }
@@ -113,12 +113,12 @@ db_close(lua_State *L)
 static int
 db_del(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     DBT k;
     u_int flags;
     int status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
@@ -126,7 +126,7 @@ db_del(lua_State *L)
 
     flags = luab_checkinteger(L, 3, UINT_MAX);
 
-    if ((status = (sc->db->del)(sc->db, &k, flags)) != 0)
+    if ((status = (self->db->del)(self->db, &k, flags)) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -139,12 +139,12 @@ db_del(lua_State *L)
 static int
 db_get(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     DBT k, v;
     u_int flags;
     int status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
@@ -152,7 +152,7 @@ db_get(lua_State *L)
 
     flags = luab_checkinteger(L, 3, UINT_MAX);
 
-    if ((status = (sc->db->get)(sc->db, &k, &v, flags)) != 0)
+    if ((status = (self->db->get)(self->db, &k, &v, flags)) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -166,12 +166,12 @@ db_get(lua_State *L)
 static int
 db_put(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     DBT k, v;
     u_int flags;
     int status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
@@ -183,7 +183,7 @@ db_put(lua_State *L)
     }
     flags = luab_checkinteger(L, 4, UINT_MAX);
 
-    if ((status = (sc->db->put)(sc->db, &k, &v, flags)) != 0) {
+    if ((status = (self->db->put)(self->db, &k, &v, flags)) != 0) {
         free(k.data);
         free(v.data);
         return luab_pusherr(L, status);
@@ -199,17 +199,17 @@ db_put(lua_State *L)
 static int
 db_seq(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     DBT k, v;
     u_int flags;
     int status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
     flags = luab_checkinteger(L, 2, UINT_MAX);
 
-    if ((status = (sc->db->seq)(sc->db, &k, &v, flags)) != 0)
+    if ((status = (self->db->seq)(self->db, &k, &v, flags)) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -222,16 +222,16 @@ db_seq(lua_State *L)
 static int
 db_sync(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     u_int flags;
     int status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
     flags = luab_checkinteger(L, 2, UINT_MAX);
 
-    if ((status = (sc->db->sync)(sc->db, flags)) != 0)
+    if ((status = (self->db->sync)(self->db, flags)) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -242,13 +242,13 @@ db_sync(lua_State *L)
 static int
 db_fd(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     int fd, status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
-    if ((fd = (sc->db->fd)(sc->db)) < 0)
+    if ((fd = (self->db->fd)(self->db)) < 0)
         return luab_pusherr(L, fd);
 
     lua_pushinteger(L, fd);
@@ -259,14 +259,14 @@ db_fd(lua_State *L)
 static int
 db_flock(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
     int op = luab_checkinteger(L, 2, INT_MAX);
     int fd, status;
 
-    if ((status = db_isclosed(sc)) != 0)
+    if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
-    if ((fd = (sc->db->fd)(sc->db)) < 0)
+    if ((fd = (self->db->fd)(self->db)) < 0)
         return luab_pusherr(L, fd);
 
     if ((status = flock(fd, op)) != 0)
@@ -280,9 +280,9 @@ db_flock(lua_State *L)
 static int
 db_gc(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
 
-    if (db_isclosed(sc) != 0)
+    if (db_isclosed(self) != 0)
         db_close(L);
 
     return 0;
@@ -291,12 +291,12 @@ db_gc(lua_State *L)
 static int
 db_tostring(lua_State *L)
 {
-    luab_db_t *sc = luab_todb(L, 1);
+    luab_db_t *self = luab_todb(L, 1);
 
-    if (db_isclosed(sc) != 0)
+    if (db_isclosed(self) != 0)
         lua_pushliteral(L, "db (closed)");
     else
-        lua_pushfstring(L, "db (%p)", sc->db);
+        lua_pushfstring(L, "db (%p)", self->db);
 
     return 1;
 }
@@ -327,12 +327,12 @@ luab_dbopen(lua_State *L)
     int flags = luab_checkinteger(L, 2, INT_MAX);
     int mode = luab_checkinteger(L, 3, INT_MAX);
     int type = luab_checkinteger(L, 4, INT_MAX);
-    luab_db_t *sc = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
+    luab_db_t *self = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
 
-    sc->db = NULL;
+    self->db = NULL;
     luaL_setmetatable(L, LUABSD_DB);
 
-    if ((sc->db = dbopen(fname, flags, mode, type, NULL)) == NULL)
+    if ((self->db = dbopen(fname, flags, mode, type, NULL)) == NULL)
         lua_pushnil(L);
 
     return 1;

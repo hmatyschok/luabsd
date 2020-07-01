@@ -62,7 +62,6 @@ int luab_pusherr(lua_State *, int);
 typedef struct {
     const char  *name;
     luaL_Reg    *reg;
-    size_t  size;
 } luab_type_t;
 
 #define luab_todata(L, narg, id, t) \
