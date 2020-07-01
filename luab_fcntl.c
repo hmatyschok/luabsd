@@ -151,21 +151,21 @@ flock_tostring(lua_State *L)
     return 1;
 }
 
-static luaL_Reg flock_methods[] = {
-    { "l_start",    flock_l_start },
-    { "l_len",  flock_l_len },
-    { "l_pid",  flock_l_pid },
-    { "l_type", flock_l_type },
-    { "l_whence",   flock_l_whence },
-    { "l_sysid",    flock_l_sysid },
-    { "get",    flock_get },
-    { "__tostring", flock_tostring },
-    { NULL, NULL }
+static luab_table_t flock_methods[] = {
+    LUABSD_FUNC("l_start",    flock_l_start),
+    LUABSD_FUNC("l_len",  flock_l_len),
+    LUABSD_FUNC("l_pid",  flock_l_pid),
+    LUABSD_FUNC("l_type", flock_l_type),
+    LUABSD_FUNC("l_whence",   flock_l_whence),
+    LUABSD_FUNC("l_sysid",    flock_l_sysid),
+    LUABSD_FUNC("get",    flock_get),
+    LUABSD_FUNC("__tostring", flock_tostring),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 luab_type_t flock_type = {
     .name = LUABSD_FLOCK,
-    .reg = flock_methods,
+    .vec = flock_methods,
 };
 
 static int

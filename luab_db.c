@@ -301,23 +301,23 @@ db_tostring(lua_State *L)
     return 1;
 }
 
-static luaL_Reg db_methods[] = {
-    { "close",  db_close },
-    { "del",    db_del },
-    { "get",    db_get },
-    { "fd", db_fd },
-    { "put",    db_put },
-    { "seq",    db_seq },
-    { "sync",   db_sync },
-    { "flock",   db_flock },
-    { "__gc",   db_gc },
-    { "__tostring", db_tostring },
-    { NULL, NULL }
+static luab_table_t db_methods[] = {
+    LUABSD_FUNC("close",  db_close),
+    LUABSD_FUNC("del",    db_del),
+    LUABSD_FUNC("get",    db_get),
+    LUABSD_FUNC("fd", db_fd),
+    LUABSD_FUNC("put",    db_put),
+    LUABSD_FUNC("seq",    db_seq),
+    LUABSD_FUNC("sync",   db_sync),
+    LUABSD_FUNC("flock",   db_flock),
+    LUABSD_FUNC("__gc",   db_gc),
+    LUABSD_FUNC("__tostring", db_tostring),
+    LUABSD_FUNC(NULL, NULL)
 };
 
 luab_type_t db_type = {
     .name = LUABSD_DB,
-    .reg = db_methods,
+    .vec = db_methods,
 };
 
 static int

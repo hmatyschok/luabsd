@@ -59,33 +59,42 @@ luab_pusherr(lua_State *L, int status)
     return 2;
 }
 
+/*
+ * Called, when package.loadlib takes place.
+ */
+
 static void
-luab_newtable(lua_State *L, luab_table_t *reg, const char *name)
+luab_populate(lua_State *L, luab_table_t *vec)
 {
     luab_table_t *tok;
 
-    lua_newtable(L);
-
-    for (tok = reg; tok->key; tok++) {
+    for (tok = vec; tok->key != NULL; tok++) {
         tok->func(L, &tok->val);
         lua_setfield(L, -2, tok->key);
     }
+    lua_pop(L, 0);
+}
+
+static void     /* XXX signature */
+luab_newtable(lua_State *L, luab_table_t *vec, const char *name)
+{
+    lua_newtable(L);
+    luab_populate(L, vec);
     lua_setfield(L, -2, name);
 }
 
 static void
-luab_newmetatable(lua_State *L, luab_type_t *ud)
+luab_newmetatable(lua_State *L, luab_type_t *arg)
 {
-    luaL_newmetatable(L, ud->name);
+    luaL_newmetatable(L, arg->name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
-    luaL_setfuncs(L, ud->reg, 0);
+
+    luab_populate(L, arg->vec);
+
     lua_pop(L, 1);
 }
 
-/*
- * Called, when package.loadlib takes place.
- */
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
