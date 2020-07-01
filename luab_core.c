@@ -75,16 +75,16 @@ luab_populate(lua_State *L, luab_table_t *vec)
     lua_pop(L, 0);
 }
 
-static void     /* XXX signature */
-luab_newtable(lua_State *L, luab_table_t *vec, const char *name)
+static void
+luab_newtable(lua_State *L, luab_module_t *arg)
 {
     lua_newtable(L);
-    luab_populate(L, vec);
-    lua_setfield(L, -2, name);
+    luab_populate(L, arg->vec);
+    lua_setfield(L, -2, arg->name);
 }
 
 static void
-luab_newmetatable(lua_State *L, luab_type_t *arg)
+luab_newmetatable(lua_State *L, luab_module_t *arg)
 {
     luaL_newmetatable(L, arg->name);
     lua_pushvalue(L, -1);
@@ -102,18 +102,18 @@ luaopen_bsd(lua_State *L)
 
     lua_newtable(L);
 
-    luab_newtable(L, luab_sys_file_lib, "file");
-    luab_newtable(L, luab_sys_stat_lib, "stat");
-    luab_newtable(L, luab_sys_time_lib, "time");
-    luab_newtable(L, luab_sys_unistd_lib, "unistd");
+    luab_newtable(L, &luab_sys_file_lib);
+    luab_newtable(L, &luab_sys_stat_lib);
+    luab_newtable(L, &luab_sys_time_lib);
+    luab_newtable(L, &luab_sys_unistd_lib);
 
     lua_setfield(L, -2, "sys");
 
-    luab_newtable(L, luab_db_lib, "db");
-    luab_newtable(L, luab_fcntl_lib, "fcntl");
-    luab_newtable(L, luab_stdlib_lib, "stdlib");
-    luab_newtable(L, luab_unistd_lib, "unistd");
-    luab_newtable(L, luab_uuid_lib, "uuid");
+    luab_newtable(L, &luab_db_lib);
+    luab_newtable(L, &luab_fcntl_lib);
+    luab_newtable(L, &luab_stdlib_lib);
+    luab_newtable(L, &luab_unistd_lib);
+    luab_newtable(L, &luab_uuid_lib);
 
     lua_pushvalue(L, -1);
 

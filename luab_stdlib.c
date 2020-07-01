@@ -34,6 +34,8 @@
 
 #include "luabsd.h"
 
+#define LUABSD_STDLIB_LIB_COOKIE    1593623310
+
 /*
  * Components or service primitives on stdlib.h.
  */
@@ -59,8 +61,14 @@ luab_arc4random_uniform(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_stdlib_lib[] = {   /* stdlib.h */
+static luab_table_t luab_stdlib_vec[] = {   /* stdlib.h */
     LUABSD_FUNC("arc4random", luab_arc4random),
     LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
     LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_stdlib_lib = {
+    .id = LUABSD_STDLIB_LIB_COOKIE,
+    .name = "stdlib",
+    .vec = luab_stdlib_vec,
 };

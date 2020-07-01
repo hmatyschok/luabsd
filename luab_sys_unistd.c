@@ -32,7 +32,9 @@
 
 #include "luabsd.h"
 
-luab_table_t luab_sys_unistd_lib[] = {   /* sys/unistd.h */
+#define LUABSD_SYS_UNISTD_LIB_COOKIE    1593623310
+
+static luab_table_t luab_sys_unistd_vec[] = {   /* sys/unistd.h */
     LUABSD_INT("_POSIX_ADVISORY_INFO",  _POSIX_ADVISORY_INFO),
     LUABSD_INT("_POSIX_ASYNCHRONOUS_IO",    _POSIX_ASYNCHRONOUS_IO),
     LUABSD_INT("_POSIX_CHOWN_RESTRICTED",   _POSIX_CHOWN_RESTRICTED),
@@ -127,4 +129,10 @@ luab_table_t luab_sys_unistd_lib[] = {   /* sys/unistd.h */
     LUABSD_INT("RFFLAGS",   RFFLAGS),
     LUABSD_INT("RFKERNELONLY",  RFKERNELONLY),
     LUABSD_INT(NULL, 0)
+};
+
+luab_module_t luab_sys_unistd_lib = {
+    .id = LUABSD_SYS_UNISTD_LIB_COOKIE,
+    .name = "unistd",
+    .vec = luab_sys_unistd_vec,
 };

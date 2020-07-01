@@ -35,6 +35,8 @@
 
 #include "luabsd.h"
 
+#define LUABSD_UNISTD_LIB_COOKIE    1593623310
+
 /*
  * Interface against components or service primitives on unistd.h.
  */
@@ -276,7 +278,7 @@ luab_setuid(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_unistd_lib[] = {   /* unistd.h */
+static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),
@@ -297,4 +299,10 @@ luab_table_t luab_unistd_lib[] = {   /* unistd.h */
     LUABSD_FUNC("setsid", luab_setsid),
     LUABSD_FUNC("setuid", luab_setuid),
     LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_unistd_lib = {
+    .id = LUABSD_UNISTD_LIB_COOKIE,
+    .name = "unistd",
+    .vec = luab_unistd_vec,
 };

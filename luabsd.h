@@ -60,26 +60,27 @@ int luab_pusherr(lua_State *, int);
     (luaL_checkinteger((L), (narg)) & (msk))
 
 typedef struct {
+    long   id;        /*  date -u +'%s' */
     const char  *name;
     luab_table_t    *vec;
-} luab_type_t;
+} luab_module_t;
 
 #define luab_todata(L, narg, id, t) \
     ((t)luaL_checkudata((L), (narg), (id)))
 
-extern luab_type_t db_type;
-extern luab_type_t flock_type;
+extern luab_module_t db_type;
+extern luab_module_t flock_type;
 
-extern luab_table_t luab_sys_file_lib[];
-extern luab_table_t luab_sys_stat_lib[];
-extern luab_table_t luab_sys_time_lib[];
-extern luab_table_t luab_sys_unistd_lib[];
+extern luab_module_t luab_sys_file_lib;
+extern luab_module_t luab_sys_stat_lib;
+extern luab_module_t luab_sys_time_lib;
+extern luab_module_t luab_sys_unistd_lib;
 
-extern luab_table_t luab_db_lib[];
-extern luab_table_t luab_fcntl_lib[];
-extern luab_table_t luab_stdlib_lib[];
-extern luab_table_t luab_unistd_lib[];
-extern luab_table_t luab_uuid_lib[];
+extern luab_module_t luab_db_lib;
+extern luab_module_t luab_fcntl_lib;
+extern luab_module_t luab_stdlib_lib;
+extern luab_module_t luab_unistd_lib;
+extern luab_module_t luab_uuid_lib;
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 

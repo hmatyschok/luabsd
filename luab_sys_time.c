@@ -37,6 +37,8 @@
 
 #include "luabsd.h"
 
+#define LUABSD_SYS_TIME_LIB_COOKIE    1593623310
+
 /*
  * Interface against components or service primitives on sys/time.h.
  */
@@ -146,11 +148,17 @@ luab_getitimer(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_sys_time_lib[] = { /* sys/time.h */
+static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUABSD_INT("ITIMER_REAL",    ITIMER_REAL),
     LUABSD_INT("ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
     LUABSD_INT("ITIMER_PROF",    ITIMER_PROF),
     LUABSD_FUNC("getitimer",  luab_getitimer),
     LUABSD_FUNC("setitimer",  luab_setitimer),
     LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_sys_time_lib = {
+    .id = LUABSD_SYS_TIME_LIB_COOKIE,
+    .name = "time",
+    .vec = luab_sys_time_vec,
 };

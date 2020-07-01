@@ -35,6 +35,8 @@
 
 #include "luabsd.h"
 
+#define LUABSD_UUID_LIB_COOKIE    1593623310
+
 /*
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
  */
@@ -62,7 +64,13 @@ luab_uuidgen(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_uuid_lib[] = { /* uuid.h */
+static luab_table_t luab_uuid_vec[] = { /* uuid.h */
     LUABSD_FUNC("uuidgen",    luab_uuidgen),
     LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_uuid_lib = {
+    .id = LUABSD_UUID_LIB_COOKIE,
+    .name = "uuid",
+    .vec = luab_uuid_vec,
 };

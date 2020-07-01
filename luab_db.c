@@ -38,6 +38,9 @@
 
 #include "luabsd.h"
 
+#define LUABSD_DB_TYPE_COOKIE    1593623398
+#define LUABSD_DB_LIB_COOKIE    1593623310
+
 typedef struct {
     DB  *db;
 } luab_db_t;
@@ -315,7 +318,8 @@ static luab_table_t db_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
-luab_type_t db_type = {
+luab_module_t db_type = {
+    .id = LUABSD_DB_TYPE_COOKIE,
     .name = LUABSD_DB,
     .vec = db_methods,
 };
@@ -338,7 +342,7 @@ luab_dbopen(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_db_lib[] = {   /* db.h */
+static luab_table_t luab_db_vec[] = {   /* db.h */
     LUABSD_INT("DB_LOCK",    DB_LOCK),
     LUABSD_INT("DB_SHMEM",   DB_SHMEM),
     LUABSD_INT("DB_TXN", DB_TXN),
@@ -358,4 +362,10 @@ luab_table_t luab_db_lib[] = {   /* db.h */
     LUABSD_INT("DB_RECNO",   DB_RECNO),
     LUABSD_FUNC("dbopen", luab_dbopen),
     LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_db_lib = {
+    .id = LUABSD_DB_LIB_COOKIE,
+    .name = "db",
+    .vec = luab_db_vec,
 };

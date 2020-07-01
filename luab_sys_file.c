@@ -32,7 +32,9 @@
 
 #include "luabsd.h"
 
-luab_table_t luab_sys_file_lib[] = { /* sys/file.h */
+#define LUABSD_SYS_FILE_LIB_COOKIE    1593623310
+
+static luab_table_t luab_sys_file_vec[] = { /* sys/file.h */
     LUABSD_INT("DTYPE_NONE",    DTYPE_NONE),
     LUABSD_INT("DTYPE_VNODE",   DTYPE_VNODE),
     LUABSD_INT("DTYPE_SOCKET",  DTYPE_SOCKET),
@@ -49,4 +51,10 @@ luab_table_t luab_sys_file_lib[] = { /* sys/file.h */
     LUABSD_INT("DTYPE_LINUXEFD",    DTYPE_LINUXEFD),
     LUABSD_INT("DTYPE_LINUXTFD",    DTYPE_LINUXTFD),
     LUABSD_INT(NULL, 0)
+};
+
+luab_module_t luab_sys_file_lib = {
+    .id = LUABSD_SYS_FILE_LIB_COOKIE,
+    .name = "file",
+    .vec = luab_sys_file_vec,
 };

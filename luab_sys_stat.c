@@ -34,6 +34,8 @@
 
 #include "luabsd.h"
 
+#define LUABSD_SYS_STAT_LIB_COOKIE    1593623310
+
 /*
  * Components or service primitives on sys/stat.h.
  */
@@ -270,7 +272,7 @@ luab_umask(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_sys_stat_lib[] = { /* sys/stat.h */
+static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
     LUABSD_INT("S_ISUID",    S_ISUID),
     LUABSD_INT("S_ISGID",    S_ISGID),
     LUABSD_INT("S_ISTXT",    S_ISTXT),
@@ -334,4 +336,10 @@ luab_table_t luab_sys_stat_lib[] = { /* sys/stat.h */
     LUABSD_FUNC("mknodat",    luab_mknodat),
     LUABSD_FUNC("umask",    luab_umask),
     LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_sys_stat_lib = {
+    .id = LUABSD_SYS_STAT_LIB_COOKIE,
+    .name = "stat",
+    .vec = luab_sys_stat_vec,
 };
