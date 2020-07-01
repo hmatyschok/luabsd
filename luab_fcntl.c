@@ -130,7 +130,7 @@ static luaL_Reg flock_methods[] = {    /* XXX incomplete */
     { NULL, NULL }
 };
 
-luab_udata_t flock_type = {
+luab_type_t flock_type = {
     .name = LUABSD_FLOCK,
     .reg = flock_methods,
 };

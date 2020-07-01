@@ -63,13 +63,13 @@ typedef struct {
     const char  *name;
     luaL_Reg    *reg;
     size_t  size;
-} luab_udata_t;
+} luab_type_t;
 
 #define luab_todata(L, narg, id, t) \
     ((t)luaL_checkudata((L), (narg), (id)))
 
-extern luab_udata_t db_type;
-extern luab_udata_t flock_type;
+extern luab_type_t db_type;
+extern luab_type_t flock_type;
 
 extern luab_table_t luab_db[];
 extern luab_table_t luab_fcntl[];
@@ -81,7 +81,7 @@ extern luab_table_t luab_unistd[];
 extern luab_table_t luab_uuid[];
 
 void    luab_newtable(lua_State *, luab_table_t *, const char *);
-void    luab_newmetatable(lua_State *, luab_udata_t *);
+void    luab_newmetatable(lua_State *, luab_type_t *);
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 

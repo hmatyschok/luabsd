@@ -313,7 +313,7 @@ static luaL_Reg db_methods[] = {
     { NULL, NULL }
 };
 
-luab_udata_t db_type = {
+luab_type_t db_type = {
     .name = LUABSD_DB,
     .reg = db_methods,
 };
