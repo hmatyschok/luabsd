@@ -252,10 +252,7 @@ luab_fcntl(lua_State *L)
             arg = luab_checkinteger(L, narg, INT_MAX);
     }
 
-    if (argp != NULL)
-        res = fcntl(fd, cmd, &argp->info);
-    else
-        res = fcntl(fd, cmd, arg);
+    res = (argp) ? fcntl(fd, cmd, &argp->info) : fcntl(fd, cmd, arg);
 
     if (res < 0)
         return luab_pusherr(L, res);
