@@ -55,9 +55,9 @@ void    luab_pushinteger(lua_State *, luab_un_t *);
 int luab_pusherr(lua_State *, int);
     
 #define luab_checklstring(L, narg, len) \
-    (luaL_checklstring(L, narg, &((size_t){len})))
+    (luaL_checklstring((L), (narg), &((size_t){(len)})))
 #define luab_checkinteger(L, narg, msk) \
-    (luaL_checkinteger(L, narg) & (msk))
+    (luaL_checkinteger((L), (narg)) & (msk))
 
 typedef struct {
     const char  *name;

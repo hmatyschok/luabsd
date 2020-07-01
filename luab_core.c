@@ -74,7 +74,7 @@ luab_newtable(lua_State *L, luab_table_t *reg, const char *name)
 }
 
 void
-luab_newmetatable(lua_State *L, luab_udata_t *ud)
+luab_newmetatable(lua_State *L, luab_type_t *ud)
 {
     luaL_newmetatable(L, ud->name);
     lua_pushvalue(L, -1);
