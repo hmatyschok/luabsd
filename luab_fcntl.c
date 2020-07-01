@@ -205,6 +205,34 @@ luab_creat(lua_State *L)
 }
 
 static int
+luab_fcntl(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int cmd = luab_checkinteger(L, 2, INT_MAX);
+    int narg = lua_gettop(L), arg = 0, res;
+    luab_flock_t *sc = NULL;
+
+    if (narg == 3) {
+        if (lua_type(L, narg) == LUA_TUSERDATA)
+            sc = luab_todata(L, narg, LUABSD_FLOCK, luab_flock_t *);
+        else
+            arg = luab_checkinteger(L, narg, INT_MAX);
+    }
+
+    if (sc != NULL)
+        res = fcntl(fd, cmd, &sc->info);
+    else
+        res = fcntl(fd, cmd, arg);
+
+    if (res < 0)
+        return luab_pusherr(L, res);
+
+    lua_pushinteger(L, res);
+
+    return 1;
+}
+
+static int
 luab_posix_fadvise(lua_State *L)
 {
     int fd = luab_checkinteger(L, 1, INT_MAX);
@@ -304,6 +332,7 @@ luab_table_t luab_fcntl_lib[] = {    /* fcntl.h */
     LUABSD_FUNC("open", luab_open),
     LUABSD_FUNC("creat",    luab_creat),
     LUABSD_FUNC("openat",   luab_openat),
+    LUABSD_FUNC("luab_fcntl",   luab_fcntl),
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
     LUABSD_FUNC("new_flock", luab_new_flock),
