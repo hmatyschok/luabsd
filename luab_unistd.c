@@ -73,10 +73,11 @@ static int
 luab_alarm(lua_State *L)
 {
     u_int seconds = luab_checkinteger(L, 1, UINT_MAX);
-    int narg = lua_gettop(L);
     u_int status;
 
     if (seconds > 0) {
+        int narg = lua_gettop(L)
+        
         if (lua_type(L, narg) != LUA_TFUNCTION)
             return luaL_error(L, "Missing callout handler.");
 

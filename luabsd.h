@@ -56,8 +56,8 @@ int luab_pusherr(lua_State *, int);
 
 #define luab_checklstring(L, narg, len) \
     (luaL_checklstring((L), (narg), &((size_t){(len)})))
-#define luab_checkinteger(L, narg, msk) \
-    (luaL_checkinteger((L), (narg)) & (msk))
+#define luab_checkinteger(L, narg, b_msk) \
+    (luaL_checkinteger((L), (narg)) & (b_msk))
 
 typedef struct {
     long   cookie;        /*  date -u +'%s' */
