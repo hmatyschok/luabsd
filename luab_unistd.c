@@ -43,6 +43,53 @@
  */
 
 static int
+luab_access(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int mode = luab_checkinteger(L, 2, INT_MAX);
+    int status;
+
+    if ((status = access(path, mode)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_eaccess(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int mode = luab_checkinteger(L, 2, INT_MAX);
+    int status;
+
+    if ((status = eaccess(path, mode)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_faccessat(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    int mode = luab_checkinteger(L, 3, INT_MAX);
+    int flag = luab_checkinteger(L, 4, INT_MAX);
+    int status;
+
+    if ((status = faccessat(fd, path, mode, flag)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
 luab_fork(lua_State *L)
 {
     pid_t pid;
@@ -467,6 +514,9 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS", _CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS),
     LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LIBS",    _CS_POSIX_V6_LPBIG_OFFBIG_LIBS),
     LUABSD_INT("_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS",    _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS),
+    LUABSD_FUNC("access",   luab_access),
+    LUABSD_FUNC("eaccess",   luab_eaccess),
+    LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),
