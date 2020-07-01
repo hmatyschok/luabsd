@@ -62,7 +62,7 @@ luab_uuidgen(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_uuid[] = { /* uuid.h */
+luab_table_t luab_uuid_lib[] = { /* uuid.h */
     LUABSD_FUNC("uuidgen",    luab_uuidgen),
     LUABSD_FUNC(NULL, NULL)
 };

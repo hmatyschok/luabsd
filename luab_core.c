@@ -93,17 +93,17 @@ luaopen_bsd(lua_State *L)
 
     lua_newtable(L);
 
-    luab_newtable(L, luab_sys_file, "file");
-    luab_newtable(L, luab_sys_stat, "stat");
-    luab_newtable(L, luab_sys_time, "time");
+    luab_newtable(L, luab_sys_file_lib, "file");
+    luab_newtable(L, luab_sys_stat_lib, "stat");
+    luab_newtable(L, luab_sys_time_lib, "time");
 
     lua_setfield(L, -2, "sys");
 
-    luab_newtable(L, luab_db, "db");
-    luab_newtable(L, luab_fcntl, "fcntl");
-    luab_newtable(L, luab_stdlib, "stdlib");
-    luab_newtable(L, luab_unistd, "unistd");
-    luab_newtable(L, luab_uuid, "uuid");
+    luab_newtable(L, luab_db_lib, "db");
+    luab_newtable(L, luab_fcntl_lib, "fcntl");
+    luab_newtable(L, luab_stdlib_lib, "stdlib");
+    luab_newtable(L, luab_unistd_lib, "unistd");
+    luab_newtable(L, luab_uuid_lib, "uuid");
 
     lua_pushvalue(L, -1);
 

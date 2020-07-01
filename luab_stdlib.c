@@ -59,7 +59,7 @@ luab_arc4random_uniform(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_stdlib[] = {   /* stdlib.h */
+luab_table_t luab_stdlib_lib[] = {   /* stdlib.h */
     LUABSD_FUNC("arc4random", luab_arc4random),
     LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
     LUABSD_FUNC(NULL, NULL)

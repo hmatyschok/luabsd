@@ -71,14 +71,14 @@ typedef struct {
 extern luab_type_t db_type;
 extern luab_type_t flock_type;
 
-extern luab_table_t luab_db[];
-extern luab_table_t luab_fcntl[];
-extern luab_table_t luab_stdlib[];
-extern luab_table_t luab_sys_file[];
-extern luab_table_t luab_sys_stat[];
-extern luab_table_t luab_sys_time[];
-extern luab_table_t luab_unistd[];
-extern luab_table_t luab_uuid[];
+extern luab_table_t luab_db_lib[];
+extern luab_table_t luab_fcntl_lib[];
+extern luab_table_t luab_stdlib_lib[];
+extern luab_table_t luab_sys_file_lib[];
+extern luab_table_t luab_sys_stat_lib[];
+extern luab_table_t luab_sys_time_lib[];
+extern luab_table_t luab_unistd_lib[];
+extern luab_table_t luab_uuid_lib[];
 
 void    luab_newtable(lua_State *, luab_table_t *, const char *);
 void    luab_newmetatable(lua_State *, luab_type_t *);

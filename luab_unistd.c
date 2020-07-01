@@ -276,7 +276,7 @@ luab_setuid(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_unistd[] = {   /* unistd.h */
+luab_table_t luab_unistd_lib[] = {   /* unistd.h */
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),

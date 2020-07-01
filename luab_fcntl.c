@@ -233,7 +233,7 @@ luab_posix_fallocate(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_fcntl[] = {    /* fcntl.h */
+luab_table_t luab_fcntl_lib[] = {    /* fcntl.h */
     LUABSD_INT("O_RDONLY",   O_RDONLY),
     LUABSD_INT("O_WRONLY",   O_WRONLY),
     LUABSD_INT("O_RDWR", O_RDWR),

@@ -270,7 +270,7 @@ luab_umask(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_sys_stat[] = { /* sys/stat.h */
+luab_table_t luab_sys_stat_lib[] = { /* sys/stat.h */
     LUABSD_INT("S_ISUID",    S_ISUID),
     LUABSD_INT("S_ISGID",    S_ISGID),
     LUABSD_INT("S_ISTXT",    S_ISTXT),

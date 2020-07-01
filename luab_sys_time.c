@@ -146,7 +146,7 @@ luab_getitimer(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_sys_time[] = { /* sys/time.h */
+luab_table_t luab_sys_time_lib[] = { /* sys/time.h */
     LUABSD_INT("ITIMER_REAL",    ITIMER_REAL),
     LUABSD_INT("ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
     LUABSD_INT("ITIMER_PROF",    ITIMER_PROF),

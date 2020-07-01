@@ -32,7 +32,7 @@
 
 #include "luabsd.h"
 
-luab_table_t luab_sys_file[] = { /* sys/file.h */
+luab_table_t luab_sys_file_lib[] = { /* sys/file.h */
     LUABSD_INT("DTYPE_NONE",    DTYPE_NONE),
     LUABSD_INT("DTYPE_VNODE",   DTYPE_VNODE),
     LUABSD_INT("DTYPE_SOCKET",  DTYPE_SOCKET),

@@ -336,7 +336,7 @@ luab_dbopen(lua_State *L)
     return 1;
 }
 
-luab_table_t luab_db[] = {   /* db.h */
+luab_table_t luab_db_lib[] = {   /* db.h */
     LUABSD_INT("DB_LOCK",    DB_LOCK),
     LUABSD_INT("DB_SHMEM",   DB_SHMEM),
     LUABSD_INT("DB_TXN", DB_TXN),
