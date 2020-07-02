@@ -102,9 +102,6 @@ luab_setitimer(lua_State *L)
     int narg = lua_gettop(L), status;
     struct itimerval itv;
 
-    if (sec <= 0)
-        return luaL_error(L, "Invalid value for timeout.");
-
     if (lua_type(L, narg) != LUA_TFUNCTION)
         return luaL_error(L, "Missing callout handler.");
 
