@@ -38,29 +38,42 @@
 
 #include "luabsd.h"
 
-#define LUABSD_FCNTL_LIB_ID    1593623310
-#define LUABSD_FCNTL_LIB_KEY    "fcntl"
-#define LUABSD_FLOCK_ID    1593623399
+/*
+ * Interface against  
+ * 
+ *  struct flock {
+ *      off_t   l_start;        
+ *      off_t   l_len;          
+ *      pid_t   l_pid;          
+ *      short   l_type;         
+ *      short   l_whence;       
+ *      int     l_sysid;        
+ *  };
+ */
+
+#define LUABSD_FLOCK_TYPE_ID    1593623399
+#define LUABSD_FLOCK_TYPE    "FLOCK*"
 
 typedef struct {
     struct flock    info;
 } luab_flock_t;
 
-#define LUABSD_FLOCK    "FLOCK*"
 #define luab_toflock(L, narg) \
-    (luab_todata((L), (narg), LUABSD_FLOCK, luab_flock_t *))
-
+    (luab_todata((L), (narg), LUABSD_FLOCK_TYPE, luab_flock_t *))
+ 
+/* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
 static int
 flock_l_start(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
-    off_t l_start = luab_checkinteger(L, 2, LONG_MAX);
+    off_t l_start = luab_checkinteger(L, 2, ULONG_MAX);
 
     self->info.l_start = l_start;
 
     return 0;
 }
 
+/* len = 0 means until end of file */
 static int
 flock_l_len(lua_State *L)
 {
@@ -72,17 +85,19 @@ flock_l_len(lua_State *L)
     return 0;
 }
 
+/* lock owner */
 static int
 flock_l_pid(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
-    pid_t l_pid = luab_checkinteger(L, 2, UINT_MAX);
+    pid_t l_pid = luab_checkinteger(L, 2, INT_MAX);
 
     self->info.l_pid = l_pid;
 
     return 0;
 }
 
+/* lock type: read/write, etc. */
 static int
 flock_l_type(lua_State *L)
 {
@@ -94,6 +109,7 @@ flock_l_type(lua_State *L)
     return 0;
 }
 
+/* type of l_start */
 static int
 flock_l_whence(lua_State *L)
 {
@@ -105,6 +121,7 @@ flock_l_whence(lua_State *L)
     return 0;
 }
 
+/* remote system id or zero for local */
 static int
 flock_l_sysid(lua_State *L)
 {
@@ -116,6 +133,9 @@ flock_l_sysid(lua_State *L)
     return 0;
 }
 
+/*
+ * Maps attributes on flock{} to an instance of LUA_TTABLE.
+ */
 static int
 flock_get(lua_State *L)
 {
@@ -168,8 +188,8 @@ static luab_table_t flock_methods[] = {
 };
 
 luab_module_t flock_type = {
-    .cookie = LUABSD_FLOCK_ID,
-    .name = LUABSD_FLOCK,
+    .cookie = LUABSD_FLOCK_TYPE_ID,
+    .name = LUABSD_FLOCK_TYPE,
     .vec = flock_methods,
 };
 
@@ -179,10 +199,17 @@ luab_new_flock(lua_State *L)
     luab_flock_t *self = (luab_flock_t *)lua_newuserdata(L, sizeof(luab_flock_t));
 
     bzero(&self->info, sizeof(struct flock));
-    luaL_setmetatable(L, LUABSD_FLOCK);
+    luaL_setmetatable(L, LUABSD_FLOCK_TYPE);
 
     return 1;
 }
+
+/*
+ * Interface against service primitives on <fcntl.h>.
+ */
+
+#define LUABSD_FCNTL_LIB_ID    1593623310
+#define LUABSD_FCNTL_LIB_KEY    "fcntl"
 
 static int
 luab_open(lua_State *L)
@@ -210,12 +237,10 @@ luab_openat(lua_State *L)
     const char *path = luab_checklstring(L, 2, MAXPATHLEN);
     int flags = luab_checkinteger(L, 3, INT_MAX);
     int narg = lua_gettop(L), fd;
-    mode_t mode;
+    mode_t mode = 0;
 
     if (narg == 4 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
-    else
-        mode = 0;
 
     if ((fd = openat(dirfd, path, flags, mode)) < 0)
         return luab_pusherr(L, fd);
@@ -365,7 +390,7 @@ static luab_table_t luab_fcntl_vec[] = {    /* fcntl.h */
     LUABSD_FUNC("open", luab_open),
     LUABSD_FUNC("creat",    luab_creat),
     LUABSD_FUNC("openat",   luab_openat),
-    LUABSD_FUNC("luab_fcntl",   luab_fcntl),
+    LUABSD_FUNC("fcntl",   luab_fcntl),
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
     LUABSD_FUNC("new_flock", luab_new_flock),

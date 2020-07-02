@@ -40,15 +40,16 @@
 
 #define LUABSD_DB_LIB_ID    1593623310
 #define LUABSD_DB_LIB_KEY    "db"
-#define LUABSD_DB_ID    1593623398
+
+#define LUABSD_DB_TYPE_ID    1593623398
+#define LUABSD_DB_TYPE   "DB*"
 
 typedef struct {
     DB  *db;
 } luab_db_t;
 
-#define LUABSD_DB   "DB*"
 #define luab_todb(L, narg) \
-    luab_todata((L), (narg), LUABSD_DB, luab_db_t *)
+    luab_todata((L), (narg), LUABSD_DB_TYPE, luab_db_t *)
 
 /*
  * Interface against db(3).
@@ -320,8 +321,8 @@ static luab_table_t db_methods[] = {
 };
 
 luab_module_t db_type = {
-    .cookie = LUABSD_DB_ID,
-    .name = LUABSD_DB,
+    .cookie = LUABSD_DB_TYPE_ID,
+    .name = LUABSD_DB_TYPE,
     .vec = db_methods,
 };
 
@@ -335,7 +336,7 @@ luab_dbopen(lua_State *L)
     luab_db_t *self = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
 
     self->db = NULL;
-    luaL_setmetatable(L, LUABSD_DB);
+    luaL_setmetatable(L, LUABSD_DB_TYPE);
 
     if ((self->db = dbopen(fname, flags, mode, type, NULL)) == NULL)
         lua_pushnil(L);
