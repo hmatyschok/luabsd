@@ -42,22 +42,12 @@ typedef struct {
     luab_un_t   val;
 } luab_table_t;
 
-void    luab_pushcfunction(lua_State *, luab_un_t *);
-void    luab_pushinteger(lua_State *, luab_un_t *);
-
 #define LUABSD_REG(f, k, v) \
     { .func = f, .key = k, v }
 #define LUABSD_INT(k, v) \
     LUABSD_REG(luab_pushinteger, k, .val.x_i = v)
 #define LUABSD_FUNC(k, v) \
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
-
-int luab_pusherr(lua_State *, int);
-
-#define luab_checkinteger(L, narg, b_msk) \
-    (luaL_checkinteger((L), (narg)) & (b_msk))
-
-const char *    luab_checklstring(lua_State *, int, size_t);
 
 typedef struct {
     long   cookie;        /*  date -u +'%s' */
@@ -81,6 +71,16 @@ extern luab_module_t luab_fcntl_lib;
 extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
+
+int luab_pusherr(lua_State *, int);
+
+void    luab_pushcfunction(lua_State *, luab_un_t *);
+void    luab_pushinteger(lua_State *, luab_un_t *);
+
+#define luab_checkinteger(L, narg, b_msk) \
+    (luaL_checkinteger((L), (narg)) & (b_msk))
+    
+const char *    luab_checklstring(lua_State *, int, size_t);
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
