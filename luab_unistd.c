@@ -190,6 +190,16 @@ luab_close(lua_State *L)
 }
 
 static int
+luab_closefrom(lua_State *L)
+{
+    int lowfd = luab_checkinteger(L, 1, INT_MAX);
+
+    closefrom(lowfd);
+
+    return 0;
+}
+
+static int
 luab_fork(lua_State *L)
 {
     pid_t pid;
@@ -618,6 +628,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("alarm",    luab_alarm),
     LUABSD_FUNC("chdir",    luab_chdir),
     LUABSD_FUNC("close",    luab_close),
+    LUABSD_FUNC("closefrom",    luab_closefrom),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fchdir",    luab_fchdir),
