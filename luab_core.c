@@ -34,6 +34,20 @@
 
 #include "luabsd.h"
 
+const char *
+luab_checklstring(lua_State *L, int narg, size_t n)
+{
+    const char *buf;
+    size_t len;
+
+    buf = luaL_checklstring(L, narg, &len);
+
+    if (len > n)    /* XXX err_msg */
+        luaL_argerror(L, narg, "is to big");
+
+    return buf;
+}
+
 void
 luab_pushinteger(lua_State *L, luab_un_t *u)
 {
