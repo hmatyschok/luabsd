@@ -72,7 +72,7 @@ h_signal(int arg __unused)
 static int
 luab_alarm(lua_State *L)
 {
-    u_int seconds = luab_checkinteger(L, 1, UINT_MAX);
+    u_int seconds = luab_checkinteger(L, 1, INT_MAX);
     u_int status;
 
     if (seconds > 0) {
