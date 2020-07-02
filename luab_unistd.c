@@ -76,8 +76,8 @@ luab_alarm(lua_State *L)
     u_int status;
 
     if (seconds > 0) {
-        int narg = lua_gettop(L)
-        
+        int narg = lua_gettop(L);
+
         if (lua_type(L, narg) != LUA_TFUNCTION)
             return luaL_error(L, "Missing callout handler.");
 
@@ -140,6 +140,34 @@ luab_faccessat(lua_State *L)
     int status;
 
     if ((status = faccessat(fd, path, mode, flag)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_chdir(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int status;
+
+    if ((status = chdir(path)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_fchdir(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int status;
+
+    if ((status = fchdir(fd)) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -574,8 +602,10 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS",    _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS),
     LUABSD_FUNC("access",   luab_access),
     LUABSD_FUNC("alarm",    luab_alarm),
+    LUABSD_FUNC("chdir",    luab_chdir),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("faccessat",   luab_faccessat),
+    LUABSD_FUNC("fchdir",    luab_fchdir),
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),
