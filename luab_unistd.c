@@ -200,6 +200,35 @@ luab_closefrom(lua_State *L)
 }
 
 static int
+luab_dup(lua_State *L)
+{
+    int oldd = luab_checkinteger(L, 1, INT_MAX);
+    int fd;
+
+    if ((fd = dup(oldd)) != 0)
+        return luab_pusherr(L, fd);
+
+    lua_pushinteger(L, fd);
+
+    return 1;
+}
+
+static int
+luab_dup2(lua_State *L)
+{
+    int oldd = luab_checkinteger(L, 1, INT_MAX);
+    int newd = luab_checkinteger(L, 2, INT_MAX);
+    int fd;
+
+    if ((fd = dup2(oldd, newd)) != 0)
+        return luab_pusherr(L, fd);
+
+    lua_pushinteger(L, fd);
+
+    return 1;
+}
+
+static int
 luab_fork(lua_State *L)
 {
     pid_t pid;
@@ -629,6 +658,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("chdir",    luab_chdir),
     LUABSD_FUNC("close",    luab_close),
     LUABSD_FUNC("closefrom",    luab_closefrom),
+    LUABSD_FUNC("dup",    luab_dup),
+    LUABSD_FUNC("dup2",    luab_dup2),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fchdir",    luab_fchdir),
