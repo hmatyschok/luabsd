@@ -387,6 +387,45 @@ luab_getgid(lua_State *L)
     return 1;
 }
 
+/***
+ * @function getgroups
+ * @param gidsetlen same as in getgroups(2).
+ * @return (ngroups,table) or (-1, err_msg)
+ * @synopsis n, gidset = bsd.unistd.getgroups(gidsetlen)
+ */
+static int
+luab_getgroups(lua_State *L)
+{
+    int gidsetlen = luab_checkinteger(L, 1, INT_MAX);
+    gid_t *gidset;
+    int ngroups, i, j;
+
+    if (gidsetlen == 0)
+        gidset = NULL;
+    else {
+        if ((gidset = alloca(gidsetlen * sizeof(gid_t))) == NULL)
+            return luab_pusherr(L, -1);
+    }
+
+    if ((ngroups = getgroups(gidsetlen, gidset)) < 0)
+        return luab_pusherr(L, ngroups);
+
+    lua_pushinteger(L, ngroups);
+
+    if (gidsetlen == 0)
+        return 1;
+
+    lua_newtable(L);
+
+    for (i = 0, j = 1; i < gidsetlen; i++, j++) {
+        lua_pushinteger(L, gidset[i]);
+        lua_rawseti(L, -2, j);
+    }
+    lua_pushvalue(L, -1);
+
+    return 2;
+}
+
 static int
 luab_getlogin(lua_State *L)
 {
@@ -882,6 +921,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),
     LUABSD_FUNC("getgid",    luab_getgid),
+    LUABSD_FUNC("getgroups",    luab_getgroups),
     LUABSD_FUNC("getlogin",   luab_getlogin),
     LUABSD_FUNC("getpid", luab_getpid),
     LUABSD_FUNC("getppid",    luab_getppid),
