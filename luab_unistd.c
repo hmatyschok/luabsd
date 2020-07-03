@@ -233,7 +233,7 @@ luab_dup2(lua_State *L)
 }
 
 /*
- * Usage - bsd.unistd.execve(2) :
+ * Usage - bsd.unistd.execv{e}(2) :
  *
  *  #1 local path = "/blah/blubb"
  *
@@ -241,8 +241,25 @@ luab_dup2(lua_State *L)
  *
  *  local err, msg = bsd.unistd.execve(path, argv)
  */
-
 extern char **environ;
+
+static int
+luab_execv(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    const char **argv = luab_checkargv(L, 2);
+    int status;
+
+    if ((status = execv(path, __DECONST(char **, argv))) != 0) {
+        free(argv);
+        return luab_pusherr(L, status);
+    }
+    lua_pushinteger(L, status);
+
+    free(argv);
+
+    return 1;
+}
 
 static int
 luab_execve(lua_State *L)
@@ -252,6 +269,24 @@ luab_execve(lua_State *L)
     int status;
 
     if ((status = execve(path, __DECONST(char **, argv), environ)) != 0) {
+        free(argv);
+        return luab_pusherr(L, status);
+    }
+    lua_pushinteger(L, status);
+
+    free(argv);
+
+    return 1;
+}
+
+static int
+luab_execvp(lua_State *L)
+{
+    const char *file = luab_checklstring(L, 1, MAXPATHLEN);
+    const char **argv = luab_checkargv(L, 2);
+    int status;
+
+    if ((status = execvp(file, __DECONST(char **, argv))) != 0) {
         free(argv);
         return luab_pusherr(L, status);
     }
@@ -762,7 +797,9 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fchdir",    luab_fchdir),
+    LUABSD_FUNC("execv",   luab_execv),
     LUABSD_FUNC("execve",   luab_execve),
+    LUABSD_FUNC("execvp",   luab_execvp),
     LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("getegid",    luab_getegid),
