@@ -26,9 +26,11 @@
 
 #include <sys/limits.h>
 #include <sys/param.h>
+#include <sys/syslimits.h>
 
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -352,6 +354,22 @@ luab_getsid(lua_State *L)
     return 1;
 }
 
+#if __POSIX_VISIBLE >= 200112
+static int
+luab_gethostname(lua_State *L)
+{
+    char buf[MAXHOSTNAMELEN];
+    int status;
+
+    if ((status = gethostname(buf, sizeof(buf))) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+    lua_pushlstring(L, buf, strlen(buf));
+
+    return 2;
+}
+
 static int
 luab_setegid(lua_State *L)
 {
@@ -379,6 +397,7 @@ luab_seteuid(lua_State *L)
 
     return 1;
 }
+#endif
 
 static int
 luab_setgid(lua_State *L)
@@ -387,6 +406,20 @@ luab_setgid(lua_State *L)
     int status;
 
     if ((status = setgid(gid)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_sethostname(lua_State *L)
+{
+    const char *name = luab_checklstring(L, 1, MAXHOSTNAMELEN);
+    int status;
+
+    if ((status = sethostname(name, strlen(name))) != 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -514,7 +547,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_V6_ILP32_OFFBIG",  _V6_ILP32_OFFBIG),
     LUABSD_INT("_V6_LP64_OFF64",    _V6_LP64_OFF64),
     LUABSD_INT("_V6_LPBIG_OFFBIG",  _V6_LPBIG_OFFBIG),
-#if __XSI_VISIBLE    
+#if __XSI_VISIBLE
     LUABSD_INT("_XOPEN_CRYPT",  _XOPEN_CRYPT),
     LUABSD_INT("_XOPEN_ENH_I18N",   _XOPEN_ENH_I18N),
     LUABSD_INT("_XOPEN_LEGACY", _XOPEN_LEGACY),
@@ -550,7 +583,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_SC_2_UPE", _SC_2_UPE),
     LUABSD_INT("_SC_STREAM_MAX",    _SC_STREAM_MAX),
     LUABSD_INT("_SC_TZNAME_MAX",    _SC_TZNAME_MAX),
-#if __POSIX_VISIBLE >= 199309    
+#if __POSIX_VISIBLE >= 199309
     LUABSD_INT("_SC_ASYNCHRONOUS_IO",   _SC_ASYNCHRONOUS_IO),
     LUABSD_INT("_SC_MAPPED_FILES",  _SC_MAPPED_FILES),
     LUABSD_INT("_SC_MEMLOCK",   _SC_MEMLOCK),
@@ -645,13 +678,13 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_SC_XOPEN_VERSION", _SC_XOPEN_VERSION),
     LUABSD_INT("_SC_XOPEN_XCU_VERSION", _SC_XOPEN_XCU_VERSION),
 #endif
-#if __BSD_VISIBLE    
+#if __BSD_VISIBLE
     LUABSD_INT("_SC_NPROCESSORS_CONF",  _SC_NPROCESSORS_CONF),
     LUABSD_INT("_SC_NPROCESSORS_ONLN",  _SC_NPROCESSORS_ONLN),
     LUABSD_INT("_SC_CPUSET_SIZE",   _SC_CPUSET_SIZE),
-#endif    
+#endif
     LUABSD_INT("_SC_PHYS_PAGES",    _SC_PHYS_PAGES),
-#if __POSIX_VISIBLE >= 199209    
+#if __POSIX_VISIBLE >= 199209
     LUABSD_INT("_CS_PATH",  _CS_PATH),
 #endif
 #if __POSIX_VISIBLE >= 200112
@@ -690,9 +723,13 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getpgrp",    luab_getpgrp),
     LUABSD_FUNC("getuid", luab_getuid),
     LUABSD_FUNC("getsid", luab_getsid),
+#if __POSIX_VISIBLE >= 200112
+    LUABSD_FUNC("gethostname",  luab_gethostname),
     LUABSD_FUNC("setegid",    luab_setegid),
     LUABSD_FUNC("seteuid",    luab_seteuid),
+#endif
     LUABSD_FUNC("setgid",    luab_setgid),
+    LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
     LUABSD_FUNC("setpgid",    luab_setpgid),
     LUABSD_FUNC("setpgrp",    luab_setpgrp),
