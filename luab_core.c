@@ -26,6 +26,7 @@
 
 #include <errno.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <lua.h>
@@ -34,7 +35,7 @@
 
 #include "luabsd.h"
 
-static const char **
+const char **
 luab_checkargv(lua_State *L, int narg)
 {
     const char **argv;
