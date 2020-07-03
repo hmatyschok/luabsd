@@ -79,6 +79,7 @@ int luab_pusherr(lua_State *, int);
 
 #define luab_checkinteger(L, narg, b_msk) \
     (luaL_checkinteger((L), (narg)) & (b_msk))
+static const char **    luab_checkargv(lua_State *, int);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
 LUAMOD_API int  luaopen_bsd(lua_State *);

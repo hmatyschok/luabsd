@@ -233,7 +233,7 @@ luab_dup2(lua_State *L)
 }
 
 /*
- * Usage:
+ * Usage - bsd.unistd.execve(2) :
  *
  *  #1 local path = "/blah/blubb"
  *
@@ -248,50 +248,16 @@ static int
 luab_execve(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    const char **argv;
-    int narg, status;
+    const char **argv = luab_checkargv(L, 2);
+    int status;
 
-    if (lua_type(L, 2) != LUA_TTABLE)
-        luaL_argerror(L, 2, "table expected");
-
-    if ((narg = lua_rawlen(L, 2)) == 0)
-        luaL_argerror(L, 2, "empty table");
-
-    if ((argv = alloca((narg + 1) * sizeof(*argv))) == NULL) {
-        errno = ENOMEM;
-        status = -1;
-    } else {
-        status = 0;
-        narg = 0;
-
-        lua_pushnil(L);
-
-        while (lua_next(L, 2) != 0) {
-            /*
-             * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
-             */
-            if ((lua_type(L, -2) == LUA_TNUMBER)
-                && (lua_type(L, -1) == LUA_TSTRING)) {
-                argv[narg] = lua_tostring(L, -1);
-                lua_pop(L, 1);
-            } else {
-                errno = EINVAL;
-                status = -1;
-                lua_pop(L, 1);
-                break;
-            }
-
-            narg++;
-        }
+    if ((status = execve(path, __DECONST(char **, argv), environ)) != 0) {
+        free(argv);
+        return luab_pusherr(L, status);
     }
-
-    if (status != 0)
-        return luab_pusherr(L, status);
-
-    if ((status = execve(path, __DECONST(char **, argv), environ)) != 0)
-        return luab_pusherr(L, status);
-
     lua_pushinteger(L, status);
+
+    free(argv);
 
     return 1;
 }
@@ -300,47 +266,16 @@ static int
 luab_fexecve(lua_State *L)
 {
     int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char **argv;
-    int narg, status;
+    const char **argv = luab_checkargv(L, 2);
+    int status;
 
-    if (lua_type(L, 2) != LUA_TTABLE)
-        luaL_argerror(L, 2, "table expected");
-
-    if ((narg = lua_rawlen(L, 2)) == 0)
-        luaL_argerror(L, 2, "empty table");
-
-    if ((argv = alloca((narg + 1) * sizeof(*argv))) == NULL) {
-        errno = ENOMEM;
-        status = -1;
-    } else {    /* XXX redundant code-section */
-        status = 0;
-        narg = 0;
-
-        lua_pushnil(L);
-
-        while (lua_next(L, 2) != 0) {
-            if ((lua_type(L, -2) == LUA_TNUMBER)
-                && (lua_type(L, -1) == LUA_TSTRING)) {
-                argv[narg] = lua_tostring(L, -1);
-                lua_pop(L, 1);
-            } else {
-                errno = EINVAL;
-                status = -1;
-                lua_pop(L, 1);
-                break;
-            }
-
-            narg++;
-        }
+    if ((status = fexecve(fd, __DECONST(char **, argv), environ)) != 0) {
+        free(argv);
+        return luab_pusherr(L, status);
     }
-
-    if (status != 0)
-        return luab_pusherr(L, status);
-
-    if ((status = fexecve(fd, __DECONST(char **, argv), environ)) != 0)
-        return luab_pusherr(L, status);
-
     lua_pushinteger(L, status);
+
+    free(argv);
 
     return 1;
 }

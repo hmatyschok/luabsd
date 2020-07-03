@@ -34,6 +34,45 @@
 
 #include "luabsd.h"
 
+static const char **
+luab_checkargv(lua_State *L, int narg)
+{
+    const char **argv;
+    int n;
+
+    if (lua_type(L, 2) != LUA_TTABLE)
+        luaL_argerror(L, 2, "Table expected");
+
+    if ((n = lua_rawlen(L, 2)) == 0)
+        luaL_argerror(L, 2, "Empty table");
+
+    if ((argv = calloc((narg + 1), sizeof(*argv))) == NULL)
+        luaL_argerror(L, 2, "Cannot allocate memory");
+
+    n = 0;
+
+    lua_pushnil(L);
+
+    while (lua_next(L, 2) != 0) {
+        /*
+         * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
+         */
+        if ((lua_type(L, -2) != LUA_TNUMBER)
+            || (lua_type(L, -1) != LUA_TSTRING)) {
+            free(argv);
+            lua_pop(L, 1);
+            luaL_argerror(L, 2, "Invalid argument");
+        }
+
+        argv[n] = lua_tostring(L, -1);
+        lua_pop(L, 1);
+
+        n++;
+    }
+
+    return argv;
+}
+
 const char *
 luab_checklstring(lua_State *L, int narg, size_t n)
 {
