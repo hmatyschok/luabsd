@@ -329,6 +329,51 @@ luab_fork(lua_State *L)
 }
 
 static int
+luab_pathconf(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int name = luab_checkinteger(L, 2, INT_MAX);
+    long status;
+
+    if ((status = pathconf(path, name)) < 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_lpathconf(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int name = luab_checkinteger(L, 2, INT_MAX);
+    long status;
+
+    if ((status = lpathconf(path, name)) < 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_fpathconf(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int name = luab_checkinteger(L, 2, INT_MAX);
+    long status;
+
+    if ((status = fpathconf(fd, name)) < 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
 luab_getegid(lua_State *L)
 {
     gid_t egid = getegid();
@@ -802,6 +847,9 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("execvp",   luab_execvp),
     LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("fork",   luab_fork),
+    LUABSD_FUNC("fpathconf",    luab_fpathconf),
+    LUABSD_FUNC("lpathconf",    luab_lpathconf),
+    LUABSD_FUNC("pathconf",    luab_pathconf),
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),
     LUABSD_FUNC("getgid",    luab_getgid),
