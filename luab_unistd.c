@@ -28,8 +28,10 @@
 #include <sys/param.h>
 #include <sys/syslimits.h>
 
+#include <errno.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include <lua.h>
@@ -226,6 +228,119 @@ luab_dup2(lua_State *L)
         return luab_pusherr(L, fd);
 
     lua_pushinteger(L, fd);
+
+    return 1;
+}
+
+/*
+ * Usage:
+ *
+ *  #1 local path = "/blah/blubb"
+ *
+ *  #2 local argv = { "arg0", "arg1", ... , "argN" }
+ *
+ *  local err, msg = bsd.unistd.execve(path, argv)
+ */
+
+extern char **environ;
+
+static int
+luab_execve(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    const char **argv;
+    int narg, status;
+
+    if (lua_type(L, 2) != LUA_TTABLE)
+        luaL_argerror(L, 2, "table expected");
+
+    if ((narg = lua_rawlen(L, 2)) == 0)
+        luaL_argerror(L, 2, "empty table");
+
+    if ((argv = alloca((narg + 1) * sizeof(*argv))) == NULL) {
+        errno = ENOMEM;
+        status = -1;
+    } else {
+        status = 0;
+        narg = 0;
+
+        lua_pushnil(L);
+
+        while (lua_next(L, 2) != 0) {
+            /*
+             * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
+             */
+            if ((lua_type(L, -2) == LUA_TNUMBER)
+                && (lua_type(L, -1) == LUA_TSTRING)) {
+                argv[narg] = lua_tostring(L, -1);
+                lua_pop(L, 1);
+            } else {
+                errno = EINVAL;
+                status = -1;
+                lua_pop(L, 1);
+                break;
+            }
+
+            narg++;
+        }
+    }
+
+    if (status != 0)
+        return luab_pusherr(L, status);
+
+    if ((status = execve(path, __DECONST(char **, argv), environ)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_fexecve(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    const char **argv;
+    int narg, status;
+
+    if (lua_type(L, 2) != LUA_TTABLE)
+        luaL_argerror(L, 2, "table expected");
+
+    if ((narg = lua_rawlen(L, 2)) == 0)
+        luaL_argerror(L, 2, "empty table");
+
+    if ((argv = alloca((narg + 1) * sizeof(*argv))) == NULL) {
+        errno = ENOMEM;
+        status = -1;
+    } else {    /* XXX redundant code-section */
+        status = 0;
+        narg = 0;
+
+        lua_pushnil(L);
+
+        while (lua_next(L, 2) != 0) {
+            if ((lua_type(L, -2) == LUA_TNUMBER)
+                && (lua_type(L, -1) == LUA_TSTRING)) {
+                argv[narg] = lua_tostring(L, -1);
+                lua_pop(L, 1);
+            } else {
+                errno = EINVAL;
+                status = -1;
+                lua_pop(L, 1);
+                break;
+            }
+
+            narg++;
+        }
+    }
+
+    if (status != 0)
+        return luab_pusherr(L, status);
+
+    if ((status = fexecve(fd, __DECONST(char **, argv), environ)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
 
     return 1;
 }
@@ -712,6 +827,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fchdir",    luab_fchdir),
+    LUABSD_FUNC("execve",   luab_execve),
+    LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),

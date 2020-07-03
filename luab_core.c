@@ -43,7 +43,7 @@ luab_checklstring(lua_State *L, int narg, size_t n)
     buf = luaL_checklstring(L, narg, &len);
 
     if (len > n)    /* XXX err_msg */
-        luaL_argerror(L, narg, "is to big");
+        luaL_argerror(L, narg, "is too big");
 
     return buf;
 }
