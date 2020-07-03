@@ -329,36 +329,6 @@ luab_fork(lua_State *L)
 }
 
 static int
-luab_pathconf(lua_State *L)
-{
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int name = luab_checkinteger(L, 2, INT_MAX);
-    long status;
-
-    if ((status = pathconf(path, name)) < 0)
-        return luab_pusherr(L, status);
-
-    lua_pushinteger(L, status);
-
-    return 1;
-}
-
-static int
-luab_lpathconf(lua_State *L)
-{
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int name = luab_checkinteger(L, 2, INT_MAX);
-    long status;
-
-    if ((status = lpathconf(path, name)) < 0)
-        return luab_pusherr(L, status);
-
-    lua_pushinteger(L, status);
-
-    return 1;
-}
-
-static int
 luab_fpathconf(lua_State *L)
 {
     int fd = luab_checkinteger(L, 1, INT_MAX);
@@ -369,6 +339,20 @@ luab_fpathconf(lua_State *L)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_getcwd(lua_State *L)
+{
+    char *buf;
+
+    if ((buf = getcwd(NULL, MAXPATHLEN)) == NULL)
+        return luab_pusherr(L, -1);
+
+    lua_pushlstring(L, buf, strlen(buf));
+    free(buf);
 
     return 1;
 }
@@ -480,6 +464,36 @@ luab_getsid(lua_State *L)
         return luab_pusherr(L, sid);
 
     lua_pushinteger(L, sid);
+
+    return 1;
+}
+
+static int
+luab_pathconf(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int name = luab_checkinteger(L, 2, INT_MAX);
+    long status;
+
+    if ((status = pathconf(path, name)) < 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_lpathconf(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int name = luab_checkinteger(L, 2, INT_MAX);
+    long status;
+
+    if ((status = lpathconf(path, name)) < 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
 
     return 1;
 }
@@ -627,6 +641,22 @@ luab_setuid(lua_State *L)
 
     return 1;
 }
+
+#if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
+static int
+luab_getwd(lua_State *L)
+{
+    char *buf;
+
+    if ((buf = getwd(NULL)) == NULL)
+        return luab_pusherr(L, -1);
+
+    lua_pushlstring(L, buf, strlen(buf));
+    free(buf);
+
+    return 1;
+}
+#endif
 
 static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("STDIN_FILENO",  STDIN_FILENO),
@@ -848,8 +878,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("fpathconf",    luab_fpathconf),
-    LUABSD_FUNC("lpathconf",    luab_lpathconf),
-    LUABSD_FUNC("pathconf",    luab_pathconf),
+    LUABSD_FUNC("getcwd",   luab_getcwd),
     LUABSD_FUNC("getegid",    luab_getegid),
     LUABSD_FUNC("geteuid",    luab_geteuid),
     LUABSD_FUNC("getgid",    luab_getgid),
@@ -860,6 +889,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getpgrp",    luab_getpgrp),
     LUABSD_FUNC("getuid", luab_getuid),
     LUABSD_FUNC("getsid", luab_getsid),
+    LUABSD_FUNC("lpathconf",    luab_lpathconf),
+    LUABSD_FUNC("pathconf",    luab_pathconf),
 #if __POSIX_VISIBLE >= 200112
     LUABSD_FUNC("gethostname",  luab_gethostname),
     LUABSD_FUNC("setegid",    luab_setegid),
@@ -872,6 +903,9 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("setpgrp",    luab_setpgrp),
     LUABSD_FUNC("setsid", luab_setsid),
     LUABSD_FUNC("setuid", luab_setuid),
+#if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
+    LUABSD_FUNC("getwd",   luab_getwd),
+#endif
     LUABSD_FUNC(NULL, NULL)
 };
 
