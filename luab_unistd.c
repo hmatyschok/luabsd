@@ -232,17 +232,15 @@ luab_dup2(lua_State *L)
     return 1;
 }
 
-/*
- * Usage - bsd.unistd.execv{e}(2) :
- *
- *  #1 local path = "/blah/blubb"
- *
- *  #2 local argv = { "arg0", "arg1", ... , "argN" }
- *
- *  local err, msg = bsd.unistd.execve(path, argv)
- */
 extern char **environ;
 
+/***
+ * @function execv
+ * @param path self-explanatory
+ * @param argv array of strings
+ * @return (n [, err ])
+ * @synopsis n, err = bsd.unistd.execv("/x/y", { "arg0" , "arg1" , ..., argN })
+ */
 static int
 luab_execv(lua_State *L)
 {
@@ -261,6 +259,13 @@ luab_execv(lua_State *L)
     return 1;
 }
 
+/***
+ * @function execve
+ * @param path self-explanatory
+ * @param argv array of strings
+ * @return (n [, err ])
+ * @synopsis n, err = bsd.unistd.execve("/x/y", { "arg0" , "arg1" , ..., argN })
+ */
 static int
 luab_execve(lua_State *L)
 {
@@ -279,6 +284,13 @@ luab_execve(lua_State *L)
     return 1;
 }
 
+/***
+ * @function execvp
+ * @param path self-explanatory
+ * @param argv array of strings
+ * @return (n [, err ])
+ * @synopsis n, err = bsd.unistd.execvp("/x/y", { "arg0" , "arg1" , ..., argN })
+ */
 static int
 luab_execvp(lua_State *L)
 {
@@ -297,6 +309,13 @@ luab_execvp(lua_State *L)
     return 1;
 }
 
+/***
+ * @function fexecve
+ * @param fd file-descriptor
+ * @param argv array of strings
+ * @return (n [, err ])
+ * @synopsis n, err = bsd.unistd.fexecve("/x/y", { "arg0" , "arg1" , ..., argN })
+ */
 static int
 luab_fexecve(lua_State *L)
 {
@@ -389,8 +408,8 @@ luab_getgid(lua_State *L)
 
 /***
  * @function getgroups
- * @param gidsetlen same as in getgroups(2).
- * @return (ngroups,table) or (-1, err_msg)
+ * @param gidsetlen same as in getgroups(2)
+ * @return (n [,table]) or (-1, err_msg)
  * @synopsis n, gidset = bsd.unistd.getgroups(gidsetlen)
  */
 static int
