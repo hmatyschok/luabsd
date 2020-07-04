@@ -481,6 +481,18 @@ luab_isatty(lua_State *L)
 }
 
 static int
+luab_link(lua_State *L)
+{
+    const char *name1 = luab_checklstring(L, 1, MAXPATHLEN);
+    const char *name2 = luab_checklstring(L, 2, MAXPATHLEN);
+    int status;
+
+    status = link(name1, name2);
+
+    return luab_pusherr(L, status);
+}
+
+static int
 luab_lpathconf(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
@@ -688,6 +700,21 @@ luab_getwd(lua_State *L)
 #endif
 
 #if __POSIX_VISIBLE >= 200809
+static int
+luab_linkat(lua_State *L)
+{
+    int fd1 = luab_checkinteger(L, 1, INT_MAX);
+    const char *name1 = luab_checklstring(L, 2, MAXPATHLEN);
+    int fd2 = luab_checkinteger(L, 3, INT_MAX);
+    const char *name2 = luab_checklstring(L, 4, MAXPATHLEN);
+    int flag = luab_checkinteger(L, 5, INT_MAX);
+    int status;
+
+    status = linkat(fd1, name1, fd2, name2, flag);
+
+    return luab_pusherr(L, status);
+}
+
 static int
 luab_unlinkat(lua_State *L)
 {
@@ -935,6 +962,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getuid", luab_getuid),
     LUABSD_FUNC("getsid", luab_getsid),
     LUABSD_FUNC("isatty",   luab_isatty),
+    LUABSD_FUNC("link", luab_link),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("pathconf",    luab_pathconf),
 #if __POSIX_VISIBLE >= 200112
@@ -956,6 +984,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getwd",   luab_getwd),
 #endif
 #if __POSIX_VISIBLE >= 200809
+    LUABSD_FUNC("linkat", luab_linkat),
     LUABSD_FUNC("unlinkat", luab_unlinkat),
 #endif
     LUABSD_FUNC(NULL, NULL)
