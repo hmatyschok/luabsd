@@ -58,20 +58,57 @@ luab_checkargv(lua_State *L, int narg)
         /*
          * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
          */
-        if ((lua_type(L, -2) != LUA_TNUMBER)
-            || (lua_type(L, -1) != LUA_TSTRING)) {
+        if ((lua_type(L, -2) == LUA_TNUMBER)
+            && (lua_type(L, -1) == LUA_TSTRING)) {
+            argv[n] = lua_tostring(L, -1);
+            lua_pop(L, 1);
+        } else {
             free(argv);
             lua_pop(L, 1);
             luaL_argerror(L, narg, "Invalid argument");
         }
 
-        argv[n] = lua_tostring(L, -1);
-        lua_pop(L, 1);
-
         n++;
     }
 
     return argv;
+}
+
+int *
+luab_checkintvector(lua_State *L, int narg, size_t len)
+{
+    int *vec;
+    size_t n;
+
+    if (lua_type(L, narg) != LUA_TTABLE)
+        luaL_argerror(L, narg, "Table expected");
+
+    if ((n = lua_rawlen(L, narg)) != len)
+        luaL_argerror(L, narg, "Size mismatch");
+
+    if ((vec = calloc(len, sizeof(int))) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    n = 0;
+
+    lua_pushnil(L);
+
+    while (lua_next(L, narg) != 0) {
+
+        if ((lua_type(L, -2) == LUA_TNUMBER)
+            && (lua_type(L, -1) == LUA_TNUMBER)) {
+            vec[n] = lua_tointeger(L, -1);
+            lua_pop(L, 1);
+        } else {
+            free(vec);
+            lua_pop(L, 1);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+
+        n++;
+    }
+
+    return vec;
 }
 
 const char *

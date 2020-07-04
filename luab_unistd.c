@@ -504,6 +504,46 @@ luab_pause(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function pipe create descriptor pair for interprocess communication
+ * @param fildes pair { fildes1, fildes2 } of fildescriptors
+ * @return (n [, err ])
+ * @synopsis n, err = bsd.unistd.pipe({ fildes1, fildes2 })
+ */
+static int
+luab_pipe(lua_State *L)
+{
+    int *fildes = luab_checkintvector(L, 1, 2);
+    int status;
+
+    status = pipe(fildes);
+
+    free(fildes);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * @function pipe2 create descriptor pair for interprocess communication
+ * @param fildes pair { fildes1, fildes2 } of fildescriptors
+ * @param flags see pipe(2)
+ * @return (n [, err ])
+ * @synopsis n, err = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ */
+static int
+luab_pipe2(lua_State *L)
+{
+    int *fildes = luab_checkintvector(L, 1, 2);
+    int flags = luab_checkinteger(L, 2, INT_MAX);
+    int status;
+
+    status = pipe2(fildes, flags);
+
+    free(fildes);
+
+    return luab_pusherr(L, status);
+}
+
 #if __POSIX_VISIBLE >= 200112
 static int
 luab_gethostname(lua_State *L)
@@ -991,6 +1031,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("pathconf",    luab_pathconf),
     LUABSD_FUNC("pause",    luab_pause),
+    LUABSD_FUNC("pipe", luab_pipe),
+    LUABSD_FUNC("pipe2", luab_pipe2),
 #if __POSIX_VISIBLE >= 200112
     LUABSD_FUNC("gethostname",  luab_gethostname),
     LUABSD_FUNC("setegid",    luab_setegid),
