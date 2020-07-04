@@ -443,12 +443,9 @@ luab_getpgid(lua_State *L)
     pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
     pid_t pgrp;
 
-    if ((pgrp = getpgid(pid)) < 0)
-        return luab_pusherr(L, pgrp);
+    pgrp = getpgid(pid);
 
-    lua_pushinteger(L, pgrp);
-
-    return 1;
+    return luab_pusherr(L, pgrp);
 }
 
 static int
@@ -663,6 +660,17 @@ luab_ttyname_r(lua_State *L)
     return 2;
 }
 
+static int
+luab_unlink(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int status;
+
+    status = unlink(path);
+
+    return luab_pusherr(L, status);
+}
+
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
 static int
 luab_getwd(lua_State *L)
@@ -676,6 +684,21 @@ luab_getwd(lua_State *L)
     free(buf);
 
     return 1;
+}
+#endif
+
+#if __POSIX_VISIBLE >= 200809
+static int
+luab_unlinkat(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    int flag = luab_checkinteger(L, 3, INT_MAX);
+    int status;
+
+    status = unlinkat(fd, path, flag);
+
+    return luab_pusherr(L, status);
 }
 #endif
 
@@ -928,8 +951,12 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("setuid", luab_setuid),
     LUABSD_FUNC("ttyname",  luab_ttyname),
     LUABSD_FUNC("ttyname_r",  luab_ttyname_r),
+    LUABSD_FUNC("unlink",   luab_unlink),
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
+#endif
+#if __POSIX_VISIBLE >= 200809
+    LUABSD_FUNC("unlinkat", luab_unlinkat),
 #endif
     LUABSD_FUNC(NULL, NULL)
 };
