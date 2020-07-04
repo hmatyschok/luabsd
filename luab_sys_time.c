@@ -122,13 +122,10 @@ luab_setitimer(lua_State *L)
     bzero(&itv, sizeof(itv));
     itv.it_value.tv_sec = sec;
 
-    if ((status = setitimer(which, &itv, NULL)) != 0) {
+    if ((status = setitimer(which, &itv, NULL)) != 0)
         pthread_cancel(tid);
-        return luab_pusherr(L, status);
-    }
-    lua_pushinteger(L, status);
 
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int

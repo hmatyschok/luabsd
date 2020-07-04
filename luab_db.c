@@ -253,12 +253,9 @@ db_fd(lua_State *L)
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
-    if ((fd = (self->db->fd)(self->db)) < 0)
-        return luab_pusherr(L, fd);
+    fd = (self->db->fd)(self->db);
 
-    lua_pushinteger(L, fd);
-
-    return 1;
+    return luab_pusherr(L, fd);
 }
 
 static int
@@ -274,12 +271,9 @@ db_flock(lua_State *L)
     if ((fd = (self->db->fd)(self->db)) < 0)
         return luab_pusherr(L, fd);
 
-    if ((status = flock(fd, op)) != 0)
-        return luab_pusherr(L, status);
+    status = flock(fd, op);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int

@@ -39,15 +39,15 @@
 #include "luabsd.h"
 
 /*
- * Interface against  
- * 
+ * Interface against
+ *
  *  struct flock {
- *      off_t   l_start;        
- *      off_t   l_len;          
- *      pid_t   l_pid;          
- *      short   l_type;         
- *      short   l_whence;       
- *      int     l_sysid;        
+ *      off_t   l_start;
+ *      off_t   l_len;
+ *      pid_t   l_pid;
+ *      short   l_type;
+ *      short   l_whence;
+ *      int     l_sysid;
  *  };
  */
 
@@ -60,7 +60,7 @@ typedef struct {
 
 #define luab_toflock(L, narg) \
     (luab_todata((L), (narg), LUABSD_FLOCK_TYPE, luab_flock_t *))
- 
+
 /* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
 static int
 flock_l_start(lua_State *L)
@@ -222,12 +222,9 @@ luab_open(lua_State *L)
     if (narg == 3 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
 
-    if ((fd = open(path, flags, mode)) < 0)
-        return luab_pusherr(L, fd);
+    fd = open(path, flags, mode);
 
-    lua_pushinteger(L, fd);
-
-    return 1;
+    return luab_pusherr(L, fd);
 }
 
 static int
@@ -242,12 +239,9 @@ luab_openat(lua_State *L)
     if (narg == 4 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
 
-    if ((fd = openat(dirfd, path, flags, mode)) < 0)
-        return luab_pusherr(L, fd);
+    fd = openat(dirfd, path, flags, mode);
 
-    lua_pushinteger(L, fd);
-
-    return 1;
+    return luab_pusherr(L, fd);
 }
 
 static int
@@ -257,12 +251,9 @@ luab_creat(lua_State *L)
     mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int fd;
 
-    if ((fd = creat(path, mode)) < 0)
-        return luab_pusherr(L, fd);
+    fd = creat(path, mode);
 
-    lua_pushinteger(L, fd);
-
-    return 1;
+    return luab_pusherr(L, fd);
 }
 
 static int
@@ -282,12 +273,7 @@ luab_fcntl(lua_State *L)
 
     res = (argp) ? fcntl(fd, cmd, &argp->info) : fcntl(fd, cmd, arg);
 
-    if (res < 0)
-        return luab_pusherr(L, res);
-
-    lua_pushinteger(L, res);
-
-    return 1;
+    return luab_pusherr(L, res);
 }
 
 static int
@@ -298,11 +284,9 @@ luab_posix_fadvise(lua_State *L)
     off_t len = luab_checkinteger(L, 3, UINT_MAX);
     int advice = luab_checkinteger(L, 4, INT_MAX);
 
-    if ((errno = posix_fadvise(fd, offset, len, advice)) != 0)
-        return luab_pusherr(L, errno);
+    errno = posix_fadvise(fd, offset, len, advice);
 
-    lua_pushinteger(L, errno);
-    return 1;
+    return luab_pusherr(L, errno);
 }
 
 static int
@@ -312,11 +296,9 @@ luab_posix_fallocate(lua_State *L)
     off_t offset = luab_checkinteger(L, 2, UINT_MAX);
     off_t len = luab_checkinteger(L, 3, UINT_MAX);
 
-    if ((errno = posix_fallocate(fd, offset, len)) != 0)
-        return luab_pusherr(L, errno);
+    errno = posix_fallocate(fd, offset, len);
 
-    lua_pushinteger(L, errno);
-    return 1;
+    return luab_pusherr(L, errno);
 }
 
 static luab_table_t luab_fcntl_vec[] = {    /* fcntl.h */

@@ -55,7 +55,9 @@ static int
 luab_arc4random_uniform(lua_State *L)
 {
     uint32_t ub = luaL_checkinteger(L, 1);
-    uint32_t n = arc4random_uniform(ub);
+    uint32_t n;
+
+    n = arc4random_uniform(ub);
 
     lua_pushinteger(L, n);
 

@@ -94,9 +94,7 @@ luab_alarm(lua_State *L)
     }
     status = alarm(seconds);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 /*
@@ -110,12 +108,9 @@ luab_access(lua_State *L)
     int mode = luab_checkinteger(L, 2, INT_MAX);
     int status;
 
-    if ((status = access(path, mode)) != 0)
-        return luab_pusherr(L, status);
+    status = access(path, mode);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -125,12 +120,9 @@ luab_eaccess(lua_State *L)
     int mode = luab_checkinteger(L, 2, INT_MAX);
     int status;
 
-    if ((status = eaccess(path, mode)) != 0)
-        return luab_pusherr(L, status);
+    status = eaccess(path, mode);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -142,12 +134,9 @@ luab_faccessat(lua_State *L)
     int flag = luab_checkinteger(L, 4, INT_MAX);
     int status;
 
-    if ((status = faccessat(fd, path, mode, flag)) != 0)
-        return luab_pusherr(L, status);
+    status = faccessat(fd, path, mode, flag);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -156,12 +145,9 @@ luab_chdir(lua_State *L)
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
     int status;
 
-    if ((status = chdir(path)) != 0)
-        return luab_pusherr(L, status);
+    status = chdir(path);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -170,12 +156,9 @@ luab_fchdir(lua_State *L)
     int fd = luab_checkinteger(L, 1, INT_MAX);
     int status;
 
-    if ((status = fchdir(fd)) != 0)
-        return luab_pusherr(L, status);
+    status = fchdir(fd);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -184,12 +167,9 @@ luab_close(lua_State *L)
     int fd = luab_checkinteger(L, 1, INT_MAX);
     int status;
 
-    if ((status = close(fd)) != 0)
-        return luab_pusherr(L, status);
+    status = close(fd);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -208,12 +188,9 @@ luab_dup(lua_State *L)
     int oldd = luab_checkinteger(L, 1, INT_MAX);
     int fd;
 
-    if ((fd = dup(oldd)) != 0)
-        return luab_pusherr(L, fd);
+    fd = dup(oldd);
 
-    lua_pushinteger(L, fd);
-
-    return 1;
+    return luab_pusherr(L, fd);
 }
 
 static int
@@ -223,12 +200,9 @@ luab_dup2(lua_State *L)
     int newd = luab_checkinteger(L, 2, INT_MAX);
     int fd;
 
-    if ((fd = dup2(oldd, newd)) != 0)
-        return luab_pusherr(L, fd);
+    fd = dup2(oldd, newd);
 
-    lua_pushinteger(L, fd);
-
-    return 1;
+    return luab_pusherr(L, fd);
 }
 
 extern char **environ;
@@ -247,15 +221,11 @@ luab_execv(lua_State *L)
     const char **argv = luab_checkargv(L, 2);
     int status;
 
-    if ((status = execv(path, __DECONST(char **, argv))) != 0) {
-        free(argv);
-        return luab_pusherr(L, status);
-    }
-    lua_pushinteger(L, status);
+    status = execv(path, __DECONST(char **, argv));
 
     free(argv);
 
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 /***
@@ -272,15 +242,11 @@ luab_execve(lua_State *L)
     const char **argv = luab_checkargv(L, 2);
     int status;
 
-    if ((status = execve(path, __DECONST(char **, argv), environ)) != 0) {
-        free(argv);
-        return luab_pusherr(L, status);
-    }
-    lua_pushinteger(L, status);
+    status = execve(path, __DECONST(char **, argv), environ);
 
     free(argv);
 
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 /***
@@ -297,15 +263,11 @@ luab_execvp(lua_State *L)
     const char **argv = luab_checkargv(L, 2);
     int status;
 
-    if ((status = execvp(file, __DECONST(char **, argv))) != 0) {
-        free(argv);
-        return luab_pusherr(L, status);
-    }
-    lua_pushinteger(L, status);
+    status = execvp(file, __DECONST(char **, argv));
 
     free(argv);
 
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 /***
@@ -322,28 +284,19 @@ luab_fexecve(lua_State *L)
     const char **argv = luab_checkargv(L, 2);
     int status;
 
-    if ((status = fexecve(fd, __DECONST(char **, argv), environ)) != 0) {
-        free(argv);
-        return luab_pusherr(L, status);
-    }
-    lua_pushinteger(L, status);
+    status = fexecve(fd, __DECONST(char **, argv), environ);
 
     free(argv);
 
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
 luab_fork(lua_State *L)
 {
-    pid_t pid;
+    pid_t pid = fork();
 
-    if ((pid = fork()) < 0)
-        return luab_pusherr(L, pid);
-
-    lua_pushinteger(L, pid);
-
-    return 1;
+    return luab_pusherr(L, pid);
 }
 
 static int
@@ -353,12 +306,9 @@ luab_fpathconf(lua_State *L)
     int name = luab_checkinteger(L, 2, INT_MAX);
     long status;
 
-    if ((status = fpathconf(fd, name)) < 0)
-        return luab_pusherr(L, status);
+    status = fpathconf(fd, name);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -367,7 +317,7 @@ luab_getcwd(lua_State *L)
     char *buf;
 
     if ((buf = getcwd(NULL, MAXPATHLEN)) == NULL)
-        return luab_pusherr(L, -1);
+        return luab_pushnil(L);
 
     lua_pushlstring(L, buf, strlen(buf));
     free(buf);
@@ -517,12 +467,9 @@ luab_getsid(lua_State *L)
     pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
     pid_t sid;
 
-    if ((sid = getsid(pid)) < 0)
-        return luab_pusherr(L, sid);
+    sid = getsid(pid);
 
-    lua_pushinteger(L, sid);
-
-    return 1;
+    return luab_pusherr(L, sid);
 }
 
 static int
@@ -531,12 +478,9 @@ luab_isatty(lua_State *L)
     int fd = luab_checkinteger(L, 1, INT_MAX);
     int status;
 
-    if ((status = isatty(fd)) == 0)
-        return luab_pusherr(L, status);
+    status = isatty(fd);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -546,12 +490,9 @@ luab_lpathconf(lua_State *L)
     int name = luab_checkinteger(L, 2, INT_MAX);
     long status;
 
-    if ((status = lpathconf(path, name)) < 0)
-        return luab_pusherr(L, status);
+    status = lpathconf(path, name);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -561,12 +502,9 @@ luab_pathconf(lua_State *L)
     int name = luab_checkinteger(L, 2, INT_MAX);
     long status;
 
-    if ((status = pathconf(path, name)) < 0)
-        return luab_pusherr(L, status);
+    status = pathconf(path, name);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 #if __POSIX_VISIBLE >= 200112
@@ -591,12 +529,9 @@ luab_setegid(lua_State *L)
     gid_t egid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
-    if ((status = setegid(egid)) != 0)
-        return luab_pusherr(L, status);
+    status = setegid(egid);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -605,12 +540,9 @@ luab_seteuid(lua_State *L)
     uid_t euid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
-    if ((status = seteuid(euid)) != 0)
-        return luab_pusherr(L, status);
+    status = seteuid(euid);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 #endif
 
@@ -620,12 +552,9 @@ luab_setgid(lua_State *L)
     gid_t gid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
-    if ((status = setgid(gid)) != 0)
-        return luab_pusherr(L, status);
+    status = setgid(gid);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -634,12 +563,9 @@ luab_sethostname(lua_State *L)
     const char *name = luab_checklstring(L, 1, MAXHOSTNAMELEN);
     int status;
 
-    if ((status = sethostname(name, strlen(name))) != 0)
-        return luab_pusherr(L, status);
+    status = sethostname(name, strlen(name));
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -648,12 +574,9 @@ luab_setlogin(lua_State *L)
     const char *name = luab_checklstring(L, 1, MAXLOGNAME);
     int status;
 
-    if ((status = setlogin(name)) != 0)
-        return luab_pusherr(L, status);
+    status = setlogin(name);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -663,12 +586,9 @@ luab_setpgid(lua_State *L)
     pid_t pgrp = luab_checkinteger(L, 2, UINT_MAX);
     int status;
 
-    if ((status = setpgid(pid, pgrp)) != 0)
-        return luab_pusherr(L, status);
+    status = setpgid(pid, pgrp);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -678,12 +598,9 @@ luab_setpgrp(lua_State *L)
     pid_t pgrp = luab_checkinteger(L, 2, UINT_MAX);
     int status;
 
-    if ((status = setpgrp(pid, pgrp)) != 0)
-        return luab_pusherr(L, status);
+    status = setpgrp(pid, pgrp);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -691,12 +608,9 @@ luab_setsid(lua_State *L)
 {
     pid_t sid;
 
-    if ((sid = setsid()) < 0)
-        return luab_pusherr(L, sid);
+    sid = setsid();
 
-    lua_pushinteger(L, sid);
-
-    return 1;
+    return luab_pusherr(L, sid);
 }
 
 static int
@@ -705,12 +619,9 @@ luab_setuid(lua_State *L)
     uid_t uid = luab_checkinteger(L, 1, UINT_MAX);
     int status;
 
-    if ((status = setuid(uid)) != 0)
-        return luab_pusherr(L, status);
+    status = setuid(uid);
 
-    lua_pushinteger(L, status);
-
-    return 1;
+    return luab_pusherr(L, status);
 }
 
 static int
