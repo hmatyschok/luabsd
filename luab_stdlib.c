@@ -45,7 +45,8 @@ static int
 luab_arc4random(lua_State *L)
 {
     uint32_t n = arc4random();
-
+    
+    luab_checkmaxargs(L, 0);
     lua_pushinteger(L, n);
 
     return 1;
@@ -56,7 +57,8 @@ luab_arc4random_uniform(lua_State *L)
 {
     uint32_t ub = luaL_checkinteger(L, 1);
     uint32_t n;
-
+    
+    luab_checkmaxargs(L, 1);
     n = arc4random_uniform(ub);
 
     lua_pushinteger(L, n);

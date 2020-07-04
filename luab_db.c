@@ -153,8 +153,6 @@ db_get(lua_State *L)
     u_int flags;
     int status;
 
-    luab_checkmaxargs(L, 1);
-
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
@@ -183,8 +181,6 @@ db_put(lua_State *L)
     DBT k, v;
     u_int flags;
     int status;
-
-    luab_checkmaxargs(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
@@ -352,7 +348,7 @@ luab_dbopen(lua_State *L)
     luab_db_t *self;
 
     luab_checkmaxargs(L, 4);
-
+    
     self = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
     self->db = NULL;
     luaL_setmetatable(L, LUABSD_DB_TYPE);

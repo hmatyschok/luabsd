@@ -80,12 +80,15 @@ int luab_pushnil(lua_State *);
 
 #define luab_checkinteger(L, narg, b_msk) \
     (luaL_checkinteger((L), (narg)) & (b_msk))
-    
+
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
-#define luab_checkmaxargs(L, narg)
+#define luab_checkmaxargs(L, nmax) do {                 \
+    if (lua_gettop(L) > nmax)                           \
+        luaL_error(L, "wrong number of arguments");     \
+    } while (0)
 
 __END_DECLS
 

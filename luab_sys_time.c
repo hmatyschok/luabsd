@@ -102,6 +102,8 @@ luab_setitimer(lua_State *L)
     int narg = lua_gettop(L), status;
     struct itimerval itv;
 
+    luab_checkmaxargs(L, 3);
+
     if (lua_type(L, narg) != LUA_TFUNCTION)
         return luaL_error(L, "Missing callout handler.");
 
@@ -134,6 +136,8 @@ luab_getitimer(lua_State *L)
     int which = luab_checkinteger(L, 1, INT_MAX);
     struct itimerval itv;
     int status;
+
+    luab_checkmaxargs(L, 1);
 
     if ((status = getitimer(which, &itv)) != 0)
         return luab_pusherr(L, status);

@@ -48,6 +48,7 @@ luab_chflags(lua_State *L)
     u_long flags = luab_checkinteger(L, 2, ULONG_MAX);
     int status;
 
+    luab_checkmaxargs(L, 2);
     status = chflags(path, flags);
 
     return luab_pusherr(L, status);
@@ -60,6 +61,7 @@ luab_lchflags(lua_State *L)
     u_long flags = luab_checkinteger(L, 2, ULONG_MAX);
     int status;
 
+    luab_checkmaxargs(L, 2);
     status = lchflags(path, flags);
 
     return luab_pusherr(L, status);
@@ -86,6 +88,7 @@ luab_chflagsat(lua_State *L)
     int atflag = luab_checkinteger(L, 4, INT_MAX);
     int status;
 
+    luab_checkmaxargs(L, 4);
     status = chflagsat(fd, path, flags, atflag);
 
     return luab_pusherr(L, status);
@@ -98,6 +101,7 @@ luab_chmod(lua_State *L)
     mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
+    luab_checkmaxargs(L, 2);
     status = chmod(path, mode);
 
     return luab_pusherr(L, status);
@@ -110,6 +114,7 @@ luab_fchmod(lua_State *L)
     mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
+    luab_checkmaxargs(L, 2);
     status = fchmod(fd, mode);
 
     return luab_pusherr(L, status);
@@ -122,6 +127,7 @@ luab_lchmod(lua_State *L)
     mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
+    luab_checkmaxargs(L, 2);
     status = lchmod(path, mode);
 
     return luab_pusherr(L, status);
@@ -136,6 +142,7 @@ luab_fchmodat(lua_State *L)
     int flag = luab_checkinteger(L, 4, INT_MAX);
     int status;
 
+    luab_checkmaxargs(L, 4);
     status = fchmodat(fd, path, mode, flag);
 
     return luab_pusherr(L, status);
@@ -148,6 +155,7 @@ luab_mkdir(lua_State *L)
     mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
+    luab_checkmaxargs(L, 2);
     status = mkdir(path, mode);
 
     return luab_pusherr(L, status);
@@ -161,6 +169,7 @@ luab_mkdirat(lua_State *L)
     mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
     int status;
 
+    luab_checkmaxargs(L, 3);
     status = mkdirat(fd, path, mode);
 
     return luab_pusherr(L, status);
@@ -174,6 +183,7 @@ luab_mknod(lua_State *L)
     dev_t dev = luab_checkinteger(L, 3, ULONG_MAX);
     int status;
 
+    luab_checkmaxargs(L, 4);
     status = mknod(path, mode, dev);
 
     return luab_pusherr(L, status);
@@ -188,6 +198,7 @@ luab_mknodat(lua_State *L)
     dev_t dev = luab_checkinteger(L, 4, ULONG_MAX);
     int status;
 
+    luab_checkmaxargs(L, 4);
     status = mknodat(fd, path, mode, dev);
 
     return luab_pusherr(L, status);
@@ -200,6 +211,7 @@ luab_mkfifo(lua_State *L)
     mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int status;
 
+    luab_checkmaxargs(L, 2);
     status = mkfifo(path, mode);
 
     return luab_pusherr(L, status);
@@ -213,6 +225,7 @@ luab_mkfifoat(lua_State *L)
     mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
     int status;
 
+    luab_checkmaxargs(L, 3);
     status = mkfifoat(fd, path, mode);
 
     return luab_pusherr(L, status);
@@ -224,6 +237,7 @@ luab_umask(lua_State *L)
     mode_t numask = luab_checkinteger(L, 1, ALLPERMS);
     mode_t oumask;
 
+    luab_checkmaxargs(L, 1);
     oumask = umask(numask);
 
     lua_pushinteger(L, oumask);

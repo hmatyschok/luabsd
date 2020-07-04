@@ -83,6 +83,7 @@ flock_l_len(lua_State *L)
     off_t l_len = luab_checkinteger(L, 2, LONG_MAX);
 
     luab_checkmaxargs(L, 2);
+
     self->info.l_len = l_len;
 
     return 0;
@@ -96,6 +97,7 @@ flock_l_pid(lua_State *L)
     pid_t l_pid = luab_checkinteger(L, 2, INT_MAX);
 
     luab_checkmaxargs(L, 2);
+
     self->info.l_pid = l_pid;
 
     return 0;
@@ -109,6 +111,7 @@ flock_l_type(lua_State *L)
     int l_type = luab_checkinteger(L, 2, SHRT_MAX);
 
     luab_checkmaxargs(L, 2);
+
     self->info.l_type = (short)l_type;
 
     return 0;
@@ -122,6 +125,7 @@ flock_l_whence(lua_State *L)
     int l_whence = luab_checkinteger(L, 2, SHRT_MAX);
 
     luab_checkmaxargs(L, 2);
+
     self->info.l_whence = (short)l_whence;
 
     return 0;
@@ -135,6 +139,7 @@ flock_l_sysid(lua_State *L)
     int l_sysid = luab_checkinteger(L, 2, INT_MAX);
 
     luab_checkmaxargs(L, 2);
+
     self->info.l_sysid = l_sysid;
 
     return 0;
@@ -208,7 +213,7 @@ luab_Flock(lua_State *L)
     luab_flock_t *self;
 
     luab_checkmaxargs(L, 0);
-    
+
     self = (luab_flock_t *)lua_newuserdata(L, sizeof(luab_flock_t));
 
     bzero(&self->info, sizeof(struct flock));
@@ -232,7 +237,7 @@ luab_open(lua_State *L)
     int narg = lua_gettop(L), fd;
     mode_t mode = 0;
 
-    luab_checkmaxargs(L, narg);
+    luab_checkmaxargs(L, 3);
 
     if (narg == 3 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
@@ -251,7 +256,7 @@ luab_openat(lua_State *L)
     int narg = lua_gettop(L), fd;
     mode_t mode = 0;
 
-    luab_checkmaxargs(L, narg);
+    luab_checkmaxargs(L, 4);
 
     if (narg == 4 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
@@ -282,7 +287,7 @@ luab_fcntl(lua_State *L)
     int narg = lua_gettop(L), arg = 0, res;
     luab_flock_t *argp = NULL;
 
-    luab_checkmaxargs(L, narg);
+    luab_checkmaxargs(L, 3);
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
@@ -304,6 +309,8 @@ luab_posix_fadvise(lua_State *L)
     off_t len = luab_checkinteger(L, 3, UINT_MAX);
     int advice = luab_checkinteger(L, 4, INT_MAX);
 
+    luab_checkmaxargs(L, 4);
+
     errno = posix_fadvise(fd, offset, len, advice);
 
     return luab_pusherr(L, errno);
@@ -315,6 +322,8 @@ luab_posix_fallocate(lua_State *L)
     int fd = luab_checkinteger(L, 1, INT_MAX);
     off_t offset = luab_checkinteger(L, 2, UINT_MAX);
     off_t len = luab_checkinteger(L, 3, UINT_MAX);
+
+    luab_checkmaxargs(L, 4);
 
     errno = posix_fallocate(fd, offset, len);
 
