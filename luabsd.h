@@ -85,11 +85,7 @@ const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
-#define luab_checkmaxargs(L, narg)                                  \
-    do {                                                            \
-        if (lua_gettop(L) != narg)                                  \
-            luaL_argerror(L, narg, "More arguments then expected"); \
-    } while (1)
+#define luab_checkmaxargs(L, narg)
 
 __END_DECLS
 

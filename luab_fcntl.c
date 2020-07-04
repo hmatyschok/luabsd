@@ -68,6 +68,8 @@ flock_l_start(lua_State *L)
     luab_flock_t *self = luab_toflock(L, 1);
     off_t l_start = luab_checkinteger(L, 2, ULONG_MAX);
 
+    luab_checkmaxargs(L, 2);
+
     self->info.l_start = l_start;
 
     return 0;
@@ -80,6 +82,7 @@ flock_l_len(lua_State *L)
     luab_flock_t *self = luab_toflock(L, 1);
     off_t l_len = luab_checkinteger(L, 2, LONG_MAX);
 
+    luab_checkmaxargs(L, 2);
     self->info.l_len = l_len;
 
     return 0;
@@ -92,6 +95,7 @@ flock_l_pid(lua_State *L)
     luab_flock_t *self = luab_toflock(L, 1);
     pid_t l_pid = luab_checkinteger(L, 2, INT_MAX);
 
+    luab_checkmaxargs(L, 2);
     self->info.l_pid = l_pid;
 
     return 0;
@@ -104,6 +108,7 @@ flock_l_type(lua_State *L)
     luab_flock_t *self = luab_toflock(L, 1);
     int l_type = luab_checkinteger(L, 2, SHRT_MAX);
 
+    luab_checkmaxargs(L, 2);
     self->info.l_type = (short)l_type;
 
     return 0;
@@ -116,6 +121,7 @@ flock_l_whence(lua_State *L)
     luab_flock_t *self = luab_toflock(L, 1);
     int l_whence = luab_checkinteger(L, 2, SHRT_MAX);
 
+    luab_checkmaxargs(L, 2);
     self->info.l_whence = (short)l_whence;
 
     return 0;
@@ -128,6 +134,7 @@ flock_l_sysid(lua_State *L)
     luab_flock_t *self = luab_toflock(L, 1);
     int l_sysid = luab_checkinteger(L, 2, INT_MAX);
 
+    luab_checkmaxargs(L, 2);
     self->info.l_sysid = l_sysid;
 
     return 0;
@@ -140,6 +147,8 @@ static int
 flock_get(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
+
+    luab_checkmaxargs(L, 1);
 
     lua_newtable(L);   /* XXX */
 
@@ -194,9 +203,13 @@ luab_module_t flock_type = {
 };
 
 static int
-luab_new_flock(lua_State *L)
+luab_Flock(lua_State *L)
 {
-    luab_flock_t *self = (luab_flock_t *)lua_newuserdata(L, sizeof(luab_flock_t));
+    luab_flock_t *self;
+
+    luab_checkmaxargs(L, 0);
+    
+    self = (luab_flock_t *)lua_newuserdata(L, sizeof(luab_flock_t));
 
     bzero(&self->info, sizeof(struct flock));
     luaL_setmetatable(L, LUABSD_FLOCK_TYPE);
@@ -219,6 +232,8 @@ luab_open(lua_State *L)
     int narg = lua_gettop(L), fd;
     mode_t mode = 0;
 
+    luab_checkmaxargs(L, narg);
+
     if (narg == 3 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
 
@@ -236,6 +251,8 @@ luab_openat(lua_State *L)
     int narg = lua_gettop(L), fd;
     mode_t mode = 0;
 
+    luab_checkmaxargs(L, narg);
+
     if (narg == 4 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
 
@@ -251,6 +268,7 @@ luab_creat(lua_State *L)
     mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
     int fd;
 
+    luab_checkmaxargs(L, 2);
     fd = creat(path, mode);
 
     return luab_pusherr(L, fd);
@@ -263,6 +281,8 @@ luab_fcntl(lua_State *L)
     int cmd = luab_checkinteger(L, 2, INT_MAX);
     int narg = lua_gettop(L), arg = 0, res;
     luab_flock_t *argp = NULL;
+
+    luab_checkmaxargs(L, narg);
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
@@ -375,7 +395,7 @@ static luab_table_t luab_fcntl_vec[] = {    /* fcntl.h */
     LUABSD_FUNC("fcntl",   luab_fcntl),
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
-    LUABSD_FUNC("new_flock", luab_new_flock),
+    LUABSD_FUNC("Flock", luab_Flock),
     LUABSD_FUNC(NULL, NULL)
 };
 
