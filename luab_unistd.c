@@ -126,20 +126,6 @@ luab_eaccess(lua_State *L)
 }
 
 static int
-luab_faccessat(lua_State *L)
-{
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    int mode = luab_checkinteger(L, 3, INT_MAX);
-    int flag = luab_checkinteger(L, 4, INT_MAX);
-    int status;
-
-    status = faccessat(fd, path, mode, flag);
-
-    return luab_pusherr(L, status);
-}
-
-static int
 luab_chdir(lua_State *L)
 {
     const char *path = luab_checklstring(L, 1, MAXPATHLEN);
@@ -264,27 +250,6 @@ luab_execvp(lua_State *L)
     int status;
 
     status = execvp(file, __DECONST(char **, argv));
-
-    free(argv);
-
-    return luab_pusherr(L, status);
-}
-
-/***
- * @function fexecve
- * @param fd file-descriptor
- * @param argv array of strings
- * @return (n [, err ])
- * @synopsis n, err = bsd.unistd.fexecve("/x/y", { "arg0" , "arg1" , ..., argN })
- */
-static int
-luab_fexecve(lua_State *L)
-{
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char **argv = luab_checkargv(L, 2);
-    int status;
-
-    status = fexecve(fd, __DECONST(char **, argv), environ);
 
     free(argv);
 
@@ -492,7 +457,7 @@ luab_link(lua_State *L)
     return luab_pusherr(L, status);
 }
 #ifndef _LSEEK_DECLARED
-#define	_LSEEK_DECLARED
+#define _LSEEK_DECLARED
 static int
 luab_lseek(lua_State *L)
 {
@@ -715,6 +680,41 @@ luab_getwd(lua_State *L)
 #endif
 
 #if __POSIX_VISIBLE >= 200809
+static int
+luab_faccessat(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
+    int mode = luab_checkinteger(L, 3, INT_MAX);
+    int flag = luab_checkinteger(L, 4, INT_MAX);
+    int status;
+
+    status = faccessat(fd, path, mode, flag);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * @function fexecve
+ * @param fd file-descriptor
+ * @param argv array of strings
+ * @return (n [, err ])
+ * @synopsis n, err = bsd.unistd.fexecve("/x/y", { "arg0" , "arg1" , ..., argN })
+ */
+static int
+luab_fexecve(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    const char **argv = luab_checkargv(L, 2);
+    int status;
+
+    status = fexecve(fd, __DECONST(char **, argv), environ);
+
+    free(argv);
+
+    return luab_pusherr(L, status);
+}
+
 static int
 luab_linkat(lua_State *L)
 {
@@ -956,12 +956,10 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("dup",    luab_dup),
     LUABSD_FUNC("dup2",    luab_dup2),
     LUABSD_FUNC("eaccess",   luab_eaccess),
-    LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fchdir",    luab_fchdir),
     LUABSD_FUNC("execv",   luab_execv),
     LUABSD_FUNC("execve",   luab_execve),
     LUABSD_FUNC("execvp",   luab_execvp),
-    LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("fork",   luab_fork),
     LUABSD_FUNC("fpathconf",    luab_fpathconf),
     LUABSD_FUNC("getcwd",   luab_getcwd),
@@ -979,7 +977,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("isatty",   luab_isatty),
     LUABSD_FUNC("link", luab_link),
 #ifndef _LSEEK_DECLARED
-#define	_LSEEK_DECLARED
+#define _LSEEK_DECLARED
     LUABSD_FUNC("lseek", luab_lseek),
 #endif
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
@@ -1003,6 +1001,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getwd",   luab_getwd),
 #endif
 #if __POSIX_VISIBLE >= 200809
+    LUABSD_FUNC("faccessat",   luab_faccessat),
+    LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("linkat", luab_linkat),
     LUABSD_FUNC("unlinkat", luab_unlinkat),
 #endif
