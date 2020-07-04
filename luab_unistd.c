@@ -491,6 +491,21 @@ luab_link(lua_State *L)
 
     return luab_pusherr(L, status);
 }
+#ifndef _LSEEK_DECLARED
+#define	_LSEEK_DECLARED
+static int
+luab_lseek(lua_State *L)
+{
+    int filedes = luab_checkinteger(L, 1, INT_MAX);
+    off_t offset = luab_checkinteger(L, 2, UINT_MAX);
+    int whence = luab_checkinteger(L, 3, INT_MAX);
+    off_t location;
+
+    location = lseek(fildes, offset, whence);
+
+    return luab_pusherr(L, location);
+}
+#endif
 
 static int
 luab_lpathconf(lua_State *L)
@@ -963,6 +978,10 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getsid", luab_getsid),
     LUABSD_FUNC("isatty",   luab_isatty),
     LUABSD_FUNC("link", luab_link),
+#ifndef _LSEEK_DECLARED
+#define	_LSEEK_DECLARED
+    LUABSD_FUNC("lseek", luab_lseek),
+#endif
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("pathconf",    luab_pathconf),
 #if __POSIX_VISIBLE >= 200112
