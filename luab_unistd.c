@@ -496,6 +496,14 @@ luab_pathconf(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+static int
+luab_pause(lua_State *L)
+{
+    int status = pause();
+
+    return luab_pusherr(L, status);
+}
+
 #if __POSIX_VISIBLE >= 200112
 static int
 luab_gethostname(lua_State *L)
@@ -982,6 +990,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #endif
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("pathconf",    luab_pathconf),
+    LUABSD_FUNC("pause",    luab_pause),
 #if __POSIX_VISIBLE >= 200112
     LUABSD_FUNC("gethostname",  luab_gethostname),
     LUABSD_FUNC("setegid",    luab_setegid),
