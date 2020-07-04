@@ -35,6 +35,8 @@
 
 #include "luabsd.h"
 
+LUAMOD_API int  luaopen_bsd(lua_State *);
+
 const char **
 luab_checkargv(lua_State *L, int narg)
 {

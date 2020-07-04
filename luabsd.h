@@ -80,11 +80,16 @@ int luab_pushnil(lua_State *);
 
 #define luab_checkinteger(L, narg, b_msk) \
     (luaL_checkinteger((L), (narg)) & (b_msk))
+    
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
-LUAMOD_API int  luaopen_bsd(lua_State *);
+#define luab_checkmaxargs(L, narg)                                  \
+    do {                                                            \
+        if (lua_gettop(L) != narg)                                  \
+            luaL_argerror(L, narg, "More arguments then expected"); \
+    } while (1)
 
 __END_DECLS
 
