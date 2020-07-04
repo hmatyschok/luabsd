@@ -26,7 +26,6 @@
 
 #include <sys/limits.h>
 #include <sys/param.h>
-#include <sys/syslimits.h>
 
 #include <errno.h>
 #include <unistd.h>
@@ -527,13 +526,12 @@ luab_getsid(lua_State *L)
 }
 
 static int
-luab_pathconf(lua_State *L)
+luab_isatty(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int name = luab_checkinteger(L, 2, INT_MAX);
-    long status;
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int status;
 
-    if ((status = pathconf(path, name)) < 0)
+    if ((status = isatty(fd)) == 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -549,6 +547,21 @@ luab_lpathconf(lua_State *L)
     long status;
 
     if ((status = lpathconf(path, name)) < 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+
+    return 1;
+}
+
+static int
+luab_pathconf(lua_State *L)
+{
+    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    int name = luab_checkinteger(L, 2, INT_MAX);
+    long status;
+
+    if ((status = pathconf(path, name)) < 0)
         return luab_pusherr(L, status);
 
     lua_pushinteger(L, status);
@@ -698,6 +711,43 @@ luab_setuid(lua_State *L)
     lua_pushinteger(L, status);
 
     return 1;
+}
+
+static int
+luab_ttyname(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    char *buf;
+
+    if ((buf = ttyname(fd)) == NULL)
+        return luab_pushnil(L);
+
+    lua_pushlstring(L, buf, strlen(buf));
+
+    return 1;
+}
+
+static int
+luab_ttyname_r(lua_State *L)
+{
+    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int status = -1;
+    size_t len;
+    char *buf;
+
+    if ((len = sysconf(_SC_TTY_NAME_MAX)) < 0)
+        return luab_pusherr(L, status);
+
+    if ((buf = alloca(len)) == NULL)
+        return luab_pusherr(L, status);
+
+    if ((status = ttyname_r(fd, buf, len)) != 0)
+        return luab_pusherr(L, status);
+
+    lua_pushinteger(L, status);
+    lua_pushlstring(L, buf, strlen(buf));
+
+    return 2;
 }
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
@@ -948,6 +998,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getpgrp",    luab_getpgrp),
     LUABSD_FUNC("getuid", luab_getuid),
     LUABSD_FUNC("getsid", luab_getsid),
+    LUABSD_FUNC("isatty",   luab_isatty),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("pathconf",    luab_pathconf),
 #if __POSIX_VISIBLE >= 200112
@@ -962,6 +1013,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("setpgrp",    luab_setpgrp),
     LUABSD_FUNC("setsid", luab_setsid),
     LUABSD_FUNC("setuid", luab_setuid),
+    LUABSD_FUNC("ttyname",  luab_ttyname),
+    LUABSD_FUNC("ttyname_r",  luab_ttyname_r),
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
 #endif

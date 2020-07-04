@@ -76,6 +76,7 @@ extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
 int luab_pusherr(lua_State *, int);
+int luab_pushnil(lua_State *);
 
 #define luab_checkinteger(L, narg, b_msk) \
     (luaL_checkinteger((L), (narg)) & (b_msk))

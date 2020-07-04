@@ -101,16 +101,41 @@ luab_pushcfunction(lua_State *L, luab_un_t *u)
 }
 
 int
-luab_pusherr(lua_State *L, int status)
+luab_pusherr(lua_State *L, int res)
 {
     int saved_errno = errno;
     char *msg;
+    int status;
 
-    lua_pushinteger(L, status);
-    msg = strerror(saved_errno);
-    lua_pushstring(L, msg);
+    lua_pushinteger(L, res);
 
-    return 2;
+    if (saved_errno != 0 && res != 0) {
+        msg = strerror(saved_errno);
+        lua_pushstring(L, msg);
+        status = 2;
+    } else
+        status = 1;
+
+    return status;
+}
+
+int
+luab_pushnil(lua_State *L)
+{
+    int saved_errno = errno;
+    char *msg;
+    int status;
+
+    lua_pushnil(L);
+
+    if (saved_errno != 0) {
+        msg = strerror(saved_errno);
+        lua_pushstring(L, msg);
+        status = 2;
+    } else
+        status = 1;
+
+    return status;
 }
 
 /*
