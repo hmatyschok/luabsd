@@ -635,6 +635,8 @@ luab_ttyname(lua_State *L)
 
     lua_pushlstring(L, buf, strlen(buf));
 
+    free(buf);
+
     return 1;
 }
 
