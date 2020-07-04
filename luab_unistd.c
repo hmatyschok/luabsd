@@ -106,11 +106,14 @@ luab_alarm(lua_State *L)
 static int
 luab_access(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int mode = luab_checkinteger(L, 2, INT_MAX);
+    const char *path;
+    int mode;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, INT_MAX);
     status = access(path, mode);
 
     return luab_pusherr(L, status);
@@ -119,11 +122,14 @@ luab_access(lua_State *L)
 static int
 luab_eaccess(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int mode = luab_checkinteger(L, 2, INT_MAX);
+    const char *path;
+    int mode;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, INT_MAX);
     status = eaccess(path, mode);
 
     return luab_pusherr(L, status);
@@ -132,10 +138,12 @@ luab_eaccess(lua_State *L)
 static int
 luab_chdir(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    const char *path;
     int status;
 
     luab_checkmaxargs(L, 1);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
     status = chdir(path);
 
     return luab_pusherr(L, status);
@@ -144,10 +152,12 @@ luab_chdir(lua_State *L)
 static int
 luab_fchdir(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int fd;
     int status;
 
     luab_checkmaxargs(L, 1);
+    
+    fd = luab_checkinteger(L, 1, INT_MAX);
     status = fchdir(fd);
 
     return luab_pusherr(L, status);
@@ -168,9 +178,11 @@ luab_close(lua_State *L)
 static int
 luab_closefrom(lua_State *L)
 {
-    int lowfd = luab_checkinteger(L, 1, INT_MAX);
+    int lowfd;
 
     luab_checkmaxargs(L, 1);
+    
+    lowfd = luab_checkinteger(L, 1, INT_MAX);
     closefrom(lowfd);
 
     return 0;
@@ -179,10 +191,12 @@ luab_closefrom(lua_State *L)
 static int
 luab_dup(lua_State *L)
 {
-    int oldd = luab_checkinteger(L, 1, INT_MAX);
+    int oldd;
     int fd;
 
     luab_checkmaxargs(L, 1);
+    
+    oldd = luab_checkinteger(L, 1, INT_MAX);
     fd = dup(oldd);
 
     return luab_pusherr(L, fd);
@@ -191,11 +205,15 @@ luab_dup(lua_State *L)
 static int
 luab_dup2(lua_State *L)
 {
-    int oldd = luab_checkinteger(L, 1, INT_MAX);
-    int newd = luab_checkinteger(L, 2, INT_MAX);
+    int oldd;
+    int newd;
     int fd;
 
     luab_checkmaxargs(L, 2);
+    
+    oldd = luab_checkinteger(L, 1, INT_MAX);
+    newd = luab_checkinteger(L, 2, INT_MAX);
+    
     fd = dup2(oldd, newd);
 
     return luab_pusherr(L, fd);
@@ -213,11 +231,15 @@ extern char **environ;
 static int
 luab_execv(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    const char **argv = luab_checkargv(L, 2);
+    const char *path;
+    const char **argv;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+    
     status = execv(path, __DECONST(char **, argv));
 
     free(argv);
@@ -235,11 +257,15 @@ luab_execv(lua_State *L)
 static int
 luab_execve(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    const char **argv = luab_checkargv(L, 2);
+    const char *path;
+    const char **argv;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+    
     status = execve(path, __DECONST(char **, argv), environ);
 
     free(argv);
@@ -257,11 +283,15 @@ luab_execve(lua_State *L)
 static int
 luab_execvp(lua_State *L)
 {
-    const char *file = luab_checklstring(L, 1, MAXPATHLEN);
-    const char **argv = luab_checkargv(L, 2);
+    const char *file;
+    const char **argv;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    file = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+    
     status = execvp(file, __DECONST(char **, argv));
 
     free(argv);
@@ -283,11 +313,15 @@ luab_fork(lua_State *L)
 static int
 luab_fpathconf(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    int name = luab_checkinteger(L, 2, INT_MAX);
+    int fd;
+    int name;
     long status;
 
     luab_checkmaxargs(L, 2);
+    
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    name = luab_checkinteger(L, 2, INT_MAX);
+    
     status = fpathconf(fd, name);
 
     return luab_pusherr(L, status);
@@ -297,6 +331,8 @@ static int
 luab_getcwd(lua_State *L)
 {
     char *buf;
+
+    luab_checkmaxargs(L, 0);
 
     if ((buf = getcwd(NULL, MAXPATHLEN)) == NULL)
         return luab_pushnil(L);
@@ -349,11 +385,13 @@ luab_getgid(lua_State *L)
 static int
 luab_getgroups(lua_State *L)
 {
-    int gidsetlen = luab_checkinteger(L, 1, INT_MAX);
+    int gidsetlen;
     gid_t *gidset;
     int ngroups, i, j;
 
     luab_checkmaxargs(L, 1);
+
+    gidsetlen = luab_checkinteger(L, 1, INT_MAX);
 
     if (gidsetlen == 0)
         gidset = NULL;
@@ -391,7 +429,7 @@ luab_getlogin(lua_State *L)
     if ((p = getlogin()) == NULL)
         lua_pushnil(L);
     else
-        lua_pushstring(L, p);
+        lua_pushlstring(L, p, strlen(p));
 
     return 1;
 }
@@ -432,10 +470,12 @@ luab_getpgrp(lua_State *L)
 static int
 luab_getpgid(lua_State *L)
 {
-    pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
+    pid_t pid;
     pid_t pgrp;
 
     luab_checkmaxargs(L, 1);
+    
+    pid = luab_checkinteger(L, 1, UINT_MAX);
     pgrp = getpgid(pid);
 
     return luab_pusherr(L, pgrp);
@@ -455,10 +495,12 @@ luab_getuid(lua_State *L)
 static int
 luab_getsid(lua_State *L)
 {
-    pid_t pid = luab_checkinteger(L, 1, UINT_MAX);
+    pid_t pid;
     pid_t sid;
 
     luab_checkmaxargs(L, 1);
+    
+    pid = luab_checkinteger(L, 1, UINT_MAX);
     sid = getsid(pid);
 
     return luab_pusherr(L, sid);
@@ -467,10 +509,12 @@ luab_getsid(lua_State *L)
 static int
 luab_isatty(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int fd;
     int status;
 
     luab_checkmaxargs(L, 1);
+    
+    fd = luab_checkinteger(L, 1, INT_MAX);
     status = isatty(fd);
 
     return luab_pusherr(L, status);
@@ -479,11 +523,15 @@ luab_isatty(lua_State *L)
 static int
 luab_link(lua_State *L)
 {
-    const char *name1 = luab_checklstring(L, 1, MAXPATHLEN);
-    const char *name2 = luab_checklstring(L, 2, MAXPATHLEN);
+    const char *name1;
+    const char *name2;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    name1 = luab_checklstring(L, 1, MAXPATHLEN);
+    name2 = luab_checklstring(L, 2, MAXPATHLEN);
+   
     status = link(name1, name2);
 
     return luab_pusherr(L, status);
@@ -493,12 +541,17 @@ luab_link(lua_State *L)
 static int
 luab_lseek(lua_State *L)
 {
-    int filedes = luab_checkinteger(L, 1, INT_MAX);
-    off_t offset = luab_checkinteger(L, 2, UINT_MAX);
-    int whence = luab_checkinteger(L, 3, INT_MAX);
+    int filedes;
+    off_t offset;
+    int whence;
     off_t location;
 
     luab_checkmaxargs(L, 3);
+    
+    filedes = luab_checkinteger(L, 1, INT_MAX);
+    offset = luab_checkinteger(L, 2, UINT_MAX);
+    whence = luab_checkinteger(L, 3, INT_MAX);
+    
     location = lseek(fildes, offset, whence);
 
     return luab_pusherr(L, location);
@@ -508,11 +561,15 @@ luab_lseek(lua_State *L)
 static int
 luab_lpathconf(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int name = luab_checkinteger(L, 2, INT_MAX);
+    const char *path;
+    int name;
     long status;
 
     luab_checkmaxargs(L, 2);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    name = luab_checkinteger(L, 2, INT_MAX);
+    
     status = lpathconf(path, name);
 
     return luab_pusherr(L, status);
@@ -521,11 +578,15 @@ luab_lpathconf(lua_State *L)
 static int
 luab_pathconf(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int name = luab_checkinteger(L, 2, INT_MAX);
+    const char *path;
+    int name;
     long status;
 
     luab_checkmaxargs(L, 2);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    name = luab_checkinteger(L, 2, INT_MAX);
+    
     status = pathconf(path, name);
 
     return luab_pusherr(L, status);
@@ -551,10 +612,12 @@ luab_pause(lua_State *L)
 static int
 luab_pipe(lua_State *L)
 {
-    int *fildes = luab_checkintvector(L, 1, 2);
+    int *fildes;
     int status;
 
     luab_checkmaxargs(L, 1);
+    
+    fildes = luab_checkintvector(L, 1, 2);
     status = pipe(fildes);
 
     free(fildes);
@@ -572,11 +635,15 @@ luab_pipe(lua_State *L)
 static int
 luab_pipe2(lua_State *L)
 {
-    int *fildes = luab_checkintvector(L, 1, 2);
-    int flags = luab_checkinteger(L, 2, INT_MAX);
+    int *fildes;
+    int flags;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    fildes = luab_checkintvector(L, 1, 2);
+    flags = luab_checkinteger(L, 2, INT_MAX);
+    
     status = pipe2(fildes, flags);
 
     free(fildes);
@@ -605,10 +672,12 @@ luab_gethostname(lua_State *L)
 static int
 luab_setegid(lua_State *L)
 {
-    gid_t egid = luab_checkinteger(L, 1, INT_MAX);
+    gid_t egid;
     int status;
 
     luab_checkmaxargs(L, 1);
+    
+    egid = luab_checkinteger(L, 1, INT_MAX);
     status = setegid(egid);
 
     return luab_pusherr(L, status);
@@ -617,10 +686,12 @@ luab_setegid(lua_State *L)
 static int
 luab_seteuid(lua_State *L)
 {
-    uid_t euid = luab_checkinteger(L, 1, INT_MAX);
+    uid_t euid;
     int status;
 
     luab_checkmaxargs(L, 1);
+    
+    euid = luab_checkinteger(L, 1, INT_MAX);
     status = seteuid(euid);
 
     return luab_pusherr(L, status);
@@ -630,10 +701,11 @@ luab_seteuid(lua_State *L)
 static int
 luab_setgid(lua_State *L)
 {
-    gid_t gid = luab_checkinteger(L, 1, INT_MAX);
+    gid_t gid;
     int status;
 
     luab_checkmaxargs(L, 1);
+    gid = luab_checkinteger(L, 1, INT_MAX);
     status = setgid(gid);
 
     return luab_pusherr(L, status);
@@ -642,10 +714,11 @@ luab_setgid(lua_State *L)
 static int
 luab_sethostname(lua_State *L)
 {
-    const char *name = luab_checklstring(L, 1, MAXHOSTNAMELEN);
+    const char *name;
     int status;
 
     luab_checkmaxargs(L, 1);
+    name = luab_checklstring(L, 1, MAXHOSTNAMELEN);
     status = sethostname(name, strlen(name));
 
     return luab_pusherr(L, status);
@@ -654,10 +727,11 @@ luab_sethostname(lua_State *L)
 static int
 luab_setlogin(lua_State *L)
 {
-    const char *name = luab_checklstring(L, 1, MAXLOGNAME);
+    const char *name;
     int status;
 
     luab_checkmaxargs(L, 1);
+    name = luab_checklstring(L, 1, MAXLOGNAME);
     status = setlogin(name);
 
     return luab_pusherr(L, status);
@@ -666,11 +740,15 @@ luab_setlogin(lua_State *L)
 static int
 luab_setpgid(lua_State *L)
 {
-    pid_t pid = luab_checkinteger(L, 1, INT_MAX);
-    pid_t pgrp = luab_checkinteger(L, 2, INT_MAX);
+    pid_t pid;
+    pid_t pgrp;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    pid = luab_checkinteger(L, 1, INT_MAX);
+    pgrp = luab_checkinteger(L, 2, INT_MAX);
+    
     status = setpgid(pid, pgrp);
 
     return luab_pusherr(L, status);
@@ -679,11 +757,15 @@ luab_setpgid(lua_State *L)
 static int
 luab_setpgrp(lua_State *L)
 {
-    pid_t pid = luab_checkinteger(L, 1, INT_MAX);
-    pid_t pgrp = luab_checkinteger(L, 2, INT_MAX);
+    pid_t pid;
+    pid_t pgrp;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    pid = luab_checkinteger(L, 1, INT_MAX);
+    pgrp = luab_checkinteger(L, 2, INT_MAX);
+    
     status = setpgrp(pid, pgrp);
 
     return luab_pusherr(L, status);
@@ -703,10 +785,11 @@ luab_setsid(lua_State *L)
 static int
 luab_setuid(lua_State *L)
 {
-    uid_t uid = luab_checkinteger(L, 1, INT_MAX);
+    uid_t uid;
     int status;
 
     luab_checkmaxargs(L, 1);
+    uid = luab_checkinteger(L, 1, INT_MAX);
     status = setuid(uid);
 
     return luab_pusherr(L, status);
@@ -715,10 +798,12 @@ luab_setuid(lua_State *L)
 static int
 luab_ttyname(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int fd;
     char *buf;
 
     luab_checkmaxargs(L, 1);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
 
     if ((buf = ttyname(fd)) == NULL)
         return luab_pushnil(L);
@@ -733,12 +818,14 @@ luab_ttyname(lua_State *L)
 static int
 luab_ttyname_r(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
+    int fd;
     int status = -1;
     size_t len;
     char *buf;
 
     luab_checkmaxargs(L, 1);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
 
     if ((len = sysconf(_SC_TTY_NAME_MAX)) < 0)
         return luab_pusherr(L, status);
@@ -758,10 +845,12 @@ luab_ttyname_r(lua_State *L)
 static int
 luab_unlink(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
+    const char *path;
     int status;
 
     luab_checkmaxargs(L, 1);
+    
+    path = luab_checklstring(L, 1, MAXPATHLEN);
     status = unlink(path);
 
     return luab_pusherr(L, status);
@@ -789,13 +878,19 @@ luab_getwd(lua_State *L)
 static int
 luab_faccessat(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    int mode = luab_checkinteger(L, 3, INT_MAX);
-    int flag = luab_checkinteger(L, 4, INT_MAX);
+    int fd;
+    const char *path;
+    int mode;
+    int flag;
     int status;
 
     luab_checkmaxargs(L, 4);
+    
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode = luab_checkinteger(L, 3, INT_MAX);
+    flag = luab_checkinteger(L, 4, INT_MAX);
+    
     status = faccessat(fd, path, mode, flag);
 
     return luab_pusherr(L, status);
@@ -811,11 +906,15 @@ luab_faccessat(lua_State *L)
 static int
 luab_fexecve(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char **argv = luab_checkargv(L, 2);
+    int fd;
+    const char **argv;
     int status;
 
     luab_checkmaxargs(L, 2);
+    
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    argv = luab_checkargv(L, 2);
+    
     status = fexecve(fd, __DECONST(char **, argv), environ);
 
     free(argv);
@@ -826,14 +925,21 @@ luab_fexecve(lua_State *L)
 static int
 luab_linkat(lua_State *L)
 {
-    int fd1 = luab_checkinteger(L, 1, INT_MAX);
-    const char *name1 = luab_checklstring(L, 2, MAXPATHLEN);
-    int fd2 = luab_checkinteger(L, 3, INT_MAX);
-    const char *name2 = luab_checklstring(L, 4, MAXPATHLEN);
-    int flag = luab_checkinteger(L, 5, INT_MAX);
+    int fd1;
+    const char *name1;
+    int fd2;
+    const char *name2;
+    int flag;
     int status;
 
     luab_checkmaxargs(L, 5);
+    
+    fd1 = luab_checkinteger(L, 1, INT_MAX);
+    name1 = luab_checklstring(L, 2, MAXPATHLEN);
+    fd2 = luab_checkinteger(L, 3, INT_MAX);
+    name2 = luab_checklstring(L, 4, MAXPATHLEN);
+    flag = luab_checkinteger(L, 5, INT_MAX);
+    
     status = linkat(fd1, name1, fd2, name2, flag);
 
     return luab_pusherr(L, status);
@@ -842,12 +948,17 @@ luab_linkat(lua_State *L)
 static int
 luab_unlinkat(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    int flag = luab_checkinteger(L, 3, INT_MAX);
+    int fd;
+    const char *path;
+    int flag;
     int status;
 
     luab_checkmaxargs(L, 3);
+    
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    flag = luab_checkinteger(L, 3, INT_MAX);
+    
     status = unlinkat(fd, path, flag);
 
     return luab_pusherr(L, status);
