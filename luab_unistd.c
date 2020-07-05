@@ -509,7 +509,7 @@ luab_isatty(lua_State *L)
 static int
 luab_link(lua_State *L)
 {
-    const char *name1, name2;
+    const char *name1, *name2;
     int status;
 
     (void)luab_checkmaxargs(L, 2);

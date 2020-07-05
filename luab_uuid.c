@@ -49,7 +49,7 @@ luab_uuidgen(lua_State *L)
     char *buf;
     uint32_t status;
 
-    luab_checkmaxargs(L, 0);
+    (void)luab_checkmaxargs(L, 0);
 
     if ((status = uuidgen(&uuid, 1)) != 0)
         return luab_pusherr(L, status);

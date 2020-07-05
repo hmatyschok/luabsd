@@ -99,10 +99,12 @@ db_isclosed(luab_db_t *self)
 static int
 db_close(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
     int status;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
@@ -120,10 +122,14 @@ db_close(lua_State *L)
 static int
 db_del(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
     DBT k;
     u_int flags;
     int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
@@ -132,8 +138,6 @@ db_del(lua_State *L)
         return luab_pusherr(L, status);
 
     flags = luab_checkinteger(L, 3, INT_MAX);
-
-    luab_checkmaxargs(L, 3);
 
     if ((status = (self->db->del)(self->db, &k, flags)) != 0)
         return luab_pusherr(L, status);
@@ -148,10 +152,14 @@ db_del(lua_State *L)
 static int
 db_get(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
     DBT k, v;
     u_int flags;
     int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
@@ -160,8 +168,6 @@ db_get(lua_State *L)
         return luab_pusherr(L, status);
 
     flags = luab_checkinteger(L, 3, INT_MAX);
-
-    luab_checkmaxargs(L, 3);
 
     if ((status = (self->db->get)(self->db, &k, &v, flags)) != 0)
         return luab_pusherr(L, status);
@@ -177,10 +183,14 @@ db_get(lua_State *L)
 static int
 db_put(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
     DBT k, v;
     u_int flags;
     int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
@@ -193,8 +203,6 @@ db_put(lua_State *L)
         return luab_pusherr(L, status);
     }
     flags = luab_checkinteger(L, 4, INT_MAX);
-
-    luab_checkmaxargs(L, 4);
 
     if ((status = (self->db->put)(self->db, &k, &v, flags)) != 0) {
         free(k.data);
@@ -212,19 +220,19 @@ db_put(lua_State *L)
 static int
 db_seq(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
     DBT k, v;
     u_int flags;
     int status;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 2);
+
+    self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
     flags = luab_checkinteger(L, 2, INT_MAX);
-
-    luab_checkmaxargs(L, 2);
 
     if ((status = (self->db->seq)(self->db, &k, &v, flags)) != 0)
         return luab_pusherr(L, status);
@@ -239,16 +247,18 @@ db_seq(lua_State *L)
 static int
 db_sync(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
     u_int flags;
     int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
 
     flags = luab_checkinteger(L, 2, INT_MAX);
-
-    luab_checkmaxargs(L, 2);
 
     if ((status = (self->db->sync)(self->db, flags)) != 0)
         return luab_pusherr(L, status);
@@ -261,10 +271,12 @@ db_sync(lua_State *L)
 static int
 db_fd(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
     int fd, status;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
@@ -277,11 +289,13 @@ db_fd(lua_State *L)
 static int
 db_flock(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
-    int op = luab_checkinteger(L, 2, INT_MAX);
-    int fd, status;
+    luab_db_t *self;
+    int op, fd, status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    self = luab_todb(L, 1);
+    op = luab_checkinteger(L, 2, INT_MAX);
 
     if ((status = db_isclosed(self)) != 0)
         return luab_pusherr(L, status);
@@ -341,16 +355,20 @@ luab_module_t db_type = {
 static int
 luab_dbopen(lua_State *L)
 {
-    const char *fname = db_fname(L, 1);
-    int flags = luab_checkinteger(L, 2, INT_MAX);
-    int mode = luab_checkinteger(L, 3, INT_MAX);
-    int type = luab_checkinteger(L, 4, INT_MAX);
+    const char *fname;
+    int flags, mode, type;
     luab_db_t *self;
 
-    luab_checkmaxargs(L, 4);
-    
+    (void)luab_checkmaxargs(L, 4);
+
+    fname = db_fname(L, 1);
+    flags = luab_checkinteger(L, 2, INT_MAX);
+    mode = luab_checkinteger(L, 3, INT_MAX);
+    type = luab_checkinteger(L, 4, INT_MAX);
+
     self = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
     self->db = NULL;
+
     luaL_setmetatable(L, LUABSD_DB_TYPE);
 
     if ((self->db = dbopen(fname, flags, mode, type, NULL)) == NULL)
