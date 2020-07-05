@@ -94,7 +94,7 @@ luab_checkmaxargs(lua_State *L, int nmax)
     int narg;
 
     if ((narg = lua_gettop(L)) > nmax)
-        luaL_error(L, "wrong number of arguments");
+        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
 
     return narg;
 }
