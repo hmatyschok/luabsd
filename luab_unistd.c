@@ -511,7 +511,7 @@ luab_lseek(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     filedes = luab_checkinteger(L, 1, INT_MAX);
-    offset = luab_checkinteger(L, 2, UINT_MAX);
+    offset = luab_checkinteger(L, 2, ULONG_MAX);
     whence = luab_checkinteger(L, 3, INT_MAX);
 
     location = lseek(fildes, offset, whence);
@@ -792,6 +792,38 @@ luab_rmdir(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/* ISO/IEC 9945-1: 1996 */
+#if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
+#ifndef _FTRUNCATE_DECLARED
+#define	_FTRUNCATE_DECLARED
+/***
+ * @function truncate(2) - truncate / extend a file to a specific length
+ * @param fd      Identifies the file by its file descriptor.
+ * @param length    If the file was larger than this size, the extra data is
+ *                  lost. If the file was smaller than this size, it will be
+ *                  extended as if by writing bytes with the value zero.
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.truncate(path, size)
+ */
+static int
+luab_ftruncate(lua_State *L)
+{
+    int fd;
+    off_t length;
+    int status;
+
+    luab_checkmaxargs(L, 2);
+
+    fd = luab_checkinteger(L, 1, MAXPATHLEN);
+    length = luab_checkinteger(L, 2, LONG_MAX);
+
+    status = ftruncate(fd, length);
+
+    return luab_pusherr(L, status);
+}
+#endif
+#endif
+
 /* 1003.1-2001 */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
 /***
@@ -974,9 +1006,31 @@ luab_lchown(lua_State *L)
 
 #ifndef _TRUNCATE_DECLARED
 #define _TRUNCATE_DECLARED
-/*
-int  truncate(const char *, off_t);
+/***
+ * @function truncate(2) - truncate / extend a file to a specific length
+ * @param path      Identifies the file by name.
+ * @param length    If the file was larger than this size, the extra data is
+ *                  lost. If the file was smaller than this size, it will be
+ *                  extended as if by writing bytes with the value zero.
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.truncate(path, length)
  */
+static int
+luab_truncate(lua_State *L)
+{
+    const char *path;
+    off_t length;
+    int status;
+
+    luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    length = luab+checkinteger(L, 2, LONG_MAX);
+
+    status = truncate(path, length);
+
+    return luab_pusherr(L, status);
+}
 #endif
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
 
@@ -1418,14 +1472,15 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 
 /* ISO/IEC 9945-1: 1996 */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
+
 /*
     LUABSD_FUNC("fsync",    luab_fsync),
     LUABSD_FUNC("fdatasync",    luab_fdatasync),
+ */
 #ifndef _FTRUNCATE_DECLARED
 #define _FTRUNCATE_DECLARED
     LUABSD_FUNC("ftruncate",    luab_ftruncate),
 #endif
- */
 #endif
 
 #if __POSIX_VISIBLE >= 199506
@@ -1457,9 +1512,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
  */
 #ifndef _TRUNCATE_DECLARED
 #define _TRUNCATE_DECLARED
-/*
     LUABSD_FUNC("truncate", luab_truncate),
- */
 #endif
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
 
