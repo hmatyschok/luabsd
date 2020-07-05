@@ -116,21 +116,6 @@ luab_access(lua_State *L)
 }
 
 static int
-luab_eaccess(lua_State *L)
-{
-    const char *path;
-    int mode, status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode = luab_checkinteger(L, 2, INT_MAX);
-    status = eaccess(path, mode);
-
-    return luab_pusherr(L, status);
-}
-
-static int
 luab_chdir(lua_State *L)
 {
     const char *path;
@@ -140,19 +125,6 @@ luab_chdir(lua_State *L)
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
     status = chdir(path);
-
-    return luab_pusherr(L, status);
-}
-
-static int
-luab_fchdir(lua_State *L)
-{
-    int fd, status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    fd = luab_checkinteger(L, 1, INT_MAX);
-    status = fchdir(fd);
 
     return luab_pusherr(L, status);
 }
@@ -455,18 +427,7 @@ luab_getpgrp(lua_State *L)
     return luab_pusherr(L, pgrp);
 }
 
-static int
-luab_getpgid(lua_State *L)
-{
-    pid_t pid, pgrp;
 
-    (void)luab_checkmaxargs(L, 1);
-
-    pid = luab_checkinteger(L, 1, UINT_MAX);
-    pgrp = getpgid(pid);
-
-    return luab_pusherr(L, pgrp);
-}
 
 static int
 luab_getuid(lua_State *L)
@@ -480,18 +441,6 @@ luab_getuid(lua_State *L)
     return luab_pusherr(L, uid);
 }
 
-static int
-luab_getsid(lua_State *L)
-{
-    pid_t pid, sid;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    pid = luab_checkinteger(L, 1, UINT_MAX);
-    sid = getsid(pid);
-
-    return luab_pusherr(L, sid);
-}
 
 static int
 luab_isatty(lua_State *L)
@@ -521,6 +470,7 @@ luab_link(lua_State *L)
 
     return luab_pusherr(L, status);
 }
+
 #ifndef _LSEEK_DECLARED
 #define _LSEEK_DECLARED
 static int
@@ -592,7 +542,7 @@ luab_pause(lua_State *L)
 /***
  * @function pipe create descriptor pair for interprocess communication
  * @param fildes pair { fildes1, fildes2 } of fildescriptors
- * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
  * @synopsis n [, msg ] = bsd.unistd.pipe({ fildes1, fildes2 })
  */
 static int
@@ -615,7 +565,7 @@ luab_pipe(lua_State *L)
  * @function pipe2 create descriptor pair for interprocess communication
  * @param fildes pair { fildes1, fildes2 } of fildescriptors
  * @param flags see pipe(2)
- * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
  * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
  */
 static int
@@ -636,73 +586,6 @@ luab_pipe2(lua_State *L)
 
     return luab_pusherr(L, status);
 }
-
-#if __POSIX_VISIBLE >= 200112
-static int
-luab_gethostname(lua_State *L)
-{
-    char buf[MAXHOSTNAMELEN];
-    int status;
-
-    (void)luab_checkmaxargs(L, 0);
-
-    if ((status = gethostname(buf, sizeof(buf))) != 0)
-        return luab_pusherr(L, status);
-
-    lua_pushinteger(L, status);
-    lua_pushlstring(L, buf, strlen(buf));
-
-    return 2;
-}
-
-/***
- * @function rmdir - remove a directory file
- * @param path string
- * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
- * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
- */
-static int
-luab_rmdir(lua_State *L)
-{
-    const char *path;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    status = rmdir(path);
-
-    return luab_pusherr(L, status);
-}
-
-static int
-luab_setegid(lua_State *L)
-{
-    gid_t egid;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    egid = luab_checkinteger(L, 1, INT_MAX);
-    status = setegid(egid);
-
-    return luab_pusherr(L, status);
-}
-
-static int
-luab_seteuid(lua_State *L)
-{
-    uid_t euid;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    euid = luab_checkinteger(L, 1, INT_MAX);
-    status = seteuid(euid);
-
-    return luab_pusherr(L, status);
-}
-#endif
 
 static int
 luab_setgid(lua_State *L)
@@ -862,23 +745,154 @@ luab_unlink(lua_State *L)
     return luab_pusherr(L, status);
 }
 
-#if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
+/***
+ * @function rmdir(2) - remove a directory file
+ * @param path string
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ */
 static int
-luab_getwd(lua_State *L)
+luab_rmdir(lua_State *L)
 {
-    char *buf;
+    const char *path;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    status = rmdir(path);
+
+    return luab_pusherr(L, status);
+}
+
+#if __POSIX_VISIBLE >= 200112
+/***
+ * @function gethostname(3) - get name of current host
+ * @return (n [, msg ]) (0, <hostname>) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ */
+static int
+luab_gethostname(lua_State *L)
+{
+    char buf[MAXHOSTNAMELEN];
+    int status;
 
     (void)luab_checkmaxargs(L, 0);
 
-    if ((buf = getwd(NULL)) == NULL)
-        return luab_pusherr(L, -1);
+    if ((status = gethostname(buf, sizeof(buf))) != 0)
+        return luab_pusherr(L, status);
 
+    lua_pushinteger(L, status);
     lua_pushlstring(L, buf, strlen(buf));
-    free(buf);
 
-    return 1;
+    return 2;
 }
+
+/***
+ * @function setegid(2) - set effective group id
+ * #param egid effective group id
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.setegid(egid)
+ */
+static int
+luab_setegid(lua_State *L)
+{
+    gid_t egid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    egid = luab_checkinteger(L, 1, INT_MAX);
+    status = setegid(egid);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * @function seteuid(2) - set effective user id
+ * #param euid effective user id
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.seteuid(euid)
+ */
+static int
+luab_seteuid(lua_State *L)
+{
+    uid_t euid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    euid = luab_checkinteger(L, 1, INT_MAX);
+    status = seteuid(euid);
+
+    return luab_pusherr(L, status);
+}
+#endif /* __POSIX_VISIBLE >= 200112 */
+
+/* 1003.1-2008 */
+#if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
+/***
+ * @function getsid(2) - get process session
+ * @param pid process id
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.getsid(pid)
+ */
+static int
+luab_getsid(lua_State *L)
+{
+    pid_t pid, sid;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    pid = luab_checkinteger(L, 1, INT_MAX);
+    sid = getsid(pid);
+
+    return luab_pusherr(L, sid);
+}
+
+/***
+ * @function fchdir(2) - change current working directory
+ * @param fd file-descriptor
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.fchdir(fd)
+ */
+static int
+luab_fchdir(lua_State *L)
+{
+    int fd, status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    status = fchdir(fd);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * @function getpgid(2) - get current process group by pid  
+ * @param pid idetifies current process
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.getpgid(fd)
+ */
+static int
+luab_getpgid(lua_State *L)
+{
+    pid_t pid, pgrp;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    pid = luab_checkinteger(L, 1, INT_MAX);
+    pgrp = getpgid(pid);
+
+    return luab_pusherr(L, pgrp);
+}
+
+#ifndef _TRUNCATE_DECLARED
+#define	_TRUNCATE_DECLARED
+int	 truncate(const char *, off_t);
 #endif
+#endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
 
 #if __POSIX_VISIBLE >= 200809
 static int
@@ -906,8 +920,8 @@ luab_faccessat(lua_State *L)
  * @function fexecve
  * @param fd file-descriptor
  * @param argv array of strings
- * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
- * @synopsis n [, msg ] = bsd.unistd.fexecve("/x/y", { "arg0" , "arg1" , ..., argN })
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.fexecve(fd, { "arg0" , "arg1" , ..., argN })
  */
 static int
 luab_fexecve(lua_State *L)
@@ -967,7 +981,53 @@ luab_unlinkat(lua_State *L)
 
     return luab_pusherr(L, status);
 }
-#endif
+#endif /* __POSIX_VISIBLE >= 200809 */
+
+#if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
+/***
+ * @function getwd(3) - get working directory pathname
+ * @return ({str,nil} [, msg ]) (<path>) on success or (nil, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.getwd()
+ */
+static int
+luab_getwd(lua_State *L)
+{
+    char *buf;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    if ((buf = getwd(NULL)) == NULL)
+        return luab_pushnil(L);
+
+    lua_pushlstring(L, buf, strlen(buf));
+    free(buf);
+
+    return 1;
+}
+#endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE */
+#if __BSD_VISIBLE
+/***
+ * @function eaccess(2) - check accessibility of a file
+ * @param path file named by path  
+ * @param mode indicated acccess permissions 
+ * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
+ * @synopsis n [, msg ] = bsd.unistd.eaccess(path, mode)
+ */
+static int
+luab_eaccess(lua_State *L)
+{
+    const char *path;
+    int mode, status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, INT_MAX);
+    status = eaccess(path, mode);
+
+    return luab_pusherr(L, status);
+}
+#endif /* __BSD_VISIBLE */
 
 static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("STDIN_FILENO",  STDIN_FILENO),
@@ -1173,6 +1233,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LIBS",    _CS_POSIX_V6_LPBIG_OFFBIG_LIBS),
     LUABSD_INT("_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS",    _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS),
 #endif
+/* 1003.1-1990 */
     LUABSD_FUNC("access",   luab_access),
     LUABSD_FUNC("alarm",    luab_alarm),
     LUABSD_FUNC("chdir",    luab_chdir),
@@ -1180,8 +1241,6 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("closefrom",    luab_closefrom),
     LUABSD_FUNC("dup",    luab_dup),
     LUABSD_FUNC("dup2",    luab_dup2),
-    LUABSD_FUNC("eaccess",   luab_eaccess),
-    LUABSD_FUNC("fchdir",    luab_fchdir),
     LUABSD_FUNC("execv",   luab_execv),
     LUABSD_FUNC("execve",   luab_execve),
     LUABSD_FUNC("execvp",   luab_execvp),
@@ -1195,10 +1254,10 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getlogin",   luab_getlogin),
     LUABSD_FUNC("getpid", luab_getpid),
     LUABSD_FUNC("getppid",    luab_getppid),
-    LUABSD_FUNC("getpgid",    luab_getpgid),
+    
     LUABSD_FUNC("getpgrp",    luab_getpgrp),
     LUABSD_FUNC("getuid", luab_getuid),
-    LUABSD_FUNC("getsid", luab_getsid),
+    
     LUABSD_FUNC("isatty",   luab_isatty),
     LUABSD_FUNC("link", luab_link),
 #ifndef _LSEEK_DECLARED
@@ -1210,13 +1269,13 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("pause",    luab_pause),
     LUABSD_FUNC("pipe", luab_pipe),
     LUABSD_FUNC("pipe2", luab_pipe2),
-#if __POSIX_VISIBLE >= 200112
-    LUABSD_FUNC("gethostname",  luab_gethostname),
-    LUABSD_FUNC("setegid",    luab_setegid),
-    LUABSD_FUNC("seteuid",    luab_seteuid),
-#endif
+
     LUABSD_FUNC("rmdir",    luab_rmdir),
     LUABSD_FUNC("setgid",    luab_setgid),
+    
+    
+    
+    
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
     LUABSD_FUNC("setpgid",    luab_setpgid),
@@ -1226,15 +1285,79 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("ttyname",  luab_ttyname),
     LUABSD_FUNC("ttyname_r",  luab_ttyname_r),
     LUABSD_FUNC("unlink",   luab_unlink),
-#if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
-    LUABSD_FUNC("getwd",   luab_getwd),
+
+/* 1003.2-1992 */
+#if __POSIX_VISIBLE >= 199209 || __XSI_VISIBLE
+/*
+    LUABSD_FUNC("confstr",  luab_confstr),
+ */
+#ifndef _GETOPT_DECLARED
+#define	_GETOPT_DECLARED
+/*
+    LUABSD_FUNC("getopt",   luab_getopt),
+ */
+#endif /* _GETOPT_DECLARED */
 #endif
+
+/* ISO/IEC 9945-1: 1996 */
+#if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
+/*
+    LUABSD_FUNC("fsync",    luab_fsync),
+    LUABSD_FUNC("fdatasync",    luab_fdatasync),
+#ifndef _FTRUNCATE_DECLARED
+#define	_FTRUNCATE_DECLARED
+    LUABSD_FUNC("ftruncate",    luab_ftruncate),
+#endif
+ */
+#endif
+    
+#if __POSIX_VISIBLE >= 199506
+/*
+    LUABSD_FUNC("getlogin_r",   luab_getlogin_r),
+ */
+#endif    
+/* 1003.1-2001 */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE    
+/*    
+    LUABSD_FUNC("fchown",   luab_fchown),
+    LUABSD_FUNC("readlink", luab_readlink),
+ */
+#endif
+#if __POSIX_VISIBLE >= 200112
+    LUABSD_FUNC("gethostname",  luab_gethostname),
+    LUABSD_FUNC("setegid",    luab_setegid),
+    LUABSD_FUNC("seteuid",    luab_seteuid),
+#endif
+/* 1003.1-2008 */
+#if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
+    LUABSD_FUNC("getsid", luab_getsid),
+    LUABSD_FUNC("fchdir",    luab_fchdir),
+    LUABSD_FUNC("getpgid",    luab_getpgid),
+/*
+    LUABSD_FUNC("lchown",   luab_lchown),
+    LUABSD_FUNC("pread",    luab_pread),
+    LUABSD_FUNC("pwrite",   luab_pwrite),
+ */
+#ifndef _TRUNCATE_DECLARED
+#define	_TRUNCATE_DECLARED
+/*
+    LUABSD_FUNC("truncate", luab_truncate),
+ */
+#endif
+#endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
+
 #if __POSIX_VISIBLE >= 200809
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("linkat", luab_linkat),
     LUABSD_FUNC("unlinkat", luab_unlinkat),
+#endif /* __POSIX_VISIBLE >= 200809 */
+#if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
+    LUABSD_FUNC("getwd",   luab_getwd),
 #endif
+#if __BSD_VISIBLE
+    LUABSD_FUNC("eaccess",   luab_eaccess),
+#endif /* __BSD_VISIBLE */
     LUABSD_FUNC(NULL, NULL)
 };
 
