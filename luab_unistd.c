@@ -42,6 +42,147 @@
 #define LUABSD_UNISTD_LIB_ID    1593623310
 #define LUABSD_UNISTD_LIB_KEY   "unistd"
 
+/*
+ * Interface against (subset of) functions of exec(3) family.
+ */
+
+extern char **environ;
+
+/***
+ * @function execv(3) - execute a file
+ *
+ * @param path      Identifies the new process image file by its path.
+ * @param argv      Argument vector, instance of LUA_TTABLE:
+ *
+ *                      { "arg0" , "arg1" , ..., argN }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.execv(path, argv)
+ */
+static int
+luab_execv(lua_State *L)
+{
+    const char *path;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+
+    status = execv(path, __DECONST(char **, argv));
+
+    free(argv);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * @function execve(2) - execute a file
+ *
+ * @param path      Identifies the new process image file by its path.
+ * @param argv      Argument vector, instance of LUA_TTABLE:
+ *
+ *                      { "arg0" , "arg1" , ..., argN }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.execve(path, argv)
+ */
+static int
+luab_execve(lua_State *L)
+{
+    const char *path;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+
+    status = execve(path, __DECONST(char **, argv), environ);
+
+    free(argv);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * @function execvp(3) - execute a file
+ *
+ * @param path      Identifies the new process image file by its path.
+ * @param argv      Argument vector, instance of LUA_TTABLE:
+ *
+ *                      { "arg0" , "arg1" , ..., argN }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.execvp(path, argv)
+ */
+static int
+luab_execvp(lua_State *L)
+{
+    const char *file;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    file = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+
+    status = execvp(file, __DECONST(char **, argv));
+
+    free(argv);
+
+    return luab_pusherr(L, status);
+}
+
+#if __POSIX_VISIBLE >= 200809
+/***
+ * @function fexecve(2) - execute a file
+ *
+ * @param fd        Identifies the new process image file by open file
+ *                  descriptor.
+ * @param argv      Argument vector, instance of LUA_TTABLE:
+ *
+ *                      { "arg0" , "arg1" , ..., argN }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.fexecve(fd, argv)
+ */
+static int
+luab_fexecve(lua_State *L)
+{
+    int fd;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    argv = luab_checkargv(L, 2);
+
+    status = fexecve(fd, __DECONST(char **, argv), environ);
+
+    free(argv);
+
+    return luab_pusherr(L, status);
+}
+#endif
+
+/*
+ * Interface against alarm(3).
+ */
+
 static lua_State *saved_L;
 static lua_Hook h;
 
@@ -72,6 +213,18 @@ h_signal(int arg __unused)
     lua_sethook(saved_L, h_callback, l_msk, 1);
 }
 
+/***
+ * @function alarm(3) - set signal timer alarm
+ *
+ * @param seconds       For timeout specified number of seconds.
+ * @param callback      Callout routine.
+ * @param group         Group id.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (sec [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis sec [, msg ] = bsd.unistd.alarm(seconds, callback)
+ */
 static int
 luab_alarm(lua_State *L)
 {
@@ -100,6 +253,17 @@ luab_alarm(lua_State *L)
  * Interface against components or service primitives on unistd.h.
  */
 
+/***
+ * @function access(2) - check availability of a file
+ *
+ * @param path          Identifies the file by name.
+ * @param mode          See the File Access Permission section of intro(2).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.access(path, mode)
+ */
 static int
 luab_access(lua_State *L)
 {
@@ -115,6 +279,16 @@ luab_access(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function chdir(2) - change current working directory
+ *
+ * @param path          Points to the pathname of the directory.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.chdir(path)
+ */
 static int
 luab_chdir(lua_State *L)
 {
@@ -131,11 +305,15 @@ luab_chdir(lua_State *L)
 
 /***
  * @function chown(2) - change owner and group of a file
- * @param path identifies the file by name
- * @param owner user id
- * @param group group id
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.chown(path, owner, group)
+ *
+ * @param path          Identifies the file by name.
+ * @param owner         User id.
+ * @param group         Group id.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.chown(path, owner, group)
  */
 static int
 luab_chown(lua_State *L)
@@ -156,6 +334,16 @@ luab_chown(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function close(2) - delete a descriptor
+ *
+ * @param fd            Open file descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.close(fd)
+ */
 static int
 luab_close(lua_State *L)
 {
@@ -169,6 +357,17 @@ luab_close(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function closefrom(2) - delete open file descriptors
+ *
+ * @param lowfd         Any file descriptor greater than or equal from the
+ *                      per-process file descriptor table.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.closefrom(lowfd)
+ */
 static int
 luab_closefrom(lua_State *L)
 {
@@ -182,6 +381,17 @@ luab_closefrom(lua_State *L)
     return 0;
 }
 
+/***
+ * @function dup(2) - duplicate an existing file descriptor
+ *
+ * @param oldd          Small non-negative integer index in the per-process
+ *                      descriptor table.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.dup(oldd)
+ */
 static int
 luab_dup(lua_State *L)
 {
@@ -195,6 +405,18 @@ luab_dup(lua_State *L)
     return luab_pusherr(L, fd);
 }
 
+/***
+ * @function dup2(2) - duplicate an existing file descriptor
+ *
+ * @param oldd          Small non-negative integer index in the per-process
+ *                      descriptor table.
+ * @param newd          The value for the new descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.dup2(oldd, newd)
+ */
 static int
 luab_dup2(lua_State *L)
 {
@@ -210,86 +432,14 @@ luab_dup2(lua_State *L)
     return luab_pusherr(L, fd);
 }
 
-extern char **environ;
-
 /***
- * @function execv
- * @param path self-explanatory
- * @param argv array of strings
- * @return n [, msg ]
- * @synopsis n [, msg ] = bsd.unistd.execv("/x/y", { "arg0" , "arg1" , ..., argN })
+ * @function fork(2) - create a new process
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis pid [, msg ] = bsd.unistd.fork()
  */
-static int
-luab_execv(lua_State *L)
-{
-    const char *path;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
-
-    status = execv(path, __DECONST(char **, argv));
-
-    free(argv);
-
-    return luab_pusherr(L, status);
-}
-
-/***
- * @function execve
- * @param path self-explanatory
- * @param argv array of strings
- * @return n [, msg ]
- * @synopsis n [, msg ] = bsd.unistd.execve("/x/y", { "arg0" , "arg1" , ..., argN })
- */
-static int
-luab_execve(lua_State *L)
-{
-    const char *path;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
-
-    status = execve(path, __DECONST(char **, argv), environ);
-
-    free(argv);
-
-    return luab_pusherr(L, status);
-}
-
-/***
- * @function execvp
- * @param path self-explanatory
- * @param argv array of strings
- * @return n [, msg ]
- * @synopsis n [, msg ] = bsd.unistd.execvp("/x/y", { "arg0" , "arg1" , ..., argN })
- */
-static int
-luab_execvp(lua_State *L)
-{
-    const char *file;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    file = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
-
-    status = execvp(file, __DECONST(char **, argv));
-
-    free(argv);
-
-    return luab_pusherr(L, status);
-}
-
 static int
 luab_fork(lua_State *L)
 {
@@ -301,6 +451,21 @@ luab_fork(lua_State *L)
     return luab_pusherr(L, pid);
 }
 
+/***
+ * @function fpathconf(2) - get configurable pathname variables
+ *
+ * @param fd            Open file descriptor.
+ * @param name          Specifies the system variable on
+ *
+ *                          bsd.sys.unistd._PC_*
+ *
+ *                      to be queried.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis value [, msg ] = bsd.unistd.fpathconf(fd, name)
+ */
 static int
 luab_fpathconf(lua_State *L)
 {
@@ -316,6 +481,13 @@ luab_fpathconf(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function getcwd(3) - get working directory pathname
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (path [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ * @synopsis path [, msg ] = bsd.unistd.getcwd()
+ */
 static int
 luab_getcwd(lua_State *L)
 {
@@ -332,6 +504,13 @@ luab_getcwd(lua_State *L)
     return 1;
 }
 
+/***
+ * @function getegid(2) - get (effective)vgroup process identification
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (egid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis egid [, msg ] = bsd.unistd.getegid()
+ */
 static int
 luab_getegid(lua_State *L)
 {
@@ -343,6 +522,13 @@ luab_getegid(lua_State *L)
     return luab_pusherr(L, egid);
 }
 
+/***
+ * @function geteuid(2) - get (effective) user identification
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (euid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis euid [, msg ] = bsd.unistd.geteuid()
+ */
 static int
 luab_geteuid(lua_State *L)
 {
@@ -354,6 +540,13 @@ luab_geteuid(lua_State *L)
     return luab_pusherr(L, euid);;
 }
 
+/***
+ * @function getgid(2) - get group process identification
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (gid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis gid [, msg ] = bsd.unistd.getgid()
+ */
 static int
 luab_getgid(lua_State *L)
 {
@@ -366,10 +559,24 @@ luab_getgid(lua_State *L)
 }
 
 /***
- * @function getgroups
- * @param gidsetlen same as in getgroups(2)
- * @return (n [,table]) or (-1, err_msg)
- * @synopsis n, gidset = bsd.unistd.getgroups(gidsetlen)
+ * @function getgroups(2) - get group access list
+ *
+ * @param gidsetlen     Number of entries that may be placed on
+ *                      instance of returned LUA_TTABLE:
+ *
+ *                          gitset = { "gid0" , "gid1" , ..., gidN },
+ *
+ *                      iff
+ *
+ *                          gidsetlen > 0,
+ *
+ *                      on success.
+ *
+ * @return (LUA_TNUMBER, LUA_T{NIL,STRING,TABLE})   (len, nil) or
+ *                                                  (len, gidset) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis len, gidset = bsd.unistd.getgroups(gidsetlen)
  */
 static int
 luab_getgroups(lua_State *L)
@@ -406,43 +613,35 @@ luab_getgroups(lua_State *L)
     return 2;
 }
 
+/***
+ * @function getlogin(2) - get login name
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,STRING} ]) (name [, nil]) on success or
+ *                                                    (nil, (strerror(errno)))
+ * @synopsis name [, msg ] = bsd.unistd.getlogin()
+ */
 static int
 luab_getlogin(lua_State *L)
 {
-    char *p;
+    char *name;
 
     (void)luab_checkmaxargs(L, 0);
 
-    if ((p = getlogin()) == NULL)
+    if ((name = getlogin()) == NULL)
         lua_pushnil(L);
     else
-        lua_pushlstring(L, p, strlen(p));
+        lua_pushlstring(L, name, strlen(name));
 
     return 1;
 }
 
-static int
-luab_getpid(lua_State *L)
-{
-    pid_t pid;
-
-    (void)luab_checkmaxargs(L, 0);
-    pid = getpid();
-
-    return luab_pusherr(L, pid);
-}
-
-static int
-luab_getppid(lua_State *L)
-{
-    pid_t pid;
-
-    (void)luab_checkmaxargs(L, 0);
-    pid = getppid();
-
-    return luab_pusherr(L, pid);
-}
-
+/***
+ * @function getpgrp(2) - get process group
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pgrp [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis pgrp [, msg ] = bsd.unistd.getpgrp()
+ */
 static int
 luab_getpgrp(lua_State *L)
 {
@@ -454,8 +653,49 @@ luab_getpgrp(lua_State *L)
     return luab_pusherr(L, pgrp);
 }
 
+/***
+ * @function getpid(2) - get calling process identification
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis pid [, msg ] = bsd.unistd.getpid()
+ */
+static int
+luab_getpid(lua_State *L)
+{
+    pid_t pid;
 
+    (void)luab_checkmaxargs(L, 0);
+    pid = getpid();
 
+    return luab_pusherr(L, pid);
+}
+
+/***
+ * @function getppid(2) - get parent process identification
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (ppid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis ppid [, msg ] = bsd.unistd.getppid()
+ */
+static int
+luab_getppid(lua_State *L)
+{
+    pid_t ppid;
+
+    (void)luab_checkmaxargs(L, 0);
+    ppid = getppid();
+
+    return luab_pusherr(L, ppid);
+}
+
+/***
+ * @function getuid(2) - get user identification
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (uid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis uid [, msg ] = bsd.unistd.getuid()
+ */
 static int
 luab_getuid(lua_State *L)
 {
@@ -468,7 +708,17 @@ luab_getuid(lua_State *L)
     return luab_pusherr(L, uid);
 }
 
-
+/***
+ * @function isatty(3) - determine, if valid terminal type device.
+ *
+ * @param fd            Open file descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (1 [, nil]) or
+ *                                                  (1, (strerror(errno)))
+ *                                                      on success or
+ *                                                  (0, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.isatty(fd)
+ */
 static int
 luab_isatty(lua_State *L)
 {
@@ -482,6 +732,17 @@ luab_isatty(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function link(2) - make a hard file link
+ *
+ * @param name1         Path or file name of underlying object.
+ * @param name2         Path or file name where it points to name1.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.link(name1, name2)
+ */
 static int
 luab_link(lua_State *L)
 {
@@ -500,6 +761,22 @@ luab_link(lua_State *L)
 
 #ifndef _LSEEK_DECLARED
 #define _LSEEK_DECLARED
+/***
+ * @function lseek(2) - reposition read/write file offset
+ *
+ * @param filedes       Open file descriptor.
+ * @param offset        Offset according to the directive whence.
+ * @param whence        Specifies the directive on
+ *
+ *                          bsd.sys.unistd.SEEK_*
+ *
+ *                      for repositioning.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (loc [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis loc [, msg ] = bsd.unistd.lseek(filedes, offset, whence)
+ */
 static int
 luab_lseek(lua_State *L)
 {
@@ -520,23 +797,21 @@ luab_lseek(lua_State *L)
 }
 #endif
 
-static int
-luab_lpathconf(lua_State *L)
-{
-    const char *path;
-    int name;
-    long status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    name = luab_checkinteger(L, 2, INT_MAX);
-
-    status = lpathconf(path, name);
-
-    return luab_pusherr(L, status);
-}
-
+/***
+ * @function pathconf(2) - get configurable pathname variables
+ *
+ * @param path          Name of file or directory.
+ * @param name          Specifies the system variable on
+ *
+ *                          bsd.sys.unistd._PC_*
+ *
+ *                      to be queried.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis value [, msg ] = bsd.unistd.pathconf(fd, name)
+ */
 static int
 luab_pathconf(lua_State *L)
 {
@@ -554,6 +829,14 @@ luab_pathconf(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function pause(3) - stop until signal
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (-1 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis value [, msg ] = bsd.unistd.pause()
+ */
 static int
 luab_pause(lua_State *L)
 {
@@ -567,10 +850,16 @@ luab_pause(lua_State *L)
 }
 
 /***
- * @function pipe create descriptor pair for interprocess communication
- * @param fildes pair { fildes1, fildes2 } of fildescriptors
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.pipe({ fildes1, fildes2 })
+ * @function pipe(2) - create descriptor pair for interprocess communication
+ *
+ * @param filedes       Pair of file descriptors as instance of LUA_TTABLE:
+ *
+ *                          { filedes1, filedes2 }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.pipe(filedes)
  */
 static int
 luab_pipe(lua_State *L)
@@ -589,11 +878,22 @@ luab_pipe(lua_State *L)
 }
 
 /***
- * @function pipe2 create descriptor pair for interprocess communication
- * @param fildes pair { fildes1, fildes2 } of fildescriptors
- * @param flags see pipe(2)
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ * @function pipe2(2) - create descriptor pair for interprocess communication
+ *
+ * @param filedes       Pair of file descriptors as instance of LUA_TTABLE:
+ *
+ *                          { filedes1, filedes2 }.
+ *
+ * @param flags         The values are constructed from
+ *
+ *                          bsd.fcntl.O_{CLOEXEC,NONBLOCK}
+ *
+ *                      by bitwise-inclusive OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @synopsis err [, msg ] = bsd.unistd.pipe2(filedes, flags)
  */
 static int
 luab_pipe2(lua_State *L)
@@ -758,6 +1058,13 @@ luab_ttyname_r(lua_State *L)
     return 2;
 }
 
+/***
+ * @function unlink(2) - remove a directory entry
+ * @param path The file to be removed.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.unlink(path)
+ */
 static int
 luab_unlink(lua_State *L)
 {
@@ -774,9 +1081,10 @@ luab_unlink(lua_State *L)
 
 /***
  * @function rmdir(2) - remove a directory file
- * @param path string
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ * @param path      The file to be removed.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.rmdir(path)
  */
 static int
 luab_rmdir(lua_State *L)
@@ -795,15 +1103,16 @@ luab_rmdir(lua_State *L)
 /* ISO/IEC 9945-1: 1996 */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
 #ifndef _FTRUNCATE_DECLARED
-#define	_FTRUNCATE_DECLARED
+#define _FTRUNCATE_DECLARED
 /***
  * @function truncate(2) - truncate / extend a file to a specific length
- * @param fd      Identifies the file by its file descriptor.
+ * @param fd        File descriptor.
  * @param length    If the file was larger than this size, the extra data is
  *                  lost. If the file was smaller than this size, it will be
  *                  extended as if by writing bytes with the value zero.
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.truncate(path, size)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.truncate(path, size)
  */
 static int
 luab_ftruncate(lua_State *L)
@@ -828,11 +1137,12 @@ luab_ftruncate(lua_State *L)
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
 /***
  * @function fchown(2) - change owner and group of a file
- * @param fd identifies the file by file descriptor
- * @param owner user id
- * @param group group id
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.fchown(fd, owner, group)
+ * @param fd        File by file descriptor.
+ * @param owner     User id.
+ * @param group     Group id.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.fchown(fd, owner, group)
  */
 static int
 luab_fchown(lua_State *L)
@@ -857,8 +1167,8 @@ luab_fchown(lua_State *L)
 #if __POSIX_VISIBLE >= 200112
 /***
  * @function gethostname(3) - get name of current host
- * @return (n [, msg ]) (0, <hostname>) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ]) (0, <hostname>) on success or (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
  */
 static int
 luab_gethostname(lua_State *L)
@@ -879,9 +1189,10 @@ luab_gethostname(lua_State *L)
 
 /***
  * @function setegid(2) - set effective group id
- * #param egid effective group id
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.setegid(egid)
+ * #param egid      Effective group id.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.setegid(egid)
  */
 static int
 luab_setegid(lua_State *L)
@@ -899,9 +1210,10 @@ luab_setegid(lua_State *L)
 
 /***
  * @function seteuid(2) - set effective user id
- * #param euid effective user id
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.seteuid(euid)
+ * @param euid      Effective user id.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.seteuid(euid)
  */
 static int
 luab_seteuid(lua_State *L)
@@ -922,9 +1234,10 @@ luab_seteuid(lua_State *L)
 #if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
 /***
  * @function getsid(2) - get process session
- * @param pid process id
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.getsid(pid)
+ * @param pid       Process id.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.getsid(pid)
  */
 static int
 luab_getsid(lua_State *L)
@@ -941,9 +1254,10 @@ luab_getsid(lua_State *L)
 
 /***
  * @function fchdir(2) - change current working directory
- * @param fd file descriptor
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.fchdir(fd)
+ * @param fd        File descriptor.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.fchdir(fd)
  */
 static int
 luab_fchdir(lua_State *L)
@@ -960,9 +1274,10 @@ luab_fchdir(lua_State *L)
 
 /***
  * @function getpgid(2) - get current process group by pid
- * @param pid idetifies current process
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.getpgid(fd)
+ * @param pid       Process id.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.getpgid(fd)
  */
 static int
 luab_getpgid(lua_State *L)
@@ -980,10 +1295,11 @@ luab_getpgid(lua_State *L)
 /***
  * @function lchown(2) - change owner and group of a file
  * @param path identifies the file by name
- * @param owner user id
- * @param group group id
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.lchown(path, owner, group)
+ * @param owner     User id
+ * @param group     Group id.
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.lchown(path, owner, group)
  */
 static int
 luab_lchown(lua_State *L)
@@ -1012,8 +1328,9 @@ luab_lchown(lua_State *L)
  * @param length    If the file was larger than this size, the extra data is
  *                  lost. If the file was smaller than this size, it will be
  *                  extended as if by writing bytes with the value zero.
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.truncate(path, length)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.truncate(path, length)
  */
 static int
 luab_truncate(lua_State *L)
@@ -1058,13 +1375,14 @@ luab_faccessat(lua_State *L)
 
 /***
  * @function fchownat(2) - change owner and group of a file
- * @param fd relative to the directory associated with the file descriptor
- * @param path identifies the file by its name through relative path
- * @param owner user id
- * @param group group id
+ * @param fd File descriptor.
+ * @param path Identifies a file through relative path.
+ * @param owner User id.
+ * @param group Group id.
  * @param flag bsd.fcntl.AT_SYMLINK_NOFOLLOW
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.fchownat(fd, path, owner, group, flag)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.fchownat(fd, path, owner, group, flag)
  */
 static int
 luab_fchownat(lua_State *L)
@@ -1085,32 +1403,6 @@ luab_fchownat(lua_State *L)
     flag = luab_checkinteger(L, 5, INT_MAX);
 
     status = fchownat(fd, path, owner, group, flag);
-
-    return luab_pusherr(L, status);
-}
-
-/***
- * @function fexecve
- * @param fd file descriptor
- * @param argv array of strings
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.fexecve(fd, { "arg0" , "arg1" , ..., argN })
- */
-static int
-luab_fexecve(lua_State *L)
-{
-    int fd;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    fd = luab_checkinteger(L, 1, INT_MAX);
-    argv = luab_checkargv(L, 2);
-
-    status = fexecve(fd, __DECONST(char **, argv), environ);
-
-    free(argv);
 
     return luab_pusherr(L, status);
 }
@@ -1137,6 +1429,15 @@ luab_linkat(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * @function unlink(2) - remove a directory entry
+ * @param fd File descriptor.
+ * @param path Identifies a file by (relative) path.
+ * @param flag bsd.fcntl.AT_REMOVEDIR
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.unlink(path)
+ */
 static int
 luab_unlinkat(lua_State *L)
 {
@@ -1158,9 +1459,11 @@ luab_unlinkat(lua_State *L)
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
 /***
- * @function getwd(3) - get working directory pathname
- * @return ({str,nil} [, msg ]) (<path>) on success or (nil, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.getwd()
+ * @function getcwd(3) - get working directory pathname
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])   (path) on success or
+ *                                                    (nil, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.getcwd()
  */
 static int
 luab_getwd(lua_State *L)
@@ -1181,10 +1484,11 @@ luab_getwd(lua_State *L)
 #if __BSD_VISIBLE
 /***
  * @function eaccess(2) - check accessibility of a file
- * @param path file named by path
- * @param mode indicated acccess permissions
- * @return (n [, msg ]) (0, nil) on success or (-1, <msg maps to errno>)
- * @synopsis n [, msg ] = bsd.unistd.eaccess(path, mode)
+ * @param path File named by path.
+ * @param mode See the File Access Permission section of intro(2).
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])    (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ * @synopsis err [, msg ] = bsd.unistd.eaccess(path, mode)
  */
 static int
 luab_eaccess(lua_State *L)
@@ -1197,6 +1501,23 @@ luab_eaccess(lua_State *L)
     path = luab_checklstring(L, 1, MAXPATHLEN);
     mode = luab_checkinteger(L, 2, INT_MAX);
     status = eaccess(path, mode);
+
+    return luab_pusherr(L, status);
+}
+
+static int
+luab_lpathconf(lua_State *L)
+{
+    const char *path;
+    int name;
+    long status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    name = luab_checkinteger(L, 2, INT_MAX);
+
+    status = lpathconf(path, name);
 
     return luab_pusherr(L, status);
 }
@@ -1426,19 +1747,16 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getgid",    luab_getgid),
     LUABSD_FUNC("getgroups",    luab_getgroups),
     LUABSD_FUNC("getlogin",   luab_getlogin),
+    LUABSD_FUNC("getpgrp",    luab_getpgrp),
     LUABSD_FUNC("getpid", luab_getpid),
     LUABSD_FUNC("getppid",    luab_getppid),
-
-    LUABSD_FUNC("getpgrp",    luab_getpgrp),
     LUABSD_FUNC("getuid", luab_getuid),
-
     LUABSD_FUNC("isatty",   luab_isatty),
     LUABSD_FUNC("link", luab_link),
 #ifndef _LSEEK_DECLARED
 #define _LSEEK_DECLARED
     LUABSD_FUNC("lseek", luab_lseek),
 #endif
-    LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("pathconf",    luab_pathconf),
     LUABSD_FUNC("pause",    luab_pause),
     LUABSD_FUNC("pipe", luab_pipe),
@@ -1528,6 +1846,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #endif
 #if __BSD_VISIBLE
     LUABSD_FUNC("eaccess",   luab_eaccess),
+    LUABSD_FUNC("lpathconf",    luab_lpathconf),
 #endif /* __BSD_VISIBLE */
     LUABSD_FUNC(NULL, NULL)
 };

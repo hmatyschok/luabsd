@@ -37,6 +37,9 @@
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
+/*
+ * Translate an instance of LUA_TTABLE into an argv.
+ */
 const char **
 luab_checkargv(lua_State *L, int narg)
 {
@@ -76,6 +79,9 @@ luab_checkargv(lua_State *L, int narg)
     return argv;
 }
 
+/*
+ * Translate an instance of LUA_TTABLE into an array of integers.
+ */
 int *
 luab_checkintvector(lua_State *L, int narg, size_t len)
 {
