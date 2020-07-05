@@ -75,21 +75,32 @@ extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
-int luab_pusherr(lua_State *, int);
-int luab_pushnil(lua_State *);
-
-#define luab_checkinteger(L, narg, b_msk) \
-    (luaL_checkinteger((L), (narg)) & (b_msk))
+static __inline lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
+static __inline int luab_checkmaxargs(lua_State *, int);
 
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
-#define luab_checkmaxargs(L, nmax) do {                 \
-    if (lua_gettop(L) > nmax)                           \
-        luaL_error(L, "wrong number of arguments");     \
-    } while (0)
+static __inline lua_Integer
+luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((luaL_checkinteger(L, narg)) & (b_msk));
+}
 
+static __inline int
+luab_checkmaxargs(lua_State *L, int nmax)
+{
+    int narg;
+
+    if ((narg = lua_gettop(L)) > nmax)
+        luaL_error(L, "wrong number of arguments");
+
+    return narg;
+}
+
+int luab_pusherr(lua_State *, int);
+int luab_pushnil(lua_State *);
 __END_DECLS
 
 #endif /* _LUABSD_H_ */
