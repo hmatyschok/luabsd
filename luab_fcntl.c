@@ -232,12 +232,15 @@ luab_Flock(lua_State *L)
 static int
 luab_open(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    int flags = luab_checkinteger(L, 2, INT_MAX);
-    int narg = lua_gettop(L), fd;
-    mode_t mode = 0;
+    int narg = luab_checkmaxargs(L, 3);
+    const char *path;
+    int flags;
+    mode_t mode;
+    int fd;
 
-    luab_checkmaxargs(L, 3);
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    flags = luab_checkinteger(L, 2, INT_MAX);
+    mode = 0;
 
     if (narg == 3 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
@@ -250,11 +253,15 @@ luab_open(lua_State *L)
 static int
 luab_creat(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
+    const char *path;
+    mode_t mode;
     int fd;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, ALLPERMS);
+
     fd = creat(path, mode);
 
     return luab_pusherr(L, fd);
@@ -263,12 +270,14 @@ luab_creat(lua_State *L)
 static int
 luab_fcntl(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    int cmd = luab_checkinteger(L, 2, INT_MAX);
-    int narg = lua_gettop(L), arg = 0, status;
-    luab_flock_t *argp = NULL;
+    int narg = luab_checkmaxargs(L, 3);
+    int fd, cmd, arg, status;
+    luab_flock_t *argp;
 
-    luab_checkmaxargs(L, 3);
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    cmd = luab_checkinteger(L, 2, INT_MAX);
+    arg = 0;
+    argp = NULL;
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
@@ -289,11 +298,12 @@ luab_fcntl(lua_State *L)
 static int
 luab_flock(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    int operation = luab_checkinteger(L, 2, INT_MAX);
-    int status;
+    int fd, operation, status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    operation = luab_checkinteger(L, 2, INT_MAX);
 
     status = flock(fd, operation);
 
@@ -305,13 +315,17 @@ luab_flock(lua_State *L)
 static int
 luab_openat(lua_State *L)
 {
-    int dirfd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    int flags = luab_checkinteger(L, 3, INT_MAX);
-    int narg = lua_gettop(L), fd;
-    mode_t mode = 0;
+    int narg = luab_checkmaxargs(L, 4), dirfd;
+    const char *path;
+    int flags;
+    mode_t mode;
+    int fd;
 
-    luab_checkmaxargs(L, 4);
+
+    dirfd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    flags = luab_checkinteger(L, 3, INT_MAX);
+    mode = 0;
 
     if (narg == 4 && (flags & O_CREAT) != 0)
         mode = luab_checkinteger(L, narg, ALLPERMS);
@@ -326,12 +340,17 @@ luab_openat(lua_State *L)
 static int
 luab_posix_fadvise(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    off_t offset = luab_checkinteger(L, 2, UINT_MAX);
-    off_t len = luab_checkinteger(L, 3, UINT_MAX);
-    int advice = luab_checkinteger(L, 4, INT_MAX);
+    int fd;
+    off_t offset;
+    off_t len;
+    int advice;
 
-    luab_checkmaxargs(L, 4);
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    offset = luab_checkinteger(L, 2, INT_MAX);
+    len = luab_checkinteger(L, 3, INT_MAX);
+    advice = luab_checkinteger(L, 4, INT_MAX);
 
     errno = posix_fadvise(fd, offset, len, advice);
 
@@ -341,11 +360,15 @@ luab_posix_fadvise(lua_State *L)
 static int
 luab_posix_fallocate(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    off_t offset = luab_checkinteger(L, 2, UINT_MAX);
-    off_t len = luab_checkinteger(L, 3, UINT_MAX);
+    int fd;
+    off_t offset;
+    off_t len;
 
-    luab_checkmaxargs(L, 4);
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    offset = luab_checkinteger(L, 2, INT_MAX);
+    len = luab_checkinteger(L, 3, INT_MAX);
 
     errno = posix_fallocate(fd, offset, len);
 
