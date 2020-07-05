@@ -67,6 +67,9 @@ luab_arc4random_uniform(lua_State *L)
 }
 
 static luab_table_t luab_stdlib_vec[] = {   /* stdlib.h */
+    LUABSD_INT("EXIT_FAILURE",  EXIT_FAILURE),
+    LUABSD_INT("EXIT_SUCCESS",  EXIT_SUCCESS),
+    LUABSD_INT("RAND_MAX",  RAND_MAX),
     LUABSD_FUNC("arc4random", luab_arc4random),
     LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
     LUABSD_FUNC(NULL, NULL)
