@@ -217,8 +217,8 @@ extern char **environ;
  * @function execv
  * @param path self-explanatory
  * @param argv array of strings
- * @return (n [, err ])
- * @synopsis n, err = bsd.unistd.execv("/x/y", { "arg0" , "arg1" , ..., argN })
+ * @return n [, msg ]
+ * @synopsis n [, msg ] = bsd.unistd.execv("/x/y", { "arg0" , "arg1" , ..., argN })
  */
 static int
 luab_execv(lua_State *L)
@@ -243,8 +243,8 @@ luab_execv(lua_State *L)
  * @function execve
  * @param path self-explanatory
  * @param argv array of strings
- * @return (n [, err ])
- * @synopsis n, err = bsd.unistd.execve("/x/y", { "arg0" , "arg1" , ..., argN })
+ * @return n [, msg ]
+ * @synopsis n [, msg ] = bsd.unistd.execve("/x/y", { "arg0" , "arg1" , ..., argN })
  */
 static int
 luab_execve(lua_State *L)
@@ -269,8 +269,8 @@ luab_execve(lua_State *L)
  * @function execvp
  * @param path self-explanatory
  * @param argv array of strings
- * @return (n [, err ])
- * @synopsis n, err = bsd.unistd.execvp("/x/y", { "arg0" , "arg1" , ..., argN })
+ * @return n [, msg ]
+ * @synopsis n [, msg ] = bsd.unistd.execvp("/x/y", { "arg0" , "arg1" , ..., argN })
  */
 static int
 luab_execvp(lua_State *L)
@@ -592,8 +592,8 @@ luab_pause(lua_State *L)
 /***
  * @function pipe create descriptor pair for interprocess communication
  * @param fildes pair { fildes1, fildes2 } of fildescriptors
- * @return (n [, err ])
- * @synopsis n, err = bsd.unistd.pipe({ fildes1, fildes2 })
+ * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
+ * @synopsis n [, msg ] = bsd.unistd.pipe({ fildes1, fildes2 })
  */
 static int
 luab_pipe(lua_State *L)
@@ -615,8 +615,8 @@ luab_pipe(lua_State *L)
  * @function pipe2 create descriptor pair for interprocess communication
  * @param fildes pair { fildes1, fildes2 } of fildescriptors
  * @param flags see pipe(2)
- * @return (n [, err ])
- * @synopsis n, err = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
+ * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
  */
 static int
 luab_pipe2(lua_State *L)
@@ -653,6 +653,26 @@ luab_gethostname(lua_State *L)
     lua_pushlstring(L, buf, strlen(buf));
 
     return 2;
+}
+
+/***
+ * @function rmdir - remove a directory file
+ * @param path string
+ * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
+ * @synopsis n [, msg ] = bsd.unistd.pipe2({ fildes1, fildes2 }, flags)
+ */
+static int
+luab_rmdir(lua_State *L)
+{
+    const char *path;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    status = rmdir(path);
+
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -886,8 +906,8 @@ luab_faccessat(lua_State *L)
  * @function fexecve
  * @param fd file-descriptor
  * @param argv array of strings
- * @return (n [, err ])
- * @synopsis n, err = bsd.unistd.fexecve("/x/y", { "arg0" , "arg1" , ..., argN })
+ * @return (n [, msg ]) (0, nil) if successfull or (-1, message maps to errno)
+ * @synopsis n [, msg ] = bsd.unistd.fexecve("/x/y", { "arg0" , "arg1" , ..., argN })
  */
 static int
 luab_fexecve(lua_State *L)
@@ -1195,6 +1215,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("setegid",    luab_setegid),
     LUABSD_FUNC("seteuid",    luab_seteuid),
 #endif
+    LUABSD_FUNC("rmdir",    luab_rmdir),
     LUABSD_FUNC("setgid",    luab_setgid),
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
