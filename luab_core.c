@@ -133,18 +133,6 @@ luab_checklstring(lua_State *L, int narg, size_t n)
     return buf;
 }
 
-void
-luab_pushinteger(lua_State *L, luab_un_t *u)
-{
-    lua_pushinteger(L, u->x_i);
-}
-
-void
-luab_pushcfunction(lua_State *L, luab_un_t *u)
-{
-    lua_pushcfunction(L, u->x_f);
-}
-
 int
 luab_pusherr(lua_State *L, int res)
 {
@@ -223,7 +211,7 @@ LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
     lua_newtable(L);
-
+                        /* XXX */
     lua_newtable(L);
 
     luab_newtable(L, &luab_sys_file_lib);

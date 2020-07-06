@@ -49,11 +49,8 @@ typedef struct {
 #define LUABSD_FUNC(k, v) \
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
-void    luab_pushcfunction(lua_State *, luab_un_t *);
-void    luab_pushinteger(lua_State *, luab_un_t *);
-
 typedef struct {
-    long   cookie;        /*  date -u +'%s' */
+    unsigned long   cookie;        /*  date -u +'%s' */
     const char  *name;
     luab_table_t    *vec;
 } luab_module_t;
@@ -78,6 +75,10 @@ extern luab_module_t luab_uuid_lib;
 static __inline lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
 static __inline int luab_checkmaxargs(lua_State *, int);
 
+static _inline void luab_pushcfunction(lua_State *, luab_un_t *);
+static _inline void luab_pushinteger(lua_State *, luab_un_t *);
+
+
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
@@ -101,6 +102,18 @@ luab_checkmaxargs(lua_State *L, int nmax)
 
 int luab_pusherr(lua_State *, int);
 int luab_pushnil(lua_State *);
+
+static _inline void    /* XXX inline */
+luab_pushinteger(lua_State *L, luab_un_t *u)
+{
+    lua_pushinteger(L, u->x_i);
+}
+
+static _inline
+luab_pushcfunction(lua_State *L, luab_un_t *u)
+{
+    lua_pushcfunction(L, u->x_f);
+}
 __END_DECLS
 
 #endif /* _LUABSD_H_ */
