@@ -145,9 +145,12 @@ luab_checkmaxargs(lua_State *L, int nmax)
 }
 
 void *
-luab_newuserdata(lua_State *L, luab_module_t *m)
+luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 {
     void *ud = lua_newuserdata(L, m->sz);
+
+    if (m->init != NULL && arg != NULL)
+        (*m->init)(ud, arg);
 
     luaL_setmetatable(L, m->name);
 
@@ -202,7 +205,7 @@ luab_populate(lua_State *L, luab_table_t *vec)
     luab_table_t *tok;
 
     for (tok = vec; tok->key != NULL; tok++) {
-        tok->func(L, &tok->val);
+        (*tok->init)(L, &tok->val);
         lua_setfield(L, -2, tok->key);
     }
     lua_pop(L, 0);

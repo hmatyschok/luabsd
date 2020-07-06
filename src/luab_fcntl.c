@@ -30,7 +30,7 @@
 
 #include <errno.h>
 #include <fcntl.h>
-#include <strings.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -221,10 +221,19 @@ static luab_table_t flock_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void
+flock_init(void *ud, void *arg)
+{
+    luab_flock_t *self = ud;
+    
+    (void)memmove(&self->info, arg, sizeof(self->info));
+}
+
 luab_module_t flock_type = {
     .cookie = LUABSD_FLOCK_TYPE_ID,
     .name = LUABSD_FLOCK_TYPE,
     .vec = flock_methods,
+    .init = flock_init,
     .sz = sizeof(luab_flock_t),
 };
 
@@ -235,10 +244,10 @@ luab_StructFlock(lua_State *L)
 
     luab_checkmaxargs(L, 0);
 
-    self = (luab_flock_t *)luab_newuserdata(L, &flock_type);
+    self = (luab_flock_t *)luab_newuserdata(L, &flock_type, NULL);
 
-    bzero(&self->info, sizeof(struct flock));
-
+    (void)memset(&self->info, 0, sizeof(struct flock));
+    
     return 1;
 }
 

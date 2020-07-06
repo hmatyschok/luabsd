@@ -29,7 +29,7 @@
 
 #include <pthread.h>
 #include <signal.h>
-#include <strings.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -154,10 +154,19 @@ static luab_table_t timespec_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void
+timespec_init(void *ud, void *arg)
+{
+    luab_timespec_t *self = ud;
+    
+    (void)memmove(&self->tv, arg, sizeof(self->tv));
+}
+
 luab_module_t timespec_type = {
     .cookie = LUABSD_TIMESPEC_TYPE_ID,
     .name = LUABSD_TIMESPEC_TYPE,
     .vec = timespec_methods,
+    .init = timespec_init,
     .sz = sizeof(luab_timespec_t),
 };
 
@@ -177,9 +186,9 @@ luab_StructTimeSpec(lua_State *L)
 
     luab_checkmaxargs(L, 0);
 
-    self = (luab_timespec_t *)luab_newuserdata(L, &timespec_type);
+    self = (luab_timespec_t *)luab_newuserdata(L, &timespec_type, NULL);
 
-    bzero(&self->tv, sizeof(struct timespec));
+    (void)memset(&self->tv, 0, sizeof(struct timespec));
 
     return 1;
 }

@@ -27,6 +27,8 @@
 #ifndef _LUABSD_H_
 #define _LUABSD_H_
 
+#include <sys/types.h>
+
 __BEGIN_DECLS
 
 typedef union {
@@ -34,25 +36,28 @@ typedef union {
     lua_CFunction   x_f;
 } luab_un_t;
 
-typedef void    (*luab_fn_t)(lua_State *L, luab_un_t *x);
+typedef void    (*luab_tab_fn_t)(lua_State *L, luab_un_t *x);
 
 typedef struct {
-    luab_fn_t   func;
+    luab_tab_fn_t   init;
     const char    *key;
     luab_un_t   val;
 } luab_table_t;
 
-#define LUABSD_REG(f, k, v) \
-    { .func = f, .key = k, v }
+#define LUABSD_REG(fn, k, v) \
+    { .init = fn, .key = k, v }
 #define LUABSD_INT(k, v) \
     LUABSD_REG(luab_pushinteger, k, .val.x_i = v)
 #define LUABSD_FUNC(k, v) \
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
+typedef void (*luab_mod_fn_t)(void *ud, void *arg);
+
 typedef struct {
-    unsigned long   cookie;        /*  date -u +'%s' */
+    uint32_t  cookie;        /*  date -u +'%s' */
     const char  *name;
     luab_table_t    *vec;
+    luab_mod_fn_t    init;
     size_t  sz;
 } luab_module_t;
 
@@ -86,7 +91,7 @@ const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
-void *  luab_newuserdata(lua_State *, luab_module_t *);
+void *  luab_newuserdata(lua_State *, luab_module_t *, void *arg);
 
 int luab_pusherr(lua_State *, int);
 int luab_pushnil(lua_State *);
