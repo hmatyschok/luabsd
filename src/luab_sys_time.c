@@ -50,7 +50,6 @@
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
 
 typedef struct {
-    unsigned long   cookie;
     struct timespec    tv;
 } luab_timespec_t;
 

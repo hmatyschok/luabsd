@@ -55,7 +55,6 @@
 #define LUABSD_FLOCK_TYPE    "FLOCK*"
 
 typedef struct {
-    unsigned long   cookie;
     struct flock    info;
 } luab_flock_t;
 
