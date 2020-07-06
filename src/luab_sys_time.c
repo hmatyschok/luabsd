@@ -68,10 +68,13 @@ typedef struct {
 static int
 TimeSpec_tv_sec(lua_State *L)
 {
-    luab_timespec_t *self = luab_totimespec(L, 1);
-    time_t tv_sec = luab_checkinteger(L, 2, INT_MAX);
+    luab_timespec_t *self;
+    time_t tv_sec;
 
     luab_checkmaxargs(L, 2);
+
+    self = luab_totimespec(L, 1);
+    tv_sec = luab_checkinteger(L, 2, INT_MAX);
 
     self->tv.tv_sec = tv_sec;
 
@@ -90,10 +93,13 @@ TimeSpec_tv_sec(lua_State *L)
 static int
 TimeSpec_tv_nsec(lua_State *L)
 {
-    luab_timespec_t *self = luab_totimespec(L, 1);
-    long tv_nsec = luab_checkinteger(L, 2, LONG_MAX);
+    luab_timespec_t *self;
+    long tv_nsec;
 
     luab_checkmaxargs(L, 2);
+
+    self = luab_totimespec(L, 1);
+    tv_nsec = luab_checkinteger(L, 2, LONG_MAX);
 
     self->tv.tv_nsec = tv_nsec;
 
@@ -112,9 +118,11 @@ TimeSpec_tv_nsec(lua_State *L)
 static int
 TimeSpec_get(lua_State *L)
 {
-    luab_timespec_t *self = luab_totimespec(L, 1);
+    luab_timespec_t *self;
 
     luab_checkmaxargs(L, 1);
+
+    self = luab_totimespec(L, 1);
 
     lua_newtable(L);   /* XXX */
 
