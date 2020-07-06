@@ -82,7 +82,6 @@ extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
 static __inline lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
-static __inline void *  luab_checkudata(lua_State *, int, luab_module_t *);
 
 static __inline void luab_pushcfunction(lua_State *, luab_un_t *);
 static __inline void luab_pushinteger(lua_State *, luab_un_t *);
@@ -91,6 +90,7 @@ const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
+void    luab_checkudata(lua_State *, int, luab_module_t *);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *arg);
 
 int luab_pusherr(lua_State *, int);
@@ -100,12 +100,6 @@ static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
 {
     return ((luaL_checkinteger(L, narg)) & (b_msk));
-}
-
-static __inline void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
-{
-    return luaL_checkudata(L, narg, m->name);
 }
 
 static __inline void
