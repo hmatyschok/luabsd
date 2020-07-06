@@ -59,7 +59,7 @@ extern char **environ;
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.execv(path, argv)
+ * @usage err [, msg ] = bsd.unistd.execv(path, argv)
  */
 static int
 luab_execv(lua_State *L)
@@ -91,7 +91,7 @@ luab_execv(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.execve(path, argv)
+ * @usage err [, msg ] = bsd.unistd.execve(path, argv)
  */
 static int
 luab_execve(lua_State *L)
@@ -123,7 +123,7 @@ luab_execve(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.execvp(path, argv)
+ * @usage err [, msg ] = bsd.unistd.execvp(path, argv)
  */
 static int
 luab_execvp(lua_State *L)
@@ -157,7 +157,7 @@ luab_execvp(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.fexecve(fd, argv)
+ * @usage err [, msg ] = bsd.unistd.fexecve(fd, argv)
  */
 static int
 luab_fexecve(lua_State *L)
@@ -223,7 +223,7 @@ h_signal(int arg __unused)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (sec [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis sec [, msg ] = bsd.unistd.alarm(seconds, callback)
+ * @usage sec [, msg ] = bsd.unistd.alarm(seconds, callback)
  */
 static int
 luab_alarm(lua_State *L)
@@ -262,7 +262,7 @@ luab_alarm(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.access(path, mode)
+ * @usage err [, msg ] = bsd.unistd.access(path, mode)
  */
 static int
 luab_access(lua_State *L)
@@ -287,7 +287,7 @@ luab_access(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.chdir(path)
+ * @usage err [, msg ] = bsd.unistd.chdir(path)
  */
 static int
 luab_chdir(lua_State *L)
@@ -313,7 +313,7 @@ luab_chdir(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.chown(path, owner, group)
+ * @usage err [, msg ] = bsd.unistd.chown(path, owner, group)
  */
 static int
 luab_chown(lua_State *L)
@@ -342,7 +342,7 @@ luab_chown(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.close(fd)
+ * @usage err [, msg ] = bsd.unistd.close(fd)
  */
 static int
 luab_close(lua_State *L)
@@ -366,7 +366,7 @@ luab_close(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.closefrom(lowfd)
+ * @usage err [, msg ] = bsd.unistd.closefrom(lowfd)
  */
 static int
 luab_closefrom(lua_State *L)
@@ -390,7 +390,7 @@ luab_closefrom(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.dup(oldd)
+ * @usage err [, msg ] = bsd.unistd.dup(oldd)
  */
 static int
 luab_dup(lua_State *L)
@@ -415,7 +415,7 @@ luab_dup(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.dup2(oldd, newd)
+ * @usage err [, msg ] = bsd.unistd.dup2(oldd, newd)
  */
 static int
 luab_dup2(lua_State *L)
@@ -438,7 +438,7 @@ luab_dup2(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis pid [, msg ] = bsd.unistd.fork()
+ * @usage pid [, msg ] = bsd.unistd.fork()
  */
 static int
 luab_fork(lua_State *L)
@@ -464,7 +464,7 @@ luab_fork(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis value [, msg ] = bsd.unistd.fpathconf(fd, name)
+ * @usage value [, msg ] = bsd.unistd.fpathconf(fd, name)
  */
 static int
 luab_fpathconf(lua_State *L)
@@ -486,7 +486,7 @@ luab_fpathconf(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (path [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
- * @synopsis path [, msg ] = bsd.unistd.getcwd()
+ * @usage path [, msg ] = bsd.unistd.getcwd()
  */
 static int
 luab_getcwd(lua_State *L)
@@ -509,7 +509,7 @@ luab_getcwd(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (egid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
- * @synopsis egid [, msg ] = bsd.unistd.getegid()
+ * @usage egid [, msg ] = bsd.unistd.getegid()
  */
 static int
 luab_getegid(lua_State *L)
@@ -527,7 +527,7 @@ luab_getegid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (euid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
- * @synopsis euid [, msg ] = bsd.unistd.geteuid()
+ * @usage euid [, msg ] = bsd.unistd.geteuid()
  */
 static int
 luab_geteuid(lua_State *L)
@@ -545,7 +545,7 @@ luab_geteuid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (gid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
- * @synopsis gid [, msg ] = bsd.unistd.getgid()
+ * @usage gid [, msg ] = bsd.unistd.getgid()
  */
 static int
 luab_getgid(lua_State *L)
@@ -576,7 +576,7 @@ luab_getgid(lua_State *L)
  *                                                  (len, gidset) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis len, gidset = bsd.unistd.getgroups(gidsetlen)
+ * @usage len, gidset = bsd.unistd.getgroups(gidsetlen)
  */
 static int
 luab_getgroups(lua_State *L)
@@ -618,7 +618,7 @@ luab_getgroups(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,STRING} ]) (name [, nil]) on success or
  *                                                    (nil, (strerror(errno)))
- * @synopsis name [, msg ] = bsd.unistd.getlogin()
+ * @usage name [, msg ] = bsd.unistd.getlogin()
  */
 static int
 luab_getlogin(lua_State *L)
@@ -640,7 +640,7 @@ luab_getlogin(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pgrp [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
- * @synopsis pgrp [, msg ] = bsd.unistd.getpgrp()
+ * @usage pgrp [, msg ] = bsd.unistd.getpgrp()
  */
 static int
 luab_getpgrp(lua_State *L)
@@ -658,7 +658,7 @@ luab_getpgrp(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
- * @synopsis pid [, msg ] = bsd.unistd.getpid()
+ * @usage pid [, msg ] = bsd.unistd.getpid()
  */
 static int
 luab_getpid(lua_State *L)
@@ -676,7 +676,7 @@ luab_getpid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (ppid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
- * @synopsis ppid [, msg ] = bsd.unistd.getppid()
+ * @usage ppid [, msg ] = bsd.unistd.getppid()
  */
 static int
 luab_getppid(lua_State *L)
@@ -694,7 +694,7 @@ luab_getppid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (uid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
- * @synopsis uid [, msg ] = bsd.unistd.getuid()
+ * @usage uid [, msg ] = bsd.unistd.getuid()
  */
 static int
 luab_getuid(lua_State *L)
@@ -717,7 +717,7 @@ luab_getuid(lua_State *L)
  *                                                  (1, (strerror(errno)))
  *                                                      on success or
  *                                                  (0, (strerror(errno)))
- * @synopsis err [, msg ] = bsd.unistd.isatty(fd)
+ * @usage err [, msg ] = bsd.unistd.isatty(fd)
  */
 static int
 luab_isatty(lua_State *L)
@@ -741,7 +741,7 @@ luab_isatty(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.link(name1, name2)
+ * @usage err [, msg ] = bsd.unistd.link(name1, name2)
  */
 static int
 luab_link(lua_State *L)
@@ -775,7 +775,7 @@ luab_link(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (loc [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis loc [, msg ] = bsd.unistd.lseek(filedes, offset, whence)
+ * @usage loc [, msg ] = bsd.unistd.lseek(filedes, offset, whence)
  */
 static int
 luab_lseek(lua_State *L)
@@ -810,7 +810,7 @@ luab_lseek(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis value [, msg ] = bsd.unistd.pathconf(path, name)
+ * @usage value [, msg ] = bsd.unistd.pathconf(path, name)
  */
 static int
 luab_pathconf(lua_State *L)
@@ -835,7 +835,7 @@ luab_pathconf(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (-1 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis value [, msg ] = bsd.unistd.pause()
+ * @usage value [, msg ] = bsd.unistd.pause()
  */
 static int
 luab_pause(lua_State *L)
@@ -859,7 +859,7 @@ luab_pause(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.pipe(filedes)
+ * @usage err [, msg ] = bsd.unistd.pipe(filedes)
  */
 static int
 luab_pipe(lua_State *L)
@@ -893,7 +893,7 @@ luab_pipe(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.pipe2(filedes, flags)
+ * @usage err [, msg ] = bsd.unistd.pipe2(filedes, flags)
  */
 static int
 luab_pipe2(lua_State *L)
@@ -922,7 +922,7 @@ luab_pipe2(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.setgid(gid)
+ * @usage err [, msg ] = bsd.unistd.setgid(gid)
  */
 static int
 luab_setgid(lua_State *L)
@@ -946,7 +946,7 @@ luab_setgid(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.setpgid(pgrp)
+ * @usage err [, msg ] = bsd.unistd.setpgid(pgrp)
  */
 static int
 luab_setpgid(lua_State *L)
@@ -973,7 +973,7 @@ luab_setpgid(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.setpgrp(pgrp)
+ * @usage err [, msg ] = bsd.unistd.setpgrp(pgrp)
  */
 static int
 luab_setpgrp(lua_State *L)
@@ -997,7 +997,7 @@ luab_setpgrp(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (sid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis sid [, msg ] = bsd.unistd.setsid()
+ * @usage sid [, msg ] = bsd.unistd.setsid()
  */
 static int
 luab_setsid(lua_State *L)
@@ -1017,7 +1017,7 @@ luab_setsid(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (uid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis uid [, msg ] = bsd.unistd.setuid()
+ * @usage uid [, msg ] = bsd.unistd.setuid()
  */
 static int
 luab_setuid(lua_State *L)
@@ -1042,7 +1042,7 @@ luab_setuid(lua_State *L)
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (name [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
  *
- * @synopsis name [, msg ] = bsd.unistd.ttyname()
+ * @usage name [, msg ] = bsd.unistd.ttyname()
  */
 static int
 luab_ttyname(lua_State *L)
@@ -1073,7 +1073,7 @@ luab_ttyname(lua_State *L)
  * @return (LUA_TNUMBER, LUA_TSTRING)               (0, name) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis name [, msg ] = bsd.unistd.ttyname()
+ * @usage name [, msg ] = bsd.unistd.ttyname()
  */
 static int
 luab_ttyname_r(lua_State *L)
@@ -1110,7 +1110,7 @@ luab_ttyname_r(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.unlink(path)
+ * @usage err [, msg ] = bsd.unistd.unlink(path)
  */
 static int
 luab_unlink(lua_State *L)
@@ -1134,7 +1134,7 @@ luab_unlink(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.rmdir(path)
+ * @usage err [, msg ] = bsd.unistd.rmdir(path)
  */
 static int
 luab_rmdir(lua_State *L)
@@ -1165,7 +1165,7 @@ luab_rmdir(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.ftruncate(path)
+ * @usage err [, msg ] = bsd.unistd.ftruncate(path)
  */
 static int
 luab_ftruncate(lua_State *L)
@@ -1198,7 +1198,7 @@ luab_ftruncate(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.fchown(path)
+ * @usage err [, msg ] = bsd.unistd.fchown(path)
  */
 static int
 luab_fchown(lua_State *L)
@@ -1227,7 +1227,7 @@ luab_fchown(lua_State *L)
  * @return (LUA_TNUMBER, LUA_TSTRING)               (0, hostname) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err, hostname = bsd.unistd.gethostname()
+ * @usage err, hostname = bsd.unistd.gethostname()
  */
 static int
 luab_gethostname(lua_State *L)
@@ -1254,7 +1254,7 @@ luab_gethostname(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.setegid(egid)
+ * @usage err [, msg ] = bsd.unistd.setegid(egid)
  */
 static int
 luab_setegid(lua_State *L)
@@ -1278,7 +1278,7 @@ luab_setegid(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.seteuid(euid)
+ * @usage err [, msg ] = bsd.unistd.seteuid(euid)
  */
 static int
 luab_seteuid(lua_State *L)
@@ -1305,7 +1305,7 @@ luab_seteuid(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (sid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis sid [, msg ] = bsd.unistd.getsid(pid)
+ * @usage sid [, msg ] = bsd.unistd.getsid(pid)
  */
 static int
 luab_getsid(lua_State *L)
@@ -1328,7 +1328,7 @@ luab_getsid(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis sid [, msg ] = bsd.unistd.fchdir(fd)
+ * @usage sid [, msg ] = bsd.unistd.fchdir(fd)
  */
 static int
 luab_fchdir(lua_State *L)
@@ -1351,7 +1351,7 @@ luab_fchdir(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.getpgid(pid)
+ * @usage err [, msg ] = bsd.unistd.getpgid(pid)
  */
 static int
 luab_getpgid(lua_State *L)
@@ -1376,7 +1376,7 @@ luab_getpgid(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.lchown(path, owner, group)
+ * @usage err [, msg ] = bsd.unistd.lchown(path, owner, group)
  */
 static int
 luab_lchown(lua_State *L)
@@ -1410,7 +1410,7 @@ luab_lchown(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.truncate(path, length)
+ * @usage err [, msg ] = bsd.unistd.truncate(path, length)
  */
 static int
 luab_truncate(lua_State *L)
@@ -1470,7 +1470,7 @@ luab_faccessat(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.fchownat(fd, path, owner, group, flag)
+ * @usage err [, msg ] = bsd.unistd.fchownat(fd, path, owner, group, flag)
  */
 static int
 luab_fchownat(lua_State *L)
@@ -1515,7 +1515,7 @@ luab_fchownat(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.linkat(fd1, name1, fd2, name2, flag)
+ * @usage err [, msg ] = bsd.unistd.linkat(fd1, name1, fd2, name2, flag)
  */
 static int
 luab_linkat(lua_State *L)
@@ -1546,7 +1546,7 @@ luab_linkat(lua_State *L)
  *                      object pointed by name1 or associated with the object
  *                      pointed by name1.
  * @param path          Link identified by path.
- * @param flag          The values are constructed over
+ * @param flag          Values are constructed over
  *
  *                          bsd.fcntl.AT_SYMLINK_NOFOLLOW
  *
@@ -1555,7 +1555,7 @@ luab_linkat(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.unlinkat(fd, path, flag)
+ * @usage err [, msg ] = bsd.unistd.unlinkat(fd, path, flag)
  */
 static int
 luab_unlinkat(lua_State *L)
@@ -1582,7 +1582,7 @@ luab_unlinkat(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (path [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
- * @synopsis path [, msg ] = bsd.unistd.getwd()
+ * @usage path [, msg ] = bsd.unistd.getwd()
  */
 static int
 luab_getwd(lua_State *L)
@@ -1610,7 +1610,7 @@ luab_getwd(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis err [, msg ] = bsd.unistd.eaccess(path, mode)
+ * @usage err [, msg ] = bsd.unistd.eaccess(path, mode)
  */
 static int
 luab_eaccess(lua_State *L)
@@ -1640,7 +1640,7 @@ luab_eaccess(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis value [, msg ] = bsd.unistd.lpathconf(path, name)
+ * @usage value [, msg ] = bsd.unistd.lpathconf(path, name)
  */
 static int
 luab_lpathconf(lua_State *L)
@@ -1667,7 +1667,7 @@ luab_lpathconf(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis value [, msg ] = bsd.unistd.sethostname(name)
+ * @usage err [, msg ] = bsd.unistd.sethostname(name)
  */
 static int
 luab_sethostname(lua_State *L)
@@ -1690,7 +1690,7 @@ luab_sethostname(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis value [, msg ] = bsd.unistd.setlogin(name)
+ * @usage err [, msg ] = bsd.unistd.setlogin(name)
  */
 static int
 luab_setlogin(lua_State *L)

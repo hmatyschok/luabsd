@@ -229,6 +229,26 @@ luab_Flock(lua_State *L)
 #define LUABSD_FCNTL_LIB_ID    1593623310
 #define LUABSD_FCNTL_LIB_KEY    "fcntl"
 
+/***
+ * @function open(2) - open or create for reading, writing or executing
+ *
+ * @param path          The specified file name.
+ * @param flags         Values are constructed over
+ *
+ *                          bsd.fcntl.O_*
+ *
+ *                      by bitwise-inclusive OR.
+ * @param mode          Values are constructed over
+ *
+ *                          bsd.sys.stat.S_*
+ *
+ *                      by bitwise-inclusive OR. 
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (fd [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage fd [, msg ] = bsd.fcntl.open(path, flags [, mode])
+ */
 static int
 luab_open(lua_State *L)
 {
@@ -250,6 +270,21 @@ luab_open(lua_State *L)
     return luab_pusherr(L, fd);
 }
 
+/***
+ * @function creat(2) - create a new file
+ *
+ * @param path          The specified file name.
+ * @param mode          Values are constructed over
+ *
+ *                          bsd.sys.stat.S_*
+ *
+ *                      by bitwise-inclusive OR. 
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (fd [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage fd [, msg ] = bsd.fcntl.creat(path, mode)
+ */
 static int
 luab_creat(lua_State *L)
 {
@@ -267,6 +302,22 @@ luab_creat(lua_State *L)
     return luab_pusherr(L, fd);
 }
 
+/***
+ * @function fcntl(2) - file control
+ *
+ * @param fd            The specified descriptor.
+ * @param cmd           Command operated on fd over
+ *
+ *                          bsd.fcntl.F_*,
+ *
+ *                      as described in fcntl(2).
+ * @param arg           Optional, depends on applied cmd.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage value [, msg ] = bsd.fcntl.fcntl(fd, cmd [, arg])
+ */
 static int
 luab_fcntl(lua_State *L)
 {
