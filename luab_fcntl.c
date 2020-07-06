@@ -372,7 +372,6 @@ luab_openat(lua_State *L)
     mode_t mode;
     int fd;
 
-
     dirfd = luab_checkinteger(L, 1, INT_MAX);
     path = luab_checklstring(L, 2, MAXPATHLEN);
     flags = luab_checkinteger(L, 3, INT_MAX);

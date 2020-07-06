@@ -155,14 +155,14 @@ luab_pusherr(lua_State *L, int res)
 int
 luab_pushnil(lua_State *L)
 {
-    int saved_errno = errno;
+    int save_errno = errno;
     char *msg;
     int status;
 
     lua_pushnil(L);
 
-    if (saved_errno != 0) {
-        msg = strerror(saved_errno);
+    if (save_errno != 0) {
+        msg = strerror(save_errno);
         lua_pushstring(L, msg);
         status = 2;
     } else
