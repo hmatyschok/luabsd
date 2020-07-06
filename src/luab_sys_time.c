@@ -37,12 +37,151 @@
 
 #include "luabsd.h"
 
-#define LUABSD_SYS_TIME_LIB_ID    1593623310
-#define LUABSD_SYS_TIME_LIB_KEY    "time"
+/*
+ * Interface against
+ *
+ *  struct timespec {
+ *      time_t  tv_sec;
+ *      long    tv_nsec;
+ *  };
+ */
+
+#define LUABSD_TIMESPEC_TYPE_ID    1594034844
+#define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
+
+typedef struct {
+    struct timespec    tv;
+} luab_timespec_t;
+
+#define luab_totimespec(L, narg) \
+    (luab_todata((L), (narg), LUABSD_TIMESPEC_TYPE, luab_timespec_t *))
+
+/***
+ * Set value for tv_sec over timespec{}.
+ *
+ * @function tv_sec
+ *
+ * @param sec           Specifies value in seconds.
+ *
+ * @usage tv:tv_sec(sec)
+ */
+static int
+TimeSpec_tv_sec(lua_State *L)
+{
+    luab_timespec_t *self = luab_totimespec(L, 1);
+    time_t tv_sec = luab_checkinteger(L, 2, INT_MAX);
+
+    luab_checkmaxargs(L, 2);
+
+    self->tv.tv_sec = tv_sec;
+
+    return 0;
+}
+
+/***
+ * Set value for tv_nsec over timespec{}.
+ *
+ * @function tv_nsec
+ *
+ * @param nsec           Specifies value in nanoneconds.
+ *
+ * @usage tv:tv_nsec(nsec)
+ */
+static int
+TimeSpec_tv_nsec(lua_State *L)
+{
+    luab_timespec_t *self = luab_totimespec(L, 1);
+    long tv_nsec = luab_checkinteger(L, 2, LONG_MAX);
+
+    luab_checkmaxargs(L, 2);
+
+    self->tv.tv_nsec = tv_nsec;
+
+    return 0;
+}
+
+/***
+ * Get attributes over timespec{} as LUA_TTABLE.
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ * @usage t = tv:get()
+ */
+static int
+TimeSpec_get(lua_State *L)
+{
+    luab_timespec_t *self = luab_totimespec(L, 1);
+
+    luab_checkmaxargs(L, 1);
+
+    lua_newtable(L);   /* XXX */
+
+    lua_pushinteger(L, self->tv.tv_sec);
+    lua_setfield(L, -2, "tv_sec");
+
+    lua_pushinteger(L, self->tv.tv_nsec);
+    lua_setfield(L, -2, "tv_nsec");
+
+    lua_pushvalue(L, -1);
+
+    return 1;
+}
+
+static int
+TimeSpec_tostring(lua_State *L)
+{
+    luab_timespec_t *self = luab_totimespec(L, 1);
+    lua_pushfstring(L, "timespec (%p)", self);
+
+    return 1;
+}
+
+static luab_table_t timespec_methods[] = {
+    LUABSD_FUNC("tv_sec",   TimeSpec_tv_sec),
+    LUABSD_FUNC("tv_nsec",  TimeSpec_tv_nsec),
+    LUABSD_FUNC("get",  TimeSpec_get),
+    LUABSD_FUNC("__tostring",   TimeSpec_tostring),
+    LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t timespec_type = {
+    .cookie = LUABSD_TIMESPEC_TYPE_ID,
+    .name = LUABSD_TIMESPEC_TYPE,
+    .vec = timespec_methods,
+};
+
+/***
+ * Ctor.
+ *
+ * @function StructTimeSpec
+ *
+ * @return (LUA_TUSERDATA)
+ *
+ * @usage tv = bsd.sys.time.StructTimeSpec()
+ */
+static int
+luab_StructTimeSpec(lua_State *L)
+{
+    luab_timespec_t *self;
+
+    luab_checkmaxargs(L, 0);
+
+    self = (luab_timespec_t *)lua_newuserdata(L, sizeof(luab_timespec_t));
+
+    bzero(&self->tv, sizeof(struct timespec));
+    luaL_setmetatable(L, LUABSD_TIMESPEC_TYPE);
+
+    return 1;
+}
 
 /*
  * Interface against components or service primitives on sys/time.h.
  */
+
+#define LUABSD_SYS_TIME_LIB_ID    1593623310
+#define LUABSD_SYS_TIME_LIB_KEY    "time"
 
 static sigset_t nsigset;
 static pthread_t tid;
@@ -157,6 +296,7 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUABSD_INT("ITIMER_PROF",    ITIMER_PROF),
     LUABSD_FUNC("getitimer",  luab_getitimer),
     LUABSD_FUNC("setitimer",  luab_setitimer),
+    LUABSD_FUNC("StructTimeSpec",  luab_StructTimeSpec),
     LUABSD_FUNC(NULL, NULL)
 };
 

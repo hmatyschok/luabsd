@@ -60,6 +60,7 @@ typedef struct {
 
 extern luab_module_t db_type;
 extern luab_module_t flock_type;
+extern luab_module_t timespec_type;
 
 extern luab_module_t luab_sys_file_lib;
 extern luab_module_t luab_sys_stat_lib;
@@ -103,7 +104,7 @@ luab_checkmaxargs(lua_State *L, int nmax)
 int luab_pusherr(lua_State *, int);
 int luab_pushnil(lua_State *);
 
-static __inline void    /* XXX inline */
+static __inline void
 luab_pushinteger(lua_State *L, luab_un_t *u)
 {
     lua_pushinteger(L, u->x_i);

@@ -63,7 +63,7 @@ typedef struct {
 
 /* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
 static int
-flock_l_start(lua_State *L)
+Flock_l_start(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
     off_t l_start = luab_checkinteger(L, 2, ULONG_MAX);
@@ -77,7 +77,7 @@ flock_l_start(lua_State *L)
 
 /* len = 0 means until end of file */
 static int
-flock_l_len(lua_State *L)
+Flock_l_len(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
     off_t l_len = luab_checkinteger(L, 2, LONG_MAX);
@@ -91,7 +91,7 @@ flock_l_len(lua_State *L)
 
 /* lock owner */
 static int
-flock_l_pid(lua_State *L)
+Flock_l_pid(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
     pid_t l_pid = luab_checkinteger(L, 2, INT_MAX);
@@ -105,7 +105,7 @@ flock_l_pid(lua_State *L)
 
 /* lock type: read/write, etc. */
 static int
-flock_l_type(lua_State *L)
+Flock_l_type(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
     int l_type = luab_checkinteger(L, 2, SHRT_MAX);
@@ -119,7 +119,7 @@ flock_l_type(lua_State *L)
 
 /* type of l_start */
 static int
-flock_l_whence(lua_State *L)
+Flock_l_whence(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
     int l_whence = luab_checkinteger(L, 2, SHRT_MAX);
@@ -133,7 +133,7 @@ flock_l_whence(lua_State *L)
 
 /* remote system id or zero for local */
 static int
-flock_l_sysid(lua_State *L)
+Flock_l_sysid(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
     int l_sysid = luab_checkinteger(L, 2, INT_MAX);
@@ -149,7 +149,7 @@ flock_l_sysid(lua_State *L)
  * Maps attributes on flock{} to an instance of LUA_TTABLE.
  */
 static int
-flock_get(lua_State *L)
+Flock_get(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
 
@@ -181,7 +181,7 @@ flock_get(lua_State *L)
 }
 
 static int
-flock_tostring(lua_State *L)
+Flock_tostring(lua_State *L)
 {
     luab_flock_t *self = luab_toflock(L, 1);
     lua_pushfstring(L, "flock (%p)", self);
@@ -190,14 +190,14 @@ flock_tostring(lua_State *L)
 }
 
 static luab_table_t flock_methods[] = {
-    LUABSD_FUNC("l_start",    flock_l_start),
-    LUABSD_FUNC("l_len",  flock_l_len),
-    LUABSD_FUNC("l_pid",  flock_l_pid),
-    LUABSD_FUNC("l_type", flock_l_type),
-    LUABSD_FUNC("l_whence",   flock_l_whence),
-    LUABSD_FUNC("l_sysid",    flock_l_sysid),
-    LUABSD_FUNC("get",    flock_get),
-    LUABSD_FUNC("__tostring", flock_tostring),
+    LUABSD_FUNC("l_start",    Flock_l_start),
+    LUABSD_FUNC("l_len",  Flock_l_len),
+    LUABSD_FUNC("l_pid",  Flock_l_pid),
+    LUABSD_FUNC("l_type", Flock_l_type),
+    LUABSD_FUNC("l_whence",   Flock_l_whence),
+    LUABSD_FUNC("l_sysid",    Flock_l_sysid),
+    LUABSD_FUNC("get",    Flock_get),
+    LUABSD_FUNC("__tostring", Flock_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 
@@ -208,7 +208,7 @@ luab_module_t flock_type = {
 };
 
 static int
-luab_Flock(lua_State *L)
+luab_StructFlock(lua_State *L)
 {
     luab_flock_t *self;
 
@@ -541,7 +541,7 @@ static luab_table_t luab_fcntl_vec[] = {    /* fcntl.h */
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
 #endif
-    LUABSD_FUNC("Flock", luab_Flock),
+    LUABSD_FUNC("StructFlock", luab_StructFlock),
     LUABSD_FUNC(NULL, NULL)
 };
 
