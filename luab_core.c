@@ -136,14 +136,14 @@ luab_checklstring(lua_State *L, int narg, size_t n)
 int
 luab_pusherr(lua_State *L, int res)
 {
-    int saved_errno = errno;
+    int save_errno = errno;
     char *msg;
     int status;
 
     lua_pushinteger(L, res);
 
-    if (saved_errno != 0 && res != 0) {
-        msg = strerror(saved_errno);
+    if (save_errno != 0 && res != 0) {
+        msg = strerror(save_errno);
         lua_pushstring(L, msg);
         status = 2;
     } else
