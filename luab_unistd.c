@@ -1690,7 +1690,7 @@ luab_sethostname(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @synopsis value [, msg ] = bsd.unistd.sethostname(name)
+ * @synopsis value [, msg ] = bsd.unistd.setlogin(name)
  */
 static int
 luab_setlogin(lua_State *L)
