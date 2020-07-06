@@ -63,7 +63,9 @@ typedef struct {
 #define luab_todata(L, narg, id, t) \
     ((t)luaL_checkudata((L), (narg), (id)))
 
+#if __BSD_VISIBLE
 extern luab_module_t db_type;
+#endif
 extern luab_module_t flock_type;
 extern luab_module_t timespec_type;
 

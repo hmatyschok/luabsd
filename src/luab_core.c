@@ -252,7 +252,9 @@ luaopen_bsd(lua_State *L)
 
     lua_pushvalue(L, -1);
 
+#if __BSD_VISIBLE
     luab_newmetatable(L, &db_type);
+#endif
     luab_newmetatable(L, &flock_type);
     luab_newmetatable(L, &timespec_type);
 

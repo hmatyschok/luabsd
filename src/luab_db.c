@@ -41,6 +41,7 @@
 #define LUABSD_DB_LIB_ID    1593623310
 #define LUABSD_DB_LIB_KEY    "db"
 
+#if __BSD_VISIBLE
 #define LUABSD_DB_TYPE_ID    1593623398
 #define LUABSD_DB_TYPE   "DB*"
 
@@ -353,6 +354,7 @@ luab_module_t db_type = {
     .sz = sizeof(luab_db_t),
 };
 
+
 static int
 luab_dbopen(lua_State *L)
 {
@@ -373,11 +375,15 @@ luab_dbopen(lua_State *L)
         lua_pop(L, 1);
         lua_pushnil(L);
     }
-    
+
     return 1;
 }
+#endif
 
 static luab_table_t luab_db_vec[] = {   /* db.h */
+    LUABSD_INT("RET_ERROR", RET_ERROR),
+    LUABSD_INT("RET_SUCCESS",   RET_SUCCESS),
+    LUABSD_INT("RET_SPECIAL",   RET_SPECIAL),
     LUABSD_INT("DB_LOCK",    DB_LOCK),
     LUABSD_INT("DB_SHMEM",   DB_SHMEM),
     LUABSD_INT("DB_TXN", DB_TXN),
@@ -395,7 +401,9 @@ static luab_table_t luab_db_vec[] = {   /* db.h */
     LUABSD_INT("DB_BTREE",   DB_BTREE),
     LUABSD_INT("DB_HASH",    DB_HASH),
     LUABSD_INT("DB_RECNO",   DB_RECNO),
+#if __BSD_VISIBLE
     LUABSD_FUNC("dbopen", luab_dbopen),
+#endif
     LUABSD_FUNC(NULL, NULL)
 };
 
