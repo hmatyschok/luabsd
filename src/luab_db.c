@@ -50,7 +50,7 @@ typedef struct {
 } luab_db_t;
 
 #define luab_todb(L, narg) \
-    luab_todata((L), (narg), LUABSD_DB_TYPE, luab_db_t *)
+    luab_todata((L), (narg), &db_type, luab_db_t *)
 
 /*
  * Interface against db(3).

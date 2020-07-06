@@ -147,9 +147,7 @@ luab_checkmaxargs(lua_State *L, int nmax)
 void *
 luab_newuserdata(lua_State *L, luab_module_t *m)
 {
-    luab_udata_t *ud = (luab_udata_t *)lua_newuserdata(L, m->sz);
-
-    ud->cookie = m->cookie;
+    void *ud = lua_newuserdata(L, m->sz);
 
     luaL_setmetatable(L, m->name);
 

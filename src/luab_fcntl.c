@@ -60,7 +60,7 @@ typedef struct {
 } luab_flock_t;
 
 #define luab_toflock(L, narg) \
-    (luab_todata((L), (narg), LUABSD_FLOCK_TYPE, luab_flock_t *))
+    (luab_todata((L), (narg), &flock_type, luab_flock_t *))
 
 /* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
 static int

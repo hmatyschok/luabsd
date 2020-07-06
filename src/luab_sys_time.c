@@ -55,7 +55,7 @@ typedef struct {
 } luab_timespec_t;
 
 #define luab_totimespec(L, narg) \
-    (luab_todata((L), (narg), LUABSD_TIMESPEC_TYPE, luab_timespec_t *))
+    (luab_todata((L), (narg), &timespec_type, luab_timespec_t *))
 
 /***
  * Set value for tv_sec over timespec{}.
