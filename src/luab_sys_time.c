@@ -50,6 +50,7 @@
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
 
 typedef struct {
+    unsigned long   cookie;
     struct timespec    tv;
 } luab_timespec_t;
 
@@ -168,10 +169,9 @@ luab_StructTimeSpec(lua_State *L)
 
     luab_checkmaxargs(L, 0);
 
-    self = (luab_timespec_t *)lua_newuserdata(L, sizeof(luab_timespec_t));
+    self = (luab_timespec_t *)luab_newuserdata(L, &timespec_type);
 
     bzero(&self->tv, sizeof(struct timespec));
-    luaL_setmetatable(L, LUABSD_TIMESPEC_TYPE);
 
     return 1;
 }

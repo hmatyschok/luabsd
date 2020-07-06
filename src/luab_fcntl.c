@@ -55,6 +55,7 @@
 #define LUABSD_FLOCK_TYPE    "FLOCK*"
 
 typedef struct {
+    unsigned long   cookie;
     struct flock    info;
 } luab_flock_t;
 
@@ -214,10 +215,9 @@ luab_StructFlock(lua_State *L)
 
     luab_checkmaxargs(L, 0);
 
-    self = (luab_flock_t *)lua_newuserdata(L, sizeof(luab_flock_t));
+    self = (luab_flock_t *)luab_newuserdata(L, &flock_type);
 
     bzero(&self->info, sizeof(struct flock));
-    luaL_setmetatable(L, LUABSD_FLOCK_TYPE);
 
     return 1;
 }

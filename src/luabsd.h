@@ -53,7 +53,12 @@ typedef struct {
     unsigned long   cookie;        /*  date -u +'%s' */
     const char  *name;
     luab_table_t    *vec;
+    size_t  sz;
 } luab_module_t;
+
+typedef struct {
+    unsigned long   cookie;
+} luab_udata_t;
 
 #define luab_todata(L, narg, id, t) \
     ((t)luaL_checkudata((L), (narg), (id)))
@@ -74,35 +79,25 @@ extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
 static __inline lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
-static __inline int luab_checkmaxargs(lua_State *, int);
 
 static __inline void luab_pushcfunction(lua_State *, luab_un_t *);
 static __inline void luab_pushinteger(lua_State *, luab_un_t *);
 
-
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
+int luab_checkmaxargs(lua_State *, int);
+
+void *  luab_newuserdata(lua_State *, luab_module_t *);
+
+int luab_pusherr(lua_State *, int);
+int luab_pushnil(lua_State *);
 
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
 {
     return ((luaL_checkinteger(L, narg)) & (b_msk));
 }
-
-static __inline int
-luab_checkmaxargs(lua_State *L, int nmax)
-{
-    int narg;
-
-    if ((narg = lua_gettop(L)) > nmax)
-        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
-
-    return narg;
-}
-
-int luab_pusherr(lua_State *, int);
-int luab_pushnil(lua_State *);
 
 static __inline void
 luab_pushinteger(lua_State *L, luab_un_t *u)

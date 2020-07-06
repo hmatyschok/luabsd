@@ -134,6 +134,29 @@ luab_checklstring(lua_State *L, int narg, size_t n)
 }
 
 int
+luab_checkmaxargs(lua_State *L, int nmax)
+{
+    int narg;
+
+    if ((narg = lua_gettop(L)) > nmax)
+        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
+
+    return narg;
+}
+
+void *
+luab_newuserdata(lua_State *L, luab_module_t *m)
+{
+    luab_udata_t *ud = (luab_udata_t *)lua_newuserdata(L, m->sz);
+
+    ud->cookie = m->cookie;
+
+    luaL_setmetatable(L, m->name);
+
+    return ud;
+}
+
+int
 luab_pusherr(lua_State *L, int res)
 {
     int save_errno = errno;

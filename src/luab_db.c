@@ -350,6 +350,7 @@ luab_module_t db_type = {
     .cookie = LUABSD_DB_TYPE_ID,
     .name = LUABSD_DB_TYPE,
     .vec = db_methods,
+    .sz = sizeof(luab_db_t),
 };
 
 static int
@@ -366,14 +367,13 @@ luab_dbopen(lua_State *L)
     mode = luab_checkinteger(L, 3, INT_MAX);
     type = luab_checkinteger(L, 4, INT_MAX);
 
-    self = (luab_db_t *)lua_newuserdata(L, sizeof(luab_db_t));
-    self->db = NULL;
+    self = (luab_db_t *)luab_newuserdata(L, &db_type);
 
-    luaL_setmetatable(L, LUABSD_DB_TYPE);
-
-    if ((self->db = dbopen(fname, flags, mode, type, NULL)) == NULL)
+    if ((self->db = dbopen(fname, flags, mode, type, NULL)) == NULL) {
+        lua_pop(L, 1);
         lua_pushnil(L);
-
+    }
+    
     return 1;
 }
 
