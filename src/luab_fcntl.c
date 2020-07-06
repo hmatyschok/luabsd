@@ -225,6 +225,7 @@ luab_module_t flock_type = {
     .cookie = LUABSD_FLOCK_TYPE_ID,
     .name = LUABSD_FLOCK_TYPE,
     .vec = flock_methods,
+    .sz = sizeof(luab_flock_t),
 };
 
 static int

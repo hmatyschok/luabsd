@@ -158,6 +158,7 @@ luab_module_t timespec_type = {
     .cookie = LUABSD_TIMESPEC_TYPE_ID,
     .name = LUABSD_TIMESPEC_TYPE,
     .vec = timespec_methods,
+    .sz = sizeof(luab_timespec_t),
 };
 
 /***
