@@ -145,14 +145,6 @@ luab_checkmaxargs(lua_State *L, int nmax)
 }
 
 void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
-{
-    void *ud = luaL_checkudata(L, narg, m->name);
-    luaL_argcheck(L, ud != NULL, narg, m->name);
-    return ud;
-}
-
-void *
 luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 {
     void *ud = lua_newuserdata(L, m->sz);

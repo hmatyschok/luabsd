@@ -502,15 +502,16 @@ out:
 static int
 luab_setitimer(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 3);
+    int narg = luab_checkmaxargs(L, 4);
     int which;
-    time_t sec;
+    struct itimerval *value; 
+    struct itimerval *ovalue;
     int status;
-    struct itimerval itv;
-
+    
     which = luab_checkinteger(L, 1, INT_MAX);
-    sec = luab_checkinteger(L, 2, LONG_MAX); /* LP64 */
-
+    value = (struct itimerval *)luab_checkudataisnil(L, 2, &itimerval_type);
+    ovalue = (struct itimerval *)luab_checkudataisnil(L, 3, &itimerval_type);
+    
     if (lua_type(L, narg) != LUA_TFUNCTION)
         return luaL_error(L, "Missing callout handler.");
 
@@ -528,10 +529,7 @@ luab_setitimer(lua_State *L)
     if ((status = pthread_create(&tid, NULL, h_signal, NULL)) != 0)
         return luab_pusherr(L, status);
 
-    bzero(&itv, sizeof(itv));
-    itv.it_value.tv_sec = sec;
-
-    if ((status = setitimer(which, &itv, NULL)) != 0)
+    if ((status = setitimer(which, value, ovalue)) != 0)
         pthread_cancel(tid);
 
     return luab_pusherr(L, status);
