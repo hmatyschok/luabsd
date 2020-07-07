@@ -69,6 +69,7 @@ extern luab_module_t db_type;
 #endif
 extern luab_module_t flock_type;
 extern luab_module_t timespec_type;
+extern luab_module_t stat_type;
 
 extern luab_module_t luab_sys_file_lib;
 extern luab_module_t luab_sys_stat_lib;
@@ -90,7 +91,7 @@ const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
-void    luab_checkudata(lua_State *, int, luab_module_t *);
+void *  luab_checkudata(lua_State *, int, luab_module_t *);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *arg);
 
 int luab_pusherr(lua_State *, int);

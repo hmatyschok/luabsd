@@ -53,6 +53,8 @@ typedef struct {
     struct timespec    tv;
 } luab_timespec_t;
 
+#define luab_newtimespec(L, arg) \
+    ((luab_timespec_t *)luab_newuserdata(L, &timespec_type, (arg)))
 #define luab_totimespec(L, narg) \
     (luab_todata((L), (narg), &timespec_type, luab_timespec_t *))
 
@@ -186,9 +188,7 @@ luab_StructTimeSpec(lua_State *L)
 
     luab_checkmaxargs(L, 0);
 
-    self = (luab_timespec_t *)luab_newuserdata(L, &timespec_type, NULL);
-
-    (void)memset(&self->tv, 0, sizeof(struct timespec));
+    self = luab_newtimespec(L, NULL);
 
     return 1;
 }

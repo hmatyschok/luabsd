@@ -149,6 +149,7 @@ luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
     void *ud = luaL_checkudata(L, narg, m->name);
     luaL_argcheck(L, ud != NULL, narg, m->name);
+    return ud;
 }
 
 void *
@@ -158,6 +159,8 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 
     if (m->init != NULL && arg != NULL)
         (*m->init)(ud, arg);
+    else
+        (void)memset(ud, 0, m->sz);
 
     luaL_setmetatable(L, m->name);
 
@@ -265,6 +268,7 @@ luaopen_bsd(lua_State *L)
 #endif
     luab_newmetatable(L, &flock_type);
     luab_newmetatable(L, &timespec_type);
+    luab_newmetatable(L, &stat_type);
 
     return 1;
 }

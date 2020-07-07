@@ -58,6 +58,8 @@ typedef struct {
     struct flock    info;
 } luab_flock_t;
 
+#define luab_newflock(L, arg) \
+    ((luab_flock_t *)luab_newuserdata(L, &flock_type, (arg)))
 #define luab_toflock(L, narg) \
     (luab_todata((L), (narg), &flock_type, luab_flock_t *))
 
@@ -225,7 +227,7 @@ static void
 flock_init(void *ud, void *arg)
 {
     luab_flock_t *self = ud;
-    
+
     (void)memmove(&self->info, arg, sizeof(self->info));
 }
 
@@ -244,10 +246,8 @@ luab_StructFlock(lua_State *L)
 
     luab_checkmaxargs(L, 0);
 
-    self = (luab_flock_t *)luab_newuserdata(L, &flock_type, NULL);
+    self = luab_newflock(L, NULL);
 
-    (void)memset(&self->info, 0, sizeof(struct flock));
-    
     return 1;
 }
 
