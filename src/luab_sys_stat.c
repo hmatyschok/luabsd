@@ -88,7 +88,7 @@ typedef struct {
 
 /* inode's device */
 static int
-Stat_st_dev(lua_State *L)
+Stat_set_st_dev(lua_State *L)
 {
     luab_stat_t *self;
     dev_t st_dev;
@@ -105,7 +105,7 @@ Stat_st_dev(lua_State *L)
 
 /* inode's number */
 static int
-Stat_st_ino(lua_State *L)
+Stat_set_st_ino(lua_State *L)
 {
     luab_stat_t *self;
     ino_t st_ino;
@@ -122,7 +122,7 @@ Stat_st_ino(lua_State *L)
 
 /* number of hard links */
 static int
-Stat_st_nlink(lua_State *L)
+Stat_set_st_nlink(lua_State *L)
 {
     luab_stat_t *self;
     nlink_t st_nlink;
@@ -139,7 +139,7 @@ Stat_st_nlink(lua_State *L)
 
 /* inode protection mode */
 static int
-Stat_st_mode(lua_State *L)
+Stat_set_st_mode(lua_State *L)
 {
     luab_stat_t *self;
     u_int st_mode;
@@ -156,7 +156,7 @@ Stat_st_mode(lua_State *L)
 
 /* user ID of the file's owner */
 static int
-Stat_st_uid(lua_State *L)
+Stat_set_st_uid(lua_State *L)
 {
     luab_stat_t *self;
     uid_t st_uid;
@@ -173,7 +173,7 @@ Stat_st_uid(lua_State *L)
 
 /* user ID of the file's owner */
 static int
-Stat_st_gid(lua_State *L)
+Stat_set_st_gid(lua_State *L)
 {
     luab_stat_t *self;
     gid_t st_gid;
@@ -190,7 +190,7 @@ Stat_st_gid(lua_State *L)
 
 /* device type */
 static int
-Stat_st_rdev(lua_State *L)
+Stat_set_st_rdev(lua_State *L)
 {
     luab_stat_t *self;
     dev_t st_rdev;
@@ -208,7 +208,7 @@ Stat_st_rdev(lua_State *L)
 /* time of last access */
 #ifdef  __STAT_TIME_T_EXT
 static int
-Stat_st_atim_ext(lua_State *L)
+Stat_set_st_atim_ext(lua_State *L)
 {
     luab_stat_t *self;
     __int32_t st_atim_ext;
@@ -225,7 +225,7 @@ Stat_st_atim_ext(lua_State *L)
 #endif
 
 static int
-Stat_st_atim(lua_State *L)
+Stat_set_st_atim(lua_State *L)
 {
     luab_stat_t *self;
     void *ud;
@@ -243,7 +243,7 @@ Stat_st_atim(lua_State *L)
 /* time of last data modification */
 #ifdef  __STAT_TIME_T_EXT
 static int
-Stat_st_mtim_ext(lua_State *L)
+Stat_set_st_mtim_ext(lua_State *L)
 {
     luab_stat_t *self;
     __int32_t st_mtim_ext;
@@ -260,7 +260,7 @@ Stat_st_mtim_ext(lua_State *L)
 #endif
 
 static int
-Stat_st_mtim(lua_State *L)
+Stat_set_st_mtim(lua_State *L)
 {
     luab_stat_t *self;
     void *ud;
@@ -278,7 +278,7 @@ Stat_st_mtim(lua_State *L)
 /* time of last file status change */
 #ifdef  __STAT_TIME_T_EXT
 static int
-Stat_st_ctim_ext(lua_State *L)
+Stat_set_st_ctim_ext(lua_State *L)
 {
     luab_stat_t *self;
     __int32_t st_ctim_ext;
@@ -295,7 +295,7 @@ Stat_st_ctim_ext(lua_State *L)
 #endif
 
 static int
-Stat_st_ctim(lua_State *L)
+Stat_set_st_ctim(lua_State *L)
 {
     luab_stat_t *self;
     void *ud;
@@ -313,7 +313,7 @@ Stat_st_ctim(lua_State *L)
 /* time of file creation */
 #ifdef  __STAT_TIME_T_EXT
 static int
-Stat_st_btim_ext(lua_State *L)
+Stat_set_st_btim_ext(lua_State *L)
 {
     luab_stat_t *self;
     __int32_t st_btim_ext;
@@ -330,7 +330,7 @@ Stat_st_btim_ext(lua_State *L)
 #endif
 
 static int
-Stat_st_birthtim(lua_State *L)
+Stat_set_st_birthtim(lua_State *L)
 {
     luab_stat_t *self;
     void *ud;
@@ -347,7 +347,7 @@ Stat_st_birthtim(lua_State *L)
 
 /* file size, in bytes */
 static int
-Stat_st_size(lua_State *L)
+Stat_set_st_size(lua_State *L)
 {
     luab_stat_t *self;
     off_t st_size;
@@ -364,7 +364,7 @@ Stat_st_size(lua_State *L)
 
 /* blocks allocated for file */
 static int
-Stat_st_blocks(lua_State *L)
+Stat_set_st_blocks(lua_State *L)
 {
     luab_stat_t *self;
     blkcnt_t st_blocks;
@@ -381,7 +381,7 @@ Stat_st_blocks(lua_State *L)
 
 /* optimal blocksize for I/O */
 static int
-Stat_st_blksize(lua_State *L)
+Stat_set_st_blksize(lua_State *L)
 {
     luab_stat_t *self;
     blksize_t st_blksize;
@@ -398,7 +398,7 @@ Stat_st_blksize(lua_State *L)
 
 /* user defined flags for file */
 static int
-Stat_st_flags(lua_State *L)
+Stat_set_st_flags(lua_State *L)
 {
     luab_stat_t *self;
     fflags_t st_flags;
@@ -415,7 +415,7 @@ Stat_st_flags(lua_State *L)
 
 /* file generation number */
 static int
-Stat_st_gen(lua_State *L)
+Stat_set_st_gen(lua_State *L)
 {
     luab_stat_t *self;
     __uint64_t st_gen;
@@ -444,39 +444,39 @@ Stat_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "st_dev", self->st.st_dev);
-    luab_setinteger(L, -2, "st_ino", self->st.st_ino);
-    luab_setinteger(L, -2, "st_nlink", self->st.st_nlink);
-    luab_setinteger(L, -2, "st_mode", self->st.st_mode);
-    luab_setinteger(L, -2, "st_uid", self->st.st_uid);
-    luab_setinteger(L, -2, "st_gid", self->st.st_gid);
-    luab_setinteger(L, -2, "st_rdev", self->st.st_rdev);
+    luab_setinteger(L, -2, "set_st_dev", self->st.st_dev);
+    luab_setinteger(L, -2, "set_st_ino", self->st.st_ino);
+    luab_setinteger(L, -2, "set_st_nlink", self->st.st_nlink);
+    luab_setinteger(L, -2, "set_st_mode", self->st.st_mode);
+    luab_setinteger(L, -2, "set_st_uid", self->st.st_uid);
+    luab_setinteger(L, -2, "set_st_gid", self->st.st_gid);
+    luab_setinteger(L, -2, "set_st_rdev", self->st.st_rdev);
 
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_atim_ext", self->st.st_atim_ext);
+    luab_setinteger(L, -2, "set_st_atim_ext", self->st.st_atim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_atim", &self->st.st_atim);
+    luab_setudata(L, -2, &timespec_type, "set_st_atim", &self->st.st_atim);
 
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_mtim_ext", self->st.st_mtim_ext);
+    luab_setinteger(L, -2, "set_st_mtim_ext", self->st.st_mtim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_mtim", &self->st.st_mtim);
+    luab_setudata(L, -2, &timespec_type, "set_st_mtim", &self->st.st_mtim);
     
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_ctim_ext", self->st.st_ctim_ext);
+    luab_setinteger(L, -2, "set_st_ctim_ext", self->st.st_ctim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_ctim", &self->st.st_ctim);
+    luab_setudata(L, -2, &timespec_type, "set_st_ctim", &self->st.st_ctim);
     
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_btim_ext", self->st.st_btim_ext);
+    luab_setinteger(L, -2, "set_st_btim_ext", self->st.st_btim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_birthtim", &self->st.st_birthtim);
+    luab_setudata(L, -2, &timespec_type, "set_st_birthtim", &self->st.st_birthtim);
 
-    luab_setinteger(L, -2, "st_size", self->st.st_size);
-    luab_setinteger(L, -2, "st_blocks", self->st.st_blocks);
-    luab_setinteger(L, -2, "st_blksize", self->st.st_blksize);
-    luab_setinteger(L, -2, "st_flags", self->st.st_flags);
-    luab_setinteger(L, -2, "st_gen", self->st.st_gen);
+    luab_setinteger(L, -2, "set_st_size", self->st.st_size);
+    luab_setinteger(L, -2, "set_st_blocks", self->st.st_blocks);
+    luab_setinteger(L, -2, "set_st_blksize", self->st.st_blksize);
+    luab_setinteger(L, -2, "set_st_flags", self->st.st_flags);
+    luab_setinteger(L, -2, "set_st_gen", self->st.st_gen);
 
     lua_pushvalue(L, -1);
 
@@ -494,36 +494,36 @@ Stat_tostring(lua_State *L)
 }
 
 static luab_table_t stat_methods[] = {
-    LUABSD_FUNC("st_dev",   Stat_st_dev),
-    LUABSD_FUNC("st_ino",   Stat_st_ino),
-    LUABSD_FUNC("st_nlink", Stat_st_nlink),
-    LUABSD_FUNC("st_mode",  Stat_st_mode),
-    LUABSD_FUNC("st_uid",   Stat_st_uid),
-    LUABSD_FUNC("st_gid",    Stat_st_gid),
-    LUABSD_FUNC("st_rdev",  Stat_st_rdev),
+    LUABSD_FUNC("set_st_dev",   Stat_set_st_dev),
+    LUABSD_FUNC("set_st_ino",   Stat_set_st_ino),
+    LUABSD_FUNC("set_st_nlink", Stat_set_st_nlink),
+    LUABSD_FUNC("set_st_mode",  Stat_set_st_mode),
+    LUABSD_FUNC("set_st_uid",   Stat_set_st_uid),
+    LUABSD_FUNC("set_st_gid",   Stat_set_st_gid),
+    LUABSD_FUNC("set_st_rdev",  Stat_set_st_rdev),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("st_atim_ext",  Stat_st_atim_ext),
+    LUABSD_FUNC("set_st_atim_ext",  Stat_set_st_atim_ext),
 #endif
-    LUABSD_FUNC("st_atim",  Stat_st_atim),
+    LUABSD_FUNC("set_st_atim",  Stat_set_st_atim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("st_mtim_ext",  Stat_st_mtim_ext),
+    LUABSD_FUNC("set_st_mtim_ext",  Stat_set_st_mtim_ext),
 #endif
-    LUABSD_FUNC("st_mtim",  Stat_st_mtim),
+    LUABSD_FUNC("set_st_mtim",  Stat_set_st_mtim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("st_ctim_ext",  Stat_st_ctim_ext),
+    LUABSD_FUNC("set_st_ctim_ext",  Stat_set_st_ctim_ext),
 #endif
-    LUABSD_FUNC("st_ctim",  Stat_st_ctim),
+    LUABSD_FUNC("set_st_ctim",  Stat_set_st_ctim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("st_btim_ext",  Stat_st_btim_ext),
+    LUABSD_FUNC("set_st_btim_ext",  Stat_set_st_btim_ext),
 #endif
-    LUABSD_FUNC("st_birthtim",  Stat_st_birthtim),
-    LUABSD_FUNC("st_size",  Stat_st_size),
-    LUABSD_FUNC("st_blocks",  Stat_st_blocks),
-    LUABSD_FUNC("st_blocks",  Stat_st_blksize),
-    LUABSD_FUNC("st_flags",  Stat_st_flags),
-    LUABSD_FUNC("st_gen",  Stat_st_gen),
-    LUABSD_FUNC("get",    Stat_get),
-    LUABSD_FUNC("__tostring", Stat_tostring),
+    LUABSD_FUNC("set_st_birthtim",  Stat_set_st_birthtim),
+    LUABSD_FUNC("set_st_size",  Stat_set_st_size),
+    LUABSD_FUNC("set_st_blocks",    Stat_set_st_blocks),
+    LUABSD_FUNC("set_st_blocks",    Stat_set_st_blksize),
+    LUABSD_FUNC("set_st_flags", Stat_set_st_flags),
+    LUABSD_FUNC("set_st_gen",   Stat_set_st_gen),
+    LUABSD_FUNC("get",  Stat_get),
+    LUABSD_FUNC("__tostring",   Stat_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

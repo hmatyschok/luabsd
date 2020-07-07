@@ -61,14 +61,14 @@ typedef struct {
 /***
  * Set value for tv_sec over timespec{}.
  *
- * @function tv_sec
+ * @function set_tv_sec
  *
  * @param sec           Specifies value in seconds.
  *
  * @usage tv:tv_sec(sec)
  */
 static int
-TimeSpec_tv_sec(lua_State *L)
+TimeSpec_set_tv_sec(lua_State *L)
 {
     luab_timespec_t *self;
     time_t tv_sec;
@@ -86,14 +86,14 @@ TimeSpec_tv_sec(lua_State *L)
 /***
  * Set value for tv_nsec over timespec{}.
  *
- * @function tv_nsec
+ * @function set_tv_nsec
  *
  * @param nsec           Specifies value in nanoneconds.
  *
  * @usage tv:tv_nsec(nsec)
  */
 static int
-TimeSpec_tv_nsec(lua_State *L)
+TimeSpec_set_tv_nsec(lua_State *L)
 {
     luab_timespec_t *self;
     long tv_nsec;
@@ -146,8 +146,8 @@ TimeSpec_tostring(lua_State *L)
 }
 
 static luab_table_t timespec_methods[] = {
-    LUABSD_FUNC("tv_sec",   TimeSpec_tv_sec),
-    LUABSD_FUNC("tv_nsec",  TimeSpec_tv_nsec),
+    LUABSD_FUNC("set_tv_sec",   TimeSpec_tv_sec),
+    LUABSD_FUNC("set_tv_nsec",  TimeSpec_tv_nsec),
     LUABSD_FUNC("get",  TimeSpec_get),
     LUABSD_FUNC("__tostring",   TimeSpec_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -156,7 +156,7 @@ static luab_table_t timespec_methods[] = {
 static void
 timespec_init(void *ud, void *arg)
 {
-    luab_timespec_t *self = ud;
+    luab_timespec_t *self = (luab_timespec_t *)ud;
 
     (void)memmove(&self->tv, arg, sizeof(self->tv));
 }
