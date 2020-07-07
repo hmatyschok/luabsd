@@ -128,8 +128,8 @@ TimeSpec_get(lua_State *L)
 
     lua_newtable(L);
 
-    lua_setinteger(L, -2, "tv_sec", self->tv.tv_sec);
-    lua_setinteger(L, -2, "tv_nsec", self->tv.tv_nsec);
+    luab_setinteger(L, -2, "tv_sec", self->tv.tv_sec);
+    luab_setinteger(L, -2, "tv_nsec", self->tv.tv_nsec);
 
     lua_pushvalue(L, -1);
 
@@ -146,8 +146,8 @@ TimeSpec_tostring(lua_State *L)
 }
 
 static luab_table_t timespec_methods[] = {
-    LUABSD_FUNC("set_tv_sec",   TimeSpec_tv_sec),
-    LUABSD_FUNC("set_tv_nsec",  TimeSpec_tv_nsec),
+    LUABSD_FUNC("set_tv_sec",   TimeSpec_set_tv_sec),
+    LUABSD_FUNC("set_tv_nsec",  TimeSpec_set_tv_nsec),
     LUABSD_FUNC("get",  TimeSpec_get),
     LUABSD_FUNC("__tostring",   TimeSpec_tostring),
     LUABSD_FUNC(NULL, NULL)
