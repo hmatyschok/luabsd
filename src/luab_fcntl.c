@@ -55,7 +55,7 @@
 #define LUABSD_FLOCK_TYPE    "FLOCK*"
 
 typedef struct {
-    struct flock    info;
+    struct flock    l;
 } luab_flock_t;
 
 #define luab_newflock(L, arg) \
@@ -75,7 +75,7 @@ Flock_l_start(lua_State *L)
     self = luab_toflock(L, 1);
     l_start = luab_checkinteger(L, 2, ULONG_MAX);
 
-    self->info.l_start = l_start;
+    self->l.l_start = l_start;
 
     return 0;
 }
@@ -92,7 +92,7 @@ Flock_l_len(lua_State *L)
     self = luab_toflock(L, 1);
     l_len = luab_checkinteger(L, 2, LONG_MAX);
 
-    self->info.l_len = l_len;
+    self->l.l_len = l_len;
 
     return 0;
 }
@@ -109,7 +109,7 @@ Flock_l_pid(lua_State *L)
     self = luab_toflock(L, 1);
     l_pid = luab_checkinteger(L, 2, INT_MAX);
 
-    self->info.l_pid = l_pid;
+    self->l.l_pid = l_pid;
 
     return 0;
 }
@@ -126,7 +126,7 @@ Flock_l_type(lua_State *L)
     self = luab_toflock(L, 1);
     l_type = luab_checkinteger(L, 2, SHRT_MAX);
 
-    self->info.l_type = (short)l_type;
+    self->l.l_type = (short)l_type;
 
     return 0;
 }
@@ -143,7 +143,7 @@ Flock_l_whence(lua_State *L)
     self = luab_toflock(L, 1);
     l_whence = luab_checkinteger(L, 2, SHRT_MAX);
 
-    self->info.l_whence = (short)l_whence;
+    self->l.l_whence = (short)l_whence;
 
     return 0;
 }
@@ -160,7 +160,7 @@ Flock_l_sysid(lua_State *L)
     self = luab_toflock(L, 1);
     l_sysid = luab_checkinteger(L, 2, INT_MAX);
 
-    self->info.l_sysid = l_sysid;
+    self->l.l_sysid = l_sysid;
 
     return 0;
 }
@@ -179,22 +179,22 @@ Flock_get(lua_State *L)
 
     lua_newtable(L);   /* XXX */
 
-    lua_pushinteger(L, self->info.l_start);
+    lua_pushinteger(L, self->l.l_start);
     lua_setfield(L, -2, "l_start");
 
-    lua_pushinteger(L, self->info.l_len);
+    lua_pushinteger(L, self->l.l_len);
     lua_setfield(L, -2, "l_len");
 
-    lua_pushinteger(L, self->info.l_pid);
+    lua_pushinteger(L, self->l.l_pid);
     lua_setfield(L, -2, "l_pid");
 
-    lua_pushinteger(L, self->info.l_type);
+    lua_pushinteger(L, self->l.l_type);
     lua_setfield(L, -2, "l_type");
 
-    lua_pushinteger(L, self->info.l_whence);
+    lua_pushinteger(L, self->l.l_whence);
     lua_setfield(L, -2, "l_whence");
 
-    lua_pushinteger(L, self->info.l_sysid);
+    lua_pushinteger(L, self->l.l_sysid);
     lua_setfield(L, -2, "l_sysid");
 
     lua_pushvalue(L, -1);
@@ -225,10 +225,10 @@ static luab_table_t flock_methods[] = {
 
 static void
 flock_init(void *ud, void *arg)
-{
-    luab_flock_t *self = ud;
+{                                           /* XXX */
+    luab_flock_t *self = (luab_flock_t *)ud;
 
-    (void)memmove(&self->info, arg, sizeof(self->info));
+    (void)memmove(&self->l, arg, sizeof(self->l));
 }
 
 luab_module_t flock_type = {
@@ -242,11 +242,10 @@ luab_module_t flock_type = {
 static int
 luab_StructFlock(lua_State *L)
 {
-    luab_flock_t *self;
 
     luab_checkmaxargs(L, 0);
 
-    self = luab_newflock(L, NULL);
+    (void)luab_newflock(L, NULL);
 
     return 1;
 }
@@ -367,7 +366,7 @@ luab_fcntl(lua_State *L)
     }
 
     if (argp != NULL)
-        status = fcntl(fd, cmd, &argp->info);
+        status = fcntl(fd, cmd, &argp->l);
     else
         status = fcntl(fd, cmd, arg);
 

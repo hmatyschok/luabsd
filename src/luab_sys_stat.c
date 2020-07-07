@@ -437,7 +437,6 @@ static int
 Stat_get(lua_State *L)
 {
     luab_stat_t *self;
-    void *ud;
 
     luab_checkmaxargs(L, 1);
 
@@ -470,28 +469,28 @@ Stat_get(lua_State *L)
     lua_pushinteger(L, self->st.st_atim_ext);
     lua_setfield(L, -2, "st_atim_ext");
 #endif
-    ud = luab_newuserdata(L, &timespec_type, &self->st.st_atim);
+    (void)luab_newuserdata(L, &timespec_type, &self->st.st_atim);
     lua_setfield(L, -2, "st_atim");
-    
+
 #ifdef  __STAT_TIME_T_EXT
     lua_pushinteger(L, self->st.st_mtim_ext);
     lua_setfield(L, -2, "st_mtim_ext");
 #endif
-    ud = luab_newuserdata(L, &timespec_type, &self->st.st_mtim);
+    (void)luab_newuserdata(L, &timespec_type, &self->st.st_mtim);
     lua_setfield(L, -2, "st_mtim");
 #ifdef  __STAT_TIME_T_EXT
     lua_pushinteger(L, self->st.st_ctim_ext);
     lua_setfield(L, -2, "st_ctim_ext");
 #endif
-    ud = luab_newuserdata(L, &timespec_type, &self->st.st_ctim);
+    (void)luab_newuserdata(L, &timespec_type, &self->st.st_ctim);
     lua_setfield(L, -2, "st_ctim");
 #ifdef  __STAT_TIME_T_EXT
     lua_pushinteger(L, self->st.st_btim_ext);
     lua_setfield(L, -2, "st_btim_ext");
 #endif
-    ud = luab_newuserdata(L, &timespec_type, &self->st.st_birthtim);
+    (void)luab_newuserdata(L, &timespec_type, &self->st.st_birthtim);
     lua_setfield(L, -2, "st_birthtim");
-    
+
     lua_pushinteger(L, self->st.st_size);
     lua_setfield(L, -2, "st_size");
 
@@ -558,8 +557,8 @@ static luab_table_t stat_methods[] = {
 
 static void
 stat_init(void *ud, void *arg)
-{
-    luab_stat_t *self = ud;
+{                                           /* XXX */
+    luab_stat_t *self = (luab_stat_t *)ud;
 
     (void)memmove(&self->st, arg, sizeof(self->st));
 }
@@ -575,17 +574,15 @@ luab_module_t stat_type = {
 static int
 luab_StructStat(lua_State *L)
 {
-    luab_stat_t *self;
-
     luab_checkmaxargs(L, 0);
 
-    self = luab_newstat(L, NULL);
+    (void)luab_newstat(L, NULL);
 
     return 1;
 }
 
 /*
- * Components or service primitives on sys/stat.h.
+ * Components or service primitives over sys/stat.h.
  */
 
 #define LUABSD_SYS_STAT_LIB_ID    1593623310

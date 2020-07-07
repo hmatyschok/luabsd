@@ -160,7 +160,7 @@ static void
 timespec_init(void *ud, void *arg)
 {
     luab_timespec_t *self = ud;
-    
+
     (void)memmove(&self->tv, arg, sizeof(self->tv));
 }
 
@@ -184,11 +184,9 @@ luab_module_t timespec_type = {
 static int
 luab_StructTimeSpec(lua_State *L)
 {
-    luab_timespec_t *self;
-
     luab_checkmaxargs(L, 0);
 
-    self = luab_newtimespec(L, NULL);
+    (void)luab_newtimespec(L, NULL);
 
     return 1;
 }

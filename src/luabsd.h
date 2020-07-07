@@ -61,6 +61,10 @@ typedef struct {
     size_t  sz;
 } luab_module_t;
 
+typedef struct {
+    size_t len;
+} luab_udata_t;
+
 #define luab_todata(L, narg, id, t) \
     ((t)luab_checkudata((L), (narg), (id)))
 
