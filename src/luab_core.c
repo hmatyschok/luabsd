@@ -268,7 +268,7 @@ luaopen_bsd(lua_State *L)
 #endif
     luab_newmetatable(L, &flock_type);
     luab_newmetatable(L, &timespec_type);
-
+    luab_newmetatable(L, &itimerval_type);
     luab_newmetatable(L, &stat_type);
 
     return 1;

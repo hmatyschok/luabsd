@@ -70,6 +70,7 @@ extern luab_module_t db_type;
 #endif
 extern luab_module_t flock_type;
 extern luab_module_t timespec_type;
+extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
 
 extern luab_module_t luab_sys_file_lib;
@@ -110,7 +111,6 @@ int luab_pushnil(lua_State *);
         (void)luab_newuserdata((L), (id), (v));             \
         lua_setfield((L), (narg), (k));                     \
     } while (0)
-
 
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)

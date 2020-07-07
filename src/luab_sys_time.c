@@ -241,6 +241,208 @@ luab_StructTimeSpec(lua_State *L)
 }
 
 /*
+ * Interface against
+ *
+ *  struct itimerval {
+ *      struct  timeval it_interval;
+ *      struct  timeval it_value;
+ *  };
+ *
+ */
+
+#define LUABSD_ITIMERVAL_TYPE_ID    1594110231
+#define LUABSD_ITIMERVAL_TYPE    "ITIMERVAL*"
+
+typedef struct {
+    struct itimerval    it;
+} luab_itimerval_t;
+
+#define luab_newitimerval(L, arg) \
+    ((luab_itimerval_t *)luab_newuserdata(L, &itimerval_type, (arg)))
+#define luab_toitimerval(L, narg) \
+    (luab_todata((L), (narg), &itimerval_type, luab_itimerval_t *))
+
+/* timer interval */
+/***
+ * Set timer interval.
+ *
+ * @function set_it_interval
+ *
+ * @param tv            Instance of timespec{}.
+ *
+ * @usage it:set_it_interval(tv)
+ */
+static int
+ItimerVal_set_it_interval(lua_State *L)
+{
+    luab_itimerval_t *self;
+    void *ud;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_toitimerval(L, 1);
+    ud = luab_checkudata(L, 2, &timespec_type);
+
+    (void)memmove(&self->it.it_interval, ud, timespec_type.sz);
+
+    return 0;
+}
+
+/***
+ * Get timer interval.
+ *
+ * @function get_it_interval
+ *
+ * @return (LUA_TUSERDATA)
+ *
+ * @usage tv = it:get_it_interval()
+ */
+static int
+ItimerVal_get_it_interval(lua_State *L)
+{
+    luab_itimerval_t *self;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toitimerval(L, 1);
+
+    (void)luab_newuserdata(L, &timespec_type, &self->it.it_interval);
+
+    return 1;
+}
+
+/* current value */
+/***
+ * Set current value.
+ *
+ * @function set_it_value
+ *
+ * @param tv            Instance of timespec{}.
+ *
+ * @usage it:set_it_value(tv)
+ */
+static int
+ItimerVal_set_it_value(lua_State *L)
+{
+    luab_itimerval_t *self;
+    void *ud;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_toitimerval(L, 1);
+    ud = luab_checkudata(L, 2, &timespec_type);
+
+    (void)memmove(&self->it.it_value, ud, timespec_type.sz);
+
+    return 0;
+}
+
+/***
+ * Get timer value.
+ *
+ * @function get_it_value
+ *
+ * @return (LUA_TUSERDATA)
+ *
+ * @usage tv = it:get_it_value()
+ */
+static int
+ItimerVal_get_it_value(lua_State *L)
+{
+    luab_itimerval_t *self;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toitimerval(L, 1);
+
+    (void)luab_newuserdata(L, &timespec_type, &self->it.it_value);
+
+    return 1;
+}
+
+/***
+ * Get attributes over itimerval{} as LUA_TTABLE.
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ * @usage t = it:get()
+ */
+static int
+ItimerVal_get(lua_State *L)
+{
+    luab_itimerval_t *self;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toitimerval(L, 1);
+
+    lua_newtable(L);   /* XXX */
+
+    luab_setudata(L, -2, &timespec_type, "it_interval", &self->it.it_interval);
+    luab_setudata(L, -2, &timespec_type, "it_value", &self->it.it_value);
+
+    lua_pushvalue(L, -1);
+
+    return 1;
+}
+
+static int
+ItimerVal_tostring(lua_State *L)
+{
+    luab_itimerval_t *self = luab_toitimerval(L, 1);
+    lua_pushfstring(L, "itimerval (%p)", self);
+
+    return 1;
+}
+
+static luab_table_t itimerval_methods[] = {
+    LUABSD_FUNC("set_it_interval",  ItimerVal_set_it_interval),
+    LUABSD_FUNC("set_it_value", ItimerVal_set_it_value),
+    LUABSD_FUNC("get",  ItimerVal_get),
+    LUABSD_FUNC("get_it_interval",  ItimerVal_get_it_interval),
+    LUABSD_FUNC("get_it_value", ItimerVal_get_it_value),
+    LUABSD_FUNC("__tostring",   ItimerVal_tostring),
+    LUABSD_FUNC(NULL, NULL)
+};
+
+static void
+itimerval_init(void *ud, void *arg)
+{
+    luab_itimerval_t *self = ud;    /* XXX */
+
+    (void)memmove(&self->it, arg, sizeof(self->it));
+}
+
+luab_module_t itimerval_type = {
+    .cookie = LUABSD_ITIMERVAL_TYPE_ID,
+    .name = LUABSD_ITIMERVAL_TYPE,
+    .vec = itimerval_methods,
+    .init = itimerval_init,
+    .sz = sizeof(luab_itimerval_t),
+};
+
+/***
+ * Ctor.
+ *
+ * @function StructItimerVal
+ *
+ * @return (LUA_TUSERDATA)
+ *
+ * @usage tv = bsd.sys.time.StructItimerVal()
+ */
+static int
+luab_StructItimerVal(lua_State *L)
+{
+    luab_checkmaxargs(L, 0);
+
+    (void)luab_newitimerval(L, NULL);
+
+    return 1;
+}
+
+/*
  * Interface against components or service primitives on sys/time.h.
  */
 
@@ -335,6 +537,7 @@ luab_setitimer(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+#if __XSI_VISIBLE
 static int
 luab_getitimer(lua_State *L)
 {
@@ -353,14 +556,18 @@ luab_getitimer(lua_State *L)
 
     return 1;
 }
+#endif
 
 static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
-    LUABSD_INT("ITIMER_REAL",    ITIMER_REAL),
+    LUABSD_INT("ITIMER_REAL",   ITIMER_REAL),
     LUABSD_INT("ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
-    LUABSD_INT("ITIMER_PROF",    ITIMER_PROF),
-    LUABSD_FUNC("getitimer",  luab_getitimer),
-    LUABSD_FUNC("setitimer",  luab_setitimer),
-    LUABSD_FUNC("StructTimeSpec",  luab_StructTimeSpec),
+    LUABSD_INT("ITIMER_PROF",   ITIMER_PROF),
+    LUABSD_FUNC("setitimer",    luab_setitimer),
+#if __XSI_VISIBLE
+    LUABSD_FUNC("getitimer",    luab_getitimer),
+#endif
+    LUABSD_FUNC("StructTimeSpec",   luab_StructTimeSpec),
+    LUABSD_FUNC("StructItimerVal",  luab_StructItimerVal),
     LUABSD_FUNC(NULL, NULL)
 };
 
