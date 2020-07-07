@@ -69,6 +69,7 @@ typedef struct {
 extern luab_module_t db_type;
 extern luab_module_t bintime_type;
 #endif
+extern luab_module_t clockinfo_type;
 extern luab_module_t flock_type;
 extern luab_module_t timezone_type;
 extern luab_module_t timespec_type;

@@ -446,6 +446,318 @@ luab_StructBinTime(lua_State *L)
 #endif /* __BSD_VISIBLE */
 
 /*
+ * Interface against getkerninfo clock information structure
+ *
+ *  struct clockinfo {
+ *      int hz;
+ *      int tick;
+ *      int spare;
+ *      int stathz;
+ *      int profhz;
+ *  };
+ */
+
+#define LUABSD_CLOCKINFO_TYPE_ID    1594164272
+#define LUABSD_CLOCKINFO_TYPE    "CLOCKINFO*"
+
+typedef struct {
+    struct clockinfo    ci;
+} luab_clockinfo_t;
+
+#define luab_newclockinfo(L, arg) \
+    ((luab_clockinfo_t *)luab_newuserdata(L, &clockinfo_type, (arg)))
+#define luab_toclockinfo(L, narg) \
+    (luab_todata((L), (narg), &clockinfo_type, luab_clockinfo_t *))
+
+/***
+ * Set clock frequency.
+ *
+ * @function set_hz
+ *
+ * @param hz            Frequency.
+ *
+ * @usage ci:set_hz(hz)
+ */
+static int
+ClockInfo_set_hz(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int hz;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_toclockinfo(L, 1);
+    hz = luab_checkinteger(L, 2, INT_MAX);
+
+    self->ci.hz = hz;
+
+    return 0;
+}
+
+/***
+ * Get clock frequency.
+ *
+ * @function get_hz
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage hz = ci:get_hz()
+ */
+static int
+ClockInfo_get_hz(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int hz;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toclockinfo(L, 1);
+    hz = self->ci.hz;
+
+    lua_pushinteger(L, hz);
+
+    return 1;
+}
+
+/***
+ * Set micro-seconds per hz tick.
+ *
+ * @function set_tick
+ *
+ * @param tick            Tick.
+ *
+ * @usage ci:set_tick(tick)
+ */
+static int
+ClockInfo_set_tick(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int tick;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_toclockinfo(L, 1);
+    tick = luab_checkinteger(L, 2, INT_MAX);
+
+    self->ci.tick = tick;
+
+    return 0;
+}
+
+/***
+ * Get micro-seconds per hz tick.
+ *
+ * @function get_tick
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage tick = ci:get_tick()
+ */
+static int
+ClockInfo_get_tick(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int tick;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toclockinfo(L, 1);
+    tick = self->ci.tick;
+
+    lua_pushinteger(L, tick);
+
+    return 1;
+}
+
+/***
+ * Set statistics clock frequency.
+ *
+ * @function set_stathz
+ *
+ * @param stathz            Frequency.
+ *
+ * @usage ci:set_stathz(stathz)
+ */
+static int
+ClockInfo_set_stathz(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int stathz;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_toclockinfo(L, 1);
+    stathz = luab_checkinteger(L, 2, INT_MAX);
+
+    self->ci.stathz = stathz;
+
+    return 0;
+}
+
+/***
+ * Get statistics clock frequency.
+ *
+ * @function get_stathz
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage stathz = ci:get_stathz()
+ */
+static int
+ClockInfo_get_stathz(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int stathz;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toclockinfo(L, 1);
+    stathz = self->ci.stathz;
+
+    lua_pushinteger(L, stathz);
+
+    return 1;
+}
+
+/***
+ * Set profiling clock frequency.
+ *
+ * @function set_profhz
+ *
+ * @param profhz            Frequency.
+ *
+ * @usage ci:set_profhz(profhz)
+ */
+static int
+ClockInfo_set_profhz(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int profhz;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_toclockinfo(L, 1);
+    profhz = luab_checkinteger(L, 2, INT_MAX);
+
+    self->ci.profhz = profhz;
+
+    return 0;
+}
+
+/***
+ * Get profiling clock frequency.
+ *
+ * @function get_profhz
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage profhz = ci:get_profhz()
+ */
+static int
+ClockInfo_get_profhz(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    int profhz;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toclockinfo(L, 1);
+    profhz = self->ci.profhz;
+
+    lua_pushinteger(L, profhz);
+
+    return 1;
+}
+
+/***
+ * Translate clockinfo{} into LUA_TTABLE.
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ * @usage t = ci:get()
+ */
+static int
+ClockInfo_get(lua_State *L)
+{
+    luab_clockinfo_t *self;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toclockinfo(L, 1);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "hz", self->ci.hz);
+    luab_setinteger(L, -2, "tick", self->ci.tick);
+    luab_setinteger(L, -2, "stathz", self->ci.stathz);
+    luab_setinteger(L, -2, "profhz", self->ci.stathz);
+
+    lua_pushvalue(L, -1);
+
+    return 1;
+}
+
+static int
+ClockInfo_tostring(lua_State *L)
+{
+    luab_clockinfo_t *self = luab_toclockinfo(L, 1);
+    lua_pushfstring(L, "clockinfo (%p)", self);
+
+    return 1;
+}
+
+static luab_table_t clockinfo_methods[] = {
+    LUABSD_FUNC("set_hz",   ClockInfo_set_hz),
+    LUABSD_FUNC("set_tickc",    ClockInfo_set_tick),
+    LUABSD_FUNC("set_stathz",   ClockInfo_set_stathz),
+    LUABSD_FUNC("set_profhz",   ClockInfo_set_profhz),
+    LUABSD_FUNC("get",  ClockInfo_get),
+    LUABSD_FUNC("get_hz",  ClockInfo_get_hz),
+    LUABSD_FUNC("get_tick", ClockInfo_get_tick),
+    LUABSD_FUNC("get_stathz",   ClockInfo_get_stathz),
+    LUABSD_FUNC("get_profhz",   ClockInfo_get_profhz),
+    LUABSD_FUNC("__tostring",   ClockInfo_tostring),
+    LUABSD_FUNC(NULL, NULL)
+};
+
+static void
+clockinfo_init(void *ud, void *arg)
+{
+    luab_clockinfo_t *self = (luab_clockinfo_t *)ud;
+
+    (void)memmove(&self->ci, arg, sizeof(self->ci));
+}
+
+luab_module_t clockinfo_type = {
+    .cookie = LUABSD_CLOCKINFO_TYPE_ID,
+    .name = LUABSD_CLOCKINFO_TYPE,
+    .vec = clockinfo_methods,
+    .init = clockinfo_init,
+    .sz = sizeof(luab_clockinfo_t),
+};
+
+/***
+ * Ctor.
+ *
+ * @function StructClockInfo
+ *
+ * @return (LUA_TUSERDATA)
+ *
+ * @usage ci = bsd.sys.time.StructClockInfo()
+ */
+static int
+luab_StructClockInfo(lua_State *L)
+{
+    luab_checkmaxargs(L, 0);
+
+    (void)luab_newclockinfo(L, NULL);
+
+    return 1;
+}
+
+/*
  * Interface against
  *
  *  struct timespec {
@@ -971,28 +1283,28 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUABSD_INT("DST_EET",   DST_EET),
     LUABSD_INT("DST_CAN",   DST_CAN),
 #ifndef CLOCK_REALTIME
-    LUABSD_FUNC("CLOCK_REALTIME",   CLOCK_REALTIME),
-    LUABSD_FUNC("CLOCK_VIRTUAL",    CLOCK_VIRTUAL),
-    LUABSD_FUNC("CLOCK_PROF",   CLOCK_PROF),
-    LUABSD_FUNC("CLOCK_MONOTONIC",  CLOCK_MONOTONIC),
-    LUABSD_FUNC("CLOCK_UPTIME", CLOCK_UPTIME),
-    LUABSD_FUNC("CLOCK_UPTIME_PRECISE", CLOCK_UPTIME_PRECISE),
-    LUABSD_FUNC("CLOCK_UPTIME_FAST",    CLOCK_UPTIME_FAST),
-    LUABSD_FUNC("CLOCK_REALTIME_PRECISE",   CLOCK_REALTIME_PRECISE),
-    LUABSD_FUNC("CLOCK_REALTIME_FAST",  CLOCK_REALTIME_FAST),
-    LUABSD_FUNC("CLOCK_MONOTONIC_PRECISE",  CLOCK_MONOTONIC_PRECISE),
-    LUABSD_FUNC("CLOCK_MONOTONIC_FAST", CLOCK_MONOTONIC_FAST),
-    LUABSD_FUNC("CLOCK_SECOND", CLOCK_SECOND),
-    LUABSD_FUNC("CLOCK_THREAD_CPUTIME_ID",  CLOCK_THREAD_CPUTIME_ID),
-    LUABSD_FUNC("CLOCK_PROCESS_CPUTIME_ID", CLOCK_PROCESS_CPUTIME_ID),
+    LUABSD_INT("CLOCK_REALTIME",    CLOCK_REALTIME),
+    LUABSD_INT("CLOCK_VIRTUAL", CLOCK_VIRTUAL),
+    LUABSD_INT("CLOCK_PROF",    CLOCK_PROF),
+    LUABSD_INT("CLOCK_MONOTONIC",   CLOCK_MONOTONIC),
+    LUABSD_INT("CLOCK_UPTIME",  CLOCK_UPTIME),
+    LUABSD_INT("CLOCK_UPTIME_PRECISE",  CLOCK_UPTIME_PRECISE),
+    LUABSD_INT("CLOCK_UPTIME_FAST", CLOCK_UPTIME_FAST),
+    LUABSD_INT("CLOCK_REALTIME_PRECISE",    CLOCK_REALTIME_PRECISE),
+    LUABSD_INT("CLOCK_REALTIME_FAST",   CLOCK_REALTIME_FAST),
+    LUABSD_INT("CLOCK_MONOTONIC_PRECISE",   CLOCK_MONOTONIC_PRECISE),
+    LUABSD_INT("CLOCK_MONOTONIC_FAST",  CLOCK_MONOTONIC_FAST),
+    LUABSD_INT("CLOCK_SECOND",  CLOCK_SECOND),
+    LUABSD_INT("CLOCK_THREAD_CPUTIME_ID",   CLOCK_THREAD_CPUTIME_ID),
+    LUABSD_INT("CLOCK_PROCESS_CPUTIME_ID",  CLOCK_PROCESS_CPUTIME_ID),
 #endif
 #ifndef TIMER_ABSTIME
-    LUABSD_FUNC("TIMER_RELTIME",    TIMER_RELTIME),
-    LUABSD_FUNC("TIMER_ABSTIME",    TIMER_ABSTIME),
+    LUABSD_INT("TIMER_RELTIME", TIMER_RELTIME),
+    LUABSD_INT("TIMER_ABSTIME", TIMER_ABSTIME),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_FUNC("CPUCLOCK_WHICH_PID",   CPUCLOCK_WHICH_PID),
-    LUABSD_FUNC("CPUCLOCK_WHICH_TID",   CPUCLOCK_WHICH_TID),
+    LUABSD_INT("CPUCLOCK_WHICH_PID",   CPUCLOCK_WHICH_PID),
+    LUABSD_INT("CPUCLOCK_WHICH_TID",   CPUCLOCK_WHICH_TID),
 #endif
     LUABSD_INT("ITIMER_REAL",   ITIMER_REAL),
     LUABSD_INT("ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
@@ -1004,6 +1316,7 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
 #if __BSD_VISIBLE
     LUABSD_FUNC("StructBinTime",    luab_StructBinTime),
 #endif
+    LUABSD_FUNC("StructClockInfo",  luab_StructClockInfo),
     LUABSD_FUNC("StructItimerVal",  luab_StructItimerVal),
     LUABSD_FUNC("StructTimeSpec",   luab_StructTimeSpec),
     LUABSD_FUNC("StructTimeZone",   luab_StructTimeZone),
