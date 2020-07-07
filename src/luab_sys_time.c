@@ -40,6 +40,209 @@
 /*
  * Interface against
  *
+ *  struct timezone {
+ *      int tz_minuteswest;
+ *      int tz_dsttime;
+ *  };
+ */
+
+#define LUABSD_TIMEZONE_TYPE_ID    1594159943
+#define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
+
+typedef struct {
+    struct timezone    tz;
+} luab_timezone_t;
+
+#define luab_newtimezone(L, arg) \
+    ((luab_timezone_t *)luab_newuserdata(L, &timezone_type, (arg)))
+#define luab_totimezone(L, narg) \
+    (luab_todata((L), (narg), &timezone_type, luab_timezone_t *))
+
+/***
+ * Set value for minutes west of Greenwich.
+ *
+ * @function set_tz_minuteswest
+ *
+ * @param zone          Specifies value in minutes.
+ *
+ * @usage tz:set_tz_minuteswest(min)
+ */
+static int
+TimeZone_set_tz_minuteswest(lua_State *L)
+{
+    luab_timezone_t *self;
+    time_t tz_minuteswest;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_totimezone(L, 1);
+    tz_minuteswest = luab_checkinteger(L, 2, INT_MAX);
+
+    self->tz.tz_minuteswest = tz_minuteswest;
+
+    return 0;
+}
+
+/***
+ * Get value for minutes west of Greenwich.
+ *
+ * @function get_tz_minuteswest
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage zone = tz:get_tz_minuteswest()
+ */
+static int
+TimeZone_get_tz_minuteswest(lua_State *L)
+{
+    luab_timezone_t *self;
+    time_t tz_minuteswest;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_totimezone(L, 1);
+    tz_minuteswest = self->tz.tz_minuteswest;
+
+    lua_pushinteger(L, tz_minuteswest);
+
+    return 1;
+}
+
+/***
+ * Set value for type of dst correction.
+ *
+ * @function set_tz_dsttime
+ *
+ * @param dst           Specifies dst correction.
+ *
+ * @usage tz:set_tz_dsttime(dst)
+ */
+static int
+TimeZone_set_tz_dsttime(lua_State *L)
+{
+    luab_timezone_t *self;
+    long tz_dsttime;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_totimezone(L, 1);
+    tz_dsttime = luab_checkinteger(L, 2, LONG_MAX);
+
+    self->tz.tz_dsttime = tz_dsttime;
+
+    return 0;
+}
+
+/***
+ * Get value for type of dst correction.
+ *
+ * @function get_tz_dsttime
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage dst = tz:get_tz_dsttime()
+ */
+static int
+TimeZone_get_tz_dsttime(lua_State *L)
+{
+    luab_timezone_t *self;
+    time_t tz_dsttime;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_totimezone(L, 1);
+    tz_dsttime = self->tz.tz_dsttime;
+
+    lua_pushinteger(L, tz_dsttime);
+
+    return 1;
+}
+
+/***
+ * Translate timezone{} into LUA_TTABLE.
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ * @usage t = tz:get()
+ */
+static int
+TimeZone_get(lua_State *L)
+{
+    luab_timezone_t *self;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_totimezone(L, 1);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "tz_minuteswest", self->tz.tz_minuteswest);
+    luab_setinteger(L, -2, "tz_dsttime", self->tz.tz_dsttime);
+
+    lua_pushvalue(L, -1);
+
+    return 1;
+}
+
+static int
+TimeZone_tostring(lua_State *L)
+{
+    luab_timezone_t *self = luab_totimezone(L, 1);
+    lua_pushfstring(L, "timezone (%p)", self);
+
+    return 1;
+}
+
+static luab_table_t timezone_methods[] = {
+    LUABSD_FUNC("set_tz_minuteswest",   TimeZone_set_tz_minuteswest),
+    LUABSD_FUNC("set_tz_dsttime",   TimeZone_set_tz_dsttime),
+    LUABSD_FUNC("get",  TimeZone_get),
+    LUABSD_FUNC("get_tz_minuteswest",   TimeZone_get_tz_minuteswest),
+    LUABSD_FUNC("get_tz_dsttime",   TimeZone_get_tz_dsttime),
+    LUABSD_FUNC("__tostring",   TimeZone_tostring),
+    LUABSD_FUNC(NULL, NULL)
+};
+
+static void
+timezone_init(void *ud, void *arg)
+{
+    luab_timezone_t *self = (luab_timezone_t *)ud;
+
+    (void)memmove(&self->tz, arg, sizeof(self->tz));
+}
+
+luab_module_t timezone_type = {
+    .cookie = LUABSD_TIMEZONE_TYPE_ID,
+    .name = LUABSD_TIMEZONE_TYPE,
+    .vec = timezone_methods,
+    .init = timezone_init,
+    .sz = sizeof(luab_timezone_t),
+};
+
+/***
+ * Ctor.
+ *
+ * @function StructTimeZone
+ *
+ * @return (LUA_TUSERDATA)
+ *
+ * @usage tz = bsd.sys.time.StructTimeZone()
+ */
+static int
+luab_StructTimeZone(lua_State *L)
+{
+    luab_checkmaxargs(L, 0);
+
+    (void)luab_newtimezone(L, NULL);
+
+    return 1;
+}
+
+/*
+ * Interface against
+ *
  *  struct timespec {
  *      time_t  tv_sec;
  *      long    tv_nsec;
@@ -555,6 +758,13 @@ luab_getitimer(lua_State *L)
 #endif
 
 static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
+    LUABSD_INT("DST_NONE",  DST_NONE),
+    LUABSD_INT("DST_USA",   DST_USA),
+    LUABSD_INT("DST_AUST",  DST_AUST),
+    LUABSD_INT("DST_WET",   DST_WET),
+    LUABSD_INT("DST_MET",   DST_MET),
+    LUABSD_INT("DST_EET",   DST_EET),
+    LUABSD_INT("DST_CAN",   DST_CAN),
     LUABSD_INT("ITIMER_REAL",   ITIMER_REAL),
     LUABSD_INT("ITIMER_VIRTUAL",    ITIMER_VIRTUAL),
     LUABSD_INT("ITIMER_PROF",   ITIMER_PROF),
@@ -562,8 +772,9 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
 #if __XSI_VISIBLE
     LUABSD_FUNC("getitimer",    luab_getitimer),
 #endif
-    LUABSD_FUNC("StructTimeSpec",   luab_StructTimeSpec),
     LUABSD_FUNC("StructItimerVal",  luab_StructItimerVal),
+    LUABSD_FUNC("StructTimeSpec",   luab_StructTimeSpec),
+    LUABSD_FUNC("StructTimeZone",   luab_StructTimeZone),
     LUABSD_FUNC(NULL, NULL)
 };
 

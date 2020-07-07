@@ -259,6 +259,7 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &db_type);
 #endif
     luab_newmetatable(L, &flock_type);
+    luab_newmetatable(L, &timezone_type);
     luab_newmetatable(L, &timespec_type);
     luab_newmetatable(L, &itimerval_type);
     luab_newmetatable(L, &stat_type);

@@ -69,6 +69,7 @@ typedef struct {
 extern luab_module_t db_type;
 #endif
 extern luab_module_t flock_type;
+extern luab_module_t timezone_type;
 extern luab_module_t timespec_type;
 extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
@@ -127,7 +128,7 @@ luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 
 static __inline void *
 luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
-{    
+{
     return ((lua_isnil(L, narg) == 0) ? luaL_checkudata(L, narg, m->name) : NULL);
 }
 
