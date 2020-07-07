@@ -105,11 +105,12 @@ int luab_pushnil(lua_State *);
         lua_pushinteger((L), (v));                          \
         lua_setfield((L), (narg), (k));                     \
     } while (0)
-#define luab_setudata(L, narg, t, k, v)                     \
+#define luab_setudata(L, narg, id, k, v)                    \
     do {                                                    \
-        (void)luab_newuserdata((L), (t), (v));              \
+        (void)luab_newuserdata((L), (id), (v));             \
         lua_setfield((L), (narg), (k));                     \
     } while (0)
+
 
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
