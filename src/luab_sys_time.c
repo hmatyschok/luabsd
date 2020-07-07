@@ -240,6 +240,211 @@ luab_StructTimeZone(lua_State *L)
     return 1;
 }
 
+#if __BSD_VISIBLE
+/*
+ * Interface against
+ *
+ *  struct bintime {
+ *      time_t  sec;
+ *      uint64_t frac;
+ *  };
+ */
+
+#define LUABSD_BINTIME_TYPE_ID    1594161740
+#define LUABSD_BINTIME_TYPE    "BINTIME*"
+
+typedef struct {
+    struct bintime    bt;
+} luab_bintime_t;
+
+#define luab_newbintime(L, arg) \
+    ((luab_bintime_t *)luab_newuserdata(L, &bintime_type, (arg)))
+#define luab_tobintime(L, narg) \
+    (luab_todata((L), (narg), &bintime_type, luab_bintime_t *))
+
+/***
+ * Set value for sytem time.
+ *
+ * @function set_sec
+ *
+ * @param sec           Seconds.
+ *
+ * @usage bt:set_sec(min)
+ */
+static int
+BinTime_set_sec(lua_State *L)
+{
+    luab_bintime_t *self;
+    int sec;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_tobintime(L, 1);
+    sec = luab_checkinteger(L, 2, INT_MAX);
+
+    self->bt.sec = sec;
+
+    return 0;
+}
+
+/***
+ * Get value for system time.
+ *
+ * @function get_sec
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage sec = bt:get_sec()
+ */
+static int
+BinTime_get_sec(lua_State *L)
+{
+    luab_bintime_t *self;
+    int sec;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_tobintime(L, 1);
+    sec = self->bt.sec;
+
+    lua_pushinteger(L, sec);
+
+    return 1;
+}
+
+/***
+ * Set value for for system time.
+ *
+ * @function set_frac
+ *
+ * @param frac          Specifies frac.
+ *
+ * @usage bt:set_frac(frac)
+ */
+static int
+BinTime_set_frac(lua_State *L)
+{
+    luab_bintime_t *self;
+    uint64_t frac;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_tobintime(L, 1);
+    frac = luab_checkinteger(L, 2, LONG_MAX);
+
+    self->bt.frac = frac;
+
+    return 0;
+}
+
+/***
+ * Get value for for system time.
+ *
+ * @function get_frac
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage frac = bt:get_frac()
+ */
+static int
+BinTime_get_frac(lua_State *L)
+{
+    luab_bintime_t *self;
+    uint64_t frac;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_tobintime(L, 1);
+    frac = self->bt.frac;
+
+    lua_pushinteger(L, frac);
+
+    return 1;
+}
+
+/***
+ * Translate bintime{} into LUA_TTABLE.
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ * @usage t = bt:get()
+ */
+static int
+BinTime_get(lua_State *L)
+{
+    luab_bintime_t *self;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_tobintime(L, 1);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "sec", self->bt.sec);
+    luab_setinteger(L, -2, "frac", self->bt.frac);
+
+    lua_pushvalue(L, -1);
+
+    return 1;
+}
+
+static int
+BinTime_tostring(lua_State *L)
+{
+    luab_bintime_t *self = luab_tobintime(L, 1);
+    lua_pushfstring(L, "bintime (%p)", self);
+
+    return 1;
+}
+
+static luab_table_t bintime_methods[] = {
+    LUABSD_FUNC("set_sec",  BinTime_set_sec),
+    LUABSD_FUNC("set_frac", BinTime_set_frac),
+    LUABSD_FUNC("get",  BinTime_get),
+    LUABSD_FUNC("get_sec",  BinTime_get_sec),
+    LUABSD_FUNC("get_frac", BinTime_get_frac),
+    LUABSD_FUNC("__tostring",   BinTime_tostring),
+    LUABSD_FUNC(NULL, NULL)
+};
+
+static void
+bintime_init(void *ud, void *arg)
+{
+    luab_bintime_t *self = (luab_bintime_t *)ud;
+
+    (void)memmove(&self->bt, arg, sizeof(self->bt));
+}
+
+luab_module_t bintime_type = {
+    .cookie = LUABSD_BINTIME_TYPE_ID,
+    .name = LUABSD_BINTIME_TYPE,
+    .vec = bintime_methods,
+    .init = bintime_init,
+    .sz = sizeof(luab_bintime_t),
+};
+
+/***
+ * Ctor.
+ *
+ * @function StructBinTime
+ *
+ * @return (LUA_TUSERDATA)
+ *
+ * @usage tz = bsd.sys.time.StructBinTime()
+ */
+static int
+luab_StructBinTime(lua_State *L)
+{
+    luab_checkmaxargs(L, 0);
+
+    (void)luab_newbintime(L, NULL);
+
+    return 1;
+}
+#endif /* __BSD_VISIBLE */
+
 /*
  * Interface against
  *
@@ -349,7 +554,7 @@ static int
 TimeSpec_get_tv_nsec(lua_State *L)
 {
     luab_timespec_t *self;
-    time_t tv_nsec;
+    long tv_nsec;
 
     luab_checkmaxargs(L, 1);
 
@@ -771,6 +976,9 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUABSD_FUNC("setitimer",    luab_setitimer),
 #if __XSI_VISIBLE
     LUABSD_FUNC("getitimer",    luab_getitimer),
+#endif
+#if __BSD_VISIBLE
+    LUABSD_FUNC("StructBinTime",    luab_StructBinTime),
 #endif
     LUABSD_FUNC("StructItimerVal",  luab_StructItimerVal),
     LUABSD_FUNC("StructTimeSpec",   luab_StructTimeSpec),

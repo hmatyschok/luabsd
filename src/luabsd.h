@@ -67,6 +67,7 @@ typedef struct {
 
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
+extern luab_module_t bintime_type;
 #endif
 extern luab_module_t flock_type;
 extern luab_module_t timezone_type;
