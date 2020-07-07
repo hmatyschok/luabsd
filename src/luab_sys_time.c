@@ -71,7 +71,7 @@ static int
 TimeZone_set_tz_minuteswest(lua_State *L)
 {
     luab_timezone_t *self;
-    time_t tz_minuteswest;
+    int tz_minuteswest;
 
     luab_checkmaxargs(L, 2);
 
@@ -96,7 +96,7 @@ static int
 TimeZone_get_tz_minuteswest(lua_State *L)
 {
     luab_timezone_t *self;
-    time_t tz_minuteswest;
+    int tz_minuteswest;
 
     luab_checkmaxargs(L, 1);
 
@@ -121,7 +121,7 @@ static int
 TimeZone_set_tz_dsttime(lua_State *L)
 {
     luab_timezone_t *self;
-    long tz_dsttime;
+    int tz_dsttime;
 
     luab_checkmaxargs(L, 2);
 
@@ -262,7 +262,7 @@ typedef struct {
     (luab_todata((L), (narg), &timespec_type, luab_timespec_t *))
 
 /***
- * Set value for tv_sec over timespec{}.
+ * Set value for tv_sec.
  *
  * @function set_tv_sec
  *
@@ -287,7 +287,7 @@ TimeSpec_set_tv_sec(lua_State *L)
 }
 
 /***
- * Get value for tv_sec over timespec{}.
+ * Get value for tv_sec.
  *
  * @function get_tv_sec
  *
@@ -312,7 +312,7 @@ TimeSpec_get_tv_sec(lua_State *L)
 }
 
 /***
- * Set value for tv_nsec over timespec{}.
+ * Set value for tv_nsec.
  *
  * @function set_tv_nsec
  *
@@ -337,7 +337,7 @@ TimeSpec_set_tv_nsec(lua_State *L)
 }
 
 /***
- * Get value for tv_nsec over timespec{}.
+ * Get value for tv_nsec.
  *
  * @function get_tv_nsec
  *
@@ -362,7 +362,7 @@ TimeSpec_get_tv_nsec(lua_State *L)
 }
 
 /***
- * Get attributes over timespec{} as LUA_TTABLE.
+ * Translate timespec{} into LUA_TTABLE.
  *
  * @function get
  *
@@ -564,7 +564,7 @@ ItimerVal_get_it_value(lua_State *L)
 }
 
 /***
- * Get attributes over itimerval{} as LUA_TTABLE.
+ * Translate itimerval{} into LUA_TTABLE.
  *
  * @function get
  *
