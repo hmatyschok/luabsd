@@ -39,19 +39,29 @@ Therefore
 
 and so on. A callout may implemented as follows:
 
-    local expired = false
-
-    local function callback ()
-        expired = true
+    expired = false
+    
+    local function event()
         print("Hello world!")
+        expired = true;
     end
+    
+    tv = bsd.sys.time.StructTimeSpec()
+    tv:set_tv_sec(3)
+    
+    it1 = bsd.sys.time.StructItimerVal()
+    it1:set_it_value(tv)
+    
+    it2 = bsd.sys.time.StructItimerVal()
+    
+    err, msg = bsd.sys.time.setitimer(lib.sys.time.ITIMER_REAL, it1, it2, event)
 
-    lib.sys.time.setitimer(lib.sys.time.ITIMER_REAL, 3, callback)
-
-    while true do -- yes, this is bad style ^^
+    while true do -- do something
         if expired then
             break
         end
     end
+    
+    print("setitimer()", err, msg)
 
 </code></pre>
