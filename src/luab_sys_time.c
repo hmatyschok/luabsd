@@ -126,13 +126,10 @@ TimeSpec_get(lua_State *L)
 
     self = luab_totimespec(L, 1);
 
-    lua_newtable(L);   /* XXX */
+    lua_newtable(L);
 
-    lua_pushinteger(L, self->tv.tv_sec);
-    lua_setfield(L, -2, "tv_sec");
-
-    lua_pushinteger(L, self->tv.tv_nsec);
-    lua_setfield(L, -2, "tv_nsec");
+    lua_setinteger(L, -2, "tv_sec", self->tv.tv_sec);
+    lua_setinteger(L, -2, "tv_nsec", self->tv.tv_nsec);
 
     lua_pushvalue(L, -1);
 

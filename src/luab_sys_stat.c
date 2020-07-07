@@ -442,69 +442,41 @@ Stat_get(lua_State *L)
 
     self = luab_tostat(L, 1);
 
-    lua_newtable(L);   /* XXX Well, more macros should be implemented. */
+    lua_newtable(L);
 
-    lua_pushinteger(L, self->st.st_dev);
-    lua_setfield(L, -2, "st_dev");
-
-    lua_pushinteger(L, self->st.st_ino);
-    lua_setfield(L, -2, "st_ino");
-
-    lua_pushinteger(L, self->st.st_nlink);
-    lua_setfield(L, -2, "st_nlink");
-
-    lua_pushinteger(L, self->st.st_mode);
-    lua_setfield(L, -2, "st_mode");
-
-    lua_pushinteger(L, self->st.st_uid);
-    lua_setfield(L, -2, "st_uid");
-
-    lua_pushinteger(L, self->st.st_gid);
-    lua_setfield(L, -2, "st_gid");
-
-    lua_pushinteger(L, self->st.st_rdev);
-    lua_setfield(L, -2, "st_rdev");
+    luab_setinteger(L, -2, "st_dev", self->st.st_dev);
+    luab_setinteger(L, -2, "st_ino", self->st.st_ino);
+    luab_setinteger(L, -2, "st_nlink", self->st.st_nlink);
+    luab_setinteger(L, -2, "st_mode", self->st.st_mode);
+    luab_setinteger(L, -2, "st_uid", self->st.st_uid);
+    luab_setinteger(L, -2, "st_gid", self->st.st_gid);
+    luab_setinteger(L, -2, "st_rdev", self->st.st_rdev);
 
 #ifdef  __STAT_TIME_T_EXT
-    lua_pushinteger(L, self->st.st_atim_ext);
-    lua_setfield(L, -2, "st_atim_ext");
+    luab_setinteger(L, -2, "st_atim_ext", self->st.st_atim_ext);
 #endif
-    (void)luab_newuserdata(L, &timespec_type, &self->st.st_atim);
-    lua_setfield(L, -2, "st_atim");
+    luab_setudata(L, -2, &timespec_type, "st_atim", &self->st.st_atim);
 
 #ifdef  __STAT_TIME_T_EXT
-    lua_pushinteger(L, self->st.st_mtim_ext);
-    lua_setfield(L, -2, "st_mtim_ext");
+    luab_setinteger(L, -2, "st_mtim_ext", self->st.st_mtim_ext);
 #endif
-    (void)luab_newuserdata(L, &timespec_type, &self->st.st_mtim);
-    lua_setfield(L, -2, "st_mtim");
+    luab_setudata(L, -2, &timespec_type, "st_mtim", &self->st.st_mtim);
+    
 #ifdef  __STAT_TIME_T_EXT
-    lua_pushinteger(L, self->st.st_ctim_ext);
-    lua_setfield(L, -2, "st_ctim_ext");
+    luab_setinteger(L, -2, "st_ctim_ext", self->st.st_ctim_ext);
 #endif
-    (void)luab_newuserdata(L, &timespec_type, &self->st.st_ctim);
-    lua_setfield(L, -2, "st_ctim");
+    luab_setudata(L, -2, &timespec_type, "st_ctim", &self->st.st_ctim);
+    
 #ifdef  __STAT_TIME_T_EXT
-    lua_pushinteger(L, self->st.st_btim_ext);
-    lua_setfield(L, -2, "st_btim_ext");
+    luab_setinteger(L, -2, "st_btim_ext", self->st.st_btim_ext);
 #endif
-    (void)luab_newuserdata(L, &timespec_type, &self->st.st_birthtim);
-    lua_setfield(L, -2, "st_birthtim");
+    luab_setudata(L, -2, &timespec_type, "st_birthtim", &self->st.st_birthtim);
 
-    lua_pushinteger(L, self->st.st_size);
-    lua_setfield(L, -2, "st_size");
-
-    lua_pushinteger(L, self->st.st_blocks);
-    lua_setfield(L, -2, "st_blocks");
-
-    lua_pushinteger(L, self->st.st_blksize);
-    lua_setfield(L, -2, "st_blksize");
-
-    lua_pushinteger(L, self->st.st_flags);
-    lua_setfield(L, -2, "st_flags");
-
-    lua_pushinteger(L, self->st.st_gen);
-    lua_setfield(L, -2, "st_gen");
+    luab_setinteger(L, -2, "st_size", self->st.st_size);
+    luab_setinteger(L, -2, "st_blocks", self->st.st_blocks);
+    luab_setinteger(L, -2, "st_blksize", self->st.st_blksize);
+    luab_setinteger(L, -2, "st_flags", self->st.st_flags);
+    luab_setinteger(L, -2, "st_gen", self->st.st_gen);
 
     lua_pushvalue(L, -1);
 

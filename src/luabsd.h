@@ -65,9 +65,6 @@ typedef struct {
     size_t len;
 } luab_udata_t;
 
-#define luab_todata(L, narg, id, t) \
-    ((t)luab_checkudata((L), (narg), (id)))
-
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
 #endif
@@ -100,6 +97,19 @@ void *  luab_newuserdata(lua_State *, luab_module_t *, void *arg);
 
 int luab_pusherr(lua_State *, int);
 int luab_pushnil(lua_State *);
+
+#define luab_todata(L, narg, id, t) \
+    ((t)luab_checkudata((L), (narg), (id)))
+#define luab_setinteger(L, narg, k, v)                      \
+    do {                                                    \
+        lua_pushinteger((L), (v));                          \
+        lua_setfield((L), (narg), (k));                     \
+    } while (0)
+#define luab_setudata(L, narg, t, k, v)                     \
+    do {                                                    \
+        (void)luab_newuserdata((L), (t), (v));              \
+        lua_setfield((L), (narg), (k));                     \
+    } while (0)
 
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)

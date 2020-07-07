@@ -177,25 +177,14 @@ Flock_get(lua_State *L)
 
     self = luab_toflock(L, 1);
 
-    lua_newtable(L);   /* XXX */
+    lua_newtable(L);
 
-    lua_pushinteger(L, self->l.l_start);
-    lua_setfield(L, -2, "l_start");
-
-    lua_pushinteger(L, self->l.l_len);
-    lua_setfield(L, -2, "l_len");
-
-    lua_pushinteger(L, self->l.l_pid);
-    lua_setfield(L, -2, "l_pid");
-
-    lua_pushinteger(L, self->l.l_type);
-    lua_setfield(L, -2, "l_type");
-
-    lua_pushinteger(L, self->l.l_whence);
-    lua_setfield(L, -2, "l_whence");
-
-    lua_pushinteger(L, self->l.l_sysid);
-    lua_setfield(L, -2, "l_sysid");
+    lua_setinteger(L, -2, "l_start", self->l.l_start);
+    lua_setinteger(L, -2, "l_len", self->l.l_len);
+    lua_setinteger(L, -2, "l_pid", self->l.l_pid);
+    lua_setinteger(L, -2, "l_type", self->l.l_type);
+    lua_setinteger(L, -2, "l_whence", self->l.l_whence);
+    lua_setinteger(L, -2, "l_sysid", self->l.l_sysid);
 
     lua_pushvalue(L, -1);
 
