@@ -65,7 +65,7 @@ typedef struct {
  *
  * @param sec           Specifies value in seconds.
  *
- * @usage tv:tv_sec(sec)
+ * @usage tv:set_tv_sec(sec)
  */
 static int
 TimeSpec_set_tv_sec(lua_State *L)
@@ -84,13 +84,38 @@ TimeSpec_set_tv_sec(lua_State *L)
 }
 
 /***
+ * Get value for tv_sec over timespec{}.
+ *
+ * @function get_tv_sec
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage sec = tv:get_tv_sec()
+ */
+static int
+TimeSpec_get_tv_sec(lua_State *L)
+{
+    luab_timespec_t *self;
+    time_t tv_sec;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_totimespec(L, 1);
+    tv_sec = self->tv.tv_sec;
+
+    lua_pushinteger(L, tv_sec);
+
+    return 1;
+}
+
+/***
  * Set value for tv_nsec over timespec{}.
  *
  * @function set_tv_nsec
  *
  * @param nsec           Specifies value in nanoneconds.
  *
- * @usage tv:tv_nsec(nsec)
+ * @usage tv:set_tv_nsec(nsec)
  */
 static int
 TimeSpec_set_tv_nsec(lua_State *L)
@@ -106,6 +131,31 @@ TimeSpec_set_tv_nsec(lua_State *L)
     self->tv.tv_nsec = tv_nsec;
 
     return 0;
+}
+
+/***
+ * Get value for tv_nsec over timespec{}.
+ *
+ * @function get_tv_nsec
+ *
+ * @return (LUA_TNUMBER)
+ *
+ * @usage nsec = tv:get_tv_nsec()
+ */
+static int
+TimeSpec_get_tv_nsec(lua_State *L)
+{
+    luab_timespec_t *self;
+    time_t tv_nsec;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_totimespec(L, 1);
+    tv_nsec = self->tv.tv_nsec;
+
+    lua_pushinteger(L, tv_nsec);
+
+    return 1;
 }
 
 /***
@@ -149,6 +199,8 @@ static luab_table_t timespec_methods[] = {
     LUABSD_FUNC("set_tv_sec",   TimeSpec_set_tv_sec),
     LUABSD_FUNC("set_tv_nsec",  TimeSpec_set_tv_nsec),
     LUABSD_FUNC("get",  TimeSpec_get),
+    LUABSD_FUNC("get_tv_sec",   TimeSpec_get_tv_sec),
+    LUABSD_FUNC("get_tv_nsec",  TimeSpec_get_tv_nsec),
     LUABSD_FUNC("__tostring",   TimeSpec_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

@@ -103,6 +103,22 @@ Stat_set_st_dev(lua_State *L)
     return 0;
 }
 
+static int
+Stat_get_st_dev(lua_State *L)
+{
+    luab_stat_t *self;
+    dev_t st_dev;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_tostat(L, 1);
+    st_dev = self->st.st_dev;
+    
+    luab_pushinteger(L, st_dev);
+
+    return 0;
+}
+
 /* inode's number */
 static int
 Stat_set_st_ino(lua_State *L)
