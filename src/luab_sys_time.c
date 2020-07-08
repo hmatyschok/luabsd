@@ -235,16 +235,24 @@ luab_module_t timezone_type = {
  *
  * @function StructTimeZone
  *
+ * @param tz            Optional.
+ *
  * @return (LUA_TUSERDATA)
  *
- * @usage tz = bsd.sys.time.StructTimeZone()
+ * @usage tz = bsd.sys.time.StructTimeZone([ tz ])
  */
 static int
 luab_StructTimeZone(lua_State *L)
 {
-    luab_checkmaxargs(L, 0);
+    int narg = luab_checkmaxargs(L, 1);
+    struct timezone *timezone;
 
-    (void)luab_newtimezone(L, NULL);
+    if (narg == 0)
+        timezone = NULL;
+    else
+        timezone = timezone_udata(L, narg);
+
+    (void)luab_newtimezone(L, timezone);
 
     return 1;
 }
@@ -448,16 +456,24 @@ luab_module_t bintime_type = {
  *
  * @function StructBinTime
  *
+ * @param               Optional.
+ *
  * @return (LUA_TUSERDATA)
  *
- * @usage bt = bsd.sys.time.StructBinTime()
+ * @usage bt = bsd.sys.time.StructBinTime([ bt ])
  */
 static int
 luab_StructBinTime(lua_State *L)
 {
-    luab_checkmaxargs(L, 0);
+    int narg = luab_checkmaxargs(L, 1);
+    struct bintime *bintime;
 
-    (void)luab_newbintime(L, NULL);
+    if (narg == 0)
+        bintime = NULL;
+    else
+        bintime = bintime_udata(L, narg);
+
+    (void)luab_newbintime(L, bintime);
 
     return 1;
 }
@@ -770,16 +786,24 @@ luab_module_t clockinfo_type = {
  *
  * @function StructClockInfo
  *
+ * @param ci                    Optional.
+ *
  * @return (LUA_TUSERDATA)
  *
- * @usage ci = bsd.sys.time.StructClockInfo()
+ * @usage ci = bsd.sys.time.StructClockInfo([ ci ])
  */
 static int
 luab_StructClockInfo(lua_State *L)
 {
-    luab_checkmaxargs(L, 0);
+    int narg = luab_checkmaxargs(L, 1);
+    struct clockinfo *clockinfo;
 
-    (void)luab_newclockinfo(L, NULL);
+    if (narg == 0)
+        clockinfo = NULL;
+    else
+        clockinfo = clockinfo_udata(L, narg);
+
+    (void)luab_newclockinfo(L, clockinfo);
 
     return 1;
 }
@@ -982,16 +1006,24 @@ luab_module_t timespec_type = {
  *
  * @function StructTimeSpec
  *
+ * @param tv                    Optional.
+ *
  * @return (LUA_TUSERDATA)
  *
- * @usage tv = bsd.sys.time.StructTimeSpec()
+ * @usage tv = bsd.sys.time.StructTimeSpec([ tv ])
  */
 static int
 luab_StructTimeSpec(lua_State *L)
 {
-    luab_checkmaxargs(L, 0);
+    int narg = luab_checkmaxargs(L, 1);
+    struct timespec *timespec;
 
-    (void)luab_newtimespec(L, NULL);
+    if (narg == 0)
+        timespec = NULL;
+    else
+        timespec = timespec_udata(L, narg);
+
+    (void)luab_newtimespec(L, timespec);
 
     return 1;
 }
@@ -1200,9 +1232,15 @@ luab_module_t itimerval_type = {
 static int
 luab_StructItimerVal(lua_State *L)
 {
-    luab_checkmaxargs(L, 0);
+    int narg = luab_checkmaxargs(L, 1);
+    struct itimerval *itimerval;
 
-    (void)luab_newitimerval(L, NULL);
+    if (narg == 0)
+        itimerval = NULL;
+    else
+        itimerval = itimerval_udata(L, narg);
+
+    (void)luab_newitimerval(L, itimerval);
 
     return 1;
 }

@@ -28,6 +28,7 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 
+#include <stdlib.h>
 #include <string.h>
 
 #include <lua.h>
@@ -894,9 +895,15 @@ luab_module_t stat_type = {
 static int
 luab_StructStat(lua_State *L)
 {
-    luab_checkmaxargs(L, 0);
+    int narg = luab_checkmaxargs(L, 1);
+    struct stat *stat;
 
-    (void)luab_newstat(L, NULL);
+    if (narg == 0)
+        stat = NULL;
+    else
+        stat = stat_udata(L, narg);
+
+    (void)luab_newstat(L, stat);
 
     return 1;
 }
@@ -1226,6 +1233,9 @@ static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
  *  int futimens(int fd, const struct timespec times[2]);
  *  int utimensat(int fd, const char *path, const struct timespec times[2],
  *      int flag);
+ *
+ *  LUABSD_FUNC("futimens", luab_futimens),
+ *  LUABSD_FUNC("utimensat", luab_utimensat),
  */
 #endif
     LUABSD_FUNC("fstat",    luab_fstat),

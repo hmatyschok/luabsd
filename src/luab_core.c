@@ -46,7 +46,7 @@ luab_checkargv(lua_State *L, int narg)
     const char **argv;
     int n;
 
-    if (lua_type(L, narg) != LUA_TTABLE)
+    if (lua_istable(L, narg) == 0)
         luaL_argerror(L, narg, "Table expected");
 
     if ((n = lua_rawlen(L, narg)) == 0)
@@ -63,8 +63,8 @@ luab_checkargv(lua_State *L, int narg)
         /*
          * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
          */
-        if ((lua_type(L, -2) == LUA_TNUMBER)
-            && (lua_type(L, -1) == LUA_TSTRING)) {
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isstring(L, -1) != 0)) {
             argv[n] = lua_tostring(L, -1);
             lua_pop(L, 1);
         } else {
@@ -88,7 +88,7 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
     int *vec;
     size_t n;
 
-    if (lua_type(L, narg) != LUA_TTABLE)
+    if (lua_istable(L, narg) == 0)
         luaL_argerror(L, narg, "Table expected");
 
     if ((n = lua_rawlen(L, narg)) != len)
@@ -103,8 +103,8 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
 
     while (lua_next(L, narg) != 0) {
 
-        if ((lua_type(L, -2) == LUA_TNUMBER)
-            && (lua_type(L, -1) == LUA_TNUMBER)) {
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isnumber(L, -1) != 0)) {
             vec[n] = lua_tointeger(L, -1);
             lua_pop(L, 1);
         } else {

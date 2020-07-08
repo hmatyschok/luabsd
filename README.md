@@ -3,8 +3,8 @@ libluabsd - toolbox for implementing (web-based) software for (embedded) systems
 ================================================================================
 
 This library provides an easy customizable interface as extension of the Lua 
-language (5.2.4) against APIs those are common Unix-like Operating Systems (e. g. 
-*BSD, GNU/Linux, Minix, QNX, etc.).
+(5.2.4) language  against APIs those are common Unix-like Operating Systems 
+(e. g. *BSD, GNU/Linux, Minix, QNX, etc.).
 
 As an example, a database may created, as described in db(3):
 
@@ -33,17 +33,15 @@ Therefore
     local key = bsd.uuid.uuidgen()
     local value = "Hello world!"
 
-    db:put(key, value, bsd.db.R_NOOVERWRITE)
+    err, msg = db:put(key, value, bsd.db.R_NOOVERWRITE)
 
-    err, record = db:get(key, 0)
-
-and so on. A callout may implemented as follows:
+a callout may implemented as follows:
 
     fetch = true
     expired = false
 
     local function event()
-        print("Hello world!")
+        print(db:get(key, 0))
         expired = true;
     end
 

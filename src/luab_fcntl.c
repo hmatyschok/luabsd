@@ -342,10 +342,15 @@ luab_module_t flock_type = {
 static int
 luab_StructFlock(lua_State *L)
 {
+    int narg = luab_checkmaxargs(L, 1);
+    struct flock *flock;
 
-    luab_checkmaxargs(L, 0);
+    if (narg == 0)
+        flock = NULL;
+    else
+        flock = flock_udata(L, narg);
 
-    (void)luab_newflock(L, NULL);
+    (void)luab_newflock(L, flock);
 
     return 1;
 }
@@ -358,7 +363,9 @@ luab_StructFlock(lua_State *L)
 #define LUABSD_FCNTL_LIB_KEY    "fcntl"
 
 /***
- * @function open(2) - open or create for reading, writing or executing
+ * open(2) - open or create for reading, writing or executing
+ *
+ * @function open
  *
  * @param path          The specified file name.
  * @param flags         Values are constructed over
@@ -399,7 +406,9 @@ luab_open(lua_State *L)
 }
 
 /***
- * @function creat(2) - create a new file
+ * creat(2) - create a new file
+ *
+ * @function creat
  *
  * @param path          The specified file name.
  * @param mode          Values are constructed over
@@ -431,7 +440,9 @@ luab_creat(lua_State *L)
 }
 
 /***
- * @function fcntl(2) - file control
+ * fcntl(2) - file control
+ *
+ * @function fcntl
  *
  * @param fd            The specified descriptor.
  * @param cmd           Command operated on fd over
@@ -474,6 +485,23 @@ luab_fcntl(lua_State *L)
 }
 
 #if __BSD_VISIBLE
+/***
+ * flock(2) - apply or remove an advisory lock on an open file
+ *
+ * @function flock
+ *
+ * @param fd            The specified descriptor.
+ * @param operation     Specified by
+ *
+ *                          bsd.sys.file.LOCK_*,
+ *
+ *                      over <sys/file,h>.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage value [, msg ] = bsd.fcntl.flock(fd, operation)
+ */
 static int
 luab_flock(lua_State *L)
 {
