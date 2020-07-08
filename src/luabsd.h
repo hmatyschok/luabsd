@@ -54,15 +54,15 @@ typedef struct {
 typedef void (*luab_mod_fn_t)(void *ud, void *arg);
 
 typedef struct {
-    uint32_t  cookie;        /*  date -u +'%s' */
+    u_int32_t  cookie;        /*  date -u +'%s' */
+    u_int32_t  sz;
     const char  *name;
     luab_table_t    *vec;
     luab_mod_fn_t    init;
-    size_t  sz;
 } luab_module_t;
 
 typedef struct {
-    size_t len;
+    u_int32_t  len;
 } luab_udata_t;
 
 #if __BSD_VISIBLE

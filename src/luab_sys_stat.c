@@ -986,7 +986,24 @@ luab_fchmodat(lua_State *L)
 
     return luab_pusherr(L, status);
 }
-#endif
+#endif /* __POSIX_VISIBLE >= 200809 */
+
+static int
+luab_fstat(lua_State *L)
+{
+    int fd;
+    luab_stat_t *ud;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    ud = luab_tostat(L, 2);
+
+    status = fstat(fd, &ud->st);
+
+    return luab_pusherr(L, status);
+}
 
 #if __BSD_VISIBLE
 static int
@@ -1116,7 +1133,9 @@ luab_mknodat(lua_State *L)
 
     return luab_pusherr(L, status);
 }
-#endif
+#endif /* __POSIX_VISIBLE >= 200809 */
+
+
 
 static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
     LUABSD_INT("S_ISUID",    S_ISUID),
@@ -1200,6 +1219,7 @@ static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
  *      int flag);
  */
 #endif
+    LUABSD_FUNC("fstat",    luab_fstat),
 #if __BSD_VISIBLE
     LUABSD_FUNC("lchflags", luab_lchflags),
 #endif
