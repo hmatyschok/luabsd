@@ -152,7 +152,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
     if (m->init != NULL && arg != NULL)
         (*m->init)(ud, arg);
     else
-        (void)memset(ud, 0, m->sz);
+        (void)memset_s(ud, m->sz, 0, m->sz);
 
     luaL_setmetatable(L, m->name);
 
