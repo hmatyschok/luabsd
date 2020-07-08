@@ -146,7 +146,7 @@ static int
 TimeZone_get_tz_dsttime(lua_State *L)
 {
     luab_timezone_t *self;
-    time_t tz_dsttime;
+    int tz_dsttime;
 
     luab_checkmaxargs(L, 1);
 
