@@ -250,6 +250,7 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, &luab_db_lib);
     luab_newtable(L, &luab_fcntl_lib);
     luab_newtable(L, &luab_stdlib_lib);
+    luab_newtable(L, &luab_time_lib);
     luab_newtable(L, &luab_unistd_lib);
     luab_newtable(L, &luab_uuid_lib);
 

@@ -84,6 +84,7 @@ extern luab_module_t luab_sys_unistd_lib;
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_fcntl_lib;
 extern luab_module_t luab_stdlib_lib;
+extern luab_module_t luab_time_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
