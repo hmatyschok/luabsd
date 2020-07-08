@@ -36,10 +36,10 @@ typedef union {
     lua_CFunction   x_f;
 } luab_un_t;
 
-typedef void    (*luab_tab_fn_t)(lua_State *L, luab_un_t *x);
+typedef void    (*luab_table_fn)(lua_State *L, luab_un_t *x);
 
 typedef struct {
-    luab_tab_fn_t   init;
+    luab_table_fn   init;
     const char    *key;
     luab_un_t   val;
 } luab_table_t;
@@ -51,14 +51,16 @@ typedef struct {
 #define LUABSD_FUNC(k, v) \
     LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
 
-typedef void (*luab_mod_fn_t)(void *ud, void *arg);
+typedef void (*luab_init_fn)(void *ud, void *arg);
+typedef void *  (*luab_udata_fn)(lua_State *L, int narg);
 
 typedef struct {
     u_int32_t  cookie;        /*  date -u +'%s' */
     u_int32_t  sz;
     const char  *name;
     luab_table_t    *vec;
-    luab_mod_fn_t    init;
+    luab_init_fn    init;
+    luab_udata_fn    get;
 } luab_module_t;
 
 typedef struct {

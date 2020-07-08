@@ -50,7 +50,7 @@
 #define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
 
 typedef struct {
-    struct timezone    tz;
+    struct timezone    timezone;
 } luab_timezone_t;
 
 #define luab_newtimezone(L, arg) \
@@ -78,7 +78,7 @@ TimeZone_set_tz_minuteswest(lua_State *L)
     self = luab_totimezone(L, 1);
     tz_minuteswest = luab_checkinteger(L, 2, INT_MAX);
 
-    self->tz.tz_minuteswest = tz_minuteswest;
+    self->timezone.tz_minuteswest = tz_minuteswest;
 
     return 0;
 }
@@ -101,7 +101,7 @@ TimeZone_get_tz_minuteswest(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_totimezone(L, 1);
-    tz_minuteswest = self->tz.tz_minuteswest;
+    tz_minuteswest = self->timezone.tz_minuteswest;
 
     lua_pushinteger(L, tz_minuteswest);
 
@@ -128,7 +128,7 @@ TimeZone_set_tz_dsttime(lua_State *L)
     self = luab_totimezone(L, 1);
     tz_dsttime = luab_checkinteger(L, 2, LONG_MAX);
 
-    self->tz.tz_dsttime = tz_dsttime;
+    self->timezone.tz_dsttime = tz_dsttime;
 
     return 0;
 }
@@ -151,7 +151,7 @@ TimeZone_get_tz_dsttime(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_totimezone(L, 1);
-    tz_dsttime = self->tz.tz_dsttime;
+    tz_dsttime = self->timezone.tz_dsttime;
 
     lua_pushinteger(L, tz_dsttime);
 
@@ -178,8 +178,8 @@ TimeZone_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "tz_minuteswest", self->tz.tz_minuteswest);
-    luab_setinteger(L, -2, "tz_dsttime", self->tz.tz_dsttime);
+    luab_setinteger(L, -2, "tz_minuteswest", self->timezone.tz_minuteswest);
+    luab_setinteger(L, -2, "tz_dsttime", self->timezone.tz_dsttime);
 
     lua_pushvalue(L, -1);
 
@@ -210,7 +210,15 @@ timezone_init(void *ud, void *arg)
 {
     luab_timezone_t *self = (luab_timezone_t *)ud;
 
-    (void)memmove(&self->tz, arg, sizeof(self->tz));
+    (void)memmove(&self->timezone, arg, sizeof(self->timezone));
+}
+
+static void *
+timezone_udata(lua_State *L, int narg)
+{
+    luab_timezone_t *self = luab_totimezone(L, narg);
+
+    return (&self->timezone);
 }
 
 luab_module_t timezone_type = {
@@ -218,6 +226,7 @@ luab_module_t timezone_type = {
     .name = LUABSD_TIMEZONE_TYPE,
     .vec = timezone_methods,
     .init = timezone_init,
+    .get = timezone_udata,
     .sz = sizeof(luab_timezone_t),
 };
 
@@ -254,7 +263,7 @@ luab_StructTimeZone(lua_State *L)
 #define LUABSD_BINTIME_TYPE    "BINTIME*"
 
 typedef struct {
-    struct bintime    bt;
+    struct bintime    bintime;
 } luab_bintime_t;
 
 #define luab_newbintime(L, arg) \
@@ -282,7 +291,7 @@ BinTime_set_sec(lua_State *L)
     self = luab_tobintime(L, 1);
     sec = luab_checkinteger(L, 2, INT_MAX);
 
-    self->bt.sec = sec;
+    self->bintime.sec = sec;
 
     return 0;
 }
@@ -305,7 +314,7 @@ BinTime_get_sec(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_tobintime(L, 1);
-    sec = self->bt.sec;
+    sec = self->bintime.sec;
 
     lua_pushinteger(L, sec);
 
@@ -332,7 +341,7 @@ BinTime_set_frac(lua_State *L)
     self = luab_tobintime(L, 1);
     frac = luab_checkinteger(L, 2, LONG_MAX);
 
-    self->bt.frac = frac;
+    self->bintime.frac = frac;
 
     return 0;
 }
@@ -355,7 +364,7 @@ BinTime_get_frac(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_tobintime(L, 1);
-    frac = self->bt.frac;
+    frac = self->bintime.frac;
 
     lua_pushinteger(L, frac);
 
@@ -382,8 +391,8 @@ BinTime_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "sec", self->bt.sec);
-    luab_setinteger(L, -2, "frac", self->bt.frac);
+    luab_setinteger(L, -2, "sec", self->bintime.sec);
+    luab_setinteger(L, -2, "frac", self->bintime.frac);
 
     lua_pushvalue(L, -1);
 
@@ -414,7 +423,15 @@ bintime_init(void *ud, void *arg)
 {
     luab_bintime_t *self = (luab_bintime_t *)ud;
 
-    (void)memmove(&self->bt, arg, sizeof(self->bt));
+    (void)memmove(&self->bintime, arg, sizeof(self->bintime));
+}
+
+static void *
+bintime_udata(lua_State *L, int narg)
+{
+    luab_bintime_t *self = luab_tobintime(L, narg);
+
+    return (&self->bintime);
 }
 
 luab_module_t bintime_type = {
@@ -422,6 +439,7 @@ luab_module_t bintime_type = {
     .name = LUABSD_BINTIME_TYPE,
     .vec = bintime_methods,
     .init = bintime_init,
+    .get = bintime_udata,
     .sz = sizeof(luab_bintime_t),
 };
 
@@ -461,7 +479,7 @@ luab_StructBinTime(lua_State *L)
 #define LUABSD_CLOCKINFO_TYPE    "CLOCKINFO*"
 
 typedef struct {
-    struct clockinfo    ci;
+    struct clockinfo    clockinfo;
 } luab_clockinfo_t;
 
 #define luab_newclockinfo(L, arg) \
@@ -489,7 +507,7 @@ ClockInfo_set_hz(lua_State *L)
     self = luab_toclockinfo(L, 1);
     hz = luab_checkinteger(L, 2, INT_MAX);
 
-    self->ci.hz = hz;
+    self->clockinfo.hz = hz;
 
     return 0;
 }
@@ -512,7 +530,7 @@ ClockInfo_get_hz(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_toclockinfo(L, 1);
-    hz = self->ci.hz;
+    hz = self->clockinfo.hz;
 
     lua_pushinteger(L, hz);
 
@@ -539,7 +557,7 @@ ClockInfo_set_tick(lua_State *L)
     self = luab_toclockinfo(L, 1);
     tick = luab_checkinteger(L, 2, INT_MAX);
 
-    self->ci.tick = tick;
+    self->clockinfo.tick = tick;
 
     return 0;
 }
@@ -562,7 +580,7 @@ ClockInfo_get_tick(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_toclockinfo(L, 1);
-    tick = self->ci.tick;
+    tick = self->clockinfo.tick;
 
     lua_pushinteger(L, tick);
 
@@ -589,7 +607,7 @@ ClockInfo_set_stathz(lua_State *L)
     self = luab_toclockinfo(L, 1);
     stathz = luab_checkinteger(L, 2, INT_MAX);
 
-    self->ci.stathz = stathz;
+    self->clockinfo.stathz = stathz;
 
     return 0;
 }
@@ -612,7 +630,7 @@ ClockInfo_get_stathz(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_toclockinfo(L, 1);
-    stathz = self->ci.stathz;
+    stathz = self->clockinfo.stathz;
 
     lua_pushinteger(L, stathz);
 
@@ -639,7 +657,7 @@ ClockInfo_set_profhz(lua_State *L)
     self = luab_toclockinfo(L, 1);
     profhz = luab_checkinteger(L, 2, INT_MAX);
 
-    self->ci.profhz = profhz;
+    self->clockinfo.profhz = profhz;
 
     return 0;
 }
@@ -662,7 +680,7 @@ ClockInfo_get_profhz(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_toclockinfo(L, 1);
-    profhz = self->ci.profhz;
+    profhz = self->clockinfo.profhz;
 
     lua_pushinteger(L, profhz);
 
@@ -689,10 +707,10 @@ ClockInfo_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "hz", self->ci.hz);
-    luab_setinteger(L, -2, "tick", self->ci.tick);
-    luab_setinteger(L, -2, "stathz", self->ci.stathz);
-    luab_setinteger(L, -2, "profhz", self->ci.stathz);
+    luab_setinteger(L, -2, "hz", self->clockinfo.hz);
+    luab_setinteger(L, -2, "tick", self->clockinfo.tick);
+    luab_setinteger(L, -2, "stathz", self->clockinfo.stathz);
+    luab_setinteger(L, -2, "profhz", self->clockinfo.stathz);
 
     lua_pushvalue(L, -1);
 
@@ -727,7 +745,15 @@ clockinfo_init(void *ud, void *arg)
 {
     luab_clockinfo_t *self = (luab_clockinfo_t *)ud;
 
-    (void)memmove(&self->ci, arg, sizeof(self->ci));
+    (void)memmove(&self->clockinfo, arg, sizeof(self->clockinfo));
+}
+
+static void *
+clockinfo_udata(lua_State *L, int narg)
+{
+    luab_clockinfo_t *self = luab_toclockinfo(L, narg);
+
+    return (&self->clockinfo);
 }
 
 luab_module_t clockinfo_type = {
@@ -735,6 +761,7 @@ luab_module_t clockinfo_type = {
     .name = LUABSD_CLOCKINFO_TYPE,
     .vec = clockinfo_methods,
     .init = clockinfo_init,
+    .get = clockinfo_udata,
     .sz = sizeof(luab_clockinfo_t),
 };
 
@@ -770,7 +797,7 @@ luab_StructClockInfo(lua_State *L)
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
 
 typedef struct {
-    struct timespec    tv;
+    struct timespec    timespec;
 } luab_timespec_t;
 
 #define luab_newtimespec(L, arg) \
@@ -798,7 +825,7 @@ TimeSpec_set_tv_sec(lua_State *L)
     self = luab_totimespec(L, 1);
     tv_sec = luab_checkinteger(L, 2, INT_MAX);
 
-    self->tv.tv_sec = tv_sec;
+    self->timespec.tv_sec = tv_sec;
 
     return 0;
 }
@@ -821,7 +848,7 @@ TimeSpec_get_tv_sec(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_totimespec(L, 1);
-    tv_sec = self->tv.tv_sec;
+    tv_sec = self->timespec.tv_sec;
 
     lua_pushinteger(L, tv_sec);
 
@@ -848,7 +875,7 @@ TimeSpec_set_tv_nsec(lua_State *L)
     self = luab_totimespec(L, 1);
     tv_nsec = luab_checkinteger(L, 2, LONG_MAX);
 
-    self->tv.tv_nsec = tv_nsec;
+    self->timespec.tv_nsec = tv_nsec;
 
     return 0;
 }
@@ -871,7 +898,7 @@ TimeSpec_get_tv_nsec(lua_State *L)
     luab_checkmaxargs(L, 1);
 
     self = luab_totimespec(L, 1);
-    tv_nsec = self->tv.tv_nsec;
+    tv_nsec = self->timespec.tv_nsec;
 
     lua_pushinteger(L, tv_nsec);
 
@@ -898,8 +925,8 @@ TimeSpec_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "tv_sec", self->tv.tv_sec);
-    luab_setinteger(L, -2, "tv_nsec", self->tv.tv_nsec);
+    luab_setinteger(L, -2, "tv_sec", self->timespec.tv_sec);
+    luab_setinteger(L, -2, "tv_nsec", self->timespec.tv_nsec);
 
     lua_pushvalue(L, -1);
 
@@ -930,7 +957,15 @@ timespec_init(void *ud, void *arg)
 {
     luab_timespec_t *self = (luab_timespec_t *)ud;
 
-    (void)memmove(&self->tv, arg, sizeof(self->tv));
+    (void)memmove(&self->timespec, arg, sizeof(self->timespec));
+}
+
+static void *
+timespec_udata(lua_State *L, int narg)
+{
+    luab_timespec_t *self = luab_totimespec(L, narg);
+
+    return (&self->timespec);
 }
 
 luab_module_t timespec_type = {
@@ -938,6 +973,7 @@ luab_module_t timespec_type = {
     .name = LUABSD_TIMESPEC_TYPE,
     .vec = timespec_methods,
     .init = timespec_init,
+    .get = timespec_udata,
     .sz = sizeof(luab_timespec_t),
 };
 
@@ -974,7 +1010,7 @@ luab_StructTimeSpec(lua_State *L)
 #define LUABSD_ITIMERVAL_TYPE    "ITIMERVAL*"
 
 typedef struct {
-    struct itimerval    it;
+    struct itimerval    itimerval;
 } luab_itimerval_t;
 
 #define luab_newitimerval(L, arg) \
@@ -1003,7 +1039,7 @@ ItimerVal_set_it_interval(lua_State *L)
     self = luab_toitimerval(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
-    (void)memmove(&self->it.it_interval, ud, timespec_type.sz);
+    (void)memmove(&self->itimerval.it_interval, ud, timespec_type.sz);
 
     return 0;
 }
@@ -1026,7 +1062,7 @@ ItimerVal_get_it_interval(lua_State *L)
 
     self = luab_toitimerval(L, 1);
 
-    (void)luab_newuserdata(L, &timespec_type, &self->it.it_interval);
+    (void)luab_newuserdata(L, &timespec_type, &self->itimerval.it_interval);
 
     return 1;
 }
@@ -1052,7 +1088,7 @@ ItimerVal_set_it_value(lua_State *L)
     self = luab_toitimerval(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
-    (void)memmove(&self->it.it_value, ud, timespec_type.sz);
+    (void)memmove(&self->itimerval.it_value, ud, timespec_type.sz);
 
     return 0;
 }
@@ -1075,7 +1111,7 @@ ItimerVal_get_it_value(lua_State *L)
 
     self = luab_toitimerval(L, 1);
 
-    (void)luab_newuserdata(L, &timespec_type, &self->it.it_value);
+    (void)luab_newuserdata(L, &timespec_type, &self->itimerval.it_value);
 
     return 1;
 }
@@ -1100,8 +1136,8 @@ ItimerVal_get(lua_State *L)
 
     lua_newtable(L);   /* XXX */
 
-    luab_setudata(L, -2, &timespec_type, "it_interval", &self->it.it_interval);
-    luab_setudata(L, -2, &timespec_type, "it_value", &self->it.it_value);
+    luab_setudata(L, -2, &timespec_type, "it_interval", &self->itimerval.it_interval);
+    luab_setudata(L, -2, &timespec_type, "it_value", &self->itimerval.it_value);
 
     lua_pushvalue(L, -1);
 
@@ -1132,7 +1168,15 @@ itimerval_init(void *ud, void *arg)
 {
     luab_itimerval_t *self = ud;    /* XXX */
 
-    (void)memmove(&self->it, arg, sizeof(self->it));
+    (void)memmove(&self->itimerval, arg, sizeof(self->itimerval));
+}
+
+static void *
+itimerval_udata(lua_State *L, int narg)
+{
+    luab_itimerval_t *self = luab_toitimerval(L, narg);
+
+    return (&self->itimerval);
 }
 
 luab_module_t itimerval_type = {
@@ -1140,6 +1184,7 @@ luab_module_t itimerval_type = {
     .name = LUABSD_ITIMERVAL_TYPE,
     .vec = itimerval_methods,
     .init = itimerval_init,
+    .get = itimerval_udata,
     .sz = sizeof(luab_itimerval_t),
 };
 
