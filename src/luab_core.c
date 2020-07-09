@@ -87,7 +87,7 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
 {
     int *vec;
     size_t n;
-
+                                    /* XXX redundant code-section */
     if (lua_istable(L, narg) == 0)
         luaL_argerror(L, narg, "Table expected");
 
@@ -128,7 +128,7 @@ luab_checklstring(lua_State *L, int narg, size_t n)
     buf = luaL_checklstring(L, narg, &len);
 
     if (len > n)    /* XXX err_msg */
-        luaL_argerror(L, narg, "is too big");
+        luaL_argerror(L, narg, "Value too large to be stored in data type");
 
     return buf;
 }
@@ -168,7 +168,7 @@ luab_pusherr(lua_State *L, int res)
 
     lua_pushinteger(L, res);
 
-    if (save_errno != 0 && res != 0) {
+    if (save_errno != 0 && res < 0) {
         msg = strerror(save_errno);
         lua_pushstring(L, msg);
         status = 2;

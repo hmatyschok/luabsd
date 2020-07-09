@@ -1234,7 +1234,7 @@ static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
  *  int utimensat(int fd, const char *path, const struct timespec times[2],
  *      int flag);
  *
- *  LUABSD_FUNC("futimens", luab_futimens),
+ *      LUABSD_FUNC("futimens", luab_futimens),
  *  LUABSD_FUNC("utimensat", luab_utimensat),
  */
 #endif
