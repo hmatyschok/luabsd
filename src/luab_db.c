@@ -109,17 +109,11 @@ db_close(lua_State *L)
 
     self = luab_todb(L, 1);
 
-    if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
-
-    if ((status = (self->db->close)(self->db)) != 0)
-        return luab_pusherr(L, status);
-
-    lua_pushinteger(L, status);
-
-    self->db = NULL;
-
-    return 1;
+    if ((status = db_isclosed(self)) == 0) {
+        if ((status = (self->db->close)(self->db)) == 0)
+            self->db = NULL;
+    }
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -134,22 +128,15 @@ db_del(lua_State *L)
 
     self = luab_todb(L, 1);
 
-    if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
+    if ((status = db_isclosed(self)) == 0) {
+        flags = luab_checkinteger(L, 3, INT_MAX);
 
-    if ((status = db_newbuf(L, 2, &k)) != 0)
-        return luab_pusherr(L, status);
-
-    flags = luab_checkinteger(L, 3, INT_MAX);
-
-    if ((status = (self->db->del)(self->db, &k, flags)) != 0)
-        return luab_pusherr(L, status);
-
-    lua_pushinteger(L, status);
-
-    free(k.data);
-
-    return 1;
+        if ((status = db_newbuf(L, 2, &k)) == 0) {
+            status = (self->db->del)(self->db, &k, flags);
+            free(k.data);
+        }
+    }
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -165,22 +152,25 @@ db_get(lua_State *L)
     self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
-
-    if ((status = db_newbuf(L, 2, &k)) != 0)
-        return luab_pusherr(L, status);
+        goto bad;
 
     flags = luab_checkinteger(L, 3, INT_MAX);
 
-    if ((status = (self->db->get)(self->db, &k, &v, flags)) != 0)
-        return luab_pusherr(L, status);
+    if ((status = db_newbuf(L, 2, &k)) != 0)
+        goto bad;
 
+    if ((status = (self->db->get)(self->db, &k, &v, flags)) != 0) {
+        free(k.data);
+        goto bad;
+    }
     lua_pushinteger(L, status);
     lua_pushlstring(L, v.data, v.size);
 
     free(k.data);
 
     return 2;
+bad:
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -196,28 +186,24 @@ db_put(lua_State *L)
     self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
+        goto out;
+
+    flags = luab_checkinteger(L, 4, INT_MAX);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
-        return luab_pusherr(L, status);
+        goto out;
 
     if ((status = db_newbuf(L, 3, &v)) != 0) {
         free(k.data);
-        return luab_pusherr(L, status);
+        goto out;
     }
-    flags = luab_checkinteger(L, 4, INT_MAX);
 
-    if ((status = (self->db->put)(self->db, &k, &v, flags)) != 0) {
-        free(k.data);
-        free(v.data);
-        return luab_pusherr(L, status);
-    }
-    lua_pushinteger(L, status);
+    status = (self->db->put)(self->db, &k, &v, flags);
 
     free(k.data);
     free(v.data);
-
-    return 1;
+out:
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -233,18 +219,20 @@ db_seq(lua_State *L)
     self = luab_todb(L, 1);
 
     if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
+        goto bad;
 
     flags = luab_checkinteger(L, 2, INT_MAX);
 
     if ((status = (self->db->seq)(self->db, &k, &v, flags)) != 0)
-        return luab_pusherr(L, status);
+        goto bad;
 
     lua_pushinteger(L, status);
     lua_pushlstring(L, k.data, k.size);
     lua_pushlstring(L, v.data, v.size);
 
     return 3;
+bad:
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -258,33 +246,25 @@ db_sync(lua_State *L)
 
     self = luab_todb(L, 1);
 
-    if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
-
-    flags = luab_checkinteger(L, 2, INT_MAX);
-
-    if ((status = (self->db->sync)(self->db, flags)) != 0)
-        return luab_pusherr(L, status);
-
-    lua_pushinteger(L, status);
-
-    return 1;
+    if ((status = db_isclosed(self)) == 0) {
+        flags = luab_checkinteger(L, 2, INT_MAX);
+        status = (self->db->sync)(self->db, flags);
+    }
+    return luab_pusherr(L, status);
 }
 
 static int
 db_fd(lua_State *L)
 {
     luab_db_t *self;
-    int fd, status;
+    int fd = -1, status;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_todb(L, 1);
 
-    if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
-
-    fd = (self->db->fd)(self->db);
+    if ((status = db_isclosed(self)) == 0)
+        fd = (self->db->fd)(self->db);
 
     return luab_pusherr(L, fd);
 }
@@ -300,14 +280,10 @@ db_flock(lua_State *L)
     self = luab_todb(L, 1);
     op = luab_checkinteger(L, 2, INT_MAX);
 
-    if ((status = db_isclosed(self)) != 0)
-        return luab_pusherr(L, status);
-
-    if ((fd = (self->db->fd)(self->db)) < 0)
-        return luab_pusherr(L, fd);
-
-    status = flock(fd, op);
-
+    if ((status = db_isclosed(self)) == 0) {
+        if ((fd = (self->db->fd)(self->db)) >= 0)
+            status = flock(fd, op);
+    }
     return luab_pusherr(L, status);
 }
 
