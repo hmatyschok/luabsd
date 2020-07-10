@@ -38,6 +38,82 @@
 #include "luabsd.h"
 
 /*
+ * Translate a LUA_TTABLE over LUA_TUSERDATA into an array of timespec{} items.
+ */
+static struct timespec *
+luab_checktimesvector(lua_State *L, int narg, size_t len)
+{
+    struct timespec *vec, *ts;
+    size_t n;
+
+    if (lua_istable(L, narg) == 0)
+        luaL_argerror(L, narg, "Table expected");
+
+    if ((n = lua_rawlen(L, narg)) != len)
+        luaL_argerror(L, narg, "Size mismatch");
+
+    if ((vec = calloc(len, sizeof(struct timespec))) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    n = 0;
+
+    lua_pushnil(L);
+
+    while (lua_next(L, narg) != 0) {
+
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isuserdata(L, -1) != 0)) {
+            ts = (struct timespec *)(*timespec_type.get)(L, -1);
+            (void)memmove(&vec[n], ts, sizeof(struct timespec));
+            lua_pop(L, 1);
+        } else {
+            free(vec);
+            lua_pop(L, 1);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+
+        n++;
+    }
+
+    return vec;
+}
+
+static void
+luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
+{
+    struct timespec *vec, *ts;
+    size_t n;
+
+    if (lua_istable(L, narg) == 0)
+        luaL_argerror(L, narg, "Table expected");
+
+    if ((n = lua_rawlen(L, narg)) != len)
+        luaL_argerror(L, narg, "Size mismatch");
+
+    vec = (struct timespec *)arg;
+    n = 0;
+
+    lua_pushnil(L);
+
+    while (lua_next(L, narg) != 0) {
+
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isuserdata(L, -1) != 0)) {
+            ts = (struct timespec *)(*timespec_type.get)(L, -1);
+            (void)memmove(ts, &vec[n], sizeof(struct timespec));
+            lua_pop(L, 1);
+        } else {
+            free(vec);
+            lua_pop(L, 1);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+
+        n++;
+    }
+    free(vec);
+}
+
+/*
  * Interface against
  *
  *  struct stat {
@@ -1002,6 +1078,59 @@ luab_fchmodat(lua_State *L)
 
     return luab_pusherr(L, status);
 }
+
+static int
+luab_futimens(lua_State *L)
+{
+    int fd;
+    struct timespec *times;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+
+    if (lua_isnil(L, 2) != 0)
+        times = luab_checktimesvector(L, 2, 2);
+    else
+        times = NULL;
+
+    status = futimens(fd, times);
+
+    if (times != NULL)
+        luab_pushtimesvector(L, 2, 2, times);
+
+    return luab_pusherr(L, status);
+}
+
+static int
+luab_utimensat(lua_State *L)
+{
+    int fd;
+    const char *path;
+    struct timespec *times;
+    int flag, status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+
+    if (lua_isnil(L, 3) != 0)
+        times = luab_checktimesvector(L, 2, 2);
+    else
+        times = NULL;
+
+    flag = luab_checkinteger(L, 4, INT_MAX);
+
+    status = utimensat(fd, path, times, flag);
+
+    if (times != NULL)
+        luab_pushtimesvector(L, 2, 2, times);
+
+    return luab_pusherr(L, status);
+}
+
 #endif /* __POSIX_VISIBLE >= 200809 */
 
 static int
@@ -1227,16 +1356,8 @@ static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
 #endif
 #if __POSIX_VISIBLE >= 200809
     LUABSD_FUNC("fchmodat", luab_fchmodat),
-/*
- * XXX
- *
- *  int futimens(int fd, const struct timespec times[2]);
- *  int utimensat(int fd, const char *path, const struct timespec times[2],
- *      int flag);
- *
- *      LUABSD_FUNC("futimens", luab_futimens),
- *  LUABSD_FUNC("utimensat", luab_utimensat),
- */
+    LUABSD_FUNC("futimens", luab_futimens),
+    LUABSD_FUNC("utimensat", luab_utimensat),
 #endif
     LUABSD_FUNC("fstat",    luab_fstat),
 #if __BSD_VISIBLE
