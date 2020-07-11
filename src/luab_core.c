@@ -237,7 +237,7 @@ LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
     lua_newtable(L);
-                        /* XXX */
+                        /* XXX Well, more macros. */
     lua_newtable(L);
 
     luab_newtable(L, &luab_sys_file_lib);

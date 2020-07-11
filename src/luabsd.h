@@ -113,6 +113,11 @@ int luab_pushnil(lua_State *);
         lua_pushinteger((L), (v));                          \
         lua_setfield((L), (narg), (k));                     \
     } while (0)
+#define luab_setstring(L, narg, k, v)                       \
+    do {                                                    \
+        lua_pushstring((L), (v));                           \
+        lua_setfield((L), (narg), (k));                     \
+    } while (0)
 #define luab_setudata(L, narg, id, k, v)                    \
     do {                                                    \
         (void)luab_newuserdata((L), (id), (v));             \
