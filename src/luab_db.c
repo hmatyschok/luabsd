@@ -38,8 +38,9 @@
 
 #include "luabsd.h"
 
-#define LUABSD_DB_LIB_ID    1593623310
-#define LUABSD_DB_LIB_KEY    "db"
+/*
+ * Interface against db(3).
+ */
 
 #if __BSD_VISIBLE
 #define LUABSD_DB_TYPE_ID    1593623398
@@ -53,10 +54,6 @@ typedef struct {
     ((luab_db_t *)luab_newuserdata(L, &db_type, (arg)))
 #define luab_todb(L, narg) \
     luab_todata((L), (narg), &db_type, luab_db_t *)
-
-/*
- * Interface against db(3).
- */
 
 static const char *
 db_fname(lua_State *L, int narg)
@@ -159,16 +156,17 @@ db_get(lua_State *L)
     if ((status = db_newbuf(L, 2, &k)) != 0)
         goto bad;
 
-    if ((status = (self->db->get)(self->db, &k, &v, flags)) != 0) {
-        free(k.data);
-        goto bad;
-    }
+    if ((status = (self->db->get)(self->db, &k, &v, flags)) != 0)
+        goto bad1;
+
     lua_pushinteger(L, status);
     lua_pushlstring(L, v.data, v.size);
 
     free(k.data);
 
     return 2;
+bad1:
+    free(k.data);
 bad:
     return luab_pusherr(L, status);
 }
@@ -193,15 +191,14 @@ db_put(lua_State *L)
     if ((status = db_newbuf(L, 2, &k)) != 0)
         goto out;
 
-    if ((status = db_newbuf(L, 3, &v)) != 0) {
-        free(k.data);
-        goto out;
-    }
+    if ((status = db_newbuf(L, 3, &v)) != 0)
+        goto out1;
 
     status = (self->db->put)(self->db, &k, &v, flags);
 
-    free(k.data);
     free(v.data);
+out1:
+    free(k.data);
 out:
     return luab_pusherr(L, status);
 }
@@ -357,6 +354,9 @@ luab_dbopen(lua_State *L)
     return 1;
 }
 #endif
+
+#define LUABSD_DB_LIB_ID    1593623310
+#define LUABSD_DB_LIB_KEY    "db"
 
 static luab_table_t luab_db_vec[] = {   /* db.h */
     LUABSD_INT("RET_ERROR", RET_ERROR),
