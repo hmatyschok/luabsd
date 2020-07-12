@@ -266,6 +266,7 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &timespec_type);
     luab_newmetatable(L, &itimerval_type);
     luab_newmetatable(L, &stat_type);
+    luab_newmetatable(L, &tm_type);
 
     return 1;
 }

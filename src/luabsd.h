@@ -75,6 +75,7 @@ extern luab_module_t clockinfo_type;
 extern luab_module_t flock_type;
 extern luab_module_t timezone_type;
 extern luab_module_t timespec_type;
+extern luab_module_t tm_type;
 extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
 
