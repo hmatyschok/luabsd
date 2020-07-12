@@ -1104,6 +1104,37 @@ luab_setuid(lua_State *L)
 }
 
 /***
+ * sysconf(3) - get configuration system variable
+ *
+ * @function sysconf
+ *
+ * @param name          Specifies the system variable over
+ *
+ *                          bsd.unistd._SC_*
+ *
+ *                      to be queried.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (value [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage value [, msg ] = bsd.unistd.sysconf()
+ */
+static int
+luab_sysconf(lua_State *L)
+{
+    int name;
+    long value;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    name = luab_checkinteger(L, 1, INT_MAX);
+
+    value = sysconf(name);
+
+    return luab_pusherr(L, value);
+}
+
+/***
  * tcgetpgrp(3) - set foreground process group ID
  *
  * @function tcgetpgrp
@@ -1113,7 +1144,7 @@ luab_setuid(lua_State *L)
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (pgrp [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage name [, msg ] = bsd.unistd.tcgetpgrp()
+ * @usage pgrp [, msg ] = bsd.unistd.tcgetpgrp()
  */
 static int
 luab_tcgetpgrp(lua_State *L)
@@ -1124,7 +1155,7 @@ luab_tcgetpgrp(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    
+
     pgrp = tcgetpgrp(fd);
 
     return luab_pusherr(L, pgrp);
@@ -1142,7 +1173,7 @@ luab_tcgetpgrp(lua_State *L)
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage name [, msg ] = bsd.unistd.tcsetpgrp()
+ * @usage err [, msg ] = bsd.unistd.tcsetpgrp()
  */
 static int
 luab_tcsetpgrp(lua_State *L)
@@ -2120,7 +2151,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("setpgrp",    luab_setpgrp),
     LUABSD_FUNC("setsid", luab_setsid),
     LUABSD_FUNC("setuid", luab_setuid),
-    /* LUABSD_FUNC("sysconf",    luab_sysconf), XXX */
+    LUABSD_FUNC("sysconf",    luab_sysconf),
     LUABSD_FUNC("tcgetpgrp",    luab_tcgetpgrp),
     LUABSD_FUNC("tcsetpgrp",    luab_tcsetpgrp),
     LUABSD_FUNC("ttyname",  luab_ttyname),
