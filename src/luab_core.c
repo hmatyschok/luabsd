@@ -197,6 +197,28 @@ luab_pushnil(lua_State *L)
     return status;
 }
 
+int
+luab_pushstring(lua_State *L, char *res)
+{
+    int save_errno = errno;
+    char *msg;
+    int status;
+
+    if (res != NULL) {
+        lua_pushstring(L, res);
+
+        if (save_errno != 0) {
+            msg = strerror(save_errno);
+            lua_pushstring(L, msg);
+            status = 2;
+        } else
+            status = 1;
+    } else
+        status = luab_pushnil(L);
+
+    return status;
+}
+
 /*
  * Called, when package.loadlib takes place.
  */
