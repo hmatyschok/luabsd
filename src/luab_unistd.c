@@ -49,7 +49,9 @@
 extern char **environ;
 
 /***
- * @function execv(3) - execute a file
+ * execv(3) - execute a file
+ * 
+ * @function execv
  *
  * @param path      Identifies the new process image file by its path.
  * @param argv      Argument vector, instance of LUA_TTABLE:
@@ -81,7 +83,9 @@ luab_execv(lua_State *L)
 }
 
 /***
- * @function execve(2) - execute a file
+ * execve(2) - execute a files
+ * 
+ * @function execve
  *
  * @param path      Identifies the new process image file by its path.
  * @param argv      Argument vector, instance of LUA_TTABLE:
@@ -113,7 +117,9 @@ luab_execve(lua_State *L)
 }
 
 /***
- * @function execvp(3) - execute a file
+ * execvp(3) - execute a file
+ * 
+ * @function execvp
  *
  * @param path      Identifies the new process image file by its path.
  * @param argv      Argument vector, instance of LUA_TTABLE:
@@ -146,7 +152,9 @@ luab_execvp(lua_State *L)
 
 #if __POSIX_VISIBLE >= 200809
 /***
- * @function fexecve(2) - execute a file
+ * fexecve(2) - execute a file
+ * 
+ * @function fexecve
  *
  * @param fd        Identifies the new process image file by open file
  *                  descriptor.
@@ -214,7 +222,9 @@ h_signal(int arg __unused)
 }
 
 /***
- * @function alarm(3) - set signal timer alarm
+ * alarm(3) - set signal timer alarm
+ * 
+ * @function alarm
  *
  * @param seconds       For timeout specified number of seconds.
  * @param callback      Callout routine.
@@ -254,7 +264,9 @@ luab_alarm(lua_State *L)
  */
 
 /***
- * @function access(2) - check availability of a file
+ * access(2) - check availability of a file
+ * 
+ * @function access
  *
  * @param path          Identifies the file by name.
  * @param mode          See the File Access Permission section of intro(2).
@@ -304,7 +316,9 @@ luab_chdir(lua_State *L)
 }
 
 /***
- * @function chown(2) - change owner and group of a file
+ * chown(2) - change owner and group of a file
+ * 
+ * @function chown
  *
  * @param path          Identifies the file by name.
  * @param owner         User ID.
@@ -335,7 +349,9 @@ luab_chown(lua_State *L)
 }
 
 /***
- * @function close(2) - delete a descriptor
+ * close(2) - delete a descriptor
+ * 
+ * @function close
  *
  * @param fd            Open file descriptor.
  *
@@ -358,7 +374,9 @@ luab_close(lua_State *L)
 }
 
 /***
- * @function closefrom(2) - delete open file descriptors
+ * closefrom(2) - delete open file descriptors
+ * 
+ * @function closefrom
  *
  * @param lowfd         Any file descriptor greater than or equal from the
  *                      per-process file descriptor table.
@@ -382,7 +400,9 @@ luab_closefrom(lua_State *L)
 }
 
 /***
- * @function dup(2) - duplicate an existing file descriptor
+ * dup(2) - duplicate an existing file descriptor
+ * 
+ * @function dup
  *
  * @param oldd          Small non-negative integer index in the per-process
  *                      descriptor table.
@@ -406,7 +426,9 @@ luab_dup(lua_State *L)
 }
 
 /***
- * @function dup2(2) - duplicate an existing file descriptor
+ * dup2(2) - duplicate an existing file descriptor
+ * 
+ * @function dup2
  *
  * @param oldd          Small non-negative integer index in the per-process
  *                      descriptor table.
@@ -433,7 +455,9 @@ luab_dup2(lua_State *L)
 }
 
 /***
- * @function fork(2) - create a new process
+ * fork(2) - create a new process
+ * 
+ * @function fork
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -452,7 +476,9 @@ luab_fork(lua_State *L)
 }
 
 /***
- * @function fpathconf(2) - get configurable pathname variables
+ * fpathconf(2) - get configurable pathname variables
+ * 
+ * @function fpathconf
  *
  * @param fd            Open file descriptor.
  * @param name          Specifies the system variable over
@@ -482,7 +508,9 @@ luab_fpathconf(lua_State *L)
 }
 
 /***
- * @function getcwd(3) - get working directory pathname
+ * getcwd(3) - get working directory pathname
+ * 
+ * @function getcwd
  *
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (path [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
@@ -505,7 +533,9 @@ luab_getcwd(lua_State *L)
 }
 
 /***
- * @function getegid(2) - get (effective)vgroup process identification
+ * getegid(2) - get (effective)vgroup process identification
+ * 
+ * @function getegid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (egid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -523,7 +553,9 @@ luab_getegid(lua_State *L)
 }
 
 /***
- * @function geteuid(2) - get (effective) user identification
+ * geteuid(2) - get (effective) user identification
+ * 
+ * @function geteuid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (euid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -541,7 +573,9 @@ luab_geteuid(lua_State *L)
 }
 
 /***
- * @function getgid(2) - get group process identification
+ * getgid(2) - get group process identification
+ * 
+ * @function getgid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (gid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -559,7 +593,9 @@ luab_getgid(lua_State *L)
 }
 
 /***
- * @function getgroups(2) - get group access list
+ * getgroups(2) - get group access list
+ * 
+ * @function getgroups
  *
  * @param gidsetlen     Number of entries that may be placed on
  *                      instance of returned LUA_TTABLE:
@@ -614,7 +650,9 @@ luab_getgroups(lua_State *L)
 }
 
 /***
- * @function getlogin(2) - get login name
+ * getlogin(2) - get login name
+ * 
+ * @function getlogin
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,STRING} ]) (name [, nil]) on success or
  *                                                    (nil, (strerror(errno)))
@@ -636,7 +674,9 @@ luab_getlogin(lua_State *L)
 }
 
 /***
- * @function getpgrp(2) - get process group
+ * getpgrp(2) - get process group
+ * 
+ * @function getpgrp
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pgrp [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -654,7 +694,9 @@ luab_getpgrp(lua_State *L)
 }
 
 /***
- * @function getpid(2) - get calling process identification
+ * getpid(2) - get calling process identification
+ * 
+ * @function getpid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -672,7 +714,9 @@ luab_getpid(lua_State *L)
 }
 
 /***
- * @function getppid(2) - get parent process identification
+ * getppid(2) - get parent process identification
+ * 
+ * @function getppid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (ppid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -690,7 +734,9 @@ luab_getppid(lua_State *L)
 }
 
 /***
- * @function getuid(2) - get user identification
+ * getuid(2) - get user identification
+ * 
+ * @function getuid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (uid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -709,7 +755,9 @@ luab_getuid(lua_State *L)
 }
 
 /***
- * @function isatty(3) - determine, if valid terminal type device.
+ * isatty(3) - determine, if valid terminal type device
+ * 
+ * @function isatty
  *
  * @param fd            Open file descriptor.
  *
@@ -733,7 +781,9 @@ luab_isatty(lua_State *L)
 }
 
 /***
- * @function link(2) - make a hard file link
+ * link(2) - make a hard file link
+ * 
+ * @function link
  *
  * @param name1         Path or file name of underlying object.
  * @param name2         Path or file name where it points to name1.
@@ -762,7 +812,9 @@ luab_link(lua_State *L)
 #ifndef _LSEEK_DECLARED
 #define _LSEEK_DECLARED
 /***
- * @function lseek(2) - reposition read/write file offset
+ * lseek(2) - reposition read/write file offset
+ * 
+ * @function lseek
  *
  * @param filedes       Open file descriptor.
  * @param offset        Offset according to the directive whence.
@@ -798,7 +850,9 @@ luab_lseek(lua_State *L)
 #endif
 
 /***
- * @function pathconf(2) - get configurable pathname variables
+ * pathconf(2) - get configurable pathname variables
+ * 
+ * @function pathconf
  *
  * @param path          Name of file or directory.
  * @param name          Specifies the system variable over
@@ -830,7 +884,9 @@ luab_pathconf(lua_State *L)
 }
 
 /***
- * @function pause(3) - stop until signal
+ * pause(3) - stop until signal
+ * 
+ * @function pause
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (-1 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -850,7 +906,9 @@ luab_pause(lua_State *L)
 }
 
 /***
- * @function pipe(2) - create descriptor pair for interprocess communication
+ * pipe(2) - create descriptor pair for interprocess communication
+ * 
+ * @function pipe
  *
  * @param filedes       Pair of file descriptors as instance of LUA_TTABLE:
  *
@@ -878,7 +936,9 @@ luab_pipe(lua_State *L)
 }
 
 /***
- * @function pipe2(2) - create descriptor pair for interprocess communication
+ * pipe2(2) - create descriptor pair for interprocess communication
+ * 
+ * @function pipe2
  *
  * @param filedes       Pair of file descriptors as instance of LUA_TTABLE:
  *
@@ -915,7 +975,9 @@ luab_pipe2(lua_State *L)
 }
 
 /***
- * @function setgid(2) - set group id
+ * setgid(2) - set group id
+ * 
+ * @function setgid
  *
  * @param gid           Group ID.
  *
@@ -938,7 +1000,9 @@ luab_setgid(lua_State *L)
 }
 
 /***
- * @function setpgid(2) - set process group
+ * setpgid(2) - set process group
+ * 
+ * @function setpgid
  *
  * @param pid           Process identifier.
  * @param pgrp          Process group for specefied process.
@@ -965,7 +1029,9 @@ luab_setpgid(lua_State *L)
 }
 
 /***
- * @function setpgrp(2) - set process group
+ * setpgrp(2) - set process group
+ * 
+ * @function setpgrp
  *
  * @param pid           Process identifier.
  * @param pgrp          Process group for specefied process.
@@ -992,7 +1058,9 @@ luab_setpgrp(lua_State *L)
 }
 
 /***
- * @function setsid(2) - create session and set process group ID
+ * setsid(2) - create session and set process group ID
+ * 
+ * @function setsid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (sid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -1012,7 +1080,9 @@ luab_setsid(lua_State *L)
 }
 
 /***
- * @function setuid(2) - set user and group ID
+ * setuid(2) - set user and group ID
+ * 
+ * @function setuid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (uid [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -1034,8 +1104,9 @@ luab_setuid(lua_State *L)
 }
 
 /***
- * @function ttyname(3) - get name from associated terminal (tty) from file
- *                          descriptor
+ * ttyname(3) - get name from associated terminal (tty) from file descriptor
+ * 
+ * @function ttyname
  *
  * @param fd            File descriptor refers to a valid terminal device.
  *
@@ -1065,8 +1136,9 @@ luab_ttyname(lua_State *L)
 }
 
 /***
- * @function ttyname_r(3) - get name from associated terminal (tty) from file
- *                          descriptor
+ * ttyname_r(3) - get name from associated terminal (tty) from file descriptor
+ * 
+ * @function ttyname_r
  *
  * @param fd            File descriptor refers to a valid terminal device.
  *
@@ -1103,7 +1175,9 @@ luab_ttyname_r(lua_State *L)
 }
 
 /***
- * @function unlink(2) - remove a directory entry
+ * unlink(2) - remove a directory entry
+ * 
+ * @function unlink
  *
  * @param path          The file to be removed.
  *
@@ -1127,7 +1201,9 @@ luab_unlink(lua_State *L)
 }
 
 /***
- * @function rmdir(2) - remove a directory file
+ * rmdir(2) - remove a directory file
+ * 
+ * @function rmdir
  *
  * @param path          The file to be removed.
  *
@@ -1155,7 +1231,9 @@ luab_rmdir(lua_State *L)
 #ifndef _FTRUNCATE_DECLARED
 #define _FTRUNCATE_DECLARED
 /***
- * @function ftruncate(2) - truncate/extend a file to a specific length
+ * ftruncate(2) - truncate/extend a file to a specific length
+ * 
+ * @function ftruncate
  *
  * @param fd            File descriptor.
  * @param length        If the file was larger than this size, the extra data is
@@ -1189,7 +1267,9 @@ luab_ftruncate(lua_State *L)
 /* 1003.1-2001 */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
 /***
- * @function fchown(2) - change owner and group of a file
+ * fchown(2) - change owner and group of a file
+ * 
+ * @function fchown
  *
  * @param fd            File by file descriptor.
  * @param owner         User ID.
@@ -1222,7 +1302,9 @@ luab_fchown(lua_State *L)
 
 #if __POSIX_VISIBLE >= 200112
 /***
- * @function gethostname(3) - get name of current host
+ * gethostname(3) - get name of current host
+ * 
+ * @function gethostname
  *
  * @return (LUA_TNUMBER, LUA_TSTRING)               (0, hostname) on success or
  *                                                  (-1, (strerror(errno)))
@@ -1247,7 +1329,9 @@ luab_gethostname(lua_State *L)
 }
 
 /***
- * @function setegid(2) - set effective group ID
+ * setegid(2) - set effective group ID
+ * 
+ * @function setegid
  *
  * @param egid          Effective group ID.
  *
@@ -1271,7 +1355,9 @@ luab_setegid(lua_State *L)
 }
 
 /***
- * @function seteuid(2) - set effective user ID
+ * seteuid(2) - set effective user ID
+ * 
+ * @function seteuid
  *
  * @param euid          Effective user ID.
  *
@@ -1298,7 +1384,9 @@ luab_seteuid(lua_State *L)
 /* 1003.1-2008 */
 #if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
 /***
- * @function getsid(2) - get process session
+ * getsid(2) - get process session ID
+ * 
+ * @function getsid
  *
  * @param pid           Process ID.
  *
@@ -1321,7 +1409,9 @@ luab_getsid(lua_State *L)
 }
 
 /***
- * @function fchdir(2) - change current working directory
+ * fchdir(2) - change current working directory
+ * 
+ * @function fchdir
  *
  * @param fd            The directory referenced by this file descriptor.
  *
@@ -1344,7 +1434,9 @@ luab_fchdir(lua_State *L)
 }
 
 /***
- * @function getpgid(2) - get current process group by pid
+ * getpgid(2) - get current process group by pid
+ * 
+ * @function getpgid
  *
  * @param pid           Process ID.
  *
@@ -1367,7 +1459,9 @@ luab_getpgid(lua_State *L)
 }
 
 /***
- * @function lchown(2) - change owner and group of a file
+ * lchown(2) - change owner and group of a file
+ * 
+ * @function lchown
  *
  * @param path          Specifies the file by its name.
  * @param owner         Specifies the owner by User ID.
@@ -1400,7 +1494,9 @@ luab_lchown(lua_State *L)
 #ifndef _TRUNCATE_DECLARED
 #define _TRUNCATE_DECLARED
 /***
- * @function truncate(2) - truncate / extend a file to a specific length
+ * truncate(2) - truncate / extend a file to a specific length
+ * 
+ * @function truncate
  *
  * @param path          Identifies the file by name.
  * @param length        If the file was larger than this size, the extra data is
@@ -1454,7 +1550,9 @@ luab_faccessat(lua_State *L)
 }
 
 /***
- * @function fchownat(2) - change owner and group of a file
+ * fchownat(2) - change owner and group of a file
+ * 
+ * @function fchownat
  *
  * @param fd            File descriptor associated with working directory from
  *                      object pointed by path.
@@ -1496,7 +1594,9 @@ luab_fchownat(lua_State *L)
 }
 
 /***
- * @function linkat(2) - make a hard file link
+ * linkat(2) - make a hard file link
+ * 
+ * @function linkat
  *
  * @param fd1           File descriptor associated with working directory from
  *                      object pointed by name1 or associated with the object
@@ -1540,7 +1640,9 @@ luab_linkat(lua_State *L)
 }
 
 /***
- * @function unlinkat(2) - remove directory entry
+ * unlinkat(2) - remove directory entry
+ * 
+ * @function unlinkat
  *
  * @param fd            File descriptor associated with working directory from
  *                      object pointed by name1 or associated with the object
@@ -1578,7 +1680,9 @@ luab_unlinkat(lua_State *L)
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
 /***
- * @function getwd(3) - get working directory pathname
+ * getwd(3) - get working directory pathname
+ * 
+ * @function getwd
  *
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (path [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
@@ -1602,7 +1706,9 @@ luab_getwd(lua_State *L)
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE */
 #if __BSD_VISIBLE
 /***
- * @function eaccess(2) - check availability of a file
+ * eaccess(2) - check availability of a file
+ * 
+ * @function eaccess
  *
  * @param path          Identifies the file by name.
  * @param mode          See the File Access Permission section of intro(2).
@@ -1628,7 +1734,9 @@ luab_eaccess(lua_State *L)
 }
 
 /***
- * @function lpathconf(2) - get configurable pathname variables
+ * lpathconf(2) - get configurable pathname variables
+ * 
+ * @function lpathconf
  *
  * @param path          Name of file or directory.
  * @param name          Specifies the system variable over
@@ -1660,7 +1768,9 @@ luab_lpathconf(lua_State *L)
 }
 
 /***
- * @function sethostname(3) - set name of current host
+ * sethostname(3) - set name of current host
+ * 
+ * @function sethostname
  *
  * @param name          Hostname.
  *
@@ -1683,7 +1793,9 @@ luab_sethostname(lua_State *L)
 }
 
 /***
- * @function setlogin(2) - set login name
+ * setlogin(2) - set login name
+ * 
+ * @function setlogin
  *
  * @param name          Login name.
  *
