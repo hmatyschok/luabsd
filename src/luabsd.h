@@ -104,7 +104,7 @@ const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *arg);
 
-int luab_pusherr(lua_State *, int);
+int luab_pusherr(lua_State *, long);
 int luab_pushnil(lua_State *);
 
 #define luab_todata(L, narg, id, t) \

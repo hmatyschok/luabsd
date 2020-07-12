@@ -160,7 +160,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 }
 
 int
-luab_pusherr(lua_State *L, int res)
+luab_pusherr(lua_State *L, long res)
 {
     int save_errno = errno;
     char *msg;
