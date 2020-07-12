@@ -1104,6 +1104,33 @@ luab_setuid(lua_State *L)
 }
 
 /***
+ * tcgetpgrp(3) - set foreground process group ID
+ *
+ * @function tcgetpgrp
+ *
+ * @param fd            File descriptor refers to a controlling terminal device.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (pgrp [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage name [, msg ] = bsd.unistd.tcgetpgrp()
+ */
+static int
+luab_tcgetpgrp(lua_State *L)
+{
+    int fd;
+    pid_t pgrp;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    
+    pgrp = tcgetpgrp(fd);
+
+    return luab_pusherr(L, pgrp);
+}
+
+/***
  * tcsetpgrp(3) - set foreground process group ID
  *
  * @function tcsetpgrp
@@ -1112,8 +1139,8 @@ luab_setuid(lua_State *L)
  * @param pgrp_id       The value must be the same as the process group ID of a
  *                      process in the same session as the calling process.
  *
- * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (name [, nil]) on success or
- *                                                  (nil, (strerror(errno)))
+ * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
  *
  * @usage name [, msg ] = bsd.unistd.tcsetpgrp()
  */
@@ -2094,7 +2121,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("setsid", luab_setsid),
     LUABSD_FUNC("setuid", luab_setuid),
     /* LUABSD_FUNC("sysconf",    luab_sysconf), XXX */
-    /* LUABSD_FUNC("tcgetpgrp",    luab_tcgetpgrp), XXX */
+    LUABSD_FUNC("tcgetpgrp",    luab_tcgetpgrp),
     LUABSD_FUNC("tcsetpgrp",    luab_tcsetpgrp),
     LUABSD_FUNC("ttyname",  luab_ttyname),
     LUABSD_FUNC("ttyname_r",  luab_ttyname_r),
