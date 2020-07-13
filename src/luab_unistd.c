@@ -23,6 +23,15 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+/*
+ * The implementation of the interface against alarm(3) is derived from:
+ *
+ * lalarm.c
+ * an alarm library for Lua based on signal
+ * Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>
+ * 28 Jul 2018 12:47:52
+ * This code is hereby placed in the public domain and also under the MIT license
+ */
 
 #include <sys/limits.h>
 #include <sys/param.h>
@@ -39,14 +48,44 @@
 
 #include "luabsd.h"
 
-#define LUABSD_UNISTD_LIB_ID    1593623310
-#define LUABSD_UNISTD_LIB_KEY   "unistd"
+extern char **environ;
+
+static lua_State *saved_L;
+static lua_Hook h;
+
+static int h_msk;
+static int h_cnt;
+
+static void
+h_callback(lua_State *L, lua_Debug *arg __unused)
+{
+    L = saved_L;
+
+    lua_sethook(L, h, h_msk, h_cnt);
+    lua_getfield(L, LUA_REGISTRYINDEX, "l_callback");
+
+    if (lua_pcall(L, 0, 0, 0) != 0)
+        lua_error(L);
+}
+
+static void
+h_signal(int arg __unused)
+{
+    int l_msk = (LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT);
+
+    h = lua_gethook(saved_L);
+    h_msk = lua_gethookmask(saved_L);
+    h_cnt = lua_gethookcount(saved_L);
+
+    lua_sethook(saved_L, h_callback, l_msk, 1);
+}
 
 /*
  * Interface against (subset of) functions of exec(3) family.
  */
 
-extern char **environ;
+#define LUABSD_UNISTD_LIB_ID    1593623310
+#define LUABSD_UNISTD_LIB_KEY   "unistd"
 
 /***
  * execv(3) - execute a file
@@ -186,40 +225,6 @@ luab_fexecve(lua_State *L)
     return luab_pusherr(L, status);
 }
 #endif
-
-/*
- * Interface against alarm(3).
- */
-
-static lua_State *saved_L;
-static lua_Hook h;
-
-static int h_msk;
-static int h_cnt;
-
-static void
-h_callback(lua_State *L, lua_Debug *arg __unused)
-{
-    L = saved_L;
-
-    lua_sethook(L, h, h_msk, h_cnt);
-    lua_getfield(L, LUA_REGISTRYINDEX, "l_callback");
-
-    if (lua_pcall(L, 0, 0, 0) != 0)
-        lua_error(L);
-}
-
-static void
-h_signal(int arg __unused)
-{
-    int l_msk = (LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT);
-
-    h = lua_gethook(saved_L);
-    h_msk = lua_gethookmask(saved_L);
-    h_cnt = lua_gethookcount(saved_L);
-
-    lua_sethook(saved_L, h_callback, l_msk, 1);
-}
 
 /***
  * alarm(3) - set signal timer alarm
