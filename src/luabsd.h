@@ -28,33 +28,34 @@
 #define _LUABSD_H_
 
 #include <sys/types.h>
+#include <sys/uio.h>
 
 __BEGIN_DECLS
 
-typedef union {
-    lua_Integer x_i;
-    lua_CFunction   x_f;
-} luab_un_t;
+typedef union luab_type {
+    lua_Integer type_int;
+    lua_CFunction   type_fn;
+} luab_type_un;
 
-typedef void    (*luab_table_fn)(lua_State *L, luab_un_t *x);
+typedef void    (*luab_table_fn)(lua_State *, luab_type_un *);
 
 typedef struct {
     luab_table_fn   init;
     const char    *key;
-    luab_un_t   val;
+    luab_type_un   val;
 } luab_table_t;
 
 #define LUABSD_REG(fn, k, v) \
     { .init = fn, .key = k, v }
 #define LUABSD_INT(k, v) \
-    LUABSD_REG(luab_pushinteger, k, .val.x_i = v)
+    LUABSD_REG(luab_pushinteger, k, .val.type_int = v)
 #define LUABSD_FUNC(k, v) \
-    LUABSD_REG(luab_pushcfunction, k, .val.x_f = v)
+    LUABSD_REG(luab_pushcfunction, k, .val.type_fn = v)
 
-typedef void (*luab_init_fn)(void *ud, void *arg);
-typedef void *  (*luab_udata_fn)(lua_State *L, int narg);
+typedef void (*luab_init_fn)(void *, void *);
+typedef void *  (*luab_udata_fn)(lua_State *, int);
 
-typedef struct {
+typedef struct luab_module {
     u_int32_t  cookie;        /*  date -u +'%s' */
     size_t  sz;
     const char  *name;
@@ -63,10 +64,10 @@ typedef struct {
     luab_udata_fn    get;
 } luab_module_t;
 
-typedef struct {
-    u_int32_t   cookie;
-    size_t   len;
-} luab_udata_t;
+typedef struct luab_iov {
+    struct iovec    iov;
+    size_t  max_size;
+} luab_iov_t;
 
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
@@ -91,13 +92,6 @@ extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_time_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
-
-static __inline lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
-static __inline void *  luab_checkudata(lua_State *, int, luab_module_t *);
-static __inline void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
-
-static __inline void luab_pushcfunction(lua_State *, luab_un_t *);
-static __inline void luab_pushinteger(lua_State *, luab_un_t *);
 
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
@@ -142,19 +136,22 @@ luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 static __inline void *
 luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
 {
-    return ((lua_isnil(L, narg) == 0) ? luaL_checkudata(L, narg, m->name) : NULL);
+    if (lua_isnil(L, narg) != 0)
+        return NULL;
+
+    return luaL_checkudata(L, narg, m->name);
 }
 
 static __inline void
-luab_pushinteger(lua_State *L, luab_un_t *u)
+luab_pushinteger(lua_State *L, luab_type_un *un)
 {
-    lua_pushinteger(L, u->x_i);
+    lua_pushinteger(L, un->type_int);
 }
 
 static __inline void
-luab_pushcfunction(lua_State *L, luab_un_t *u)
+luab_pushcfunction(lua_State *L, luab_type_un *un)
 {
-    lua_pushcfunction(L, u->x_f);
+    lua_pushcfunction(L, un->type_fn);
 }
 __END_DECLS
 
