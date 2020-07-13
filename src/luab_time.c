@@ -26,6 +26,7 @@
 
 #include <sys/param.h>
 
+#include <errno.h>
 #include <string.h>
 #include <time.h>
 
@@ -710,7 +711,8 @@ luab_StructTM(lua_State *L)
     else
         tm = tm_udata(L, narg);
 
-    (void)luab_newtm(L, tm);
+    if (luab_newtm(L, tm) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }

@@ -344,7 +344,8 @@ luab_dbopen(lua_State *L)
     mode = luab_checkinteger(L, 3, INT_MAX);
     type = luab_checkinteger(L, 4, INT_MAX);
 
-    self = luab_newdb(L, NULL);
+    if ((self = luab_newdb(L, NULL)) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     if ((self->db = dbopen(fname, flags, mode, type, NULL)) == NULL) {
         lua_pop(L, 1);

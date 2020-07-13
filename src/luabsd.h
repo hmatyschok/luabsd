@@ -56,7 +56,7 @@ typedef void *  (*luab_udata_fn)(lua_State *L, int narg);
 
 typedef struct {
     u_int32_t  cookie;        /*  date -u +'%s' */
-    u_int32_t  sz;
+    size_t  sz;
     const char  *name;
     luab_table_t    *vec;
     luab_init_fn    init;
@@ -64,7 +64,8 @@ typedef struct {
 } luab_module_t;
 
 typedef struct {
-    u_int32_t  len;
+    u_int32_t   cookie;
+    size_t   len;
 } luab_udata_t;
 
 #if __BSD_VISIBLE

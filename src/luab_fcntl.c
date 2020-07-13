@@ -350,7 +350,8 @@ luab_StructFlock(lua_State *L)
     else
         flock = flock_udata(L, narg);
 
-    (void)luab_newflock(L, flock);
+    if (luab_newflock(L, flock) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }

@@ -147,12 +147,20 @@ luab_checkmaxargs(lua_State *L, int nmax)
 void *
 luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 {
-    void *ud = lua_newuserdata(L, m->sz);
+    void *ud;
+
+    if (m == NULL) {
+        errno = EINVAL;
+        luaL_error(L, "%s", strerror(errno));
+    }
+
+    if ((ud = lua_newuserdata(L, m->sz)) == NULL)
+        luaL_error(L, "%s", strerror(errno));
+
+    (void)memset_s(ud, m->sz, 0, m->sz);
 
     if (m->init != NULL && arg != NULL)
         (*m->init)(ud, arg);
-    else
-        (void)memset_s(ud, m->sz, 0, m->sz);
 
     luaL_setmetatable(L, m->name);
 

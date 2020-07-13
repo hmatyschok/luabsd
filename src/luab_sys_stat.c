@@ -28,6 +28,7 @@
 #include <sys/param.h>
 #include <sys/stat.h>
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -979,7 +980,8 @@ luab_StructStat(lua_State *L)
     else
         stat = stat_udata(L, narg);
 
-    (void)luab_newstat(L, stat);
+    if (luab_newstat(L, stat) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }

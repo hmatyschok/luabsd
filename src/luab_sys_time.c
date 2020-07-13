@@ -27,6 +27,7 @@
 #include <sys/limits.h>
 #include <sys/time.h>
 
+#include <errno.h>
 #include <pthread.h>
 #include <signal.h>
 #include <string.h>
@@ -252,7 +253,8 @@ luab_StructTimeZone(lua_State *L)
     else
         timezone = timezone_udata(L, narg);
 
-    (void)luab_newtimezone(L, timezone);
+    if (luab_newtimezone(L, timezone) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }
@@ -473,7 +475,8 @@ luab_StructBinTime(lua_State *L)
     else
         bintime = bintime_udata(L, narg);
 
-    (void)luab_newbintime(L, bintime);
+    if (luab_newbintime(L, bintime) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }
@@ -803,7 +806,8 @@ luab_StructClockInfo(lua_State *L)
     else
         clockinfo = clockinfo_udata(L, narg);
 
-    (void)luab_newclockinfo(L, clockinfo);
+    if (luab_newclockinfo(L, clockinfo) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }
@@ -1023,7 +1027,8 @@ luab_StructTimeSpec(lua_State *L)
     else
         timespec = timespec_udata(L, narg);
 
-    (void)luab_newtimespec(L, timespec);
+    if (luab_newtimespec(L, timespec) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }
@@ -1240,7 +1245,8 @@ luab_StructItimerVal(lua_State *L)
     else
         itimerval = itimerval_udata(L, narg);
 
-    (void)luab_newitimerval(L, itimerval);
+    if (luab_newitimerval(L, itimerval) == NULL)
+        luaL_error(L, "%s", strerror(errno));
 
     return 1;
 }
