@@ -265,12 +265,13 @@ LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
     lua_newtable(L);
-                        /* XXX Well, more macros. */
+                        /* XXX */
     lua_newtable(L);
 
     luab_newtable(L, &luab_sys_file_lib);
     luab_newtable(L, &luab_sys_stat_lib);
     luab_newtable(L, &luab_sys_time_lib);
+    luab_newtable(L, &luab_sys_uio_lib);
     luab_newtable(L, &luab_sys_unistd_lib);
 
     lua_setfield(L, -2, "sys");
@@ -295,6 +296,7 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &itimerval_type);
     luab_newmetatable(L, &stat_type);
     luab_newmetatable(L, &tm_type);
+    luab_newmetatable(L, &iovec_type);
 
     return 1;
 }

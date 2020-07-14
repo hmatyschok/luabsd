@@ -247,7 +247,7 @@ luab_module_t timezone_type = {
  *
  * @param tz            Optional.
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage tz = bsd.sys.time.StructTimeZone([ tz ])
  */
@@ -472,7 +472,7 @@ luab_module_t bintime_type = {
  *
  * @param               Optional.
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage bt = bsd.sys.time.StructBinTime([ bt ])
  */
@@ -806,7 +806,7 @@ luab_module_t clockinfo_type = {
  *
  * @param ci                    Optional.
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage ci = bsd.sys.time.StructClockInfo([ ci ])
  */
@@ -1030,7 +1030,7 @@ luab_module_t timespec_type = {
  *
  * @param tv                    Optional.
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage tv = bsd.sys.time.StructTimeSpec([ tv ])
  */
@@ -1107,7 +1107,7 @@ ItimerVal_set_it_interval(lua_State *L)
  *
  * @function get_it_interval
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage tv = it:get_it_interval()
  */
@@ -1156,7 +1156,7 @@ ItimerVal_set_it_value(lua_State *L)
  *
  * @function get_it_value
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage tv = it:get_it_value()
  */
@@ -1164,14 +1164,18 @@ static int
 ItimerVal_get_it_value(lua_State *L)
 {
     luab_itimerval_t *self;
+    int status;
 
     luab_checkmaxargs(L, 1);
 
     self = luab_toitimerval(L, 1);
 
-    (void)luab_newuserdata(L, &timespec_type, &self->itimerval.it_value);
+    if (luab_newuserdata(L, &timespec_type, &self->itimerval.it_value) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /***
@@ -1251,7 +1255,7 @@ luab_module_t itimerval_type = {
  *
  * @function StructItimerVal
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage tv = bsd.sys.time.StructItimerVal()
  */

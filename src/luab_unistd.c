@@ -265,7 +265,7 @@ luab_alarm(lua_State *L)
 }
 
 /*
- * Interface against components or service primitives on unistd.h.
+ * Interface against components or service primitives over <unistd.h>.
  */
 
 /***
@@ -538,7 +538,7 @@ luab_getcwd(lua_State *L)
 }
 
 /***
- * getegid(2) - get (effective)vgroup process identification
+ * getegid(2) - get (effective) group process identification
  *
  * @function getegid
  *

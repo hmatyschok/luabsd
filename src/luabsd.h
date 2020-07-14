@@ -80,10 +80,12 @@ extern luab_module_t timespec_type;
 extern luab_module_t tm_type;
 extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
+extern luab_module_t iovec_type;
 
 extern luab_module_t luab_sys_file_lib;
 extern luab_module_t luab_sys_stat_lib;
 extern luab_module_t luab_sys_time_lib;
+extern luab_module_t luab_sys_uio_lib;
 extern luab_module_t luab_sys_unistd_lib;
 
 extern luab_module_t luab_db_lib;
@@ -117,8 +119,8 @@ int luab_pushstring(lua_State *, char *);
     } while (0)
 #define luab_setudata(L, narg, id, k, v)                    \
     do {                                                    \
-        (void)luab_newuserdata((L), (id), (v));             \
-        lua_setfield((L), (narg), (k));                     \
+        if (luab_newuserdata((L), (id), (v)) != NULL)       \
+            lua_setfield((L), (narg), (k));                 \
     } while (0)
 
 static __inline lua_Integer

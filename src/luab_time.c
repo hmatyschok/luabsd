@@ -623,7 +623,9 @@ TM_get(lua_State *L)
     luab_setinteger(L, -2, "tm_yday", self->tm.tm_yday);
     luab_setinteger(L, -2, "tm_isdst", self->tm.tm_isdst);
     luab_setinteger(L, -2, "tm_gmtoff", self->tm.tm_gmtoff);
-    luab_setstring(L, -2, "tm_zone", self->tm.tm_zone);
+
+    if (self->tm.tm_zone != NULL)
+        luab_setstring(L, -2, "tm_zone", self->tm.tm_zone);
 
     lua_pushvalue(L, -1);
 
