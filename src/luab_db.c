@@ -25,7 +25,7 @@
  */
 
 #include <sys/file.h>
-#include <sys/limits.h>
+#include <sys/param.h>
 
 #include <db.h>
 #include <errno.h>
@@ -124,10 +124,9 @@ db_del(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     self = luab_todb(L, 1);
+    flags = luab_checkinteger(L, 3, INT_MAX);
 
     if ((status = db_isclosed(self)) == 0) {
-        flags = luab_checkinteger(L, 3, INT_MAX);
-
         if ((status = db_newbuf(L, 2, &k)) == 0) {
             status = (self->db->del)(self->db, &k, flags);
             free(k.data);
@@ -147,11 +146,10 @@ db_get(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     self = luab_todb(L, 1);
+    flags = luab_checkinteger(L, 3, INT_MAX);
 
     if ((status = db_isclosed(self)) != 0)
         goto bad;
-
-    flags = luab_checkinteger(L, 3, INT_MAX);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
         goto bad;
@@ -182,11 +180,10 @@ db_put(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     self = luab_todb(L, 1);
+    flags = luab_checkinteger(L, 4, INT_MAX);
 
     if ((status = db_isclosed(self)) != 0)
         goto out;
-
-    flags = luab_checkinteger(L, 4, INT_MAX);
 
     if ((status = db_newbuf(L, 2, &k)) != 0)
         goto out;
@@ -214,11 +211,10 @@ db_seq(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_todb(L, 1);
+    flags = luab_checkinteger(L, 2, INT_MAX);
 
     if ((status = db_isclosed(self)) != 0)
         goto bad;
-
-    flags = luab_checkinteger(L, 2, INT_MAX);
 
     if ((status = (self->db->seq)(self->db, &k, &v, flags)) != 0)
         goto bad;
@@ -242,11 +238,11 @@ db_sync(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_todb(L, 1);
+    flags = luab_checkinteger(L, 2, INT_MAX);
 
-    if ((status = db_isclosed(self)) == 0) {
-        flags = luab_checkinteger(L, 2, INT_MAX);
+    if ((status = db_isclosed(self)) == 0)
         status = (self->db->sync)(self->db, flags);
-    }
+
     return luab_pusherr(L, status);
 }
 
