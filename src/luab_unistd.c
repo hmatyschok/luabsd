@@ -1295,6 +1295,50 @@ luab_unlink(lua_State *L)
 }
 
 /***
+ * write(2) - write output
+ *
+ * @function write
+ *
+ * @param fd            Open file descriptor.
+ * @param buf           Instance of luab_iovec_t.
+ * @param nbytes        Number of bytes for write operation.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage n [, msg ] = bsd.unistd.write(fd, buf, nbytes)
+ */
+static int
+luab_write(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *iov;
+    size_t nbytes;
+    const char *buf;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    nbytes = luab_checkinteger(L, 3, INT_MAX);  /* XXX LP64: LONG_MAX */
+
+    if ((buf = iov->iov.iov_base) != NULL) {
+        if (nbytes <= iov->iov.iov_len)
+            status = write(fd, buf, nbytes);
+        else
+            goto bad;
+    } else
+        goto bad;
+out:
+    return luab_pusherr(L, status);
+bad:
+    errno = EINVAL;
+    status = -1;
+    goto out;
+}
+
+/***
  * rmdir(2) - remove a directory file
  *
  * @function rmdir
@@ -1583,6 +1627,53 @@ luab_lchown(lua_State *L)
     status = lchown(path, owner, group);
 
     return luab_pusherr(L, status);
+}
+
+/***
+ * pwrite(2) - write output
+ *
+ * @function pwrite
+ *
+ * @param fd            Open file descriptor.
+ * @param buf           Instance of luab_iovec_t.
+ * @param nbytes        Number of bytes for write operation.
+ * @param offset        Specifies position for write operation.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage n [, msg ] = bsd.unistd.write(fd, buf, nbytes)
+ */
+static int
+luab_pwrite(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *iov;
+    size_t nbytes;
+    off_t offset;
+    const char *buf;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    nbytes = luab_checkinteger(L, 3, LONG_MAX);  /* XXX LP64: LONG_MAX */
+    offset = luab_checkinteger(L, 4, LONG_MAX);
+
+    if ((buf = iov->iov.iov_base) != NULL) {
+        if (nbytes <= iov->iov.iov_len)
+            status = pwrite(fd, buf, nbytes, offset);
+        else
+            goto bad;
+    } else
+        goto bad;
+out:
+    return luab_pusherr(L, status);
+bad:
+    errno = EINVAL;
+    status = -1;
+    goto out;
 }
 
 #ifndef _TRUNCATE_DECLARED
@@ -2162,6 +2253,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("ttyname",  luab_ttyname),
     LUABSD_FUNC("ttyname_r",  luab_ttyname_r),
     LUABSD_FUNC("unlink",   luab_unlink),
+    LUABSD_FUNC("write",    luab_write),
 
 /* 1003.2-1992 */
 #if __POSIX_VISIBLE >= 199209 || __XSI_VISIBLE
@@ -2214,8 +2306,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("lchown",   luab_lchown),
 /*
     LUABSD_FUNC("pread",    luab_pread),
-    LUABSD_FUNC("pwrite",   luab_pwrite),
  */
+    LUABSD_FUNC("pwrite",   luab_pwrite),
 #ifndef _TRUNCATE_DECLARED
 #define _TRUNCATE_DECLARED
     LUABSD_FUNC("truncate", luab_truncate),

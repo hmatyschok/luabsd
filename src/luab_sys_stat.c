@@ -63,7 +63,7 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
     while (lua_next(L, narg) != 0) {
 
         if ((lua_isnumber(L, -2) != 0)
-            && (lua_isuserdata(L, -1) != 0)) {
+            && (lua_isuserdata(L, -1) != 0)) {  /* XXX */
             ts = (struct timespec *)(*timespec_type.get)(L, -1);
             (void)memmove(&vec[n], ts, sizeof(struct timespec));
             lua_pop(L, 1);
