@@ -705,6 +705,7 @@ luab_StructTM(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 1);
     struct tm *tm;
+    int status;
 
     if (narg == 0)
         tm = NULL;
@@ -712,9 +713,11 @@ luab_StructTM(lua_State *L)
         tm = tm_udata(L, narg);
 
     if (luab_newtm(L, tm) == NULL)
-        luaL_error(L, "%s", strerror(errno));
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /*

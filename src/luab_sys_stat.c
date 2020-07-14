@@ -974,6 +974,7 @@ luab_StructStat(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 1);
     struct stat *stat;
+    int status;
 
     if (narg == 0)
         stat = NULL;
@@ -981,9 +982,11 @@ luab_StructStat(lua_State *L)
         stat = stat_udata(L, narg);
 
     if (luab_newstat(L, stat) == NULL)
-        luaL_error(L, "%s", strerror(errno));
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /*

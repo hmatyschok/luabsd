@@ -256,6 +256,7 @@ luab_StructTimeZone(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 1);
     struct timezone *timezone;
+    int status;
 
     if (narg == 0)
         timezone = NULL;
@@ -263,9 +264,11 @@ luab_StructTimeZone(lua_State *L)
         timezone = timezone_udata(L, narg);
 
     if (luab_newtimezone(L, timezone) == NULL)
-        luaL_error(L, "%s", strerror(errno));
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 #if __BSD_VISIBLE
@@ -478,6 +481,7 @@ luab_StructBinTime(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 1);
     struct bintime *bintime;
+    int status;
 
     if (narg == 0)
         bintime = NULL;
@@ -485,9 +489,11 @@ luab_StructBinTime(lua_State *L)
         bintime = bintime_udata(L, narg);
 
     if (luab_newbintime(L, bintime) == NULL)
-        luaL_error(L, "%s", strerror(errno));
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 #endif /* __BSD_VISIBLE */
 
@@ -809,6 +815,7 @@ luab_StructClockInfo(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 1);
     struct clockinfo *clockinfo;
+    int status;
 
     if (narg == 0)
         clockinfo = NULL;
@@ -816,9 +823,11 @@ luab_StructClockInfo(lua_State *L)
         clockinfo = clockinfo_udata(L, narg);
 
     if (luab_newclockinfo(L, clockinfo) == NULL)
-        luaL_error(L, "%s", strerror(errno));
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /*
@@ -1030,6 +1039,7 @@ luab_StructTimeSpec(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 1);
     struct timespec *timespec;
+    int status;
 
     if (narg == 0)
         timespec = NULL;
@@ -1037,9 +1047,11 @@ luab_StructTimeSpec(lua_State *L)
         timespec = timespec_udata(L, narg);
 
     if (luab_newtimespec(L, timespec) == NULL)
-        luaL_error(L, "%s", strerror(errno));
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /*
@@ -1248,6 +1260,7 @@ luab_StructItimerVal(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 1);
     struct itimerval *itimerval;
+    int status;
 
     if (narg == 0)
         itimerval = NULL;
@@ -1255,9 +1268,11 @@ luab_StructItimerVal(lua_State *L)
         itimerval = itimerval_udata(L, narg);
 
     if (luab_newitimerval(L, itimerval) == NULL)
-        luaL_error(L, "%s", strerror(errno));
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /*

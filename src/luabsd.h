@@ -64,10 +64,10 @@ typedef struct luab_module {
     luab_udata_fn    get;
 } luab_module_t;
 
-typedef struct luab_iov {
+typedef struct luab_iovec {
     struct iovec    iov;
-    size_t  max_size;
-} luab_iov_t;
+    size_t  iov_max_len;
+} luab_iovec_t;
 
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
@@ -97,7 +97,7 @@ const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
-void *  luab_newuserdata(lua_State *, luab_module_t *, void *arg);
+void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
 
 int luab_pusherr(lua_State *, long);
 int luab_pushnil(lua_State *);
@@ -137,9 +137,9 @@ static __inline void *
 luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
 {
     if (lua_isnil(L, narg) != 0)
-        return NULL;
+        return (NULL);
 
-    return luaL_checkudata(L, narg, m->name);
+    return (luaL_checkudata(L, narg, m->name));
 }
 
 static __inline void
