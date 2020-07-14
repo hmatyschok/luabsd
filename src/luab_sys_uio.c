@@ -134,7 +134,7 @@ IOVec_clear(lua_State *L)
         errno = ENXIO;
         status = luab_pushnil(L);
     }
-    return 1;
+    return status;
 }
 
 static int
