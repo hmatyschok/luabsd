@@ -155,7 +155,7 @@ luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
 #define LUABSD_STAT_TYPE_ID    1594028586
 #define LUABSD_STAT_TYPE    "STAT*"
 
-typedef struct {
+typedef struct luab_stat {
     struct stat    stat;
 } luab_stat_t;
 

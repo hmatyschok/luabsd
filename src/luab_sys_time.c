@@ -59,7 +59,7 @@
 #define LUABSD_TIMEZONE_TYPE_ID    1594159943
 #define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
 
-typedef struct {
+typedef struct luab_timezone {
     struct timezone    timezone;
 } luab_timezone_t;
 
@@ -281,7 +281,7 @@ luab_StructTimeZone(lua_State *L)
 #define LUABSD_BINTIME_TYPE_ID    1594161740
 #define LUABSD_BINTIME_TYPE    "BINTIME*"
 
-typedef struct {
+typedef struct luab_bintime {
     struct bintime    bintime;
 } luab_bintime_t;
 
@@ -506,7 +506,7 @@ luab_StructBinTime(lua_State *L)
 #define LUABSD_CLOCKINFO_TYPE_ID    1594164272
 #define LUABSD_CLOCKINFO_TYPE    "CLOCKINFO*"
 
-typedef struct {
+typedef struct luab_clockinfo {
     struct clockinfo    clockinfo;
 } luab_clockinfo_t;
 
@@ -833,7 +833,7 @@ luab_StructClockInfo(lua_State *L)
 #define LUABSD_TIMESPEC_TYPE_ID    1594034844
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
 
-typedef struct {
+typedef struct luab_timespec {
     struct timespec    timespec;
 } luab_timespec_t;
 
@@ -1055,7 +1055,7 @@ luab_StructTimeSpec(lua_State *L)
 #define LUABSD_ITIMERVAL_TYPE_ID    1594110231
 #define LUABSD_ITIMERVAL_TYPE    "ITIMERVAL*"
 
-typedef struct {
+typedef struct luab_itimerval {
     struct itimerval    itimerval;
 } luab_itimerval_t;
 

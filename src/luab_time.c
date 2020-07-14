@@ -57,7 +57,7 @@
 #define LUABSD_TM_TYPE_ID    1594168426
 #define LUABSD_TM_TYPE    "TM*"
 
-typedef struct {
+typedef struct luab_tm {
     struct tm    tm;
 } luab_tm_t;
 

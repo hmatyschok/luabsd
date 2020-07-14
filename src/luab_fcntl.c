@@ -54,7 +54,7 @@
 #define LUABSD_FLOCK_TYPE_ID    1593623399
 #define LUABSD_FLOCK_TYPE    "FLOCK*"
 
-typedef struct {
+typedef struct luab_flock {
     struct flock    flock;
 } luab_flock_t;
 

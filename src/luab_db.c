@@ -46,7 +46,7 @@
 #define LUABSD_DB_TYPE_ID    1593623398
 #define LUABSD_DB_TYPE   "DB*"
 
-typedef struct {
+typedef struct luab_db {
     DB  *db;
 } luab_db_t;
 
