@@ -941,6 +941,55 @@ luab_pipe(lua_State *L)
 }
 
 /***
+ * read(2) - read input
+ *
+ * @function read
+ *
+ * @param fd            Open file descriptor.
+ * @param buf           Instance of luab_iovec_t.
+ * @param nbytes        Assumed number of bytes to be read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage n [, msg ] = bsd.unistd.read(fd, buf, nbytes)
+ */
+static int
+luab_read(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *iov;
+    size_t nbytes;
+    caddr_t buf;
+    ssize_t status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    nbytes = luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+);
+    if ((buf = iov->iov.iov_base) != NULL) {
+        if (nbytes <= iov->iov_max_len) {
+            if ((status = read(fd, buf, nbytes)) > 0)
+                iov->iov.iov_len = status;
+        } else {
+            errno = EINVAL;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
+/***
  * setgid(2) - set group id
  *
  * @function setgid
@@ -1275,7 +1324,7 @@ luab_write(lua_State *L)
     int fd;
     luab_iovec_t *iov;
     size_t nbytes;
-    const char *buf;
+    c_caddr_t buf;
     ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
@@ -1297,7 +1346,7 @@ luab_write(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENOENT;
+        errno = ENXIO;
         status = -1;
     }
 
@@ -1596,6 +1645,59 @@ luab_lchown(lua_State *L)
 }
 
 /***
+ * pread(2) - read input
+ *
+ * @function pread
+ *
+ * @param fd            Open file descriptor.
+ * @param buf           Instance of luab_iovec_t.
+ * @param nbytes        Assumed number of bytes to be read.
+ * @param offset        Location, where data to be read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage n [, msg ] = bsd.unistd.pread(fd, buf, nbytes, offset)
+ */
+static int
+luab_pread(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *iov;
+    size_t nbytes;
+    off_t offset;
+    caddr_t buf;
+    ssize_t status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    nbytes = luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+);
+    offset = luab_checkinteger(L, 4, LONG_MAX);
+
+    if ((buf = iov->iov.iov_base) != NULL) {
+        if (nbytes <= iov->iov_max_len) {
+            if ((status = read(fd, buf, nbytes)) > 0)
+                iov->iov.iov_len = status;
+        } else {
+            errno = EINVAL;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
+/***
  * pwrite(2) - write output
  *
  * @function pwrite
@@ -1617,7 +1719,7 @@ luab_pwrite(lua_State *L)
     luab_iovec_t *iov;
     size_t nbytes;
     off_t offset;
-    const char *buf;
+    caddr_t buf;
     ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
@@ -1641,7 +1743,7 @@ luab_pwrite(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENOENT;
+        errno = ENXIO;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -2251,6 +2353,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("pathconf",    luab_pathconf),
     LUABSD_FUNC("pause",    luab_pause),
     LUABSD_FUNC("pipe", luab_pipe),
+    LUABSD_FUNC("read", luab_read),
     LUABSD_FUNC("rmdir",    luab_rmdir),
     LUABSD_FUNC("setgid",    luab_setgid),
     LUABSD_FUNC("setpgid",    luab_setpgid),
@@ -2314,9 +2417,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("fchdir",    luab_fchdir),
     LUABSD_FUNC("getpgid",    luab_getpgid),
     LUABSD_FUNC("lchown",   luab_lchown),
-/*
     LUABSD_FUNC("pread",    luab_pread),
- */
     LUABSD_FUNC("pwrite",   luab_pwrite),
 #ifndef _TRUNCATE_DECLARED
 #define _TRUNCATE_DECLARED
