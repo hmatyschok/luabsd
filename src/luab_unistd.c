@@ -941,45 +941,6 @@ luab_pipe(lua_State *L)
 }
 
 /***
- * pipe2(2) - create descriptor pair for interprocess communication
- *
- * @function pipe2
- *
- * @param filedes       Pair of file descriptors as instance of LUA_TTABLE:
- *
- *                          { filedes1, filedes2 }.
- *
- * @param flags         The values are constructed from
- *
- *                          bsd.fcntl.O_{CLOEXEC,NONBLOCK}
- *
- *                      by bitwise-inclusive OR.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
- *
- * @usage err [, msg ] = bsd.unistd.pipe2(filedes, flags)
- */
-static int
-luab_pipe2(lua_State *L)
-{
-    int *fildes;
-    int flags;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    fildes = luab_checkintvector(L, 1, 2);
-    flags = luab_checkinteger(L, 2, INT_MAX);
-
-    status = pipe2(fildes, flags);
-
-    free(fildes);
-
-    return luab_pusherr(L, status);
-}
-
-/***
  * setgid(2) - set group id
  *
  * @function setgid
@@ -1320,9 +1281,9 @@ luab_write(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);    
+    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     nbytes = luab_checkinteger(L, 3,
-#ifdef	__LP64__
+#ifdef  __LP64__
     LONG_MAX
 #else
     INT_MAX
@@ -1665,7 +1626,7 @@ luab_pwrite(lua_State *L)
     fd = luab_checkinteger(L, 1, INT_MAX);
     iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     nbytes = luab_checkinteger(L, 3,
-#ifdef	__LP64__
+#ifdef  __LP64__
     LONG_MAX
 #else
     INT_MAX
@@ -1901,6 +1862,7 @@ luab_getwd(lua_State *L)
     return 1;
 }
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE */
+
 #if __BSD_VISIBLE
 /***
  * eaccess(2) - check availability of a file
@@ -1926,6 +1888,45 @@ luab_eaccess(lua_State *L)
     path = luab_checklstring(L, 1, MAXPATHLEN);
     mode = luab_checkinteger(L, 2, INT_MAX);
     status = eaccess(path, mode);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * pipe2(2) - create descriptor pair for interprocess communication
+ *
+ * @function pipe2
+ *
+ * @param filedes       Pair of file descriptors as instance of LUA_TTABLE:
+ *
+ *                          { filedes1, filedes2 }.
+ *
+ * @param flags         The values are constructed from
+ *
+ *                          bsd.fcntl.O_{CLOEXEC,NONBLOCK}
+ *
+ *                      by bitwise-inclusive OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.pipe2(filedes, flags)
+ */
+static int
+luab_pipe2(lua_State *L)
+{
+    int *fildes;
+    int flags;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fildes = luab_checkintvector(L, 1, 2);
+    flags = luab_checkinteger(L, 2, INT_MAX);
+
+    status = pipe2(fildes, flags);
+
+    free(fildes);
 
     return luab_pusherr(L, status);
 }
@@ -2252,7 +2253,6 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("pathconf",    luab_pathconf),
     LUABSD_FUNC("pause",    luab_pause),
     LUABSD_FUNC("pipe", luab_pipe),
-    LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("rmdir",    luab_rmdir),
     LUABSD_FUNC("setgid",    luab_setgid),
     LUABSD_FUNC("setpgid",    luab_setpgid),
@@ -2338,6 +2338,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #endif
 #if __BSD_VISIBLE
     LUABSD_FUNC("eaccess",   luab_eaccess),
+    LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
