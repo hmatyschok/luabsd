@@ -203,7 +203,13 @@ luab_StructIOVec(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    iov_len = luab_checkinteger(L, 1, INT_MAX);
+    iov_len = luab_checkinteger(L, 1,
+#ifdef	__LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+);
 
     if (iov_len > 0) {
         if ((buf = calloc(1, iov_len)) != NULL) {

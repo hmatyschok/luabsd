@@ -1320,8 +1320,14 @@ luab_write(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
-    nbytes = luab_checkinteger(L, 3, INT_MAX);  /* XXX LP64: LONG_MAX */
+    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);    
+    nbytes = luab_checkinteger(L, 3,
+#ifdef	__LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+);  /* XXX LP64: LONG_MAX */
 
     if ((buf = iov->iov.iov_base) != NULL) {
         if (nbytes <= iov->iov.iov_len)
@@ -1642,7 +1648,7 @@ luab_lchown(lua_State *L)
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage n [, msg ] = bsd.unistd.write(fd, buf, nbytes)
+ * @usage n [, msg ] = bsd.unistd.pwrite(fd, buf, nbytes)
  */
 static int
 luab_pwrite(lua_State *L)
@@ -1658,7 +1664,13 @@ luab_pwrite(lua_State *L)
 
     fd = luab_checkinteger(L, 1, INT_MAX);
     iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
-    nbytes = luab_checkinteger(L, 3, LONG_MAX);  /* XXX LP64: LONG_MAX */
+    nbytes = luab_checkinteger(L, 3,
+#ifdef	__LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+);  /* XXX LP64: LONG_MAX */
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
     if ((buf = iov->iov.iov_base) != NULL) {
