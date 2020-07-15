@@ -1276,7 +1276,7 @@ luab_write(lua_State *L)
     luab_iovec_t *iov;
     size_t nbytes;
     const char *buf;
-    int status;
+    ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -1288,21 +1288,20 @@ luab_write(lua_State *L)
 #else
     INT_MAX
 #endif
-);  /* XXX LP64: LONG_MAX */
-
+);
     if ((buf = iov->iov.iov_base) != NULL) {
         if (nbytes <= iov->iov.iov_len)
             status = write(fd, buf, nbytes);
-        else
-            goto bad;
-    } else
-        goto bad;
-out:
+        else {
+            errno = EINVAL;
+            status = -1;
+        }
+    } else {
+        errno = ENOENT;
+        status = -1;
+    }
+
     return luab_pusherr(L, status);
-bad:
-    errno = EINVAL;
-    status = -1;
-    goto out;
 }
 
 /***
@@ -1619,7 +1618,7 @@ luab_pwrite(lua_State *L)
     size_t nbytes;
     off_t offset;
     const char *buf;
-    int status;
+    ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -1631,22 +1630,21 @@ luab_pwrite(lua_State *L)
 #else
     INT_MAX
 #endif
-);  /* XXX LP64: LONG_MAX */
+);
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
     if ((buf = iov->iov.iov_base) != NULL) {
         if (nbytes <= iov->iov.iov_len)
             status = pwrite(fd, buf, nbytes, offset);
-        else
-            goto bad;
-    } else
-        goto bad;
-out:
+        else {
+            errno = EINVAL;
+            status = -1;
+        }
+    } else {
+        errno = ENOENT;
+        status = -1;
+    }
     return luab_pusherr(L, status);
-bad:
-    errno = EINVAL;
-    status = -1;
-    goto out;
 }
 
 #ifndef _TRUNCATE_DECLARED
