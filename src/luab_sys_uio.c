@@ -61,32 +61,37 @@
     (luab_todata((L), (narg), &iovec_type, luab_iovec_t *))
 
 static int
-IOVec_set(lua_State *L)
+IOVec_copyin(lua_State *L)
 {
     luab_iovec_t *self;
-    const char *buf;
+    const char *src;
+    caddr_t dst;
     size_t len;
+    int status;
 
     luab_checkmaxargs(L, 2);
 
     self = luab_toiovec(L, 1);
-    buf = luab_checklstring(L, 2, self->iov_max_len);
+    src = luab_checklstring(L, 2, self->iov_max_len);
 
-    len = strlen(buf);
-
-    (void)memmove(self->iov.iov_base, buf, len);
-
-    self->iov.iov_len = len;
-
-    return luab_pusherr(L, len);
+    if ((dst = self->iov.iov_base) != NULL) {
+        len = strlen(src);
+        (void)memmove(dst, src, len);
+        self->iov.iov_len = len;
+        status = len;
+    } else {
+        errno = ENXIO;
+        status = errno;
+    }
+    return luab_pusherr(L, status);
 }
 
 static int
-IOVec_get(lua_State *L)
+IOVec_copyout(lua_State *L)
 {
     luab_iovec_t *self;
     luaL_Buffer b;
-    caddr_t dst, src;
+    caddr_t src, dst;
     size_t len;
     int status;
 
@@ -94,20 +99,24 @@ IOVec_get(lua_State *L)
 
     self = luab_toiovec(L, 1);
 
-    if ((len = self->iov.iov_len) > 0) {
-        luaL_buffinit(L, &b);
+    if ((src = self->iov.iov_base) != NULL) {
+        if ((len = self->iov.iov_len) > 0) {
+            luaL_buffinit(L, &b);
 
-        dst = luaL_prepbuffsize(&b, len);
-        src = self->iov.iov_base;
+            dst = luaL_prepbuffsize(&b, len);
 
-        (void)memmove(dst, src, len);
+            (void)memmove(dst, src, len);
 
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
+            luaL_addsize(&b, len);
+            luaL_pushresult(&b);
 
-        status = 1;
+            status = 1;
+        } else {
+            errno = ENOENT;
+            status = luab_pushnil(L);
+        }
     } else {
-        errno = ENOENT;
+        errno = ENXIO;
         status = luab_pushnil(L);
     }
     return status;
@@ -125,15 +134,17 @@ IOVec_clear(lua_State *L)
 
     self = luab_toiovec(L, 1);
 
-    if ((len = self->iov_max_len) > 0) {
-        buf = self->iov.iov_base;
+    if ((buf = self->iov.iov_base) != NULL) {
+        if ((len = self->iov_max_len) > 0) {
+            (void)memset_s(buf, len, 0, len);
 
-        (void)memset_s(buf, len, 0, len);
-
-        len = self->iov.iov_len;
-        self->iov.iov_len = 0;
-        status = len;
-        errno = 0;
+            len = self->iov.iov_len;
+            self->iov.iov_len = 0;
+            status = len;
+        } else {
+            errno = ENOENT;
+            status = errno;
+        }
     } else {
         errno = ENXIO;
         status = errno;
@@ -218,9 +229,9 @@ IOVec_tostring(lua_State *L)
 
 static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("clear",    IOVec_clear),
-    LUABSD_FUNC("get",  IOVec_get),
+    LUABSD_FUNC("copyout",  IOVec_copyout),
     LUABSD_FUNC("resize",   IOVec_resize),
-    LUABSD_FUNC("set",  IOVec_set),
+    LUABSD_FUNC("copyin",  IOVec_copyin),
     LUABSD_FUNC("__gc", IOVec_gc),
     LUABSD_FUNC("__tostring",   IOVec_tostring),
     LUABSD_FUNC(NULL, NULL)
