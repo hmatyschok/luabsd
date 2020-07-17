@@ -160,22 +160,27 @@ IOVec_resize(lua_State *L)
 #endif
     );
 
-    if ((src = self->iov.iov_base) != NULL) {
-        if ((dst = realloc(src, len)) != NULL) {
-            self->iov.iov_base = dst;
+    if (len > 0) {
+        if ((src = self->iov.iov_base) != NULL) {
+            if ((dst = realloc(src, len)) != NULL) {
+                self->iov.iov_base = dst;
 
-            if (self->iov.iov_len <= len)
-                self->iov.iov_len = len;
+                if (self->iov.iov_len <= len)
+                    self->iov.iov_len = len;
 
-            self->iov_max_len = len;
-            status = len;
-        } else
+                self->iov_max_len = len;
+                status = len;
+            } else
+                status = errno;
+        } else {
+            errno = ENXIO;
             status = errno;
+        }
     } else {
-        errno = ENXIO;
+        errno = EINVAL;
         status = errno;
     }
-    return luab_pusherr(L, errno);
+    return luab_pusherr(L, status);
 }
 
 static int
@@ -238,25 +243,25 @@ static int
 luab_StructIOVec(lua_State *L)
 {
     luab_iovec_t *self;
-    size_t iov_len;
+    size_t len;
     caddr_t buf;
     int status;
 
     (void)luab_checkmaxargs(L, 1);
 
-    iov_len = luab_checkinteger(L, 1,
+    len = luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX
 #else
     INT_MAX
 #endif
 );
-    if (iov_len > 0) {
-        if ((buf = calloc(1, iov_len)) != NULL) {
+    if (len > 0) {
+        if ((buf = calloc(1, len)) != NULL) {
             if ((self = luab_newiovec(L, NULL)) != NULL) {
                 self->iov.iov_base = buf;
                 self->iov.iov_len = 0;
-                self->iov_max_len = iov_len;
+                self->iov_max_len = len;
                 status = 1;
             } else {
                 status = luab_pushnil(L);
@@ -268,7 +273,6 @@ luab_StructIOVec(lua_State *L)
         errno = EINVAL;
         status = luab_pushnil(L);
     }
-
     return status;
 }
 
