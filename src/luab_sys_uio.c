@@ -165,7 +165,7 @@ IOVec_resize(lua_State *L)
             if ((dst = realloc(src, len)) != NULL) {
                 self->iov.iov_base = dst;
 
-                if (self->iov.iov_len <= len)
+                if (len <= self->iov.iov_len)
                     self->iov.iov_len = len;
 
                 self->iov_max_len = len;
