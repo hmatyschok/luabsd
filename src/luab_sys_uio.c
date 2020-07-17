@@ -257,7 +257,7 @@ luab_StructIOVec(lua_State *L)
     INT_MAX
 #endif
     );
-    
+
     if (len > 0) {
         if ((buf = calloc(1, len)) != NULL) {
             if ((self = luab_newiovec(L, NULL)) != NULL) {
