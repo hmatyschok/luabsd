@@ -170,6 +170,7 @@ IOVec_resize(lua_State *L)
 
                 self->iov_max_len = len;
                 status = len;
+                errno = 0;
             } else
                 status = errno;
         } else {
