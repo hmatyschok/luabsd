@@ -43,6 +43,13 @@
  *      void    *iov_base;
  *      size_t   iov_len;
  *  };
+ *
+ * maps to
+ *
+ *  typedef struct luab_iovec {
+ *      struct iovec    iov;
+ *      size_t  iov_max_len;
+ *  } luab_iovec_t;
  */
 
 #define LUABSD_IOVEC_TYPE_ID    1594559731
@@ -71,9 +78,7 @@ IOVec_set(lua_State *L)
 
     self->iov.iov_len = len;
 
-    lua_pushinteger(L, len);
-
-    return 1;
+    return luab_pusherr(L, len);
 }
 
 static int
@@ -127,14 +132,50 @@ IOVec_clear(lua_State *L)
 
         len = self->iov.iov_len;
         self->iov.iov_len = 0;
-
-        lua_pushinteger(L, len);
-        status = 1;
+        status = len;
+        errno = 0;
     } else {
         errno = ENXIO;
-        status = luab_pushnil(L);
+        status = errno;
     }
-    return status;
+    return luab_pusherr(L, status);
+}
+
+static int
+IOVec_resize(lua_State *L)
+{
+    luab_iovec_t *self;
+    size_t len;
+    caddr_t src, dst;
+    int status;
+
+    luab_checkmaxargs(L, 2);
+
+    self = luab_toiovec(L, 1);
+    len = luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if ((src = self->iov.iov_base) != NULL) {
+        if ((dst = realloc(src, len)) != NULL) {
+            self->iov.iov_base = dst;
+
+            if (self->iov.iov_len <= len)
+                self->iov.iov_len = len;
+
+            self->iov_max_len = len;
+            status = len;
+        } else
+            status = errno;
+    } else {
+        errno = ENXIO;
+        status = errno;
+    }
+    return luab_pusherr(L, errno);
 }
 
 static int
@@ -157,7 +198,6 @@ IOVec_gc(lua_State *L)
 
         self->iov_max_len = 0;
     }
-
     return 0;
 }
 
@@ -171,10 +211,11 @@ IOVec_tostring(lua_State *L)
 }
 
 static luab_table_t iovec_methods[] = {
-    LUABSD_FUNC("set",  IOVec_set),
-    LUABSD_FUNC("get",  IOVec_get),
     LUABSD_FUNC("clear",    IOVec_clear),
-    LUABSD_FUNC("__gc",   IOVec_gc),
+    LUABSD_FUNC("get",  IOVec_get),
+    LUABSD_FUNC("resize",   IOVec_resize),
+    LUABSD_FUNC("set",  IOVec_set),
+    LUABSD_FUNC("__gc", IOVec_gc),
     LUABSD_FUNC("__tostring",   IOVec_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
@@ -204,13 +245,12 @@ luab_StructIOVec(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     iov_len = luab_checkinteger(L, 1,
-#ifdef	__LP64__
+#ifdef  __LP64__
     LONG_MAX
 #else
     INT_MAX
 #endif
 );
-
     if (iov_len > 0) {
         if ((buf = calloc(1, iov_len)) != NULL) {
             if ((self = luab_newiovec(L, NULL)) != NULL) {

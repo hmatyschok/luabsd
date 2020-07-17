@@ -1143,12 +1143,15 @@ luab_fstat(lua_State *L)
 {
     int fd;
     luab_stat_t *ud;
+    struct stat *sb;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
     ud = luab_tostat(L, 2);
+    sb = &ud->stat;
+
 
     status = fstat(fd, &ud->stat);
 
