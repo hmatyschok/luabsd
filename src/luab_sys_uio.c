@@ -167,6 +167,20 @@ IOVec_len(lua_State *L)
 }
 
 static int
+IOVec_max_len(lua_State *L)
+{
+    luab_iovec_t *self;
+    size_t len;
+
+    luab_checkmaxargs(L, 1);
+
+    self = luab_toiovec(L, 2);
+    len = self->iov_max_len;
+
+    return luab_pusherr(L, len);
+}
+
+static int
 IOVec_resize(lua_State *L)
 {
     luab_iovec_t *self;
@@ -246,6 +260,7 @@ static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("copyin",  IOVec_copyin),
     LUABSD_FUNC("copyout",  IOVec_copyout),
     LUABSD_FUNC("len",  IOVec_len),
+    LUABSD_FUNC("max_len",  IOVec_max_len),
     LUABSD_FUNC("resize",   IOVec_resize),
     LUABSD_FUNC("__gc", IOVec_gc),
     LUABSD_FUNC("__tostring",   IOVec_tostring),
