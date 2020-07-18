@@ -1785,7 +1785,7 @@ luab_pwrite(lua_State *L)
 #else
     INT_MAX
 #endif
-);
+    );
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
     if ((buf = iov->iov.iov_base) != NULL) {
@@ -1837,6 +1837,50 @@ luab_truncate(lua_State *L)
 }
 #endif
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
+
+#if __POSIX_VISIBLE >= 199506
+/***
+ * getlogin_r(2) - get login name
+ *
+ * @function getlogin_r
+ *
+ * @param name           Buffer, instance of luab_iovec_t, capable hold requested
+ *                      user name.
+ * @param len           Specifies the length in bytes of requested user name.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.getlogin_r(buf, len)
+ */
+static int
+luab_getlogin_r(lua_State *L)
+{
+    luab_iovec_t *iov;
+    size_t len;
+    caddr_t name;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+    
+    iov = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    len = luab_checkinteger(L, 2, INT_MAX);
+    
+    if ((name = iov->iov.iov_base) != NULL) {
+        if (len <= iov->iov_max_len) {
+            if ((status = getlogin_r(name, len)) == 0)
+                iov->iov.iov_len = len;
+        } else {
+            errno = EINVAL;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+#endif
 
 #if __POSIX_VISIBLE >= 200809
 static int
@@ -2445,9 +2489,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #endif
 
 #if __POSIX_VISIBLE >= 199506
-/*
     LUABSD_FUNC("getlogin_r",   luab_getlogin_r),
- */
 #endif
 /* 1003.1-2001 */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
