@@ -1337,7 +1337,8 @@ luab_write(lua_State *L)
 #else
     INT_MAX
 #endif
-);
+    );
+
     if ((buf = iov->iov.iov_base) != NULL) {
         if (nbytes <= iov->iov.iov_len)
             status = write(fd, buf, nbytes);
@@ -1381,6 +1382,58 @@ luab_rmdir(lua_State *L)
 
 /* ISO/IEC 9945-1: 1996 */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
+/***
+ * fsync(2) - synchronize changes to a file
+ *
+ * @function fsync
+ *
+ * @param fd            Open file descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.fsync(fd)
+ */
+static int
+luab_fsync(lua_State *L)
+{
+    int fd, status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+
+    status = fsync(fd);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * fdatasync(2) - synchronize changes to a file
+ *
+ * @function fsync
+ *
+ * @param fd            Open file descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.fdatasync(fd)
+ */
+static int
+luab_fdatasync(lua_State *L)
+{
+    int fd, status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+
+    status = fdatasync(fd);
+
+    return luab_pusherr(L, status);
+}
+
 #ifndef _FTRUNCATE_DECLARED
 #define _FTRUNCATE_DECLARED
 /***
@@ -2383,11 +2436,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 
 /* ISO/IEC 9945-1: 1996 */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
-
-/*
     LUABSD_FUNC("fsync",    luab_fsync),
     LUABSD_FUNC("fdatasync",    luab_fdatasync),
- */
 #ifndef _FTRUNCATE_DECLARED
 #define _FTRUNCATE_DECLARED
     LUABSD_FUNC("ftruncate",    luab_ftruncate),
