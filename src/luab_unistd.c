@@ -958,26 +958,26 @@ static int
 luab_read(lua_State *L)
 {
     int fd;
-    luab_iovec_t *iov;
+    luab_iovec_t *buf;
     size_t nbytes;
-    caddr_t buf;
+    caddr_t caddr;
     ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     nbytes = luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
 #else
     INT_MAX
 #endif
-);
-    if ((buf = iov->iov.iov_base) != NULL) {
-        if (nbytes <= iov->iov_max_len) {
-            if ((status = read(fd, buf, nbytes)) > 0)
-                iov->iov.iov_len = status;
+    );
+    if ((caddr = buf->iov.iov_base) != NULL) {
+        if (nbytes <= buf->iov_max_len) {
+            if ((status = read(fd, caddr, nbytes)) > 0)
+                buf->iov.iov_len = status;
         } else {
             errno = EINVAL;
             status = -1;
@@ -1322,15 +1322,15 @@ static int
 luab_write(lua_State *L)
 {
     int fd;
-    luab_iovec_t *iov;
+    luab_iovec_t *buf;
     size_t nbytes;
-    c_caddr_t buf;
+    c_caddr_t caddr;
     ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     nbytes = luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -1339,9 +1339,9 @@ luab_write(lua_State *L)
 #endif
     );
 
-    if ((buf = iov->iov.iov_base) != NULL) {
-        if (nbytes <= iov->iov.iov_len)
-            status = write(fd, buf, nbytes);
+    if ((caddr = buf->iov.iov_base) != NULL) {
+        if (nbytes <= buf->iov.iov_len)
+            status = write(fd, caddr, nbytes);
         else {
             errno = EINVAL;
             status = -1;
@@ -1504,6 +1504,17 @@ luab_fchown(lua_State *L)
 
     return luab_pusherr(L, status);
 }
+
+/*
+static int
+luab_readlink(lua_State *L)
+{
+
+
+}
+ */
+
+
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
 
 #if __POSIX_VISIBLE >= 200112
@@ -1716,16 +1727,16 @@ static int
 luab_pread(lua_State *L)
 {
     int fd;
-    luab_iovec_t *iov;
+    luab_iovec_t *buf;
     size_t nbytes;
     off_t offset;
-    caddr_t buf;
+    caddr_t caddr;
     ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     nbytes = luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -1735,10 +1746,10 @@ luab_pread(lua_State *L)
 );
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((buf = iov->iov.iov_base) != NULL) {
-        if (nbytes <= iov->iov_max_len) {
-            if ((status = read(fd, buf, nbytes)) > 0)
-                iov->iov.iov_len = status;
+    if ((caddr = buf->iov.iov_base) != NULL) {
+        if (nbytes <= buf->iov_max_len) {
+            if ((status = read(fd, caddr, nbytes)) > 0)
+                buf->iov.iov_len = status;
         } else {
             errno = EINVAL;
             status = -1;
@@ -1769,16 +1780,16 @@ static int
 luab_pwrite(lua_State *L)
 {
     int fd;
-    luab_iovec_t *iov;
+    luab_iovec_t *buf;
     size_t nbytes;
     off_t offset;
-    caddr_t buf;
+    caddr_t caddr;
     ssize_t status;
 
     (void)luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    iov = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     nbytes = luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -1788,9 +1799,9 @@ luab_pwrite(lua_State *L)
     );
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((buf = iov->iov.iov_base) != NULL) {
-        if (nbytes <= iov->iov.iov_len)
-            status = pwrite(fd, buf, nbytes, offset);
+    if ((caddr = buf->iov.iov_base) != NULL) {
+        if (nbytes <= buf->iov.iov_len)
+            status = pwrite(fd, caddr, nbytes, offset);
         else {
             errno = EINVAL;
             status = -1;
@@ -1856,20 +1867,20 @@ luab_truncate(lua_State *L)
 static int
 luab_getlogin_r(lua_State *L)
 {
-    luab_iovec_t *iov;
+    luab_iovec_t *buf;
     size_t len;
     caddr_t name;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
-    
-    iov = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
     len = luab_checkinteger(L, 2, INT_MAX);
-    
-    if ((name = iov->iov.iov_base) != NULL) {
-        if (len <= iov->iov_max_len) {
+
+    if ((name = buf->iov.iov_base) != NULL) {
+        if (len <= buf->iov_max_len) {
             if ((status = getlogin_r(name, len)) == 0)
-                iov->iov.iov_len = len;
+                buf->iov.iov_len = len;
         } else {
             errno = EINVAL;
             status = -1;
