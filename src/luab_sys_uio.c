@@ -160,7 +160,7 @@ IOVec_len(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toiovec(L, 2);
+    self = luab_toiovec(L, 1);
     len = self->iov.iov_len;
 
     return luab_pusherr(L, len);
@@ -174,7 +174,7 @@ IOVec_max_len(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toiovec(L, 2);
+    self = luab_toiovec(L, 1);
     len = self->iov_max_len;
 
     return luab_pusherr(L, len);
