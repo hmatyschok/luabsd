@@ -2110,6 +2110,44 @@ luab_readlinkat(lua_State *L)
 }
 
 /***
+ * symlinkat(2) - make symbolic link to a file
+ *
+ * @function symlinkat
+ *
+ * @param name1         File name from target.
+ * @param fd            Denotes either file descriptor associated with directory
+ *                      where its relative to the symbolic link or specifies by
+ *                      fd accepted parameter
+ *
+ *                          bsd.unistd.AT_FDCWD.
+ *
+ * @param name2         Denotes assumed symbolic link maps to file name1.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.symlinkat(name1, fd, name2)
+ */
+static int
+luab_symlinkat(lua_State *L)
+{
+    const char *name1;
+    int fd;
+    const char *name2;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    name1 = luab_checklstring(L, 1, MAXPATHLEN);
+    fd = luab_checkinteger(L, 2, INT_MAX);
+    name2 = luab_checklstring(L, 3, MAXPATHLEN);
+
+    status = symlinkat(name1, fd, name2);
+
+    return luab_pusherr(L, status);
+}
+
+/***
  * unlinkat(2) - remove directory entry
  *
  * @function unlinkat
@@ -2147,6 +2185,38 @@ luab_unlinkat(lua_State *L)
     return luab_pusherr(L, status);
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
+
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402
+/***
+ * symlink(2) - make symbolic link to a file
+ *
+ * @function symlink
+ *
+ * @param name1         File name from target.
+ * @param name2         Denotes assumed symbolic link maps to file name1.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.symlink(name1, name2)
+ */
+static int
+luab_symlink(lua_State *L)
+{
+    const char *name1;
+    const char *name2;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    name1 = luab_checklstring(L, 1, MAXPATHLEN);
+    name2 = luab_checklstring(L, 3, MAXPATHLEN);
+
+    status = symlink(name1, name2);
+
+    return luab_pusherr(L, status);
+}
+#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402 */
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
 /***
@@ -2629,15 +2699,18 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("truncate", luab_truncate),
 #endif
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
-
 #if __POSIX_VISIBLE >= 200809
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fchownat", luab_fchownat),
     LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("linkat", luab_linkat),
     LUABSD_FUNC("readlinkat", luab_readlinkat),
+    LUABSD_FUNC("symlinkat",    luab_symlinkat),
     LUABSD_FUNC("unlinkat", luab_unlinkat),
 #endif /* __POSIX_VISIBLE >= 200809 */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402
+    LUABSD_FUNC("symlink",  luab_symlink),
+#endif
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
 #endif
