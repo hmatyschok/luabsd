@@ -1505,16 +1505,55 @@ luab_fchown(lua_State *L)
     return luab_pusherr(L, status);
 }
 
-/*
+/***
+ * readlink(2) - read value of a symbolic link
+ *
+ * @function readlink
+ *
+ * @param path          Symbolic link.
+ * @param buf           Holds read contents from symbolic link.
+ * @param bufsiz        Assumed number of bytes to be read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (count [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage count [, msg ] = bsd.unistd.readlink(path, buf, bufsiz)
+ */
 static int
 luab_readlink(lua_State *L)
 {
+    const char * path;
+    luab_iovec_t *buf;
+    size_t bufsiz;
+    caddr_t caddr;
+    ssize_t count;
 
+    (void)luab_checkmaxargs(L, 3);
 
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    bufsiz = luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if ((caddr = buf->iov.iov_base) != NULL) {
+        if (bufsiz <= buf->iov_max_len) {
+            if ((count = readlink(path, caddr, bufsiz)) > 0)
+                buf->iov.iov_len = count;
+        } else {
+            errno = EINVAL;
+            count = -1;
+        }
+    } else {
+        errno = ENXIO;
+        count = -1;
+    }
+    return luab_pusherr(L, count);
 }
- */
-
-
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
 
 #if __POSIX_VISIBLE >= 200112
@@ -2003,6 +2042,59 @@ luab_linkat(lua_State *L)
     status = linkat(fd1, name1, fd2, name2, flag);
 
     return luab_pusherr(L, status);
+}
+
+/***
+ * readlinkat(2) - read value of a symbolic link
+ *
+ * @function readlinkat
+ *
+ * @param fd            Open file descriptor.
+ * @param path          Symbolic link.
+ * @param buf           Holds read contents from symbolic link.
+ * @param bufsize       Assumed number of bytes to be read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (count [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage count [, msg ] = bsd.unistd.readlinkat(fd,path, buf, bufsize)
+ */
+static int
+luab_readlinkat(lua_State *L)
+{
+    int fd;
+    const char *path;
+    luab_iovec_t *buf;
+    size_t bufsize;
+    caddr_t caddr;
+    ssize_t count;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 3);
+    bufsize = luab_checkinteger(L, 4,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if ((caddr = buf->iov.iov_base) != NULL) {
+        if (bufsize <= buf->iov_max_len) {
+            if ((count = readlink(path, caddr, bufsize)) > 0)
+                buf->iov.iov_len = count;
+        } else {
+            errno = EINVAL;
+            count = -1;
+        }
+    } else {
+        errno = ENXIO;
+        count = -1;
+    }
+    return luab_pusherr(L, count);
 }
 
 /***
@@ -2505,9 +2597,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 /* 1003.1-2001 */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
     LUABSD_FUNC("fchown",   luab_fchown),
-/*
     LUABSD_FUNC("readlink", luab_readlink),
- */
 #endif
 #if __POSIX_VISIBLE >= 200112
     LUABSD_FUNC("gethostname",  luab_gethostname),
@@ -2533,6 +2623,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("fchownat", luab_fchownat),
     LUABSD_FUNC("fexecve",   luab_fexecve),
     LUABSD_FUNC("linkat", luab_linkat),
+    LUABSD_FUNC("readlinkat", luab_readlinkat),
     LUABSD_FUNC("unlinkat", luab_unlinkat),
 #endif /* __POSIX_VISIBLE >= 200809 */
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
