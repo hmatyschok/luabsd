@@ -961,7 +961,7 @@ luab_read(lua_State *L)
     luab_iovec_t *buf;
     size_t nbytes;
     caddr_t caddr;
-    ssize_t status;
+    ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -976,17 +976,17 @@ luab_read(lua_State *L)
     );
     if ((caddr = buf->iov.iov_base) != NULL) {
         if (nbytes <= buf->iov_max_len) {
-            if ((status = read(fd, caddr, nbytes)) > 0)
-                buf->iov.iov_len = status;
+            if ((count = read(fd, caddr, nbytes)) > 0)
+                buf->iov.iov_len = count;
         } else {
             errno = EINVAL;
-            status = -1;
+            count = -1;
         }
     } else {
         errno = ENXIO;
-        status = -1;
+        count = -1;
     }
-    return luab_pusherr(L, status);
+    return luab_pusherr(L, count);
 }
 
 /***
@@ -1337,7 +1337,7 @@ luab_write(lua_State *L)
     luab_iovec_t *buf;
     size_t nbytes;
     c_caddr_t caddr;
-    ssize_t status;
+    ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -1353,17 +1353,17 @@ luab_write(lua_State *L)
 
     if ((caddr = buf->iov.iov_base) != NULL) {
         if (nbytes <= buf->iov.iov_len)
-            status = write(fd, caddr, nbytes);
+            count = write(fd, caddr, nbytes);
         else {
             errno = EINVAL;
-            status = -1;
+            count = -1;
         }
     } else {
         errno = ENXIO;
-        status = -1;
+        count = -1;
     }
 
-    return luab_pusherr(L, status);
+    return luab_pusherr(L, count);
 }
 
 /***
@@ -1782,7 +1782,7 @@ luab_pread(lua_State *L)
     size_t nbytes;
     off_t offset;
     caddr_t caddr;
-    ssize_t status;
+    ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -1799,17 +1799,17 @@ luab_pread(lua_State *L)
 
     if ((caddr = buf->iov.iov_base) != NULL) {
         if (nbytes <= buf->iov_max_len) {
-            if ((status = read(fd, caddr, nbytes)) > 0)
-                buf->iov.iov_len = status;
+            if ((count = read(fd, caddr, nbytes)) > 0)
+                buf->iov.iov_len = count;
         } else {
             errno = EINVAL;
-            status = -1;
+            count = -1;
         }
     } else {
         errno = ENXIO;
-        status = -1;
+        count = -1;
     }
-    return luab_pusherr(L, status);
+    return luab_pusherr(L, count);
 }
 
 /***
@@ -1835,7 +1835,7 @@ luab_pwrite(lua_State *L)
     size_t nbytes;
     off_t offset;
     caddr_t caddr;
-    ssize_t status;
+    ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -1852,16 +1852,16 @@ luab_pwrite(lua_State *L)
 
     if ((caddr = buf->iov.iov_base) != NULL) {
         if (nbytes <= buf->iov.iov_len)
-            status = pwrite(fd, caddr, nbytes, offset);
+            count = pwrite(fd, caddr, nbytes, offset);
         else {
             errno = EINVAL;
-            status = -1;
+            count = -1;
         }
     } else {
         errno = ENXIO;
-        status = -1;
+        count = -1;
     }
-    return luab_pusherr(L, status);
+    return luab_pusherr(L, count);
 }
 
 #ifndef _TRUNCATE_DECLARED
