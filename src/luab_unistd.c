@@ -949,10 +949,10 @@ luab_pipe(lua_State *L)
  * @param buf           Instance of luab_iovec_t.
  * @param nbytes        Assumed number of bytes to be read.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (count [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage n [, msg ] = bsd.unistd.read(fd, buf, nbytes)
+ * @usage count [, msg ] = bsd.unistd.read(fd, buf, nbytes)
  */
 static int
 luab_read(lua_State *L)
@@ -1313,10 +1313,10 @@ luab_unlink(lua_State *L)
  * @param buf           Instance of luab_iovec_t.
  * @param nbytes        Number of bytes for write operation.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (count [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage n [, msg ] = bsd.unistd.write(fd, buf, nbytes)
+ * @usage count [, msg ] = bsd.unistd.write(fd, buf, nbytes)
  */
 static int
 luab_write(lua_State *L)
@@ -1757,10 +1757,10 @@ luab_lchown(lua_State *L)
  * @param nbytes        Assumed number of bytes to be read.
  * @param offset        Location, where data to be read.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (count [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage n [, msg ] = bsd.unistd.pread(fd, buf, nbytes, offset)
+ * @usage count [, msg ] = bsd.unistd.pread(fd, buf, nbytes, offset)
  */
 static int
 luab_pread(lua_State *L)
@@ -1810,10 +1810,10 @@ luab_pread(lua_State *L)
  * @param nbytes        Number of bytes for write operation.
  * @param offset        Specifies position for write operation.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (n [, nil]) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (count [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage n [, msg ] = bsd.unistd.pwrite(fd, buf, nbytes)
+ * @usage count [, msg ] = bsd.unistd.pwrite(fd, buf, nbytes)
  */
 static int
 luab_pwrite(lua_State *L)
