@@ -1245,37 +1245,49 @@ luab_ttyname(lua_State *L)
  * @function ttyname_r
  *
  * @param fd            File descriptor refers to a valid terminal device.
+ * @param buf           Buffer, instance of luab_iovec_t, capable hold requested
+ *                      user name.
+ * @param len           Specifies the length in bytes of requested tty(4) name.
  *
- * @return (LUA_TNUMBER, LUA_TSTRING)               (0, name) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage name [, msg ] = bsd.unistd.ttyname()
+ * @usage err [, msg ] = bsd.unistd.ttyname_r(buf, len)
  */
 static int
 luab_ttyname_r(lua_State *L)
 {
-    int fd, status;
+    int fd;
+    luab_iovec_t *buf;
     size_t len;
-    char *buf;
+    caddr_t name;
+    int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    status = -1;
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    len = luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
 
-    if ((len = sysconf(_SC_TTY_NAME_MAX)) < 0)
-        return luab_pusherr(L, status);
-
-    if ((buf = alloca(len)) == NULL)
-        return luab_pusherr(L, status);
-
-    if ((status = ttyname_r(fd, buf, len)) != 0)
-        return luab_pusherr(L, status);
-
-    lua_pushinteger(L, status);
-    lua_pushlstring(L, buf, strlen(buf));
-
-    return 2;
+    if ((name = buf->iov.iov_base) != NULL) {
+        if (len <= buf->iov_max_len) {
+            if ((status = ttyname_r(fd, name, len)) == 0)
+                buf->iov.iov_len = len;
+        } else {
+            errno = EINVAL;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
 }
 
 /***
@@ -1894,7 +1906,7 @@ luab_truncate(lua_State *L)
  *
  * @function getlogin_r
  *
- * @param name           Buffer, instance of luab_iovec_t, capable hold requested
+ * @param name          Buffer, instance of luab_iovec_t, capable hold requested
  *                      user name.
  * @param len           Specifies the length in bytes of requested user name.
  *
