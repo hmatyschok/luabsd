@@ -1925,7 +1925,7 @@ luab_getlogin_r(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1); /* XXX macro might defined */
     len = luab_checkinteger(L, 2, INT_MAX);
 
     if ((name = buf->iov.iov_base) != NULL) {
@@ -2217,6 +2217,254 @@ luab_symlink(lua_State *L)
     return luab_pusherr(L, status);
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402 */
+
+/* X/Open System Interfaces */
+#if __XSI_VISIBLE
+/***
+ * crypt(3) - Trapdoor encryption
+ *
+ * @function crypt
+ *
+ * @param key           Data to hash.
+ * @param salt          String specifies salt in
+ *
+ *                       #1 Extended,
+ *
+ *                       #2 Modular or
+ *
+ *                       #3 Traditional
+ *
+ *                      form.
+ *
+ * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage value [, msg ] = bsd.unistd.crypt(key, salt)
+ */
+static int
+luab_crypt(lua_State *L)
+{
+    const char *key;
+    const char *salt;
+    caddr_t value;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    key = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    salt = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
+
+    value = crypt(key, salt);
+
+    return luab_pushstring(L, value);
+}
+
+/***
+ * gethostid(3) - get unique identifier of current host
+ *
+ * @function gethostid
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (hostid [, nil]) on success or
+ *                                                  (hostid, (strerror(errno)))
+ *
+ * @usage hostid [, msg ] = bsd.unistd.gethostid()
+ */
+static int
+luab_gethostid(lua_State *L)
+{
+    long hostid;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    hostid = gethostid();
+
+    return luab_pusherr(L, hostid);
+}
+
+/***
+ * lockf(3) - record locking on files
+ *
+ * @function lockf
+ *
+ * @param fd            Open file descriptor.
+ * @param function      Control value specifies assumed action over
+ *
+ *                          bsd.unistd.F_{ULOCK,LOCK,TLOCK,TEST}
+ *
+ *                      to be taken.
+ * @param size          Number of contigous bytes to be locked or unlocked.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.lockf(fd, function, size)
+ */
+static int
+luab_lockf(lua_State *L)
+{
+    int fd;
+    int function;
+    off_t size;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    function = luab_checkinteger(L, 2, INT_MAX);
+    size = luab_checkinteger(L, 3, LONG_MAX);
+
+    status = lockf(fd, function, size);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * nice(3) - set programm scheduling priority
+ *
+ * @function nice
+ *
+ * @param incr          Scheduling priority of the process.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.nice(incr)
+ */
+static int
+luab_nice(lua_State *L)
+{
+    int incr, status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    incr = luab_checkinteger(L, 1, INT_MAX);
+
+    status = nice(incr);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * setregid(2) - set real and effective group ID
+ *
+ * @function setregid
+ *
+ * @param rgid          Real group ID.
+ * @param egid          Effective group ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.setregid(rgid, egid)
+ */
+static int
+luab_setregid(lua_State *L)
+{
+    gid_t rgid, egid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    rgid = luab_checkinteger(L, 1, INT_MAX);
+    egid = luab_checkinteger(L, 2, INT_MAX);
+
+    status = setregid(rgid, egid);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * setreuid(2) - set real and effective user ID
+ *
+ * @function setreuid
+ *
+ * @param ruid          Real user ID.
+ * @param euid          Effective user ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.setreuid(ruid, euid)
+ */
+static int
+luab_setreuid(lua_State *L)
+{
+    uid_t ruid, euid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    ruid = luab_checkinteger(L, 1, INT_MAX);
+    euid = luab_checkinteger(L, 2, INT_MAX);
+
+    status = setreuid(ruid, euid);
+
+    return luab_pusherr(L , status);
+}
+
+#ifndef _SWAB_DECLARED
+#define _SWAB_DECLARED
+/***
+ * swab(3) - swap adjacent bytes
+ *
+ * @function swab
+ *
+ * @param in_buf        Source location, LUA_TUSERDATA(luab_iovec_t).
+ * @param out_buf       Destination location, LUA_TUSERDATA(luab_iovec_t).
+ * @param len           Length.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.swab(in_buf, out_buf, len)
+ */static int
+luab_swab(lua_State *l)
+{
+    luab_iovec_t *in_buf, *out_buf;
+    ssize_t len;
+    caddr_t src, dst;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    in_buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    out_buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    len = luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    int status;
+
+    if ((in_buf->iov.iov_len == out_buf->iov.iov_len) &&
+        ((src = in_buf->iov.iov_base) != NULL) &&
+        ((dst = out_buf->iov.iov_base) != NULL) &&
+        (len <= out_buf->iov.iov_len)) {
+        swab(src, dst, len);
+        status = 0;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+#endif /* _SWAB_DECLARED */
+
+/***
+ * sync(2) - schedule file system updates
+ *
+ * @function sync
+ *
+ * @usage bsd.unistd.sync()
+ */
+static int
+luab_sync(lua_State *L)
+{
+    (void)luab_checkmaxargs(L, 0);
+    sync();
+    return 0;
+}
+#endif /* __XSI_VISIBLE */
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
 /***
@@ -2711,6 +2959,20 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402
     LUABSD_FUNC("symlink",  luab_symlink),
 #endif
+/* X/Open System Interfaces */
+#if __XSI_VISIBLE
+    LUABSD_FUNC("crypt",    luab_crypt),
+    LUABSD_FUNC("gethostid",    luab_gethostid),
+    LUABSD_FUNC("lockf",    luab_lockf),
+    LUABSD_FUNC("nice", luab_nice),
+    LUABSD_FUNC("setregid", luab_setregid),
+    LUABSD_FUNC("setreuid", luab_setreuid),
+#ifndef _SWAB_DECLARED
+#define _SWAB_DECLARED
+    LUABSD_FUNC("swab", luab_swab),
+#endif
+    LUABSD_FUNC("sync", luab_sync),
+#endif  /* __XSI_VISIBLE */
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
 #endif

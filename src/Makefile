@@ -1,5 +1,9 @@
 
 PACKAGE=lib${LIB}
+SHLIBDIR?=	/lib
+
+.include <src.opts.mk>
+
 LIB=    luabsd
 SHLIB_MAJOR= 0
 
@@ -20,6 +24,8 @@ SRCS+=  luab_uuid.c
 
 INCS=   luabsd.h
 MAN=
+
+LIBADD=	crypt
 
 CFLAGS+= -I${.CURDIR} -I/usr/local/include/lua52
 
