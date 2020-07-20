@@ -1581,7 +1581,7 @@ luab_readlink(lua_State *L)
  * @usage err, hostname = bsd.unistd.gethostname()
  */
 static int
-luab_gethostname(lua_State *L)
+luab_gethostname(lua_State *L)  /* XXX */
 {
     char buf[MAXHOSTNAMELEN];
     int status;
@@ -2451,6 +2451,13 @@ luab_sync(lua_State *L)
 }
 #endif /* __XSI_VISIBLE */
 
+#if (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE
+int  chroot(const char *);
+int  getdtablesize(void);
+int  getpagesize(void) __pure2;
+char    *getpass(const char *);
+#endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE */
+
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
 /***
  * getwd(3) - get working directory pathname
@@ -2843,7 +2850,9 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LIBS",    _CS_POSIX_V6_LPBIG_OFFBIG_LIBS),
     LUABSD_INT("_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS",    _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS),
 #endif
-/* 1003.1-1990 */
+/*
+ * 1003.1-1990
+ */
     LUABSD_FUNC("access",   luab_access),
     LUABSD_FUNC("alarm",    luab_alarm),
     LUABSD_FUNC("chdir",    luab_chdir),
@@ -2891,20 +2900,17 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("unlink",   luab_unlink),
     LUABSD_FUNC("write",    luab_write),
 
-/* 1003.2-1992 */
+/*
+ * 1003.2-1992
+ */
 #if __POSIX_VISIBLE >= 199209 || __XSI_VISIBLE
 /*
     LUABSD_FUNC("confstr",  luab_confstr),
  */
-#ifndef _GETOPT_DECLARED
-#define _GETOPT_DECLARED
-/*
-    LUABSD_FUNC("getopt",   luab_getopt),
- */
-#endif /* _GETOPT_DECLARED */
 #endif
-
-/* ISO/IEC 9945-1: 1996 */
+/*
+ * ISO/IEC 9945-1: 1996
+ */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
     LUABSD_FUNC("fsync",    luab_fsync),
     LUABSD_FUNC("fdatasync",    luab_fdatasync),
@@ -2917,7 +2923,9 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #if __POSIX_VISIBLE >= 199506
     LUABSD_FUNC("getlogin_r",   luab_getlogin_r),
 #endif
-/* 1003.1-2001 */
+/*
+ * 1003.1-2001
+ */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
     LUABSD_FUNC("fchown",   luab_fchown),
     LUABSD_FUNC("readlink", luab_readlink),
@@ -2927,7 +2935,9 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("setegid",    luab_setegid),
     LUABSD_FUNC("seteuid",    luab_seteuid),
 #endif
-/* 1003.1-2008 */
+/*
+ * 1003.1-2008
+ */
 #if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
     LUABSD_FUNC("getsid", luab_getsid),
     LUABSD_FUNC("fchdir",    luab_fchdir),
@@ -2939,7 +2949,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #define _TRUNCATE_DECLARED
     LUABSD_FUNC("truncate", luab_truncate),
 #endif
-#endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
+#endif
 #if __POSIX_VISIBLE >= 200809
     LUABSD_FUNC("faccessat",   luab_faccessat),
     LUABSD_FUNC("fchownat", luab_fchownat),
@@ -2948,11 +2958,13 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("readlinkat", luab_readlinkat),
     LUABSD_FUNC("symlinkat",    luab_symlinkat),
     LUABSD_FUNC("unlinkat", luab_unlinkat),
-#endif /* __POSIX_VISIBLE >= 200809 */
+#endif
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402
     LUABSD_FUNC("symlink",  luab_symlink),
 #endif
-/* X/Open System Interfaces */
+/*
+ * X/Open System Interfaces
+ */
 #if __XSI_VISIBLE
     LUABSD_FUNC("crypt",    luab_crypt),
     LUABSD_FUNC("gethostid",    luab_gethostid),
@@ -2965,7 +2977,15 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("swab", luab_swab),
 #endif
     LUABSD_FUNC("sync", luab_sync),
-#endif  /* __XSI_VISIBLE */
+#endif
+/*
+#if (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE
+    LUAB_FUNC("chroot", luab_chroot),
+    LUAB_FUNC("getdtablesize",  luab_getdtablesize),
+    LUAB_FUNC("getpagesize",    luab_getpagesize),
+    LUAB_FUNC("getpass", luab_getpass),
+#endif */
+
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
 #endif
