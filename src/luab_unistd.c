@@ -622,55 +622,59 @@ luab_getgid(lua_State *L)
  * @function getgroups
  *
  * @param gidsetlen     Number of entries that may be placed on
- *                      instance of returned LUA_TTABLE:
+ *                      gidset, of successfull.
+ * @param gidset        Empty instance of LUA_TTABLE, but still populated
  *
- *                          gitset = { "gid0" , "gid1" , ..., gidN },
+ *                          { "gid0" , "gid1" , ..., gidN },
  *
  *                      iff (if and only if)
  *
- *                          gidsetlen > 0,
+ *                          gidsetlen > 0.
  *
- *                      on success.
- *
- * @return (LUA_TNUMBER, LUA_T{NIL,STRING,TABLE})   (len, nil) or
- *                                                  (len, gidset) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (len [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage len, gidset = bsd.unistd.getgroups(gidsetlen)
+ * @usage len [, msg ] = bsd.unistd.getgroups(gidsetlen, gidset)
  */
 static int
 luab_getgroups(lua_State *L)
 {
     int gidsetlen;
     gid_t *gidset;
-    int ngroups, i, j;
+    int ngroups;
+    int i, j;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 2);
 
-    if ((gidsetlen = luab_checkinteger(L, 1, INT_MAX)) == 0)
-        gidset = NULL;
-    else {
+    gidsetlen = luab_checkinteger(L, 1, INT_MAX);
+
+    if (lua_istable(L, 2) == 0) /* XXX redundant code section */
+        luaL_argerror(L, 2, "Table expected");
+
+    if (lua_rawlen(L, 2) != 0)
+        luaL_argerror(L, 2, "Table not empty");
+
+    if (gidsetlen > 0) {
         if ((gidset = alloca(gidsetlen * sizeof(gid_t))) == NULL)
-            return luab_pusherr(L, -1);
+            ngroups = -1;
+        else
+            ngroups = 0;
+    } else {
+        gidset = NULL;
+        ngroups = 0;
     }
 
-    if ((ngroups = getgroups(gidsetlen, gidset)) < 0)
-        return luab_pusherr(L, ngroups);
+    if (ngroups == 0) {
+        if ((ngroups = getgroups(gidsetlen, gidset)) > 0) {
+            lua_pushnil(L); /* populate Table, if any */
 
-    lua_pushinteger(L, ngroups);
+            for (i = 0, j = 1; i < gidsetlen; i++, j++)
+                luab_rawsetinteger(L, 2, j, gidset[i]);
 
-    if (gidsetlen == 0)
-        return 1;
-
-    lua_newtable(L);
-
-    for (i = 0, j = 1; i < gidsetlen; i++, j++) {
-        lua_pushinteger(L, gidset[i]);
-        lua_rawseti(L, -2, j);
+            lua_pop(L, 0);
+        }
     }
-    lua_pushvalue(L, -1);
-
-    return 2;
+    return luab_pusherr(L, ngroups);
 }
 
 /***

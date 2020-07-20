@@ -107,6 +107,11 @@ int luab_pushstring(lua_State *, char *);
 
 #define luab_todata(L, narg, id, t) \
     ((t)luab_checkudata((L), (narg), (id)))
+#define luab_rawsetinteger(L, narg, k, v)                   \
+    do {                                                    \
+        lua_pushinteger((L), (v));                          \
+        lua_rawseti((L), (narg), (k));                      \
+    } while (0)
 #define luab_setinteger(L, narg, k, v)                      \
     do {                                                    \
         lua_pushinteger((L), (v));                          \
