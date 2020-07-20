@@ -515,26 +515,44 @@ luab_fpathconf(lua_State *L)
 /***
  * getcwd(3) - get working directory pathname
  *
- * @function getcwd
+ * @function getwd
+ *
+ * @param buf           Source location, LUA_TUSERDATA(luab_iovec_t).
+ * @param size          Size in bytes.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (path [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
- * @usage path [, msg ] = bsd.unistd.getcwd()
+ *
+ * @usage path [, msg ] = bsd.unistd.getwd(buf, size)
  */
 static int
 luab_getcwd(lua_State *L)
 {
-    char *buf;
+    luab_iovec_t *buf;
+    size_t size;
+    caddr_t caddr;
+    caddr_t status;
 
-    (void)luab_checkmaxargs(L, 0);
+    (void)luab_checkmaxargs(L, 2);
 
-    if ((buf = getcwd(NULL, MAXPATHLEN)) == NULL)
-        return luab_pushnil(L);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    size = luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
 
-    lua_pushlstring(L, buf, strlen(buf));
-    free(buf);
-
-    return 1;
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len >= size)) {
+        if ((status = getcwd(caddr, size)) != NULL)
+            buf->iov.iov_len = size;
+    } else {
+        errno = ENXIO;
+        status = NULL;
+    }
+    return luab_pushstring(L, status);
 }
 
 /***
@@ -2472,24 +2490,32 @@ luab_sync(lua_State *L)
  *
  * @function getwd
  *
+ * @param buf           Source location, LUA_TUSERDATA(luab_iovec_t).
+ *
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING])      (path [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
- * @usage path [, msg ] = bsd.unistd.getwd()
+ * @usage path [, msg ] = bsd.unistd.getwd(buf)
  */
 static int
 luab_getwd(lua_State *L)
 {
-    char *buf;
+    luab_iovec_t *buf;
+    caddr_t caddr;
+    caddr_t status;
 
-    (void)luab_checkmaxargs(L, 0);
+    (void)luab_checkmaxargs(L, 1);
 
-    if ((buf = getwd(NULL)) == NULL)
-        return luab_pushnil(L);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
 
-    lua_pushlstring(L, buf, strlen(buf));
-    free(buf);
-
-    return 1;
+    if ((((caddr = buf->iov.iov_base) != NULL)) &&
+        (buf->iov_max_len >= MAXPATHLEN)) {
+        if ((status = getwd(caddr)) != NULL)
+            buf->iov.iov_len = strlen(caddr);
+    } else {
+        errno = ENXIO;
+        status = NULL;
+    }
+    return luab_pushstring(L, status);
 }
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE */
 
