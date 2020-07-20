@@ -992,14 +992,10 @@ luab_read(lua_State *L)
     INT_MAX
 #endif
     );
-    if ((caddr = buf->iov.iov_base) != NULL) {
-        if (nbytes <= buf->iov_max_len) {
-            if ((count = read(fd, caddr, nbytes)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = EINVAL;
-            count = -1;
-        }
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (nbytes <= buf->iov_max_len)) {
+        if ((count = read(fd, caddr, nbytes)) > 0)
+            buf->iov.iov_len = count;
     } else {
         errno = ENXIO;
         count = -1;
@@ -1293,14 +1289,10 @@ luab_ttyname_r(lua_State *L)
 #endif
     );
 
-    if ((name = buf->iov.iov_base) != NULL) {
-        if (len <= buf->iov_max_len) {
-            if ((status = ttyname_r(fd, name, len)) == 0)
-                buf->iov.iov_len = len;
-        } else {
-            errno = EINVAL;
-            status = -1;
-        }
+    if (((name = buf->iov.iov_base) != NULL) &&
+        (len <= buf->iov_max_len)) {
+        if ((status = ttyname_r(fd, name, len)) == 0)
+            buf->iov.iov_len = len;
     } else {
         errno = ENXIO;
         status = -1;
@@ -1369,18 +1361,13 @@ luab_write(lua_State *L)
 #endif
     );
 
-    if ((caddr = buf->iov.iov_base) != NULL) {
-        if (nbytes <= buf->iov.iov_len)
-            count = write(fd, caddr, nbytes);
-        else {
-            errno = EINVAL;
-            count = -1;
-        }
-    } else {
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (nbytes <= buf->iov.iov_len))
+        count = write(fd, caddr, nbytes);
+    else {
         errno = ENXIO;
         count = -1;
     }
-
     return luab_pusherr(L, count);
 }
 
@@ -1570,14 +1557,10 @@ luab_readlink(lua_State *L)
 #endif
     );
 
-    if ((caddr = buf->iov.iov_base) != NULL) {
-        if (bufsiz <= buf->iov_max_len) {
-            if ((count = readlink(path, caddr, bufsiz)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = EINVAL;
-            count = -1;
-        }
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (bufsiz <= buf->iov_max_len)) {
+        if ((count = readlink(path, caddr, bufsiz)) > 0)
+            buf->iov.iov_len = count;
     } else {
         errno = ENXIO;
         count = -1;
@@ -1815,14 +1798,10 @@ luab_pread(lua_State *L)
 );
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((caddr = buf->iov.iov_base) != NULL) {
-        if (nbytes <= buf->iov_max_len) {
-            if ((count = read(fd, caddr, nbytes)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = EINVAL;
-            count = -1;
-        }
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (nbytes <= buf->iov_max_len)) {
+        if ((count = read(fd, caddr, nbytes)) > 0)
+            buf->iov.iov_len = count;
     } else {
         errno = ENXIO;
         count = -1;
@@ -1868,14 +1847,10 @@ luab_pwrite(lua_State *L)
     );
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((caddr = buf->iov.iov_base) != NULL) {
-        if (nbytes <= buf->iov.iov_len)
-            count = pwrite(fd, caddr, nbytes, offset);
-        else {
-            errno = EINVAL;
-            count = -1;
-        }
-    } else {
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (nbytes <= buf->iov.iov_len))
+        count = pwrite(fd, caddr, nbytes, offset);
+    else {
         errno = ENXIO;
         count = -1;
     }
@@ -1946,14 +1921,10 @@ luab_getlogin_r(lua_State *L)
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 1); /* XXX macro might defined */
     len = luab_checkinteger(L, 2, INT_MAX);
 
-    if ((name = buf->iov.iov_base) != NULL) {
-        if (len <= buf->iov_max_len) {
-            if ((status = getlogin_r(name, len)) == 0)
-                buf->iov.iov_len = len;
-        } else {
-            errno = EINVAL;
-            status = -1;
-        }
+    if (((name = buf->iov.iov_base) != NULL) &&
+        (len <= buf->iov_max_len)) {
+        if ((status = getlogin_r(name, len)) == 0)
+            buf->iov.iov_len = len;
     } else {
         errno = ENXIO;
         status = -1;
@@ -2112,14 +2083,10 @@ luab_readlinkat(lua_State *L)
 #endif
     );
 
-    if ((caddr = buf->iov.iov_base) != NULL) {
-        if (bufsize <= buf->iov_max_len) {
-            if ((count = readlink(path, caddr, bufsize)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = EINVAL;
-            count = -1;
-        }
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (bufsize <= buf->iov_max_len)){
+        if ((count = readlink(path, caddr, bufsize)) > 0)
+            buf->iov.iov_len = count;
     } else {
         errno = ENXIO;
         count = -1;
