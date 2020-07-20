@@ -37,6 +37,7 @@
 #include <sys/param.h>
 
 #include <errno.h>
+#include <pwd.h>
 #include <unistd.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -2452,10 +2453,59 @@ luab_sync(lua_State *L)
 #endif /* __XSI_VISIBLE */
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE
-int  chroot(const char *);
-int  getdtablesize(void);
-int  getpagesize(void) __pure2;
-char    *getpass(const char *);
+static int
+luab_chroot(lua_State *L)
+{
+    const char *dirname;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    dirname = luab_checklstring(L, 1, MAXPATHLEN);
+
+    status = chroot(dirname);
+
+    return luab_pusherr(L, status);
+}
+
+static int
+luab_getdtablesize(lua_State *L)
+{
+    int size;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    size = getdtablesize();
+
+    return luab_pusherr(L, size);
+}
+
+static int
+luab_getpagesize(lua_State *L)
+{
+    int size;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    size = getpagesize();
+
+    return luab_pusherr(L, size);
+}
+
+static int
+luab_getpass(lua_State *L)  /* XXX */
+{
+    const char *prompt;
+    caddr_t value;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    prompt = luab_checklstring(L, 1, _PASSWORD_LEN);
+
+    value = getpass(prompt);
+
+    return luab_pushstring(L, value);
+}
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE */
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
@@ -2978,13 +3028,13 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #endif
     LUABSD_FUNC("sync", luab_sync),
 #endif
-/*
+
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE
-    LUAB_FUNC("chroot", luab_chroot),
-    LUAB_FUNC("getdtablesize",  luab_getdtablesize),
-    LUAB_FUNC("getpagesize",    luab_getpagesize),
-    LUAB_FUNC("getpass", luab_getpass),
-#endif */
+    LUABSD_FUNC("chroot", luab_chroot),
+    LUABSD_FUNC("getdtablesize",  luab_getdtablesize),
+    LUABSD_FUNC("getpagesize",    luab_getpagesize),
+    LUABSD_FUNC("getpass", luab_getpass),
+#endif
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
