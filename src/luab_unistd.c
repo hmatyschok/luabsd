@@ -650,9 +650,6 @@ luab_getgroups(lua_State *L)
 
     luab_checktable(L, 2);
 
-    if (lua_rawlen(L, 2) != 0)
-        luaL_argerror(L, 2, "Table not empty");
-
     if (gidsetlen > 0) {
         if ((gidset = alloca(gidsetlen * sizeof(gid_t))) == NULL)
             ngroups = -1;
