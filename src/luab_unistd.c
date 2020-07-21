@@ -648,8 +648,7 @@ luab_getgroups(lua_State *L)
 
     gidsetlen = luab_checkinteger(L, 1, INT_MAX);
 
-    if (lua_istable(L, 2) == 0) /* XXX redundant code section */
-        luaL_argerror(L, 2, "Table expected");
+    luab_checktable(L, 2);
 
     if (lua_rawlen(L, 2) != 0)
         luaL_argerror(L, 2, "Table not empty");

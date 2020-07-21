@@ -47,8 +47,7 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
     struct timespec *vec, *ts;
     size_t n;
 
-    if (lua_istable(L, narg) == 0)
-        luaL_argerror(L, narg, "Table expected");
+    luab_checktable(L, narg);
 
     if ((n = lua_rawlen(L, narg)) != len)
         luaL_argerror(L, narg, "Size mismatch");
@@ -85,8 +84,7 @@ luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
     struct timespec *vec, *ts;
     size_t n;
 
-    if (lua_istable(L, narg) == 0)
-        luaL_argerror(L, narg, "Table expected");
+    luab_checktable(L, narg);
 
     if ((n = lua_rawlen(L, narg)) != len)
         luaL_argerror(L, narg, "Size mismatch");

@@ -134,6 +134,13 @@ luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
     return ((luaL_checkinteger(L, narg)) & (b_msk));
 }
 
+static __inline void
+luab_checktable(lua_State *L, int narg)
+{
+    if (lua_istable(L, narg) == 0)
+        luaL_argerror(L, narg, "Table expected");
+}
+
 static __inline void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {

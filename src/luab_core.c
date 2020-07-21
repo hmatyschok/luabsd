@@ -46,8 +46,7 @@ luab_checkargv(lua_State *L, int narg)
     const char **argv;
     int n;
 
-    if (lua_istable(L, narg) == 0)
-        luaL_argerror(L, narg, "Table expected");
+    luab_checktable(L, narg);
 
     if ((n = lua_rawlen(L, narg)) == 0)
         luaL_argerror(L, narg, "Empty table");
@@ -88,8 +87,7 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
     int *vec;
     size_t n;
                                     /* XXX redundant code-section */
-    if (lua_istable(L, narg) == 0)
-        luaL_argerror(L, narg, "Table expected");
+    luab_checktable(L, narg);
 
     if ((n = lua_rawlen(L, narg)) != len)
         luaL_argerror(L, narg, "Size mismatch");
