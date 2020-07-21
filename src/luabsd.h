@@ -95,15 +95,17 @@ extern luab_module_t luab_time_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
-const char **    luab_checkargv(lua_State *, int);
-int *   luab_checkintvector(lua_State *, int, size_t);
-const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
-
 int luab_pusherr(lua_State *, long);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, char *);
+void    luab_pushtimesvector(lua_State *, int, size_t, void *);
+
+const char **    luab_checkargv(lua_State *, int);
+int *   luab_checkintvector(lua_State *, int, size_t);
+const char *    luab_checklstring(lua_State *, int, size_t);
+struct timespec *   luab_checktimesvector(lua_State *, int, size_t);
 
 #define luab_todata(L, narg, id, t) \
     ((t)luab_checkudata((L), (narg), (id)))
@@ -139,6 +141,19 @@ luab_checktable(lua_State *L, int narg)
 {
     if (lua_istable(L, narg) == 0)
         luaL_argerror(L, narg, "Table expected");
+}
+
+static __inline size_t
+luab_checkltable(lua_State *L, int narg, size_t len)
+{
+    size_t n;
+
+    luab_checktable(L, narg);
+
+    if ((n = lua_rawlen(L, narg)) != len)
+        luaL_argerror(L, narg, "Size mismatch");
+
+    return (n);
 }
 
 static __inline void *

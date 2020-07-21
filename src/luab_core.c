@@ -38,98 +38,8 @@
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
- * Translate an instance of LUA_TTABLE into an argv.
+ * Common ops. and subr.
  */
-const char **
-luab_checkargv(lua_State *L, int narg)
-{
-    const char **argv;
-    int n;
-
-    luab_checktable(L, narg);
-
-    if ((n = lua_rawlen(L, narg)) == 0)
-        luaL_argerror(L, narg, "Empty table");
-
-    if ((argv = calloc((n + 1), sizeof(*argv))) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
-
-    n = 0;
-
-    lua_pushnil(L);
-
-    while (lua_next(L, narg) != 0) {
-        /*
-         * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
-         */
-        if ((lua_isnumber(L, -2) != 0)
-            && (lua_isstring(L, -1) != 0)) {
-            argv[n] = lua_tostring(L, -1);
-            lua_pop(L, 1);
-        } else {
-            free(argv);
-            lua_pop(L, 1);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
-
-        n++;
-    }
-
-    return argv;
-}
-
-/*
- * Translate an instance of LUA_TTABLE into an array of integers.
- */
-int *
-luab_checkintvector(lua_State *L, int narg, size_t len)
-{
-    int *vec;
-    size_t n;
-                                    /* XXX redundant code-section */
-    luab_checktable(L, narg);
-
-    if ((n = lua_rawlen(L, narg)) != len)
-        luaL_argerror(L, narg, "Size mismatch");
-
-    if ((vec = calloc(len, sizeof(int))) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
-
-    n = 0;
-
-    lua_pushnil(L);
-
-    while (lua_next(L, narg) != 0) {
-
-        if ((lua_isnumber(L, -2) != 0)
-            && (lua_isnumber(L, -1) != 0)) {
-            vec[n] = lua_tointeger(L, -1);
-            lua_pop(L, 1);
-        } else {
-            free(vec);
-            lua_pop(L, 1);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
-
-        n++;
-    }
-
-    return vec;
-}
-
-const char *
-luab_checklstring(lua_State *L, int narg, size_t n)
-{
-    const char *buf;
-    size_t len;
-
-    buf = luaL_checklstring(L, narg, &len);
-
-    if (len > n)    /* XXX err_msg */
-        luaL_argerror(L, narg, "Value too large to be stored in data type");
-
-    return buf;
-}
 
 int
 luab_checkmaxargs(lua_State *L, int nmax)
@@ -224,7 +134,151 @@ luab_pushstring(lua_State *L, char *res)
 }
 
 /*
- * Called, when package.loadlib takes place.
+ * Operations on Atomic Data Types.
+ */
+
+const char *
+luab_checklstring(lua_State *L, int narg, size_t n)
+{
+    const char *buf;
+    size_t len;
+
+    buf = luaL_checklstring(L, narg, &len);
+
+    if (len > n)    /* XXX err_msg */
+        luaL_argerror(L, narg, "Value too large to be stored in data type");
+
+    return buf;
+}
+
+/*
+ * Operations on Complex Data Types.
+ */
+
+/* Translate an instance of LUA_TTABLE into an argv. */
+const char **
+luab_checkargv(lua_State *L, int narg)
+{
+    const char **argv;
+    size_t n;
+
+    luab_checktable(L, narg);
+
+    if ((n = lua_rawlen(L, narg)) == 0) /* XXX */
+        luaL_argerror(L, narg, "Empty table");
+
+    if ((argv = calloc((n + 1), sizeof(*argv))) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    lua_pushnil(L);
+
+    for (n = 0; lua_next(L, narg) != 0; n++) {
+        /*
+         * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
+         */
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isstring(L, -1) != 0)) {
+            argv[n] = lua_tostring(L, -1);
+            lua_pop(L, 1);
+        } else {
+            free(argv);
+            lua_pop(L, 1);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+    }
+    return argv;
+}
+
+/* Translate an instance of LUA_TTABLE into an array of integers. */
+int *
+luab_checkintvector(lua_State *L, int narg, size_t len)
+{
+    int *vec;
+    size_t n;
+
+    n = luab_checkltable(L, narg, len);
+
+    /* XXX redundant code-section */
+    if ((vec = calloc(n, sizeof(int))) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    lua_pushnil(L);
+
+    for (n = 0; lua_next(L, narg) != 0; n++) {
+
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isnumber(L, -1) != 0)) {
+            vec[n] = lua_tointeger(L, -1);
+            lua_pop(L, 1);
+        } else {
+            free(vec);
+            lua_pop(L, 1);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+    }
+
+    return vec;
+}
+
+/* Translate a LUA_TTABLE over LUA_TUSERDATA into an array of timespec{} items. */
+struct timespec *
+luab_checktimesvector(lua_State *L, int narg, size_t len)
+{
+    size_t n = luab_checkltable(L, narg, len);
+    struct timespec *vec, *ts;
+
+    if ((vec = calloc(n, sizeof(struct timespec))) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    lua_pushnil(L);
+
+    for (n = 0; lua_next(L, narg) != 0; n++) {
+
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isuserdata(L, -1) != 0)) {  /* XXX */
+            ts = (struct timespec *)(*timespec_type.get)(L, -1);
+            (void)memmove(&vec[n], ts, sizeof(struct timespec));
+            lua_pop(L, 1);
+        } else {
+            free(vec);
+            lua_pop(L, 1);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+    }
+    return vec;
+}
+
+void
+luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
+{
+    struct timespec *vec, *ts;
+    size_t n;
+
+    (void)luab_checkltable(L, narg, len);
+
+    vec = (struct timespec *)arg;
+
+    lua_pushnil(L);
+
+    for (n = 0; lua_next(L, narg) != 0; n++) {
+
+        if ((lua_isnumber(L, -2) != 0)
+            && (lua_isuserdata(L, -1) != 0)) {
+            ts = (struct timespec *)(*timespec_type.get)(L, -1);
+            (void)memmove(ts, &vec[n], sizeof(struct timespec));
+            lua_pop(L, 1);
+        } else {
+            free(vec);
+            lua_pop(L, 1);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+    }
+    free(vec);
+}
+
+/*
+ * Common subr. for initializiation, those are
+ * called during runtime of package.loadlib().
  */
 
 static void
