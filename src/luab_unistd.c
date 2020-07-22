@@ -82,6 +82,34 @@ h_signal(int arg __unused)
 }
 
 /*
+ * Translate a LUA_TTABLE into an array of gid_t items.
+ */
+static gid_t *
+luab_checkgidset(lua_State *L, int narg, size_t len)
+{
+    gid_t *vec, v;
+    int k;
+
+    vec = luab_newvector(L, narg, len, sizeof(gid_t));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
+            v = (gid_t)luab_tointeger(L, -1, INT_MAX);
+            vec[k] = v;
+        } else {
+            free(vec);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+        lua_pop(L, 1);
+    }
+    return vec;
+}
+
+/*
  * Interface against (subset of) functions of exec(3) family.
  */
 
@@ -2646,6 +2674,38 @@ luab_lpathconf(lua_State *L)
 }
 
 /***
+ * setgroups(2) - set group access list
+ *
+ * @function setgroups
+ *
+ * @param ngroups       Number of entries, #gidset.
+ * @param gidset        Instance of LUA_TTABLE(gid_t).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.setgroups(ngroup, gidset)
+ */
+static int
+luab_setgroups(lua_State *L)
+{
+    int ngroups;
+    gid_t *gidset;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    ngroups = luab_checkinteger(L, 1, INT_MAX);
+    gidset = luab_checkgidset(L, 2, ngroups);
+
+    status = setgroups(ngroups, gidset);
+
+    free(gidset);
+
+    return luab_pusherr(L, status);
+}
+
+/***
  * sethostname(3) - set name of current host
  *
  * @function sethostname
@@ -3043,6 +3103,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
+    LUABSD_FUNC("setgroups",    luab_setgroups),
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
 #endif /* __BSD_VISIBLE */

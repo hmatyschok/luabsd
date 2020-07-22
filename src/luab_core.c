@@ -155,21 +155,6 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
     return ud;
 }
 
-void *
-luab_newvector(lua_State *L, int narg, size_t len, size_t size)
-{
-    size_t n = luab_checkltable(L, narg, len);
-    void *vec;
-
-    if (size == 0)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    if ((vec = calloc(n, size)) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
-
-    return (vec);
-}
-
 /* Translate an instance of LUA_TTABLE into an argv. */
 const char **
 luab_checkargv(lua_State *L, int narg)
@@ -203,22 +188,38 @@ luab_checkargv(lua_State *L, int narg)
     return argv;
 }
 
+/* allocate an array by cardinality from table */
+void *
+luab_newvector(lua_State *L, int narg, size_t len, size_t size)
+{
+    size_t n = luab_checkltable(L, narg, len);
+    void *vec;
+
+    if (size == 0)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    if ((vec = calloc(n, size)) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    return (vec);
+}
+
 /* Translate an instance of LUA_TTABLE into an array of integers. */
 int *
 luab_checkintvector(lua_State *L, int narg, size_t len)
 {
-    int *vec;
-    size_t n;
+    int *vec, k, v;
 
     vec = luab_newvector(L, narg, len, sizeof(int));
 
     lua_pushnil(L);
 
-    for (n = 0; lua_next(L, narg) != 0; n++) {
+    for (k = 0; lua_next(L, narg) != 0; k++) {
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isnumber(L, -1) != 0)) {
-            vec[n] = lua_tointeger(L, -1);
+            v = (int)luab_tointeger(L, -1, UINT_MAX);
+            vec[k] = v;
         } else {
             free(vec);
             luaL_argerror(L, narg, "Invalid argument");
@@ -232,19 +233,19 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
 struct timespec *
 luab_checktimesvector(lua_State *L, int narg, size_t len)
 {
-    struct timespec *vec, *ts;
-    size_t n;
+    struct timespec *vec, *v;
+    int k;
 
     vec = luab_newvector(L, narg, len, sizeof(struct timespec));
 
     lua_pushnil(L);
 
-    for (n = 0; lua_next(L, narg) != 0; n++) {
+    for (k = 0; lua_next(L, narg) != 0; k++) {
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {  /* XXX */
-            ts = (struct timespec *)(*timespec_type.get)(L, -1);
-            (void)memmove(&vec[n], ts, sizeof(struct timespec));
+            v = (struct timespec *)(*timespec_type.get)(L, -1);
+            (void)memmove(&vec[k], v, sizeof(struct timespec));
         } else {
             free(vec);
             luaL_argerror(L, narg, "Invalid argument");
@@ -257,8 +258,8 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
 void
 luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
 {
-    struct timespec *vec, *ts;
-    size_t n;
+    struct timespec *vec, *v;
+    int k;
 
     (void)luab_checkltable(L, narg, len);
 
@@ -266,12 +267,12 @@ luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
 
     lua_pushnil(L);
 
-    for (n = 0; lua_next(L, narg) != 0; n++) {
+    for (k = 0; lua_next(L, narg) != 0; k++) {
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {
-            ts = (struct timespec *)(*timespec_type.get)(L, -1);
-            (void)memmove(ts, &vec[n], sizeof(struct timespec));
+            v = (struct timespec *)(*timespec_type.get)(L, -1);
+            (void)memmove(v, &vec[k], sizeof(struct timespec));
         } else {
             free(vec);
             luaL_argerror(L, narg, "Invalid argument");

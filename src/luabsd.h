@@ -131,6 +131,12 @@ struct timespec *   luab_checktimesvector(lua_State *, int, size_t);
     } while (0)
 
 static __inline lua_Integer
+luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((lua_tointeger(L, narg)) & (b_msk));
+}
+
+static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
 {
     return ((luaL_checkinteger(L, narg)) & (b_msk));
