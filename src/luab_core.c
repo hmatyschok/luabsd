@@ -156,7 +156,7 @@ luab_checklstring(lua_State *L, int narg, size_t n)
  */
 
 void *
-luab_checkvector(lua_State *L, int narg, size_t len, size_t size)
+luab_newvector(lua_State *L, int narg, size_t len, size_t size)
 {
     size_t n = luab_checkltable(L, narg, len);
     void *vec;
@@ -210,7 +210,7 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
     int *vec;
     size_t n;
 
-    vec = luab_checkvector(L, narg, len, sizeof(int));
+    vec = luab_newvector(L, narg, len, sizeof(int));
 
     lua_pushnil(L);
 
@@ -235,7 +235,7 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
     struct timespec *vec, *ts;
     size_t n;
 
-    vec = luab_checkvector(L, narg, len, sizeof(struct timespec));
+    vec = luab_newvector(L, narg, len, sizeof(struct timespec));
 
     lua_pushnil(L);
 
