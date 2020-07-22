@@ -101,7 +101,7 @@ int luab_pusherr(lua_State *, long);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, char *);
 void    luab_pushtimesvector(lua_State *, int, size_t, void *);
-
+void *  luab_checkvector(lua_State *, int, size_t, size_t);
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);

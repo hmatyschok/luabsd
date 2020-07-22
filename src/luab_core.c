@@ -155,6 +155,21 @@ luab_checklstring(lua_State *L, int narg, size_t n)
  * Operations on Complex Data Types.
  */
 
+void *
+luab_checkvector(lua_State *L, int narg, size_t len, size_t size)
+{
+    size_t n = luab_checkltable(L, narg, len);
+    void *vec;
+
+    if (size == 0)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    if ((vec = calloc(n, size)) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    return (vec);
+}
+
 /* Translate an instance of LUA_TTABLE into an argv. */
 const char **
 luab_checkargv(lua_State *L, int narg)
@@ -195,11 +210,7 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
     int *vec;
     size_t n;
 
-    n = luab_checkltable(L, narg, len);
-
-    /* XXX redundant code-section */
-    if ((vec = calloc(n, sizeof(int))) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
+    vec = luab_checkvector(L, narg, len, sizeof(int));
 
     lua_pushnil(L);
 
@@ -221,11 +232,10 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
 struct timespec *
 luab_checktimesvector(lua_State *L, int narg, size_t len)
 {
-    size_t n = luab_checkltable(L, narg, len);
     struct timespec *vec, *ts;
+    size_t n;
 
-    if ((vec = calloc(n, sizeof(struct timespec))) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
+    vec = luab_checkvector(L, narg, len, sizeof(struct timespec));
 
     lua_pushnil(L);
 
