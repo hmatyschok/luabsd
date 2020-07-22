@@ -1296,12 +1296,12 @@ static int h_msk;
 static int h_cnt;
 
 static void
-h_callback(lua_State *L, lua_Debug *arg __unused)
+h_callout(lua_State *L, lua_Debug *arg __unused)
 {
     L = saved_L;
 
     lua_sethook(L, h, h_msk, h_cnt);
-    lua_getfield(L, LUA_REGISTRYINDEX, "l_callback");
+    lua_getfield(L, LUA_REGISTRYINDEX, "l_callout");
 
     if (lua_pcall(L, 0, 0, 0) != 0)
         lua_error(L);
@@ -1326,7 +1326,7 @@ h_signal(void *arg __unused)
             h_msk = lua_gethookmask(saved_L);
             h_cnt = lua_gethookcount(saved_L);
 
-            lua_sethook(saved_L, h_callback, l_msk, 1);
+            lua_sethook(saved_L, h_callout, l_msk, 1);
             goto out;
         default:
             break;
@@ -1353,7 +1353,7 @@ luab_setitimer(lua_State *L)
         return luaL_error(L, "Missing callout handler.");
 
     lua_settop(L, narg);
-    lua_setfield(L, LUA_REGISTRYINDEX, "l_callback");
+    lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
 
     saved_L = L;
 
