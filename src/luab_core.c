@@ -52,27 +52,6 @@ luab_checkmaxargs(lua_State *L, int nmax)
     return narg;
 }
 
-void *
-luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
-{
-    void *ud = NULL;
-
-    if (m != NULL) {
-        if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
-            (void)memset_s(ud, m->sz, 0, m->sz);
-
-            if (m->init != NULL && arg != NULL)
-                (*m->init)(ud, arg);
-
-            luaL_setmetatable(L, m->name);
-        } else
-            errno = ENOMEM;
-    } else
-        errno = EINVAL;
-
-    return ud;
-}
-
 int
 luab_pusherr(lua_State *L, long res)
 {
@@ -156,6 +135,27 @@ luab_checklstring(lua_State *L, int narg, size_t n)
  */
 
 void *
+luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
+{
+    void *ud = NULL;
+
+    if (m != NULL) {
+        if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
+            (void)memset_s(ud, m->sz, 0, m->sz);
+
+            if (m->init != NULL && arg != NULL)
+                (*m->init)(ud, arg);
+
+            luaL_setmetatable(L, m->name);
+        } else
+            errno = ENOMEM;
+    } else
+        errno = EINVAL;
+
+    return ud;
+}
+
+void *
 luab_newvector(lua_State *L, int narg, size_t len, size_t size)
 {
     size_t n = luab_checkltable(L, narg, len);
@@ -191,8 +191,8 @@ luab_checkargv(lua_State *L, int narg)
         /*
          * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
          */
-        if ((lua_isnumber(L, -2) != 0)
-            && (lua_isstring(L, -1) != 0)) {
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isstring(L, -1) != 0)) {
             argv[n] = lua_tostring(L, -1);
         } else {
             free(argv);
@@ -216,8 +216,8 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
 
     for (n = 0; lua_next(L, narg) != 0; n++) {
 
-        if ((lua_isnumber(L, -2) != 0)
-            && (lua_isnumber(L, -1) != 0)) {
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
             vec[n] = lua_tointeger(L, -1);
         } else {
             free(vec);
@@ -241,8 +241,8 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
 
     for (n = 0; lua_next(L, narg) != 0; n++) {
 
-        if ((lua_isnumber(L, -2) != 0)
-            && (lua_isuserdata(L, -1) != 0)) {  /* XXX */
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isuserdata(L, -1) != 0)) {  /* XXX */
             ts = (struct timespec *)(*timespec_type.get)(L, -1);
             (void)memmove(&vec[n], ts, sizeof(struct timespec));
         } else {
@@ -268,8 +268,8 @@ luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
 
     for (n = 0; lua_next(L, narg) != 0; n++) {
 
-        if ((lua_isnumber(L, -2) != 0)
-            && (lua_isuserdata(L, -1) != 0)) {
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isuserdata(L, -1) != 0)) {
             ts = (struct timespec *)(*timespec_type.get)(L, -1);
             (void)memmove(ts, &vec[n], sizeof(struct timespec));
         } else {
