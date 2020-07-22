@@ -179,12 +179,11 @@ luab_checkargv(lua_State *L, int narg)
         if ((lua_isnumber(L, -2) != 0)
             && (lua_isstring(L, -1) != 0)) {
             argv[n] = lua_tostring(L, -1);
-            lua_pop(L, 1);
         } else {
             free(argv);
-            lua_pop(L, 1);
             luaL_argerror(L, narg, "Invalid argument");
         }
+        lua_pop(L, 1);
     }
     return argv;
 }
@@ -209,14 +208,12 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
         if ((lua_isnumber(L, -2) != 0)
             && (lua_isnumber(L, -1) != 0)) {
             vec[n] = lua_tointeger(L, -1);
-            lua_pop(L, 1);
         } else {
             free(vec);
-            lua_pop(L, 1);
             luaL_argerror(L, narg, "Invalid argument");
         }
+        lua_pop(L, 1);
     }
-
     return vec;
 }
 
@@ -238,12 +235,11 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
             && (lua_isuserdata(L, -1) != 0)) {  /* XXX */
             ts = (struct timespec *)(*timespec_type.get)(L, -1);
             (void)memmove(&vec[n], ts, sizeof(struct timespec));
-            lua_pop(L, 1);
         } else {
             free(vec);
-            lua_pop(L, 1);
             luaL_argerror(L, narg, "Invalid argument");
         }
+        lua_pop(L, 1);
     }
     return vec;
 }
@@ -266,12 +262,11 @@ luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
             && (lua_isuserdata(L, -1) != 0)) {
             ts = (struct timespec *)(*timespec_type.get)(L, -1);
             (void)memmove(ts, &vec[n], sizeof(struct timespec));
-            lua_pop(L, 1);
         } else {
             free(vec);
-            lua_pop(L, 1);
             luaL_argerror(L, narg, "Invalid argument");
         }
+        lua_pop(L, 1);
     }
     free(vec);
 }
