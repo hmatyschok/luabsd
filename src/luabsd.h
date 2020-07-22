@@ -97,7 +97,7 @@ extern luab_module_t luab_uuid_lib;
 
 int luab_checkmaxargs(lua_State *, int);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
-int luab_pusherr(lua_State *, long);
+int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, char *);
 void    luab_pushtimesvector(lua_State *, int, size_t, void *);
