@@ -51,6 +51,9 @@
 
 extern char **environ;
 
+/*
+ * Subr. for luab_alerm(3).
+ */
 static lua_State *saved_L;
 static lua_Hook h;
 
@@ -261,13 +264,13 @@ luab_fexecve(lua_State *L)
  * @function alarm
  *
  * @param seconds       For timeout specified number of seconds.
- * @param callback      Callout routine.
+ * @param callout       Callout routine implements an event.
  * @param group         Group ID.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (sec [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage sec [, msg ] = bsd.unistd.alarm(seconds, callback)
+ * @usage sec [, msg ] = bsd.unistd.alarm(seconds, callout)
  */
 static int
 luab_alarm(lua_State *L)
@@ -281,7 +284,7 @@ luab_alarm(lua_State *L)
             return luaL_error(L, "Missing callout handler.");
 
         lua_settop(L, narg);
-        lua_setfield(L, LUA_REGISTRYINDEX, "l_callback");
+        lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
 
         saved_L = L;
 

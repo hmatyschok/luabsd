@@ -53,7 +53,7 @@ luab_checkmaxargs(lua_State *L, int nmax)
 }
 
 int
-luab_pusherr(lua_State *L, long res)
+luab_pusherr(lua_State *L, lua_Integer res)
 {
     int save_errno = errno;
     char *msg;
