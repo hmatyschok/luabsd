@@ -94,11 +94,13 @@ int
 luab_pushstring(lua_State *L, char *res)
 {
     int save_errno = errno;
+    size_t len;
     char *msg;
     int status;
 
     if (res != NULL) {
-        lua_pushstring(L, res);
+        len = strnlen(res, LUAL_BUFFERSIZE);
+        lua_pushlstring(L, res, len);
 
         if (save_errno != 0) {
             msg = strerror(save_errno);
@@ -188,7 +190,7 @@ luab_checkargv(lua_State *L, int narg)
     return argv;
 }
 
-/* allocate an array by cardinality from table */
+/* Allocate an array by cardinality of given table */
 void *
 luab_newvector(lua_State *L, int narg, size_t len, size_t size)
 {

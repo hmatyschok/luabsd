@@ -83,7 +83,7 @@ typedef struct luab_stat {
     struct stat    stat;
 } luab_stat_t;
 
-#define luab_newstat(L, arg) \
+#define luab_new_stat(L, arg) \
     ((luab_stat_t *)luab_newuserdata(L, &stat_type, (arg)))
 #define luab_to_stat(L, narg) \
     (luab_todata((L), (narg), &stat_type, luab_stat_t *))
@@ -926,7 +926,7 @@ luab_StructStat(lua_State *L)
     else
         stat = stat_udata(L, narg);
 
-    if (luab_newstat(L, stat) == NULL)
+    if (luab_new_stat(L, stat) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

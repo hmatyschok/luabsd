@@ -63,7 +63,7 @@ typedef struct luab_timezone {
     struct timezone    timezone;
 } luab_timezone_t;
 
-#define luab_newtimezone(L, arg) \
+#define luab_new_timezone(L, arg) \
     ((luab_timezone_t *)luab_newuserdata(L, &timezone_type, (arg)))
 #define luab_to_timezone(L, narg) \
     (luab_todata((L), (narg), &timezone_type, luab_timezone_t *))
@@ -284,7 +284,7 @@ luab_StructTimeZone(lua_State *L)
     else
         timezone = timezone_udata(L, narg);
 
-    if (luab_newtimezone(L, timezone) == NULL)
+    if (luab_new_timezone(L, timezone) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -309,7 +309,7 @@ typedef struct luab_bintime {
     struct bintime    bintime;
 } luab_bintime_t;
 
-#define luab_newbintime(L, arg) \
+#define luab_new_bintime(L, arg) \
     ((luab_bintime_t *)luab_newuserdata(L, &bintime_type, (arg)))
 #define luab_to_bintime(L, narg) \
     (luab_todata((L), (narg), &bintime_type, luab_bintime_t *))
@@ -530,7 +530,7 @@ luab_StructBinTime(lua_State *L)
     else
         bintime = bintime_udata(L, narg);
 
-    if (luab_newbintime(L, bintime) == NULL)
+    if (luab_new_bintime(L, bintime) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -558,7 +558,7 @@ typedef struct luab_clockinfo {
     struct clockinfo    clockinfo;
 } luab_clockinfo_t;
 
-#define luab_newclockinfo(L, arg) \
+#define luab_new_clockinfo(L, arg) \
     ((luab_clockinfo_t *)luab_newuserdata(L, &clockinfo_type, (arg)))
 #define luab_to_clockinfo(L, narg) \
     (luab_todata((L), (narg), &clockinfo_type, luab_clockinfo_t *))
@@ -885,7 +885,7 @@ luab_StructClockInfo(lua_State *L)
     else
         clockinfo = clockinfo_udata(L, narg);
 
-    if (luab_newclockinfo(L, clockinfo) == NULL)
+    if (luab_new_clockinfo(L, clockinfo) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -909,7 +909,7 @@ typedef struct luab_timespec {
     struct timespec    timespec;
 } luab_timespec_t;
 
-#define luab_newtimespec(L, arg) \
+#define luab_new_timespec(L, arg) \
     ((luab_timespec_t *)luab_newuserdata(L, &timespec_type, (arg)))
 #define luab_to_timespec(L, narg) \
     (luab_todata((L), (narg), &timespec_type, luab_timespec_t *))
@@ -1130,7 +1130,7 @@ luab_StructTimeSpec(lua_State *L)
     else
         timespec = timespec_udata(L, narg);
 
-    if (luab_newtimespec(L, timespec) == NULL)
+    if (luab_new_timespec(L, timespec) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -1155,7 +1155,7 @@ typedef struct luab_itimerval {
     struct itimerval    itimerval;
 } luab_itimerval_t;
 
-#define luab_newitimerval(L, arg) \
+#define luab_new_itimerval(L, arg) \
     ((luab_itimerval_t *)luab_newuserdata(L, &itimerval_type, (arg)))
 #define luab_to_itimerval(L, narg) \
     (luab_todata((L), (narg), &itimerval_type, luab_itimerval_t *))
@@ -1376,7 +1376,7 @@ luab_StructItimerVal(lua_State *L)
     else
         itimerval = itimerval_udata(L, narg);
 
-    if (luab_newitimerval(L, itimerval) == NULL)
+    if (luab_new_itimerval(L, itimerval) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

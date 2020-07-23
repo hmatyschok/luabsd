@@ -52,7 +52,7 @@ typedef struct luab_db {
 
 #define luab_newdb(L, arg) \
     ((luab_db_t *)luab_newuserdata(L, &db_type, (arg)))
-#define luab_todb(L, narg) \
+#define luab_to_db(L, narg) \
     luab_todata((L), (narg), &db_type, luab_db_t *)
 
 static const char *
@@ -104,7 +104,7 @@ db_close(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
 
     if ((status = db_isclosed(self)) == 0) {
         if ((status = (self->db->close)(self->db)) == 0)
@@ -123,7 +123,7 @@ db_del(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
     flags = luab_checkinteger(L, 3, INT_MAX);
 
     if ((status = db_isclosed(self)) == 0) {
@@ -145,7 +145,7 @@ db_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
     flags = luab_checkinteger(L, 3, INT_MAX);
 
     if ((status = db_isclosed(self)) != 0)
@@ -179,7 +179,7 @@ db_put(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
     flags = luab_checkinteger(L, 4, INT_MAX);
 
     if ((status = db_isclosed(self)) != 0)
@@ -210,7 +210,7 @@ db_seq(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
     flags = luab_checkinteger(L, 2, INT_MAX);
 
     if ((status = db_isclosed(self)) != 0)
@@ -237,7 +237,7 @@ db_sync(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
     flags = luab_checkinteger(L, 2, INT_MAX);
 
     if ((status = db_isclosed(self)) == 0)
@@ -254,7 +254,7 @@ db_fd(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
 
     if ((status = db_isclosed(self)) == 0)
         fd = (self->db->fd)(self->db);
@@ -270,7 +270,7 @@ db_flock(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    self = luab_todb(L, 1);
+    self = luab_to_db(L, 1);
     op = luab_checkinteger(L, 2, INT_MAX);
 
     if ((status = db_isclosed(self)) == 0) {
@@ -283,7 +283,11 @@ db_flock(lua_State *L)
 static int
 db_gc(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_db(L, 1);
 
     if (db_isclosed(self) != 0)
         db_close(L);
@@ -294,7 +298,11 @@ db_gc(lua_State *L)
 static int
 db_tostring(lua_State *L)
 {
-    luab_db_t *self = luab_todb(L, 1);
+    luab_db_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_db(L, 1);
 
     if (db_isclosed(self) != 0)
         lua_pushliteral(L, "db (closed)");
