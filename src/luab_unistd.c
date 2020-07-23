@@ -2885,6 +2885,32 @@ luab_vfork(lua_State *L)
 
 #if __BSD_VISIBLE
 /***
+ * acct(2) - enable or disable process accounting
+ *
+ * @function acct
+ *
+ * @param file          Existing pathname.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.acct(file)
+ */
+static int
+luab_acct(lua_State *L)
+{
+    const char *file;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    file = luab_checklstring(L, 1, MAXPATHLEN);
+    status = acct(file);
+
+    return luab_pusherr(L, status);
+}
+
+/***
  * eaccess(2) - check availability of a file
  *
  * @function eaccess
@@ -3414,6 +3440,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("vfork",    luab_vfork),
 #endif
 #if __BSD_VISIBLE
+    LUABSD_FUNC("acct", luab_acct),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
