@@ -286,7 +286,7 @@ luab_alarm(lua_State *L)
         lua_settop(L, narg);
         lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
 
-        saved_L = L;
+        saved_L = L;    /* XXX race condition */
 
         if (signal(SIGALRM, h_signal) == SIG_ERR)
             return luab_pusherr(L, -1);
@@ -2572,6 +2572,33 @@ luab_getwd(lua_State *L)
     }
     return luab_pushstring(L, status);
 }
+
+/***
+ * usleep(3) - suspend process execution for an interval measured in microseconds
+ *
+ * @function usleep
+ *
+ * @param microseconds  For suspension specified number of microseconds.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.usleep(microseconds)
+ */
+static int
+luab_usleep(lua_State *L)
+{
+    useconds_t microseconds;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    microseconds = luab_checkinteger(L, 1, INT_MAX);
+
+    status = usleep(microseconds);
+
+    return luab_pusherr(L, status);
+}
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE */
 
 #if __BSD_VISIBLE
@@ -3101,6 +3128,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
+    LUABSD_FUNC("usleep",   luab_usleep),
 #endif
 #if __BSD_VISIBLE
     LUABSD_FUNC("eaccess",   luab_eaccess),

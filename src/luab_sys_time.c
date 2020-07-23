@@ -1355,7 +1355,7 @@ luab_setitimer(lua_State *L)
     lua_settop(L, narg);
     lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
 
-    saved_L = L;
+    saved_L = L;    /* XXX race condition */
 
     if ((status = sigfillset(&nsigset)) != 0)
         return luab_pusherr(L, status);
