@@ -72,6 +72,7 @@ typedef struct luab_iovec {
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
 extern luab_module_t bintime_type;
+extern luab_module_t crypt_data_type;
 #endif
 extern luab_module_t clockinfo_type;
 extern luab_module_t flock_type;
