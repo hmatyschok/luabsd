@@ -2599,6 +2599,28 @@ luab_usleep(lua_State *L)
 
     return luab_pusherr(L, status);
 }
+
+/***
+ * vfork(2) - create a new process without copying the address space
+ *
+ * @function vfork
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (pid [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.vfork()
+ */
+static int
+luab_vfork(lua_State *L)
+{
+    pid_t pid;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    pid = vfork();
+
+    return luab_pusherr(L, pid);
+}
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE */
 
 #if __BSD_VISIBLE
@@ -3129,6 +3151,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
     LUABSD_FUNC("getwd",   luab_getwd),
     LUABSD_FUNC("usleep",   luab_usleep),
+    LUABSD_FUNC("vfork",    luab_vfork),
 #endif
 #if __BSD_VISIBLE
     LUABSD_FUNC("eaccess",   luab_eaccess),
