@@ -65,7 +65,7 @@ typedef struct luab_timezone {
 
 #define luab_newtimezone(L, arg) \
     ((luab_timezone_t *)luab_newuserdata(L, &timezone_type, (arg)))
-#define luab_totimezone(L, narg) \
+#define luab_to_timezone(L, narg) \
     (luab_todata((L), (narg), &timezone_type, luab_timezone_t *))
 
 /***
@@ -75,7 +75,7 @@ typedef struct luab_timezone {
  *
  * @param zone          Specifies value in minutes.
  *
- * @usage tz:set_tz_minuteswest(min)
+ * @usage timezone:set_tz_minuteswest(min)
  */
 static int
 TimeZone_set_tz_minuteswest(lua_State *L)
@@ -85,7 +85,7 @@ TimeZone_set_tz_minuteswest(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_totimezone(L, 1);
+    self = luab_to_timezone(L, 1);
     tz_minuteswest = luab_checkinteger(L, 2, INT_MAX);
 
     self->timezone.tz_minuteswest = tz_minuteswest;
@@ -100,7 +100,7 @@ TimeZone_set_tz_minuteswest(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage zone = tz:get_tz_minuteswest()
+ * @usage zone = timezone:get_tz_minuteswest()
  */
 static int
 TimeZone_get_tz_minuteswest(lua_State *L)
@@ -110,7 +110,7 @@ TimeZone_get_tz_minuteswest(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_totimezone(L, 1);
+    self = luab_to_timezone(L, 1);
     tz_minuteswest = self->timezone.tz_minuteswest;
 
     lua_pushinteger(L, tz_minuteswest);
@@ -125,7 +125,7 @@ TimeZone_get_tz_minuteswest(lua_State *L)
  *
  * @param dst           Specifies dst correction.
  *
- * @usage tz:set_tz_dsttime(dst)
+ * @usage timezone:set_tz_dsttime(dst)
  */
 static int
 TimeZone_set_tz_dsttime(lua_State *L)
@@ -135,7 +135,7 @@ TimeZone_set_tz_dsttime(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_totimezone(L, 1);
+    self = luab_to_timezone(L, 1);
     tz_dsttime = luab_checkinteger(L, 2, LONG_MAX);
 
     self->timezone.tz_dsttime = tz_dsttime;
@@ -150,7 +150,7 @@ TimeZone_set_tz_dsttime(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage dst = tz:get_tz_dsttime()
+ * @usage dst = timezone:get_tz_dsttime()
  */
 static int
 TimeZone_get_tz_dsttime(lua_State *L)
@@ -160,7 +160,7 @@ TimeZone_get_tz_dsttime(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_totimezone(L, 1);
+    self = luab_to_timezone(L, 1);
     tz_dsttime = self->timezone.tz_dsttime;
 
     lua_pushinteger(L, tz_dsttime);
@@ -175,7 +175,7 @@ TimeZone_get_tz_dsttime(lua_State *L)
  *
  * @return (LUA_TTABLE)
  *
- * @usage t = tz:get()
+ * @usage t = timezone:get()
  */
 static int
 TimeZone_get(lua_State *L)
@@ -184,7 +184,7 @@ TimeZone_get(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_totimezone(L, 1);
+    self = luab_to_timezone(L, 1);
 
     lua_newtable(L);
 
@@ -197,9 +197,29 @@ TimeZone_get(lua_State *L)
 }
 
 static int
+TimeZone_gc(lua_State *L)
+{
+    luab_timezone_t *self;
+    luab_module_t *m;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_timezone(L, 1);
+    m = &timezone_type;
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return 0;
+}
+
+static int
 TimeZone_tostring(lua_State *L)
 {
-    luab_timezone_t *self = luab_totimezone(L, 1);
+    luab_timezone_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_timezone(L, 1);
     lua_pushfstring(L, "timezone (%p)", self);
 
     return 1;
@@ -211,6 +231,7 @@ static luab_table_t timezone_methods[] = {
     LUABSD_FUNC("get",  TimeZone_get),
     LUABSD_FUNC("get_tz_minuteswest",   TimeZone_get_tz_minuteswest),
     LUABSD_FUNC("get_tz_dsttime",   TimeZone_get_tz_dsttime),
+    LUABSD_FUNC("__gc", TimeZone_gc),
     LUABSD_FUNC("__tostring",   TimeZone_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
@@ -226,7 +247,7 @@ timezone_init(void *ud, void *arg)
 static void *
 timezone_udata(lua_State *L, int narg)
 {
-    luab_timezone_t *self = luab_totimezone(L, narg);
+    luab_timezone_t *self = luab_to_timezone(L, narg);
 
     return (&self->timezone);
 }
@@ -290,7 +311,7 @@ typedef struct luab_bintime {
 
 #define luab_newbintime(L, arg) \
     ((luab_bintime_t *)luab_newuserdata(L, &bintime_type, (arg)))
-#define luab_tobintime(L, narg) \
+#define luab_to_bintime(L, narg) \
     (luab_todata((L), (narg), &bintime_type, luab_bintime_t *))
 
 /***
@@ -300,7 +321,7 @@ typedef struct luab_bintime {
  *
  * @param sec           Seconds.
  *
- * @usage bt:set_sec(sec)
+ * @usage bintime:set_sec(sec)
  */
 static int
 BinTime_set_sec(lua_State *L)
@@ -310,7 +331,7 @@ BinTime_set_sec(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tobintime(L, 1);
+    self = luab_to_bintime(L, 1);
     sec = luab_checkinteger(L, 2, INT_MAX);
 
     self->bintime.sec = sec;
@@ -325,7 +346,7 @@ BinTime_set_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage sec = bt:get_sec()
+ * @usage sec = bintime:get_sec()
  */
 static int
 BinTime_get_sec(lua_State *L)
@@ -335,7 +356,7 @@ BinTime_get_sec(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tobintime(L, 1);
+    self = luab_to_bintime(L, 1);
     sec = self->bintime.sec;
 
     lua_pushinteger(L, sec);
@@ -350,7 +371,7 @@ BinTime_get_sec(lua_State *L)
  *
  * @param frac          Specifies frac.
  *
- * @usage bt:set_frac(frac)
+ * @usage bintime:set_frac(frac)
  */
 static int
 BinTime_set_frac(lua_State *L)
@@ -360,7 +381,7 @@ BinTime_set_frac(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tobintime(L, 1);
+    self = luab_to_bintime(L, 1);
     frac = luab_checkinteger(L, 2, LONG_MAX);
 
     self->bintime.frac = frac;
@@ -375,7 +396,7 @@ BinTime_set_frac(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage frac = bt:get_frac()
+ * @usage frac = bintime:get_frac()
  */
 static int
 BinTime_get_frac(lua_State *L)
@@ -385,7 +406,7 @@ BinTime_get_frac(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tobintime(L, 1);
+    self = luab_to_bintime(L, 1);
     frac = self->bintime.frac;
 
     lua_pushinteger(L, frac);
@@ -400,7 +421,7 @@ BinTime_get_frac(lua_State *L)
  *
  * @return (LUA_TTABLE)
  *
- * @usage t = bt:get()
+ * @usage t = bintime:get()
  */
 static int
 BinTime_get(lua_State *L)
@@ -409,7 +430,7 @@ BinTime_get(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tobintime(L, 1);
+    self = luab_to_bintime(L, 1);
 
     lua_newtable(L);
 
@@ -422,9 +443,29 @@ BinTime_get(lua_State *L)
 }
 
 static int
+BinTime_gc(lua_State *L)
+{
+    luab_bintime_t *self;
+    luab_module_t *m;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_bintime(L, 1);
+    m = &bintime_type;
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return 0;
+}
+
+static int
 BinTime_tostring(lua_State *L)
 {
-    luab_bintime_t *self = luab_tobintime(L, 1);
+    luab_bintime_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_bintime(L, 1);
     lua_pushfstring(L, "bintime (%p)", self);
 
     return 1;
@@ -436,6 +477,7 @@ static luab_table_t bintime_methods[] = {
     LUABSD_FUNC("get",  BinTime_get),
     LUABSD_FUNC("get_sec",  BinTime_get_sec),
     LUABSD_FUNC("get_frac", BinTime_get_frac),
+    LUABSD_FUNC("__gc", BinTime_gc),
     LUABSD_FUNC("__tostring",   BinTime_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
@@ -451,7 +493,7 @@ bintime_init(void *ud, void *arg)
 static void *
 bintime_udata(lua_State *L, int narg)
 {
-    luab_bintime_t *self = luab_tobintime(L, narg);
+    luab_bintime_t *self = luab_to_bintime(L, narg);
 
     return (&self->bintime);
 }
@@ -518,7 +560,7 @@ typedef struct luab_clockinfo {
 
 #define luab_newclockinfo(L, arg) \
     ((luab_clockinfo_t *)luab_newuserdata(L, &clockinfo_type, (arg)))
-#define luab_toclockinfo(L, narg) \
+#define luab_to_clockinfo(L, narg) \
     (luab_todata((L), (narg), &clockinfo_type, luab_clockinfo_t *))
 
 /***
@@ -528,7 +570,7 @@ typedef struct luab_clockinfo {
  *
  * @param hz            Frequency.
  *
- * @usage ci:set_hz(hz)
+ * @usage clockinfo:set_hz(hz)
  */
 static int
 ClockInfo_set_hz(lua_State *L)
@@ -538,7 +580,7 @@ ClockInfo_set_hz(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     hz = luab_checkinteger(L, 2, INT_MAX);
 
     self->clockinfo.hz = hz;
@@ -553,7 +595,7 @@ ClockInfo_set_hz(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage hz = ci:get_hz()
+ * @usage hz = clockinfo:get_hz()
  */
 static int
 ClockInfo_get_hz(lua_State *L)
@@ -563,7 +605,7 @@ ClockInfo_get_hz(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     hz = self->clockinfo.hz;
 
     lua_pushinteger(L, hz);
@@ -578,7 +620,7 @@ ClockInfo_get_hz(lua_State *L)
  *
  * @param tick            Tick.
  *
- * @usage ci:set_tick(tick)
+ * @usage clockinfo:set_tick(tick)
  */
 static int
 ClockInfo_set_tick(lua_State *L)
@@ -588,7 +630,7 @@ ClockInfo_set_tick(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     tick = luab_checkinteger(L, 2, INT_MAX);
 
     self->clockinfo.tick = tick;
@@ -603,7 +645,7 @@ ClockInfo_set_tick(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage tick = ci:get_tick()
+ * @usage tick = clockinfo:get_tick()
  */
 static int
 ClockInfo_get_tick(lua_State *L)
@@ -613,7 +655,7 @@ ClockInfo_get_tick(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     tick = self->clockinfo.tick;
 
     lua_pushinteger(L, tick);
@@ -628,7 +670,7 @@ ClockInfo_get_tick(lua_State *L)
  *
  * @param stathz            Frequency.
  *
- * @usage ci:set_stathz(stathz)
+ * @usage clockinfo:set_stathz(stathz)
  */
 static int
 ClockInfo_set_stathz(lua_State *L)
@@ -638,7 +680,7 @@ ClockInfo_set_stathz(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     stathz = luab_checkinteger(L, 2, INT_MAX);
 
     self->clockinfo.stathz = stathz;
@@ -653,7 +695,7 @@ ClockInfo_set_stathz(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage stathz = ci:get_stathz()
+ * @usage stathz = clockinfo:get_stathz()
  */
 static int
 ClockInfo_get_stathz(lua_State *L)
@@ -663,7 +705,7 @@ ClockInfo_get_stathz(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     stathz = self->clockinfo.stathz;
 
     lua_pushinteger(L, stathz);
@@ -678,7 +720,7 @@ ClockInfo_get_stathz(lua_State *L)
  *
  * @param profhz            Frequency.
  *
- * @usage ci:set_profhz(profhz)
+ * @usage clockinfo:set_profhz(profhz)
  */
 static int
 ClockInfo_set_profhz(lua_State *L)
@@ -688,7 +730,7 @@ ClockInfo_set_profhz(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     profhz = luab_checkinteger(L, 2, INT_MAX);
 
     self->clockinfo.profhz = profhz;
@@ -703,7 +745,7 @@ ClockInfo_set_profhz(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage profhz = ci:get_profhz()
+ * @usage profhz = clockinfo:get_profhz()
  */
 static int
 ClockInfo_get_profhz(lua_State *L)
@@ -713,7 +755,7 @@ ClockInfo_get_profhz(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
     profhz = self->clockinfo.profhz;
 
     lua_pushinteger(L, profhz);
@@ -728,7 +770,7 @@ ClockInfo_get_profhz(lua_State *L)
  *
  * @return (LUA_TTABLE)
  *
- * @usage t = ci:get()
+ * @usage t = clockinfo:get()
  */
 static int
 ClockInfo_get(lua_State *L)
@@ -737,7 +779,7 @@ ClockInfo_get(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toclockinfo(L, 1);
+    self = luab_to_clockinfo(L, 1);
 
     lua_newtable(L);
 
@@ -752,9 +794,29 @@ ClockInfo_get(lua_State *L)
 }
 
 static int
+ClockInfo_gc(lua_State *L)
+{
+    luab_clockinfo_t *self;
+    luab_module_t *m;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_clockinfo(L, 1);
+    m = &clockinfo_type;
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return 0;
+}
+
+static int
 ClockInfo_tostring(lua_State *L)
 {
-    luab_clockinfo_t *self = luab_toclockinfo(L, 1);
+    luab_clockinfo_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_clockinfo(L, 1);
     lua_pushfstring(L, "clockinfo (%p)", self);
 
     return 1;
@@ -770,6 +832,7 @@ static luab_table_t clockinfo_methods[] = {
     LUABSD_FUNC("get_tick", ClockInfo_get_tick),
     LUABSD_FUNC("get_stathz",   ClockInfo_get_stathz),
     LUABSD_FUNC("get_profhz",   ClockInfo_get_profhz),
+    LUABSD_FUNC("__gc", ClockInfo_gc),
     LUABSD_FUNC("__tostring",   ClockInfo_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
@@ -785,7 +848,7 @@ clockinfo_init(void *ud, void *arg)
 static void *
 clockinfo_udata(lua_State *L, int narg)
 {
-    luab_clockinfo_t *self = luab_toclockinfo(L, narg);
+    luab_clockinfo_t *self = luab_to_clockinfo(L, narg);
 
     return (&self->clockinfo);
 }
@@ -848,7 +911,7 @@ typedef struct luab_timespec {
 
 #define luab_newtimespec(L, arg) \
     ((luab_timespec_t *)luab_newuserdata(L, &timespec_type, (arg)))
-#define luab_totimespec(L, narg) \
+#define luab_to_timespec(L, narg) \
     (luab_todata((L), (narg), &timespec_type, luab_timespec_t *))
 
 /***
@@ -858,7 +921,7 @@ typedef struct luab_timespec {
  *
  * @param sec           Specifies value in seconds.
  *
- * @usage tv:set_tv_sec(sec)
+ * @usage timespec:set_tv_sec(sec)
  */
 static int
 TimeSpec_set_tv_sec(lua_State *L)
@@ -868,7 +931,7 @@ TimeSpec_set_tv_sec(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_totimespec(L, 1);
+    self = luab_to_timespec(L, 1);
     tv_sec = luab_checkinteger(L, 2, INT_MAX);
 
     self->timespec.tv_sec = tv_sec;
@@ -883,7 +946,7 @@ TimeSpec_set_tv_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage sec = tv:get_tv_sec()
+ * @usage sec = timespec:get_tv_sec()
  */
 static int
 TimeSpec_get_tv_sec(lua_State *L)
@@ -893,7 +956,7 @@ TimeSpec_get_tv_sec(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_totimespec(L, 1);
+    self = luab_to_timespec(L, 1);
     tv_sec = self->timespec.tv_sec;
 
     lua_pushinteger(L, tv_sec);
@@ -908,7 +971,7 @@ TimeSpec_get_tv_sec(lua_State *L)
  *
  * @param nsec           Specifies value in nanoneconds.
  *
- * @usage tv:set_tv_nsec(nsec)
+ * @usage timespec:set_tv_nsec(nsec)
  */
 static int
 TimeSpec_set_tv_nsec(lua_State *L)
@@ -918,7 +981,7 @@ TimeSpec_set_tv_nsec(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_totimespec(L, 1);
+    self = luab_to_timespec(L, 1);
     tv_nsec = luab_checkinteger(L, 2, LONG_MAX);
 
     self->timespec.tv_nsec = tv_nsec;
@@ -933,7 +996,7 @@ TimeSpec_set_tv_nsec(lua_State *L)
  *
  * @return (LUA_TNUMBER)
  *
- * @usage nsec = tv:get_tv_nsec()
+ * @usage nsec = timespec:get_tv_nsec()
  */
 static int
 TimeSpec_get_tv_nsec(lua_State *L)
@@ -943,7 +1006,7 @@ TimeSpec_get_tv_nsec(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_totimespec(L, 1);
+    self = luab_to_timespec(L, 1);
     tv_nsec = self->timespec.tv_nsec;
 
     lua_pushinteger(L, tv_nsec);
@@ -958,7 +1021,7 @@ TimeSpec_get_tv_nsec(lua_State *L)
  *
  * @return (LUA_TTABLE)
  *
- * @usage t = tv:get()
+ * @usage t = timespec:get()
  */
 static int
 TimeSpec_get(lua_State *L)
@@ -967,7 +1030,7 @@ TimeSpec_get(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_totimespec(L, 1);
+    self = luab_to_timespec(L, 1);
 
     lua_newtable(L);
 
@@ -980,9 +1043,29 @@ TimeSpec_get(lua_State *L)
 }
 
 static int
+TimeSpec_gc(lua_State *L)
+{
+    luab_timespec_t *self;
+    luab_module_t *m;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_timespec(L, 1);
+    m = &timespec_type;
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return 0;
+}
+
+static int
 TimeSpec_tostring(lua_State *L)
 {
-    luab_timespec_t *self = luab_totimespec(L, 1);
+    luab_timespec_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_timespec(L, 1);
     lua_pushfstring(L, "timespec (%p)", self);
 
     return 1;
@@ -994,6 +1077,7 @@ static luab_table_t timespec_methods[] = {
     LUABSD_FUNC("get",  TimeSpec_get),
     LUABSD_FUNC("get_tv_sec",   TimeSpec_get_tv_sec),
     LUABSD_FUNC("get_tv_nsec",  TimeSpec_get_tv_nsec),
+    LUABSD_FUNC("__gc", TimeSpec_gc),
     LUABSD_FUNC("__tostring",   TimeSpec_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
@@ -1009,7 +1093,7 @@ timespec_init(void *ud, void *arg)
 static void *
 timespec_udata(lua_State *L, int narg)
 {
-    luab_timespec_t *self = luab_totimespec(L, narg);
+    luab_timespec_t *self = luab_to_timespec(L, narg);
 
     return (&self->timespec);
 }
@@ -1073,7 +1157,7 @@ typedef struct luab_itimerval {
 
 #define luab_newitimerval(L, arg) \
     ((luab_itimerval_t *)luab_newuserdata(L, &itimerval_type, (arg)))
-#define luab_toitimerval(L, narg) \
+#define luab_to_itimerval(L, narg) \
     (luab_todata((L), (narg), &itimerval_type, luab_itimerval_t *))
 
 /* timer interval */
@@ -1084,7 +1168,7 @@ typedef struct luab_itimerval {
  *
  * @param tv            Instance of timespec{}.
  *
- * @usage it:set_it_interval(tv)
+ * @usage itimerval:set_it_interval(tv)
  */
 static int
 ItimerVal_set_it_interval(lua_State *L)
@@ -1094,7 +1178,7 @@ ItimerVal_set_it_interval(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toitimerval(L, 1);
+    self = luab_to_itimerval(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
     (void)memmove(&self->itimerval.it_interval, ud, timespec_type.sz);
@@ -1109,7 +1193,7 @@ ItimerVal_set_it_interval(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage tv = it:get_it_interval()
+ * @usage tv = itimerval:get_it_interval()
  */
 static int
 ItimerVal_get_it_interval(lua_State *L)
@@ -1118,7 +1202,7 @@ ItimerVal_get_it_interval(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toitimerval(L, 1);
+    self = luab_to_itimerval(L, 1);
 
     (void)luab_newuserdata(L, &timespec_type, &self->itimerval.it_interval);
 
@@ -1133,7 +1217,7 @@ ItimerVal_get_it_interval(lua_State *L)
  *
  * @param tv            Instance of timespec{}.
  *
- * @usage it:set_it_value(tv)
+ * @usage itimerval:set_it_value(tv)
  */
 static int
 ItimerVal_set_it_value(lua_State *L)
@@ -1143,7 +1227,7 @@ ItimerVal_set_it_value(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toitimerval(L, 1);
+    self = luab_to_itimerval(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
     (void)memmove(&self->itimerval.it_value, ud, timespec_type.sz);
@@ -1158,7 +1242,7 @@ ItimerVal_set_it_value(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage tv = it:get_it_value()
+ * @usage tv = itimerval:get_it_value()
  */
 static int
 ItimerVal_get_it_value(lua_State *L)
@@ -1168,7 +1252,7 @@ ItimerVal_get_it_value(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toitimerval(L, 1);
+    self = luab_to_itimerval(L, 1);
 
     if (luab_newuserdata(L, &timespec_type, &self->itimerval.it_value) == NULL)
         status = luab_pushnil(L);
@@ -1185,7 +1269,7 @@ ItimerVal_get_it_value(lua_State *L)
  *
  * @return (LUA_TTABLE)
  *
- * @usage t = it:get()
+ * @usage t = itimerval:get()
  */
 static int
 ItimerVal_get(lua_State *L)
@@ -1194,7 +1278,7 @@ ItimerVal_get(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toitimerval(L, 1);
+    self = luab_to_itimerval(L, 1);
 
     lua_newtable(L);   /* XXX */
 
@@ -1207,9 +1291,29 @@ ItimerVal_get(lua_State *L)
 }
 
 static int
+ItimerVal_gc(lua_State *L)
+{
+    luab_itimerval_t *self;
+    luab_module_t *m;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_itimerval(L, 1);
+    m = &itimerval_type;
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return 0;
+}
+
+static int
 ItimerVal_tostring(lua_State *L)
 {
-    luab_itimerval_t *self = luab_toitimerval(L, 1);
+    luab_itimerval_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_itimerval(L, 1);
     lua_pushfstring(L, "itimerval (%p)", self);
 
     return 1;
@@ -1221,6 +1325,7 @@ static luab_table_t itimerval_methods[] = {
     LUABSD_FUNC("get",  ItimerVal_get),
     LUABSD_FUNC("get_it_interval",  ItimerVal_get_it_interval),
     LUABSD_FUNC("get_it_value", ItimerVal_get_it_value),
+    LUABSD_FUNC("__gc", ItimerVal_gc),
     LUABSD_FUNC("__tostring",   ItimerVal_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
@@ -1236,7 +1341,7 @@ itimerval_init(void *ud, void *arg)
 static void *
 itimerval_udata(lua_State *L, int narg)
 {
-    luab_itimerval_t *self = luab_toitimerval(L, narg);
+    luab_itimerval_t *self = luab_to_itimerval(L, narg);
 
     return (&self->itimerval);
 }

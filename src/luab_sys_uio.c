@@ -57,7 +57,7 @@
 
 #define luab_newiovec(L, arg) \
     ((luab_iovec_t *)luab_newuserdata(L, &iovec_type, (arg)))
-#define luab_toiovec(L, narg) \
+#define luab_to_iovec(L, narg) \
     (luab_todata((L), (narg), &iovec_type, luab_iovec_t *))
 
 static int
@@ -70,7 +70,7 @@ IOVec_clear(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toiovec(L, 1);
+    self = luab_to_iovec(L, 1);
 
     if ((buf = self->iov.iov_base) != NULL) {
         if ((len = self->iov_max_len) > 0) {
@@ -101,7 +101,7 @@ IOVec_copyin(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toiovec(L, 1);
+    self = luab_to_iovec(L, 1);
     src = luab_checklstring(L, 2, self->iov_max_len);
 
     if ((dst = self->iov.iov_base) != NULL) {
@@ -127,7 +127,7 @@ IOVec_copyout(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toiovec(L, 1);
+    self = luab_to_iovec(L, 1);
 
     if ((src = self->iov.iov_base) != NULL) {
         if ((len = self->iov.iov_len) > 0) {
@@ -160,7 +160,7 @@ IOVec_len(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toiovec(L, 1);
+    self = luab_to_iovec(L, 1);
     len = self->iov.iov_len;
 
     return luab_pusherr(L, len);
@@ -174,7 +174,7 @@ IOVec_max_len(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_toiovec(L, 1);
+    self = luab_to_iovec(L, 1);
     len = self->iov_max_len;
 
     return luab_pusherr(L, len);
@@ -190,7 +190,7 @@ IOVec_resize(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_toiovec(L, 1);
+    self = luab_to_iovec(L, 1);
     len = luab_checkinteger(L, 2,
 #ifdef  __LP64__
     LONG_MAX
@@ -226,9 +226,13 @@ IOVec_resize(lua_State *L)
 static int
 IOVec_gc(lua_State *L)
 {
-    luab_iovec_t *self = luab_toiovec(L, 1);
+    luab_iovec_t *self;
     caddr_t buf;
     size_t len;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
 
     if (self->iov.iov_base != NULL) {
         buf = self->iov.iov_base;
@@ -249,7 +253,11 @@ IOVec_gc(lua_State *L)
 static int
 IOVec_tostring(lua_State *L)
 {
-    luab_iovec_t *self = luab_toiovec(L, 1);
+    luab_iovec_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
     lua_pushfstring(L, "IOVec (%p)", self);
 
     return 1;
@@ -270,7 +278,7 @@ static luab_table_t iovec_methods[] = {
 static void *
 iovec_udata(lua_State *L, int narg)
 {
-    return luab_toiovec(L, narg);
+    return luab_to_iovec(L, narg);
 }
 
 luab_module_t iovec_type = {

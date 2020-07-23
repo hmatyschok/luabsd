@@ -85,7 +85,7 @@ typedef struct luab_stat {
 
 #define luab_newstat(L, arg) \
     ((luab_stat_t *)luab_newuserdata(L, &stat_type, (arg)))
-#define luab_tostat(L, narg) \
+#define luab_to_stat(L, narg) \
     (luab_todata((L), (narg), &stat_type, luab_stat_t *))
 
 /* inode's device */
@@ -97,7 +97,7 @@ Stat_set_st_dev(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_dev = luab_checkinteger(L, 2, LONG_MAX);
 
     self->stat.st_dev = st_dev;
@@ -113,7 +113,7 @@ Stat_get_st_dev(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_dev = self->stat.st_dev;
 
     lua_pushinteger(L, st_dev);
@@ -130,7 +130,7 @@ Stat_set_st_ino(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_ino = luab_checkinteger(L, 2, LONG_MAX);
 
     self->stat.st_ino = st_ino;
@@ -146,7 +146,7 @@ Stat_get_st_ino(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_ino = self->stat.st_ino;
 
     lua_pushinteger(L, st_ino);
@@ -163,7 +163,7 @@ Stat_set_st_nlink(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_nlink = luab_checkinteger(L, 2, LONG_MAX);
 
     self->stat.st_nlink = st_nlink;
@@ -179,7 +179,7 @@ Stat_get_st_nlink(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_nlink = self->stat.st_nlink;
 
     lua_pushinteger(L, st_nlink);
@@ -196,7 +196,7 @@ Stat_set_st_mode(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_mode = luab_checkinteger(L, 2, USHRT_MAX);
 
     self->stat.st_mode = (mode_t)st_mode;
@@ -212,7 +212,7 @@ Stat_get_st_mode(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_mode = self->stat.st_mode;
 
     lua_pushinteger(L, st_mode);
@@ -229,7 +229,7 @@ Stat_set_st_uid(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_uid = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_uid = st_uid;
@@ -245,7 +245,7 @@ Stat_get_st_uid(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_uid = self->stat.st_uid;
 
     lua_pushinteger(L, st_uid);
@@ -262,7 +262,7 @@ Stat_set_st_gid(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_gid = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_gid = st_gid;
@@ -278,7 +278,7 @@ Stat_get_st_gid(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_gid = self->stat.st_gid;
 
     lua_pushinteger(L, st_gid);
@@ -295,7 +295,7 @@ Stat_set_st_rdev(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_rdev = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_rdev = st_rdev;
@@ -311,7 +311,7 @@ Stat_get_st_rdev(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_rdev = self->stat.st_rdev;
 
     lua_pushinteger(L, st_rdev);
@@ -329,7 +329,7 @@ Stat_set_st_atim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_atim_ext = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_atim_ext = st_atim_ext;
@@ -345,7 +345,7 @@ Stat_get_st_atim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_atim_ext = self->stat.st_atim_ext;
 
     lua_pushinteger(L, st_atim_ext);
@@ -362,7 +362,7 @@ Stat_set_st_atim(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
     (void)memmove(&self->stat.st_atim, ud, timespec_type.sz);
@@ -377,7 +377,7 @@ Stat_get_st_atim(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
 
     (void)luab_newuserdata(L, &timespec_type, &self->stat.st_atim);
 
@@ -394,7 +394,7 @@ Stat_set_st_mtim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_mtim_ext = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_mtim_ext = st_mtim_ext;
@@ -410,7 +410,7 @@ Stat_get_st_mtim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_mtim_ext = self->stat.st_mtim_ext;
 
     lua_pushinteger(L, st_mtim_ext);
@@ -427,7 +427,7 @@ Stat_set_st_mtim(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
     (void)memmove(&self->stat.st_mtim, ud, timespec_type.sz);
@@ -442,7 +442,7 @@ Stat_get_st_mtim(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
 
     (void)luab_newuserdata(L, &timespec_type, &self->stat.st_mtim);
 
@@ -459,7 +459,7 @@ Stat_set_st_ctim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_ctim_ext = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_ctim_ext = st_ctim_ext;
@@ -475,7 +475,7 @@ Stat_get_st_ctim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_ctim_ext = self->stat.st_ctim_ext;
 
     lua_pushinteger(L, st_ctim_ext);
@@ -492,7 +492,7 @@ Stat_set_st_ctim(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
     (void)memmove(&self->stat.st_ctim, ud, timespec_type.sz);
@@ -507,7 +507,7 @@ Stat_get_st_ctim(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
 
     (void)luab_newuserdata(L, &timespec_type, &self->stat.st_ctim);
 
@@ -524,7 +524,7 @@ Stat_set_st_btim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_btim_ext = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_btim_ext = st_btim_ext;
@@ -540,7 +540,7 @@ Stat_get_st_btim_ext(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_btim_ext = self->stat.st_btim_ext;
 
     lua_pushinteger(L, st_btim_ext);
@@ -557,7 +557,7 @@ Stat_set_st_birthtim(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     ud = luab_checkudata(L, 2, &timespec_type);
 
     (void)memmove(&self->stat.st_birthtim, ud, timespec_type.sz);
@@ -572,7 +572,7 @@ Stat_get_st_birthtim(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
 
     (void)luab_newuserdata(L, &timespec_type, &self->stat.st_birthtim);
 
@@ -588,7 +588,7 @@ Stat_set_st_size(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_size = luab_checkinteger(L, 2, LONG_MAX);
 
     self->stat.st_size = st_size;
@@ -604,7 +604,7 @@ Stat_get_st_size(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_size = self->stat.st_size;
 
     lua_pushinteger(L, st_size);
@@ -621,7 +621,7 @@ Stat_set_st_blocks(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_blocks = luab_checkinteger(L, 2, LONG_MAX);
 
     self->stat.st_blocks = st_blocks;
@@ -637,7 +637,7 @@ Stat_get_st_blocks(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_blocks = self->stat.st_blocks;
 
     lua_pushinteger(L, st_blocks);
@@ -654,7 +654,7 @@ Stat_set_st_blksize(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_blksize = luab_checkinteger(L, 2, INT_MAX);
 
     self->stat.st_blksize = st_blksize;
@@ -670,7 +670,7 @@ Stat_get_st_blksize(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_blksize = self->stat.st_blksize;
 
     lua_pushinteger(L, st_blksize);
@@ -687,7 +687,7 @@ Stat_set_st_flags(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_flags = luab_checkinteger(L, 2, UINT_MAX);
 
     self->stat.st_flags = st_flags;
@@ -703,7 +703,7 @@ Stat_get_st_flags(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_flags = self->stat.st_flags;
 
     lua_pushinteger(L, st_flags);
@@ -720,7 +720,7 @@ Stat_set_st_gen(lua_State *L)
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_gen = luab_checkinteger(L, 2, LONG_MAX);
 
     self->stat.st_gen = st_gen;
@@ -736,7 +736,7 @@ Stat_get_st_gen(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
     st_gen = self->stat.st_gen;
 
     lua_pushinteger(L, st_gen);
@@ -754,7 +754,7 @@ Stat_get(lua_State *L)
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_tostat(L, 1);
+    self = luab_to_stat(L, 1);
 
     lua_newtable(L);
 
@@ -798,9 +798,29 @@ Stat_get(lua_State *L)
 }
 
 static int
+Stat_gc(lua_State *L)
+{
+    luab_stat_t *self;
+    luab_module_t *m;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_stat(L, 1);
+    m = &stat_type;
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return 0;
+}
+
+static int
 Stat_tostring(lua_State *L)
 {
-    luab_stat_t *self = luab_tostat(L, 1);
+    luab_stat_t *self;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_stat(L, 1);
     lua_pushfstring(L, "stat (%p)", self);
 
     return 1;
@@ -864,6 +884,7 @@ static luab_table_t stat_methods[] = {
     LUABSD_FUNC("get_st_blocks",    Stat_get_st_blksize),
     LUABSD_FUNC("get_st_flags", Stat_get_st_flags),
     LUABSD_FUNC("get_st_gen",   Stat_get_st_gen),
+    LUABSD_FUNC("__gc", Stat_gc),
     LUABSD_FUNC("__tostring",   Stat_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
@@ -879,7 +900,7 @@ stat_init(void *ud, void *arg)
 static void *
 stat_udata(lua_State *L, int narg)
 {
-    luab_stat_t *self = luab_tostat(L, narg);
+    luab_stat_t *self = luab_to_stat(L, narg);
 
     return (&self->stat);
 }
@@ -1073,7 +1094,7 @@ luab_fstat(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    ud = luab_tostat(L, 2);
+    ud = luab_to_stat(L, 2);
     sb = &ud->stat;
 
 
