@@ -2911,6 +2911,31 @@ luab_acct(lua_State *L)
 }
 
 /***
+ * check_utility_compat(2) - determine wether a utility should be compatible
+ *
+ * @function check_utility_compat
+ *
+ * @param utility           Existing pathname.
+ *
+ * @return (LUA_TNUMBER)                            (1 on success or 0)
+ *
+ * @usage compat = bsd.unistd.check_utility_compat(utility)
+ */
+static int
+luab_check_utility_compat(lua_State *L)
+{
+    const char *utility;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    utility = luab_checklstring(L, 1, MAXPATHLEN);
+    status = check_utility_compat(utility);
+
+    return luab_pusherr(L, status);
+}
+
+/***
  * eaccess(2) - check availability of a file
  *
  * @function eaccess
@@ -3441,6 +3466,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #endif
 #if __BSD_VISIBLE
     LUABSD_FUNC("acct", luab_acct),
+    LUABSD_FUNC("check_utility_compat", luab_check_utility_compat),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
