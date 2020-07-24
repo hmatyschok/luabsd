@@ -2948,15 +2948,12 @@ static int
 luab_crypt_get_format(lua_State *L)
 {
     const char *format;
-    char buf[LUAL_BUFFERSIZE];
 
     (void)luab_checkmaxargs(L, 0);
 
     format = crypt_get_format();
 
-    (void)snprintf(buf, LUAL_BUFFERSIZE, "%s", format);
-
-    return luab_pushstring(L, buf);
+    return luab_pushstring(L, format);
 }
 
 /***

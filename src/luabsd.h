@@ -100,7 +100,7 @@ int luab_checkmaxargs(lua_State *, int);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
-int luab_pushstring(lua_State *, char *);
+int luab_pushstring(lua_State *, const char *);
 void    luab_pushtimesvector(lua_State *, int, size_t, void *);
 void *  luab_newvector(lua_State *, int, size_t, size_t);
 const char **    luab_checkargv(lua_State *, int);

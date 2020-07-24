@@ -91,16 +91,16 @@ luab_pushnil(lua_State *L)
 }
 
 int
-luab_pushstring(lua_State *L, char *res)
+luab_pushstring(lua_State *L, const char *s)
 {
     int save_errno = errno;
+    caddr_t msg;
     size_t len;
-    char *msg;
     int status;
 
-    if (res != NULL) {
-        len = strnlen(res, LUAL_BUFFERSIZE);
-        lua_pushlstring(L, res, len);
+    if (s != NULL) {
+        len = strnlen(s, LUAL_BUFFERSIZE);
+        lua_pushlstring(L, s, len);
 
         if (save_errno != 0) {
             msg = strerror(save_errno);
