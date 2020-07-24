@@ -2911,7 +2911,7 @@ luab_acct(lua_State *L)
 }
 
 /***
- * check_utility_compat(2) - determine wether a utility should be compatible
+ * check_utility_compat(3) - determine wether a utility should be compatible
  *
  * @function check_utility_compat
  *
@@ -2933,6 +2933,30 @@ luab_check_utility_compat(lua_State *L)
     status = check_utility_compat(utility);
 
     return luab_pusherr(L, status);
+}
+
+/***
+ * crypt_get_format(3) - trapdoor encryption
+ *
+ * @function crypt_get_format
+ *
+ * @return (LUA_TSTRING)                            (format)
+ *
+ * @usage format = bsd.unistd.crypt_get_format()
+ */
+static int
+luab_crypt_get_format(lua_State *L)
+{
+    const char *format;
+    char buf[LUAL_BUFFERSIZE];
+
+    (void)luab_checkmaxargs(L, 0);
+
+    format = crypt_get_format();
+
+    (void)snprintf(buf, LUAL_BUFFERSIZE, "%s", format);
+
+    return luab_pushstring(L, buf);
 }
 
 /***
@@ -3467,6 +3491,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #if __BSD_VISIBLE
     LUABSD_FUNC("acct", luab_acct),
     LUABSD_FUNC("check_utility_compat", luab_check_utility_compat),
+    LUABSD_FUNC("crypt_get_format", luab_crypt_get_format),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
