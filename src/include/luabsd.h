@@ -54,6 +54,7 @@ typedef struct {
 
 typedef void (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_udata_fn)(lua_State *, int);
+typedef int (*luab_ctor_fn)(lua_State *);
 
 typedef struct luab_module {
     u_int32_t  cookie;        /*  date -u +'%s' */
@@ -62,39 +63,13 @@ typedef struct luab_module {
     luab_table_t    *vec;
     luab_init_fn    init;
     luab_udata_fn    get;
+    luab_ctor_fn    new;
 } luab_module_t;
 
 typedef struct luab_iovec {
     struct iovec    iov;
     size_t  iov_max_len;
 } luab_iovec_t;
-
-#if __BSD_VISIBLE
-extern luab_module_t db_type;
-extern luab_module_t bintime_type;
-extern luab_module_t crypt_data_type;
-#endif
-extern luab_module_t clockinfo_type;
-extern luab_module_t flock_type;
-extern luab_module_t timezone_type;
-extern luab_module_t timespec_type;
-extern luab_module_t tm_type;
-extern luab_module_t itimerval_type;
-extern luab_module_t stat_type;
-extern luab_module_t iovec_type;
-
-extern luab_module_t luab_sys_file_lib;
-extern luab_module_t luab_sys_stat_lib;
-extern luab_module_t luab_sys_time_lib;
-extern luab_module_t luab_sys_uio_lib;
-extern luab_module_t luab_sys_unistd_lib;
-
-extern luab_module_t luab_db_lib;
-extern luab_module_t luab_fcntl_lib;
-extern luab_module_t luab_stdlib_lib;
-extern luab_module_t luab_time_lib;
-extern luab_module_t luab_unistd_lib;
-extern luab_module_t luab_uuid_lib;
 
 int luab_checkmaxargs(lua_State *, int);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);

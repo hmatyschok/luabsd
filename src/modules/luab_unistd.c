@@ -49,6 +49,9 @@
 
 #include "luabsd.h"
 
+extern luab_module_t crypt_data_type;
+extern int luab_StructCryptData(lua_State *);
+
 extern char **environ;
 
 /*
@@ -111,266 +114,6 @@ luab_checkgidset(lua_State *L, int narg, size_t len)
     }
     return vec;
 }
-
-#if __BSD_VISIBLE
-/*
- * Interface against
- *
- *  struct crypt_data {
- *      int initialized;
- *      char    __buf[256];
- *  };
- */
-#define LUABSD_CRYPT_DATA_TYPE_ID    1595491033
-#define LUABSD_CRYPT_DATA_TYPE    "CRYPTDATA*"
-
-typedef struct luab_crypt_data {
-    struct crypt_data    crypt_data;
-} luab_crypt_data_t;
-
-#define CRYPT_DATA_MAX  256
-
-#define luab_new_crypt_data(L, arg) \
-    ((luab_crypt_data_t *)luab_newuserdata(L, &crypt_data_type, (arg)))
-#define luab_to_crypt_data(L, narg) \
-    (luab_todata((L), (narg), &crypt_data_type, luab_crypt_data_t *))
-
-/***
- * Set param denotes initializiation.
- *
- * @function set_initialized
- *
- * @param arg           Integer.
- *
- * @usage crypt_data:set_initialized(arg)
- */
-static int
-CryptData_set_initialized(lua_State *L)
-{
-    luab_crypt_data_t *self;
-    int initialized;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    self = luab_to_crypt_data(L, 1);
-    initialized = luab_checkinteger(L, 2, INT_MAX);
-
-    self->crypt_data.initialized = initialized;
-
-    return 0;
-}
-
-/***
- * Get param denotes initializiation.
- *
- * @function get_initialized
- *
- * @return (LUA_TNUMBER)
- *
- * @usage zone = crypt_data:get_initialized()
- */
-static int
-CryptData_get_initialized(lua_State *L)
-{
-    luab_crypt_data_t *self;
-    int initialized;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_crypt_data(L, 1);
-    initialized = self->crypt_data.initialized;
-
-    lua_pushinteger(L, initialized);
-
-    return 1;
-}
-
-/***
- * Copyin.
- *
- * @function copyin
- *
- * @param data          Byte string.
- *
- * @usage crypt_data:set_buf(data)
- */
-static int
-CryptData_set_buf(lua_State *L)
-{
-    luab_crypt_data_t *self;
-    const char *buf;
-    size_t len;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    self = luab_to_crypt_data(L, 1);
-    buf = luab_checklstring(L, 2, CRYPT_DATA_MAX);
-
-    len = strlen(buf);
-
-    (void)memmove(self->crypt_data.__buf, buf, len);
-
-    return 0;
-}
-
-/***
- * Copyout.
- *
- * @function get_buf
- *
- * @return (LUA_TSTRING)
- *
- * @usage data = crypt_data:get_buf()
- */
-static int
-CryptData_get_buf(lua_State *L)
-{
-    luab_crypt_data_t *self;
-    luaL_Buffer b;
-    caddr_t dst, src;
-    size_t len;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_crypt_data(L, 1);
-    src = self->crypt_data.__buf;
-    len = strnlen(src, CRYPT_DATA_MAX);
-
-    luaL_buffinit(L, &b);
-
-    dst = luaL_prepbuffsize(&b, len);
-
-    (void)memmove(dst, src, len);
-
-    luaL_addsize(&b, len);
-    luaL_pushresult(&b);
-
-    return 1;
-}
-
-/***
- * Translate crypt_data{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = crypt_data:get()
- */
-static int
-CryptData_get(lua_State *L)
-{
-    luab_crypt_data_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_crypt_data(L, 1);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "initialized", self->crypt_data.initialized);
-    luab_setstring(L, -2, "buf", self->crypt_data.__buf);   /* XXX */
-
-    lua_pushvalue(L, -1);
-
-    return 1;
-}
-
-static int
-CryptData_gc(lua_State *L)
-{
-    luab_crypt_data_t *self;
-    luab_module_t *m;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_crypt_data(L, 1);
-    m = &crypt_data_type;
-
-    (void)memset_s(self, m->sz, 0, m->sz);
-
-    return 0;
-}
-
-static int
-CryptData_tostring(lua_State *L)
-{
-    luab_crypt_data_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_crypt_data(L, 1);
-
-    lua_pushfstring(L, "crypt_data (%p)", self);
-
-    return 1;
-}
-
-static luab_table_t crypt_data_methods[] = {
-    LUABSD_FUNC("set_initialized",   CryptData_set_initialized),
-    LUABSD_FUNC("set_buf",   CryptData_set_buf),
-    LUABSD_FUNC("get",  CryptData_get),
-    LUABSD_FUNC("get_initialized",   CryptData_get_initialized),
-    LUABSD_FUNC("get_buf",   CryptData_get_buf),
-    LUABSD_FUNC("__gc", CryptData_gc),
-    LUABSD_FUNC("__tostring",   CryptData_tostring),
-    LUABSD_FUNC(NULL, NULL)
-};
-
-static void
-crypt_data_init(void *ud, void *arg)
-{
-    luab_crypt_data_t *self = (luab_crypt_data_t *)ud;
-
-    (void)memmove(&self->crypt_data, arg, sizeof(self->crypt_data));
-}
-
-static void *
-crypt_data_udata(lua_State *L, int narg)
-{
-    luab_crypt_data_t *self = luab_to_crypt_data(L, narg);
-
-    return (&self->crypt_data);
-}
-
-luab_module_t crypt_data_type = {
-    .cookie = LUABSD_CRYPT_DATA_TYPE_ID,
-    .name = LUABSD_CRYPT_DATA_TYPE,
-    .vec = crypt_data_methods,
-    .init = crypt_data_init,
-    .get = crypt_data_udata,
-    .sz = sizeof(luab_crypt_data_t),
-};
-
-/***
- * Ctor.
- *
- * @function StructCryptData
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
- *
- * @usage tv = bsd.sys.time.StructStructCryptData([ crypt_data ])
- */
-static int
-luab_StructCryptData(lua_State *L)
-{
-    int narg = luab_checkmaxargs(L, 1);
-    struct crypt_data *crypt_data;
-    int status;
-
-    if (narg == 0)
-        crypt_data = NULL;
-    else
-        crypt_data = crypt_data_udata(L, narg);
-
-    if (luab_new_crypt_data(L, crypt_data) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return status;
-}
-#endif /* __BSD_VISIBLE */
 
 /*
  * Interface against (subset of) functions of exec(3) family.
@@ -2957,6 +2700,47 @@ luab_crypt_get_format(lua_State *L)
 }
 
 /***
+ * crypt_r(3) - Trapdoor encryption
+ *
+ * @function crypt_r
+ *
+ * @param key           Data to hash.
+ * @param salt          String specifies salt in
+ *
+ *                       #1 Extended,
+ *
+ *                       #2 Modular or
+ *
+ *                       #3 Traditional
+ *
+ *                      form.
+ * @param data          Instance of LUA_TUSERDATA(luab_crypt_data_t).
+ *
+ * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage value [, msg ] = bsd.unistd.crypt_r(key, salt, data)
+ */
+static int
+luab_crypt_r(lua_State *L)
+{
+    const char *key;
+    const char *salt;
+    struct crypt_data *data;
+    const char *value;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    key = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    salt = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
+    data = (struct crypt_data *)(*crypt_data_type.get)(L, 3);
+
+    value = crypt_r(key, salt, data);
+
+    return luab_pushstring(L, value);
+}
+
+/***
  * eaccess(2) - check availability of a file
  *
  * @function eaccess
@@ -3489,6 +3273,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("acct", luab_acct),
     LUABSD_FUNC("check_utility_compat", luab_check_utility_compat),
     LUABSD_FUNC("crypt_get_format", luab_crypt_get_format),
+    LUABSD_FUNC("crypt_r", luab_crypt_r),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),

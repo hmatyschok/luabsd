@@ -35,6 +35,36 @@
 
 #include "luabsd.h"
 
+/* XXX */
+extern luab_module_t stat_type;
+
+#if __BSD_VISIBLE
+extern luab_module_t db_type;
+extern luab_module_t bintime_type;
+extern luab_module_t crypt_data_type;
+#endif
+extern luab_module_t clockinfo_type;
+extern luab_module_t flock_type;
+extern luab_module_t timezone_type;
+extern luab_module_t timespec_type;
+extern luab_module_t tm_type;
+extern luab_module_t itimerval_type;
+extern luab_module_t iovec_type;
+
+extern luab_module_t luab_sys_file_lib;
+extern luab_module_t luab_sys_stat_lib;
+extern luab_module_t luab_sys_time_lib;
+extern luab_module_t luab_sys_uio_lib;
+extern luab_module_t luab_sys_unistd_lib;
+extern luab_module_t luab_sys_socket_lib;
+
+extern luab_module_t luab_db_lib;
+extern luab_module_t luab_fcntl_lib;
+extern luab_module_t luab_stdlib_lib;
+extern luab_module_t luab_time_lib;
+extern luab_module_t luab_unistd_lib;
+extern luab_module_t luab_uuid_lib;
+
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
@@ -346,8 +376,14 @@ luaopen_bsd(lua_State *L)
     lua_pushvalue(L, -1);
 
 #if __BSD_VISIBLE
-    luab_newmetatable(L, &bintime_type);
     luab_newmetatable(L, &crypt_data_type);
+#endif
+    luab_newmetatable(L, &stat_type);
+
+/* XXX */
+
+#if __BSD_VISIBLE
+    luab_newmetatable(L, &bintime_type);
     luab_newmetatable(L, &db_type);
 #endif
     luab_newmetatable(L, &clockinfo_type);
@@ -355,7 +391,6 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &timezone_type);
     luab_newmetatable(L, &timespec_type);
     luab_newmetatable(L, &itimerval_type);
-    luab_newmetatable(L, &stat_type);
     luab_newmetatable(L, &tm_type);
     luab_newmetatable(L, &iovec_type);
 
