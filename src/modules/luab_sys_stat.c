@@ -39,7 +39,6 @@
 #include "luabsd.h"
 
 extern luab_module_t stat_type;
-
 extern int luab_StructStat(lua_State *);
 
 #define LUABSD_SYS_STAT_LIB_ID    1593623310
