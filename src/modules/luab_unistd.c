@@ -666,7 +666,7 @@ luab_getgid(lua_State *L)
  *                      gidset, of successfull.
  * @param gidset        Empty instance of LUA_TTABLE, but still populated
  *
- *                          { "gid0" , "gid1" , ..., gidN },
+ *                          { "gid0" , "gid1" , ..., "gidN" },
  *
  *                      iff (if and only if)
  *
@@ -691,7 +691,7 @@ luab_getgroups(lua_State *L)
 
     luab_checktable(L, 2);
 
-    if (gidsetlen > 0) {
+    if (gidsetlen != 0) {
         if ((gidset = alloca(gidsetlen * sizeof(gid_t))) == NULL)
             ngroups = -1;
         else
@@ -3059,40 +3059,60 @@ luab_getentropy(lua_State *L)
 }
 
 /***
- * setdomainname(3) - set NIS domainname of current host
+ * getgrouplist(3) - calculate group access list
  *
- * @function getdomainname
+ * @function getgrouplist
  *
- * @param name          Instance of LUA_TUSERDATA(luab_iovec_t).
- * @param namelen       Maximum size of buffer maps to name.
+ * @param name          ...
+ * @param basegid       ...
+ * @param gidset        Empty instance of LUA_TTABLE, but still populated
+ *
+ *                          { "gid0" , "gid1" , ..., "gidN" },
+ *
+ *                      if query by (name, basegid) was successfull.
+ * @param ngroups
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage err [, msg ] = bsd.unistd.setdomainname(name, namelen)
+ * @usage err [, msg ] = bsd.unistd.getgrouplist(gidsetlen, gidset)
  */
 static int
-luab_setdomainname(lua_State *L)
+luab_getgrouplist(lua_State *L)
 {
-    luab_iovec_t *buf;
-    int namelen;
-    caddr_t name;
+    const char *name;
+    gid_t basegid;
+    gid_t *gidset;
+    int ngroups;
+    int i, j;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 4);
 
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
-    namelen = luab_checkinteger(L, 2, INT_MAX);
+    name = luab_checklstring(L, 1, NAME_MAX);   /* XXX wrong? */
+    basegid = luab_checkinteger(L, 2, INT_MAX);
 
-    if (((name = buf->iov.iov_base) != 0) &&
-        (buf->iov_max_len <= MAXHOSTNAMELEN) &&
-        ((size_t)namelen <= buf->iov_max_len))
-        status = setdomainname(name, namelen);
-    else {
-        errno = ENXIO;
+    luab_checkltable(L, 3, 0);  /* only empty table are accepted */
+
+    ngroups = luab_checkinteger(L, 4, INT_MAX);
+
+    if (ngroups != 0) {
+        if ((gidset = alloca(ngroups * sizeof(gid_t))) != NULL) {
+            if ((status = getgrouplist(name, basegid, gidset, &ngroups)) == 0) {
+                lua_pushnil(L); /* populate Table, if any */
+
+                for (i = 0, j = 1; i < ngroups; i++, j++)
+                    luab_rawsetinteger(L, 3, j, gidset[i]);
+
+                lua_pop(L, 0);
+            }
+        } else
+            status = -1;
+    } else {
+        errno = EINVAL;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return luab_pusherr(L, ngroups);
 }
 
 /***
@@ -3165,6 +3185,43 @@ luab_lpathconf(lua_State *L)
 
     status = lpathconf(path, name);
 
+    return luab_pusherr(L, status);
+}
+
+/***
+ * setdomainname(3) - set NIS domainname of current host
+ *
+ * @function getdomainname
+ *
+ * @param name          Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param namelen       Maximum size of buffer maps to name.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.setdomainname(name, namelen)
+ */
+static int
+luab_setdomainname(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int namelen;
+    caddr_t name;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    namelen = luab_checkinteger(L, 2, INT_MAX);
+
+    if (((name = buf->iov.iov_base) != 0) &&
+        (buf->iov_max_len <= MAXHOSTNAMELEN) &&
+        ((size_t)namelen <= buf->iov_max_len))
+        status = setdomainname(name, namelen);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
     return luab_pusherr(L, status);
 }
 
@@ -3610,9 +3667,10 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("fflagstostr",  luab_fflagstostr),
     LUABSD_FUNC("getdomainname",  luab_getdomainname),
     LUABSD_FUNC("getentropy",  luab_getentropy),
-    LUABSD_FUNC("setdomainname",  luab_setdomainname),
+    LUABSD_FUNC("getgrouplist", luab_getgrouplist),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
+    LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("setgroups",    luab_setgroups),
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
