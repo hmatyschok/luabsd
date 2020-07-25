@@ -2832,6 +2832,40 @@ luab_eaccess(lua_State *L)
 }
 
 /***
+ * exect(3) - execute a file
+ *
+ * @function exect
+ *
+ * @param path      Identifies the new process image file by its path.
+ * @param argv      Argument vector, instance of LUA_TTABLE:
+ *
+ *                      { "arg0" , "arg1" , ..., argN }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.exect(path, argv)
+ */
+static int
+luab_exect(lua_State *L)
+{
+    const char *path;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+
+    status = exect(path, __DECONST(char **, argv), envp);
+
+    free(argv);
+
+    return luab_pusherr(L, status);
+}
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
@@ -3340,6 +3374,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("crypt_set_format", luab_crypt_set_format),
     LUABSD_FUNC("crypt_dup3", luab_dup3),
     LUABSD_FUNC("eaccess",   luab_eaccess),
+    LUABSD_FUNC("exec",   luab_exect),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setgroups",    luab_setgroups),
