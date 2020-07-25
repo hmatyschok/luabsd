@@ -824,7 +824,7 @@ Stat_tostring(lua_State *L)
     return 1;
 }
 
-static luab_table_t Stat_methods[] = {
+static luab_table_t stat_methods[] = {
     LUABSD_FUNC("set_st_dev",   Stat_set_st_dev),
     LUABSD_FUNC("set_st_ino",   Stat_set_st_ino),
     LUABSD_FUNC("set_st_nlink", Stat_set_st_nlink),
@@ -906,7 +906,7 @@ stat_udata(lua_State *L, int narg)
 luab_module_t stat_type = {
     .cookie = LUABSD_STAT_TYPE_ID,
     .name = LUABSD_STAT_TYPE,
-    .vec = Stat_methods,
+    .vec = stat_methods,
     .init = stat_init,
     .get = stat_udata,
     .sz = sizeof(luab_stat_t),

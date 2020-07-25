@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/limits.h>
 #include <sys/param.h>
 #include <sys/stat.h>
 

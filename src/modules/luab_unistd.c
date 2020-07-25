@@ -33,7 +33,6 @@
  * This code is hereby placed in the public domain and also under the MIT license
  */
 
-#include <sys/limits.h>
 #include <sys/param.h>
 
 #include <errno.h>
