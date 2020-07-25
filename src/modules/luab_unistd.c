@@ -2765,6 +2765,45 @@ luab_crypt_set_format(lua_State *L)
 }
 
 /***
+ * dup3(2) - duplicate an existing file descriptor
+ *
+ * @function dup3
+ *
+ * @param oldd          Small non-negative integer index in the per-process
+ *                      descriptor table.
+ * @param newd          Small non-negative integer index in the per-process
+ *                      descriptor table.
+ * @param flags         Only the close-on-exit
+ *
+ *                          bsd.fcntl.O_CLOEXEC
+ *
+ *                      flag is allowed.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.dup3(path, mode)
+ */
+static int
+luab_dup3(lua_State *L)
+{
+    int oldd;
+    int newd;
+    int flags;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    oldd = luab_checkinteger(L, 1, INT_MAX);
+    newd = luab_checkinteger(L, 2, INT_MAX);
+    flags = luab_checkinteger(L, 3, INT_MAX);
+
+    status = dup3(oldd, newd, flags);
+
+    return luab_pusherr(L, status);
+}
+
+/***
  * eaccess(2) - check availability of a file
  *
  * @function eaccess
@@ -3299,6 +3338,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("crypt_get_format", luab_crypt_get_format),
     LUABSD_FUNC("crypt_r", luab_crypt_r),
     LUABSD_FUNC("crypt_set_format", luab_crypt_set_format),
+    LUABSD_FUNC("crypt_dup3", luab_dup3),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
