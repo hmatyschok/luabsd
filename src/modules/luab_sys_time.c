@@ -65,13 +65,6 @@ extern int  luab_StructTimeZone(lua_State *);
 extern int luab_StructBinTime(lua_State *);
 #endif
 
-/*
- * Interface against components or service primitives on sys/time.h.
- */
-
-#define LUABSD_SYS_TIME_LIB_ID    1593623310
-#define LUABSD_SYS_TIME_LIB_KEY    "time"
-
 static sigset_t nsigset;
 static pthread_t tid;
 
@@ -122,6 +115,13 @@ out:
     pthread_exit(NULL);
 }
 
+/*
+ * Interface against components or service primitives on sys/time.h.
+ */
+
+#define LUABSD_SYS_TIME_LIB_ID    1593623310
+#define LUABSD_SYS_TIME_LIB_KEY    "time"
+
 static int
 luab_setitimer(lua_State *L)
 {
@@ -144,17 +144,17 @@ luab_setitimer(lua_State *L)
     saved_L = L;    /* XXX race condition */
 
     if ((status = sigfillset(&nsigset)) != 0)
-        return luab_pusherr(L, status);
+        goto out;
 
     if ((status = pthread_sigmask(SIG_BLOCK, &nsigset, NULL)) != 0)
-        return luab_pusherr(L, status);
+        goto out;
 
     if ((status = pthread_create(&tid, NULL, h_signal, NULL)) != 0)
-        return luab_pusherr(L, status);
+        goto out;
 
     if ((status = setitimer(which, value, ovalue)) != 0)
         pthread_cancel(tid);
-
+out:
     return luab_pusherr(L, status);
 }
 
@@ -169,7 +169,7 @@ luab_getitimer(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     which = luab_checkinteger(L, 1, INT_MAX);
-    value = (struct itimerval *)luab_checkudata(L, 2, &itimerval_type);
+    value = (struct itimerval *)(*itimerval_type.get)(L, 2);
 
     status = getitimer(which, value);
 
