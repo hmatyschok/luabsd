@@ -23,15 +23,6 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- * The implementation of the interface against setitimer(2) is derived from:
- *
- * lalarm.c
- * an alarm library for Lua based on signal
- * Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>
- * 28 Jul 2018 12:47:52
- * This code is hereby placed in the public domain and also under the MIT license
- */
 
 #include <sys/limits.h>
 #include <sys/time.h>
