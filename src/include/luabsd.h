@@ -63,7 +63,7 @@ typedef struct luab_module {
     luab_table_t    *vec;
     luab_init_fn    init;
     luab_udata_fn    get;
-    luab_ctor_fn    new;
+    luab_ctor_fn    ctor;
 } luab_module_t;
 
 typedef struct luab_iovec {

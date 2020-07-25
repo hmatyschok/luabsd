@@ -2971,23 +2971,85 @@ luab_fflagstostr(lua_State *L)
 }
 
 /***
- * getdomainname(3) - get NIS domaoinname of current host
+ * getdomainname(3) - get NIS domainname of current host
  *
  * @function getdomainname
  *
- * @param flags         Flags as described in chflags(1).
+ * @param name          Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param namelen       Maximum size of buffer maps to name.
  *
- * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])     (str [, nil]) on success or
- *                                                  (nil, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
  *
- * @usage str [, msg ] = bsd.unistd.getdomainname()
+ * @usage err [, msg ] = bsd.unistd.getdomainname(name, namelen)
  */
 static int
 luab_getdomainname(lua_State *L)
 {
+    luab_iovec_t *buf;
+    size_t namelen;
+    caddr_t name;
+    int status;
 
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    namelen = luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if ((((name = buf->iov.iov_base) != NULL)) &&
+        (buf->iov_max_len <= MAXHOSTNAMELEN) &&
+        (namelen <= buf->iov_max_len)) {
+        if ((status = getdomainname(name, namelen)) == 0)
+            buf->iov.iov_len = namelen;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
 }
 
+/***
+ * setdomainname(3) - set NIS domainname of current host
+ *
+ * @function getdomainname
+ *
+ * @param name          Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param namelen       Maximum size of buffer maps to name.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.setdomainname(name, namelen)
+ */
+static int
+luab_setdomainname(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int namelen;
+    caddr_t name;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    namelen = luab_checkinteger(L, 2, INT_MAX);
+
+    if (((name = buf->iov.iov_base) != 0) &&
+        (buf->iov_max_len <= MAXHOSTNAMELEN) &&
+        ((size_t)namelen <= buf->iov_max_len))
+        status = setdomainname(name, namelen);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
 
 /***
  * pipe2(2) - create descriptor pair for interprocess communication
@@ -3503,6 +3565,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("feature_present",    luab_feature_present),
     LUABSD_FUNC("fflagstostr",  luab_fflagstostr),
     LUABSD_FUNC("getdomainname",  luab_getdomainname),
+    LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setgroups",    luab_setgroups),
