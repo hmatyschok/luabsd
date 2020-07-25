@@ -2941,6 +2941,36 @@ luab_feature_present(lua_State *L)
 }
 
 /***
+ * fflagstostr(3) - query presence of a kernel feature
+ *
+ * @function fflagstostr
+ *
+ * @param flags         Flags as described in chflags(1).
+ *
+ * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])     (str [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage str [, msg ] = bsd.unistd.fflagstostr(flags)
+ */
+static int
+luab_fflagstostr(lua_State *L)
+{
+    u_long flags;
+    char *str;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    flags = luab_checkinteger(L, 1, LONG_MAX);
+
+    str = fflagstostr(flags);
+    status = luab_pushstring(L, str);
+    free(str);
+
+    return status;
+}
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
@@ -3451,7 +3481,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("exect",   luab_exect),
     LUABSD_FUNC("execvP",   luab_execvP),
-    LUABSD_FUNC("check_feature_present",    luab_feature_present),
+    LUABSD_FUNC("feature_present",    luab_feature_present),
+    LUABSD_FUNC("fflagstostr",  luab_fflagstostr),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setgroups",    luab_setgroups),
