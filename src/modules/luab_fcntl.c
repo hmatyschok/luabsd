@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/limits.h>
 #include <sys/param.h>
 #include <sys/stat.h>
 
@@ -38,347 +37,9 @@
 
 #include "luabsd.h"
 
-/*
- * Interface against
- *
- *  struct flock {
- *      off_t   l_start;
- *      off_t   l_len;
- *      pid_t   l_pid;
- *      short   l_type;
- *      short   l_whence;
- *      int     l_sysid;
- *  };
- */
+extern luab_module_t flock_type;
 
-#define LUABSD_FLOCK_TYPE_ID    1593623399
-#define LUABSD_FLOCK_TYPE    "FLOCK*"
-
-typedef struct luab_flock {
-    struct flock    flock;
-} luab_flock_t;
-
-#define luab_newflock(L, arg) \
-    ((luab_flock_t *)luab_newuserdata(L, &flock_type, (arg)))
-#define luab_to_flock(L, narg) \
-    (luab_todata((L), (narg), &flock_type, luab_flock_t *))
-
-/* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
-static int
-Flock_set_l_start(lua_State *L)
-{
-    luab_flock_t *self;
-    off_t l_start;
-
-    luab_checkmaxargs(L, 2);
-
-    self = luab_to_flock(L, 1);
-    l_start = luab_checkinteger(L, 2, ULONG_MAX);
-
-    self->flock.l_start = l_start;
-
-    return 0;
-}
-
-static int
-Flock_get_l_start(lua_State *L)
-{
-    luab_flock_t *self;
-    off_t l_start;
-
-    luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    l_start = self->flock.l_start;
-
-    lua_pushinteger(L, l_start);
-
-    return 1;
-}
-
-/* len = 0 means until end of file */
-static int
-Flock_set_l_len(lua_State *L)
-{
-    luab_flock_t *self;
-    off_t l_len;
-
-    luab_checkmaxargs(L, 2);
-
-    self = luab_to_flock(L, 1);
-    l_len = luab_checkinteger(L, 2, LONG_MAX);
-
-    self->flock.l_len = l_len;
-
-    return 0;
-}
-
-static int
-Flock_get_l_len(lua_State *L)
-{
-    luab_flock_t *self;
-    off_t l_len;
-
-    luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    l_len = self->flock.l_len;
-
-    lua_pushinteger(L, l_len);
-
-    return 1;
-}
-
-/* lock owner */
-static int
-Flock_set_l_pid(lua_State *L)
-{
-    luab_flock_t *self;
-    pid_t l_pid;
-
-    luab_checkmaxargs(L, 2);
-
-    self = luab_to_flock(L, 1);
-    l_pid = luab_checkinteger(L, 2, INT_MAX);
-
-    self->flock.l_pid = l_pid;
-
-    return 0;
-}
-
-static int
-Flock_get_l_pid(lua_State *L)
-{
-    luab_flock_t *self;
-    pid_t l_pid;
-
-    luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    l_pid = self->flock.l_pid;
-
-    lua_pushinteger(L, l_pid);
-
-    return 1;
-}
-
-/* lock type: read/write, etc. */
-static int
-Flock_set_l_type(lua_State *L)
-{
-    luab_flock_t *self;
-    int l_type;
-
-    luab_checkmaxargs(L, 2);
-
-    self = luab_to_flock(L, 1);
-    l_type = luab_checkinteger(L, 2, SHRT_MAX);
-
-    self->flock.l_type = (short)l_type;
-
-    return 0;
-}
-
-static int
-Flock_get_l_type(lua_State *L)
-{
-    luab_flock_t *self;
-    int l_type;
-
-    luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    l_type = self->flock.l_type;
-
-    lua_pushinteger(L, l_type);
-
-    return 1;
-}
-
-/* type of l_start */
-static int
-Flock_set_l_whence(lua_State *L)
-{
-    luab_flock_t *self;
-    int l_whence;
-
-    luab_checkmaxargs(L, 2);
-
-    self = luab_to_flock(L, 1);
-    l_whence = luab_checkinteger(L, 2, SHRT_MAX);
-
-    self->flock.l_whence = (short)l_whence;
-
-    return 0;
-}
-
-static int
-Flock_get_l_whence(lua_State *L)
-{
-    luab_flock_t *self;
-    int l_whence;
-
-    luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    l_whence = self->flock.l_whence;
-
-    lua_pushinteger(L, l_whence);
-
-    return 1;
-}
-
-/* remote system id or zero for local */
-static int
-Flock_set_l_sysid(lua_State *L)
-{
-    luab_flock_t *self;
-    int l_sysid;
-
-    luab_checkmaxargs(L, 2);
-
-    self = luab_to_flock(L, 1);
-    l_sysid = luab_checkinteger(L, 2, INT_MAX);
-
-    self->flock.l_sysid = l_sysid;
-
-    return 0;
-}
-
-static int
-Flock_get_l_sysid(lua_State *L)
-{
-    luab_flock_t *self;
-    int l_sysid;
-
-    luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    l_sysid = self->flock.l_sysid;
-
-    lua_pushinteger(L, l_sysid);
-
-    return 1;
-}
-
-/*
- * Maps attributes on flock{} to an instance of LUA_TTABLE.
- */
-static int
-Flock_get(lua_State *L)
-{
-    luab_flock_t *self;
-
-    luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "l_start", self->flock.l_start);
-    luab_setinteger(L, -2, "l_len", self->flock.l_len);
-    luab_setinteger(L, -2, "l_pid", self->flock.l_pid);
-    luab_setinteger(L, -2, "l_type", self->flock.l_type);
-    luab_setinteger(L, -2, "l_whence", self->flock.l_whence);
-    luab_setinteger(L, -2, "l_sysid", self->flock.l_sysid);
-
-    lua_pushvalue(L, -1);
-
-    return 1;
-}
-
-static int
-Flock_gc(lua_State *L)
-{
-    luab_flock_t *self;
-    luab_module_t *m;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    m = &flock_type;
-
-    (void)memset_s(self, m->sz, 0, m->sz);
-
-    return 0;
-}
-
-static int
-Flock_tostring(lua_State *L)
-{
-    luab_flock_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_flock(L, 1);
-    lua_pushfstring(L, "flock (%p)", self);
-
-    return 1;
-}
-
-static luab_table_t flock_methods[] = {
-    LUABSD_FUNC("set_l_start",  Flock_set_l_start),
-    LUABSD_FUNC("set_l_len",    Flock_set_l_len),
-    LUABSD_FUNC("set_l_pid",    Flock_set_l_pid),
-    LUABSD_FUNC("set_l_type",   Flock_set_l_type),
-    LUABSD_FUNC("set_l_whence", Flock_set_l_whence),
-    LUABSD_FUNC("set_l_sysid",  Flock_set_l_sysid),
-    LUABSD_FUNC("get",  Flock_get),
-    LUABSD_FUNC("get_l_start",  Flock_get_l_start),
-    LUABSD_FUNC("get_l_len",    Flock_get_l_len),
-    LUABSD_FUNC("get_l_pid",    Flock_get_l_pid),
-    LUABSD_FUNC("get_l_type",   Flock_get_l_type),
-    LUABSD_FUNC("get_l_whence", Flock_get_l_whence),
-    LUABSD_FUNC("get_l_sysid",  Flock_get_l_sysid),
-    LUABSD_FUNC("__gc", Flock_gc),
-    LUABSD_FUNC("__tostring",   Flock_tostring),
-    LUABSD_FUNC(NULL, NULL)
-};
-
-static void
-flock_init(void *ud, void *arg)
-{                                           /* XXX */
-    luab_flock_t *self = (luab_flock_t *)ud;
-
-    (void)memmove(&self->flock, arg, sizeof(self->flock));
-}
-
-static void *
-flock_udata(lua_State *L, int narg)
-{
-    luab_flock_t *self = luab_to_flock(L, narg);
-
-    return (&self->flock);
-}
-
-luab_module_t flock_type = {
-    .cookie = LUABSD_FLOCK_TYPE_ID,
-    .name = LUABSD_FLOCK_TYPE,
-    .vec = flock_methods,
-    .init = flock_init,
-    .get = flock_udata,
-    .sz = sizeof(luab_flock_t),
-};
-
-static int
-luab_StructFlock(lua_State *L)
-{
-    int narg = luab_checkmaxargs(L, 1);
-    struct flock *flock;
-    int status;
-
-    if (narg == 0)
-        flock = NULL;
-    else
-        flock = flock_udata(L, narg);
-
-    if (luab_newflock(L, flock) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return status;
-}
+extern int  luab_StructFlock(lua_State *);
 
 /*
  * Interface against service primitives on <fcntl.h>.
@@ -487,7 +148,7 @@ luab_fcntl(lua_State *L)
 {
     int narg = luab_checkmaxargs(L, 3);
     int fd, cmd, arg, status;
-    luab_flock_t *argp;
+    struct flock *argp;
 
     fd = luab_checkinteger(L, 1, INT_MAX);
     cmd = luab_checkinteger(L, 2, INT_MAX);
@@ -496,13 +157,13 @@ luab_fcntl(lua_State *L)
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
-            argp = luab_to_flock(L, narg);
+            argp = (struct flock *)(*flock_type.get)(L, narg);
         else
             arg = luab_checkinteger(L, narg, INT_MAX);
     }
 
     if (argp != NULL)
-        status = fcntl(fd, cmd, &argp->flock);
+        status = fcntl(fd, cmd, argp);
     else
         status = fcntl(fd, cmd, arg);
 
