@@ -3015,6 +3015,50 @@ luab_getdomainname(lua_State *L)
 }
 
 /***
+ * getentropy(3) - get entropy
+ *
+ * @function getentropy
+ *
+ * @param buf           Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param buflen        Maximum capacity for used buffer.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.getentropy(buf, buflen)
+ */
+static int
+luab_getentropy(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t buflen;
+    caddr_t entropy;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    buflen = luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if ((((entropy = buf->iov.iov_base) != NULL)) &&
+        (buf->iov_max_len <= 256) &&
+        (buflen <= buf->iov_max_len)) {
+        if ((status = getentropy(entropy, buflen)) == 0)
+            buf->iov.iov_len = buflen;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
+/***
  * setdomainname(3) - set NIS domainname of current host
  *
  * @function getdomainname
@@ -3565,6 +3609,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("feature_present",    luab_feature_present),
     LUABSD_FUNC("fflagstostr",  luab_fflagstostr),
     LUABSD_FUNC("getdomainname",  luab_getdomainname),
+    LUABSD_FUNC("getentropy",  luab_getentropy),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
