@@ -132,7 +132,7 @@ luab_checkgidset(lua_State *L, int narg, size_t len)
  *                          { "arg0" , "arg1" , ..., "argN" },
  *
  *                      instance of LUA_TTABLE.
- * 
+ *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
@@ -2876,7 +2876,7 @@ luab_exect(lua_State *L)
 }
 
 /***
- * exect(3) - execute a file
+ * execvP(3) - execute a file
  *
  * @function execvP
  *
@@ -2910,6 +2910,32 @@ luab_execvP(lua_State *L)
     status = execvP(file, search_path, __DECONST(char **, argv));
 
     free(argv);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * feature_present(3) - query presence of a kernel feature
+ *
+ * @function feature_present
+ *
+ * @param feature       Name of feature to check.
+ *
+ * @return (LUA_TNUMBER)                            (1 on success or 0)
+ *
+ * @usage err [, msg ] = bsd.unistd.feature_present(feature)
+ */
+static int
+luab_feature_present(lua_State *L)
+{
+    const char *feature;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    feature = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+
+    status = feature_present(feature);
 
     return luab_pusherr(L, status);
 }
@@ -3425,6 +3451,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("exect",   luab_exect),
     LUABSD_FUNC("execvP",   luab_execvP),
+    LUABSD_FUNC("check_feature_present",    luab_feature_present),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setgroups",    luab_setgroups),
