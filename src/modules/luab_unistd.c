@@ -48,10 +48,10 @@
 
 #include "luabsd.h"
 
+extern char **environ;
+
 extern luab_module_t crypt_data_type;
 extern int luab_StructCryptData(lua_State *);
-
-extern char **environ;
 
 /*
  * Subr. for luab_alerm(3).
@@ -2740,6 +2740,31 @@ luab_crypt_r(lua_State *L)
 }
 
 /***
+ * crypt_set_format(3) - trapddor encryption
+ *
+ * @function crypt_set_format
+ *
+ * @param string            Specifies encoding format.
+ *
+ * @return (LUA_TNUMBER)                            (1 on success or 0)
+ *
+ * @usage compat = bsd.unistd.crypt_set_format(utility)
+ */
+static int
+luab_crypt_set_format(lua_State *L)
+{
+    const char *string;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    string = luab_checklstring(L, 1, MAXPATHLEN);
+    status = crypt_set_format(string);
+
+    return luab_pusherr(L, status);
+}
+
+/***
  * eaccess(2) - check availability of a file
  *
  * @function eaccess
@@ -3273,6 +3298,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("check_utility_compat", luab_check_utility_compat),
     LUABSD_FUNC("crypt_get_format", luab_crypt_get_format),
     LUABSD_FUNC("crypt_r", luab_crypt_r),
+    LUABSD_FUNC("crypt_set_format", luab_crypt_set_format),
     LUABSD_FUNC("eaccess",   luab_eaccess),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),

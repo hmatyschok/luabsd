@@ -52,13 +52,13 @@
  *  } luab_iovec_t;
  */
 
-#define LUABSD_IOVEC_TYPE_ID    1594559731
-#define LUABSD_IOVEC_TYPE   "IOVEC*"
-
 #define luab_newiovec(L, arg) \
     ((luab_iovec_t *)luab_newuserdata(L, &iovec_type, (arg)))
 #define luab_to_iovec(L, narg) \
     (luab_todata((L), (narg), &iovec_type, luab_iovec_t *))
+
+#define LUABSD_IOVEC_TYPE_ID    1594559731
+#define LUABSD_IOVEC_TYPE   "IOVEC*"
 
 static int
 IOVec_clear(lua_State *L)
