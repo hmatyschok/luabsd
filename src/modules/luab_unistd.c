@@ -126,11 +126,13 @@ luab_checkgidset(lua_State *L, int narg, size_t len)
  *
  * @function execv
  *
- * @param path      Identifies the new process image file by its path.
- * @param argv      Argument vector, instance of LUA_TTABLE:
+ * @param path          Identifies the new process image file by its path.
+ * @param argv          Argument vector:
  *
- *                      { "arg0" , "arg1" , ..., argN }.
+ *                          { "arg0" , "arg1" , ..., "argN" },
  *
+ *                      instance of LUA_TTABLE.
+ * 
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
@@ -160,10 +162,12 @@ luab_execv(lua_State *L)
  *
  * @function execve
  *
- * @param path      Identifies the new process image file by its path.
- * @param argv      Argument vector, instance of LUA_TTABLE:
+ * @param path          Identifies the new process image file by its path.
+ * @param argv          Argument vector:
  *
- *                      { "arg0" , "arg1" , ..., argN }.
+ *                          { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                      instance of LUA_TTABLE.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -194,10 +198,12 @@ luab_execve(lua_State *L)
  *
  * @function execvp
  *
- * @param path      Identifies the new process image file by its path.
- * @param argv      Argument vector, instance of LUA_TTABLE:
+ * @param path          Identifies the new process image file by its path.
+ * @param argv          Argument vector:
  *
- *                      { "arg0" , "arg1" , ..., argN }.
+ *                          { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                      instance of LUA_TTABLE.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -229,11 +235,13 @@ luab_execvp(lua_State *L)
  *
  * @function fexecve
  *
- * @param fd        Identifies the new process image file by open file
- *                  descriptor.
- * @param argv      Argument vector, instance of LUA_TTABLE:
+ * @param fd            Identifies the new process image file by open file
+ *                      descriptor.
+ * @param argv          Argument vector:
  *
- *                      { "arg0" , "arg1" , ..., argN }.
+ *                          { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                      instance of LUA_TTABLE.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -2837,9 +2845,11 @@ luab_eaccess(lua_State *L)
  * @function exect
  *
  * @param path      Identifies the new process image file by its path.
- * @param argv      Argument vector, instance of LUA_TTABLE:
+ * @param argv      Argument vector:
  *
- *                      { "arg0" , "arg1" , ..., argN }.
+ *                          { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                      instance of LUA_TTABLE.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -2858,7 +2868,46 @@ luab_exect(lua_State *L)
     path = luab_checklstring(L, 1, MAXPATHLEN);
     argv = luab_checkargv(L, 2);
 
-    status = exect(path, __DECONST(char **, argv), envp);
+    status = exect(path, __DECONST(char **, argv), environ);
+
+    free(argv);
+
+    return luab_pusherr(L, status);
+}
+
+/***
+ * exect(3) - execute a file
+ *
+ * @function execvP
+ *
+ * @param file          Identifies the new process image file by its path.
+ * @param search_path   Search path.
+ * @param argv          Argument vector:
+ *
+ *                          { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                      instance of LUA_TTABLE.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.execvP(file, search_path, argv)
+ */
+static int
+luab_execvP(lua_State *L)
+{
+    const char *file;
+    const char *search_path;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    file = luab_checklstring(L, 1, MAXPATHLEN);
+    search_path = luab_checklstring(L, 2, MAXPATHLEN);
+    argv = luab_checkargv(L, 3);
+
+    status = execvP(file, search_path, __DECONST(char **, argv));
 
     free(argv);
 
@@ -3374,7 +3423,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("crypt_set_format", luab_crypt_set_format),
     LUABSD_FUNC("crypt_dup3", luab_dup3),
     LUABSD_FUNC("eaccess",   luab_eaccess),
-    LUABSD_FUNC("exec",   luab_exect),
+    LUABSD_FUNC("exect",   luab_exect),
+    LUABSD_FUNC("execvP",   luab_execvP),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setgroups",    luab_setgroups),
