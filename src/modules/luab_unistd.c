@@ -2971,6 +2971,25 @@ luab_fflagstostr(lua_State *L)
 }
 
 /***
+ * getdomainname(3) - get NIS domaoinname of current host
+ *
+ * @function getdomainname
+ *
+ * @param flags         Flags as described in chflags(1).
+ *
+ * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])     (str [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage str [, msg ] = bsd.unistd.getdomainname()
+ */
+static int
+luab_getdomainname(lua_State *L)
+{
+
+}
+
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
@@ -3483,6 +3502,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("execvP",   luab_execvP),
     LUABSD_FUNC("feature_present",    luab_feature_present),
     LUABSD_FUNC("fflagstostr",  luab_fflagstostr),
+    LUABSD_FUNC("getdomainname",  luab_getdomainname),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setgroups",    luab_setgroups),
