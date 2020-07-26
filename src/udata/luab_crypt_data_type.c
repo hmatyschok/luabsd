@@ -203,14 +203,12 @@ static int
 CryptData_gc(lua_State *L)
 {
     luab_crypt_data_t *self;
-    luab_module_t *m;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_crypt_data(L, 1);
-    m = &crypt_data_type;
 
-    (void)memset_s(self, m->sz, 0, m->sz);
+    (void)memset_s(self, crypt_data_type.sz, 0, crypt_data_type.sz);
 
     return 0;
 }

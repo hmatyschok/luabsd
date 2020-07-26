@@ -799,14 +799,12 @@ static int
 Stat_gc(lua_State *L)
 {
     luab_stat_t *self;
-    luab_module_t *m;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_stat(L, 1);
-    m = &stat_type;
 
-    (void)memset_s(self, m->sz, 0, m->sz);
+    (void)memset_s(self, stat_type.sz, 0, stat_type.sz);
 
     return 0;
 }

@@ -189,14 +189,12 @@ static int
 TimeSpec_gc(lua_State *L)
 {
     luab_timespec_t *self;
-    luab_module_t *m;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_timespec(L, 1);
-    m = &timespec_type;
 
-    (void)memset_s(self, m->sz, 0, m->sz);
+    (void)memset_s(self, timespec_type.sz, 0, timespec_type.sz);
 
     return 0;
 }

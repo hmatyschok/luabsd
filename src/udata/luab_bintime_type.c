@@ -189,14 +189,12 @@ static int
 BinTime_gc(lua_State *L)
 {
     luab_bintime_t *self;
-    luab_module_t *m;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_bintime(L, 1);
-    m = &bintime_type;
 
-    (void)memset_s(self, m->sz, 0, m->sz);
+    (void)memset_s(self, bintime_type.sz, 0, bintime_type.sz);
 
     return 0;
 }

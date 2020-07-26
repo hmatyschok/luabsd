@@ -294,14 +294,12 @@ static int
 ClockInfo_gc(lua_State *L)
 {
     luab_clockinfo_t *self;
-    luab_module_t *m;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_clockinfo(L, 1);
-    m = &clockinfo_type;
 
-    (void)memset_s(self, m->sz, 0, m->sz);
+    (void)memset_s(self, clockinfo_type.sz, 0, clockinfo_type.sz);
 
     return 0;
 }

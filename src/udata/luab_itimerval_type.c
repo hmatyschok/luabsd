@@ -192,14 +192,12 @@ static int
 ItimerVal_gc(lua_State *L)
 {
     luab_itimerval_t *self;
-    luab_module_t *m;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_itimerval(L, 1);
-    m = &itimerval_type;
 
-    (void)memset_s(self, m->sz, 0, m->sz);
+    (void)memset_s(self, itimerval_type.sz, 0, itimerval_type.sz);
 
     return 0;
 }
