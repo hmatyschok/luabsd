@@ -24,6 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 #include <arpa/inet.h>
 
 #include <lua.h>
@@ -31,6 +34,9 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+
+extern luab_module_t in_addr_type;
+extern int luab_StructInAddr(lua_State *);
 
 #define LUABSD_ARPA_INET_LIB_ID    1595780686
 #define LUABSD_ARPA_INET_LIB_KEY   "inet"
@@ -65,6 +71,7 @@ static luab_table_t luab_arpa_inet_vec[] = {   /* arpa/inet.h */
     LUABSD_FUNC("inet_nsap_ntoa",   luab_inet_nsap_ntoa),
 #endif /* __BSD_VISIBLE */
 #endif
+    LUABSD_FUNC("StructInAddr", luab_StructInAddr),
     LUABSD_FUNC(NULL, NULL)
 };
 
