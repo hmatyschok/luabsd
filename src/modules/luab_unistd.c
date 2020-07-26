@@ -3047,7 +3047,7 @@ luab_getentropy(lua_State *L)
     );
 
     if ((((entropy = buf->iov.iov_base) != NULL)) &&
-        (buf->iov_max_len <= 256) &&
+        (buf->iov_max_len <= MAX_INPUT) &&
         (buflen <= buf->iov_max_len)) {
         if ((status = getentropy(entropy, buflen)) == 0)
             buf->iov.iov_len = buflen;
@@ -3063,8 +3063,8 @@ luab_getentropy(lua_State *L)
  *
  * @function getgrouplist
  *
- * @param name          ...
- * @param basegid       ...
+ * @param name          Group name.
+ * @param basegid       Base group ID.
  * @param gidset        Empty instance of LUA_TTABLE, but still populated
  *
  *                          { "gid0" , "gid1" , ..., "gidN" },
@@ -3113,6 +3113,50 @@ luab_getgrouplist(lua_State *L)
         status = -1;
     }
     return luab_pusherr(L, ngroups);
+}
+
+/***
+ * getloginclass(2) - get login class
+ *
+ * @function getloginclass
+ *
+ * @param name          Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param len           Maximum capacity for used buffer.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.getloginclass(name, len)
+ */
+static int
+luab_getloginclass(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t len;
+    caddr_t name;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+    len = luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if ((((name = buf->iov.iov_base) != NULL)) &&
+        (buf->iov_max_len <= MAXLOGNAME) &&
+        (len <= buf->iov_max_len)) {
+        if ((status = getloginclass(name, len)) == 0)
+            buf->iov.iov_len = len;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
 }
 
 /***
@@ -3304,6 +3348,39 @@ luab_setlogin(lua_State *L)
     name = luab_checklstring(L, 1, MAXLOGNAME);
     status = setlogin(name);
 
+    return luab_pusherr(L, status);
+}
+
+/***
+ * setloginclass(2) - set login class
+ *
+ * @function Setloginclass
+ *
+ * @param name          Instance of LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.unistd.setloginclass(name, len)
+ */
+static int
+luab_setloginclass(lua_State *L)
+{
+    luab_iovec_t *buf;
+    caddr_t name;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
+
+    if ((((name = buf->iov.iov_base) != NULL)) &&
+        (buf->iov_max_len <= MAXLOGNAME))
+        status = setloginclass(name);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
     return luab_pusherr(L, status);
 }
 #endif /* __BSD_VISIBLE */
@@ -3668,12 +3745,14 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getdomainname",  luab_getdomainname),
     LUABSD_FUNC("getentropy",  luab_getentropy),
     LUABSD_FUNC("getgrouplist", luab_getgrouplist),
+    LUABSD_FUNC("getloginclass",    luab_getloginclass),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("setgroups",    luab_setgroups),
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
+    LUABSD_FUNC("setloginclass",    luab_setloginclass),
     LUABSD_FUNC("StructCryptData",  luab_StructCryptData),
 #endif /* __BSD_VISIBLE */
     LUABSD_FUNC(NULL, NULL)
