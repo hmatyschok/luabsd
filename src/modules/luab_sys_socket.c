@@ -35,11 +35,16 @@
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
 #define LUABSD_SYS_SOCKET_LIB_KEY   "socket"
 
+extern luab_module_t luab_sys_socket_lib;
+
 /*
  * Interface against <sys/socket.h>.
  */
 
 static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
+#if __BSD_VISIBLE
+    LUABSD_INT("SOCK_MAXADDRLEN",   SOCK_MAXADDRLEN),
+#endif
     LUABSD_INT("SOCK_STREAM",   SOCK_STREAM),
     LUABSD_INT("SOCK_DGRAM",    SOCK_DGRAM),
     LUABSD_INT("SOCK_RAW",  SOCK_RAW),
@@ -294,6 +299,9 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_INT("SF_SYNC",   SF_SYNC),
     LUABSD_INT("SF_USER_READAHEAD", SF_USER_READAHEAD),
     LUABSD_INT("SF_NOCACHE",    SF_NOCACHE),
+#endif
+#if 0
+    LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr)
 #endif
     LUABSD_INT(NULL, 0)
 };

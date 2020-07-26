@@ -65,6 +65,15 @@ extern int  luab_StructTimeZone(lua_State *);
 extern int luab_StructBinTime(lua_State *);
 #endif
 
+#define LUABSD_SYS_TIME_LIB_ID    1593623310
+#define LUABSD_SYS_TIME_LIB_KEY    "time"
+
+extern luab_module_t luab_sys_time_lib;
+
+/*
+ * Interface against components or service primitives on sys/time.h.
+ */
+
 static sigset_t nsigset;
 static pthread_t tid;
 
@@ -114,13 +123,6 @@ h_signal(void *arg __unused)
 out:
     pthread_exit(NULL);
 }
-
-/*
- * Interface against components or service primitives on sys/time.h.
- */
-
-#define LUABSD_SYS_TIME_LIB_ID    1593623310
-#define LUABSD_SYS_TIME_LIB_KEY    "time"
 
 static int
 luab_setitimer(lua_State *L)

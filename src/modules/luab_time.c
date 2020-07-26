@@ -36,6 +36,11 @@
 
 #include "luabsd.h"
 
+#define LUABSD_TIME_LIB_ID    1594167179
+#define LUABSD_TIME_LIB_KEY    "time"
+
+extern luab_module_t luab_time_lib;
+
 /*
  * Interface against
  *
@@ -725,10 +730,6 @@ luab_StructTM(lua_State *L)
 /*
  * Interface against components or service primitives over <time.h>.
  */
-
-#define LUABSD_TIME_LIB_ID    1594167179
-#define LUABSD_TIME_LIB_KEY    "time"
-
 
 static luab_table_t luab_time_vec[] = { /* time.h */
 #if __POSIX_VISIBLE > 0 && __POSIX_VISIBLE < 200112 || __BSD_VISIBLE

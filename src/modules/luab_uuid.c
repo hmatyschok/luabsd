@@ -38,6 +38,8 @@
 #define LUABSD_UUID_LIB_ID    1593623310
 #define LUABSD_UUID_LIB_KEY "uuid"
 
+extern luab_module_t luab_uuid_lib;
+
 /*
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
  */

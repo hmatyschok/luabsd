@@ -48,14 +48,22 @@
 
 #include "luabsd.h"
 
-extern char **environ;
-
 extern luab_module_t crypt_data_type;
 extern int luab_StructCryptData(lua_State *);
 
+#define LUABSD_UNISTD_LIB_ID    1593623310
+#define LUABSD_UNISTD_LIB_KEY   "unistd"
+
+extern luab_module_t luab_unistd_lib;
+
 /*
- * Subr. for luab_alerm(3).
+ * Interface against components or service primitives over <unistd.h>.
  */
+
+extern char **environ;
+
+/* Subr. for luab_alerm(3). */
+
 static lua_State *saved_L;
 static lua_Hook h;
 
@@ -86,9 +94,7 @@ h_signal(int arg __unused)
     lua_sethook(saved_L, h_callout, l_msk, 1);
 }
 
-/*
- * Translate a LUA_TTABLE into an array of gid_t items.
- */
+/* Translate a LUA_TTABLE into an array of gid_t items. */
 static gid_t *
 luab_checkgidset(lua_State *L, int narg, size_t len)
 {
@@ -114,13 +120,7 @@ luab_checkgidset(lua_State *L, int narg, size_t len)
     return vec;
 }
 
-/*
- * Interface against (subset of) functions of exec(3) family.
- */
-
-#define LUABSD_UNISTD_LIB_ID    1593623310
-#define LUABSD_UNISTD_LIB_KEY   "unistd"
-
+/* Interface against (subset of) functions of exec(3) family. */
 /***
  * execv(3) - execute a file
  *
@@ -305,10 +305,6 @@ luab_alarm(lua_State *L)
 
     return luab_pusherr(L, status);
 }
-
-/*
- * Interface against components or service primitives over <unistd.h>.
- */
 
 /***
  * access(2) - check availability of a file

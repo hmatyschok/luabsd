@@ -36,6 +36,11 @@
 
 #include "luabsd.h"
 
+#define LUABSD_SYS_UIO_LIB_ID    1594559271
+#define LUABSD_SYS_UIO_LIB_KEY   "uio"
+
+extern luab_module_t luab_sys_uio_lib;
+
 /*
  * Interface against
  *
@@ -330,9 +335,6 @@ luab_StructIOVec(lua_State *L)
 /*
  * Interface against <sys/uio.h>.
  */
-
-#define LUABSD_SYS_UIO_LIB_ID    1594559271
-#define LUABSD_SYS_UIO_LIB_KEY   "uio"
 
 static luab_table_t luab_sys_uio_vec[] = {   /* sys/uio.h */
 #if __BSD_VISIBLE

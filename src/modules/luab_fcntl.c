@@ -41,12 +41,14 @@ extern luab_module_t flock_type;
 
 extern int  luab_StructFlock(lua_State *);
 
+#define LUABSD_FCNTL_LIB_ID    1593623310
+#define LUABSD_FCNTL_LIB_KEY    "fcntl"
+
+extern luab_module_t luab_fcntl_lib;
+
 /*
  * Interface against service primitives on <fcntl.h>.
  */
-
-#define LUABSD_FCNTL_LIB_ID    1593623310
-#define LUABSD_FCNTL_LIB_KEY    "fcntl"
 
 /***
  * open(2) - open or create for reading, writing or executing

@@ -1,6 +1,8 @@
 
 .PATH:	${LUAB_SRCTOP}/modules
 
+SRCS+=  luab_arpa_inet.c
+
 SRCS+=  luab_sys_file.c
 SRCS+=  luab_sys_stat.c
 SRCS+=  luab_sys_time.c

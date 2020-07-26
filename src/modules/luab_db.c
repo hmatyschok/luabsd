@@ -38,6 +38,11 @@
 
 #include "luabsd.h"
 
+#define LUABSD_DB_LIB_ID    1593623310
+#define LUABSD_DB_LIB_KEY    "db"
+
+extern luab_module_t luab_db_lib;
+
 /*
  * Interface against db(3).
  */
@@ -361,9 +366,6 @@ luab_dbopen(lua_State *L)
     return status;
 }
 #endif
-
-#define LUABSD_DB_LIB_ID    1593623310
-#define LUABSD_DB_LIB_KEY    "db"
 
 static luab_table_t luab_db_vec[] = {   /* db.h */
     LUABSD_INT("RET_ERROR", RET_ERROR),

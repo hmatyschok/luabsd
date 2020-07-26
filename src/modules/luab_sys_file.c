@@ -35,6 +35,8 @@
 #define LUABSD_SYS_FILE_LIB_ID    1593623310
 #define LUABSD_SYS_FILE_LIB_KEY    "file"
 
+extern luab_module_t luab_sys_file_lib;
+
 static luab_table_t luab_sys_file_vec[] = { /* sys/file.h */
     LUABSD_INT("DTYPE_NONE",    DTYPE_NONE),
     LUABSD_INT("DTYPE_VNODE",   DTYPE_VNODE),

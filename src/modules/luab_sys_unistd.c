@@ -35,6 +35,8 @@
 #define LUABSD_SYS_UNISTD_LIB_ID    1593623310
 #define LUABSD_SYS_UNISTD_LIB_KEY   "unistd"
 
+extern luab_module_t luab_sys_unistd_lib;
+
 static luab_table_t luab_sys_unistd_vec[] = {   /* sys/unistd.h */
     LUABSD_INT("_POSIX_ADVISORY_INFO",  _POSIX_ADVISORY_INFO),
     LUABSD_INT("_POSIX_ASYNCHRONOUS_IO",    _POSIX_ASYNCHRONOUS_IO),

@@ -24,9 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/types.h>
-
-#include <stdlib.h>
+#include <arpa/inet.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -34,51 +32,44 @@
 
 #include "luabsd.h"
 
-#define LUABSD_STDLIB_LIB_ID    1593623310
-#define LUABSD_STDLIB_LIB_KEY    "stdlib"
+#define LUABSD_ARPA_INET_LIB_ID    1595780686
+#define LUABSD_ARPA_INET_LIB_KEY   "inet"
 
-extern luab_module_t luab_stdlib_lib;
+extern luab_module_t luab_arpa_inet_lib;
 
 /*
- * Components or service primitives on stdlib.h.
+ * Interface against <arpa/inet.h>.
  */
 
-static int
-luab_arc4random(lua_State *L)
-{
-    uint32_t n = arc4random();
-    
-    luab_checkmaxargs(L, 0);
-    lua_pushinteger(L, n);
-
-    return 1;
-}
-
-static int
-luab_arc4random_uniform(lua_State *L)
-{
-    uint32_t ub = luaL_checkinteger(L, 1);
-    uint32_t n;
-    
-    luab_checkmaxargs(L, 1);
-    n = arc4random_uniform(ub);
-
-    lua_pushinteger(L, n);
-
-    return 1;
-}
-
-static luab_table_t luab_stdlib_vec[] = {   /* stdlib.h */
-    LUABSD_INT("EXIT_FAILURE",  EXIT_FAILURE),
-    LUABSD_INT("EXIT_SUCCESS",  EXIT_SUCCESS),
-    LUABSD_INT("RAND_MAX",  RAND_MAX),
-    LUABSD_FUNC("arc4random", luab_arc4random),
-    LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
+static luab_table_t luab_arpa_inet_vec[] = {   /* arpa/inet.h */
+    LUABSD_INT("INET_ADDRSTRLEN",   INET_ADDRSTRLEN),
+    LUABSD_INT("INET6_ADDRSTRLEN",  INET6_ADDRSTRLEN),
+#if 0
+    LUABSD_FUNC("inet_addr",    luab_inet_addr),
+    LUABSD_FUNC("inet_ntoa",    luab_inet_ntoa),
+    LUABSD_FUNC("inet_ntop",    luab_inet_ntop),
+    LUABSD_FUNC("inet_pton",    luab_inet_pton),
+#if __BSD_VISIBLE
+    LUABSD_FUNC("inet_aton",    luab_inet_aton),
+    LUABSD_FUNC("inet_lnaof",   luab_inet_lnaof),
+    LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
+    LUABSD_FUNC("inet_neta",    luab_inet_neta),
+    LUABSD_FUNC("inet_netof",   luab_inet_netof),
+    LUABSD_FUNC("inet_network", luab_inet_network),
+    LUABSD_FUNC("inet_net_ntop",    luab_inet_net_ntop),
+    LUABSD_FUNC("inet_net_pton",    luab_inet_net_pton),
+    LUABSD_FUNC("inet_ntoa_r",  luab_inet_ntoa_r),
+    LUABSD_FUNC("inet_cidr_ntop",   luab_inet_cidr_ntop),
+    LUABSD_FUNC("inet_cidr_pton",   luab_inet_cidr_pton),
+    LUABSD_FUNC("inet_nsap_addr",   luab_inet_nsap_addr),
+    LUABSD_FUNC("inet_nsap_ntoa",   luab_inet_nsap_ntoa),
+#endif /* __BSD_VISIBLE */
+#endif
     LUABSD_FUNC(NULL, NULL)
 };
 
-luab_module_t luab_stdlib_lib = {
-    .cookie = LUABSD_STDLIB_LIB_ID,
-    .name = LUABSD_STDLIB_LIB_KEY,
-    .vec = luab_stdlib_vec,
+luab_module_t luab_arpa_inet_lib = {
+    .cookie = LUABSD_ARPA_INET_LIB_ID,
+    .name = LUABSD_ARPA_INET_LIB_KEY,
+    .vec = luab_arpa_inet_vec,
 };

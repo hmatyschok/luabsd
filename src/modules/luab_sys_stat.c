@@ -43,6 +43,8 @@ extern int luab_StructStat(lua_State *);
 #define LUABSD_SYS_STAT_LIB_ID    1593623310
 #define LUABSD_SYS_STAT_LIB_KEY    "stat"
 
+extern luab_module_t luab_sys_stat_lib;
+
 /*
  * Components or service primitives over sys/stat.h.
  */
