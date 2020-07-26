@@ -71,17 +71,19 @@ typedef struct luab_iovec {
     size_t  iov_max_len;
 } luab_iovec_t;
 
+const char **    luab_checkargv(lua_State *, int);
+int *   luab_checkintvector(lua_State *, int, size_t);
+const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
+struct timespec *   luab_checktimesvector(lua_State *, int, size_t);
+
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
+void *  luab_newvector(lua_State *, int, size_t, size_t);
+
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);
 void    luab_pushtimesvector(lua_State *, int, size_t, void *);
-void *  luab_newvector(lua_State *, int, size_t, size_t);
-const char **    luab_checkargv(lua_State *, int);
-int *   luab_checkintvector(lua_State *, int, size_t);
-const char *    luab_checklstring(lua_State *, int, size_t);
-struct timespec *   luab_checktimesvector(lua_State *, int, size_t);
 
 #define luab_todata(L, narg, id, t) \
     ((t)luab_checkudata((L), (narg), (id)))
@@ -105,6 +107,27 @@ struct timespec *   luab_checktimesvector(lua_State *, int, size_t);
         if (luab_newuserdata((L), (id), (v)) != NULL)       \
             lua_setfield((L), (narg), (k));                 \
     } while (0)
+
+/* Push binary string at field on instance of LUA_TTABLE */
+static __inline void
+luab_setbuff(lua_State *L, int narg, const char *k, caddr_t v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t buf;
+
+    if (k != NULL && v != NULL && len > 0) {
+        luaL_buffinit(L, &b);
+
+        buf = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(buf, v, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        lua_setfield(L, narg, k);
+    }
+}
 
 static __inline lua_Integer
 luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
