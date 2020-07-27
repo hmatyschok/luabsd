@@ -47,12 +47,76 @@ extern luab_module_t luab_arpa_inet_lib;
  * Interface against <arpa/inet.h>.
  */
 
-static luab_table_t luab_arpa_inet_vec[] = {   /* arpa/inet.h */
+/***
+ * inet_addr(3) - Internet address manipulation routines
+ *
+ * @function inet_addr
+ *
+ * @param cp                String denotes IPv4 address.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage in_addr [, msg ] = bsd.arpa.inet.inet_addr(cp)
+ */
+static int
+luab_inet_addr(lua_State *L)
+{
+    const char *cp;
+    struct in_addr ia;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
+
+    ia.s_addr = inet_addr(cp);
+
+    if (luab_newuserdata(L, &in_addr_type, &ia) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
+/***
+ * inet_ntoa(3) - Internet address manipulation routines
+ *
+ * @function inet_ntoa
+ *
+ * @param in                Instance of LUA_TUSERDATA(luab_in_addr_t).
+ *
+ * @return (LUA_TSTRING)
+ *
+ * @usage cp = bsd.arpa.inet.inet_ntoa(in)
+ */
+static int
+luab_inet_ntoa(lua_State *L)
+{
+    struct in_addr *ia;
+    const char *cp;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+
+    cp = inet_ntoa(*ia);
+
+    return luab_pushstring(L, cp);
+}
+
+/*
+ * arpa/inet.h
+ */
+
+static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_INT("INET_ADDRSTRLEN",   INET_ADDRSTRLEN),
     LUABSD_INT("INET6_ADDRSTRLEN",  INET6_ADDRSTRLEN),
-#if 0
     LUABSD_FUNC("inet_addr",    luab_inet_addr),
+
     LUABSD_FUNC("inet_ntoa",    luab_inet_ntoa),
+#if 0
     LUABSD_FUNC("inet_ntop",    luab_inet_ntop),
     LUABSD_FUNC("inet_pton",    luab_inet_pton),
 #if __BSD_VISIBLE
