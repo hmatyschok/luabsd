@@ -107,6 +107,7 @@ luab_inet_ntoa(lua_State *L)
     return luab_pushstring(L, cp);
 }
 
+#if __BSD_VISIBLE
 /***
  * inet_aton(3) - Internet address manipulation routines
  *
@@ -137,6 +138,40 @@ luab_inet_aton(lua_State *L)
     return luab_pusherr(L, status);
 }
 
+/***
+ * inet_network(3) - Internet address manipulation routines
+ *
+ * @function inet_network
+ *
+ * @param cp                String denotes IPv4 address.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage in_addr [, msg ] = bsd.arpa.inet.inet_network(cp)
+ */
+static int
+luab_inet_network(lua_State *L)
+{
+    const char *cp;
+    struct in_addr ia;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
+
+    ia.s_addr = inet_network(cp);
+
+    if (luab_newuserdata(L, &in_addr_type, &ia) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+#endif /* __BSD_VISIBLE */
+
 /*
  * arpa/inet.h
  */
@@ -158,7 +193,9 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
     LUABSD_FUNC("inet_neta",    luab_inet_neta),
     LUABSD_FUNC("inet_netof",   luab_inet_netof),
+#endif    
     LUABSD_FUNC("inet_network", luab_inet_network),
+#if 0
     LUABSD_FUNC("inet_net_ntop",    luab_inet_net_ntop),
     LUABSD_FUNC("inet_net_pton",    luab_inet_net_pton),
     LUABSD_FUNC("inet_ntoa_r",  luab_inet_ntoa_r),
