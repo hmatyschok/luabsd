@@ -10,3 +10,4 @@ SRCS+=	luab_itimerval_type.c
 SRCS+=	luab_stat_type.c
 SRCS+=	luab_timespec_type.c
 SRCS+=	luab_timezone_type.c
+SRCS+=	luab_tm_type.c

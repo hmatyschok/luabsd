@@ -181,7 +181,7 @@ ItimerVal_get(lua_State *L)
 
     it = (struct itimerval *)(*itimerval_type.get)(L, 1);
 
-    lua_newtable(L);   /* XXX */
+    lua_newtable(L);
 
     luab_setudata(L, -2, &timespec_type, "it_interval", &it->it_interval);
     luab_setudata(L, -2, &timespec_type, "it_value", &it->it_value);
@@ -259,9 +259,11 @@ luab_module_t itimerval_type = {
  *
  * @function StructItimerVal
  *
+ * @param itimerval                 Instance of LUA_TUSERDATA(luab_itimerval_t).
+ * 
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage tv = bsd.sys.time.StructItimerVal()
+ * @usage itimerval = bsd.sys.time.StructItimerVal([ itimerval ])
  */
 int
 luab_StructItimerVal(lua_State *L)
