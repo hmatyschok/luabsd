@@ -40,7 +40,6 @@
 extern luab_module_t clockinfo_type;
 extern luab_module_t flock_type;
 extern luab_module_t in_addr_type;
-extern luab_module_t iovec_type;
 extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;

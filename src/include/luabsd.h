@@ -71,6 +71,8 @@ typedef struct luab_iovec {
     size_t  iov_max_len;
 } luab_iovec_t;
 
+extern luab_module_t luab_iovec_type;
+
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
