@@ -87,9 +87,10 @@ luab_inet_addr(lua_State *L)
  *
  * @param in                Instance of LUA_TUSERDATA(luab_in_addr_t).
  *
- * @return (LUA_TSTRING)
+ * @return (LUA_T{NIL,STRING} [, LUA_TSTRING ])     (cp [, nil]) on success or
+ *                                                  (msg, (strerror(errno)))
  *
- * @usage cp = bsd.arpa.inet.inet_ntoa(in)
+ * @usage cp [, msg ] = bsd.arpa.inet.inet_ntoa(in)
  */
 static int
 luab_inet_ntoa(lua_State *L)
@@ -106,6 +107,36 @@ luab_inet_ntoa(lua_State *L)
     return luab_pushstring(L, cp);
 }
 
+/***
+ * inet_aton(3) - Internet address manipulation routines
+ *
+ * @function inet_aton
+ *
+ * @param cp                    Character String to be interpreted as address.
+ * @param pin                   Instance of LUA_TUSERDATA(luab_in_addr_t).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (1 [, nil]) on success or
+ *                                                  (0, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.arpa.inet.inet_aton(cp, pin)
+ */
+static int
+luab_inet_aton(lua_State *L)
+{
+    const char *cp;
+    struct in_addr *pin;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
+    pin = (struct in_addr *)(*in_addr_type.get)(L, 2);
+
+    status = inet_aton(cp, pin);
+
+    return luab_pusherr(L, status);
+}
+
 /*
  * arpa/inet.h
  */
@@ -119,8 +150,10 @@ static luab_table_t luab_arpa_inet_vec[] = {
 #if 0
     LUABSD_FUNC("inet_ntop",    luab_inet_ntop),
     LUABSD_FUNC("inet_pton",    luab_inet_pton),
+#endif
 #if __BSD_VISIBLE
     LUABSD_FUNC("inet_aton",    luab_inet_aton),
+#if 0
     LUABSD_FUNC("inet_lnaof",   luab_inet_lnaof),
     LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
     LUABSD_FUNC("inet_neta",    luab_inet_neta),
@@ -133,8 +166,8 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_cidr_pton",   luab_inet_cidr_pton),
     LUABSD_FUNC("inet_nsap_addr",   luab_inet_nsap_addr),
     LUABSD_FUNC("inet_nsap_ntoa",   luab_inet_nsap_ntoa),
-#endif /* __BSD_VISIBLE */
 #endif
+#endif /* __BSD_VISIBLE */
     LUABSD_FUNC("StructInAddr", luab_StructInAddr),
     LUABSD_FUNC(NULL, NULL)
 };
