@@ -29,13 +29,17 @@
 #include <netinet/in.h>
 #include <arpa/inet.h>
 
+#include <errno.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 
 #include "luabsd.h"
 
+extern luab_module_t iovec_type;
 extern luab_module_t in_addr_type;
+
 extern int luab_StructInAddr(lua_State *);
 
 #define LUABSD_ARPA_INET_LIB_ID    1595780686
@@ -170,6 +174,35 @@ luab_inet_network(lua_State *L)
 
     return status;
 }
+
+static int
+luab_inet_ntoa_r(lua_State *L)
+{
+    struct in_addr *in;
+    luab_iovec_t *buf;
+    socklen_t size;
+    caddr_t caddr;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    in = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    size = luab_checkinteger(L, 3, INT_MAX);
+
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (size <= buf->iov_max_len)) {
+        if (inet_ntoa_r(*in, caddr, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = 0;
+        } else
+            status = -1;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -193,12 +226,14 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
     LUABSD_FUNC("inet_neta",    luab_inet_neta),
     LUABSD_FUNC("inet_netof",   luab_inet_netof),
-#endif    
+#endif
     LUABSD_FUNC("inet_network", luab_inet_network),
 #if 0
     LUABSD_FUNC("inet_net_ntop",    luab_inet_net_ntop),
     LUABSD_FUNC("inet_net_pton",    luab_inet_net_pton),
+#endif
     LUABSD_FUNC("inet_ntoa_r",  luab_inet_ntoa_r),
+#if 0
     LUABSD_FUNC("inet_cidr_ntop",   luab_inet_cidr_ntop),
     LUABSD_FUNC("inet_cidr_pton",   luab_inet_cidr_pton),
     LUABSD_FUNC("inet_nsap_addr",   luab_inet_nsap_addr),
