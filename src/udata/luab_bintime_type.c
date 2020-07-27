@@ -34,6 +34,8 @@
 
 #include "luabsd.h"
 
+extern luab_module_t bintime_type;
+
 /*
  * Interface against
  *
@@ -69,15 +71,15 @@ int luab_StructBinTime(lua_State *);
 static int
 BinTime_set_sec(lua_State *L)
 {
-    luab_bintime_t *self;
+    struct bintime *bt;
     int sec;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_bintime(L, 1);
+    bt = (struct bintime *)(*bintime_type.get)(L, 1);
     sec = luab_checkinteger(L, 2, INT_MAX);
 
-    self->bintime.sec = sec;
+    bt->sec = sec;
 
     return 0;
 }
@@ -94,13 +96,13 @@ BinTime_set_sec(lua_State *L)
 static int
 BinTime_get_sec(lua_State *L)
 {
-    luab_bintime_t *self;
+    struct bintime *bt;
     int sec;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_bintime(L, 1);
-    sec = self->bintime.sec;
+    bt = (struct bintime *)(*bintime_type.get)(L, 1);
+    sec = bt->sec;
 
     lua_pushinteger(L, sec);
 
@@ -119,15 +121,15 @@ BinTime_get_sec(lua_State *L)
 static int
 BinTime_set_frac(lua_State *L)
 {
-    luab_bintime_t *self;
+    struct bintime *bt;
     uint64_t frac;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_bintime(L, 1);
+    bt = (struct bintime *)(*bintime_type.get)(L, 1);
     frac = luab_checkinteger(L, 2, LONG_MAX);
 
-    self->bintime.frac = frac;
+    bt->frac = frac;
 
     return 0;
 }
@@ -144,13 +146,13 @@ BinTime_set_frac(lua_State *L)
 static int
 BinTime_get_frac(lua_State *L)
 {
-    luab_bintime_t *self;
+    struct bintime *bt;
     uint64_t frac;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_bintime(L, 1);
-    frac = self->bintime.frac;
+    bt = (struct bintime *)(*bintime_type.get)(L, 1);
+    frac = bt->frac;
 
     lua_pushinteger(L, frac);
 
@@ -169,16 +171,16 @@ BinTime_get_frac(lua_State *L)
 static int
 BinTime_get(lua_State *L)
 {
-    luab_bintime_t *self;
+    struct bintime *bt;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_bintime(L, 1);
+    bt = (struct bintime *)(*bintime_type.get)(L, 1);
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "sec", self->bintime.sec);
-    luab_setinteger(L, -2, "frac", self->bintime.frac);
+    luab_setinteger(L, -2, "sec", bt->sec);
+    luab_setinteger(L, -2, "frac", bt->frac);
 
     lua_pushvalue(L, -1);
 

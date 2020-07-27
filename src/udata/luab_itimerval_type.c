@@ -34,6 +34,9 @@
 
 #include "luabsd.h"
 
+extern luab_module_t timespec_type;
+extern luab_module_t itimerval_type;
+
 /*
  * Interface against
  *
@@ -71,15 +74,15 @@ int luab_StructItimerVal(lua_State *);
 static int
 ItimerVal_set_it_interval(lua_State *L)
 {
-    luab_itimerval_t *self;
-    void *ud;
+    struct itimerval *it;
+    struct timespec *tv;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_itimerval(L, 1);
-    ud = luab_checkudata(L, 2, &timespec_type);
+    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
+    tv = (struct timespec *)(*timespec_type.get)(L, 2);
 
-    (void)memmove(&self->itimerval.it_interval, ud, timespec_type.sz);
+    (void)memmove(&it->it_interval, tv, sizeof(*tv));
 
     return 0;
 }
@@ -96,13 +99,13 @@ ItimerVal_set_it_interval(lua_State *L)
 static int
 ItimerVal_get_it_interval(lua_State *L)
 {
-    luab_itimerval_t *self;
+    struct itimerval *it;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_itimerval(L, 1);
+    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
 
-    (void)luab_newuserdata(L, &timespec_type, &self->itimerval.it_interval);
+    (void)luab_newuserdata(L, &timespec_type, &it->it_interval);
 
     return 1;
 }
@@ -120,15 +123,15 @@ ItimerVal_get_it_interval(lua_State *L)
 static int
 ItimerVal_set_it_value(lua_State *L)
 {
-    luab_itimerval_t *self;
-    void *ud;
+    struct itimerval *it;
+    struct timespec *tv;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_itimerval(L, 1);
-    ud = luab_checkudata(L, 2, &timespec_type);
+    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
+    tv = (struct timespec *)(*timespec_type.get)(L, 2);
 
-    (void)memmove(&self->itimerval.it_value, ud, timespec_type.sz);
+    (void)memmove(&it->it_value, tv, sizeof(*tv));
 
     return 0;
 }
@@ -145,14 +148,14 @@ ItimerVal_set_it_value(lua_State *L)
 static int
 ItimerVal_get_it_value(lua_State *L)
 {
-    luab_itimerval_t *self;
+    struct itimerval *it;
     int status;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_itimerval(L, 1);
+    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
 
-    if (luab_newuserdata(L, &timespec_type, &self->itimerval.it_value) == NULL)
+    if (luab_newuserdata(L, &timespec_type, &it->it_value) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -172,16 +175,16 @@ ItimerVal_get_it_value(lua_State *L)
 static int
 ItimerVal_get(lua_State *L)
 {
-    luab_itimerval_t *self;
+    struct itimerval *it;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_itimerval(L, 1);
+    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
 
     lua_newtable(L);   /* XXX */
 
-    luab_setudata(L, -2, &timespec_type, "it_interval", &self->itimerval.it_interval);
-    luab_setudata(L, -2, &timespec_type, "it_value", &self->itimerval.it_value);
+    luab_setudata(L, -2, &timespec_type, "it_interval", &it->it_interval);
+    luab_setudata(L, -2, &timespec_type, "it_value", &it->it_value);
 
     lua_pushvalue(L, -1);
 

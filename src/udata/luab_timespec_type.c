@@ -69,15 +69,15 @@ int luab_StructTimeSpec(lua_State *);
 static int
 TimeSpec_set_tv_sec(lua_State *L)
 {
-    luab_timespec_t *self;
+    struct timespec *tv;
     time_t tv_sec;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_timespec(L, 1);
+    tv = (struct timespec *)(*timespec_type.get)(L, 1);
     tv_sec = luab_checkinteger(L, 2, INT_MAX);
 
-    self->timespec.tv_sec = tv_sec;
+    tv->tv_sec = tv_sec;
 
     return 0;
 }
@@ -94,13 +94,13 @@ TimeSpec_set_tv_sec(lua_State *L)
 static int
 TimeSpec_get_tv_sec(lua_State *L)
 {
-    luab_timespec_t *self;
+    struct timespec *tv;
     time_t tv_sec;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_timespec(L, 1);
-    tv_sec = self->timespec.tv_sec;
+    tv = (struct timespec *)(*timespec_type.get)(L, 1);
+    tv_sec = tv->tv_sec;
 
     lua_pushinteger(L, tv_sec);
 
@@ -119,15 +119,15 @@ TimeSpec_get_tv_sec(lua_State *L)
 static int
 TimeSpec_set_tv_nsec(lua_State *L)
 {
-    luab_timespec_t *self;
+    struct timespec *tv;
     long tv_nsec;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_timespec(L, 1);
+    tv = (struct timespec *)(*timespec_type.get)(L, 1);
     tv_nsec = luab_checkinteger(L, 2, LONG_MAX);
 
-    self->timespec.tv_nsec = tv_nsec;
+    tv->tv_nsec = tv_nsec;
 
     return 0;
 }
@@ -144,13 +144,13 @@ TimeSpec_set_tv_nsec(lua_State *L)
 static int
 TimeSpec_get_tv_nsec(lua_State *L)
 {
-    luab_timespec_t *self;
+    struct timespec *tv;
     long tv_nsec;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_timespec(L, 1);
-    tv_nsec = self->timespec.tv_nsec;
+    tv = (struct timespec *)(*timespec_type.get)(L, 1);
+    tv_nsec = tv->tv_nsec;
 
     lua_pushinteger(L, tv_nsec);
 
@@ -169,16 +169,16 @@ TimeSpec_get_tv_nsec(lua_State *L)
 static int
 TimeSpec_get(lua_State *L)
 {
-    luab_timespec_t *self;
+    struct timespec *tv;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_timespec(L, 1);
+    tv = (struct timespec *)(*timespec_type.get)(L, 1);
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "tv_sec", self->timespec.tv_sec);
-    luab_setinteger(L, -2, "tv_nsec", self->timespec.tv_nsec);
+    luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
+    luab_setinteger(L, -2, "tv_nsec", tv->tv_nsec);
 
     lua_pushvalue(L, -1);
 
@@ -253,11 +253,11 @@ luab_module_t timespec_type = {
  *
  * @function StructTimeSpec
  *
- * @param tv                    Optional.
+ * @param timespec                    Instance of LUA_TUSERDATA(luab_timespec_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage tv = bsd.sys.time.StructTimeSpec([ tv ])
+ * @usage timespec = bsd.sys.time.StructTimeSpec([ timespec ])
  */
 int
 luab_StructTimeSpec(lua_State *L)

@@ -34,6 +34,8 @@
 
 #include "luabsd.h"
 
+extern luab_module_t clockinfo_type;
+
 /*
  * Interface against getkerninfo clock information structure
  *
@@ -72,15 +74,15 @@ int luab_StructClockInfo(lua_State *L);
 static int
 ClockInfo_set_hz(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int hz;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_clockinfo(L, 1);
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     hz = luab_checkinteger(L, 2, INT_MAX);
 
-    self->clockinfo.hz = hz;
+    ci->hz = hz;
 
     return 0;
 }
@@ -97,13 +99,13 @@ ClockInfo_set_hz(lua_State *L)
 static int
 ClockInfo_get_hz(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int hz;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_clockinfo(L, 1);
-    hz = self->clockinfo.hz;
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
+    hz = ci->hz;
 
     lua_pushinteger(L, hz);
 
@@ -122,15 +124,15 @@ ClockInfo_get_hz(lua_State *L)
 static int
 ClockInfo_set_tick(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int tick;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_clockinfo(L, 1);
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     tick = luab_checkinteger(L, 2, INT_MAX);
 
-    self->clockinfo.tick = tick;
+    ci->tick = tick;
 
     return 0;
 }
@@ -147,13 +149,13 @@ ClockInfo_set_tick(lua_State *L)
 static int
 ClockInfo_get_tick(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int tick;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_clockinfo(L, 1);
-    tick = self->clockinfo.tick;
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
+    tick = ci->tick;
 
     lua_pushinteger(L, tick);
 
@@ -172,15 +174,15 @@ ClockInfo_get_tick(lua_State *L)
 static int
 ClockInfo_set_stathz(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int stathz;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_clockinfo(L, 1);
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     stathz = luab_checkinteger(L, 2, INT_MAX);
 
-    self->clockinfo.stathz = stathz;
+    ci->stathz = stathz;
 
     return 0;
 }
@@ -197,13 +199,13 @@ ClockInfo_set_stathz(lua_State *L)
 static int
 ClockInfo_get_stathz(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int stathz;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_clockinfo(L, 1);
-    stathz = self->clockinfo.stathz;
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
+    stathz = ci->stathz;
 
     lua_pushinteger(L, stathz);
 
@@ -222,15 +224,15 @@ ClockInfo_get_stathz(lua_State *L)
 static int
 ClockInfo_set_profhz(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int profhz;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_clockinfo(L, 1);
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     profhz = luab_checkinteger(L, 2, INT_MAX);
 
-    self->clockinfo.profhz = profhz;
+    ci->profhz = profhz;
 
     return 0;
 }
@@ -247,13 +249,13 @@ ClockInfo_set_profhz(lua_State *L)
 static int
 ClockInfo_get_profhz(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
     int profhz;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_clockinfo(L, 1);
-    profhz = self->clockinfo.profhz;
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
+    profhz = ci->profhz;
 
     lua_pushinteger(L, profhz);
 
@@ -272,18 +274,18 @@ ClockInfo_get_profhz(lua_State *L)
 static int
 ClockInfo_get(lua_State *L)
 {
-    luab_clockinfo_t *self;
+    struct clockinfo *ci;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_clockinfo(L, 1);
+    ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "hz", self->clockinfo.hz);
-    luab_setinteger(L, -2, "tick", self->clockinfo.tick);
-    luab_setinteger(L, -2, "stathz", self->clockinfo.stathz);
-    luab_setinteger(L, -2, "profhz", self->clockinfo.stathz);
+    luab_setinteger(L, -2, "hz", ci->hz);
+    luab_setinteger(L, -2, "tick", ci->tick);
+    luab_setinteger(L, -2, "stathz", ci->stathz);
+    luab_setinteger(L, -2, "profhz", ci->stathz);
 
     lua_pushvalue(L, -1);
 
@@ -362,11 +364,11 @@ luab_module_t clockinfo_type = {
  *
  * @function StructClockInfo
  *
- * @param ci                    Optional.
+ * @param clockinfo        Instance of LUA_TUSERDATA(luab_clockinfo_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage ci = bsd.sys.time.StructClockInfo([ ci ])
+ * @usage clockinfo = bsd.sys.time.StructClockInfo([ clockinfo ])
  */
 int
 luab_StructClockInfo(lua_State *L)

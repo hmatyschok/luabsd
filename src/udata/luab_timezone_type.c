@@ -34,6 +34,8 @@
 
 #include "luabsd.h"
 
+luab_module_t timezone_type;
+
 /*
  * Interface against
  *
@@ -69,15 +71,15 @@ int luab_StructTimeZone(lua_State *);
 static int
 TimeZone_set_tz_minuteswest(lua_State *L)
 {
-    luab_timezone_t *self;
+    struct timezone *tz;
     int tz_minuteswest;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_timezone(L, 1);
+    tz = (struct timezone *)(*timezone_type.get)(L, 1);
     tz_minuteswest = luab_checkinteger(L, 2, INT_MAX);
 
-    self->timezone.tz_minuteswest = tz_minuteswest;
+    tz->tz_minuteswest = tz_minuteswest;
 
     return 0;
 }
@@ -94,13 +96,13 @@ TimeZone_set_tz_minuteswest(lua_State *L)
 static int
 TimeZone_get_tz_minuteswest(lua_State *L)
 {
-    luab_timezone_t *self;
+    struct timezone *tz;
     int tz_minuteswest;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_timezone(L, 1);
-    tz_minuteswest = self->timezone.tz_minuteswest;
+    tz = (struct timezone *)(*timezone_type.get)(L, 1);
+    tz_minuteswest = tz->tz_minuteswest;
 
     lua_pushinteger(L, tz_minuteswest);
 
@@ -119,15 +121,15 @@ TimeZone_get_tz_minuteswest(lua_State *L)
 static int
 TimeZone_set_tz_dsttime(lua_State *L)
 {
-    luab_timezone_t *self;
+    struct timezone *tz;
     int tz_dsttime;
 
     luab_checkmaxargs(L, 2);
 
-    self = luab_to_timezone(L, 1);
+    tz = (struct timezone *)(*timezone_type.get)(L, 1);
     tz_dsttime = luab_checkinteger(L, 2, LONG_MAX);
 
-    self->timezone.tz_dsttime = tz_dsttime;
+    tz->tz_dsttime = tz_dsttime;
 
     return 0;
 }
@@ -144,13 +146,13 @@ TimeZone_set_tz_dsttime(lua_State *L)
 static int
 TimeZone_get_tz_dsttime(lua_State *L)
 {
-    luab_timezone_t *self;
+    struct timezone *tz;
     int tz_dsttime;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_timezone(L, 1);
-    tz_dsttime = self->timezone.tz_dsttime;
+    tz = (struct timezone *)(*timezone_type.get)(L, 1);
+    tz_dsttime = tz->tz_dsttime;
 
     lua_pushinteger(L, tz_dsttime);
 
@@ -169,16 +171,16 @@ TimeZone_get_tz_dsttime(lua_State *L)
 static int
 TimeZone_get(lua_State *L)
 {
-    luab_timezone_t *self;
+    struct timezone *tz;
 
     luab_checkmaxargs(L, 1);
 
-    self = luab_to_timezone(L, 1);
+    tz = (struct timezone *)(*timezone_type.get)(L, 1);
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "tz_minuteswest", self->timezone.tz_minuteswest);
-    luab_setinteger(L, -2, "tz_dsttime", self->timezone.tz_dsttime);
+    luab_setinteger(L, -2, "tz_minuteswest", tz->tz_minuteswest);
+    luab_setinteger(L, -2, "tz_dsttime", tz->tz_dsttime);
 
     lua_pushvalue(L, -1);
 
@@ -253,11 +255,11 @@ luab_module_t timezone_type = {
  *
  * @function StructTimeZone
  *
- * @param tz            Optional.
+ * @param timezone            Instance of LUA_TUSERDATE(luab_timezone_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage tz = bsd.sys.time.StructTimeZone([ tz ])
+ * @usage timezone = bsd.sys.time.StructTimeZone([ timezone ])
  */
 int
 luab_StructTimeZone(lua_State *L)
