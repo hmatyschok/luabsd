@@ -530,16 +530,16 @@ static int
 luab_inet_net_pton(lua_State *L)
 {
     int af;
-    luab_iovec_t *buf;
+    luab_iovec_t *src;
     void *dst;
     size_t size;
-    caddr_t src;
+    caddr_t caddr;
     int status;
 
     (void)luab_checkmaxargs(L, 4);
 
     af = luab_checkinteger(L, 1, INT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    src = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     dst = luab_checkxaddr(L, 3, af, &size);
     size = luab_checkinteger(L, 4,
 #ifdef  __LP64__
@@ -549,10 +549,10 @@ luab_inet_net_pton(lua_State *L)
 #endif
     );
 
-    if (((src = buf->iov.iov_base) != NULL) &&
-        (size <= buf->iov_max_len) &&
-        (buf->iov.iov_len <= size))
-        status = inet_net_pton(af, src, dst, size);
+    if (((caddr = src->iov.iov_base) != NULL) &&
+        (size <= src->iov_max_len) &&
+        (src->iov.iov_len <= size))
+        status = inet_net_pton(af, caddr, dst, size);
     else {
         errno = ENXIO;
         status = -1;
