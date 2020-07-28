@@ -74,17 +74,13 @@ IOVec_clear(lua_State *L)
 
     self = luab_to_iovec(L, 1);
 
-    if ((buf = self->iov.iov_base) != NULL) {
-        if ((len = self->iov_max_len) > 0) {
-            (void)memset_s(buf, len, 0, len);
+    if (((buf = self->iov.iov_base) != NULL) &&
+        ((len = self->iov_max_len) > 0)) {
+        (void)memset_s(buf, len, 0, len);
 
-            len = self->iov.iov_len;
-            self->iov.iov_len = 0;
-            status = len;
-        } else {
-            errno = ENOENT;
-            status = errno;
-        }
+        len = self->iov.iov_len;
+        self->iov.iov_len = 0;
+        status = len;
     } else {
         errno = ENXIO;
         status = errno;
@@ -131,22 +127,18 @@ IOVec_copyout(lua_State *L)
 
     self = luab_to_iovec(L, 1);
 
-    if ((src = self->iov.iov_base) != NULL) {
-        if ((len = self->iov.iov_len) > 0) {
-            luaL_buffinit(L, &b);
+    if (((src = self->iov.iov_base) != NULL) &&
+        ((len = self->iov.iov_len) > 0)) {
+        luaL_buffinit(L, &b);
 
-            dst = luaL_prepbuffsize(&b, len);
+        dst = luaL_prepbuffsize(&b, len);
 
-            (void)memmove(dst, src, len);
+        (void)memmove(dst, src, len);
 
-            luaL_addsize(&b, len);
-            luaL_pushresult(&b);
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
 
-            status = 1;
-        } else {
-            errno = ENOENT;
-            status = luab_pushnil(L);
-        }
+        status = 1;
     } else {
         errno = ENXIO;
         status = luab_pushnil(L);

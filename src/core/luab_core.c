@@ -370,6 +370,7 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, &luab_sys_time_lib);
     luab_newtable(L, &luab_sys_uio_lib);
     luab_newtable(L, &luab_sys_unistd_lib);
+    luab_newtable(L, &luab_sys_socket_lib);
     lua_setfield(L, -2, "sys");
 
     luab_newtable(L, &luab_db_lib);
