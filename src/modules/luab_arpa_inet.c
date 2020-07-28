@@ -261,6 +261,39 @@ luab_inet_aton(lua_State *L)
 }
 
 /***
+ * inet_lnaof(3) - Internet address manipulation routines
+ *
+ * @function inet_lnaof
+ *
+ * @param in                    Internet address.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage lna [, msg ] = bsd.arpa.inet.inet_lnaof(in)
+ */
+static int
+luab_inet_lnaof(lua_State *L)
+{
+    struct in_addr *ia;
+    struct in_addr lna;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+
+    lna.s_addr = inet_lnaof(*ia);
+
+    if (luab_newuserdata(L, &in_addr_type, &lna) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
+/***
  * inet_makeaddr(3) - Internet address manipulation routines
  *
  * @function inet_makeaddr
@@ -271,7 +304,7 @@ luab_inet_aton(lua_State *L)
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
  *
- * @usage in_addr [, msg ] = bsd.arpa.inet.inet_makeaddr(cp)
+ * @usage in_addr [, msg ] = bsd.arpa.inet.inet_makeaddr(net, lna)
  */
 static int
 luab_inet_makeaddr(lua_State *L)
@@ -289,6 +322,39 @@ luab_inet_makeaddr(lua_State *L)
     ia = inet_makeaddr(net->s_addr, lna->s_addr);
 
     if (luab_newuserdata(L, &in_addr_type, &ia) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
+/***
+ * inet_netof(3) - Internet address manipulation routines
+ *
+ * @function inet_netof
+ *
+ * @param in                    Internet address.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage net [, msg ] = bsd.arpa.inet.inet_netof(in)
+ */
+static int
+luab_inet_netof(lua_State *L)
+{
+    struct in_addr *ia;
+    struct in_addr net;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+
+    net.s_addr = inet_netof(*ia);
+
+    if (luab_newuserdata(L, &in_addr_type, &net) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -387,14 +453,12 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_pton",    luab_inet_pton),
 #if __BSD_VISIBLE
     LUABSD_FUNC("inet_aton",    luab_inet_aton),
-#if 0
     LUABSD_FUNC("inet_lnaof",   luab_inet_lnaof),
-#endif
     LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
 #if 0
     LUABSD_FUNC("inet_neta",    luab_inet_neta),
-    LUABSD_FUNC("inet_netof",   luab_inet_netof),
 #endif
+    LUABSD_FUNC("inet_netof",   luab_inet_netof),
     LUABSD_FUNC("inet_network", luab_inet_network),
 #if 0
     LUABSD_FUNC("inet_net_ntop",    luab_inet_net_ntop),
