@@ -51,7 +51,7 @@ extern luab_module_t luab_arpa_inet_lib;
 
 /*
  * Fetch LUA_TUSERDATA(luab_module_t) by AF_XXX.
- * 
+ *
  * XXX Well, I'll should refactor this function - the switch-statement
  * XXX shall replaced by a so called "protosw-table", but not yet.
  */
@@ -136,6 +136,99 @@ luab_inet_ntoa(lua_State *L)
     return luab_pushstring(L, cp);
 }
 
+/***
+ * inet_ntop(3) - Internet address manipulation routines
+ *
+ * @function inet_ntop
+ *
+ * @param af                    Specifies address fromat over protocol domain(9).
+ * @param src                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
+ *                              for binary representation of character string
+ *                              denotes OSI-L3 address.
+ * @param dst                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ *                              character String to be interpreted as address.
+ * @param size                  Specifies constraint, size of character string.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.arpa.inet.ntop(af, src, dst)
+ */
+static int
+luab_inet_ntop(lua_State *L)
+{
+    int af;
+    void *src;
+    luab_iovec_t *buf;
+    caddr_t dst;
+    size_t size;
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    af = luab_checkinteger(L, 1, INT_MAX);
+    src = luab_checkxaddr(L, 2, af, &size);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 3);
+    size = luab_checkinteger(L, 4, INT_MAX);
+
+    if (((dst = buf->iov.iov_base) != NULL) &&
+        (size <= buf->iov_max_len)) {
+        if (inet_ntop(af, src, dst, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = 0;
+        } else
+            status = -1;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
+/***
+ * inet_pton(3) - Internet address manipulation routines
+ *
+ * @function inet_pton
+ *
+ * @param af                    Specifies address fromat over protocol domain(9).
+ * @param src                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ *                              character String to be interpreted as address.
+ * @param dst                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
+ *                              for binary representation of character string
+ *                              denotes OSI-L3 address.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.arpa.inet.pton(af, src, dst)
+ */
+static int
+luab_inet_pton(lua_State *L)
+{
+    int af;
+    luab_iovec_t *buf;
+    void *dst;
+    caddr_t src;
+    size_t size;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    af = luab_checkinteger(L, 1, INT_MAX);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    dst = luab_checkxaddr(L, 3, af, &size);
+
+    if (((src = buf->iov.iov_base) != NULL) &&
+        (size <= buf->iov_max_len) &&
+        (buf->iov.iov_len <= size))
+        status = inet_pton(af, src, dst);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
 #if __BSD_VISIBLE
 /***
  * inet_aton(3) - Internet address manipulation routines
@@ -165,6 +258,42 @@ luab_inet_aton(lua_State *L)
     status = inet_aton(cp, pin);
 
     return luab_pusherr(L, status);
+}
+
+/***
+ * inet_makeaddr(3) - Internet address manipulation routines
+ *
+ * @function inet_makeaddr
+ *
+ * @param net                   Internet network number.
+ * @param lna                   Local network address.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
+ *                                                  (nil, (strerror(errno)))
+ *
+ * @usage in_addr [, msg ] = bsd.arpa.inet.inet_makeaddr(cp)
+ */
+static int
+luab_inet_makeaddr(lua_State *L)
+{
+    struct in_addr *net;
+    struct in_addr *lna;
+    struct in_addr ia;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    net = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    lna = (struct in_addr *)(*in_addr_type.get)(L, 2);
+
+    ia = inet_makeaddr(net->s_addr, lna->s_addr);
+
+    if (luab_newuserdata(L, &in_addr_type, &ia) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
 }
 
 /***
@@ -243,99 +372,6 @@ luab_inet_ntoa_r(lua_State *L)
     }
     return luab_pusherr(L, status);
 }
-
-/***
- * inet_pton(3) - Internet address manipulation routines
- *
- * @function inet_pton
- *
- * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of LUA_TUSERDATA(luab_iovec_t) for
- *                              character String to be interpreted as address.
- * @param dst                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
- *                              for binary representation of character string
- *                              denotes OSI-L3 address.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
- *
- * @usage err [, msg ] = bsd.arpa.inet.pton(af, src, dst)
- */
-static int
-luab_inet_pton(lua_State *L)
-{
-    int af;
-    luab_iovec_t *buf;
-    void *dst;
-    caddr_t src;
-    size_t size;
-    int status;
-
-    (void)luab_checkmaxargs(L, 3);
-
-    af = luab_checkinteger(L, 1, INT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
-    dst = luab_checkxaddr(L, 3, af, &size);
-
-    if (((src = buf->iov.iov_base) != NULL) &&
-        (size <= buf->iov_max_len) &&
-        (buf->iov.iov_len <= size))
-        status = inet_pton(af, src, dst);
-    else {
-        errno = ENXIO;
-        status = -1;
-    }
-    return luab_pusherr(L, status);
-}
-
-/***
- * inet_ntop(3) - Internet address manipulation routines
- *
- * @function inet_ntop
- *
- * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
- *                              for binary representation of character string
- *                              denotes OSI-L3 address.
- * @param dst                   Instance of LUA_TUSERDATA(luab_iovec_t) for
- *                              character String to be interpreted as address.
- * @param size                  Specifies constraint, size of character string.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
- *
- * @usage err [, msg ] = bsd.arpa.inet.ntop(af, src, dst)
- */
-static int
-luab_inet_ntop(lua_State *L)
-{
-    int af;
-    void *src;
-    luab_iovec_t *buf;
-    caddr_t dst;
-    size_t size;
-    int status;
-
-    (void)luab_checkmaxargs(L, 4);
-
-    af = luab_checkinteger(L, 1, INT_MAX);
-    src = luab_checkxaddr(L, 2, af, &size);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 3);
-    size = luab_checkinteger(L, 4, INT_MAX);
-
-    if (((dst = buf->iov.iov_base) != NULL) &&
-        (size <= buf->iov_max_len)) {
-        if (inet_ntop(af, src, dst, size) != NULL) {
-            buf->iov.iov_len = size;
-            status = 0;
-        } else
-            status = -1;
-    } else {
-        errno = ENXIO;
-        status = -1;
-    }
-    return luab_pusherr(L, status);
-}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -353,7 +389,9 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_aton",    luab_inet_aton),
 #if 0
     LUABSD_FUNC("inet_lnaof",   luab_inet_lnaof),
+#endif
     LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
+#if 0
     LUABSD_FUNC("inet_neta",    luab_inet_neta),
     LUABSD_FUNC("inet_netof",   luab_inet_netof),
 #endif
