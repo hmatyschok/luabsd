@@ -52,8 +52,9 @@ extern luab_module_t luab_arpa_inet_lib;
 /*
  * Fetch LUA_TUSERDATA(luab_module_t) by AF_XXX.
  *
- * XXX Well, I'll should refactor this function - the switch-statement
- * XXX shall replaced by a so called "protosw-table", but not yet.
+ * XXX Well, I'll should refactor and externalize this function - the
+ * XXX switch-statement shall replaced by a so called "protosw-table",
+ * XXX but not yet at this stage.
  */
 static void *
 luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
@@ -81,7 +82,7 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
  *
  * @function inet_addr
  *
- * @param cp                String denotes IPv4 address.
+ * @param cp                    String denotes IPv4 address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
@@ -114,7 +115,7 @@ luab_inet_addr(lua_State *L)
  *
  * @function inet_ntoa
  *
- * @param in                Instance of LUA_TUSERDATA(luab_in_addr_t).
+ * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_TSTRING ])     (cp [, nil]) on success or
  *                                                  (msg, (strerror(errno)))
@@ -265,7 +266,8 @@ luab_inet_aton(lua_State *L)
  *
  * @function inet_lnaof
  *
- * @param in                    Internet address.
+ * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t),
+ *                              denotes internet address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
@@ -298,8 +300,10 @@ luab_inet_lnaof(lua_State *L)
  *
  * @function inet_makeaddr
  *
- * @param net                   Internet network number.
- * @param lna                   Local network address.
+ * @param net                   Instance of LUA_TUSERDATA(luab_in_addr_t),
+ *                              denotes internet network number.
+ * @param lna                   Instance of LUA_TUSERDATA(luab_in_addr_t),
+ *                              denotes local network address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
@@ -330,11 +334,61 @@ luab_inet_makeaddr(lua_State *L)
 }
 
 /***
+ * inet_neta(3) - format an in_addr_t network number into presentation format
+ *
+ * @function inet_neta
+ *
+ * @param src                   Instance of LUA_TUSERDATA(luab_in_addr_t),
+ *                              denotes internet network number.
+ * @param dst                   Buffer, instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param size                  Minimum size of character string.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (1 [, nil]) on success or
+ *                                                  (0, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.arpa.inet.inet_neta(src, dst, size)
+ */
+static int
+luab_inet_neta(lua_State *L)
+{
+    struct in_addr *src;
+    luab_iovec_t *buf;
+    size_t size;
+    caddr_t dst;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    src = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    size = luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if (((dst = buf->iov.iov_base) != NULL) &&
+        (size <= buf->iov_max_len)) {
+        if (inet_neta(src->s_addr, dst, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = 0;
+        } else
+            status = -1;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
+/***
  * inet_netof(3) - Internet address manipulation routines
  *
  * @function inet_netof
  *
- * @param in                    Internet address.
+ * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
@@ -367,7 +421,7 @@ luab_inet_netof(lua_State *L)
  *
  * @function inet_network
  *
- * @param cp                String denotes IPv4 address.
+ * @param cp                    String denotes IPv4 address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
  *                                                  (nil, (strerror(errno)))
@@ -455,9 +509,7 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_aton",    luab_inet_aton),
     LUABSD_FUNC("inet_lnaof",   luab_inet_lnaof),
     LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
-#if 0
     LUABSD_FUNC("inet_neta",    luab_inet_neta),
-#endif
     LUABSD_FUNC("inet_netof",   luab_inet_netof),
     LUABSD_FUNC("inet_network", luab_inet_network),
 #if 0
