@@ -39,8 +39,10 @@
 
 extern luab_module_t iovec_type;
 extern luab_module_t in_addr_type;
+extern luab_module_t in6_addr_type;
 
 extern int luab_StructInAddr(lua_State *);
+extern int luab_StructIn6Addr(lua_State *);
 
 #define LUABSD_ARPA_INET_LIB_ID    1595780686
 #define LUABSD_ARPA_INET_LIB_KEY   "inet"
@@ -241,6 +243,7 @@ static luab_table_t luab_arpa_inet_vec[] = {
 #endif
 #endif /* __BSD_VISIBLE */
     LUABSD_FUNC("StructInAddr", luab_StructInAddr),
+    LUABSD_FUNC("StructIn6Addr", luab_StructIn6Addr),
     LUABSD_FUNC(NULL, NULL)
 };
 

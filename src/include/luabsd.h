@@ -110,27 +110,6 @@ void    luab_pushtimesvector(lua_State *, int, size_t, void *);
             lua_setfield((L), (narg), (k));                 \
     } while (0)
 
-/* Push binary string v by len at field k on instance of LUA_TTABLE */
-static __inline void
-luab_setbuff(lua_State *L, int narg, const char *k, caddr_t v, size_t len)
-{
-    luaL_Buffer b;
-    caddr_t buf;
-
-    if (k != NULL && v != NULL && len > 0) {
-        luaL_buffinit(L, &b);
-
-        buf = luaL_prepbuffsize(&b, len);
-
-        (void)memmove(buf, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_setfield(L, narg, k);
-    }
-}
-
 static __inline lua_Integer
 luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
 {

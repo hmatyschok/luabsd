@@ -40,6 +40,7 @@
 extern luab_module_t clockinfo_type;
 extern luab_module_t flock_type;
 extern luab_module_t in_addr_type;
+extern luab_module_t in6_addr_type;
 extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
@@ -358,12 +359,11 @@ LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
     lua_newtable(L);
-                                            /* XXX */
+
     lua_newtable(L);
     luab_newtable(L, &luab_arpa_inet_lib);
     lua_setfield(L, -2, "arpa");
-    
-                        /* XXX */
+
     lua_newtable(L);
     luab_newtable(L, &luab_sys_file_lib);
     luab_newtable(L, &luab_sys_stat_lib);
@@ -381,11 +381,10 @@ luaopen_bsd(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-/* XXX */
-
     luab_newmetatable(L, &clockinfo_type);
     luab_newmetatable(L, &flock_type);
     luab_newmetatable(L, &in_addr_type);
+    luab_newmetatable(L, &in6_addr_type);
     luab_newmetatable(L, &iovec_type);
     luab_newmetatable(L, &itimerval_type);
     luab_newmetatable(L, &stat_type);
