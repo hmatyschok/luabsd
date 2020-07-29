@@ -195,8 +195,8 @@ IOVec_resize(lua_State *L)
 #endif
     );
 
-    if (len > 0) {
-        if ((src = self->iov.iov_base) != NULL) {
+    if ((src = self->iov.iov_base) != NULL) {
+        if (len > 0) {
             if ((dst = realloc(src, len)) != NULL) {
                 self->iov.iov_base = dst;
 
@@ -208,11 +208,11 @@ IOVec_resize(lua_State *L)
             } else
                 status = -1;
         } else {
-            errno = ENXIO;
+            errno = EINVAL;
             status = -1;
         }
     } else {
-        errno = EINVAL;
+        errno = ENXIO;
         status = -1;
     }
     return luab_pusherr(L, status);
