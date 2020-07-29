@@ -104,10 +104,8 @@ CryptData_get_initialized(lua_State *L)
 
     cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
     initialized = cd->initialized;
-
-    lua_pushinteger(L, initialized);
-
-    return 1;
+    
+    return luab_pusherr(L, initialized);
 }
 
 /***

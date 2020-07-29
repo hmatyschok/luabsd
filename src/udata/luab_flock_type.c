@@ -90,9 +90,7 @@ Flock_get_l_start(lua_State *L)
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_start = l->l_start;
 
-    lua_pushinteger(L, l_start);
-
-    return 1;
+    return luab_pusherr(L, l_start);
 }
 
 /* len = 0 means until end of file */
@@ -123,9 +121,7 @@ Flock_get_l_len(lua_State *L)
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_len = l->l_len;
 
-    lua_pushinteger(L, l_len);
-
-    return 1;
+    return luab_pusherr(L, l_len);
 }
 
 /* lock owner */
@@ -156,9 +152,7 @@ Flock_get_l_pid(lua_State *L)
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_pid = l->l_pid;
 
-    lua_pushinteger(L, l_pid);
-
-    return 1;
+    return luab_pusherr(L, l_pid);
 }
 
 /* lock type: read/write, etc. */
@@ -189,9 +183,7 @@ Flock_get_l_type(lua_State *L)
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_type = l->l_type;
 
-    lua_pushinteger(L, l_type);
-
-    return 1;
+    return luab_pusherr(L, l_type);
 }
 
 /* type of l_start */
@@ -222,9 +214,7 @@ Flock_get_l_whence(lua_State *L)
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_whence = l->l_whence;
 
-    lua_pushinteger(L, l_whence);
-
-    return 1;
+    return luab_pusherr(L, l_whence);
 }
 
 /* remote system id or zero for local */
@@ -255,9 +245,7 @@ Flock_get_l_sysid(lua_State *L)
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_sysid = l->l_sysid;
 
-    lua_pushinteger(L, l_sysid);
-
-    return 1;
+    return luab_pusherr(L, l_sysid);
 }
 
 /*

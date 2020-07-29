@@ -112,9 +112,7 @@ TM_get_tm_sec(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_sec = tm->tm_sec;
 
-    lua_pushinteger(L, tm_sec);
-
-    return 1;
+    return luab_pusherr(L, tm_sec);
 }
 
 /***
@@ -162,9 +160,7 @@ TM_get_tm_min(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_min = tm->tm_min;
 
-    lua_pushinteger(L, tm_min);
-
-    return 1;
+    return luab_pusherr(L, tm_min);
 }
 
 /***
@@ -212,9 +208,7 @@ TM_get_tm_hour(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_hour = tm->tm_hour;
 
-    lua_pushinteger(L, tm_hour);
-
-    return 1;
+    return luab_pusherr(L, tm_hour);
 }
 
 /***
@@ -262,9 +256,7 @@ TM_get_tm_mday(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mday = tm->tm_mday;
 
-    lua_pushinteger(L, tm_mday);
-
-    return 1;
+    return luab_pusherr(L, tm_mday);
 }
 
 /***
@@ -312,9 +304,7 @@ TM_get_tm_mon(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mon = tm->tm_mon;
 
-    lua_pushinteger(L, tm_mon);
-
-    return 1;
+    return luab_pusherr(L, tm_mon);
 }
 
 /***
@@ -362,9 +352,7 @@ TM_get_tm_year(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_year = tm->tm_year;
 
-    lua_pushinteger(L, tm_year);
-
-    return 1;
+    return luab_pusherr(L, tm_year);
 }
 
 /***
@@ -412,9 +400,7 @@ TM_get_tm_wday(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_wday = tm->tm_wday;
 
-    lua_pushinteger(L, tm_wday);
-
-    return 1;
+    return luab_pusherr(L, tm_wday);
 }
 
 /***
@@ -462,9 +448,7 @@ TM_get_tm_yday(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_yday = tm->tm_yday;
 
-    lua_pushinteger(L, tm_yday);
-
-    return 1;
+    return luab_pusherr(L, tm_yday);
 }
 
 /***
@@ -512,9 +496,7 @@ TM_get_tm_isdst(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_isdst = tm->tm_isdst;
 
-    lua_pushinteger(L, tm_isdst);
-
-    return 1;
+    return luab_pusherr(L, tm_isdst);
 }
 
 /***
@@ -562,9 +544,7 @@ TM_get_tm_gmtoff(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_gmtoff = tm->tm_gmtoff;
 
-    lua_pushinteger(L, tm_gmtoff);
-
-    return 1;
+    return luab_pusherr(L, tm_gmtoff);
 }
 
 /***
@@ -581,17 +561,13 @@ TM_get_tm_zone(lua_State *L)
 {
     struct tm *tm;
     char *tm_zone;
-    size_t len;
 
     luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_zone = tm->tm_zone;
-    len = strlen(tm_zone);
 
-    lua_pushlstring(L, tm_zone, len);
-
-    return 1;
+    return luab_pushstring(L, tm_zone);
 }
 
 /***

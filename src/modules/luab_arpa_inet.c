@@ -493,7 +493,7 @@ luab_inet_net_ntop(lua_State *L)
     INT_MAX
 #endif
     );
-    
+
     if (((caddr = dst->iov.iov_base) != NULL) &&
         (size <= dst->iov_max_len)) {
         if (inet_net_ntop(af, src, bits, caddr, size) != NULL) {
@@ -626,7 +626,7 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_net_ntop",    luab_inet_net_ntop),
     LUABSD_FUNC("inet_net_pton",    luab_inet_net_pton),
     LUABSD_FUNC("inet_ntoa_r",  luab_inet_ntoa_r),
-#if 0
+#if 0    
     LUABSD_FUNC("inet_cidr_ntop",   luab_inet_cidr_ntop),
     LUABSD_FUNC("inet_cidr_pton",   luab_inet_cidr_pton),
     LUABSD_FUNC("inet_nsap_addr",   luab_inet_nsap_addr),

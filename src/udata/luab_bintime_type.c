@@ -104,9 +104,7 @@ BinTime_get_sec(lua_State *L)
     bt = (struct bintime *)(*bintime_type.get)(L, 1);
     sec = bt->sec;
 
-    lua_pushinteger(L, sec);
-
-    return 1;
+    return luab_pusherr(L, sec);
 }
 
 /***
@@ -154,9 +152,7 @@ BinTime_get_frac(lua_State *L)
     bt = (struct bintime *)(*bintime_type.get)(L, 1);
     frac = bt->frac;
 
-    lua_pushinteger(L, frac);
-
-    return 1;
+    return luab_pusherr(L, frac);
 }
 
 /***

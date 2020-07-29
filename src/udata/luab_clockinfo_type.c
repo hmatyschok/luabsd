@@ -107,9 +107,7 @@ ClockInfo_get_hz(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     hz = ci->hz;
 
-    lua_pushinteger(L, hz);
-
-    return 1;
+    return luab_pusherr(L, hz);
 }
 
 /***
@@ -157,9 +155,7 @@ ClockInfo_get_tick(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     tick = ci->tick;
 
-    lua_pushinteger(L, tick);
-
-    return 1;
+    return luab_pusherr(L, tick);
 }
 
 /***
@@ -207,9 +203,7 @@ ClockInfo_get_stathz(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     stathz = ci->stathz;
 
-    lua_pushinteger(L, stathz);
-
-    return 1;
+    return luab_pusherr(L, stathz);
 }
 
 /***
@@ -257,9 +251,7 @@ ClockInfo_get_profhz(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     profhz = ci->profhz;
 
-    lua_pushinteger(L, profhz);
-
-    return 1;
+    return luab_pusherr(L, profhz);
 }
 
 /***

@@ -117,9 +117,7 @@ Stat_get_st_dev(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_dev = st->st_dev;
 
-    lua_pushinteger(L, st_dev);
-
-    return 1;
+    return luab_pusherr(L, st_dev);
 }
 
 /* inode's number */
@@ -150,9 +148,7 @@ Stat_get_st_ino(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_ino = st->st_ino;
 
-    lua_pushinteger(L, st_ino);
-
-    return 1;
+    return luab_pusherr(L, st_ino);
 }
 
 /* number of hard links */
@@ -183,9 +179,7 @@ Stat_get_st_nlink(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_nlink = st->st_nlink;
 
-    lua_pushinteger(L, st_nlink);
-
-    return 1;
+    return luab_pusherr(L, st_nlink);
 }
 
 /* inode protection mode */
@@ -216,9 +210,7 @@ Stat_get_st_mode(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_mode = st->st_mode;
 
-    lua_pushinteger(L, st_mode);
-
-    return 1;
+    return luab_pusherr(L, st_mode);
 }
 
 /* user ID of the file's owner */
@@ -249,9 +241,7 @@ Stat_get_st_uid(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_uid = st->st_uid;
 
-    lua_pushinteger(L, st_uid);
-
-    return 1;
+    return luab_pusherr(L, st_uid);
 }
 
 /* user ID of the file's owner */
@@ -282,9 +272,7 @@ Stat_get_st_gid(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_gid = st->st_gid;
 
-    lua_pushinteger(L, st_gid);
-
-    return 1;
+    return luab_pusherr(L, st_gid);
 }
 
 /* device type */
@@ -315,9 +303,7 @@ Stat_get_st_rdev(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_rdev = st->st_rdev;
 
-    lua_pushinteger(L, st_rdev);
-
-    return 1;
+    return luab_pusherr(L, st_rdev);
 }
 
 /* time of last access */
@@ -349,9 +335,7 @@ Stat_get_st_atim_ext(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_atim_ext = st->st_atim_ext;
 
-    lua_pushinteger(L, st_atim_ext);
-
-    return 1;
+    return luab_pusherr(L, st_atim_ext);
 }
 #endif
 
@@ -414,9 +398,7 @@ Stat_get_st_mtim_ext(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_mtim_ext = st->st_mtim_ext;
 
-    lua_pushinteger(L, st_mtim_ext);
-
-    return 1;
+    return luab_pusherr(L, st_mtim_ext);
 }
 #endif
 
@@ -478,10 +460,8 @@ Stat_get_st_ctim_ext(lua_State *L)
 
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_ctim_ext = st->st_ctim_ext;
-
-    lua_pushinteger(L, st_ctim_ext);
-
-    return 1;
+    
+    return luab_pusherr(L, st_ctim_ext);
 }
 #endif
 
@@ -544,9 +524,7 @@ Stat_get_st_btim_ext(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_btim_ext = st->st_btim_ext;
 
-    lua_pushinteger(L, st_btim_ext);
-
-    return 1;
+    return luab_pusherr(L, st_btim_ext);
 }
 #endif
 
@@ -608,9 +586,7 @@ Stat_get_st_size(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_size = st->st_size;
 
-    lua_pushinteger(L, st_size);
-
-    return 1;
+    return luab_pusherr(L, st_size);
 }
 
 /* blocks allocated for file */
@@ -641,9 +617,7 @@ Stat_get_st_blocks(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_blocks = st->st_blocks;
 
-    lua_pushinteger(L, st_blocks);
-
-    return 1;
+    return luab_pusherr(L, st_blocks);
 }
 
 /* optimal blocksize for I/O */
@@ -674,9 +648,7 @@ Stat_get_st_blksize(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_blksize = st->st_blksize;
 
-    lua_pushinteger(L, st_blksize);
-
-    return 1;
+    return luab_pusherr(L, st_blksize);
 }
 
 /* user defined flags for file */
@@ -707,9 +679,7 @@ Stat_get_st_flags(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_flags = st->st_flags;
 
-    lua_pushinteger(L, st_flags);
-
-    return 1;
+    return luab_pusherr(L, st_flags);
 }
 
 /* file generation number */
@@ -740,9 +710,7 @@ Stat_get_st_gen(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_gen = st->st_gen;
 
-    lua_pushinteger(L, st_gen);
-
-    return 1;
+    return luab_pusherr(L, st_gen);
 }
 
 /*

@@ -102,10 +102,8 @@ InAddr_get_s_addr(lua_State *L)
 
     ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
     s_addr = ia->s_addr;
-
-    lua_pushinteger(L, s_addr);
-
-    return 1;
+    
+    return luab_pusherr(L, s_addr);
 }
 
 /***

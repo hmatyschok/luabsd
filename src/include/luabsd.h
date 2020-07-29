@@ -32,25 +32,26 @@
 
 __BEGIN_DECLS
 
-typedef union luab_type {
-    lua_Integer type_int;
-    lua_CFunction   type_fn;
-} luab_type_un;
+typedef union luab_atom {
+    lua_Integer un_int;
+    lua_Number  un_num;
+    lua_CFunction   un_fn;
+} luab_atom_u;
 
-typedef void    (*luab_table_fn)(lua_State *, luab_type_un *);
+typedef int    (*luab_table_fn)(lua_State *, luab_atom_u *);
 
-typedef struct {
+typedef struct luab_table {
     luab_table_fn   init;
     const char    *key;
-    luab_type_un   val;
+    luab_atom_u   val;
 } luab_table_t;
 
 #define LUABSD_REG(fn, k, v) \
     { .init = fn, .key = k, v }
 #define LUABSD_INT(k, v) \
-    LUABSD_REG(luab_pushinteger, k, .val.type_int = v)
+    LUABSD_REG(luab_pushinteger, k, .val.un_int = v)
 #define LUABSD_FUNC(k, v) \
-    LUABSD_REG(luab_pushcfunction, k, .val.type_fn = v)
+    LUABSD_REG(luab_pushcfunction, k, .val.un_fn = v)
 
 typedef void (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_udata_fn)(lua_State *, int);
@@ -65,6 +66,10 @@ typedef struct luab_module {
     luab_udata_fn    get;
     luab_ctor_fn    ctor;
 } luab_module_t;
+
+typedef struct luab_hook {
+    luab_atom_u un;
+} luab_hook_t;
 
 typedef struct luab_iovec {
     struct iovec    iov;
@@ -158,15 +163,17 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
 }
 
 static __inline void
-luab_pushinteger(lua_State *L, luab_type_un *un)
+luab_pushinteger(lua_State *L, luab_atom_u *un)
 {
-    lua_pushinteger(L, un->type_int);
+    lua_pushinteger(L, un->un_int);
+    return (1);
 }
 
 static __inline void
-luab_pushcfunction(lua_State *L, luab_type_un *un)
+luab_pushcfunction(lua_State *L, luab_atom_u *un)
 {
-    lua_pushcfunction(L, un->type_fn);
+    lua_pushcfunction(L, un->un_fn);
+    return (1);
 }
 __END_DECLS
 

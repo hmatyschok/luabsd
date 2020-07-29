@@ -102,9 +102,7 @@ TimeSpec_get_tv_sec(lua_State *L)
     tv = (struct timespec *)(*timespec_type.get)(L, 1);
     tv_sec = tv->tv_sec;
 
-    lua_pushinteger(L, tv_sec);
-
-    return 1;
+    return luab_pusherr(L, tv_sec);
 }
 
 /***
@@ -152,9 +150,7 @@ TimeSpec_get_tv_nsec(lua_State *L)
     tv = (struct timespec *)(*timespec_type.get)(L, 1);
     tv_nsec = tv->tv_nsec;
 
-    lua_pushinteger(L, tv_nsec);
-
-    return 1;
+    return luab_pusherr(L, tv_nsec);
 }
 
 /***

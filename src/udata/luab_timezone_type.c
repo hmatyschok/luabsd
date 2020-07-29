@@ -104,9 +104,7 @@ TimeZone_get_tz_minuteswest(lua_State *L)
     tz = (struct timezone *)(*timezone_type.get)(L, 1);
     tz_minuteswest = tz->tz_minuteswest;
 
-    lua_pushinteger(L, tz_minuteswest);
-
-    return 1;
+    return luab_pusherr(L, tz_minuteswest);
 }
 
 /***
@@ -154,9 +152,7 @@ TimeZone_get_tz_dsttime(lua_State *L)
     tz = (struct timezone *)(*timezone_type.get)(L, 1);
     tz_dsttime = tz->tz_dsttime;
 
-    lua_pushinteger(L, tz_dsttime);
-
-    return 1;
+    return luab_pusherr(L, tz_dsttime);
 }
 
 /***
