@@ -91,7 +91,7 @@ IOVec_clear(lua_State *L)
 }
 
 static int
-IOVec_copyin(lua_State *L)
+IOVec_copy_in(lua_State *L)
 {
     luab_iovec_t *self;
     const char *src;
@@ -111,13 +111,13 @@ IOVec_copyin(lua_State *L)
         status = len;
     } else {
         errno = ENXIO;
-        status = errno;
+        status = -1;
     }
     return luab_pusherr(L, status);
 }
 
 static int
-IOVec_copyout(lua_State *L)
+IOVec_copy_out(lua_State *L)
 {
     luab_iovec_t *self;
     luaL_Buffer b;
@@ -260,8 +260,8 @@ IOVec_tostring(lua_State *L)
 
 static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("clear",    IOVec_clear),
-    LUABSD_FUNC("copyin",  IOVec_copyin),
-    LUABSD_FUNC("copyout",  IOVec_copyout),
+    LUABSD_FUNC("copy_in",  IOVec_copy_in),
+    LUABSD_FUNC("copy_out",  IOVec_copy_out),
     LUABSD_FUNC("len",  IOVec_len),
     LUABSD_FUNC("max_len",  IOVec_max_len),
     LUABSD_FUNC("resize",   IOVec_resize),
