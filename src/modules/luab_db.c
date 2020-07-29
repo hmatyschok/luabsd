@@ -47,6 +47,8 @@ extern luab_module_t luab_db_lib;
 
 /*
  * Interface against db(3).
+ *
+ * XXX Refactoring in progress..
  */
 
 #if __BSD_VISIBLE
@@ -339,7 +341,6 @@ luab_module_t db_type = {
     .vec = db_methods,
     .sz = sizeof(luab_db_t),
 };
-
 
 static int
 luab_dbopen(lua_State *L)

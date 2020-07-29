@@ -205,16 +205,15 @@ IOVec_resize(lua_State *L)
 
                 self->iov_max_len = len;
                 status = len;
-                errno = 0;
             } else
-                status = errno;
+                status = -1;
         } else {
             errno = ENXIO;
-            status = errno;
+            status = -1;
         }
     } else {
         errno = EINVAL;
-        status = errno;
+        status = -1;
     }
     return luab_pusherr(L, status);
 }
