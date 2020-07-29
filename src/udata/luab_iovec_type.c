@@ -36,6 +36,8 @@
 
 #include "luabsd.h"
 
+extern luab_module_t iovec_type;
+
 /*
  * Interface against
  *

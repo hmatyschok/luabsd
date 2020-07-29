@@ -18,3 +18,4 @@ SRCS+=  luab_unistd.c
 SRCS+=  luab_uuid.c
 
 LIBADD+= crypt
+

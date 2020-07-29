@@ -15,6 +15,6 @@ SHLIB_MAJOR= 0
 
 MAN=
 
-CFLAGS+= -I${LUAB_SRCTOP}/includes -I/usr/local/include/lua52
+CFLAGS+= -I${LUAB_SRCTOP}/include -I/usr/local/include/lua52
 
 .include <bsd.lib.mk>

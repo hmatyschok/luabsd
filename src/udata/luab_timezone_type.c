@@ -34,7 +34,7 @@
 
 #include "luabsd.h"
 
-luab_module_t timezone_type;
+extern luab_module_t timezone_type;
 
 /*
  * Interface against

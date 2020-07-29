@@ -38,6 +38,8 @@
 
 #include "luabsd.h"
 
+extern luab_module_t db_type;
+
 #define LUABSD_DB_LIB_ID    1593623310
 #define LUABSD_DB_LIB_KEY    "db"
 

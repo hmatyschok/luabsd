@@ -45,7 +45,6 @@ extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
 extern luab_module_t timezone_type;
-extern luab_module_t tm_type;
 
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
@@ -62,12 +61,30 @@ extern luab_module_t luab_sys_uio_lib;
 extern luab_module_t luab_sys_unistd_lib;
 extern luab_module_t luab_sys_socket_lib;
 
+extern luab_module_t luab_core_lib;
+
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_fcntl_lib;
 extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_time_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
+
+extern int luab_CreateHook(lua_State *);
+
+#define LUABSD_CORE_LIB_ID    1595987973
+#define LUABSD_CORE_LIB_KEY   "core"
+
+static luab_table_t luab_core_vec[] = {
+    LUABSD_FUNC("CreateHook",   luab_CreateHook),
+    LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_core_lib = {
+    .cookie = LUABSD_CORE_LIB_ID,
+    .name = LUABSD_CORE_LIB_KEY,
+    .vec = luab_core_vec,
+};
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
@@ -375,6 +392,7 @@ luaopen_bsd(lua_State *L)
 
     lua_setfield(L, -2, "sys");
 
+    luab_newtable(L, &luab_core_lib);
     luab_newtable(L, &luab_db_lib);
     luab_newtable(L, &luab_fcntl_lib);
     luab_newtable(L, &luab_stdlib_lib);
@@ -393,7 +411,6 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &stat_type);
     luab_newmetatable(L, &timezone_type);
     luab_newmetatable(L, &timespec_type);
-    luab_newmetatable(L, &tm_type);
 #if __BSD_VISIBLE
     luab_newmetatable(L, &bintime_type);
     luab_newmetatable(L, &crypt_data_type);

@@ -48,7 +48,7 @@
 #include "luabsd.h"
 
 extern luab_module_t clockinfo_type;
-extern luab_module_t itmerval_type;
+extern luab_module_t itimerval_type;
 extern luab_module_t timespec_type;
 extern luab_module_t timezone_type;
 

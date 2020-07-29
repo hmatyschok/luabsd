@@ -80,7 +80,6 @@ static luab_table_t luab_time_vec[] = { /* time.h */
 
 
     LUABSD_INT("CLOCKS_PER_SEC",    CLOCKS_PER_SEC),
-    LUABSD_FUNC("StructTM", luab_StructTM),
     LUABSD_FUNC(NULL, NULL)
 };
 

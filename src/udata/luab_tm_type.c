@@ -82,7 +82,7 @@ TM_set_tm_sec(lua_State *L)
     struct tm *tm;
     int tm_sec;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_sec = luab_checkinteger(L, 2, INT_MAX);
@@ -107,7 +107,7 @@ TM_get_tm_sec(lua_State *L)
     struct tm *tm;
     int tm_sec;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_sec = tm->tm_sec;
@@ -130,7 +130,7 @@ TM_set_tm_min(lua_State *L)
     struct tm *tm;
     int tm_min;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_min = luab_checkinteger(L, 2, INT_MAX);
@@ -155,7 +155,7 @@ TM_get_tm_min(lua_State *L)
     struct tm *tm;
     int tm_min;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_min = tm->tm_min;
@@ -178,7 +178,7 @@ TM_set_tm_hour(lua_State *L)
     struct tm *tm;
     int tm_hour;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_hour = luab_checkinteger(L, 2, INT_MAX);
@@ -203,7 +203,7 @@ TM_get_tm_hour(lua_State *L)
     struct tm *tm;
     int tm_hour;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_hour = tm->tm_hour;
@@ -226,7 +226,7 @@ TM_set_tm_mday(lua_State *L)
     struct tm *tm;
     int tm_mday;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mday = luab_checkinteger(L, 2, INT_MAX);
@@ -251,7 +251,7 @@ TM_get_tm_mday(lua_State *L)
     struct tm *tm;
     int tm_mday;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mday = tm->tm_mday;
@@ -274,7 +274,7 @@ TM_set_tm_mon(lua_State *L)
     struct tm *tm;
     int tm_mon;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mon = luab_checkinteger(L, 2, INT_MAX);
@@ -299,7 +299,7 @@ TM_get_tm_mon(lua_State *L)
     struct tm *tm;
     int tm_mon;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mon = tm->tm_mon;
@@ -322,7 +322,7 @@ TM_set_tm_year(lua_State *L)
     struct tm *tm;
     int tm_year;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_year = luab_checkinteger(L, 2, INT_MAX);
@@ -347,7 +347,7 @@ TM_get_tm_year(lua_State *L)
     struct tm *tm;
     int tm_year;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_year = tm->tm_year;
@@ -370,7 +370,7 @@ TM_set_tm_wday(lua_State *L)
     struct tm *tm;
     int tm_wday;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_wday = luab_checkinteger(L, 2, INT_MAX);
@@ -395,7 +395,7 @@ TM_get_tm_wday(lua_State *L)
     struct tm *tm;
     int tm_wday;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_wday = tm->tm_wday;
@@ -418,7 +418,7 @@ TM_set_tm_yday(lua_State *L)
     struct tm *tm;
     int tm_yday;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_yday = luab_checkinteger(L, 2, INT_MAX);
@@ -443,7 +443,7 @@ TM_get_tm_yday(lua_State *L)
     struct tm *tm;
     int tm_yday;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_yday = tm->tm_yday;
@@ -466,7 +466,7 @@ TM_set_tm_isdst(lua_State *L)
     struct tm *tm;
     int tm_isdst;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_isdst = luab_checkinteger(L, 2, INT_MAX);
@@ -491,7 +491,7 @@ TM_get_tm_isdst(lua_State *L)
     struct tm *tm;
     int tm_isdst;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_isdst = tm->tm_isdst;
@@ -514,7 +514,7 @@ TM_set_tm_gmtoff(lua_State *L)
     struct tm *tm;
     long tm_gmtoff;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_gmtoff = luab_checkinteger(L, 2, LONG_MAX);
@@ -539,7 +539,7 @@ TM_get_tm_gmtoff(lua_State *L)
     struct tm *tm;
     long tm_gmtoff;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_gmtoff = tm->tm_gmtoff;
@@ -562,7 +562,7 @@ TM_get_tm_zone(lua_State *L)
     struct tm *tm;
     char *tm_zone;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_zone = tm->tm_zone;
@@ -584,7 +584,7 @@ TM_get(lua_State *L)
 {
     struct tm *tm;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     tm = (struct tm *)(*tm_type.get)(L, 1);
 
@@ -677,7 +677,7 @@ tm_udata(lua_State *L, int narg)
 {
     luab_tm_t *self = luab_to_tm(L, narg);
 
-    return (&self->tm);
+    return &self->tm;
 }
 
 luab_module_t tm_type = {
