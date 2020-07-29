@@ -70,7 +70,13 @@ typedef struct luab_module {
 typedef struct luab_iovec {
     struct iovec    iov;
     size_t  iov_max_len;
+    u_int   iov_flags;
 } luab_iovec_t;
+#if UINT_MAX > 65535
+#define IOV_IMMUTABLE   0x00000001
+#else
+#define IOV_IMMUTABLE   0x0001
+#endif
 
 extern luab_module_t iovec_type;
 
