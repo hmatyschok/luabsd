@@ -218,12 +218,12 @@ Hook_tostring(lua_State *L)
 
 static luab_table_t hook_methods[] = {
     LUABSD_FUNC("set_char", Hook_set_char),
-    LUABSD_FUNC("get_char", Hook_get_char),
     LUABSD_FUNC("set_integer",  Hook_set_integer),
-    LUABSD_FUNC("get_integer",  Hook_get_integer),
     LUABSD_FUNC("set_long", Hook_set_long),
-    LUABSD_FUNC("get_long", Hook_get_long),
     LUABSD_FUNC("set_short",    Hook_set_short),
+    LUABSD_FUNC("get_char", Hook_get_char),
+    LUABSD_FUNC("get_integer",  Hook_get_integer),
+    LUABSD_FUNC("get_long", Hook_get_long),
     LUABSD_FUNC("get_short",    Hook_get_short),
     LUABSD_FUNC("__gc", Hook_gc),
     LUABSD_FUNC("__tostring",   Hook_tostring),
