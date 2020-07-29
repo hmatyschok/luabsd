@@ -37,6 +37,7 @@
 #include "luabsd.h"
 
 extern luab_module_t tm_type;
+
 extern int  luab_StructTM(lua_State *);
 
 #define LUABSD_TIME_LIB_ID    1594167179
@@ -80,6 +81,7 @@ static luab_table_t luab_time_vec[] = { /* time.h */
 
 
     LUABSD_INT("CLOCKS_PER_SEC",    CLOCKS_PER_SEC),
+    LUABSD_FUNC("StructTM", luab_StructTM),
     LUABSD_FUNC(NULL, NULL)
 };
 

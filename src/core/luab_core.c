@@ -45,6 +45,7 @@ extern luab_module_t itimerval_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
 extern luab_module_t timezone_type;
+extern luab_module_t tm_type;
 
 #if __BSD_VISIBLE
 extern luab_module_t db_type;

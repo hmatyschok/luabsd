@@ -33,7 +33,7 @@
 
 #include "luabsd.h"
 
-extern luab_module_t luab_tm_type;
+extern luab_module_t tm_type;
 
 /*
  * Interface against
