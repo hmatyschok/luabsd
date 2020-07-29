@@ -40,6 +40,10 @@ extern luab_module_t hook_type;
  *
  *  typedef union luab_type {
  *      lua_Integer un_int;
+ *      uint8_t     un_int8;
+ *      uint16_t    un_int16;
+ *      uint32_t    un_int32;
+ *      uint64_t    un_int64;
  *      lua_Number  un_num;
  *      lua_CFunction   un_fn;
  *  } luab_type_u;
