@@ -37,6 +37,7 @@
 
 #include "luabsd.h"
 
+extern luab_module_t hook_type;
 extern luab_module_t iovec_type;
 extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;
@@ -603,6 +604,113 @@ luab_inet_ntoa_r(lua_State *L)
     }
     return luab_pusherr(L, status);
 }
+
+/***
+ * inet_cidr_ntop(3) - Internet address manipulation routines
+ *
+ * @function inet_cidr_ntop
+ *
+ * @param af                    Specifies address fromat over protocol domain(9).
+ * @param src                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
+ *                              for binary representation of character string
+ *                              denotes OSI-L3 address.
+ * @param bits                  Cardinality of bitvector subset of OSI-L3
+ *                              address masks network portion from address.
+ * @param dst                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ *                              character String to be interpreted as address.
+ * @param size                  Specifies constraint, size of character string.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.arpa.inet.inet_cidr_ntop(af, src, bits, dst, size)
+ */
+static int
+luab_inet_cidr_ntop(lua_State *L)
+{
+    int af;
+    void *src;
+    int bits;
+    luab_iovec_t *dst;
+    caddr_t caddr;
+    size_t size;
+    int status;
+
+    (void)luab_checkmaxargs(L, 5);
+
+    af = luab_checkinteger(L, 1, INT_MAX);
+    src = luab_checkxaddr(L, 2, af, &size);
+    bits = luab_checkinteger(L, 3, UINT_MAX);
+    dst = (luab_iovec_t *)(*iovec_type.get)(L, 4);
+    size = luab_checkinteger(L, 5,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if (((caddr = dst->iov.iov_base) != NULL) &&
+        (size <= dst->iov_max_len)) {
+        if (inet_cidr_ntop(af, src, bits, caddr, size) != NULL) {
+            dst->iov.iov_len = size;
+            status = 0;
+        } else
+            status = -1;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
+/***
+ * inet_cidr_pton(3) - Internet address manipulation routines
+ *
+ * @function inet_cidr_pton
+ *
+ * @param af                    Specifies address fromat over protocol domain(9).
+ * @param src                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ *                              character String to be interpreted as address.
+ * @param dst                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
+ *                              for binary representation of character string
+ *                              denotes OSI-L3 address.
+ * @param bits                  Cardinality of bitvector subset of OSI-L3
+ *                              address masks network portion from address.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = bsd.arpa.inet.inet_cidr_pton(af, src, dst, bits)
+ */
+static int
+luab_inet_cidr_pton(lua_State *L)
+{
+    int af;
+    luab_iovec_t *src;
+    void *dst;
+    luab_type_u *bits;
+    caddr_t caddr;
+    size_t size;
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    af = luab_checkinteger(L, 1, INT_MAX);
+    src = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    dst = luab_checkxaddr(L, 3, af, &size);
+    bits = (luab_type_u *)(*hook_type.get)(L, 4);
+
+    if (((caddr = src->iov.iov_base) != NULL) &&
+        (size <= src->iov_max_len) &&
+        (src->iov.iov_len <= size))
+        status = inet_cidr_pton(af, caddr, dst, (int *)bits);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -626,9 +734,9 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_net_ntop",    luab_inet_net_ntop),
     LUABSD_FUNC("inet_net_pton",    luab_inet_net_pton),
     LUABSD_FUNC("inet_ntoa_r",  luab_inet_ntoa_r),
-#if 0    
     LUABSD_FUNC("inet_cidr_ntop",   luab_inet_cidr_ntop),
     LUABSD_FUNC("inet_cidr_pton",   luab_inet_cidr_pton),
+#if 0
     LUABSD_FUNC("inet_nsap_addr",   luab_inet_nsap_addr),
     LUABSD_FUNC("inet_nsap_ntoa",   luab_inet_nsap_ntoa),
 #endif
