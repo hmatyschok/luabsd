@@ -689,7 +689,8 @@ luab_inet_cidr_pton(lua_State *L)
     int af;
     luab_iovec_t *src;
     void *dst;
-    luab_type_u *bits;
+    luab_type_u *un;
+    int *bits;
     caddr_t caddr;
     size_t size;
     int status;
@@ -699,12 +700,13 @@ luab_inet_cidr_pton(lua_State *L)
     af = luab_checkinteger(L, 1, INT_MAX);
     src = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     dst = luab_checkxaddr(L, 3, af, &size);
-    bits = (luab_type_u *)(*hook_type.get)(L, 4);
+    un = (luab_type_u *)(*hook_type.get)(L, 4);
+    bits = (int *)&(un->un_int32);
 
     if (((caddr = src->iov.iov_base) != NULL) &&
         (size <= src->iov_max_len) &&
         (src->iov.iov_len <= size))
-        status = inet_cidr_pton(af, caddr, dst, (int *)bits);
+        status = inet_cidr_pton(af, caddr, dst, bits);
     else {
         errno = ENXIO;
         status = -1;
