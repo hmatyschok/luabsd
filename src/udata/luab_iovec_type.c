@@ -111,10 +111,11 @@ IOVec_copy_in(lua_State *L)
     luab_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
-    src = luab_checklstring(L, 2, self->iov_max_len);
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
+
+        src = luab_checklstring(L, 2, self->iov_max_len);
 
         if (((dst = self->iov.iov_base) != NULL) &&
             (self->iov_flags & IOV_BUFF)) {
