@@ -79,11 +79,16 @@ IOVec_clear(lua_State *L)
 
     if (((buf = self->iov.iov_base) != NULL) &&
         ((len = self->iov_max_len) > 0)) {
-        (void)memset_s(buf, len, 0, len);
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            (void)memset_s(buf, len, 0, len);
 
-        len = self->iov.iov_len;
-        self->iov.iov_len = 0;
-        status = len;
+            len = self->iov.iov_len;
+            self->iov.iov_len = 0;
+            status = len;
+        } else {
+            errno = EPERM;
+            status = -1;
+        }
     } else {
         errno = ENXIO;
         status = errno;
@@ -106,7 +111,7 @@ IOVec_copy_in(lua_State *L)
     src = luab_checklstring(L, 2, self->iov_max_len);
 
     if ((dst = self->iov.iov_base) != NULL) {
-        if ((self->iov_flags & IOV_IMMUTABLE) == 0) {
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
             len = strlen(src);
             (void)memmove(dst, src, len);
             self->iov.iov_len = len;
@@ -114,7 +119,7 @@ IOVec_copy_in(lua_State *L)
         } else {
             errno = EPERM;
             status = -1;
-        }   
+        }
     } else {
         errno = ENXIO;
         status = -1;
@@ -137,16 +142,21 @@ IOVec_copy_out(lua_State *L)
 
     if (((src = self->iov.iov_base) != NULL) &&
         ((len = self->iov.iov_len) > 0)) {
-        luaL_buffinit(L, &b);
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            luaL_buffinit(L, &b);
 
-        dst = luaL_prepbuffsize(&b, len);
+            dst = luaL_prepbuffsize(&b, len);
 
-        (void)memmove(dst, src, len);
+            (void)memmove(dst, src, len);
 
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
+            luaL_addsize(&b, len);
+            luaL_pushresult(&b);
 
-        status = 1;
+            status = 1;
+        } else {
+            errno = EPERM;
+            status = luab_pushnil(L);
+        }
     } else {
         errno = ENXIO;
         status = luab_pushnil(L);
@@ -203,7 +213,7 @@ IOVec_resize(lua_State *L)
 
     if ((src = self->iov.iov_base) != NULL) {
         if (len > 0) {
-            if ((self->iov_flags & IOV_IMMUTABLE) == 0) { 
+            if ((self->iov_flags & IOV_LOCK) == 0) {
                 if ((dst = realloc(src, len)) != NULL) {
                     self->iov.iov_base = dst;
 
@@ -252,6 +262,7 @@ IOVec_gc(lua_State *L)
         self->iov.iov_len = 0;
 
         self->iov_max_len = 0;
+        self->iov_flags = 0;
     }
     return 0;
 }

@@ -1030,6 +1030,7 @@ luab_read(lua_State *L)
     INT_MAX
 #endif
     );
+
     if (((caddr = buf->iov.iov_base) != NULL) &&
         (nbytes <= buf->iov_max_len)) {
         if ((count = read(fd, caddr, nbytes)) > 0)

@@ -73,9 +73,9 @@ typedef struct luab_iovec {
     u_int   iov_flags;
 } luab_iovec_t;
 #if UINT_MAX > 65535
-#define IOV_IMMUTABLE   0x00000001
+#define IOV_LOCK   0x00000001
 #else
-#define IOV_IMMUTABLE   0x0001
+#define IOV_LOCK   0x0001
 #endif
 
 extern luab_module_t iovec_type;
