@@ -77,20 +77,23 @@ IOVec_clear(lua_State *L)
 
     self = luab_to_iovec(L, 1);
 
-    if (((buf = self->iov.iov_base) != NULL) &&
-        ((len = self->iov_max_len) > 0) &&
-        (self->iov_flags & IOV_BUFF)) {
-        if ((self->iov_flags & IOV_LOCK) == 0) {
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        if (((buf = self->iov.iov_base) != NULL) &&
+            ((len = self->iov_max_len) > 0) &&
+            (self->iov_flags & IOV_BUFF)) {
             (void)memset_s(buf, len, 0, len);
             len = self->iov.iov_len;
             self->iov.iov_len = 0;
             status = len;
         } else {
-            errno = EBUSY;
+            errno = ENXIO;
             status = -1;
         }
+        self->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -110,19 +113,23 @@ IOVec_copy_in(lua_State *L)
     self = luab_to_iovec(L, 1);
     src = luab_checklstring(L, 2, self->iov_max_len);
 
-    if (((dst = self->iov.iov_base) != NULL) &&
-        (self->iov_flags & IOV_BUFF)) {
-        if ((self->iov_flags & IOV_LOCK) == 0) {
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        if (((dst = self->iov.iov_base) != NULL) &&
+            (self->iov_flags & IOV_BUFF)) {
+
             len = strlen(src);
             (void)memmove(dst, src, len);
             self->iov.iov_len = len;
             status = len;
         } else {
-            errno = EBUSY;
+            errno = ENXIO;
             status = -1;
         }
+        self->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -141,25 +148,29 @@ IOVec_copy_out(lua_State *L)
 
     self = luab_to_iovec(L, 1);
 
-    if (((src = self->iov.iov_base) != NULL) &&
-        ((len = self->iov.iov_len) > 0)) {
-        if ((self->iov_flags & IOV_LOCK) == 0) {
-            luaL_buffinit(L, &b);
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
 
-            dst = luaL_prepbuffsize(&b, len);
+        if (((src = self->iov.iov_base) != NULL) &&
+            ((len = self->iov.iov_len) > 0)) {
 
-            (void)memmove(dst, src, len);
+                luaL_buffinit(L, &b);
 
-            luaL_addsize(&b, len);
-            luaL_pushresult(&b);
+                dst = luaL_prepbuffsize(&b, len);
 
-            status = 1;
+                (void)memmove(dst, src, len);
+
+                luaL_addsize(&b, len);
+                luaL_pushresult(&b);
+
+                status = 1;
         } else {
-            errno = EBUSY;
+            errno = ENXIO;
             status = luab_pushnil(L);
         }
+        self->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = luab_pushnil(L);
     }
     return status;
@@ -212,29 +223,29 @@ IOVec_resize(lua_State *L)
 #endif
     );
 
-    if ((src = self->iov.iov_base) != NULL) {
-        if ((len > 0) && (self->iov_flags & IOV_BUFF)) {
-            if ((self->iov_flags & IOV_LOCK) == 0) {
-                if ((dst = realloc(src, len)) != NULL) {
-                    self->iov.iov_base = dst;
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
 
-                    if (len <= self->iov.iov_len)
-                        self->iov.iov_len = len;
+        if (((src = self->iov.iov_base) != NULL) &&
+            (self->iov_flags & IOV_BUFF) && (len > 0)) {
 
-                    self->iov_max_len = len;
-                    status = len;
-                } else
-                    status = -1;
-            } else {
-                errno = EBUSY;
+            if ((dst = realloc(src, len)) != NULL) {
+                self->iov.iov_base = dst;
+
+                if (len <= self->iov.iov_len)
+                    self->iov.iov_len = len;
+
+                self->iov_max_len = len;
+                status = len;
+            } else
                 status = -1;
-            }
         } else {
-            errno = EINVAL;
+            errno = ENXIO;
             status = -1;
         }
+        self->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
