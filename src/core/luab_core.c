@@ -167,7 +167,7 @@ luab_pushstring(lua_State *L, const char *s)
 }
 
 /*
- * Operations on Atomic Data Types.
+ * Operations on atomic (or primitive) data types.
  */
 
 const char *
@@ -373,6 +373,9 @@ luab_newmetatable(lua_State *L, luab_module_t *arg)
     lua_pop(L, 1);
 }
 
+/*
+ * Reflects and maps interface against API over /include.
+ */
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
