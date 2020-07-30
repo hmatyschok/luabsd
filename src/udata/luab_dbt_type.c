@@ -73,24 +73,28 @@ DBT_set_data(lua_State *L)
     dbt = (DBT *)(*dbt_type.get)(L, 1);
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
 
-    buf->iov_flags |= IOV_LOCK;
+    if ((buf->iov_flags) == 0) {
+        buf->iov_flags |= IOV_LOCK;
 
-    if (dbt != NULL) {
+        if (dbt != NULL) {
 
-        if (((dbt->data = buf->iov.iov_base) != NULL) &&
-            ((dbt->size = buf->iov.iov_len) > 0) &&
-            ((buf->iov_flags & IOV_BUFF)))
-            status = 0;
-        else {
-            errno = EINVAL;
+            if (((dbt->data = buf->iov.iov_base) != NULL) &&
+                ((dbt->size = buf->iov.iov_len) > 0) &&
+                ((buf->iov_flags & IOV_BUFF)))
+                status = 0;
+            else {
+                errno = EINVAL;
+                status = -1;
+            }
+        } else {
+            errno = ENXIO;
             status = -1;
         }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
-    buf->iov_flags &= ~IOV_LOCK;
-
     return luab_pusherr(L, status);
 }
 
@@ -108,28 +112,32 @@ DBT_get_data(lua_State *L)
     dbt = (DBT *)(*dbt_type.get)(L, 1);
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
 
-    buf->iov_flags |= IOV_LOCK;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
 
-    if ((dbt != NULL) &&
-        ((src = dbt->data) != NULL) &&
-        ((len = dbt->size) > 0)) {
+        if ((dbt != NULL) &&
+            ((src = dbt->data) != NULL) &&
+            ((len = dbt->size) > 0)) {
 
-        if (((dst = buf->iov.iov_base) != NULL) &&
-            (len <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
-            (void)memmove(dst, src, len);
-            buf->iov.iov_len = len;
-            status = 0;
+            if (((dst = buf->iov.iov_base) != NULL) &&
+                (len <= buf->iov_max_len) &&
+                (buf->iov_flags & IOV_BUFF)) {
+                (void)memmove(dst, src, len);
+                buf->iov.iov_len = len;
+                status = 0;
+            } else {
+                errno = EINVAL;
+                status = -1;
+            }
         } else {
-            errno = EINVAL;
+            errno = ENXIO;
             status = -1;
         }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
-    buf->iov_flags &= ~IOV_LOCK;
-
     return luab_pusherr(L, status);
 }
 
