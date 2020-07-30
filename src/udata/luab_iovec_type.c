@@ -78,20 +78,20 @@ IOVec_clear(lua_State *L)
     self = luab_to_iovec(L, 1);
 
     if (((buf = self->iov.iov_base) != NULL) &&
-        ((len = self->iov_max_len) > 0)) {
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
+        ((len = self->iov_max_len) > 0) &&
+        (self->iov_flags & IOV_BUFF)) {
+        if ((self->iov_flags & IOV_LOCK) == 0) {
             (void)memset_s(buf, len, 0, len);
-
             len = self->iov.iov_len;
             self->iov.iov_len = 0;
             status = len;
         } else {
-            errno = EPERM;
+            errno = EBUSY;
             status = -1;
         }
     } else {
         errno = ENXIO;
-        status = errno;
+        status = -1;
     }
     return luab_pusherr(L, status);
 }
@@ -110,14 +110,15 @@ IOVec_copy_in(lua_State *L)
     self = luab_to_iovec(L, 1);
     src = luab_checklstring(L, 2, self->iov_max_len);
 
-    if ((dst = self->iov.iov_base) != NULL) {
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
+    if (((dst = self->iov.iov_base) != NULL) &&
+        (self->iov_flags & IOV_BUFF)) {
+        if ((self->iov_flags & IOV_LOCK) == 0) {
             len = strlen(src);
             (void)memmove(dst, src, len);
             self->iov.iov_len = len;
             status = len;
         } else {
-            errno = EPERM;
+            errno = EBUSY;
             status = -1;
         }
     } else {
@@ -142,7 +143,7 @@ IOVec_copy_out(lua_State *L)
 
     if (((src = self->iov.iov_base) != NULL) &&
         ((len = self->iov.iov_len) > 0)) {
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
+        if ((self->iov_flags & IOV_LOCK) == 0) {
             luaL_buffinit(L, &b);
 
             dst = luaL_prepbuffsize(&b, len);
@@ -154,7 +155,7 @@ IOVec_copy_out(lua_State *L)
 
             status = 1;
         } else {
-            errno = EPERM;
+            errno = EBUSY;
             status = luab_pushnil(L);
         }
     } else {
@@ -212,7 +213,7 @@ IOVec_resize(lua_State *L)
     );
 
     if ((src = self->iov.iov_base) != NULL) {
-        if (len > 0) {
+        if ((len > 0) && (self->iov_flags & IOV_BUFF)) {
             if ((self->iov_flags & IOV_LOCK) == 0) {
                 if ((dst = realloc(src, len)) != NULL) {
                     self->iov.iov_base = dst;
@@ -225,7 +226,7 @@ IOVec_resize(lua_State *L)
                 } else
                     status = -1;
             } else {
-                errno = EPERM;
+                errno = EBUSY;
                 status = -1;
             }
         } else {
@@ -250,7 +251,8 @@ IOVec_gc(lua_State *L)
 
     self = luab_to_iovec(L, 1);
 
-    if (self->iov.iov_base != NULL) {
+    if ((self->iov.iov_base != NULL) &&
+        (self->iov_flags & IOV_BUFF)) {
         buf = self->iov.iov_base;
         len = self->iov_max_len;
 
@@ -259,11 +261,11 @@ IOVec_gc(lua_State *L)
         free(buf);
 
         self->iov.iov_base = NULL;
-        self->iov.iov_len = 0;
-
-        self->iov_max_len = 0;
-        self->iov_flags = 0;
     }
+    self->iov.iov_len = 0;
+    self->iov_max_len = 0;
+    self->iov_flags = 0;
+
     return 0;
 }
 
@@ -325,22 +327,36 @@ luab_StructIOVec(lua_State *L)
     );
 
     if (len > 0) {
-        if ((buf = calloc(1, len)) != NULL) {
-            if ((self = luab_newiovec(L, NULL)) != NULL) {
+        if ((buf = calloc(1, len)) != NULL)
+            status = IOV_BUFF;
+        else
+            status = -1;
+    } else
+        status = IOV_PROXY;
+
+    if (status != -1) {
+        if ((self = luab_newiovec(L, NULL)) != NULL) {
+            if (status & IOV_BUFF) {
                 self->iov.iov_base = buf;
-                self->iov.iov_len = 0;
                 self->iov_max_len = len;
-                self->iov_flags = 0;    /* XXX */
-                status = 1;
-            } else {
-                status = luab_pushnil(L);
+            } else
+                self->iov_max_len = 0;
+
+            self->iov.iov_len = 0;
+            self->iov_flags = status;
+            status = 1;
+        } else {
+            if (status & IOV_BUFF)
                 free(buf);
-            }
-        } else
+
             status = luab_pushnil(L);
-    } else {
-        errno = EINVAL;
+        }
+    } else
         status = luab_pushnil(L);
-    }
+
     return status;
 }
+
+
+
+

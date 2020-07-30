@@ -30,6 +30,8 @@
 #include <sys/types.h>
 #include <sys/uio.h>
 
+#include <string.h>     /* XXX */
+
 typedef union luab_type {
     lua_Integer un_int;
     uint8_t     un_int8;
@@ -74,12 +76,12 @@ typedef struct luab_iovec {
 } luab_iovec_t;
 #if UINT_MAX > 65535
 #define IOV_LOCK    0x00000001
-#define IOV_RD      0x00000002
-#define IOV_wr      0x00000004
+#define IOV_PROXY   0x00000002
+#define IOV_BUFF    0x00000004
 #else
 #define IOV_LOCK    0x0001
-#define IOV_RD      0x0002
-#define IOV_WR      0x0004
+#define IOV_PROXY   0x0002
+#define IOV_BUFF    0x0004
 #endif
 
 extern luab_module_t iovec_type;
@@ -99,13 +101,32 @@ int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);
 void    luab_pushtimesvector(lua_State *, int, size_t, void *);
 
-#define luab_todata(L, narg, id, t) \
+#define luab_todata(L, narg, id, t)                         \
     ((t)luab_checkudata((L), (narg), (id)))
-#define luab_rawsetinteger(L, narg, k, v)                   \
-    do {                                                    \
-        lua_pushinteger((L), (v));                          \
-        lua_rawseti((L), (narg), (k));                      \
-    } while (0)
+
+static __inline void
+luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t buf;
+
+    if (k != NULL) {
+        if (v != NULL && len > 0) {
+            luaL_buffinit(L, &b);
+
+            buf = luaL_prepbuffsize(&b, len);
+
+            (void)memmove(buf, v, len);
+
+            luaL_addsize(&b, len);
+            luaL_pushresult(&b);
+        } else
+            lua_pushnil(L);
+
+        lua_setfield(L, narg, k);
+    }
+}
+
 #define luab_setcfunction(L, narg, k, v)                    \
     do {                                                    \
         lua_pushcfunction((L), (v));                        \
@@ -116,6 +137,11 @@ void    luab_pushtimesvector(lua_State *, int, size_t, void *);
         lua_pushinteger((L), (v));                          \
         lua_setfield((L), (narg), (k));                     \
     } while (0)
+#define luab_rawsetinteger(L, narg, k, v)                   \
+    do {                                                    \
+        lua_pushinteger((L), (v));                          \
+        lua_rawseti((L), (narg), (k));                      \
+    } while (0)
 #define luab_setstring(L, narg, k, v)                       \
     do {                                                    \
         lua_pushstring((L), (v));                           \
@@ -123,8 +149,9 @@ void    luab_pushtimesvector(lua_State *, int, size_t, void *);
     } while (0)
 #define luab_setudata(L, narg, id, k, v)                    \
     do {                                                    \
-        if (luab_newuserdata((L), (id), (v)) != NULL)       \
-            lua_setfield((L), (narg), (k));                 \
+        if (luab_newuserdata((L), (id), (v)) == NULL)       \
+            lua_pushnil(L);                                 \
+        lua_setfield((L), (narg), (k));                     \
     } while (0)
 
 static __inline lua_Integer

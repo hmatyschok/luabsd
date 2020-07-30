@@ -4,6 +4,7 @@
 SRCS+=	luab_bintime_type.c
 SRCS+=	luab_clockinfo_type.c
 SRCS+=	luab_crypt_data_type.c
+SRCS+=	luab_dbt_type.c
 SRCS+=	luab_flock_type.c
 SRCS+=	luab_hook_type.c
 SRCS+=	luab_in_addr_type.c
