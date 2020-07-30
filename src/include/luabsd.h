@@ -33,7 +33,8 @@
 #include <string.h>     /* XXX */
 
 typedef union luab_type {
-    lua_Integer un_int;
+    lua_Integer un_intx;
+    int         un_int;
     uint8_t     un_int8;
     uint16_t    un_int16;
     uint32_t    un_int32;

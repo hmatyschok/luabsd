@@ -701,7 +701,7 @@ luab_inet_cidr_pton(lua_State *L)
     src = (luab_iovec_t *)(*iovec_type.get)(L, 2);
     dst = luab_checkxaddr(L, 3, af, &size);
     un = (luab_type_u *)(*hook_type.get)(L, 4);
-    bits = (int *)&(un->un_int32);
+    bits = &(un->un_int);
 
     if (((caddr = src->iov.iov_base) != NULL) &&
         (size <= src->iov_max_len) &&
