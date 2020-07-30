@@ -73,8 +73,9 @@ DBT_set_data(lua_State *L)
     dbt = (DBT *)(*dbt_type.get)(L, 1);
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
 
+    buf->iov_flags |= IOV_LOCK;
+
     if (dbt != NULL) {
-        buf->iov_flags |= IOV_LOCK;
 
         if (((dbt->data = buf->iov.iov_base) != NULL) &&
             ((dbt->size = buf->iov.iov_len) > 0) &&
@@ -84,11 +85,12 @@ DBT_set_data(lua_State *L)
             errno = EINVAL;
             status = -1;
         }
-        buf->iov_flags &= ~IOV_LOCK;
     } else {
         errno = ENXIO;
         status = -1;
     }
+    buf->iov_flags &= ~IOV_LOCK;
+
     return luab_pusherr(L, status);
 }
 
@@ -106,10 +108,11 @@ DBT_get_data(lua_State *L)
     dbt = (DBT *)(*dbt_type.get)(L, 1);
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
 
+    buf->iov_flags |= IOV_LOCK;
+
     if ((dbt != NULL) &&
         ((src = dbt->data) != NULL) &&
         ((len = dbt->size) > 0)) {
-        buf->iov_flags |= IOV_LOCK;
 
         if (((dst = buf->iov.iov_base) != NULL) &&
             (len <= buf->iov_max_len) &&
@@ -121,11 +124,12 @@ DBT_get_data(lua_State *L)
             errno = EINVAL;
             status = -1;
         }
-        buf->iov_flags &= ~IOV_LOCK;
     } else {
         errno = ENXIO;
         status = -1;
     }
+    buf->iov_flags &= ~IOV_LOCK;
+
     return luab_pusherr(L, status);
 }
 
