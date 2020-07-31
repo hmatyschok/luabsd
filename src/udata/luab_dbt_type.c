@@ -76,18 +76,12 @@ DBT_set_data(lua_State *L)
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
-        if (dbt != NULL) {
-
-            if (((dbt->data = buf->iov.iov_base) != NULL) &&
-                ((dbt->size = buf->iov.iov_len) > 0) &&
-                (buf->iov_flags & IOV_BUFF))
-                status = 0;
-            else {
-                errno = EINVAL;
-                status = -1;
-            }
-        } else {
-            errno = ENXIO;
+        if (((dbt->data = buf->iov.iov_base) != NULL) &&
+            ((dbt->size = buf->iov.iov_len) > 0) &&
+            (buf->iov_flags & IOV_BUFF))
+            status = 0;
+        else {
+            errno = EINVAL;
             status = -1;
         }
         buf->iov_flags &= ~IOV_LOCK;
@@ -115,8 +109,7 @@ DBT_get_data(lua_State *L)
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
-        if ((dbt != NULL) &&
-            ((src = dbt->data) != NULL) &&
+        if (((src = dbt->data) != NULL) &&
             ((len = dbt->size) > 0)) {
 
             if (((dst = buf->iov.iov_base) != NULL) &&
@@ -237,17 +230,33 @@ luab_module_t dbt_type = {
 int
 luab_StructDBT(lua_State *L)
 {
+    int narg;
+    luab_iovec_t *buf;
     luab_dbt_t *self;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    if ((narg = luab_checkmaxargs(L, 1)) == 1)
+        buf = (luab_iovec_t *)(*iovec_type.get)(L, narg);
+    else
+        buf = NULL;
 
-    if ((self = luab_newdbt(L, NULL)) != NULL) {
-        self->dbt.data = NULL;
-        self->dbt.size = 0;
-        status = 1;
-    } else
+    if ((self = luab_newdbt(L, NULL)) == NULL)
         status = luab_pushnil(L);
+    else
+        status = 1;
 
+    if (buf != NULL) {
+        if (((buf->iov_flags & IOV_LOCK) == 0) &&
+            (buf->iov_flags & IOV_BUFF) &&
+            (buf->iov.iov_base != NULL) &&
+            (buf->iov.iov_len > 0)) {
+            buf->iov_flags |= IOV_LOCK;
+
+            self->dbt.data = buf->iov.iov_base;
+            self->dbt.size = buf->iov.iov_len;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        }
+    }
     return status;
 }
