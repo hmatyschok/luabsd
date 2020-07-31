@@ -33,7 +33,19 @@ Therefore
     local key = bsd.uuid.uuidgen()
     local value = "Hello world!"
 
-    err, msg = db:put(key, value, bsd.db.R_NOOVERWRITE)
+    buf_key = bsd.sys.uio.StructIOVec(#key)
+    buf_key:copy_in(key)
+
+    buf_value = bsd.sys.uio.StructIOVec(#value)
+    buf_value:copy_in(value)
+
+    dbt_key = bsd.db.StructDBT()
+    dbt_key:set_data(buf_key)
+
+    dbt_value = bsd.db.StructDBT()
+    dbt_value:set_data(buf_value)
+
+    err, msg = db:put(dbt_key, dbt_value, bsd.db.R_NOOVERWRITE)
 
 a callout may implemented as follows:
 
@@ -41,7 +53,18 @@ a callout may implemented as follows:
     expired = false
 
     local function event()
-        print(db:get(key, 0))
+        dbt_result = bsd.db.StructDBT()        
+        db:get(dbt_key, dbt_result, 0)
+
+        buf_result = bsd.sys.uio.StructIOVec(dbt_result:get_size())
+
+        dbt_result:get_data(buf_result)
+
+        db:sync(0)
+        db:close()
+        
+        print("event:", buf_result:copy_out())
+
         expired = true;
     end
 
@@ -65,14 +88,9 @@ a callout may implemented as follows:
             fetch = false
         end
     end
+    
+    tv = it2:get_it_value()
 
-    print("----------")
-
-    print(it2)
-
-    for k, v in pairs(it2:get()) do
-        print(" ", k, "tv_sec  : " .. v:get_tv_sec())
-        print(" ", k, "tv_nsec : " .. v:get_tv_nsec())
-    end
+    print(" -> ", it2, tv, "tv_sec: " .. tv:get_tv_sec())
 
 </code></pre>
