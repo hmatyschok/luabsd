@@ -80,7 +80,7 @@ DBT_set_data(lua_State *L)
 
             if (((dbt->data = buf->iov.iov_base) != NULL) &&
                 ((dbt->size = buf->iov.iov_len) > 0) &&
-                ((buf->iov_flags & IOV_BUFF)))
+                (buf->iov_flags & IOV_BUFF))
                 status = 0;
             else {
                 errno = EINVAL;
