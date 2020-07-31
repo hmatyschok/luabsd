@@ -48,6 +48,7 @@ extern luab_module_t timezone_type;
 extern luab_module_t tm_type;
 
 #if __BSD_VISIBLE
+extern luab_module_t dbt_type;
 extern luab_module_t db_type;
 extern luab_module_t bintime_type;
 extern luab_module_t crypt_data_type;
@@ -418,6 +419,7 @@ luaopen_bsd(lua_State *L)
 #if __BSD_VISIBLE
     luab_newmetatable(L, &bintime_type);
     luab_newmetatable(L, &crypt_data_type);
+    luab_newmetatable(L, &dbt_type);
     luab_newmetatable(L, &db_type);
 #endif
     return 1;

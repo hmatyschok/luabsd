@@ -73,7 +73,7 @@ DBT_set_data(lua_State *L)
     dbt = (DBT *)(*dbt_type.get)(L, 1);
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
 
-    if ((buf->iov_flags) == 0) {
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
         if (dbt != NULL) {
@@ -142,11 +142,26 @@ DBT_get_data(lua_State *L)
 }
 
 static int
+DBT_get_size(lua_State *L)
+{
+    DBT *dbt;
+    size_t len;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    dbt = (DBT *)(*dbt_type.get)(L, 1);
+
+    len = dbt->size;
+
+    return luab_pusherr(L, len);
+}
+
+static int
 DBT_get(lua_State *L)
 {
     DBT *dbt;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     dbt = (DBT *)(*dbt_type.get)(L, 1);
 
@@ -193,6 +208,7 @@ static luab_table_t dbt_methods[] = {
     LUABSD_FUNC("set_data",  DBT_set_data),
     LUABSD_FUNC("get",  DBT_get),
     LUABSD_FUNC("get_data",  DBT_get_data),
+    LUABSD_FUNC("get_size",  DBT_get_size),
     LUABSD_FUNC("__gc", DBT_gc),
     LUABSD_FUNC("__tostring",   DBT_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -214,6 +230,10 @@ luab_module_t dbt_type = {
     .sz = sizeof(luab_dbt_t),
 };
 
+/*
+ * XXX Well, argv from ctor should accept more args,
+ * XXX etc., but not yet at this developement stage.
+ */
 int
 luab_StructDBT(lua_State *L)
 {
