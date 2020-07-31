@@ -352,9 +352,7 @@ luab_StructFlock(lua_State *L)
     struct flock *flock;
     int status;
 
-    narg = luab_checkmaxargs(L, 1);
-
-    if (narg == 0)
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
         flock = NULL;
     else
         flock = flock_udata(L, narg);

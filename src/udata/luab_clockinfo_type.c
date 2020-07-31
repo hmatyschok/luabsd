@@ -77,7 +77,7 @@ ClockInfo_set_hz(lua_State *L)
     struct clockinfo *ci;
     int hz;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     hz = luab_checkinteger(L, 2, INT_MAX);
@@ -102,7 +102,7 @@ ClockInfo_get_hz(lua_State *L)
     struct clockinfo *ci;
     int hz;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     hz = ci->hz;
@@ -125,7 +125,7 @@ ClockInfo_set_tick(lua_State *L)
     struct clockinfo *ci;
     int tick;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     tick = luab_checkinteger(L, 2, INT_MAX);
@@ -150,7 +150,7 @@ ClockInfo_get_tick(lua_State *L)
     struct clockinfo *ci;
     int tick;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     tick = ci->tick;
@@ -173,7 +173,7 @@ ClockInfo_set_stathz(lua_State *L)
     struct clockinfo *ci;
     int stathz;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     stathz = luab_checkinteger(L, 2, INT_MAX);
@@ -198,7 +198,7 @@ ClockInfo_get_stathz(lua_State *L)
     struct clockinfo *ci;
     int stathz;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     stathz = ci->stathz;
@@ -221,7 +221,7 @@ ClockInfo_set_profhz(lua_State *L)
     struct clockinfo *ci;
     int profhz;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     profhz = luab_checkinteger(L, 2, INT_MAX);
@@ -246,7 +246,7 @@ ClockInfo_get_profhz(lua_State *L)
     struct clockinfo *ci;
     int profhz;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     profhz = ci->profhz;
@@ -268,7 +268,7 @@ ClockInfo_get(lua_State *L)
 {
     struct clockinfo *ci;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
 
@@ -365,11 +365,11 @@ luab_module_t clockinfo_type = {
 int
 luab_StructClockInfo(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 1);
+    int narg;
     struct clockinfo *clockinfo;
     int status;
 
-    if (narg == 0)
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
         clockinfo = NULL;
     else
         clockinfo = clockinfo_udata(L, narg);

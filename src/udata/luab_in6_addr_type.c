@@ -81,7 +81,7 @@ In6Addr_set_s6_addr(lua_State *L)
     struct in6_addr *ia;
     uint32_t k, v;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     ia = (struct in6_addr *)(*in6_addr_type.get)(L, 1);
 
@@ -118,7 +118,7 @@ In6Addr_get_s6_addr(lua_State *L)
     struct in6_addr *ia;
     int i, j;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     ia = (struct in6_addr *)(*in6_addr_type.get)(L, 1);
 
@@ -149,7 +149,7 @@ In6Addr_get(lua_State *L)
     caddr_t dst, src;
     size_t len;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     ia = (struct in6_addr *)(*in6_addr_type.get)(L, 1);
     len = sizeof(ia->__u6_addr);
@@ -247,11 +247,11 @@ luab_module_t in6_addr_type = {
 int
 luab_StructIn6Addr(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 1);
+    int narg;
     struct in6_addr *in6_addr;
     int status;
 
-    if (narg == 0)
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
         in6_addr = NULL;
     else
         in6_addr = in6_addr_udata(L, narg);

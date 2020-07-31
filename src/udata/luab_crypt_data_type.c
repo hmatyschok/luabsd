@@ -275,11 +275,11 @@ luab_module_t crypt_data_type = {
 int
 luab_StructCryptData(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 1);
+    int narg;
     struct crypt_data *crypt_data;
     int status;
 
-    if (narg == 0)
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
         crypt_data = NULL;
     else
         crypt_data = crypt_data_udata(L, narg);

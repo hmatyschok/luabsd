@@ -703,11 +703,11 @@ luab_module_t tm_type = {
 int
 luab_StructTM(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 1);
+    int narg;
     struct tm *tm;
     int status;
 
-    if (narg == 0)
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
         tm = NULL;
     else
         tm = tm_udata(L, narg);

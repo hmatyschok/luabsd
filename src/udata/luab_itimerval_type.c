@@ -77,7 +77,7 @@ ItimerVal_set_it_interval(lua_State *L)
     struct itimerval *it;
     struct timespec *tv;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     it = (struct itimerval *)(*itimerval_type.get)(L, 1);
     tv = (struct timespec *)(*timespec_type.get)(L, 2);
@@ -101,7 +101,7 @@ ItimerVal_get_it_interval(lua_State *L)
 {
     struct itimerval *it;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     it = (struct itimerval *)(*itimerval_type.get)(L, 1);
 
@@ -126,7 +126,7 @@ ItimerVal_set_it_value(lua_State *L)
     struct itimerval *it;
     struct timespec *tv;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     it = (struct itimerval *)(*itimerval_type.get)(L, 1);
     tv = (struct timespec *)(*timespec_type.get)(L, 2);
@@ -151,7 +151,7 @@ ItimerVal_get_it_value(lua_State *L)
     struct itimerval *it;
     int status;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     it = (struct itimerval *)(*itimerval_type.get)(L, 1);
 
@@ -177,7 +177,7 @@ ItimerVal_get(lua_State *L)
 {
     struct itimerval *it;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     it = (struct itimerval *)(*itimerval_type.get)(L, 1);
 
@@ -260,7 +260,7 @@ luab_module_t itimerval_type = {
  * @function StructItimerVal
  *
  * @param itimerval                 Instance of LUA_TUSERDATA(luab_itimerval_t).
- * 
+ *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
  * @usage itimerval = bsd.sys.time.StructItimerVal([ itimerval ])
@@ -268,11 +268,11 @@ luab_module_t itimerval_type = {
 int
 luab_StructItimerVal(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 1);
+    int narg;
     struct itimerval *itimerval;
     int status;
 
-    if (narg == 0)
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
         itimerval = NULL;
     else
         itimerval = itimerval_udata(L, narg);

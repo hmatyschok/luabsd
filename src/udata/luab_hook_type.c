@@ -262,11 +262,11 @@ luab_module_t hook_type = {
 int
 luab_CreateHook(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 1);
+    int narg;
     luab_type_u *hook;
     int status;
 
-    if (narg == 0)
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
         hook = NULL;
     else
         hook = hook_udata(L, narg);
