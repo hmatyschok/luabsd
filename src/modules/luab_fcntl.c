@@ -75,11 +75,13 @@ extern luab_module_t luab_fcntl_lib;
 static int
 luab_open(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 3);
+    int narg;
     const char *path;
     int flags;
     mode_t mode;
     int fd;
+
+    narg = luab_checkmaxargs(L, 3);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
     flags = luab_checkinteger(L, 2, INT_MAX);
@@ -148,9 +150,11 @@ luab_creat(lua_State *L)
 static int
 luab_fcntl(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 3);
+    int narg;
     int fd, cmd, arg, status;
     struct flock *argp;
+
+    narg = luab_checkmaxargs(L, 3);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
     cmd = luab_checkinteger(L, 2, INT_MAX);
@@ -210,11 +214,13 @@ luab_flock(lua_State *L)
 static int
 luab_openat(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 4), dirfd;
+    int narg, dirfd;
     const char *path;
     int flags;
     mode_t mode;
     int fd;
+
+    narg = luab_checkmaxargs(L, 4);
 
     dirfd = luab_checkinteger(L, 1, INT_MAX);
     path = luab_checklstring(L, 2, MAXPATHLEN);
