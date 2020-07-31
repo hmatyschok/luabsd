@@ -32,6 +32,8 @@
 
 #include <string.h>     /* XXX */
 
+__BEGIN_DECLS
+
 typedef union luab_type {
     lua_Integer un_intx;
     int         un_int;
@@ -87,7 +89,11 @@ typedef struct luab_iovec {
 
 extern luab_module_t iovec_type;
 
-__BEGIN_DECLS
+int luab_pusherr(lua_State *, lua_Integer);
+int luab_pushnil(lua_State *);
+int luab_pushstring(lua_State *, const char *);
+void    luab_pushtimesvector(lua_State *, int, size_t, void *);
+
 const char **    luab_checkargv(lua_State *, int);
 int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
@@ -97,13 +103,34 @@ struct timespec *   luab_checktimesvector(lua_State *, int, size_t);
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
 void *  luab_newvector(lua_State *, int, size_t, size_t);
 
-int luab_pusherr(lua_State *, lua_Integer);
-int luab_pushnil(lua_State *);
-int luab_pushstring(lua_State *, const char *);
-void    luab_pushtimesvector(lua_State *, int, size_t, void *);
+/*
+ * Operations on stack.
+ */
 
-#define luab_todata(L, narg, id, t)                         \
-    ((t)luab_checkudata((L), (narg), (id)))
+static __inline int
+luab_pushinteger(lua_State *L, luab_type_u *un)
+{
+    lua_pushinteger(L, un->un_int);
+    return (1);
+}
+
+static __inline int
+luab_pushcfunction(lua_State *L, luab_type_u *un)
+{
+    lua_pushcfunction(L, un->un_fn);
+    return (1);
+}
+
+/*
+ * Accessor for table manipulation.
+ */
+
+static __inline void
+luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_rawseti(L, narg, k);
+}
 
 static __inline void
 luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
@@ -128,38 +155,46 @@ luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
     }
 }
 
-#define luab_setcfunction(L, narg, k, v)                    \
-    do {                                                    \
-        lua_pushcfunction((L), (v));                        \
-        lua_setfield((L), (narg), (k));                     \
-    } while (0)
-#define luab_setinteger(L, narg, k, v)                      \
-    do {                                                    \
-        lua_pushinteger((L), (v));                          \
-        lua_setfield((L), (narg), (k));                     \
-    } while (0)
-#define luab_rawsetinteger(L, narg, k, v)                   \
-    do {                                                    \
-        lua_pushinteger((L), (v));                          \
-        lua_rawseti((L), (narg), (k));                      \
-    } while (0)
-#define luab_setstring(L, narg, k, v)                       \
-    do {                                                    \
-        lua_pushstring((L), (v));                           \
-        lua_setfield((L), (narg), (k));                     \
-    } while (0)
-#define luab_setudata(L, narg, id, k, v)                    \
-    do {                                                    \
-        if (luab_newuserdata((L), (id), (v)) == NULL)       \
-            lua_pushnil(L);                                 \
-        lua_setfield((L), (narg), (k));                     \
-    } while (0)
-
-static __inline lua_Integer
-luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
+static __inline void
+luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
 {
-    return ((lua_tointeger(L, narg)) & (b_msk));
+    lua_pushcfunction(L, v);
+    lua_setfield(L, narg, k);
 }
+
+static __inline void
+luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_setfield(L, narg, k);
+}
+
+static __inline void
+luab_setstring(lua_State *L, int narg, const char *k, const char *v)
+{
+    if (v == NULL)
+        lua_pushnil(L);
+    else
+        lua_pushstring(L, v);
+
+    lua_setfield(L, narg, k);
+}
+
+static __inline void
+luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
+{
+    if (luab_newuserdata(L, m, v) == NULL)
+        lua_pushnil(L);
+
+    lua_setfield(L, narg, k);
+}
+
+/*
+ * Accessor for evaluation of function arguments.
+ */
+
+#define luab_todata(L, narg, id, t) \
+    ((t)luab_checkudata((L), (narg), (id)))
 
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
@@ -202,18 +237,10 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
     return (luaL_checkudata(L, narg, m->name));
 }
 
-static __inline int
-luab_pushinteger(lua_State *L, luab_type_u *un)
+static __inline lua_Integer
+luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
 {
-    lua_pushinteger(L, un->un_int);
-    return (1);
-}
-
-static __inline int
-luab_pushcfunction(lua_State *L, luab_type_u *un)
-{
-    lua_pushcfunction(L, un->un_fn);
-    return (1);
+    return ((lua_tointeger(L, narg)) & (b_msk));
 }
 __END_DECLS
 
