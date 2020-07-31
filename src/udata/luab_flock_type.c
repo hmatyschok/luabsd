@@ -69,7 +69,7 @@ Flock_set_l_start(lua_State *L)
     struct flock *l;
     off_t l_start;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_start = luab_checkinteger(L, 2, ULONG_MAX);
@@ -85,7 +85,7 @@ Flock_get_l_start(lua_State *L)
     struct flock *l;
     off_t l_start;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_start = l->l_start;
@@ -100,7 +100,7 @@ Flock_set_l_len(lua_State *L)
     struct flock *l;
     off_t l_len;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_len = luab_checkinteger(L, 2, LONG_MAX);
@@ -116,7 +116,7 @@ Flock_get_l_len(lua_State *L)
     struct flock *l;
     off_t l_len;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_len = l->l_len;
@@ -131,7 +131,7 @@ Flock_set_l_pid(lua_State *L)
     struct flock *l;
     pid_t l_pid;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_pid = luab_checkinteger(L, 2, INT_MAX);
@@ -147,7 +147,7 @@ Flock_get_l_pid(lua_State *L)
     struct flock *l;
     pid_t l_pid;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_pid = l->l_pid;
@@ -162,7 +162,7 @@ Flock_set_l_type(lua_State *L)
     struct flock *l;
     int l_type;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_type = luab_checkinteger(L, 2, SHRT_MAX);
@@ -178,7 +178,7 @@ Flock_get_l_type(lua_State *L)
     struct flock *l;
     int l_type;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_type = l->l_type;
@@ -193,7 +193,7 @@ Flock_set_l_whence(lua_State *L)
     struct flock *l;
     int l_whence;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_whence = luab_checkinteger(L, 2, SHRT_MAX);
@@ -209,7 +209,7 @@ Flock_get_l_whence(lua_State *L)
     struct flock *l;
     int l_whence;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_whence = l->l_whence;
@@ -224,7 +224,7 @@ Flock_set_l_sysid(lua_State *L)
     struct flock *l;
     int l_sysid;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_sysid = luab_checkinteger(L, 2, INT_MAX);
@@ -240,7 +240,7 @@ Flock_get_l_sysid(lua_State *L)
     struct flock *l;
     int l_sysid;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
     l_sysid = l->l_sysid;
@@ -256,7 +256,7 @@ Flock_get(lua_State *L)
 {
     struct flock *l;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
 
     l = (struct flock *)(*flock_type.get)(L, 1);
 
@@ -348,9 +348,11 @@ luab_module_t flock_type = {
 int
 luab_StructFlock(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 1);
+    int narg;
     struct flock *flock;
     int status;
+
+    narg = luab_checkmaxargs(L, 1);
 
     if (narg == 0)
         flock = NULL;

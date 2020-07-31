@@ -179,7 +179,7 @@ luab_inet_ntop(lua_State *L)
         if (((dst = buf->iov.iov_base) != NULL) &&
             (size <= buf->iov_max_len) &&
             (buf->iov_flags & IOV_BUFF)) {
-            
+
             if (inet_ntop(af, src, dst, size) != NULL) {
                 buf->iov.iov_len = size;
                 status = 0;
@@ -395,7 +395,7 @@ luab_inet_neta(lua_State *L)
         if (((dst = buf->iov.iov_base) != NULL) &&
             (size <= buf->iov_max_len) &&
             (buf->iov_flags & IOV_BUFF)) {
-                
+
             if (inet_neta(src->s_addr, dst, size) != NULL) {
                 buf->iov.iov_len = size;
                 status = 0;
@@ -526,11 +526,11 @@ luab_inet_net_ntop(lua_State *L)
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
-    
+
         if (((dst = buf->iov.iov_base) != NULL) &&
             (size <= buf->iov_max_len) &&
             (buf->iov_flags & IOV_BUFF)) {
-                
+
             if (inet_net_ntop(af, src, bits, dst, size) != NULL) {
                 buf->iov.iov_len = size;
                 status = 0;

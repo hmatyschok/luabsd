@@ -48,16 +48,20 @@ extern luab_module_t luab_sys_stat_lib;
 /*
  * Components or service primitives over sys/stat.h.
  */
- 
+
 #if __BSD_VISIBLE
 static int
 luab_chflags(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    u_long flags = luab_checkinteger(L, 2, ULONG_MAX);
+    const char *path;
+    u_long flags;
     int status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    flags = luab_checkinteger(L, 2, ULONG_MAX);
+
     status = chflags(path, flags);
 
     return luab_pusherr(L, status);
@@ -66,13 +70,19 @@ luab_chflags(lua_State *L)
 static int
 luab_chflagsat(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    u_long flags = luab_checkinteger(L, 3, ULONG_MAX);
-    int atflag = luab_checkinteger(L, 4, INT_MAX);
+    int fd;
+    const char *path;
+    u_long flags;
+    int atflag;
     int status;
 
-    luab_checkmaxargs(L, 4);
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    flags = luab_checkinteger(L, 3, ULONG_MAX);
+    atflag = luab_checkinteger(L, 4, INT_MAX);
+
     status = chflagsat(fd, path, flags, atflag);
 
     return luab_pusherr(L, status);
@@ -82,11 +92,15 @@ luab_chflagsat(lua_State *L)
 static int
 luab_chmod(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
+    const char *path;
+    mode_t mode;
     int status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, ALLPERMS);
+
     status = chmod(path, mode);
 
     return luab_pusherr(L, status);
@@ -96,9 +110,14 @@ luab_chmod(lua_State *L)
 static int
 luab_fchflags(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    u_long flags = luab_checkinteger(L, 2, ULONG_MAX);
+    int fd;
+    u_long flags;
     int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    flags = luab_checkinteger(L, 2, ULONG_MAX);
 
     status = fchflags(fd, flags);
 
@@ -110,11 +129,15 @@ luab_fchflags(lua_State *L)
 static int
 luab_fchmod(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
+    int fd;
+    mode_t mode;
     int status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    mode = luab_checkinteger(L, 2, ALLPERMS);
+
     status = fchmod(fd, mode);
 
     return luab_pusherr(L, status);
@@ -125,13 +148,19 @@ luab_fchmod(lua_State *L)
 static int
 luab_fchmodat(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
-    int flag = luab_checkinteger(L, 4, INT_MAX);
+    int fd;
+    const char *path;
+    mode_t mode;
+    int flag;
     int status;
 
-    luab_checkmaxargs(L, 4);
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode = luab_checkinteger(L, 3, ALLPERMS);
+    flag = luab_checkinteger(L, 4, INT_MAX);
+
     status = fchmodat(fd, path, mode, flag);
 
     return luab_pusherr(L, status);
@@ -212,11 +241,15 @@ luab_fstat(lua_State *L)
 static int
 luab_lchflags(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    u_long flags = luab_checkinteger(L, 2, ULONG_MAX);
+    const char *path;
+    u_long flags;
     int status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    flags = luab_checkinteger(L, 2, ULONG_MAX);
+
     status = lchflags(path, flags);
 
     return luab_pusherr(L, status);
@@ -225,11 +258,15 @@ luab_lchflags(lua_State *L)
 static int
 luab_lchmod(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
+    const char *path;
+    mode_t mode;
     int status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, ALLPERMS);
+
     status = lchmod(path, mode);
 
     return luab_pusherr(L, status);
@@ -239,11 +276,15 @@ luab_lchmod(lua_State *L)
 static int
 luab_mkdir(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
+    const char *path;
+    mode_t mode;
     int status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, ALLPERMS);
+
     status = mkdir(path, mode);
 
     return luab_pusherr(L, status);
@@ -252,11 +293,15 @@ luab_mkdir(lua_State *L)
 static int
 luab_mkfifo(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
+    const char *path;
+    mode_t mode;
     int status;
 
-    luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, ALLPERMS);
+
     status = mkfifo(path, mode);
 
     return luab_pusherr(L, status);
@@ -266,12 +311,17 @@ luab_mkfifo(lua_State *L)
 static int
 luab_mknod(lua_State *L)
 {
-    const char *path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 2, ALLPERMS);
-    dev_t dev = luab_checkinteger(L, 3, ULONG_MAX);
+    const char *path;
+    mode_t mode;
+    dev_t dev;
     int status;
 
-    luab_checkmaxargs(L, 4);
+    (void)luab_checkmaxargs(L, 4);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checkinteger(L, 2, ALLPERMS);
+    dev = luab_checkinteger(L, 3, ULONG_MAX);
+
     status = mknod(path, mode, dev);
 
     return luab_pusherr(L, status);
@@ -282,10 +332,13 @@ luab_mknod(lua_State *L)
 static int
 luab_umask(lua_State *L)
 {
-    mode_t numask = luab_checkinteger(L, 1, ALLPERMS);
+    mode_t numask;
     mode_t oumask;
 
-    luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);
+
+    numask = luab_checkinteger(L, 1, ALLPERMS);
+
     oumask = umask(numask);
 
     lua_pushinteger(L, oumask);
@@ -297,12 +350,17 @@ luab_umask(lua_State *L)
 static int
 luab_mkdirat(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
+    int fd;
+    const char *path;
+    mode_t mode;
     int status;
 
-    luab_checkmaxargs(L, 3);
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode = luab_checkinteger(L, 3, ALLPERMS);
+
     status = mkdirat(fd, path, mode);
 
     return luab_pusherr(L, status);
@@ -311,12 +369,17 @@ luab_mkdirat(lua_State *L)
 static int
 luab_mkfifoat(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
+    int fd;
+    const char *path;
+    mode_t mode;
     int status;
 
-    luab_checkmaxargs(L, 3);
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode = luab_checkinteger(L, 3, ALLPERMS);
+
     status = mkfifoat(fd, path, mode);
 
     return luab_pusherr(L, status);
@@ -325,13 +388,19 @@ luab_mkfifoat(lua_State *L)
 static int
 luab_mknodat(lua_State *L)
 {
-    int fd = luab_checkinteger(L, 1, INT_MAX);
-    const char *path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode_t mode = luab_checkinteger(L, 3, ALLPERMS);
-    dev_t dev = luab_checkinteger(L, 4, ULONG_MAX);
+    int fd;
+    const char *path;
+    mode_t mode;
+    dev_t dev;
     int status;
 
-    luab_checkmaxargs(L, 4);
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode = luab_checkinteger(L, 3, ALLPERMS);
+    dev = luab_checkinteger(L, 4, ULONG_MAX);
+
     status = mknodat(fd, path, mode, dev);
 
     return luab_pusherr(L, status);

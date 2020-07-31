@@ -285,8 +285,11 @@ luab_fexecve(lua_State *L)
 static int
 luab_alarm(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 2);
-    u_int seconds, status;
+    int narg;
+    u_int seconds;
+    u_int status;
+
+    narg = luab_checkmaxargs(L, 2);
 
     if ((seconds = luab_checkinteger(L, 1, INT_MAX)) > 0) {
 
@@ -582,12 +585,22 @@ luab_getcwd(lua_State *L)
 #endif
     );
 
-    if (((caddr = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= size)) {
-        if ((status = getcwd(caddr, size)) != NULL)
-            buf->iov.iov_len = size;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((caddr = buf->iov.iov_base) != NULL) &&
+            (buf->iov_max_len >= size) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((status = getcwd(caddr, size)) != NULL)
+                buf->iov.iov_len = size;
+        } else {
+            errno = ENXIO;
+            status = NULL;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = NULL;
     }
     return luab_pushstring(L, status);
@@ -699,7 +712,7 @@ luab_getgroups(lua_State *L)
 
     if (ngroups == 0) {
         if ((ngroups = getgroups(gidsetlen, gidset)) > 0) {
-            lua_pushnil(L); /* populate Table, if any */
+            lua_pushnil(L); /* populate table, if any */
 
             for (i = 0, j = 1; i < gidsetlen; i++, j++)
                 luab_rawsetinteger(L, 2, j, gidset[i]);
@@ -1031,11 +1044,13 @@ luab_read(lua_State *L)
 #endif
     );
 
-    if ((buf->iov_flags) == 0) {
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
-            (nbytes <= buf->iov_max_len)) {
+            (nbytes <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
             if ((count = read(fd, caddr, nbytes)) > 0)
                 buf->iov.iov_len = count;
         } else {
@@ -1336,12 +1351,22 @@ luab_ttyname_r(lua_State *L)
 #endif
     );
 
-    if (((name = buf->iov.iov_base) != NULL) &&
-        (len <= buf->iov_max_len)) {
-        if ((status = ttyname_r(fd, name, len)) == 0)
-            buf->iov.iov_len = len;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((name = buf->iov.iov_base) != NULL) &&
+            (len <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((status = ttyname_r(fd, name, len)) == 0)
+                buf->iov.iov_len = len;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -1412,7 +1437,8 @@ luab_write(lua_State *L)
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
-            (nbytes <= buf->iov.iov_len))
+            (nbytes <= buf->iov.iov_len) &&
+            (buf->iov_flags & IOV_BUFF))
             count = write(fd, caddr, nbytes);
         else {
             errno = ENXIO;
@@ -1616,7 +1642,9 @@ luab_readlink(lua_State *L)
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
-            (bufsiz <= buf->iov_max_len)) {
+            (bufsiz <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
             if ((count = readlink(path, caddr, bufsiz)) > 0)
                 buf->iov.iov_len = count;
         } else {
@@ -1861,11 +1889,13 @@ luab_pread(lua_State *L)
 );
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((buf->iov_flags) == 0) {
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
-            (nbytes <= buf->iov_max_len)) {
+            (nbytes <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
             if ((count = read(fd, caddr, nbytes)) > 0)
                 buf->iov.iov_len = count;
         } else {
@@ -1922,7 +1952,8 @@ luab_pwrite(lua_State *L)
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
-            (nbytes <= buf->iov.iov_len))
+            (nbytes <= buf->iov.iov_len) &&
+            (buf->iov_flags & IOV_BUFF))
             count = pwrite(fd, caddr, nbytes, offset);
         else {
             errno = ENXIO;
@@ -2000,12 +2031,22 @@ luab_getlogin_r(lua_State *L)
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 1); /* XXX macro might defined */
     len = luab_checkinteger(L, 2, INT_MAX);
 
-    if (((name = buf->iov.iov_base) != NULL) &&
-        (len <= buf->iov_max_len)) {
-        if ((status = getlogin_r(name, len)) == 0)
-            buf->iov.iov_len = len;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((name = buf->iov.iov_base) != NULL) &&
+            (len <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((status = getlogin_r(name, len)) == 0)
+                buf->iov.iov_len = len;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -2166,7 +2207,9 @@ luab_readlinkat(lua_State *L)
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
-            (bufsize <= buf->iov_max_len)){
+            (bufsize <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
             if ((count = readlink(path, caddr, bufsize)) > 0)
                 buf->iov.iov_len = count;
         } else {
@@ -2508,14 +2551,27 @@ luab_swab(lua_State *l)
     );
     int status;
 
-    if ((in_buf->iov.iov_len == out_buf->iov.iov_len) &&
-        ((src = in_buf->iov.iov_base) != NULL) &&
-        ((dst = out_buf->iov.iov_base) != NULL) &&
-        (len <= out_buf->iov.iov_len)) {
-        swab(src, dst, len);
-        status = 0;
+    if (((in_buf->iov_flags & IOV_LOCK) == 0) &&
+        ((out_buf->iov_flags & IOV_LOCK) == 0)) {
+        in_buf->iov_flags |= IOV_LOCK;
+        out_buf->iov_flags |= IOV_LOCK;
+
+        if ((in_buf->iov.iov_len == out_buf->iov.iov_len) &&
+            ((src = in_buf->iov.iov_base) != NULL) &&
+            ((dst = out_buf->iov.iov_base) != NULL) &&
+            (len <= out_buf->iov.iov_len) &&
+            (in_buf->iov_flags & IOV_BUFF) &&
+            (out_buf->iov_flags & IOV_BUFF)) {
+            swab(src, dst, len);
+            status = 0;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        out_buf->iov_flags &= ~IOV_LOCK;
+        in_buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -2617,12 +2673,22 @@ luab_getwd(lua_State *L)
 
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
 
-    if ((((caddr = buf->iov.iov_base) != NULL)) &&
-        (buf->iov_max_len >= MAXPATHLEN)) {
-        if ((status = getwd(caddr)) != NULL)
-            buf->iov.iov_len = strlen(caddr);
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((caddr = buf->iov.iov_base) != NULL) &&
+            (buf->iov_max_len >= MAXPATHLEN) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((status = getwd(caddr)) != NULL)
+                buf->iov.iov_len = strlen(caddr);
+        } else {
+            errno = ENXIO;
+            status = NULL;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = NULL;
     }
     return luab_pushstring(L, status);
@@ -3047,13 +3113,23 @@ luab_getdomainname(lua_State *L)
 #endif
     );
 
-    if ((((name = buf->iov.iov_base) != NULL)) &&
-        (buf->iov_max_len <= MAXHOSTNAMELEN) &&
-        (namelen <= buf->iov_max_len)) {
-        if ((status = getdomainname(name, namelen)) == 0)
-            buf->iov.iov_len = namelen;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((name = buf->iov.iov_base) != NULL) &&
+            (buf->iov_max_len <= MAXHOSTNAMELEN) &&
+            (namelen <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((status = getdomainname(name, namelen)) == 0)
+                buf->iov.iov_len = namelen;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -3091,13 +3167,23 @@ luab_getentropy(lua_State *L)
 #endif
     );
 
-    if ((((entropy = buf->iov.iov_base) != NULL)) &&
-        (buf->iov_max_len <= MAX_INPUT) &&
-        (buflen <= buf->iov_max_len)) {
-        if ((status = getentropy(entropy, buflen)) == 0)
-            buf->iov.iov_len = buflen;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((entropy = buf->iov.iov_base) != NULL) &&
+            (buf->iov_max_len <= MAX_INPUT) &&
+            (buflen <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((status = getentropy(entropy, buflen)) == 0)
+                buf->iov.iov_len = buflen;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -3192,13 +3278,23 @@ luab_getloginclass(lua_State *L)
 #endif
     );
 
-    if ((((name = buf->iov.iov_base) != NULL)) &&
-        (buf->iov_max_len <= MAXLOGNAME) &&
-        (len <= buf->iov_max_len)) {
-        if ((status = getloginclass(name, len)) == 0)
-            buf->iov.iov_len = len;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((name = buf->iov.iov_base) != NULL) &&
+            (buf->iov_max_len <= MAXLOGNAME) &&
+            (len <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((status = getloginclass(name, len)) == 0)
+                buf->iov.iov_len = len;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -3303,12 +3399,21 @@ luab_setdomainname(lua_State *L)
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
     namelen = luab_checkinteger(L, 2, INT_MAX);
 
-    if (((name = buf->iov.iov_base) != 0) &&
-        (buf->iov_max_len <= MAXHOSTNAMELEN) &&
-        ((size_t)namelen <= buf->iov_max_len))
-        status = setdomainname(name, namelen);
-    else {
-        errno = ENXIO;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((name = buf->iov.iov_base) != 0) &&
+            (buf->iov_max_len <= MAXHOSTNAMELEN) &&
+            ((size_t)namelen <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF))
+            status = setdomainname(name, namelen);
+        else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
@@ -3419,11 +3524,20 @@ luab_setloginclass(lua_State *L)
 
     buf = (luab_iovec_t *)(*iovec_type.get)(L, 1);
 
-    if ((((name = buf->iov.iov_base) != NULL)) &&
-        (buf->iov_max_len <= MAXLOGNAME))
-        status = setloginclass(name);
-    else {
-        errno = ENXIO;
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((name = buf->iov.iov_base) != NULL) &&
+            (buf->iov_max_len <= MAXLOGNAME) &&
+            (buf->iov_flags & IOV_BUFF))
+            status = setloginclass(name);
+        else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
         status = -1;
     }
     return luab_pusherr(L, status);
