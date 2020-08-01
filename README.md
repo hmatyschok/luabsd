@@ -52,7 +52,7 @@ a set of data base thang
 
     local dbt_result = bsd.db.StructDBT()
 
-those are implementing an Proxy Pattern for operations on db(3):
+those implements proxy pattern for operations on db(3):
 
     _flags = bsd.db.R_NOOVERWRITE
 
