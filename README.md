@@ -56,7 +56,7 @@ those implements proxy pattern for operations on db(3):
 
     _flags = bsd.db.R_NOOVERWRITE
 
-    err, msg = db:put(dbt_key, dbt_value, 0)
+    err, msg = db:put(dbt_key, dbt_value, _flags)
 
 Therefore, a callout may implemented as follows:
 
