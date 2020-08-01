@@ -75,7 +75,7 @@ Therefore, a callout may implemented as follows:
         expired = true;
     end
 
-by utilizing setitimer(2)
+by utilizing setitimer(2) API:
 
     local timer = bsd.sys.time.ITIMER_REAL
     
@@ -106,7 +106,7 @@ inspects during
     end
 
 It is obvious, parametrical information are encapsulated by instances of
-LUA_TUSERDATA and accessible by get and set routines: 
+LUA_TUSERDATA and its elements or properties are accessible  
 
     local mt = getmetatable(it_probe);
 
@@ -116,13 +116,13 @@ LUA_TUSERDATA and accessible by get and set routines:
         print("", k, v)
     end
 
-especially
+through get / set routines:
 
     tv = it_probe:get_it_value()
 
     print(" -> ", it_probe, tv, "tv_sec: " .. tv:get_tv_sec())
 
-But on the other hand, data 
+But on the other hand, data (e. g. maps to stat{}, see sys/stat.h)
 
     local sb = bsd.sys.stat.StructStat()
     local fd = db:fd()
