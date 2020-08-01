@@ -3,12 +3,12 @@ libluabsd - toolbox for implementing (web-based) software for (embedded) systems
 ================================================================================
 
 This library provides an easy customizable interface as extension of the Lua 
-(5.2.4) language  against APIs those are common Unix-like Operating Systems 
-(e. g. *BSD, GNU/Linux, Minix, QNX, etc.).
+(5.2.4) language against APIs those are common on Unix-like Operating Systems,
+e. g. *BSD, GNU/Linux, Minix, QNX, etc.
 
     local bsd = require("bsd")
 
-As an example, a database may created, as described in db(3):
+As an example, a database may created,
 
     local _fname = "example.db"
     local _flags = bit32.bor(
@@ -25,6 +25,8 @@ As an example, a database may created, as described in db(3):
         bsd.sys.stat.S_IWOTH
     )
     local _type = bsd.db.DB_BTREE
+
+as described in db(3):
 
     db = bsd.db.dbopen(_fname, _flags, _mode, _type)
 
@@ -103,8 +105,8 @@ inspects during
         end
     end
 
-It is obvious, parametrical data are encapsulated by instances of LUA_TUSERDATA
-and accessible by get and set routines: 
+It is obvious, parametrical information are encapsulated by instances of
+LUA_TUSERDATA and accessible by get and set routines: 
 
     local mt = getmetatable(it_probe);
 
@@ -114,13 +116,23 @@ and accessible by get and set routines:
         print("", k, v)
     end
 
-btw.
+especially
 
     tv = it_probe:get_it_value()
 
     print(" -> ", it_probe, tv, "tv_sec: " .. tv:get_tv_sec())
 
-but on the other hand, 
+But on the other hand, data 
+
+    local sb = bsd.sys.stat.StructStat()
+    local fd = db:fd()
+
+    err, msg = bsd.sys.stat.fstat(fd, sb)
+
+    err, msg = db:sync(0)
+    err, msg = db:close()
+
+is accessible by utilizing 
 
     function print_udata(i, j, pfx)
 
@@ -140,19 +152,7 @@ but on the other hand,
                 print(pfx, k, v)
             end
         end
-    end 
-
-data 
-
-    local sb = bsd.sys.stat.StructStat()
-    local fd = db:fd()
-
-    err, msg = bsd.sys.stat.fstat(fd, sb)
-
-    err, msg = db:sync(0)
-    err, msg = db:close()
-
-is accessible by utilizing 
+    end
 
     print_udata("struct", sb, "")
 
