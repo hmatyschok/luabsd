@@ -6,9 +6,9 @@ This library provides an easy customizable interface as extension of the Lua
 (5.2.4) language  against APIs those are common Unix-like Operating Systems 
 (e. g. *BSD, GNU/Linux, Minix, QNX, etc.).
 
-As an example, a database may created, as described in db(3):
-
     local bsd = require("bsd")
+
+As an example, a database may created, as described in db(3):
 
     local _fname = "example.db"
     local _flags = bit32.bor(
@@ -28,55 +28,69 @@ As an example, a database may created, as described in db(3):
 
     db = bsd.db.dbopen(_fname, _flags, _mode, _type)
 
-Therefore
+A key / value pair 
 
     local key = bsd.uuid.uuidgen()
     local value = "Hello world!"
 
-    buf_key = bsd.sys.uio.StructIOVec(#key)
-    buf_key:copy_in(key)
+may created by utilizing
 
-    buf_value = bsd.sys.uio.StructIOVec(#value)
+    local buf_key = bsd.sys.uio.StructIOVec(#key)
+    local buf_value = bsd.sys.uio.StructIOVec(#value)
+
+    buf_key:copy_in(key)
     buf_value:copy_in(value)
 
-    dbt_key = bsd.db.StructDBT()
-    dbt_key:set_data(buf_key)
+buffer maps to
 
-    dbt_value = bsd.db.StructDBT()
-    dbt_value:set_data(buf_value)
+    local dbt_key = bsd.db.StructDBT(buf_key)
+    local dbt_value = bsd.db.StructDBT(buf_value)
 
-    err, msg = db:put(dbt_key, dbt_value, bsd.db.R_NOOVERWRITE)
+a set of data base thang
 
-a callout may implemented as follows:
+    local dbt_result = bsd.db.StructDBT()
+
+those are implementing an Proxy Pattern for operations on db(3):
+
+    _flags = bsd.db.R_NOOVERWRITE
+
+    err, msg = db:put(dbt_key, dbt_value, 0)
+
+Therefore, a callout may implemented as follows:
 
     fetch = true
     expired = false
 
     local function event()
-        dbt_result = bsd.db.StructDBT()        
-        db:get(dbt_key, dbt_result, 0)
+    
+        err, msg = db:get(dbt_key, dbt_result, 0)
 
         buf_result = bsd.sys.uio.StructIOVec(dbt_result:get_size())
-
         dbt_result:get_data(buf_result)
 
-        db:sync(0)
-        db:close()
-        
         print("event:", buf_result:copy_out())
 
         expired = true;
     end
 
-    tv = bsd.sys.time.StructTimeSpec()
+by utilizing setitimer(2)
+
+    local timer = bsd.sys.time.ITIMER_REAL
+    
+    local tv = bsd.sys.time.StructTimeSpec()
+    local it_callout = bsd.sys.time.StructItimerVal()
+
     tv:set_tv_sec(3)
 
-    it1 = bsd.sys.time.StructItimerVal()
-    it1:set_it_value(tv)
+    it_callout:set_it_value(tv)
 
-    it2 = bsd.sys.time.StructItimerVal()
+    err, msg = bsd.sys.time.setitimer(timer, it_callout, nil, event)
 
-    err, msg = bsd.sys.time.setitimer(bsd.sys.time.ITIMER_REAL, it1, nil, event)
+where
+
+    local it_probe = bsd.sys.time.StructItimerVal()
+
+inspects during
 
     while true do -- do something
         if expired then
@@ -84,13 +98,63 @@ a callout may implemented as follows:
         end
 
         if fetch then
-            err, msg = bsd.sys.time.getitimer(bsd.sys.time.ITIMER_REAL, it2)
+            err, msg = bsd.sys.time.getitimer(timer, it_probe)
             fetch = false
         end
     end
-    
-    tv = it2:get_it_value()
 
-    print(" -> ", it2, tv, "tv_sec: " .. tv:get_tv_sec())
+It is obvious, parametrical data are encapsulated by instances of LUA_TUSERDATA
+and accessible by get and set routines: 
 
+    local mt = getmetatable(it_probe);
+
+    table.sort(mt)
+
+    for k, v in pairs(mt) do
+        print("", k, v)
+    end
+
+btw.
+
+    tv = it_probe:get_it_value()
+
+    print(" -> ", it_probe, tv, "tv_sec: " .. tv:get_tv_sec())
+
+but on the other hand, 
+
+    function print_udata(i, j, pfx)
+
+        print(pfx, i, j)
+
+        pfx = pfx .. "\t"
+
+        local t = j:get()
+
+        table.sort(t)
+
+        for k, v in pairs(t) do
+            if type(v) == "userdata" then
+                print_udata(k, v, pfx)
+                print("")
+            else
+                print(pfx, k, v)
+            end
+        end
+    end 
+
+data 
+
+    local sb = bsd.sys.stat.StructStat()
+    local fd = db:fd()
+
+    err, msg = bsd.sys.stat.fstat(fd, sb)
+
+    err, msg = db:sync(0)
+    err, msg = db:close()
+
+is accessible by utilizing 
+
+    print_udata("struct", sb, "")
+
+tables.
 </code></pre>

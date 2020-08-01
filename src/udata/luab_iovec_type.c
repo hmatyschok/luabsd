@@ -351,11 +351,9 @@ luab_StructIOVec(lua_State *L)
             if (status & IOV_BUFF) {
                 self->iov.iov_base = buf;
                 self->iov_max_len = len;
-            } else
-                self->iov_max_len = 0;
-
-            self->iov.iov_len = 0;
+            }
             self->iov_flags = status;
+
             status = 1;
         } else {
             if (status & IOV_BUFF)
@@ -368,7 +366,3 @@ luab_StructIOVec(lua_State *L)
 
     return status;
 }
-
-
-
-
