@@ -41,8 +41,8 @@
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
 
-int luab_StructDBT(lua_State *);
-int luab_dbopen(lua_State *);
+extern int luab_StructDBT(lua_State *);
+extern int luab_dbopen(lua_State *);
 #endif
 
 #define LUABSD_DB_LIB_ID    1593623310
