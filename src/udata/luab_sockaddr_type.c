@@ -228,22 +228,31 @@ SockAddr_get(lua_State *L)
  *
  * @param sin_port              Specifies port ID, see /etc/services.
  *
- * @usage sockaddr:get_sin_port(sin_port)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg] = sockaddr:set_sin_port(sin_port)
  */
 static int
 SockAddr_set_sin_port(lua_State *L)
 {
     struct sockaddr_in *sin;
     in_port_t sin_port;
+    int status;
 
     (void)luab_checkmaxargs(L, 2);
 
     sin = (struct sockaddr_in *)(*sockaddr_type.get)(L, 1);
     sin_port = (in_port_t)luab_checkinteger(L, 2, SHRT_MAX);
 
-    sin->sin_port = htons(sin_port);
-
-    return 0;
+    if (sin->sin_family == AF_INET) {
+        sin->sin_port = htons(sin_port);
+        status = 0;
+    } else {
+        errno = EPERM;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
 }
 
 /***
@@ -278,24 +287,32 @@ SockAddr_get_sin_port(lua_State *L)
  * @param sin_addr                  Specifies ip(4) address by instance
  *                                  of LUA_TUSERDATA(luab_in_addr_t).
  *
- * @usage sockaddr:set_sin_addr(sin_addr)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg ] = sockaddr:set_sin_addr(sin_addr)
  */
 static int
 SockAddr_set_sin_addr(lua_State *L)
 {
     struct sockaddr_in *sin;
     struct in_addr *sin_addr;
+    int status;
 
     (void)luab_checkmaxargs(L, 2);
 
     sin = (struct sockaddr_in *)(*sockaddr_type.get)(L, 1);
     sin_addr = (struct in_addr *)(*in_addr_type.get)(L, 2);
 
-    (void)memmove(&sin->sin_addr, &sin_addr, sizeof(*sin_addr));
-
-    sin->sin_addr.s_addr = htonl(sin->sin_addr.s_addr);
-
-    return 0;
+    if (sin->sin_family == AF_INET) {
+        (void)memmove(&sin->sin_addr, &sin_addr, sizeof(*sin_addr));
+        sin->sin_addr.s_addr = htonl(sin->sin_addr.s_addr);
+        status = 0;
+    } else {
+        errno = EPERM;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
 }
 
 /***
