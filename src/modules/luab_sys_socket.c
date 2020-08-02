@@ -32,6 +32,10 @@
 
 #include "luabsd.h"
 
+extern luab_module_t sockaddr_type;
+
+extern int luab_StructSockAddr(lua_State *);
+
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
 #define LUABSD_SYS_SOCKET_LIB_KEY   "socket"
 
@@ -300,9 +304,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_INT("SF_USER_READAHEAD", SF_USER_READAHEAD),
     LUABSD_INT("SF_NOCACHE",    SF_NOCACHE),
 #endif
-#if 0
-    LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr)
-#endif
+    LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)
 };
 
