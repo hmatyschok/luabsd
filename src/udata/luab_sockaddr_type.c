@@ -402,23 +402,21 @@ luab_module_t sockaddr_type = {
  *
  * @function StructSockAddrIn
  *
- * @param sockaddr                  Optional.
+ * @param sockaddr              Template, LUA_TUSERDATA(luab_sockaddr_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage sockaddr_in = bsd.sys.socket.StructSockAddr([ sockaddr ])
+ * @usage sockaddr_in = bsd.sys.socket.StructSockAddr(sockaddr)
  */
 int
 luab_StructSockAddr(lua_State *L)
 {
-    int narg;
     struct sockaddr *sa;
     int status;
 
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        sa = NULL;
-    else
-        sa = (struct sockaddr *)sockaddr_udata(L, narg);
+    (void)luab_checkmaxargs(L, 1);
+
+    sa = (struct sockaddr *)sockaddr_udata(L, 1);
 
     if (luab_newsockaddr(L, sa) == NULL)
         status = luab_pushnil(L);
