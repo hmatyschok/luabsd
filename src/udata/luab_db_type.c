@@ -95,7 +95,7 @@ db_isclosed(luab_db_t *self)
 }
 
 static int
-db_close(lua_State *L)
+DB_close(lua_State *L)
 {
     luab_db_t *self;
     int status;
@@ -115,7 +115,7 @@ db_close(lua_State *L)
 }
 
 static int
-db_del(lua_State *L)
+DB_del(lua_State *L)
 {
     DB *db;
     DBT *k;
@@ -137,7 +137,7 @@ db_del(lua_State *L)
 }
 
 static int
-db_get(lua_State *L)
+DB_get(lua_State *L)
 {
     DB *db;
     DBT *k, *v;
@@ -160,7 +160,7 @@ db_get(lua_State *L)
 }
 
 static int
-db_put(lua_State *L)
+DB_put(lua_State *L)
 {
     DB *db;
     DBT *k, *v;
@@ -183,7 +183,7 @@ db_put(lua_State *L)
 }
 
 static int
-db_seq(lua_State *L)
+DB_seq(lua_State *L)
 {
     DB *db;
     DBT *k, *v;
@@ -206,7 +206,7 @@ db_seq(lua_State *L)
 }
 
 static int
-db_sync(lua_State *L)
+DB_sync(lua_State *L)
 {
     DB *db;
     u_int flags;
@@ -226,7 +226,7 @@ db_sync(lua_State *L)
 }
 
 static int
-db_fd(lua_State *L)
+DB_fd(lua_State *L)
 {
     DB *db;
     int fd;
@@ -244,7 +244,7 @@ db_fd(lua_State *L)
 }
 
 static int
-db_gc(lua_State *L)
+DB_gc(lua_State *L)
 {
     luab_db_t *self;
 
@@ -260,7 +260,7 @@ db_gc(lua_State *L)
 }
 
 static int
-db_tostring(lua_State *L)
+DB_tostring(lua_State *L)
 {
     luab_db_t *self;
 
@@ -277,15 +277,15 @@ db_tostring(lua_State *L)
 }
 
 static luab_table_t db_methods[] = {
-    LUABSD_FUNC("close",  db_close),
-    LUABSD_FUNC("del",    db_del),
-    LUABSD_FUNC("get",    db_get),
-    LUABSD_FUNC("fd", db_fd),
-    LUABSD_FUNC("put",    db_put),
-    LUABSD_FUNC("seq",    db_seq),
-    LUABSD_FUNC("sync",   db_sync),
-    LUABSD_FUNC("__gc",   db_gc),
-    LUABSD_FUNC("__tostring", db_tostring),
+    LUABSD_FUNC("close",  DB_close),
+    LUABSD_FUNC("del",    DB_del),
+    LUABSD_FUNC("get",    DB_get),
+    LUABSD_FUNC("fd", DB_fd),
+    LUABSD_FUNC("put",    DB_put),
+    LUABSD_FUNC("seq",    DB_seq),
+    LUABSD_FUNC("sync",   DB_sync),
+    LUABSD_FUNC("__gc",   DB_gc),
+    LUABSD_FUNC("__tostring", DB_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

@@ -8,7 +8,7 @@ e. g. *BSD, GNU/Linux, Minix, QNX, etc.
 
     local bsd = require("bsd")
 
-As an example, a database may created,
+As an example, a database may creat,
 
     local _fname = "example.db"
     local _flags = bit32.bor(
