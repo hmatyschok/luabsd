@@ -138,18 +138,15 @@ luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
     luaL_Buffer b;
     caddr_t buf;
 
-    if (k != NULL) {
-        if (v != NULL && len > 0) {
-            luaL_buffinit(L, &b);
+    if (len > 0) {
+        luaL_buffinit(L, &b);
 
-            buf = luaL_prepbuffsize(&b, len);
+        buf = luaL_prepbuffsize(&b, len);
 
-            (void)memmove(buf, v, len);
+        (void)memmove(buf, v, len);
 
-            luaL_addsize(&b, len);
-            luaL_pushresult(&b);
-        } else
-            lua_pushnil(L);
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
 
         lua_setfield(L, narg, k);
     }
@@ -172,21 +169,15 @@ luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
 static __inline void
 luab_setstring(lua_State *L, int narg, const char *k, const char *v)
 {
-    if (v == NULL)
-        lua_pushnil(L);
-    else
-        lua_pushstring(L, v);
-
+    lua_pushstring(L, v);
     lua_setfield(L, narg, k);
 }
 
 static __inline void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
-    if (luab_newuserdata(L, m, v) == NULL)
-        lua_pushnil(L);
-
-    lua_setfield(L, narg, k);
+    if (luab_newuserdata(L, m, v) != NULL)
+        lua_setfield(L, narg, k);
 }
 
 /*
