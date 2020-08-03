@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <net/if.h>
 #include <net/if_dl.h>
 
 #include <errno.h>
@@ -77,6 +78,7 @@ typedef struct luab_sockaddr {
 #define LUABSD_SOCKADDR_TYPE   "SOCKADDR*"
 
 int luab_StructSockAddr(lua_State *);
+int luab_StructSockAddrDL(lua_State *);
 int luab_StructSockAddrIn(lua_State *);
 
 /*
@@ -108,6 +110,31 @@ sockaddr_to_table(lua_State *L, void *arg)
 
     len = sa->sa_len - sizeof(u_char) - sizeof(sa_family_t);
     luab_setbuff(L, -2, "sa_data", sa->sa_data, len);
+
+    lua_pushvalue(L, -1);
+}
+
+static void
+sockaddr_dl_to_table(lua_State *L, void *arg)
+{
+    struct sockaddr_dl *sdl;
+    size_t len;
+
+    sdl = (struct sockaddr_dl *)arg;
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "sdl_len", sdl->sdl_len);
+    luab_setinteger(L, -2, "sdl_family", sdl->sdl_family);
+
+    luab_setinteger(L, -2, "sdl_index", sdl->sdl_index);
+    luab_setinteger(L, -2, "sdl_type", sdl->sdl_type);
+    luab_setinteger(L, -2, "sdl_nlen", sdl->sdl_nlen);
+    luab_setinteger(L, -2, "sdl_alen", sdl->sdl_alen);
+    luab_setinteger(L, -2, "sdl_slen", sdl->sdl_slen);
+
+    len = sdl->sdl_nlen + sdl->sdl_alen + sdl->sdl_slen;
+    luab_setbuff(L, -2, "sdl_data", sdl->sdl_data, len);
 
     lua_pushvalue(L, -1);
 }
@@ -197,10 +224,15 @@ SockAddr_get(lua_State *L)
 
     sa = (struct sockaddr *)(*sockaddr_type.get)(L, 1);
 
-    /* XXX This switch-statement will be replaced by protosw-table. */
+    /*
+     * XXX This switch-statement should be replaced by protosw-table.
+     */
     switch (sa->sa_family) {
     case AF_INET:
         sockaddr_in_to_table(L, sa);
+        break;
+    case AF_LINK:
+        sockaddr_dl_to_table(L, sa);
         break;
     default:
         sockaddr_to_table(L, sa);
@@ -229,12 +261,12 @@ SockAddr_get(lua_State *L)
  *
  * @function set_sdl_index
  *
- * @param sdl_index              Specifies interface index, see ifnet(9).
+ * @param index             Specifies interface index, see ifnet(9).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage err [, msg] = sockaddr:set_sdl_index(sdl_index)
+ * @usage err [, msg] = sockaddr:set_sdl_index(index)
  */
 static int
 SockAddr_set_sdl_index(lua_State *L)
@@ -263,9 +295,10 @@ SockAddr_set_sdl_index(lua_State *L)
  *
  * @function get_sdl_index
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (index [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
  *
- * @usage sdl_index = sockaddr:get_sdl_index()
+ * @usage index [, msg ] = sockaddr:get_sdl_index()
  */
 static int
 SockAddr_get_sdl_index(lua_State *L)
@@ -291,12 +324,12 @@ SockAddr_get_sdl_index(lua_State *L)
  *
  * @function set_sdl_type
  *
- * @param sdl_type              Specifies interface type, see ifnet(9).
+ * @param type                  Specifies interface type, see ifnet(9).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage err [, msg] = sockaddr:set_sdl_type(sdl_type)
+ * @usage err [, msg] = sockaddr:set_sdl_type(type)
  */
 static int
 SockAddr_set_sdl_type(lua_State *L)
@@ -325,9 +358,10 @@ SockAddr_set_sdl_type(lua_State *L)
  *
  * @function get_sdl_type
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (type [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
  *
- * @usage sdl_type = sockaddr:get_sdl_type()
+ * @usage type [, msg ] = sockaddr:get_sdl_type()
  */
 static int
 SockAddr_get_sdl_type(lua_State *L)
@@ -353,12 +387,12 @@ SockAddr_get_sdl_type(lua_State *L)
  *
  * @function set_sdl_nlen
  *
- * @param sdl_nlen              Specifies interface name length.
+ * @param len               Specifies interface name length.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage err [, msg] = sockaddr:set_sdl_nlen(sdl_nlen)
+ * @usage err [, msg] = sockaddr:set_sdl_nlen(len)
  */
 static int
 SockAddr_set_sdl_nlen(lua_State *L)
@@ -373,7 +407,7 @@ SockAddr_set_sdl_nlen(lua_State *L)
     sdl_nlen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
     if (sdl->sdl_family == AF_LINK) {
-        sdl->sdl_nlen = sdl_nlen;
+        sdl->sdl_nlen = sdl_nlen % IFNAMSIZ;
         status = 0;
     } else {
         errno = EPERM;
@@ -387,9 +421,10 @@ SockAddr_set_sdl_nlen(lua_State *L)
  *
  * @function get_sdl_nlen
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (len [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
  *
- * @usage sdl_nlen = sockaddr:get_sdl_nlen()
+ * @usage len [, msg ] = sockaddr:get_sdl_nlen()
  */
 static int
 SockAddr_get_sdl_nlen(lua_State *L)
@@ -415,12 +450,12 @@ SockAddr_get_sdl_nlen(lua_State *L)
  *
  * @function set_sdl_alen
  *
- * @param sdl_alen              Specifies link level adress length.
+ * @param len               Specifies link level adress length.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage err [, msg] = sockaddr:set_sdl_alen(sdl_alen)
+ * @usage err [, msg] = sockaddr:set_sdl_alen(alen)
  */
 static int
 SockAddr_set_sdl_alen(lua_State *L)
@@ -435,7 +470,7 @@ SockAddr_set_sdl_alen(lua_State *L)
     sdl_alen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
     if (sdl->sdl_family == AF_LINK) {
-        sdl->sdl_alen = sdl_alen;
+        sdl->sdl_alen = sdl_alen % 32;  /* XXX constraint depends on IFT_XXX */
         status = 0;
     } else {
         errno = EPERM;
@@ -449,9 +484,10 @@ SockAddr_set_sdl_alen(lua_State *L)
  *
  * @function get_sdl_alen
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (len [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
  *
- * @usage sdl_alen = sockaddr:get_sdl_alen()
+ * @usage len [, msg ] = sockaddr:get_sdl_alen()
  */
 static int
 SockAddr_get_sdl_alen(lua_State *L)
@@ -473,50 +509,17 @@ SockAddr_get_sdl_alen(lua_State *L)
 }
 
 /***
- * Set link layer selector length.
+ * Get link level selector length.
  *
- * @function set_sdl_slen
+ * @function sdl_slen
  *
- * @param sdl_slen              Specifies interface type, see ifnet(9).
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (slen [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
  *
- * @usage err [, msg] = sockaddr:set_sdl_slen(sdl_slen)
+ * @usage slen = sockaddr:sdl_slen()
  */
 static int
-SockAddr_set_sdl_slen(lua_State *L)
-{
-    struct sockaddr_dl *sdl;
-    u_char sdl_slen;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
-    sdl_slen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
-
-    if (sdl->sdl_family == AF_LINK) {
-        sdl->sdl_slen = sdl_slen;
-        status = 0;
-    } else {
-        errno = EPERM;
-        status = -1;
-    }
-    return luab_pusherr(L, status);
-}
-
-/***
- * Get link layer selector length.
- *
- * @function get_sdl_slen
- *
- * @return (LUA_TNUMBER)
- *
- * @usage sdl_slen = sockaddr:get_sdl_slen()
- */
-static int
-SockAddr_get_sdl_slen(lua_State *L)
+SockAddr_sdl_slen(lua_State *L)
 {
     struct sockaddr_dl *sdl;
     int sdl_slen;
@@ -596,19 +599,19 @@ static int
 SockAddr_get_sin_port(lua_State *L)
 {
     struct sockaddr_in *sin;
-    int port;
+    int sin_port;
 
     (void)luab_checkmaxargs(L, 1);
 
     sin = (struct sockaddr_in *)(*sockaddr_type.get)(L, 1);
 
     if (sin->sin_family == AF_INET)
-        port = ntohs(sin->sin_port);
+        sin_port = ntohs(sin->sin_port);
     else {
         errno = EPERM;
-        port = -1;
+        sin_port = -1;
     }
-    return luab_pusherr(L, port);
+    return luab_pusherr(L, sin_port);
 }
 
 /***
@@ -715,11 +718,11 @@ SockAddr_tostring(lua_State *L)
 static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("sa_len",   SockAddr_sa_len),
     LUABSD_FUNC("sa_family",  SockAddr_sa_family),
+    LUABSD_FUNC("sdl_slen", SockAddr_sdl_slen),
     LUABSD_FUNC("set_sdl_index",    SockAddr_set_sdl_index),
     LUABSD_FUNC("set_sdl_type",    SockAddr_set_sdl_type),
     LUABSD_FUNC("set_sdl_nlen",    SockAddr_set_sdl_nlen),
     LUABSD_FUNC("set_sdl_alen",    SockAddr_set_sdl_alen),
-    LUABSD_FUNC("set_sdl_slen",    SockAddr_set_sdl_slen),
     LUABSD_FUNC("set_sin_port", SockAddr_set_sin_port),
     LUABSD_FUNC("set_sin_addr", SockAddr_set_sin_addr),
     LUABSD_FUNC("get",  SockAddr_get),
@@ -727,7 +730,6 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("get_sdl_type",    SockAddr_get_sdl_type),
     LUABSD_FUNC("get_sdl_nlen",    SockAddr_get_sdl_nlen),
     LUABSD_FUNC("get_sdl_alen",    SockAddr_get_sdl_alen),
-    LUABSD_FUNC("set_sdl_slen",    SockAddr_get_sdl_slen),
     LUABSD_FUNC("get_sin_port", SockAddr_get_sin_port),
     LUABSD_FUNC("get_sin_addr", SockAddr_get_sin_addr),
     LUABSD_FUNC("__gc", SockAddr_gc),
@@ -761,11 +763,10 @@ luab_module_t sockaddr_type = {
     .sz = sizeof(luab_sockaddr_t),
 };
 
-
 /***
  * Generic ctor.
  *
- * @function StructSockAddrIn
+ * @function StructSockAddr
  *
  * @param sockaddr              Template, LUA_TUSERDATA(luab_sockaddr_t).
  *
@@ -792,6 +793,35 @@ luab_StructSockAddr(lua_State *L)
 }
 
 /***
+ * Ctor for sockaddr_dl{}.
+ *
+ * @function StructSockAddrDL
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ *
+ * @usage sockaddr_dl = bsd.net.if_dl.StructSockAddrDL()
+ */
+int
+luab_StructSockAddrDL(lua_State *L)
+{
+    struct sockaddr_dl sdl;
+    struct sockaddr *sa;
+    int status;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    sa = (struct sockaddr *)&sdl;
+    sockaddr_pci(sa, AF_LINK, sizeof(sdl));
+
+    if (luab_newsockaddr(L, sa) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
+/***
  * Ctor for sockaddr_in{}.
  *
  * @function StructSockAddrIn
@@ -802,7 +832,7 @@ luab_StructSockAddr(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage sockaddr_in = bsd.arpa.inet.StructSockAddrIn(in_port, in_addr)
+ * @usage sockaddr_in = bsd.arpa.inet.StructSockAddrIn(port, addr)
  */
 int
 luab_StructSockAddrIn(lua_State *L)

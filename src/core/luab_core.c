@@ -57,6 +57,8 @@ extern luab_module_t crypt_data_type;
 
 extern luab_module_t luab_arpa_inet_lib;
 
+extern luab_module_t luab_net_if_dl_lib;
+
 extern luab_module_t luab_sys_file_lib;
 extern luab_module_t luab_sys_stat_lib;
 extern luab_module_t luab_sys_time_lib;
@@ -385,8 +387,11 @@ luaopen_bsd(lua_State *L)
 
     lua_newtable(L);
     luab_newtable(L, &luab_arpa_inet_lib);
-
     lua_setfield(L, -2, "arpa");
+
+    lua_newtable(L);
+    luab_newtable(L, &luab_net_if_dl_lib);
+    lua_setfield(L, -2, "net");
 
     lua_newtable(L);
     luab_newtable(L, &luab_sys_file_lib);
@@ -395,7 +400,6 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, &luab_sys_uio_lib);
     luab_newtable(L, &luab_sys_unistd_lib);
     luab_newtable(L, &luab_sys_socket_lib);
-
     lua_setfield(L, -2, "sys");
 
     luab_newtable(L, &luab_core_lib);
