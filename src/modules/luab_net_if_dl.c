@@ -42,8 +42,8 @@ extern luab_module_t sockaddr_type;
 
 extern int luab_StructSockAddrDL(lua_State *);
 
-#define LUABSD_IF_DL_LIB_ID    1596382827
-#define LUABSD_IF_DL_LIB_KEY    "if_dl"
+#define LUABSD_NET_IF_DL_LIB_ID    1596382827
+#define LUABSD_NET_IF_DL_LIB_KEY    "if_dl"
 
 extern luab_module_t luab_net_if_dl_lib;
 
@@ -135,7 +135,7 @@ luab_link_ntoa(lua_State *L)
  * Interface against <net/if_dl.h>.
  */
 
-static luab_table_t luab_if_dl_vec[] = {
+static luab_table_t luab_net_if_dl_vec[] = {
     LUABSD_FUNC("link_addr",    luab_link_addr),
     LUABSD_FUNC("link_ntoa",    luab_link_ntoa),
     LUABSD_FUNC("StructSockAddrDL", luab_StructSockAddrDL),
@@ -143,7 +143,7 @@ static luab_table_t luab_if_dl_vec[] = {
 };
 
 luab_module_t luab_net_if_dl_lib = {
-    .cookie = LUABSD_IF_DL_LIB_ID,
-    .name = LUABSD_IF_DL_LIB_KEY,
-    .vec = luab_if_dl_vec,
+    .cookie = LUABSD_NET_IF_DL_LIB_ID,
+    .name = LUABSD_NET_IF_DL_LIB_KEY,
+    .vec = luab_net_if_dl_vec,
 };

@@ -57,6 +57,7 @@ extern luab_module_t crypt_data_type;
 
 extern luab_module_t luab_arpa_inet_lib;
 
+extern luab_module_t luab_net_if_lib;
 extern luab_module_t luab_net_if_dl_lib;
 
 extern luab_module_t luab_sys_file_lib;
@@ -390,6 +391,7 @@ luaopen_bsd(lua_State *L)
     lua_setfield(L, -2, "arpa");
 
     lua_newtable(L);
+    luab_newtable(L, &luab_net_if_lib);
     luab_newtable(L, &luab_net_if_dl_lib);
     lua_setfield(L, -2, "net");
 

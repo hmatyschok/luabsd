@@ -3,6 +3,7 @@
 
 SRCS+=  luab_arpa_inet.c
 
+SRCS+=	luab_net_if.c
 SRCS+=	luab_net_if_dl.c
 
 SRCS+=  luab_sys_file.c

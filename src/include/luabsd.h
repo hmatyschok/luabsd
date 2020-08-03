@@ -43,9 +43,10 @@ typedef union luab_type {
     uint64_t    un_int64;
     lua_Number  un_num;
     lua_CFunction   un_fn;
+    const char  *un_cp;
 } luab_type_u;
 
-typedef int    (*luab_table_fn)(lua_State *, luab_type_u *);
+typedef void    (*luab_table_fn)(lua_State *, luab_type_u *);
 
 typedef struct luab_table {
     luab_table_fn   init;
@@ -56,11 +57,14 @@ typedef struct luab_table {
 #define LUABSD_REG(fn, k, v) \
     { .init = fn, .key = k, v }
 #define LUABSD_INT(k, v) \
-    LUABSD_REG(luab_pushinteger, k, .val.un_int = v)
+    LUABSD_REG(luab_initinteger, k, .val.un_int = v)
 #define LUABSD_FUNC(k, v) \
-    LUABSD_REG(luab_pushcfunction, k, .val.un_fn = v)
+    LUABSD_REG(luab_initcfunction, k, .val.un_fn = v)
+#define LUABSD_STR(k, v) \
+    LUABSD_REG(luab_initstring, k, .val.un_cp = v)
 
-typedef void (*luab_init_fn)(void *, void *);
+typedef void *  (*luab_ctor_fn)(lua_State *, void *);
+typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_udata_fn)(lua_State *, int);
 
 typedef struct luab_module {
@@ -68,6 +72,7 @@ typedef struct luab_module {
     size_t  sz;
     const char  *name;
     luab_table_t    *vec;
+    luab_ctor_fn    ctor;
     luab_init_fn    init;
     luab_udata_fn    get;
 } luab_module_t;
@@ -110,18 +115,22 @@ void *  luab_newvector(lua_State *, int, size_t, size_t);
  * Operations on stack.
  */
 
-static __inline int
-luab_pushinteger(lua_State *L, luab_type_u *un)
+static __inline void
+luab_initinteger(lua_State *L, luab_type_u *un)
 {
     lua_pushinteger(L, un->un_int);
-    return (1);
 }
 
-static __inline int
-luab_pushcfunction(lua_State *L, luab_type_u *un)
+static __inline void
+luab_initcfunction(lua_State *L, luab_type_u *un)
 {
     lua_pushcfunction(L, un->un_fn);
-    return (1);
+}
+
+static __inline void
+luab_initstring(lua_State *L, luab_type_u *un)
+{
+    lua_pushstring(L, un->un_cp);
 }
 
 /*
