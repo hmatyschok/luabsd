@@ -324,7 +324,7 @@ SockAddr_get_sdl_index(lua_State *L)
  *
  * @function set_sdl_type
  *
- * @param type                  Specifies interface type, see ifnet(9).
+ * @param type          Specifies interface type, see net/if_types or RFC1573.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
  *                                                  (-1, (strerror(errno)))
@@ -469,8 +469,8 @@ SockAddr_set_sdl_alen(lua_State *L)
     sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
     sdl_alen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
-    if (sdl->sdl_family == AF_LINK) {
-        sdl->sdl_alen = sdl_alen % 32;  /* XXX constraint depends on IFT_XXX */
+    if (sdl->sdl_family == AF_LINK) {    /* XXX constraint depends on IFT_XXX */
+        sdl->sdl_alen = sdl_alen % SDL_ADDR_MAX_LEN;
         status = 0;
     } else {
         errno = EPERM;

@@ -89,6 +89,9 @@ typedef struct luab_iovec {
 
 extern luab_module_t iovec_type;
 
+#define SDL_DATA_MAX_LEN    46     /* XXX */
+#define SDL_ADDR_MAX_LEN    (SDL_DATA_MAX_LEN - IFNAMSIZ)
+
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);

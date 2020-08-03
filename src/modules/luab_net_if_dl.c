@@ -26,7 +26,11 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+
+#include <net/if.h>
 #include <net/if_dl.h>
+
+#include <errno.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -43,15 +47,97 @@ extern int luab_StructSockAddrDL(lua_State *);
 
 extern luab_module_t luab_net_if_dl_lib;
 
+/***
+ * link_addr(3) - interpret character strings representing link level addresses.
+ *
+ * @function link_addr
+ *
+ * @param addr              Character string denotes address.
+ * @param sdl               Storage for link level address.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (0, (strerror(errno)))
+ *
+ * @usage err [, msg] = sockaddr:set_sdl_alen(alen)
+ */
+static int
+luab_link_addr(lua_State *L)
+{
+    const char *addr;
+    struct sockaddr_dl *sdl;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    addr = luab_checklstring(L, 1, SDL_DATA_MAX_LEN); /* XXX */
+    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 2);
+
+    link_addr(addr, sdl);
+
+    return luab_pusherr(L, 0);
+}
+
+/***
+ * link_ntoa(3) - interpret link level address as ASCII string
+ *
+ * @function link_ntoa
+ *
+ * @param sdl               Link level address.
+ * @param buf               Instance of LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
+ *                                                  (-1, (strerror(errno)))
+ *
+ * @usage err [, msg] = sockaddr:link_ntoa(alen)
+ */
+static int
+luab_link_ntoa(lua_State *L)
+{
+    struct sockaddr_dl *sdl;
+    luab_iovec_t *buf;
+    caddr_t src, dst;
+    size_t len;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((dst = buf->iov.iov_base) != NULL) &&
+            (SDL_DATA_MAX_LEN <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((src = link_ntoa(sdl)) != NULL) {   /* XXX static buffer */
+                len = strnlen(src, SDL_DATA_MAX_LEN);
+                (void)memmove(dst, src, len);
+                buf->iov.iov_len = len;
+                status = 0;
+            } else {
+                errno = EINVAL;
+                status = -1;
+            }
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
 /*
  * Interface against <net/if_dl.h>.
  */
 
-static luab_table_t luab_if_dl_vec[] = {   /* if_dl.h */
-#if 0
+static luab_table_t luab_if_dl_vec[] = {
     LUABSD_FUNC("link_addr",    luab_link_addr),
     LUABSD_FUNC("link_ntoa",    luab_link_ntoa),
-#endif
     LUABSD_FUNC("StructSockAddrDL", luab_StructSockAddrDL),
     LUABSD_FUNC(NULL, NULL)
 };
