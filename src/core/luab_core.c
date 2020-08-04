@@ -119,6 +119,11 @@ luab_pusherr(lua_State *L, lua_Integer res)
     lua_pushinteger(L, res);
 
     if (save_errno != 0 && res < 0) {
+        lua_pushinteger(L, save_errno);
+        msg = strerror(save_errno);
+        lua_pushstring(L, msg);
+        status = 3;
+    } else if (save_errno == res) {
         msg = strerror(save_errno);
         lua_pushstring(L, msg);
         status = 2;
