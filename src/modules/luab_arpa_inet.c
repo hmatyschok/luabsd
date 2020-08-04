@@ -87,10 +87,12 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
  *
  * @param cp                    String denotes IPv4 address.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
- *                                                  (nil, (strerror(errno)))
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_addr [, msg ] = bsd.arpa.inet.inet_addr(cp)
+ *          (in_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage in_addr [, err, msg] = bsd.arpa.inet.inet_addr(cp)
  */
 static int
 luab_inet_addr(lua_State *L)
@@ -120,10 +122,12 @@ luab_inet_addr(lua_State *L)
  *
  * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t).
  *
- * @return (LUA_T{NIL,STRING} [, LUA_TSTRING ])     (cp [, nil]) on success or
- *                                                  (msg, (strerror(errno)))
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage cp [, msg ] = bsd.arpa.inet.inet_ntoa(in)
+ *          (cp [, nil, nil]) on success or
+ *          (msg, (errno, strerror(errno)))
+ *
+ * @usage cp [, err, msg] = bsd.arpa.inet.inet_ntoa(in)
  */
 static int
 luab_inet_ntoa(lua_State *L)
@@ -153,10 +157,12 @@ luab_inet_ntoa(lua_State *L)
  *                              character String to be interpreted as address.
  * @param size                  Specifies constraint, size of character string.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_ntop(af, src, dst, size)
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_ntop(af, src, dst, size)
  */
 static int
 luab_inet_ntop(lua_State *L)
@@ -211,10 +217,12 @@ luab_inet_ntop(lua_State *L)
  *                              for binary representation of character string
  *                              denotes OSI-L3 address.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_pton(af, src, dst)
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_pton(af, src, dst)
  */
 static int
 luab_inet_pton(lua_State *L)
@@ -261,10 +269,12 @@ luab_inet_pton(lua_State *L)
  * @param cp                    Character String to be interpreted as address.
  * @param pin                   Instance of LUA_TUSERDATA(luab_in_addr_t).
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (1 [, nil]) on success or
- *                                                  (0, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_aton(cp, pin)
+ *          (1 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_aton(cp, pin)
  */
 static int
 luab_inet_aton(lua_State *L)
@@ -291,10 +301,12 @@ luab_inet_aton(lua_State *L)
  * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t),
  *                              denotes internet address.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
- *                                                  (nil, (strerror(errno)))
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage lna [, msg ] = bsd.arpa.inet.inet_lnaof(in)
+ *          (in_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage lna [, err, msg] = bsd.arpa.inet.inet_lnaof(in)
  */
 static int
 luab_inet_lnaof(lua_State *L)
@@ -327,10 +339,12 @@ luab_inet_lnaof(lua_State *L)
  * @param lna                   Instance of LUA_TUSERDATA(luab_in_addr_t),
  *                              denotes local network address.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
- *                                                  (nil, (strerror(errno)))
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_addr [, msg ] = bsd.arpa.inet.inet_makeaddr(net, lna)
+ *          (in_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage in_addr [, err, msg] = bsd.arpa.inet.inet_makeaddr(net, lna)
  */
 static int
 luab_inet_makeaddr(lua_State *L)
@@ -365,10 +379,12 @@ luab_inet_makeaddr(lua_State *L)
  * @param dst                   Buffer, instance of LUA_TUSERDATA(luab_iovec_t).
  * @param size                  Minimum size of character string.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (1 [, nil]) on success or
- *                                                  (0, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_neta(src, dst, size)
+ *          (1 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_neta(src, dst, size)
  */
 static int
 luab_inet_neta(lua_State *L)
@@ -422,10 +438,12 @@ luab_inet_neta(lua_State *L)
  *
  * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t).
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
- *                                                  (nil, (strerror(errno)))
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage net [, msg ] = bsd.arpa.inet.inet_netof(in)
+ *          (in_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage net [, err, msg] = bsd.arpa.inet.inet_netof(in)
  */
 static int
 luab_inet_netof(lua_State *L)
@@ -455,10 +473,12 @@ luab_inet_netof(lua_State *L)
  *
  * @param cp                    String denotes IPv4 address.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])   (in_addr [, nil]) on success or
- *                                                  (nil, (strerror(errno)))
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_addr [, msg ] = bsd.arpa.inet.inet_network(cp)
+ *          (in_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage in_addr [, err, msg ] = bsd.arpa.inet.inet_network(cp)
  */
 static int
 luab_inet_network(lua_State *L)
@@ -496,10 +516,12 @@ luab_inet_network(lua_State *L)
  *                              character String to be interpreted as address.
  * @param size                  Specifies constraint, size of character string.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_net_ntop(af, src, bits, dst, size)
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_net_ntop(af, src, bits, dst, size)
  */
 static int
 luab_inet_net_ntop(lua_State *L)
@@ -563,10 +585,12 @@ luab_inet_net_ntop(lua_State *L)
  *                              denotes OSI-L3 address.
  * @param size                  Specifies constraint, size of character string.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_net_pton(af, src, dst, size)
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_net_pton(af, src, dst, size)
  */
 static int
 luab_inet_net_pton(lua_State *L)
@@ -621,10 +645,12 @@ luab_inet_net_pton(lua_State *L)
  *                              character String to be interpreted as address.
  * @param size                  Length of string.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (1 [, nil]) on success or
- *                                                  (0, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_ntoa_r(in, buf, size)
+ *          (1 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_ntoa_r(in, buf, size)
  */
 static int
 luab_inet_ntoa_r(lua_State *L)
@@ -680,10 +706,12 @@ luab_inet_ntoa_r(lua_State *L)
  *                              character String to be interpreted as address.
  * @param size                  Specifies constraint, size of character string.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_cidr_ntop(af, src, bits, dst, size)
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_cidr_ntop(af, src, bits, dst, size)
  */
 static int
 luab_inet_cidr_ntop(lua_State *L)
@@ -748,10 +776,12 @@ luab_inet_cidr_ntop(lua_State *L)
  * @param bits                  Cardinality of bitvector subset of OSI-L3
  *                              address masks network portion from address.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg ] = bsd.arpa.inet.inet_cidr_pton(af, src, dst, bits)
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ]  = bsd.arpa.inet.inet_cidr_pton(af, src, dst, bits)
  */
 static int
 luab_inet_cidr_pton(lua_State *L)

@@ -55,10 +55,12 @@ extern luab_module_t luab_net_if_dl_lib;
  * @param addr              Character string denotes address.
  * @param sdl               Storage for link level address.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (0, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg] = sockaddr:set_sdl_alen(alen)
+ *          (0 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg] = sockaddr:set_sdl_alen(alen)
  */
 static int
 luab_link_addr(lua_State *L)
@@ -84,10 +86,12 @@ luab_link_addr(lua_State *L)
  * @param sdl               Link level address.
  * @param buf               Instance of LUA_TUSERDATA(luab_iovec_t).
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (0 [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage err [, msg] = sockaddr:link_ntoa(alen)
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg] = sockaddr:link_ntoa(alen)
  */
 static int
 luab_link_ntoa(lua_State *L)

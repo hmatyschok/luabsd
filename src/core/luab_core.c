@@ -143,9 +143,10 @@ luab_pushnil(lua_State *L)
     lua_pushnil(L);
 
     if (save_errno != 0) {
+        lua_pushinteger(L, save_errno);
         msg = strerror(save_errno);
         lua_pushstring(L, msg);
-        status = 2;
+        status = 3;
     } else
         status = 1;
 
@@ -165,9 +166,10 @@ luab_pushstring(lua_State *L, const char *s)
         lua_pushlstring(L, s, len);
 
         if (save_errno != 0) {
+            lua_pushinteger(L, save_errno);
             msg = strerror(save_errno);
             lua_pushstring(L, msg);
-            status = 2;
+            status = 3;
         } else
             status = 1;
     } else
