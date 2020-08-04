@@ -56,7 +56,7 @@ those implements proxy pattern for operations on db(3):
 
     _flags = bsd.db.R_NOOVERWRITE
 
-    err, msg = db:put(dbt_key, dbt_value, _flags)
+    ret, err, msg = db:put(dbt_key, dbt_value, _flags)
 
 Therefore, a callout may implemented as follows:
 
@@ -65,7 +65,7 @@ Therefore, a callout may implemented as follows:
 
     local function event()
     
-        err, msg = db:get(dbt_key, dbt_result, 0)
+        ret, err, msg = db:get(dbt_key, dbt_result, 0)
 
         buf_result = bsd.sys.uio.StructIOVec(dbt_result:get_size())
         dbt_result:get_data(buf_result)
@@ -86,7 +86,7 @@ by utilizing setitimer(2) API:
 
     it_callout:set_it_value(tv)
 
-    err, msg = bsd.sys.time.setitimer(timer, it_callout, nil, event)
+    ret, err, msg = bsd.sys.time.setitimer(timer, it_callout, nil, event)
 
 where
 
@@ -100,7 +100,7 @@ inspects during
         end
 
         if fetch then
-            err, msg = bsd.sys.time.getitimer(timer, it_probe)
+            ret, err, msg = bsd.sys.time.getitimer(timer, it_probe)
             fetch = false
         end
     end
@@ -127,10 +127,10 @@ But on the other hand, data (e. g. maps to stat{}, see sys/stat.h)
     local sb = bsd.sys.stat.StructStat()
     local fd = db:fd()
 
-    err, msg = bsd.sys.stat.fstat(fd, sb)
+    ret, err, msg = bsd.sys.stat.fstat(fd, sb)
 
-    err, msg = db:sync(0)
-    err, msg = db:close()
+    ret, err, msg = db:sync(0)
+    ret, err, msg = db:close()
 
 is accessible by utilizing 
 
