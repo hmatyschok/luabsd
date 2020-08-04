@@ -307,6 +307,41 @@ static luab_table_t iovec_methods[] = {
 };
 
 static void *
+iovec_create(lua_State *L, void *arg)
+{
+    luab_iovec_ctx_t *ioc;
+    luab_iovec_t *self;
+
+    if ((ioc = (luab_iovec_ctx_t *)arg) != NULL) {
+        if (ioc->ioc_buf_len > 0) {
+            if ((ioc->ioc_buf = calloc(1, ioc->ioc_buf_len)) != NULL)
+                ioc->ioc_flags = IOV_BUFF;
+            else
+                ioc->ioc_flags = IOV_PROXY;
+        } else
+            ioc->ioc_flags = IOV_PROXY;
+
+        self = luab_newiovec(L, ioc);
+    } else
+        self = NULL;
+
+    return self;
+}
+
+static void
+iovec_init(void *ud, void *arg)
+{
+    luab_iovec_t *self = (luab_iovec_t *)ud;
+    luab_iovec_ctx_t *ioc = (luab_iovec_ctx_t *)arg;
+
+    if (ioc->ioc_flags & IOV_BUFF) {
+        self->iov_max_len = ioc->ioc_buf_len;
+        self->iov.iov_base = ioc->ioc_buf;
+    }
+    self->iov_flags = ioc->ioc_flags;
+}
+
+static void *
 iovec_udata(lua_State *L, int narg)
 {
     return luab_to_iovec(L, narg);
@@ -316,6 +351,8 @@ luab_module_t iovec_type = {
     .cookie = LUABSD_IOVEC_TYPE_ID,
     .name = LUABSD_IOVEC_TYPE,
     .vec = iovec_methods,
+    .ctor = iovec_create,
+    .init = iovec_init,
     .get = iovec_udata,
     .sz = sizeof(luab_iovec_t),
 };
@@ -323,14 +360,15 @@ luab_module_t iovec_type = {
 int
 luab_StructIOVec(lua_State *L)
 {
+    luab_iovec_ctx_t softc;
     luab_iovec_t *self;
-    size_t len;
-    caddr_t buf;
     int status;
 
     (void)luab_checkmaxargs(L, 1);
 
-    len = luab_checkinteger(L, 1,
+    (void)memset_s(&softc, sizeof(softc), 0, sizeof(softc));
+
+    softc.ioc_buf_len = luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX
 #else
@@ -338,31 +376,10 @@ luab_StructIOVec(lua_State *L)
 #endif
     );
 
-    if (len > 0) {
-        if ((buf = calloc(1, len)) != NULL)
-            status = IOV_BUFF;
-        else
-            status = -1;
-    } else
-        status = IOV_PROXY;
-
-    if (status != -1) {
-        if ((self = luab_newiovec(L, NULL)) != NULL) {
-            if (status & IOV_BUFF) {
-                self->iov.iov_base = buf;
-                self->iov_max_len = len;
-            }
-            self->iov_flags = status;
-
-            status = 1;
-        } else {
-            if (status & IOV_BUFF)
-                free(buf);
-
-            status = luab_pushnil(L);
-        }
-    } else
+    if ((self = iovec_create(L, &softc)) == NULL)
         status = luab_pushnil(L);
+    else
+        status = 1;
 
     return status;
 }

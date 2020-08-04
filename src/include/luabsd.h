@@ -77,6 +77,13 @@ typedef struct luab_module {
     luab_udata_fn    get;
 } luab_module_t;
 
+typedef struct luab_iovec_ctx {
+    size_t  ioc_buf_len;
+    caddr_t *ioc_buf;
+    u_int   ioc_flags;
+    void    *ioc_arg;
+} luab_iovec_ctx_t;
+
 typedef struct luab_iovec {
     struct iovec    iov;
     size_t  iov_max_len;
