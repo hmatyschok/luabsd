@@ -72,7 +72,7 @@ extern luab_module_t luab_fcntl_lib;
  *          (fd [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage fd [, err, msg ] = bsd.fcntl.open(path, flags [, mode])
+ * @usage fd [, err, msg ] = bsd.fcntl.open(path, flags [, mode ])
  */
 static int
 luab_open(lua_State *L)
@@ -151,7 +151,7 @@ luab_creat(lua_State *L)
  *          (value [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage value [, err, msg ] = bsd.fcntl.fcntl(fd, cmd [, arg])
+ * @usage value [, err, msg ] = bsd.fcntl.fcntl(fd, cmd [, arg ])
  */
 static int
 luab_fcntl(lua_State *L)

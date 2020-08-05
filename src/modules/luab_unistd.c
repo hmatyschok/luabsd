@@ -1516,7 +1516,7 @@ luab_write(lua_State *L)
     int fd;
     luab_iovec_t *buf;
     size_t nbytes;
-    c_caddr_t caddr;
+    caddr_t caddr;
     ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
@@ -1531,7 +1531,7 @@ luab_write(lua_State *L)
 #endif
     );
 
-    if ((buf->iov_flags) == 0) {
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
@@ -1749,7 +1749,7 @@ luab_readlink(lua_State *L)
 #endif
     );
 
-    if ((buf->iov_flags) == 0) {
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
@@ -2077,7 +2077,7 @@ luab_pwrite(lua_State *L)
     );
     offset = luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((buf->iov_flags) == 0) {
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&
@@ -2344,7 +2344,7 @@ luab_readlinkat(lua_State *L)
 #endif
     );
 
-    if ((buf->iov_flags) == 0) {
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
         if (((caddr = buf->iov.iov_base) != NULL) &&

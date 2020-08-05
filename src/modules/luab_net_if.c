@@ -47,6 +47,35 @@ extern int luab_StructSockAddrDL(lua_State *);
 
 extern luab_module_t luab_net_if_lib;
 
+
+/***
+ * if_nametoindex(3) - map interface name to its corrosponding index
+ *
+ * @function if_nametoindex
+ *
+ * @param ifname            Interface name.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (index [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage index [, err, msg ] = bsd.net.if.if_nametoindex(ifname)
+ */
+static int
+luab_if_nametoindex(lua_State *L)
+{
+    const char *ifname;
+    u_int index;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ifname = luab_checklstring(L, 1, IFNAMSIZ);
+    index = if_nametoindex(ifname);
+
+    return luab_pusherr(L, index);
+}
+
 /*
  * Interface against <net/if.h>.
  */
@@ -140,8 +169,8 @@ static luab_table_t luab_net_if_vec[] = {
     LUABSD_FUNC("if_freenameindex", luab_if_freenameindex),
     LUABSD_FUNC("if_indextoname",   luab_if_indextoname),
     LUABSD_FUNC("if_nameindex", luab_if_nameindex),
+#endif    
     LUABSD_FUNC("if_nametoindex",   luab_if_nametoindex),
-#endif
     LUABSD_FUNC(NULL, NULL)
 };
 
