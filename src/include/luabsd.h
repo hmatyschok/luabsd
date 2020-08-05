@@ -77,12 +77,12 @@ typedef struct luab_module {
     luab_udata_fn    get;
 } luab_module_t;
 
-typedef struct luab_iovec_ctx {
-    size_t  ioc_buf_len;
-    caddr_t *ioc_buf;
-    u_int   ioc_flags;
-    void    *ioc_arg;
-} luab_iovec_ctx_t;
+typedef struct luab_iovec_param {
+    size_t  iop_buf_len;
+    caddr_t *iop_buf;
+    u_int   iop_flags;
+    void    *iop_arg;
+} luab_iovec_param_t;
 
 typedef struct luab_iovec {
     struct iovec    iov;
@@ -154,20 +154,17 @@ luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
 static __inline void
 luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
 {
-    luaL_Buffer b;
-    caddr_t buf;
+    luab_iovec_param_t softc;
+    luab_iovec_t *buf;
 
     if (len > 0) {
-        luaL_buffinit(L, &b);
+        (void)memset_s(&softc, sizeof(softc), 0, sizeof(softc));
 
-        buf = luaL_prepbuffsize(&b, len);
+        softc.iop_buf_len = len;
+        softc.iop_arg = v;
 
-        (void)memmove(buf, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_setfield(L, narg, k);
+        if ((buf = (*iovec_type.ctor)(L, &softc)) != NULL)
+            lua_setfield(L, narg, k);
     }
 }
 

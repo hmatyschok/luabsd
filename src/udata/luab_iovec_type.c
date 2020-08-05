@@ -309,19 +309,19 @@ static luab_table_t iovec_methods[] = {
 static void *
 iovec_create(lua_State *L, void *arg)
 {
-    luab_iovec_ctx_t *ioc;
+    luab_iovec_param_t *iop;
     luab_iovec_t *self;
 
-    if ((ioc = (luab_iovec_ctx_t *)arg) != NULL) {
-        if (ioc->ioc_buf_len > 0) {
-            if ((ioc->ioc_buf = calloc(1, ioc->ioc_buf_len)) != NULL)
-                ioc->ioc_flags = IOV_BUFF;
+    if ((iop = (luab_iovec_param_t *)arg) != NULL) {
+        if (iop->iop_buf_len > 0) {
+            if ((iop->iop_buf = calloc(1, iop->iop_buf_len)) != NULL)
+                iop->iop_flags = IOV_BUFF;
             else
-                ioc->ioc_flags = IOV_PROXY;
+                iop->iop_flags = IOV_PROXY;
         } else
-            ioc->ioc_flags = IOV_PROXY;
+            iop->iop_flags = IOV_PROXY;
 
-        self = luab_newiovec(L, ioc);
+        self = luab_newiovec(L, iop);
     } else
         self = NULL;
 
@@ -332,13 +332,23 @@ static void
 iovec_init(void *ud, void *arg)
 {
     luab_iovec_t *self = (luab_iovec_t *)ud;
-    luab_iovec_ctx_t *ioc = (luab_iovec_ctx_t *)arg;
+    luab_iovec_param_t *iop = (luab_iovec_param_t *)arg;
+    caddr_t dst, src;
+    size_t len;
 
-    if (ioc->ioc_flags & IOV_BUFF) {
-        self->iov_max_len = ioc->ioc_buf_len;
-        self->iov.iov_base = ioc->ioc_buf;
+    if (iop->iop_flags & IOV_BUFF) {
+        self->iov_max_len = iop->iop_buf_len;
+        self->iov.iov_base = iop->iop_buf;
+
+        if (((dst = self->iov.iov_base) != NULL) &&
+            ((src = iop->iop_arg) != NULL)) {
+
+            len = strnlen(src, self->iov_max_len);
+            (void)memmove(dst, src, len);
+            self->iov.iov_len = len;
+        }
     }
-    self->iov_flags = ioc->ioc_flags;
+    self->iov_flags = iop->iop_flags;
 }
 
 static void *
@@ -360,7 +370,7 @@ luab_module_t iovec_type = {
 int
 luab_StructIOVec(lua_State *L)
 {
-    luab_iovec_ctx_t softc;
+    luab_iovec_param_t softc;
     luab_iovec_t *self;
     int status;
 
@@ -368,7 +378,7 @@ luab_StructIOVec(lua_State *L)
 
     (void)memset_s(&softc, sizeof(softc), 0, sizeof(softc));
 
-    softc.ioc_buf_len = luab_checkinteger(L, 1,
+    softc.iop_buf_len = luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX
 #else

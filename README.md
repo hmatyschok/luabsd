@@ -132,7 +132,7 @@ But on the other hand, data (e. g. maps to stat{}, see sys/stat.h)
     ret, err, msg = db:sync(0)
     ret, err, msg = db:close()
 
-is accessible by utilizing 
+is accessible by 
 
     function print_udata(i, j, pfx)
 
@@ -140,19 +140,23 @@ is accessible by utilizing
 
         pfx = pfx .. "\t"
 
-        local t = j:get()
+        if j.get ~= nil then
+            local t = j:get()
 
-        table.sort(t)
+            table.sort(t)
 
-        for k, v in pairs(t) do
-            if type(v) == "userdata" then
-                print_udata(k, v, pfx)
-                print("")
-            else
-                print(pfx, k, v)
+            for k, v in pairs(t) do
+                if type(v) == "userdata" then
+                    print_udata(k, v, pfx)
+                    print("")
+                else
+                    print(pfx, k, v)
+                end
             end
         end
     end
+
+utilizing
 
     print_udata("struct", sb, "")
 
