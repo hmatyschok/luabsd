@@ -202,6 +202,8 @@ luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 
 #define luab_todata(L, narg, id, t) \
     ((t)luab_checkudata((L), (narg), (id)))
+#define luab_isdata(L, narg, id, t) \
+    ((t)luab_testudata((L), (narg), (id)))
 
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
@@ -233,6 +235,12 @@ static __inline void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
     return (luaL_checkudata(L, narg, m->name));
+}
+
+static __inline void *
+luab_testudata(lua_State *L, int narg, luab_module_t *m)
+{
+    return (luaL_testudata(L, narg, m->name));
 }
 
 static __inline void *
