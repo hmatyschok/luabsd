@@ -645,7 +645,7 @@ luab_getcwd(lua_State *L)
  *
  *          (egid [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
- * 
+ *
  * @usage egid [, err, msg ] = bsd.unistd.getegid()
  */
 static int
@@ -668,7 +668,7 @@ luab_getegid(lua_State *L)
  *
  *          (euid [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
- * 
+ *
  * @usage euid [, err, msg ] = bsd.unistd.geteuid()
  */
 static int
@@ -691,7 +691,7 @@ luab_geteuid(lua_State *L)
  *
  *          (gid [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
- * 
+ *
  * @usage gid [, err, msg ] = bsd.unistd.getgid()
  */
 static int
@@ -773,7 +773,7 @@ luab_getgroups(lua_State *L)
  *
  *          (name [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
- * 
+ *
  * @usage name [, err, msg ] = bsd.unistd.getlogin()
  */
 static int
@@ -823,7 +823,7 @@ luab_getpgrp(lua_State *L)
  *
  *          (pid [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
- * 
+ *
  * @usage pid [, err, msg ] = bsd.unistd.getpid()
  */
 static int
@@ -846,7 +846,7 @@ luab_getpid(lua_State *L)
  *
  *          (ppid [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
- * 
+ *
  * @usage ppid [, err, msg ] = bsd.unistd.getppid()
  */
 static int
@@ -869,7 +869,7 @@ luab_getppid(lua_State *L)
  *
  *          (uid [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
- * 
+ *
  * @usage uid [, err, msg ] = bsd.unistd.getuid()
  */
 static int
@@ -2452,8 +2452,8 @@ luab_unlinkat(lua_State *L)
  *
  * @function symlink
  *
- * @param name1         File name from target.
- * @param name2         Denotes assumed symbolic link maps to file name1.
+ * @param name1             File name from target.
+ * @param name2             Denotes assumed symbolic link maps to file name1.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2487,18 +2487,18 @@ luab_symlink(lua_State *L)
  *
  * @function crypt
  *
- * @param key           Data to hash.
- * @param salt          String specifies salt in
+ * @param key               Data to hash.
+ * @param salt              String specifies salt in
  *
- *                       #1 Extended,
+ *                           #1 Extended,
  *
- *                       #2 Modular or
+ *                           #2 Modular or
  *
- *                       #3 Traditional
+ *                           #3 Traditional
  *
- *                      form.
+ *                          form.
  *
- * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (value [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
@@ -2551,13 +2551,13 @@ luab_gethostid(lua_State *L)
  *
  * @function lockf
  *
- * @param fd            Open file descriptor.
- * @param function      Control value specifies assumed action over
+ * @param fd                Open file descriptor.
+ * @param function          Control value specifies assumed action over
  *
- *                          bsd.unistd.F_{ULOCK,LOCK,TLOCK,TEST}
+ *                              bsd.unistd.F_{ULOCK,LOCK,TLOCK,TEST}
  *
- *                      to be taken.
- * @param size          Number of contigous bytes to be locked or unlocked.
+ *                          to be taken.
+ * @param size              Number of contigous bytes to be locked or unlocked.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2590,7 +2590,7 @@ luab_lockf(lua_State *L)
  *
  * @function nice
  *
- * @param incr          Scheduling priority of the process.
+ * @param incr              Scheduling priority of the process.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2618,8 +2618,8 @@ luab_nice(lua_State *L)
  *
  * @function setregid
  *
- * @param rgid          Real group ID.
- * @param egid          Effective group ID.
+ * @param rgid              Real group ID.
+ * @param egid              Effective group ID.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2649,8 +2649,8 @@ luab_setregid(lua_State *L)
  *
  * @function setreuid
  *
- * @param ruid          Real user ID.
- * @param euid          Effective user ID.
+ * @param ruid              Real user ID.
+ * @param euid              Effective user ID.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2682,9 +2682,9 @@ luab_setreuid(lua_State *L)
  *
  * @function swab
  *
- * @param in_buf        Source location, LUA_TUSERDATA(luab_iovec_t).
- * @param out_buf       Destination location, LUA_TUSERDATA(luab_iovec_t).
- * @param len           Length.
+ * @param in_buf            Source location, LUA_TUSERDATA(luab_iovec_t).
+ * @param out_buf           Destination location, LUA_TUSERDATA(luab_iovec_t).
+ * @param len               Length.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2750,7 +2750,9 @@ static int
 luab_sync(lua_State *L)
 {
     (void)luab_checkmaxargs(L, 0);
+
     sync();
+
     return 0;
 }
 #endif /* __XSI_VISIBLE */
@@ -2765,7 +2767,6 @@ luab_chroot(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     dirname = luab_checklstring(L, 1, MAXPATHLEN);
-
     status = chroot(dirname);
 
     return luab_pusherr(L, status);
@@ -2804,7 +2805,6 @@ luab_getpass(lua_State *L)  /* XXX */
     (void)luab_checkmaxargs(L, 1);
 
     prompt = luab_checklstring(L, 1, _PASSWORD_LEN);
-
     value = getpass(prompt);
 
     return luab_pushstring(L, value);
@@ -2817,13 +2817,13 @@ luab_getpass(lua_State *L)  /* XXX */
  *
  * @function getwd
  *
- * @param buf           Source location, LUA_TUSERDATA(luab_iovec_t).
+ * @param buf               Source location, LUA_TUSERDATA(luab_iovec_t).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING}])
  *
  *          (path [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
- * 
+ *
  * @usage path [, err, msg ] = bsd.unistd.getwd(buf)
  */
 static int
@@ -2863,7 +2863,7 @@ luab_getwd(lua_State *L)
  *
  * @function usleep
  *
- * @param microseconds          For suspension specified number of microseconds.
+ * @param microseconds      For suspension specified number of microseconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2918,7 +2918,7 @@ luab_vfork(lua_State *L)
  *
  * @function acct
  *
- * @param file                  Existing pathname.
+ * @param file              Existing pathname.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2946,7 +2946,7 @@ luab_acct(lua_State *L)
  *
  * @function check_utility_compat
  *
- * @param utility                   Existing pathname.
+ * @param utility           Existing pathname.
  *
  * @return (LUA_TNUMBER)
  *
@@ -2973,7 +2973,9 @@ luab_check_utility_compat(lua_State *L)
  *
  * @function crypt_get_format
  *
- * @return (LUA_TSTRING)                            (format)
+ * @return (LUA_TSTRING)
+ *
+ *          (format)
  *
  * @usage format = bsd.unistd.crypt_get_format()
  */
@@ -3006,7 +3008,7 @@ luab_crypt_get_format(lua_State *L)
  *                          form.
  * @param data              Instance of LUA_TUSERDATA(luab_crypt_data_t).
  *
- * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (value [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
@@ -3105,8 +3107,8 @@ luab_dup3(lua_State *L)
  *
  * @function eaccess
  *
- * @param path          Identifies the file by name.
- * @param mode          See the File Access Permission section of intro(2).
+ * @param path              Identifies the file by name.
+ * @param mode              See the File Access Permission section of intro(2).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3135,12 +3137,12 @@ luab_eaccess(lua_State *L)
  *
  * @function exect
  *
- * @param path      Identifies the new process image file by its path.
- * @param argv      Argument vector:
+ * @param path              Identifies the new process image file by its path.
+ * @param argv              Argument vector:
  *
- *                          { "arg0" , "arg1" , ..., "argN" },
+ *                              { "arg0" , "arg1" , ..., "argN" },
  *
- *                      instance of LUA_TTABLE.
+ *                          instance of LUA_TTABLE.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3173,13 +3175,13 @@ luab_exect(lua_State *L)
  *
  * @function execvP
  *
- * @param file          Identifies the new process image file by its path.
- * @param search_path   Search path.
- * @param argv          Argument vector:
+ * @param file              Identifies the new process image file by its path.
+ * @param search_path       Search path.
+ * @param argv              Argument vector:
  *
- *                          { "arg0" , "arg1" , ..., "argN" },
+ *                              { "arg0" , "arg1" , ..., "argN" },
  *
- *                      instance of LUA_TTABLE.
+ *                          instance of LUA_TTABLE.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3242,9 +3244,9 @@ luab_feature_present(lua_State *L)
  *
  * @function fflagstostr
  *
- * @param flags         Flags as described in chflags(1).
+ * @param flags             Flags as described in chflags(1).
  *
- * @return (LUA_TSTRING [, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (str [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
@@ -3660,7 +3662,7 @@ luab_setgroups(lua_State *L)
  *
  * @function sethostname
  *
- * @param name          Hostname.
+ * @param name              Hostname.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3687,7 +3689,7 @@ luab_sethostname(lua_State *L)
  *
  * @function setlogin
  *
- * @param name          Login name.
+ * @param name              Login name.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3714,7 +3716,7 @@ luab_setlogin(lua_State *L)
  *
  * @function Setloginclass
  *
- * @param name          Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param name              Instance of LUA_TUSERDATA(luab_iovec_t).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

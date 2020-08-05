@@ -55,22 +55,24 @@ extern luab_module_t luab_fcntl_lib;
  *
  * @function open
  *
- * @param path          The specified file name.
- * @param flags         Values are constructed over
+ * @param path              The specified file name.
+ * @param flags             Values are constructed over
  *
- *                          bsd.fcntl.O_*
+ *                              bsd.fcntl.O_*
  *
- *                      by bitwise-inclusive OR.
- * @param mode          Values are constructed over
+ *                          by bitwise-inclusive OR.
+ * @param mode              Values are constructed over
  *
- *                          bsd.sys.stat.S_*
+ *                              bsd.sys.stat.S_*
  *
- *                      by bitwise-inclusive OR.
+ *                          by bitwise-inclusive OR.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (fd [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fd [, msg ] = bsd.fcntl.open(path, flags [, mode])
+ *          (fd [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage fd [, err, msg ] = bsd.fcntl.open(path, flags [, mode])
  */
 static int
 luab_open(lua_State *L)
@@ -100,17 +102,19 @@ luab_open(lua_State *L)
  *
  * @function creat
  *
- * @param path          The specified file name.
- * @param mode          Values are constructed over
+ * @param path              The specified file name.
+ * @param mode              Values are constructed over
  *
- *                          bsd.sys.stat.S_*
+ *                              bsd.sys.stat.S_*
  *
- *                      by bitwise-inclusive OR.
+ *                          by bitwise-inclusive OR.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (fd [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fd [, msg ] = bsd.fcntl.creat(path, mode)
+ *          (fd [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage fd [, err, msg ] = bsd.fcntl.creat(path, mode)
  */
 static int
 luab_creat(lua_State *L)
@@ -134,18 +138,20 @@ luab_creat(lua_State *L)
  *
  * @function fcntl
  *
- * @param fd            The specified descriptor.
- * @param cmd           Command operated on fd over
+ * @param fd                The specified descriptor.
+ * @param cmd               Command operated on fd over
  *
- *                          bsd.fcntl.F_*,
+ *                              bsd.fcntl.F_*,
  *
- *                      as described in fcntl(2).
- * @param arg           Optional, depends on applied cmd.
+ *                          as described in fcntl(2).
+ * @param arg               Optional, depends on applied cmd.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage value [, msg ] = bsd.fcntl.fcntl(fd, cmd [, arg])
+ *          (value [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage value [, err, msg ] = bsd.fcntl.fcntl(fd, cmd [, arg])
  */
 static int
 luab_fcntl(lua_State *L)
@@ -182,17 +188,19 @@ luab_fcntl(lua_State *L)
  *
  * @function flock
  *
- * @param fd            The specified descriptor.
- * @param operation     Specified by
+ * @param fd                The specified descriptor.
+ * @param operation         Specified by
  *
- *                          bsd.sys.file.LOCK_*,
+ *                              bsd.sys.file.LOCK_*,
  *
- *                      over <sys/file,h>.
+ *                          over <sys/file,h>.
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,STRING} ])     (value [, nil]) on success or
- *                                                  (-1, (strerror(errno)))
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage value [, msg ] = bsd.fcntl.flock(fd, operation)
+ *          (value [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage value [, err, msg ] = bsd.fcntl.flock(fd, operation)
  */
 static int
 luab_flock(lua_State *L)
