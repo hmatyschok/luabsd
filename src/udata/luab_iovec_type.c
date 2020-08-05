@@ -342,8 +342,7 @@ iovec_init(void *ud, void *arg)
 
         if (((dst = self->iov.iov_base) != NULL) &&
             ((src = iop->iop_arg) != NULL)) {
-
-            len = strnlen(src, self->iov_max_len);
+            len = self->iov_max_len;
             (void)memmove(dst, src, len);
             self->iov.iov_len = len;
         }
