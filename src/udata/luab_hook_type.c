@@ -59,7 +59,7 @@ typedef struct luab_hook {
     luab_type_u hook;
 } luab_hook_t;
 
-#define luab_newhook(L, arg) \
+#define luab_new_hook(L, arg) \
     ((luab_hook_t *)luab_newuserdata(L, &hook_type, (arg)))
 #define luab_to_hook(L, narg) \
     (luab_todata((L), (narg), &hook_type, luab_hook_t *))
@@ -234,6 +234,12 @@ static luab_table_t hook_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+hook_create(lua_State *L, void *arg)
+{
+    return luab_new_hook(L, arg);
+}
+
 static void
 hook_init(void *ud, void *arg)
 {                                           /* XXX */
@@ -254,6 +260,7 @@ luab_module_t hook_type = {
     .cookie = LUABSD_HOOK_TYPE_ID,
     .name = LUABSD_HOOK_TYPE,
     .vec = hook_methods,
+    .ctor = hook_create,
     .init = hook_init,
     .get = hook_udata,
     .sz = sizeof(luab_hook_t),
@@ -262,16 +269,15 @@ luab_module_t hook_type = {
 int
 luab_CreateHook(lua_State *L)
 {
-    int narg;
     luab_type_u *hook;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         hook = NULL;
     else
         hook = hook_udata(L, narg);
 
-    if (luab_newhook(L, hook) == NULL)
+    if (hook_create(L, hook) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

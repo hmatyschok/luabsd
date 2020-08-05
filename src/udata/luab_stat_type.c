@@ -856,6 +856,12 @@ static luab_table_t stat_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+stat_create(lua_State *L, void *arg)
+{
+    return luab_new_stat(L, arg);
+}
+
 static void
 stat_init(void *ud, void *arg)
 {                                           /* XXX */
@@ -876,6 +882,7 @@ luab_module_t stat_type = {
     .cookie = LUABSD_STAT_TYPE_ID,
     .name = LUABSD_STAT_TYPE,
     .vec = stat_methods,
+    .ctor = stat_create,
     .init = stat_init,
     .get = stat_udata,
     .sz = sizeof(luab_stat_t),
@@ -884,16 +891,15 @@ luab_module_t stat_type = {
 int
 luab_StructStat(lua_State *L)
 {
-    int narg;
     struct stat *stat;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         stat = NULL;
     else
         stat = stat_udata(L, narg);
 
-    if (luab_new_stat(L, stat) == NULL)
+    if (stat_create(L, stat) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

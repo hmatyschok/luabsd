@@ -52,7 +52,7 @@ typedef struct luab_flock {
     struct flock    flock;
 } luab_flock_t;
 
-#define luab_newflock(L, arg) \
+#define luab_new_flock(L, arg) \
     ((luab_flock_t *)luab_newuserdata(L, &flock_type, (arg)))
 #define luab_to_flock(L, narg) \
     (luab_todata((L), (narg), &flock_type, luab_flock_t *))
@@ -320,6 +320,12 @@ static luab_table_t flock_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+flock_create(lua_State *L, void *arg)
+{
+    return luab_new_flock(L, arg);
+}
+
 static void
 flock_init(void *ud, void *arg)
 {                                           /* XXX */
@@ -340,6 +346,7 @@ luab_module_t flock_type = {
     .cookie = LUABSD_FLOCK_TYPE_ID,
     .name = LUABSD_FLOCK_TYPE,
     .vec = flock_methods,
+    .ctor = flock_create,
     .init = flock_init,
     .get = flock_udata,
     .sz = sizeof(luab_flock_t),
@@ -357,7 +364,7 @@ luab_StructFlock(lua_State *L)
     else
         flock = flock_udata(L, narg);
 
-    if (luab_newflock(L, flock) == NULL)
+    if (flock_create(L, flock) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

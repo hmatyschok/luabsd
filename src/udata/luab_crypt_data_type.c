@@ -104,7 +104,7 @@ CryptData_get_initialized(lua_State *L)
 
     cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
     initialized = cd->initialized;
-    
+
     return luab_pusherr(L, initialized);
 }
 
@@ -238,6 +238,12 @@ static luab_table_t crypt_data_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+crypt_data_create(lua_State *L, void *arg)
+{
+    return luab_new_crypt_data(L, arg);
+}
+
 static void
 crypt_data_init(void *ud, void *arg)
 {
@@ -258,6 +264,7 @@ luab_module_t crypt_data_type = {
     .cookie = LUABSD_CRYPT_DATA_TYPE_ID,
     .name = LUABSD_CRYPT_DATA_TYPE,
     .vec = crypt_data_methods,
+    .ctor = crypt_data_create,
     .init = crypt_data_init,
     .get = crypt_data_udata,
     .sz = sizeof(luab_crypt_data_t),
@@ -284,7 +291,7 @@ luab_StructCryptData(lua_State *L)
     else
         crypt_data = crypt_data_udata(L, narg);
 
-    if (luab_new_crypt_data(L, crypt_data) == NULL)
+    if (crypt_data_create(L, crypt_data) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

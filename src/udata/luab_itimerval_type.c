@@ -229,6 +229,12 @@ static luab_table_t itimerval_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+itimerval_create(lua_State *L, void *arg)
+{
+    return luab_new_itimerval(L, arg);
+}
+
 static void
 itimerval_init(void *ud, void *arg)
 {
@@ -249,6 +255,7 @@ luab_module_t itimerval_type = {
     .cookie = LUABSD_ITIMERVAL_TYPE_ID,
     .name = LUABSD_ITIMERVAL_TYPE,
     .vec = itimerval_methods,
+    .ctor = itimerval_create,
     .init = itimerval_init,
     .get = itimerval_udata,
     .sz = sizeof(luab_itimerval_t),
@@ -268,16 +275,15 @@ luab_module_t itimerval_type = {
 int
 luab_StructItimerVal(lua_State *L)
 {
-    int narg;
     struct itimerval *itimerval;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         itimerval = NULL;
     else
         itimerval = itimerval_udata(L, narg);
 
-    if (luab_new_itimerval(L, itimerval) == NULL)
+    if (itimerval_create(L, itimerval) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

@@ -64,7 +64,7 @@ typedef struct luab_db {
     DB  *db;
 } luab_db_t;
 
-#define luab_newdb(L, arg) \
+#define luab_new_db(L, arg) \
     ((luab_db_t *)luab_newuserdata(L, &db_type, (arg)))
 #define luab_to_db(L, narg) \
     luab_todata((L), (narg), &db_type, luab_db_t *)
@@ -289,6 +289,21 @@ static luab_table_t db_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+
+static void *
+db_create(lua_State *L, void *arg)
+{
+    return luab_new_db(L, arg);
+}
+
+static void
+db_init(void *ud, void *arg)
+{
+    luab_db_t *self = (luab_db_t *)ud;
+
+    self->db = (DB *)arg;
+}
+
 static void *
 db_udata(lua_State *L, int narg)
 {
@@ -301,6 +316,8 @@ luab_module_t db_type = {
     .cookie = LUABSD_DB_TYPE_ID,
     .name = LUABSD_DB_TYPE,
     .vec = db_methods,
+    .ctor = db_create,
+    .init = db_init,
     .get = db_udata,
     .sz = sizeof(luab_db_t),
 };
@@ -310,7 +327,7 @@ luab_dbopen(lua_State *L)
 {
     const char *fname;
     int flags, mode, type;
-    luab_db_t *self;
+    DB *db;
     int status;
 
     (void)luab_checkmaxargs(L, 4);
@@ -320,9 +337,9 @@ luab_dbopen(lua_State *L)
     mode = luab_checkinteger(L, 3, INT_MAX);
     type = luab_checkinteger(L, 4, INT_MAX);
 
-    if ((self = luab_newdb(L, NULL)) != NULL) {
-        if ((self->db = dbopen(fname, flags, mode, type, NULL)) == NULL) {
-            lua_pop(L, 1);
+    if ((db = dbopen(fname, flags, mode, type, NULL)) != NULL) {
+        if (db_create(L, db) == NULL) {
+            (void)(db->close)(db);
             status = luab_pushnil(L);
         } else
             status = 1;

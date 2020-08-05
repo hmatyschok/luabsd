@@ -221,6 +221,12 @@ static luab_table_t timezone_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+timezone_create(lua_State *L, void *arg)
+{
+    return luab_new_timezone(L, arg);
+}
+
 static void
 timezone_init(void *ud, void *arg)
 {
@@ -241,6 +247,7 @@ luab_module_t timezone_type = {
     .cookie = LUABSD_TIMEZONE_TYPE_ID,
     .name = LUABSD_TIMEZONE_TYPE,
     .vec = timezone_methods,
+    .ctor = timezone_create,
     .init = timezone_init,
     .get = timezone_udata,
     .sz = sizeof(luab_timezone_t),
@@ -260,16 +267,15 @@ luab_module_t timezone_type = {
 int
 luab_StructTimeZone(lua_State *L)
 {
-    int narg;
     struct timezone *timezone;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         timezone = NULL;
     else
         timezone = timezone_udata(L, narg);
 
-    if (luab_new_timezone(L, timezone) == NULL)
+    if (timezone_create(L, timezone) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

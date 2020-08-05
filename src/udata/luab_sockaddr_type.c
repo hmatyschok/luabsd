@@ -52,7 +52,7 @@ extern luab_module_t sockaddr_type;
  *      char        sa_data[14];
  *  };
  *
- * by
+ * maps to
  *
  *  struct sockaddr_storage {
  *      unsigned char   ss_len;
@@ -69,7 +69,7 @@ typedef struct luab_sockaddr {
     struct sockaddr_storage sockaddr;
 } luab_sockaddr_t;
 
-#define luab_newsockaddr(L, arg) \
+#define luab_new_sockaddr(L, arg) \
     ((luab_sockaddr_t *)luab_newuserdata(L, &sockaddr_type, (arg)))
 #define luab_to_sockaddr(L, narg) \
     (luab_todata((L), (narg), &sockaddr_type, luab_sockaddr_t *))
@@ -737,6 +737,12 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+sockaddr_create(lua_State *L, void *arg)
+{
+    return luab_new_sockaddr(L, arg);
+}
+
 static void
 sockaddr_init(void *ud, void *arg)
 {
@@ -758,6 +764,7 @@ luab_module_t sockaddr_type = {
     .cookie = LUABSD_SOCKADDR_TYPE_ID,
     .name = LUABSD_SOCKADDR_TYPE,
     .vec = sockaddr_methods,
+    .ctor = sockaddr_create,
     .init = sockaddr_init,
     .get = sockaddr_udata,
     .sz = sizeof(luab_sockaddr_t),
@@ -784,7 +791,7 @@ luab_StructSockAddr(lua_State *L)
 
     sa = (struct sockaddr *)sockaddr_udata(L, 1);
 
-    if (luab_newsockaddr(L, sa) == NULL)
+    if (sockaddr_create(L, sa) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -813,7 +820,7 @@ luab_StructSockAddrDL(lua_State *L)
     sa = (struct sockaddr *)&sdl;
     sockaddr_pci(sa, AF_LINK, sizeof(sdl));
 
-    if (luab_newsockaddr(L, sa) == NULL)
+    if (sockaddr_create(L, sa) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -857,7 +864,7 @@ luab_StructSockAddrIn(lua_State *L)
 
     sin.sin_addr.s_addr = htonl(sin.sin_addr.s_addr);
 
-    if (luab_newsockaddr(L, sa) == NULL)
+    if (sockaddr_create(L, sa) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

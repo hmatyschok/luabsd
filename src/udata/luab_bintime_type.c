@@ -221,6 +221,12 @@ static luab_table_t bintime_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+bintime_create(lua_State *L, void *arg)
+{
+    return luab_new_bintime(L, arg);
+}
+
 static void
 bintime_init(void *ud, void *arg)
 {
@@ -241,6 +247,7 @@ luab_module_t bintime_type = {
     .cookie = LUABSD_BINTIME_TYPE_ID,
     .name = LUABSD_BINTIME_TYPE,
     .vec = bintime_methods,
+    .ctor = bintime_create,
     .init = bintime_init,
     .get = bintime_udata,
     .sz = sizeof(luab_bintime_t),
@@ -260,16 +267,15 @@ luab_module_t bintime_type = {
 int
 luab_StructBinTime(lua_State *L)
 {
-    int narg;
     struct bintime *bintime;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         bintime = NULL;
     else
         bintime = bintime_udata(L, narg);
 
-    if (luab_new_bintime(L, bintime) == NULL)
+    if (bintime_create(L, bintime) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

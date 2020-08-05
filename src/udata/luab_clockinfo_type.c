@@ -326,6 +326,12 @@ static luab_table_t clockinfo_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+clockinfo_create(lua_State *L, void *arg)
+{
+    return luab_new_clockinfo(L, arg);
+}
+
 static void
 clockinfo_init(void *ud, void *arg)
 {
@@ -346,6 +352,7 @@ luab_module_t clockinfo_type = {
     .cookie = LUABSD_CLOCKINFO_TYPE_ID,
     .name = LUABSD_CLOCKINFO_TYPE,
     .vec = clockinfo_methods,
+    .ctor = clockinfo_create,
     .init = clockinfo_init,
     .get = clockinfo_udata,
     .sz = sizeof(luab_clockinfo_t),
@@ -365,16 +372,15 @@ luab_module_t clockinfo_type = {
 int
 luab_StructClockInfo(lua_State *L)
 {
-    int narg;
     struct clockinfo *clockinfo;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         clockinfo = NULL;
     else
         clockinfo = clockinfo_udata(L, narg);
 
-    if (luab_new_clockinfo(L, clockinfo) == NULL)
+    if (clockinfo_create(L, clockinfo) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

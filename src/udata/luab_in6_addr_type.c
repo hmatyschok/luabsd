@@ -208,6 +208,12 @@ static luab_table_t in6_addr_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+in6_addr_create(lua_State *L, void *arg)
+{
+    return luab_new_in6_addr(L, arg);
+}
+
 static void
 in6_addr_init(void *ud, void *arg)
 {
@@ -228,6 +234,7 @@ luab_module_t in6_addr_type = {
     .cookie = LUABSD_IN6ADDR_TYPE_ID,
     .name = LUABSD_IN6ADDR_TYPE,
     .vec = in6_addr_methods,
+    .ctor = in6_addr_create,
     .init = in6_addr_init,
     .get = in6_addr_udata,
     .sz = sizeof(luab_in6_addr_t),
@@ -247,16 +254,15 @@ luab_module_t in6_addr_type = {
 int
 luab_StructIn6Addr(lua_State *L)
 {
-    int narg;
     struct in6_addr *in6_addr;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         in6_addr = NULL;
     else
         in6_addr = in6_addr_udata(L, narg);
 
-    if (luab_new_in6_addr(L, in6_addr) == NULL)
+    if (in6_addr_create(L, in6_addr) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

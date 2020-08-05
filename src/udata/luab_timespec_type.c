@@ -221,6 +221,12 @@ static luab_table_t timespec_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+timespec_create(lua_State *L, void *arg)
+{
+    return luab_new_timespec(L, arg);
+}
+
 static void
 timespec_init(void *ud, void *arg)
 {
@@ -241,6 +247,7 @@ luab_module_t timespec_type = {
     .cookie = LUABSD_TIMESPEC_TYPE_ID,
     .name = LUABSD_TIMESPEC_TYPE,
     .vec = timespec_methods,
+    .ctor = timespec_create,
     .init = timespec_init,
     .get = timespec_udata,
     .sz = sizeof(luab_timespec_t),
@@ -260,16 +267,15 @@ luab_module_t timespec_type = {
 int
 luab_StructTimeSpec(lua_State *L)
 {
-    int narg;
     struct timespec *timespec;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         timespec = NULL;
     else
         timespec = timespec_udata(L, narg);
 
-    if (luab_new_timespec(L, timespec) == NULL)
+    if (timespec_create(L, timespec) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

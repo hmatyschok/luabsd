@@ -664,6 +664,12 @@ static luab_table_t tm_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
+static void *
+tm_create(lua_State *L, void *arg)
+{
+    return luab_new_tm(L, arg);
+}
+
 static void
 tm_init(void *ud, void *arg)
 {
@@ -684,6 +690,7 @@ luab_module_t tm_type = {
     .cookie = LUABSD_TM_TYPE_ID,
     .name = LUABSD_TM_TYPE,
     .vec = tm_methods,
+    .ctor = tm_create,
     .init = tm_init,
     .get = tm_udata,
     .sz = sizeof(luab_tm_t),
@@ -703,16 +710,15 @@ luab_module_t tm_type = {
 int
 luab_StructTM(lua_State *L)
 {
-    int narg;
     struct tm *tm;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         tm = NULL;
     else
         tm = tm_udata(L, narg);
 
-    if (luab_new_tm(L, tm) == NULL)
+    if (tm_create(L, tm) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
