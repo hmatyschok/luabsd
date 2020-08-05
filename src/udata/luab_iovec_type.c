@@ -341,7 +341,7 @@ iovec_init(void *ud, void *arg)
         self->iov.iov_base = iop->iop_buf;
 
         if (((dst = self->iov.iov_base) != NULL) &&
-            ((src = iop->iop_arg) != NULL)) {
+            ((src = iop->iop_data) != NULL)) {
             len = self->iov_max_len;
             (void)memmove(dst, src, len);
             self->iov.iov_len = len;
@@ -369,15 +369,15 @@ luab_module_t iovec_type = {
 int
 luab_StructIOVec(lua_State *L)
 {
-    luab_iovec_param_t softc;
+    luab_iovec_param_t iop;
     luab_iovec_t *self;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 1);  /* XXX */
 
-    (void)memset_s(&softc, sizeof(softc), 0, sizeof(softc));
+    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    softc.iop_buf_len = luab_checkinteger(L, 1,
+    iop.iop_buf_len = luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX
 #else
@@ -385,7 +385,7 @@ luab_StructIOVec(lua_State *L)
 #endif
     );
 
-    if ((self = iovec_create(L, &softc)) == NULL)
+    if ((self = iovec_create(L, &iop)) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

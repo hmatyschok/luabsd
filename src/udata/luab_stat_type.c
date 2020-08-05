@@ -359,14 +359,18 @@ static int
 Stat_get_st_atim(lua_State *L)
 {
     struct stat *st;
+    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
     st = (struct stat *)(*stat_type.get)(L, 1);
 
-    (void)luab_newuserdata(L, &timespec_type, &st->st_atim);
+    if ((*timespec_type.ctor)(L, &st->st_atim) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /* time of last data modification */
@@ -422,14 +426,18 @@ static int
 Stat_get_st_mtim(lua_State *L)
 {
     struct stat *st;
+    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
     st = (struct stat *)(*stat_type.get)(L, 1);
 
-    (void)luab_newuserdata(L, &timespec_type, &st->st_mtim);
+    if ((*timespec_type.ctor)(L, &st->st_mtim) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /* time of last file status change */
@@ -485,6 +493,7 @@ static int
 Stat_get_st_ctim(lua_State *L)
 {
     struct stat *st;
+    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
@@ -492,7 +501,12 @@ Stat_get_st_ctim(lua_State *L)
 
     (void)luab_newuserdata(L, &timespec_type, &st->st_ctim);
 
-    return 1;
+    if ((*timespec_type.ctor)(L, &st->st_ctim) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
 }
 
 /* time of file creation */
@@ -548,14 +562,18 @@ static int
 Stat_get_st_birthtim(lua_State *L)
 {
     struct stat *st;
+    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
     st = (struct stat *)(*stat_type.get)(L, 1);
 
-    (void)luab_newuserdata(L, &timespec_type, &st->st_birthtim);
+    if ((*timespec_type.ctor)(L, &st->st_birthtim) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
 
-    return 1;
+    return status;
 }
 
 /* file size, in bytes */
@@ -766,6 +784,37 @@ Stat_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy stat{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = stat:dump()
+ */
+static int
+Stat_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*stat_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct stat);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 Stat_gc(lua_State *L)
 {
@@ -851,6 +900,7 @@ static luab_table_t stat_methods[] = {
     LUABSD_FUNC("get_st_blocks",    Stat_get_st_blksize),
     LUABSD_FUNC("get_st_flags", Stat_get_st_flags),
     LUABSD_FUNC("get_st_gen",   Stat_get_st_gen),
+    LUABSD_FUNC("dump",  Stat_dump),
     LUABSD_FUNC("__gc", Stat_gc),
     LUABSD_FUNC("__tostring",   Stat_tostring),
     LUABSD_FUNC(NULL, NULL)

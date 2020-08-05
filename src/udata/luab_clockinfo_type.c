@@ -92,9 +92,12 @@ ClockInfo_set_hz(lua_State *L)
  *
  * @function get_hz
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage hz = clockinfo:get_hz()
+ *          (hz [, nil, nil]) on success or
+ *          (hz, (errno, strerror(errno)))
+ *
+ * @usage hz [, err, msg ]= clockinfo:get_hz()
  */
 static int
 ClockInfo_get_hz(lua_State *L)
@@ -140,9 +143,12 @@ ClockInfo_set_tick(lua_State *L)
  *
  * @function get_tick
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage tick = clockinfo:get_tick()
+ *          (tick [, nil, nil]) on success or
+ *          (tick, (errno, strerror(errno)))
+ *
+ * @usage tick [, err, msg ]= clockinfo:get_tick()
  */
 static int
 ClockInfo_get_tick(lua_State *L)
@@ -188,9 +194,12 @@ ClockInfo_set_stathz(lua_State *L)
  *
  * @function get_stathz
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage stathz = clockinfo:get_stathz()
+ *          (stathz [, nil, nil]) on success or
+ *          (stathz, (errno, strerror(errno)))
+ *
+ * @usage stathz [, err, msg ]= clockinfo:get_stathz()
  */
 static int
 ClockInfo_get_stathz(lua_State *L)
@@ -236,9 +245,12 @@ ClockInfo_set_profhz(lua_State *L)
  *
  * @function get_profhz
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage profhz = clockinfo:get_profhz()
+ *          (profhz [, nil, nil]) on success or
+ *          (profhz, (errno, strerror(errno)))
+ *
+ * @usage profhz [, err, msg ] = clockinfo:get_profhz()
  */
 static int
 ClockInfo_get_profhz(lua_State *L)
@@ -284,6 +296,37 @@ ClockInfo_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy clockinfo{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = clockinfo:dump()
+ */
+static int
+ClockInfo_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*clockinfo_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct clockinfo);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 ClockInfo_gc(lua_State *L)
 {
@@ -321,6 +364,7 @@ static luab_table_t clockinfo_methods[] = {
     LUABSD_FUNC("get_tick", ClockInfo_get_tick),
     LUABSD_FUNC("get_stathz",   ClockInfo_get_stathz),
     LUABSD_FUNC("get_profhz",   ClockInfo_get_profhz),
+    LUABSD_FUNC("dump", ClockInfo_dump),
     LUABSD_FUNC("__gc", ClockInfo_gc),
     LUABSD_FUNC("__tostring",   ClockInfo_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -363,11 +407,14 @@ luab_module_t clockinfo_type = {
  *
  * @function StructClockInfo
  *
- * @param clockinfo        Instance of LUA_TUSERDATA(luab_clockinfo_t).
+ * @param clockinfo                 Instance of LUA_TUSERDATA(luab_clockinfo_t).
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage clockinfo = bsd.sys.time.StructClockInfo([ clockinfo ])
+ *          (clockinfo [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage clockinfo [, err, msg ] = bsd.sys.time.StructClockInfo([ clockinfo ])
  */
 int
 luab_StructClockInfo(lua_State *L)

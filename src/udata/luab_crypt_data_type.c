@@ -90,9 +90,12 @@ CryptData_set_initialized(lua_State *L)
  *
  * @function get_initialized
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage zone = crypt_data:get_initialized()
+ *          (initialized [, nil, nil]) on success or
+ *          (initialized, (errno, strerror(errno)))
+ *
+ * @usage initialized [, err, msg ] = crypt_data:get_initialized()
  */
 static int
 CryptData_get_initialized(lua_State *L)
@@ -141,7 +144,10 @@ CryptData_set_buf(lua_State *L)
  *
  * @function get_buf
  *
- * @return (LUA_TSTRING)
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
  * @usage data = crypt_data:get_buf()
  */
@@ -199,6 +205,37 @@ CryptData_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy crypt_data{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = crypt_data:dump()
+ */
+static int
+CryptData_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*crypt_data_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct crypt_data);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 CryptData_gc(lua_State *L)
 {
@@ -233,6 +270,7 @@ static luab_table_t crypt_data_methods[] = {
     LUABSD_FUNC("get",  CryptData_get),
     LUABSD_FUNC("get_initialized",   CryptData_get_initialized),
     LUABSD_FUNC("get_buf",   CryptData_get_buf),
+    LUABSD_FUNC("dump", CryptData_dump),
     LUABSD_FUNC("__gc", CryptData_gc),
     LUABSD_FUNC("__tostring",   CryptData_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -275,9 +313,12 @@ luab_module_t crypt_data_type = {
  *
  * @function StructCryptData
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage tv = bsd.sys.time.StructCryptData([ crypt_data ])
+ *          (crypt_data [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage crypt_data [, err, msg ] = bsd.sys.time.StructCryptData([ crypt_data ])
  */
 int
 luab_StructCryptData(lua_State *L)

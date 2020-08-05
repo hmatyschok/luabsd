@@ -89,9 +89,12 @@ TimeZone_set_tz_minuteswest(lua_State *L)
  *
  * @function get_tz_minuteswest
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage zone = timezone:get_tz_minuteswest()
+ *          (zone [, nil, nil]) on success or
+ *          (zone, (errno, strerror(errno)))
+ *
+ * @usage zone [, err, msg ] = timezone:get_tz_minuteswest()
  */
 static int
 TimeZone_get_tz_minuteswest(lua_State *L)
@@ -137,9 +140,12 @@ TimeZone_set_tz_dsttime(lua_State *L)
  *
  * @function get_tz_dsttime
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage dst = timezone:get_tz_dsttime()
+ *          (dst [, nil, nil]) on success or
+ *          (dst, (errno, strerror(errno)))
+ *
+ * @usage dst [, err, msg ] = timezone:get_tz_dsttime()
  */
 static int
 TimeZone_get_tz_dsttime(lua_State *L)
@@ -183,6 +189,34 @@ TimeZone_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy timezone{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage iovec [, err, msg ] = timezone:dump()
+ */
+static int
+TimeZone_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+    
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*timezone_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct timezone);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 TimeZone_gc(lua_State *L)
 {
@@ -216,6 +250,7 @@ static luab_table_t timezone_methods[] = {
     LUABSD_FUNC("get",  TimeZone_get),
     LUABSD_FUNC("get_tz_minuteswest",   TimeZone_get_tz_minuteswest),
     LUABSD_FUNC("get_tz_dsttime",   TimeZone_get_tz_dsttime),
+    LUABSD_FUNC("dump", TimeZone_dump),
     LUABSD_FUNC("__gc", TimeZone_gc),
     LUABSD_FUNC("__tostring",   TimeZone_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -258,11 +293,11 @@ luab_module_t timezone_type = {
  *
  * @function StructTimeZone
  *
- * @param timezone            Instance of LUA_TUSERDATE(luab_timezone_t).
+ * @param timezone              Instance of LUA_TUSERDATE(luab_timezone_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage timezone = bsd.sys.time.StructTimeZone([ timezone ])
+ * @usage timezone [, err, msg ] = bsd.sys.time.StructTimeZone([ timezone ])
  */
 int
 luab_StructTimeZone(lua_State *L)

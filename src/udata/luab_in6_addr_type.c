@@ -172,6 +172,37 @@ In6Addr_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy in6_addr{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = in6_addr:dump()
+ */
+static int
+In6Addr_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+    
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*in6_addr_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct in6_addr);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 In6Addr_gc(lua_State *L)
 {
@@ -203,6 +234,7 @@ static luab_table_t in6_addr_methods[] = {
     LUABSD_FUNC("set_s6_addr",  In6Addr_set_s6_addr),
     LUABSD_FUNC("get",  In6Addr_get),
     LUABSD_FUNC("get_s6_addr",  In6Addr_get_s6_addr),
+    LUABSD_FUNC("dump", In6Addr_dump),
     LUABSD_FUNC("__gc", In6Addr_gc),
     LUABSD_FUNC("__tostring",   In6Addr_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -247,9 +279,12 @@ luab_module_t in6_addr_type = {
  *
  * @param in6_addr           Instance of LUA_TUSERDATA(luab_in6_addr_t), optional.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in6_addr = bsd.sys.time.StructIn6Addr([ in6_addr ])
+ *          (in6_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage in6_addr [, err, msg ] = bsd.sys.time.StructIn6Addr([ in6_addr ])
  */
 int
 luab_StructIn6Addr(lua_State *L)

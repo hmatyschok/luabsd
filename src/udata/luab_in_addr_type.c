@@ -88,9 +88,12 @@ InAddr_set_s_addr(lua_State *L)
  *
  * @function get_s_addr
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage s_addr = in_addr:get_s_addr()
+ *          (addr [, nil, nil]) on success or
+ *          (addr, (errno, strerror(errno)))
+ *
+ * @usage addr = in_addr:get_s_addr()
  */
 static int
 InAddr_get_s_addr(lua_State *L)
@@ -133,6 +136,38 @@ InAddr_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy in_addr{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = in_addr:dump()
+ */
+static int
+InAddr_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+    
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*in_addr_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct in_addr);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
+
 static int
 InAddr_gc(lua_State *L)
 {
@@ -164,6 +199,7 @@ static luab_table_t in_addr_methods[] = {
     LUABSD_FUNC("set_s_addr",  InAddr_set_s_addr),
     LUABSD_FUNC("get",  InAddr_get),
     LUABSD_FUNC("get_s_addr",  InAddr_get_s_addr),
+    LUABSD_FUNC("dump", InAddr_dump),
     LUABSD_FUNC("__gc", InAddr_gc),
     LUABSD_FUNC("__tostring",   InAddr_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -208,9 +244,12 @@ luab_module_t in_addr_type = {
  *
  * @param in_addr           Instance of LUA_TUSERDATA(luab_in_addr_t), optional.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_addr = bsd.sys.time.StructInAddr([ in_addr ])
+ *          (in_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage in_addr [, err, msg ] = bsd.sys.time.StructInAddr([ in_addr ])
  */
 int
 luab_StructInAddr(lua_State *L)

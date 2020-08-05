@@ -89,9 +89,12 @@ BinTime_set_sec(lua_State *L)
  *
  * @function get_sec
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sec = bintime:get_sec()
+ *          (sec [, nil, nil]) on success or
+ *          (sec, (errno, strerror(errno)))
+ *
+ * @usage sec [, err, msg ] = bintime:get_sec()
  */
 static int
 BinTime_get_sec(lua_State *L)
@@ -137,9 +140,12 @@ BinTime_set_frac(lua_State *L)
  *
  * @function get_frac
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage frac = bintime:get_frac()
+ *          (frac [, nil, nil]) on success or
+ *          (frac, (errno, strerror(errno)))
+ *
+ * @usage frac [, err, msg ] = bintime:get_frac()
  */
 static int
 BinTime_get_frac(lua_State *L)
@@ -183,6 +189,34 @@ BinTime_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy bintime{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage iovec [, err, msg ] = bintime:dump()
+ */
+static int
+BinTime_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+    
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*bintime_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct bintime);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 BinTime_gc(lua_State *L)
 {
@@ -216,6 +250,7 @@ static luab_table_t bintime_methods[] = {
     LUABSD_FUNC("get",  BinTime_get),
     LUABSD_FUNC("get_sec",  BinTime_get_sec),
     LUABSD_FUNC("get_frac", BinTime_get_frac),
+    LUABSD_FUNC("dump", BinTime_dump),
     LUABSD_FUNC("__gc", BinTime_gc),
     LUABSD_FUNC("__tostring",   BinTime_tostring),
     LUABSD_FUNC(NULL, NULL)

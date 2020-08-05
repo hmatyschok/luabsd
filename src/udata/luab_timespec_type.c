@@ -89,9 +89,12 @@ TimeSpec_set_tv_sec(lua_State *L)
  *
  * @function get_tv_sec
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sec = timespec:get_tv_sec()
+ *          (sec [, nil, nil]) on success or
+ *          (sec, (errno, strerror(errno)))
+ *
+ * @usage sec [, err, msg ] = timespec:get_tv_sec()
  */
 static int
 TimeSpec_get_tv_sec(lua_State *L)
@@ -137,9 +140,12 @@ TimeSpec_set_tv_nsec(lua_State *L)
  *
  * @function get_tv_nsec
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage nsec = timespec:get_tv_nsec()
+ *          (nsec [, nil, nil]) on success or
+ *          (nsec, (errno, strerror(errno)))
+ *
+ * @usage nsec [, err, msg ]= timespec:get_tv_nsec()
  */
 static int
 TimeSpec_get_tv_nsec(lua_State *L)
@@ -183,6 +189,34 @@ TimeSpec_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy timespec{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage iovec [, err, msg ] = timespec:dump()
+ */
+static int
+TimeSpec_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*timespec_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct timespec);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 TimeSpec_gc(lua_State *L)
 {
@@ -216,6 +250,7 @@ static luab_table_t timespec_methods[] = {
     LUABSD_FUNC("get",  TimeSpec_get),
     LUABSD_FUNC("get_tv_sec",   TimeSpec_get_tv_sec),
     LUABSD_FUNC("get_tv_nsec",  TimeSpec_get_tv_nsec),
+    LUABSD_FUNC("dump", TimeSpec_dump),
     LUABSD_FUNC("__gc", TimeSpec_gc),
     LUABSD_FUNC("__tostring",   TimeSpec_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -262,7 +297,7 @@ luab_module_t timespec_type = {
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage timespec = bsd.sys.time.StructTimeSpec([ timespec ])
+ * @usage timespec [, err, msg ] = bsd.sys.time.StructTimeSpec([ timespec ])
  */
 int
 luab_StructTimeSpec(lua_State *L)

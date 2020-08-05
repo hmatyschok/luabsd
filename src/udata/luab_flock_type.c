@@ -274,6 +274,38 @@ Flock_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy flock{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = flock:dump()
+ */
+static int
+Flock_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*flock_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct flock);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
+
 static int
 Flock_gc(lua_State *L)
 {
@@ -315,6 +347,7 @@ static luab_table_t flock_methods[] = {
     LUABSD_FUNC("get_l_type",   Flock_get_l_type),
     LUABSD_FUNC("get_l_whence", Flock_get_l_whence),
     LUABSD_FUNC("get_l_sysid",  Flock_get_l_sysid),
+    LUABSD_FUNC("dump", Flock_dump),
     LUABSD_FUNC("__gc", Flock_gc),
     LUABSD_FUNC("__tostring",   Flock_tostring),
     LUABSD_FUNC(NULL, NULL)

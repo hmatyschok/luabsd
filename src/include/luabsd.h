@@ -81,7 +81,7 @@ typedef struct luab_iovec_param {
     size_t  iop_buf_len;
     caddr_t *iop_buf;
     u_int   iop_flags;
-    void    *iop_arg;
+    void    *iop_data;
 } luab_iovec_param_t;
 
 typedef struct luab_iovec {
@@ -161,7 +161,7 @@ luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
         (void)memset_s(&softc, sizeof(softc), 0, sizeof(softc));
 
         softc.iop_buf_len = len;
-        softc.iop_arg = v;
+        softc.iop_data = v;
 
         if ((buf = (*iovec_type.ctor)(L, &softc)) != NULL)
             lua_setfield(L, narg, k);
@@ -192,7 +192,7 @@ luab_setstring(lua_State *L, int narg, const char *k, const char *v)
 static __inline void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
-    if (luab_newuserdata(L, m, v) != NULL)
+    if ((*m->ctor)(L, v) != NULL)
         lua_setfield(L, narg, k);
 }
 

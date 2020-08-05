@@ -97,9 +97,12 @@ TM_set_tm_sec(lua_State *L)
  *
  * @function get_tm_sec
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sec = tm:get_tm_sec()
+ *          (sec [, nil, nil]) on success or
+ *          (sec, (errno, strerror(errno)))
+ *
+ * @usage sec [, err, msg ] = tm:get_tm_sec()
  */
 static int
 TM_get_tm_sec(lua_State *L)
@@ -145,9 +148,12 @@ TM_set_tm_min(lua_State *L)
  *
  * @function get_tm_min
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage min = tm:get_tm_min()
+ *          (min [, nil, nil]) on success or
+ *          (min, (errno, strerror(errno)))
+ *
+ * @usage min [, err, min ] = tm:get_tm_min()
  */
 static int
 TM_get_tm_min(lua_State *L)
@@ -193,9 +199,12 @@ TM_set_tm_hour(lua_State *L)
  *
  * @function get_tm_hour
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage hour = tm:get_tm_hour()
+ *          (hour [, nil, nil]) on success or
+ *          (hour, (errno, strerror(errno)))
+ *
+ * @usage hour [, err, msg ] = tm:get_tm_hour()
  */
 static int
 TM_get_tm_hour(lua_State *L)
@@ -241,9 +250,12 @@ TM_set_tm_mday(lua_State *L)
  *
  * @function get_tm_mday
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage mday = tm:get_tm_mday()
+ *          (mday [, nil, nil]) on success or
+ *          (mday, (errno, strerror(errno)))
+ *
+ * @usage mday [, err, msg ] = tm:get_tm_mday()
  */
 static int
 TM_get_tm_mday(lua_State *L)
@@ -289,9 +301,12 @@ TM_set_tm_mon(lua_State *L)
  *
  * @function get_tm_mon
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage mon = tm:get_tm_mon()
+ *          (mon [, nil, nil]) on success or
+ *          (mon, (errno, strerror(errno)))
+ *
+ * @usage mon [, err, msg ] = tm:get_tm_mon()
  */
 static int
 TM_get_tm_mon(lua_State *L)
@@ -337,9 +352,12 @@ TM_set_tm_year(lua_State *L)
  *
  * @function get_tm_year
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage year = tm:get_tm_year()
+ *          (year [, nil, nil]) on success or
+ *          (year, (errno, strerror(errno)))
+ *
+ * @usage year [, err, msg ] = tm:get_tm_year()
  */
 static int
 TM_get_tm_year(lua_State *L)
@@ -385,9 +403,12 @@ TM_set_tm_wday(lua_State *L)
  *
  * @function get_tm_wday
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage wday = tm:get_tm_wday()
+ *          (wday [, nil, nil]) on success or
+ *          (wday, (errno, strerror(errno)))
+ *
+ * @usage wday [, err, msg ] = tm:get_tm_wday()
  */
 static int
 TM_get_tm_wday(lua_State *L)
@@ -433,9 +454,12 @@ TM_set_tm_yday(lua_State *L)
  *
  * @function get_tm_yday
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage yday = tm:get_tm_yday()
+ *          (yday [, nil, nil]) on success or
+ *          (yday, (errno, strerror(errno)))
+ *
+ * @usage yday [, err, msg ]= tm:get_tm_yday()
  */
 static int
 TM_get_tm_yday(lua_State *L)
@@ -481,9 +505,12 @@ TM_set_tm_isdst(lua_State *L)
  *
  * @function get_tm_isdst
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage isdst = tm:get_tm_isdst()
+ *          (isdst [, nil, nil]) on success or
+ *          (isdst, (errno, strerror(errno)))
+ *
+ * @usage isdst [, err, msg ] = tm:get_tm_isdst()
  */
 static int
 TM_get_tm_isdst(lua_State *L)
@@ -529,9 +556,12 @@ TM_set_tm_gmtoff(lua_State *L)
  *
  * @function get_tm_gmtoff
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage gmtoff = tm:get_tm_gmtoff()
+ *          (gmtoff [, nil, nil]) on success or
+ *          (gmtoff, (errno, strerror(errno)))
+ *
+ * @usage gmtoff [, err, msg ] = tm:get_tm_gmtoff()
  */
 static int
 TM_get_tm_gmtoff(lua_State *L)
@@ -552,9 +582,12 @@ TM_get_tm_gmtoff(lua_State *L)
  *
  * @function get_tm_zone
  *
- * @return (LUA_TSTRING)
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage zone = tm:get_tm_zone()
+ *          (zone [, nil, nil]) on success or
+ *          (zone, (errno, strerror(errno)))
+ *
+ * @usage zone [, err, msg ] = tm:get_tm_zone()
  */
 static int
 TM_get_tm_zone(lua_State *L)
@@ -609,6 +642,37 @@ TM_get(lua_State *L)
     return 1;
 }
 
+/***
+ * Copy tm{} into LUA_TUSERDATA(luab_iovec_t).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = tm:dump()
+ */
+static int
+TM_dump(lua_State *L)
+{
+    luab_iovec_param_t iop;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    iop.iop_data = (*tm_type.get)(L, 1);
+    iop.iop_buf_len = sizeof(struct tm);
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return status;
+}
+
 static int
 TM_gc(lua_State *L)
 {
@@ -659,6 +723,7 @@ static luab_table_t tm_methods[] = {
     LUABSD_FUNC("get_tm_isdst",   TM_get_tm_isdst),
     LUABSD_FUNC("get_tm_gmtoff",   TM_get_tm_gmtoff),
     LUABSD_FUNC("get_tm_zone",   TM_get_tm_zone),
+    LUABSD_FUNC("dump", TM_dump),
     LUABSD_FUNC("__gc", TM_gc),
     LUABSD_FUNC("__tostring",   TM_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -703,9 +768,12 @@ luab_module_t tm_type = {
  *
  * @param tm            Instance of LUA_TUSERDATA(luab_tm_t).
  *
- * @return (LUA_TUSERDATA)
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage tmz = bsd.sys.time.StructTM([ tm ])
+ *          (tm [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage tm [, err, msg ] = bsd.sys.time.StructTM([ tm ])
  */
 int
 luab_StructTM(lua_State *L)
