@@ -33,7 +33,6 @@
 #include <string.h>     /* XXX */
 
 __BEGIN_DECLS
-
 typedef union luab_type {
     lua_Integer un_intx;
     int         un_int;
@@ -274,7 +273,7 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 
         return (buf->iov.iov_base);
     }
-    return (luaL_checkudata(L, narg, m->name));
+    return (luab_checkudata(L, narg, m));
 }
 __END_DECLS
 
