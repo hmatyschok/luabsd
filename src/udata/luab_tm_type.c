@@ -60,7 +60,8 @@ typedef struct luab_tm {
 #define luab_new_tm(L, arg) \
     ((luab_tm_t *)luab_newuserdata(L, &tm_type, (arg)))
 #define luab_to_tm(L, narg) \
-    (luab_todata((L), (narg), &tm_type, luab_tm_t *))
+    (luab_toldata((L), (narg), &tm_type, \
+        luab_tm_t *, sizeof(struct tm)))
 
 #define LUABSD_TM_TYPE_ID    1594168426
 #define LUABSD_TM_TYPE    "TM*"

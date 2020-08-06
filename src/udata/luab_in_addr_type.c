@@ -51,7 +51,8 @@ typedef struct luab_in_addr {
 #define luab_new_in_addr(L, arg) \
     ((luab_in_addr_t *)luab_newuserdata(L, &in_addr_type, (arg)))
 #define luab_to_in_addr(L, narg) \
-    (luab_todata((L), (narg), &in_addr_type, luab_in_addr_t *))
+    (luab_toldata((L), (narg), &in_addr_type, \
+        luab_in_addr_t *, sizeof(struct in_addr)))
 
 #define LUABSD_INADDR_TYPE_ID    1595799233
 #define LUABSD_INADDR_TYPE    "INADDR*"

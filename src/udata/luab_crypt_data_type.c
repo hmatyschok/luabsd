@@ -53,7 +53,8 @@ typedef struct luab_crypt_data {
 #define luab_new_crypt_data(L, arg) \
     ((luab_crypt_data_t *)luab_newuserdata(L, &crypt_data_type, (arg)))
 #define luab_to_crypt_data(L, narg) \
-    (luab_todata((L), (narg), &crypt_data_type, luab_crypt_data_t *))
+    (luab_toldata((L), (narg), &crypt_data_type, \
+        luab_crypt_data_t *, sizeof(struct crypt_data)))
 
 #define LUABSD_CRYPT_DATA_TYPE_ID    1595491033
 #define LUABSD_CRYPT_DATA_TYPE    "CRYPTDATA*"

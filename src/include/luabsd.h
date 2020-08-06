@@ -242,6 +242,8 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
     (luab_isdata((L), (narg), iovec_type.name, luab_iovec_t *))
 #define luab_todata(L, narg, id, t) \
     ((t)luab_checkudata((L), (narg), (id)))
+#define luab_toldata(L, narg, id, t, len) \
+    ((t)luab_checkludata((L), (narg), (id), (len)))
 
 static __inline void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)

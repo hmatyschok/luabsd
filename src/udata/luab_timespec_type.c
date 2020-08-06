@@ -52,7 +52,8 @@ typedef struct luab_timespec {
 #define luab_new_timespec(L, arg) \
     ((luab_timespec_t *)luab_newuserdata(L, &timespec_type, (arg)))
 #define luab_to_timespec(L, narg) \
-    (luab_todata((L), (narg), &timespec_type, luab_timespec_t *))
+    (luab_toldata((L), (narg), &timespec_type, \
+        luab_timespec_t *, sizeof(struct timespec)))
 
 #define LUABSD_TIMESPEC_TYPE_ID    1594034844
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"

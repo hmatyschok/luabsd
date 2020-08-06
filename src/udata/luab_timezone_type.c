@@ -52,7 +52,8 @@ typedef struct luab_timezone {
 #define luab_new_timezone(L, arg) \
     ((luab_timezone_t *)luab_newuserdata(L, &timezone_type, (arg)))
 #define luab_to_timezone(L, narg) \
-    (luab_todata((L), (narg), &timezone_type, luab_timezone_t *))
+    (luab_toldata((L), (narg), &timezone_type, \
+        luab_timezone_t *, sizeof(struct timezone)))
 
 #define LUABSD_TIMEZONE_TYPE_ID    1594159943
 #define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
@@ -203,7 +204,7 @@ TimeZone_dump(lua_State *L)
 {
     luab_iovec_param_t iop;
     int status;
-    
+
     (void)luab_checkmaxargs(L, 1);
 
     iop.iop_data = (*timezone_type.get)(L, 1);

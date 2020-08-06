@@ -82,7 +82,8 @@ typedef struct luab_stat {
 #define luab_new_stat(L, arg) \
     ((luab_stat_t *)luab_newuserdata(L, &stat_type, (arg)))
 #define luab_to_stat(L, narg) \
-    (luab_todata((L), (narg), &stat_type, luab_stat_t *))
+    (luab_toldata((L), (narg), &stat_type, \
+        luab_stat_t *, sizeof(struct stat)))
 
 #define LUABSD_STAT_TYPE_ID    1594028586
 #define LUABSD_STAT_TYPE    "STAT*"
