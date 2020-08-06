@@ -200,11 +200,6 @@ luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
  * Accessor for evaluation of function arguments.
  */
 
-#define luab_todata(L, narg, id, t) \
-    ((t)luab_checkudata((L), (narg), (id)))
-#define luab_isdata(L, narg, id, t) \
-    ((t)luab_testudata((L), (narg), (id)))
-
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
 {
@@ -231,16 +226,27 @@ luab_checkltable(lua_State *L, int narg, size_t len)
     return (n);
 }
 
+static __inline lua_Integer
+luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((lua_tointeger(L, narg)) & (b_msk));
+}
+
+/*
+ * Accessor for evaluation of LUA_TUSERDATA.
+ */
+
+#define luab_isdata(L, narg, id, t) \
+    ((t)luaL_testudata((L), (narg), (id)))
+#define luab_isiovec(L, narg) \
+    (luab_isdata((L), (narg), iovec_type.name, luab_iovec_t *))
+#define luab_todata(L, narg, id, t) \
+    ((t)luab_checkudata((L), (narg), (id)))
+
 static __inline void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
     return (luaL_checkudata(L, narg, m->name));
-}
-
-static __inline void *
-luab_testudata(lua_State *L, int narg, luab_module_t *m)
-{
-    return (luaL_testudata(L, narg, m->name));
 }
 
 static __inline void *
@@ -249,13 +255,24 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
     if (lua_isnil(L, narg) != 0)
         return (NULL);
 
-    return (luaL_checkudata(L, narg, m->name));
+    return (luab_checkudata(L, narg, m));
 }
 
-static __inline lua_Integer
-luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
+static __inline void *
+luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
-    return ((lua_tointeger(L, narg)) & (b_msk));
+    luab_iovec_t *buf;
+
+    if ((buf = luab_isiovec(L, narg)) != NULL) {
+        if (buf->iov.iov_base == NULL)
+            luaL_argerror(L, narg, "Invalid argument.");
+
+        if (buf->iov.iov_len != len)
+            luaL_argerror(L, narg, "Invalid argument.");
+
+        return (buf->iov.iov_base);
+    }
+    return (luaL_checkudata(L, narg, m->name));
 }
 __END_DECLS
 
