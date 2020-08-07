@@ -216,19 +216,23 @@ dbt_create(lua_State *L, void *arg)
 static void
 dbt_init(void *ud, void *arg)
 {
-    luab_dbt_t *self = (luab_dbt_t *)ud;
-    luab_iovec_t *buf = (luab_iovec_t *)arg;
+    luab_dbt_t *self;
+    luab_iovec_t *buf;
 
-    if (((buf->iov_flags & IOV_LOCK) == 0) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        (buf->iov.iov_base != NULL) &&
-        (buf->iov.iov_len > 0)) {
-        buf->iov_flags |= IOV_LOCK;
+    if (((self = (luab_dbt_t *)ud) != NULL) &&
+        ((buf = (luab_iovec_t *)arg) != NULL)) {
 
-        self->dbt.data = buf->iov.iov_base;
-        self->dbt.size = buf->iov.iov_len;
+        if (((buf->iov_flags & IOV_LOCK) == 0) &&
+            (buf->iov_flags & IOV_BUFF) &&
+            (buf->iov.iov_base != NULL) &&
+            (buf->iov.iov_len > 0)) {
+            buf->iov_flags |= IOV_LOCK;
 
-        buf->iov_flags &= ~IOV_LOCK;
+            self->dbt.data = buf->iov.iov_base;
+            self->dbt.size = buf->iov.iov_len;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        }
     }
 }
 

@@ -777,10 +777,12 @@ sockaddr_create(lua_State *L, void *arg)
 static void
 sockaddr_init(void *ud, void *arg)
 {
-    luab_sockaddr_t *self = (luab_sockaddr_t *)ud;
-    struct sockaddr *sa = (struct sockaddr *)arg;
+    luab_sockaddr_t *self;
+    struct sockaddr *sa;
 
-    (void)memmove(&self->sockaddr, sa, sa->sa_len);
+    if (((self = (luab_sockaddr_t *)ud) != NULL) &&
+        ((sa = (struct sockaddr *)arg) != NULL))
+        (void)memmove(&self->sockaddr, sa, sa->sa_len);
 }
 
 static void *

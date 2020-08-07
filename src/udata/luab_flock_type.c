@@ -371,10 +371,11 @@ flock_create(lua_State *L, void *arg)
 
 static void
 flock_init(void *ud, void *arg)
-{                                           /* XXX */
-    luab_flock_t *self = (luab_flock_t *)ud;
+{
+    luab_flock_t *self;
 
-    (void)memmove(&self->flock, arg, sizeof(self->flock));
+    if ((self = (luab_flock_t *)ud) != NULL)
+        (void)memmove(&self->flock, arg, sizeof(self->flock));
 }
 
 static void *

@@ -242,10 +242,11 @@ hook_create(lua_State *L, void *arg)
 
 static void
 hook_init(void *ud, void *arg)
-{                                           /* XXX */
-    luab_hook_t *self = (luab_hook_t *)ud;
+{
+    luab_hook_t *self;
 
-    (void)memmove(&self->hook, arg, sizeof(self->hook));
+    if ((self = (luab_hook_t *)ud) != NULL)
+        (void)memmove(&self->hook, arg, sizeof(self->hook));
 }
 
 static void *

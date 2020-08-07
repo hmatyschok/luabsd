@@ -276,9 +276,10 @@ timezone_create(lua_State *L, void *arg)
 static void
 timezone_init(void *ud, void *arg)
 {
-    luab_timezone_t *self = (luab_timezone_t *)ud;
+    luab_timezone_t *self;
 
-    (void)memmove(&self->timezone, arg, sizeof(self->timezone));
+    if ((self = (luab_timezone_t *)ud) != NULL)
+        (void)memmove(&self->timezone, arg, sizeof(self->timezone));
 }
 
 static void *

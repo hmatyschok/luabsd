@@ -282,9 +282,10 @@ itimerval_create(lua_State *L, void *arg)
 static void
 itimerval_init(void *ud, void *arg)
 {
-    luab_itimerval_t *self = ud;    /* XXX */
+    luab_itimerval_t *self;
 
-    (void)memmove(&self->itimerval, arg, sizeof(self->itimerval));
+    if ((self = (luab_itimerval_t *)ud) != NULL)
+        (void)memmove(&self->itimerval, arg, sizeof(self->itimerval));
 }
 
 static void *

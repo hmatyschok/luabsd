@@ -260,9 +260,10 @@ in6_addr_create(lua_State *L, void *arg)
 static void
 in6_addr_init(void *ud, void *arg)
 {
-    luab_in6_addr_t *self = (luab_in6_addr_t *)ud;
+    luab_in6_addr_t *self;
 
-    (void)memmove(&self->in6_addr, arg, sizeof(self->in6_addr));
+    if ((self = (luab_in6_addr_t *)ud) != NULL)
+        (void)memmove(&self->in6_addr, arg, sizeof(self->in6_addr));
 }
 
 static void *

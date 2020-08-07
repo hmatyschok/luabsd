@@ -224,9 +224,10 @@ in_addr_create(lua_State *L, void *arg)
 static void
 in_addr_init(void *ud, void *arg)
 {
-    luab_in_addr_t *self = (luab_in_addr_t *)ud;
+    luab_in_addr_t *self;
 
-    (void)memmove(&self->in_addr, arg, sizeof(self->in_addr));
+    if ((self = (luab_in_addr_t *)ud) != NULL)
+        (void)memmove(&self->in_addr, arg, sizeof(self->in_addr));
 }
 
 static void *

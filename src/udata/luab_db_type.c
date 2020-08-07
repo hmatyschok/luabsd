@@ -299,9 +299,10 @@ db_create(lua_State *L, void *arg)
 static void
 db_init(void *ud, void *arg)
 {
-    luab_db_t *self = (luab_db_t *)ud;
+    luab_db_t *self;
 
-    self->db = (DB *)arg;
+    if ((self = (luab_db_t *)ud) != NULL)
+        self->db = (DB *)arg;
 }
 
 static void *

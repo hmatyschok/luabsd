@@ -276,9 +276,10 @@ bintime_create(lua_State *L, void *arg)
 static void
 bintime_init(void *ud, void *arg)
 {
-    luab_bintime_t *self = (luab_bintime_t *)ud;
+    luab_bintime_t *self;
 
-    (void)memmove(&self->bintime, arg, sizeof(self->bintime));
+    if ((self = (luab_bintime_t *)ud) != NULL)
+        (void)memmove(&self->bintime, arg, sizeof(self->bintime));
 }
 
 static void *
