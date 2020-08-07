@@ -719,40 +719,6 @@ SockAddr_get_sin_addr(lua_State *L)
     return status;
 }
 
-/***
- * Copy sockaddr{} into LUA_TUSERDATA(luab_iovec_t).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = sockaddr:dump()
- */
-static int
-SockAddr_dump(lua_State *L)
-{
-    struct sockaddr *sa;
-    luab_iovec_param_t iop;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    sa = (struct sockaddr *)(*sockaddr_type.get)(L, 1);
-    iop.iop_buf_len = sa->sa_len;
-    iop.iop_data = sa;
-
-    if ((*iovec_type.ctor)(L, &iop) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return status;
-}
-
-
 static int
 SockAddr_gc(lua_State *L)
 {
@@ -797,7 +763,6 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("get_sdl_alen",    SockAddr_get_sdl_alen),
     LUABSD_FUNC("get_sin_port", SockAddr_get_sin_port),
     LUABSD_FUNC("get_sin_addr", SockAddr_get_sin_addr),
-    LUABSD_FUNC("dump", SockAddr_dump),
     LUABSD_FUNC("__gc", SockAddr_gc),
     LUABSD_FUNC("__tostring",   SockAddr_tostring),
     LUABSD_FUNC(NULL, NULL)

@@ -203,12 +203,22 @@ static int
 TimeSpec_dump(lua_State *L)
 {
     luab_iovec_param_t iop;
+    size_t len, max_len;
+    caddr_t data;
     int status;
 
     (void)luab_checkmaxargs(L, 1);
 
-    iop.iop_data = (*timespec_type.get)(L, 1);
-    iop.iop_buf_len = sizeof(struct timespec);
+    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+    data = (caddr_t)(*timespec_type.get)(L, 1);
+
+    len = sizeof(struct timespec);
+    max_len = len + sizeof(uint32_t);
+
+    iop.iop_buf.buf_len = max_len;
+    iop.iop_data.buf_data = data;
+    iop.iop_data.buf_len = len;
 
     if ((*iovec_type.ctor)(L, &iop) == NULL)
         status = luab_pushnil(L);

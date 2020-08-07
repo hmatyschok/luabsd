@@ -311,17 +311,22 @@ iovec_create(lua_State *L, void *arg)
 {
     luab_iovec_param_t *iop;
     luab_iovec_t *self;
+    size_t len;
 
     if ((iop = (luab_iovec_param_t *)arg) != NULL) {
-        if (iop->iop_buf_len > 0) {
-            if ((iop->iop_buf = calloc(1, iop->iop_buf_len)) != NULL)
+        if ((len = iop->iop_buf.buf_len) > 0) {
+
+            if ((iop->iop_buf.buf_data = calloc(1, len)) != NULL)
                 iop->iop_flags = IOV_BUFF;
             else
                 iop->iop_flags = IOV_PROXY;
         } else
             iop->iop_flags = IOV_PROXY;
 
-        self = luab_newiovec(L, iop);
+        if (iop->iop_flags & IOV_BUFF)
+            self = luab_newiovec(L, iop);
+        else
+            self = NULL;    /* XXX IOV_PROXY, not yet. */
     } else
         self = NULL;
 
@@ -331,23 +336,28 @@ iovec_create(lua_State *L, void *arg)
 static void
 iovec_init(void *ud, void *arg)
 {
-    luab_iovec_t *self = (luab_iovec_t *)ud;
-    luab_iovec_param_t *iop = (luab_iovec_param_t *)arg;
-    caddr_t dst, src;
-    size_t len;
+    luab_iovec_t *self;
+    luab_iovec_param_t *iop;
+    size_t len, max_len;
+    caddr_t src, dst;
 
-    if (iop->iop_flags & IOV_BUFF) {
-        self->iov_max_len = iop->iop_buf_len;
-        self->iov.iov_base = iop->iop_buf;
+    if (((self = (luab_iovec_t *)ud) != NULL) &&
+        ((iop = (luab_iovec_param_t *)arg) != NULL)) {
 
-        if (((dst = self->iov.iov_base) != NULL) &&
-            ((src = iop->iop_data) != NULL)) {
-            len = self->iov_max_len;
-            (void)memmove(dst, src, len);
-            self->iov.iov_len = len;
+        self->iov_max_len = iop->iop_buf.buf_len;
+        self->iov.iov_base = iop->iop_buf.buf_data;
+        self->iov_flags = iop->iop_flags;
+
+        if (((max_len = self->iov_max_len) > 0) &&
+            ((dst = self->iov.iov_base) != NULL)) {
+
+            if (((src = iop->iop_data.buf_data) != NULL) &&
+                ((len = iop->iop_data.buf_len) <= max_len)) {
+                (void)memmove(dst, src, len);
+                self->iov.iov_len = len;
+            }
         }
     }
-    self->iov_flags = iop->iop_flags;
 }
 
 static void *
@@ -377,7 +387,7 @@ luab_StructIOVec(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    iop.iop_buf_len = luab_checkinteger(L, 1,
+    iop.iop_buf.buf_len = luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX
 #else
