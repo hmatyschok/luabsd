@@ -100,6 +100,43 @@ IOVec_clear(lua_State *L)
 }
 
 static int
+IOVec_clone(lua_State *L)
+{
+    luab_iovec_t *self;
+    luab_iovec_param_t iop;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+        if (((iop.iop_data.buf_data = self->iov.iov_base) != NULL) &&
+            ((iop.iop_data.buf_len = self->iov.iov_len) > 0) &&
+            ((iop.iop_buf.buf_len = self->iov_max_len) > 0) &&
+            (self->iov_flags & IOV_BUFF)) {
+
+            if ((*iovec_type.ctor)(L, &iop) != NULL)
+                return 1;
+            
+            status = -1;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        status = -1;
+    }
+    return luab_pusherr(L, status);
+}
+
+static int
 IOVec_copy_in(lua_State *L)
 {
     luab_iovec_t *self;
@@ -296,6 +333,7 @@ IOVec_tostring(lua_State *L)
 
 static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("clear",    IOVec_clear),
+    LUABSD_FUNC("clone",    IOVec_clone),
     LUABSD_FUNC("copy_in",  IOVec_copy_in),
     LUABSD_FUNC("copy_out",  IOVec_copy_out),
     LUABSD_FUNC("len",  IOVec_len),
