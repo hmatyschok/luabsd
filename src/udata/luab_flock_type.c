@@ -374,7 +374,7 @@ flock_init(void *ud, void *arg)
 {
     luab_flock_t *self;
 
-    if ((self = (luab_flock_t *)ud) != NULL)
+    if (((self = (luab_flock_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->flock, arg, sizeof(self->flock));
 }
 

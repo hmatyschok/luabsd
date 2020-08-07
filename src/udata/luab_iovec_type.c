@@ -122,7 +122,7 @@ IOVec_clone(lua_State *L)
 
             if ((*iovec_type.ctor)(L, &iop) != NULL)
                 return 1;
-            
+
             status = -1;
         } else {
             errno = ENXIO;

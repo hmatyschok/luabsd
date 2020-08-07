@@ -278,7 +278,7 @@ timespec_init(void *ud, void *arg)
 {
     luab_timespec_t *self;
 
-    if ((self = (luab_timespec_t *)ud) != NULL)
+    if (((self = (luab_timespec_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->timespec, arg, sizeof(self->timespec));
 }
 

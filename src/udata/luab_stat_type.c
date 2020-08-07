@@ -928,7 +928,7 @@ stat_init(void *ud, void *arg)
 {
     luab_stat_t *self;
 
-    if ((self = (luab_stat_t *)ud) != NULL)
+    if (((self = (luab_stat_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->stat, arg, sizeof(self->stat));
 }
 

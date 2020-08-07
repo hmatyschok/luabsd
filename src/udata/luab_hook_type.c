@@ -245,7 +245,7 @@ hook_init(void *ud, void *arg)
 {
     luab_hook_t *self;
 
-    if ((self = (luab_hook_t *)ud) != NULL)
+    if (((self = (luab_hook_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->hook, arg, sizeof(self->hook));
 }
 

@@ -278,7 +278,7 @@ timezone_init(void *ud, void *arg)
 {
     luab_timezone_t *self;
 
-    if ((self = (luab_timezone_t *)ud) != NULL)
+    if (((self = (luab_timezone_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->timezone, arg, sizeof(self->timezone));
 }
 

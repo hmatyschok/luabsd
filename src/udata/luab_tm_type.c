@@ -751,7 +751,7 @@ tm_init(void *ud, void *arg)
 {
     luab_tm_t *self;
 
-    if ((self = (luab_tm_t *)ud) != NULL)
+    if (((self = (luab_tm_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->tm, arg, sizeof(self->tm));
 }
 

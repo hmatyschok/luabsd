@@ -278,7 +278,7 @@ bintime_init(void *ud, void *arg)
 {
     luab_bintime_t *self;
 
-    if ((self = (luab_bintime_t *)ud) != NULL)
+    if (((self = (luab_bintime_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->bintime, arg, sizeof(self->bintime));
 }
 

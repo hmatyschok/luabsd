@@ -284,7 +284,7 @@ itimerval_init(void *ud, void *arg)
 {
     luab_itimerval_t *self;
 
-    if ((self = (luab_itimerval_t *)ud) != NULL)
+    if (((self = (luab_itimerval_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->itimerval, arg, sizeof(self->itimerval));
 }
 

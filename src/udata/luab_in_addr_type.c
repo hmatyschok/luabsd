@@ -226,7 +226,7 @@ in_addr_init(void *ud, void *arg)
 {
     luab_in_addr_t *self;
 
-    if ((self = (luab_in_addr_t *)ud) != NULL)
+    if (((self = (luab_in_addr_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->in_addr, arg, sizeof(self->in_addr));
 }
 

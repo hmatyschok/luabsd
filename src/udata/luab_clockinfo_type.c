@@ -393,7 +393,7 @@ clockinfo_init(void *ud, void *arg)
 {
     luab_clockinfo_t *self;
 
-    if ((self = (luab_clockinfo_t *)ud) != NULL)
+    if (((self = (luab_clockinfo_t *)ud) != NULL) && (arg != NULL))
         (void)memmove(&self->clockinfo, arg, sizeof(self->clockinfo));
 }
 
