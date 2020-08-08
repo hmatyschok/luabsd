@@ -101,7 +101,7 @@ In6Addr_set_s6_addr(lua_State *L)
 
         lua_pop(L, 1);
     }
-    return 0;
+    return (0);
 }
 
 /***
@@ -130,7 +130,7 @@ In6Addr_get_s6_addr(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -170,7 +170,7 @@ In6Addr_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -211,7 +211,7 @@ In6Addr_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -225,7 +225,7 @@ In6Addr_gc(lua_State *L)
 
     (void)memset_s(self, in6_addr_type.sz, 0, in6_addr_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -238,7 +238,7 @@ In6Addr_tostring(lua_State *L)
     self = luab_to_in6_addr(L, 1);
     lua_pushfstring(L, "in6_addr (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t in6_addr_methods[] = {
@@ -254,7 +254,7 @@ static luab_table_t in6_addr_methods[] = {
 static void *
 in6_addr_create(lua_State *L, void *arg)
 {
-    return luab_new_in6_addr(L, arg);
+    return (luab_new_in6_addr(L, arg));
 }
 
 static void
@@ -314,5 +314,5 @@ luab_StructIn6Addr(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

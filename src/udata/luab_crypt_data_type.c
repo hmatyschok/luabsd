@@ -83,7 +83,7 @@ CryptData_set_initialized(lua_State *L)
 
     cd->initialized = initialized;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -109,7 +109,7 @@ CryptData_get_initialized(lua_State *L)
     cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
     initialized = cd->initialized;
 
-    return luab_pusherr(L, initialized);
+    return (luab_pusherr(L, initialized));
 }
 
 /***
@@ -137,7 +137,7 @@ CryptData_set_buf(lua_State *L)
 
     (void)memmove(cd->__buf, buf, len);
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -175,7 +175,7 @@ CryptData_get_buf(lua_State *L)
     luaL_addsize(&b, len);
     luaL_pushresult(&b);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -203,7 +203,7 @@ CryptData_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -244,7 +244,7 @@ CryptData_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 
@@ -259,7 +259,7 @@ CryptData_gc(lua_State *L)
 
     (void)memset_s(self, crypt_data_type.sz, 0, crypt_data_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -273,7 +273,7 @@ CryptData_tostring(lua_State *L)
 
     lua_pushfstring(L, "crypt_data (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t crypt_data_methods[] = {
@@ -291,7 +291,7 @@ static luab_table_t crypt_data_methods[] = {
 static void *
 crypt_data_create(lua_State *L, void *arg)
 {
-    return luab_new_crypt_data(L, arg);
+    return (luab_new_crypt_data(L, arg));
 }
 
 static void
@@ -349,5 +349,5 @@ luab_StructCryptData(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

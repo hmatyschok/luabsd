@@ -90,7 +90,7 @@ TM_set_tm_sec(lua_State *L)
 
     tm->tm_sec = tm_sec;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -116,7 +116,7 @@ TM_get_tm_sec(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_sec = tm->tm_sec;
 
-    return luab_pusherr(L, tm_sec);
+    return (luab_pusherr(L, tm_sec));
 }
 
 /***
@@ -141,7 +141,7 @@ TM_set_tm_min(lua_State *L)
 
     tm->tm_min = tm_min;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -167,7 +167,7 @@ TM_get_tm_min(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_min = tm->tm_min;
 
-    return luab_pusherr(L, tm_min);
+    return (luab_pusherr(L, tm_min));
 }
 
 /***
@@ -192,7 +192,7 @@ TM_set_tm_hour(lua_State *L)
 
     tm->tm_hour = tm_hour;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -218,7 +218,7 @@ TM_get_tm_hour(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_hour = tm->tm_hour;
 
-    return luab_pusherr(L, tm_hour);
+    return (luab_pusherr(L, tm_hour));
 }
 
 /***
@@ -243,7 +243,7 @@ TM_set_tm_mday(lua_State *L)
 
     tm->tm_mday = tm_mday;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -269,7 +269,7 @@ TM_get_tm_mday(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mday = tm->tm_mday;
 
-    return luab_pusherr(L, tm_mday);
+    return (luab_pusherr(L, tm_mday));
 }
 
 /***
@@ -294,7 +294,7 @@ TM_set_tm_mon(lua_State *L)
 
     tm->tm_mon = tm_mon;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -320,7 +320,7 @@ TM_get_tm_mon(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_mon = tm->tm_mon;
 
-    return luab_pusherr(L, tm_mon);
+    return (luab_pusherr(L, tm_mon));
 }
 
 /***
@@ -345,7 +345,7 @@ TM_set_tm_year(lua_State *L)
 
     tm->tm_year = tm_year;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -371,7 +371,7 @@ TM_get_tm_year(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_year = tm->tm_year;
 
-    return luab_pusherr(L, tm_year);
+    return (luab_pusherr(L, tm_year));
 }
 
 /***
@@ -396,7 +396,7 @@ TM_set_tm_wday(lua_State *L)
 
     tm->tm_wday = tm_wday;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -422,7 +422,7 @@ TM_get_tm_wday(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_wday = tm->tm_wday;
 
-    return luab_pusherr(L, tm_wday);
+    return (luab_pusherr(L, tm_wday));
 }
 
 /***
@@ -447,7 +447,7 @@ TM_set_tm_yday(lua_State *L)
 
     tm->tm_yday = tm_yday;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -473,7 +473,7 @@ TM_get_tm_yday(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_yday = tm->tm_yday;
 
-    return luab_pusherr(L, tm_yday);
+    return (luab_pusherr(L, tm_yday));
 }
 
 /***
@@ -498,7 +498,7 @@ TM_set_tm_isdst(lua_State *L)
 
     tm->tm_isdst = tm_isdst;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -524,7 +524,7 @@ TM_get_tm_isdst(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_isdst = tm->tm_isdst;
 
-    return luab_pusherr(L, tm_isdst);
+    return (luab_pusherr(L, tm_isdst));
 }
 
 /***
@@ -549,7 +549,7 @@ TM_set_tm_gmtoff(lua_State *L)
 
     tm->tm_gmtoff = tm_gmtoff;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -575,7 +575,7 @@ TM_get_tm_gmtoff(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_gmtoff = tm->tm_gmtoff;
 
-    return luab_pusherr(L, tm_gmtoff);
+    return (luab_pusherr(L, tm_gmtoff));
 }
 
 /***
@@ -601,7 +601,7 @@ TM_get_tm_zone(lua_State *L)
     tm = (struct tm *)(*tm_type.get)(L, 1);
     tm_zone = tm->tm_zone;
 
-    return luab_pushstring(L, tm_zone);
+    return (luab_pushstring(L, tm_zone));
 }
 
 /***
@@ -640,7 +640,7 @@ TM_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -681,7 +681,7 @@ TM_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -695,7 +695,7 @@ TM_gc(lua_State *L)
 
     (void)memset_s(self, tm_type.sz, 0, tm_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -708,7 +708,7 @@ TM_tostring(lua_State *L)
     self = luab_to_tm(L, 1);
     lua_pushfstring(L, "tm (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t tm_methods[] = {
@@ -743,7 +743,7 @@ static luab_table_t tm_methods[] = {
 static void *
 tm_create(lua_State *L, void *arg)
 {
-    return luab_new_tm(L, arg);
+    return (luab_new_tm(L, arg));
 }
 
 static void
@@ -760,7 +760,7 @@ tm_udata(lua_State *L, int narg)
 {
     luab_tm_t *self = luab_to_tm(L, narg);
 
-    return &self->tm;
+    return (&self->tm);
 }
 
 luab_module_t tm_type = {
@@ -803,5 +803,5 @@ luab_StructTM(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

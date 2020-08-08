@@ -64,7 +64,7 @@ luab_chflags(lua_State *L)
 
     status = chflags(path, flags);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -85,7 +85,7 @@ luab_chflagsat(lua_State *L)
 
     status = chflagsat(fd, path, flags, atflag);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -103,7 +103,7 @@ luab_chmod(lua_State *L)
 
     status = chmod(path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #if __BSD_VISIBLE
@@ -121,7 +121,7 @@ luab_fchflags(lua_State *L)
 
     status = fchflags(fd, flags);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -140,7 +140,7 @@ luab_fchmod(lua_State *L)
 
     status = fchmod(fd, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -163,7 +163,7 @@ luab_fchmodat(lua_State *L)
 
     status = fchmodat(fd, path, mode, flag);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -187,7 +187,7 @@ luab_futimens(lua_State *L)
     if (times != NULL)
         luab_pushtimesvector(L, 2, 2, times);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -215,7 +215,7 @@ luab_utimensat(lua_State *L)
     if (times != NULL)
         luab_pushtimesvector(L, 2, 2, times);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #endif /* __POSIX_VISIBLE >= 200809 */
@@ -234,7 +234,7 @@ luab_fstat(lua_State *L)
 
     status = fstat(fd, sb);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #if __BSD_VISIBLE
@@ -252,7 +252,7 @@ luab_lchflags(lua_State *L)
 
     status = lchflags(path, flags);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -269,7 +269,7 @@ luab_lchmod(lua_State *L)
 
     status = lchmod(path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -287,7 +287,7 @@ luab_mkdir(lua_State *L)
 
     status = mkdir(path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -304,7 +304,7 @@ luab_mkfifo(lua_State *L)
 
     status = mkfifo(path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #if !defined(_MKNOD_DECLARED) && __XSI_VISIBLE
@@ -324,7 +324,7 @@ luab_mknod(lua_State *L)
 
     status = mknod(path, mode, dev);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #define _MKNOD_DECLARED
 #endif
@@ -363,7 +363,7 @@ luab_mkdirat(lua_State *L)
 
     status = mkdirat(fd, path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -382,7 +382,7 @@ luab_mkfifoat(lua_State *L)
 
     status = mkfifoat(fd, path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -403,7 +403,7 @@ luab_mknodat(lua_State *L)
 
     status = mknodat(fd, path, mode, dev);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
 

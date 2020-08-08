@@ -66,7 +66,7 @@ luab_uuidgen(lua_State *L)
     lua_pushlstring(L, buf, strlen(buf));
     free(buf);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t luab_uuid_vec[] = { /* uuid.h */

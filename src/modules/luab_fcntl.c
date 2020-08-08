@@ -94,7 +94,7 @@ luab_open(lua_State *L)
 
     fd = open(path, flags, mode);
 
-    return luab_pusherr(L, fd);
+    return (luab_pusherr(L, fd));
 }
 
 /***
@@ -130,7 +130,7 @@ luab_creat(lua_State *L)
 
     fd = creat(path, mode);
 
-    return luab_pusherr(L, fd);
+    return (luab_pusherr(L, fd));
 }
 
 /***
@@ -179,7 +179,7 @@ luab_fcntl(lua_State *L)
     else
         status = fcntl(fd, cmd, arg);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #if __BSD_VISIBLE
@@ -214,7 +214,7 @@ luab_flock(lua_State *L)
 
     status = flock(fd, operation);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -240,7 +240,7 @@ luab_openat(lua_State *L)
 
     fd = openat(dirfd, path, flags, mode);
 
-    return luab_pusherr(L, fd);
+    return (luab_pusherr(L, fd));
 }
 #endif
 
@@ -266,7 +266,7 @@ luab_posix_fadvise(lua_State *L)
     else
         status = 0;
 
-    return luab_pusherr(L, errno);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -288,7 +288,7 @@ luab_posix_fallocate(lua_State *L)
     else
         status = 0;
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 

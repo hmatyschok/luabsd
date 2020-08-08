@@ -85,7 +85,7 @@ ClockInfo_set_hz(lua_State *L)
 
     ci->hz = hz;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -111,7 +111,7 @@ ClockInfo_get_hz(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     hz = ci->hz;
 
-    return luab_pusherr(L, hz);
+    return (luab_pusherr(L, hz));
 }
 
 /***
@@ -136,7 +136,7 @@ ClockInfo_set_tick(lua_State *L)
 
     ci->tick = tick;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -162,7 +162,7 @@ ClockInfo_get_tick(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     tick = ci->tick;
 
-    return luab_pusherr(L, tick);
+    return (luab_pusherr(L, tick));
 }
 
 /***
@@ -187,7 +187,7 @@ ClockInfo_set_stathz(lua_State *L)
 
     ci->stathz = stathz;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -213,7 +213,7 @@ ClockInfo_get_stathz(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     stathz = ci->stathz;
 
-    return luab_pusherr(L, stathz);
+    return (luab_pusherr(L, stathz));
 }
 
 /***
@@ -238,7 +238,7 @@ ClockInfo_set_profhz(lua_State *L)
 
     ci->profhz = profhz;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -264,7 +264,7 @@ ClockInfo_get_profhz(lua_State *L)
     ci = (struct clockinfo *)(*clockinfo_type.get)(L, 1);
     profhz = ci->profhz;
 
-    return luab_pusherr(L, profhz);
+    return (luab_pusherr(L, profhz));
 }
 
 /***
@@ -294,7 +294,7 @@ ClockInfo_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -335,7 +335,7 @@ ClockInfo_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 
@@ -350,7 +350,7 @@ ClockInfo_gc(lua_State *L)
 
     (void)memset_s(self, clockinfo_type.sz, 0, clockinfo_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -363,7 +363,7 @@ ClockInfo_tostring(lua_State *L)
     self = luab_to_clockinfo(L, 1);
     lua_pushfstring(L, "clockinfo (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t clockinfo_methods[] = {
@@ -385,7 +385,7 @@ static luab_table_t clockinfo_methods[] = {
 static void *
 clockinfo_create(lua_State *L, void *arg)
 {
-    return luab_new_clockinfo(L, arg);
+    return (luab_new_clockinfo(L, arg));
 }
 
 static void
@@ -445,5 +445,5 @@ luab_StructClockInfo(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

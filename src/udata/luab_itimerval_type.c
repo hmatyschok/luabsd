@@ -85,7 +85,7 @@ ItimerVal_set_it_interval(lua_State *L)
 
     (void)memmove(&it->it_interval, tv, sizeof(*tv));
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -112,7 +112,7 @@ ItimerVal_get_it_interval(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /* current value */
@@ -138,7 +138,7 @@ ItimerVal_set_it_value(lua_State *L)
 
     (void)memmove(&it->it_value, tv, sizeof(*tv));
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -165,7 +165,7 @@ ItimerVal_get_it_value(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -193,7 +193,7 @@ ItimerVal_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -231,7 +231,7 @@ ItimerVal_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -245,7 +245,7 @@ ItimerVal_gc(lua_State *L)
 
     (void)memset_s(self, itimerval_type.sz, 0, itimerval_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -258,7 +258,7 @@ ItimerVal_tostring(lua_State *L)
     self = luab_to_itimerval(L, 1);
     lua_pushfstring(L, "itimerval (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t itimerval_methods[] = {
@@ -276,7 +276,7 @@ static luab_table_t itimerval_methods[] = {
 static void *
 itimerval_create(lua_State *L, void *arg)
 {
-    return luab_new_itimerval(L, arg);
+    return (luab_new_itimerval(L, arg));
 }
 
 static void
@@ -333,5 +333,5 @@ luab_StructItimerVal(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

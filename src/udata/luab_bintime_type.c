@@ -82,7 +82,7 @@ BinTime_set_sec(lua_State *L)
 
     bt->sec = sec;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -108,7 +108,7 @@ BinTime_get_sec(lua_State *L)
     bt = (struct bintime *)(*bintime_type.get)(L, 1);
     sec = bt->sec;
 
-    return luab_pusherr(L, sec);
+    return (luab_pusherr(L, sec));
 }
 
 /***
@@ -133,7 +133,7 @@ BinTime_set_frac(lua_State *L)
 
     bt->frac = frac;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -159,7 +159,7 @@ BinTime_get_frac(lua_State *L)
     bt = (struct bintime *)(*bintime_type.get)(L, 1);
     frac = bt->frac;
 
-    return luab_pusherr(L, frac);
+    return (luab_pusherr(L, frac));
 }
 
 /***
@@ -187,7 +187,7 @@ BinTime_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -225,7 +225,7 @@ BinTime_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -239,7 +239,7 @@ BinTime_gc(lua_State *L)
 
     (void)memset_s(self, bintime_type.sz, 0, bintime_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -252,7 +252,7 @@ BinTime_tostring(lua_State *L)
     self = luab_to_bintime(L, 1);
     lua_pushfstring(L, "bintime (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t bintime_methods[] = {
@@ -270,7 +270,7 @@ static luab_table_t bintime_methods[] = {
 static void *
 bintime_create(lua_State *L, void *arg)
 {
-    return luab_new_bintime(L, arg);
+    return (luab_new_bintime(L, arg));
 }
 
 static void
@@ -327,5 +327,5 @@ luab_StructBinTime(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

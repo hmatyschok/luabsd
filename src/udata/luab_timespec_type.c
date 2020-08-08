@@ -82,7 +82,7 @@ TimeSpec_set_tv_sec(lua_State *L)
 
     tv->tv_sec = tv_sec;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -108,7 +108,7 @@ TimeSpec_get_tv_sec(lua_State *L)
     tv = (struct timespec *)(*timespec_type.get)(L, 1);
     tv_sec = tv->tv_sec;
 
-    return luab_pusherr(L, tv_sec);
+    return (luab_pusherr(L, tv_sec));
 }
 
 /***
@@ -133,7 +133,7 @@ TimeSpec_set_tv_nsec(lua_State *L)
 
     tv->tv_nsec = tv_nsec;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -159,7 +159,7 @@ TimeSpec_get_tv_nsec(lua_State *L)
     tv = (struct timespec *)(*timespec_type.get)(L, 1);
     tv_nsec = tv->tv_nsec;
 
-    return luab_pusherr(L, tv_nsec);
+    return (luab_pusherr(L, tv_nsec));
 }
 
 /***
@@ -187,7 +187,7 @@ TimeSpec_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -225,7 +225,7 @@ TimeSpec_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -239,7 +239,7 @@ TimeSpec_gc(lua_State *L)
 
     (void)memset_s(self, timespec_type.sz, 0, timespec_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -252,7 +252,7 @@ TimeSpec_tostring(lua_State *L)
     self = luab_to_timespec(L, 1);
     lua_pushfstring(L, "timespec (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t timespec_methods[] = {
@@ -270,7 +270,7 @@ static luab_table_t timespec_methods[] = {
 static void *
 timespec_create(lua_State *L, void *arg)
 {
-    return luab_new_timespec(L, arg);
+    return (luab_new_timespec(L, arg));
 }
 
 static void
@@ -327,5 +327,5 @@ luab_StructTimeSpec(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

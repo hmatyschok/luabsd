@@ -82,7 +82,7 @@ TimeZone_set_tz_minuteswest(lua_State *L)
 
     tz->tz_minuteswest = tz_minuteswest;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -108,7 +108,7 @@ TimeZone_get_tz_minuteswest(lua_State *L)
     tz = (struct timezone *)(*timezone_type.get)(L, 1);
     tz_minuteswest = tz->tz_minuteswest;
 
-    return luab_pusherr(L, tz_minuteswest);
+    return (luab_pusherr(L, tz_minuteswest));
 }
 
 /***
@@ -133,7 +133,7 @@ TimeZone_set_tz_dsttime(lua_State *L)
 
     tz->tz_dsttime = tz_dsttime;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -159,7 +159,7 @@ TimeZone_get_tz_dsttime(lua_State *L)
     tz = (struct timezone *)(*timezone_type.get)(L, 1);
     tz_dsttime = tz->tz_dsttime;
 
-    return luab_pusherr(L, tz_dsttime);
+    return (luab_pusherr(L, tz_dsttime));
 }
 
 /***
@@ -187,7 +187,7 @@ TimeZone_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -225,7 +225,7 @@ TimeZone_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -239,7 +239,7 @@ TimeZone_gc(lua_State *L)
 
     (void)memset_s(self, timezone_type.sz, 0, timezone_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -252,7 +252,7 @@ TimeZone_tostring(lua_State *L)
     self = luab_to_timezone(L, 1);
     lua_pushfstring(L, "timezone (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t timezone_methods[] = {
@@ -270,7 +270,7 @@ static luab_table_t timezone_methods[] = {
 static void *
 timezone_create(lua_State *L, void *arg)
 {
-    return luab_new_timezone(L, arg);
+    return (luab_new_timezone(L, arg));
 }
 
 static void
@@ -327,5 +327,5 @@ luab_StructTimeZone(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

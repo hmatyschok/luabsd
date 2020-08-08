@@ -157,7 +157,7 @@ luab_setitimer(lua_State *L)
     if ((status = setitimer(which, value, ovalue)) != 0)
         pthread_cancel(tid);
 out:
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #if __XSI_VISIBLE
@@ -175,7 +175,7 @@ luab_getitimer(lua_State *L)
 
     status = getitimer(which, value);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 

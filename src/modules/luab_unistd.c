@@ -117,7 +117,7 @@ luab_checkgidset(lua_State *L, int narg, size_t len)
         }
         lua_pop(L, 1);
     }
-    return vec;
+    return (vec);
 }
 
 /* Interface against (subset of) functions of exec(3) family. */
@@ -156,7 +156,7 @@ luab_execv(lua_State *L)
 
     free(argv);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -194,7 +194,7 @@ luab_execve(lua_State *L)
 
     free(argv);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -232,7 +232,7 @@ luab_execvp(lua_State *L)
 
     free(argv);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #if __POSIX_VISIBLE >= 200809
@@ -272,7 +272,7 @@ luab_fexecve(lua_State *L)
 
     free(argv);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -316,7 +316,7 @@ luab_alarm(lua_State *L)
     }
     status = alarm(seconds);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -346,7 +346,7 @@ luab_access(lua_State *L)
     mode = luab_checkinteger(L, 2, INT_MAX);
     status = access(path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -372,7 +372,7 @@ luab_chdir(lua_State *L)
     path = luab_checklstring(L, 1, MAXPATHLEN);
     status = chdir(path);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -407,7 +407,7 @@ luab_chown(lua_State *L)
 
     status = chown(path, owner, group);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -434,7 +434,7 @@ luab_close(lua_State *L)
     fd = luab_checkinteger(L, 1, INT_MAX);
     status = close(fd);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -462,7 +462,7 @@ luab_closefrom(lua_State *L)
     lowfd = luab_checkinteger(L, 1, INT_MAX);
     closefrom(lowfd);
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -490,7 +490,7 @@ luab_dup(lua_State *L)
     oldd = luab_checkinteger(L, 1, INT_MAX);
     fd = dup(oldd);
 
-    return luab_pusherr(L, fd);
+    return (luab_pusherr(L, fd));
 }
 
 /***
@@ -521,7 +521,7 @@ luab_dup2(lua_State *L)
 
     fd = dup2(oldd, newd);
 
-    return luab_pusherr(L, fd);
+    return (luab_pusherr(L, fd));
 }
 
 /***
@@ -544,7 +544,7 @@ luab_fork(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
     pid = fork();
 
-    return luab_pusherr(L, pid);
+    return (luab_pusherr(L, pid));
 }
 
 /***
@@ -578,7 +578,7 @@ luab_fpathconf(lua_State *L)
 
     status = fpathconf(fd, name);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -633,7 +633,7 @@ luab_getcwd(lua_State *L)
         errno = EBUSY;
         status = NULL;
     }
-    return luab_pushstring(L, status);
+    return (luab_pushstring(L, status));
 }
 
 /***
@@ -656,7 +656,7 @@ luab_getegid(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
     egid = getegid();
 
-    return luab_pusherr(L, egid);
+    return (luab_pusherr(L, egid));
 }
 
 /***
@@ -679,7 +679,7 @@ luab_geteuid(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
     euid = geteuid();
 
-    return luab_pusherr(L, euid);;
+    return (luab_pusherr(L, euid));
 }
 
 /***
@@ -702,7 +702,7 @@ luab_getgid(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
     gid = getgid();
 
-    return luab_pusherr(L, gid);;
+    return (luab_pusherr(L, gid));
 }
 
 /***
@@ -761,7 +761,7 @@ luab_getgroups(lua_State *L)
             lua_pop(L, 0);
         }
     }
-    return luab_pusherr(L, ngroups);
+    return (luab_pusherr(L, ngroups));
 }
 
 /***
@@ -788,7 +788,7 @@ luab_getlogin(lua_State *L)
     else
         lua_pushlstring(L, name, strlen(name));
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -811,7 +811,7 @@ luab_getpgrp(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
     pgrp = getpgrp();
 
-    return luab_pusherr(L, pgrp);
+    return (luab_pusherr(L, pgrp));
 }
 
 /***
@@ -834,7 +834,7 @@ luab_getpid(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
     pid = getpid();
 
-    return luab_pusherr(L, pid);
+    return (luab_pusherr(L, pid));
 }
 
 /***
@@ -857,7 +857,7 @@ luab_getppid(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
     ppid = getppid();
 
-    return luab_pusherr(L, ppid);
+    return (luab_pusherr(L, ppid));
 }
 
 /***
@@ -881,7 +881,7 @@ luab_getuid(lua_State *L)
 
     uid = getuid();
 
-    return luab_pusherr(L, uid);
+    return (luab_pusherr(L, uid));
 }
 
 /***
@@ -909,7 +909,7 @@ luab_isatty(lua_State *L)
     fd = luab_checkinteger(L, 1, INT_MAX);
     status = isatty(fd);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -940,7 +940,7 @@ luab_link(lua_State *L)
 
     status = link(name1, name2);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #ifndef _LSEEK_DECLARED
@@ -981,7 +981,7 @@ luab_lseek(lua_State *L)
 
     location = lseek(fildes, offset, whence);
 
-    return luab_pusherr(L, location);
+    return (luab_pusherr(L, location));
 }
 #endif
 
@@ -1018,7 +1018,7 @@ luab_pathconf(lua_State *L)
 
     status = pathconf(path, name);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1042,7 +1042,7 @@ luab_pause(lua_State *L)
 
     status = pause();
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1074,7 +1074,7 @@ luab_pipe(lua_State *L)
 
     free(fildes);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1132,7 +1132,7 @@ luab_read(lua_State *L)
         errno = EBUSY;
         count = -1;
     }
-    return luab_pusherr(L, count);
+    return (luab_pusherr(L, count));
 }
 
 /***
@@ -1159,7 +1159,7 @@ luab_setgid(lua_State *L)
     gid = luab_checkinteger(L, 1, INT_MAX);
     status = setgid(gid);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1190,7 +1190,7 @@ luab_setpgid(lua_State *L)
 
     status = setpgid(pid, pgrp);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1221,7 +1221,7 @@ luab_setpgrp(lua_State *L)
 
     status = setpgrp(pid, pgrp);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1245,7 +1245,7 @@ luab_setsid(lua_State *L)
 
     sid = setsid();
 
-    return luab_pusherr(L, sid);
+    return (luab_pusherr(L, sid));
 }
 
 /***
@@ -1271,7 +1271,7 @@ luab_setuid(lua_State *L)
     uid = luab_checkinteger(L, 1, INT_MAX);
     status = setuid(uid);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1304,7 +1304,7 @@ luab_sysconf(lua_State *L)
 
     value = sysconf(name);
 
-    return luab_pusherr(L, value);
+    return (luab_pusherr(L, value));
 }
 
 /***
@@ -1334,7 +1334,7 @@ luab_tcgetpgrp(lua_State *L)
 
     pgrp = tcgetpgrp(fd);
 
-    return luab_pusherr(L, pgrp);
+    return (luab_pusherr(L, pgrp));
 }
 
 /***
@@ -1369,7 +1369,7 @@ luab_tcsetpgrp(lua_State *L)
 
     status = tcsetpgrp(fd, pgrp_id);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1403,7 +1403,7 @@ luab_ttyname(lua_State *L)
 
     free(buf);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -1463,7 +1463,7 @@ luab_ttyname_r(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1491,7 +1491,7 @@ luab_unlink(lua_State *L)
     path = luab_checklstring(L, 1, MAXPATHLEN);
     status = unlink(path);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1547,7 +1547,7 @@ luab_write(lua_State *L)
         errno = EBUSY;
         count = -1;
     }
-    return luab_pusherr(L, count);
+    return (luab_pusherr(L, count));
 }
 
 /***
@@ -1575,7 +1575,7 @@ luab_rmdir(lua_State *L)
     path = luab_checklstring(L, 1, MAXPATHLEN);
     status = rmdir(path);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /* ISO/IEC 9945-1: 1996 */
@@ -1605,7 +1605,7 @@ luab_fsync(lua_State *L)
 
     status = fsync(fd);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1633,7 +1633,7 @@ luab_fdatasync(lua_State *L)
 
     status = fdatasync(fd);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #ifndef _FTRUNCATE_DECLARED
@@ -1670,7 +1670,7 @@ luab_ftruncate(lua_State *L)
 
     status = ftruncate(fd, length);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 #endif
@@ -1709,7 +1709,7 @@ luab_fchown(lua_State *L)
 
     status = fchown(fd, owner, group);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1767,7 +1767,7 @@ luab_readlink(lua_State *L)
         errno = EBUSY;
         count = -1;
     }
-    return luab_pusherr(L, count);
+    return (luab_pusherr(L, count));
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
 
@@ -1793,12 +1793,12 @@ luab_gethostname(lua_State *L)  /* XXX */
     (void)luab_checkmaxargs(L, 0);
 
     if ((status = gethostname(buf, sizeof(buf))) != 0)
-        return luab_pusherr(L, status);
+        return (luab_pusherr(L, status));
 
     lua_pushinteger(L, status);
     lua_pushlstring(L, buf, strlen(buf));
 
-    return 2;
+    return (2);
 }
 
 /***
@@ -1826,7 +1826,7 @@ luab_setegid(lua_State *L)
     egid = luab_checkinteger(L, 1, INT_MAX);
     status = setegid(egid);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1854,7 +1854,7 @@ luab_seteuid(lua_State *L)
     euid = luab_checkinteger(L, 1, INT_MAX);
     status = seteuid(euid);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200112 */
 
@@ -1884,7 +1884,7 @@ luab_getsid(lua_State *L)
     pid = luab_checkinteger(L, 1, INT_MAX);
     sid = getsid(pid);
 
-    return luab_pusherr(L, sid);
+    return (luab_pusherr(L, sid));
 }
 
 /***
@@ -1911,7 +1911,7 @@ luab_fchdir(lua_State *L)
     fd = luab_checkinteger(L, 1, INT_MAX);
     status = fchdir(fd);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -1938,7 +1938,7 @@ luab_getpgid(lua_State *L)
     pid = luab_checkinteger(L, 1, INT_MAX);
     pgrp = getpgid(pid);
 
-    return luab_pusherr(L, pgrp);
+    return (luab_pusherr(L, pgrp));
 }
 
 /***
@@ -1973,7 +1973,7 @@ luab_lchown(lua_State *L)
 
     status = lchown(path, owner, group);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2034,7 +2034,7 @@ luab_pread(lua_State *L)
         errno = EBUSY;
         count = -1;
     }
-    return luab_pusherr(L, count);
+    return (luab_pusherr(L, count));
 }
 
 /***
@@ -2093,7 +2093,7 @@ luab_pwrite(lua_State *L)
         errno = EBUSY;
         count = -1;
     }
-    return luab_pusherr(L, count);
+    return (luab_pusherr(L, count));
 }
 
 #ifndef _TRUNCATE_DECLARED
@@ -2130,7 +2130,7 @@ luab_truncate(lua_State *L)
 
     status = truncate(path, length);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
@@ -2183,7 +2183,7 @@ luab_getlogin_r(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -2206,7 +2206,7 @@ luab_faccessat(lua_State *L)
 
     status = faccessat(fd, path, mode, flag);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2252,7 +2252,7 @@ luab_fchownat(lua_State *L)
 
     status = fchownat(fd, path, owner, group, flag);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2301,7 +2301,7 @@ luab_linkat(lua_State *L)
 
     status = linkat(fd1, name1, fd2, name2, flag);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2362,7 +2362,7 @@ luab_readlinkat(lua_State *L)
         errno = EBUSY;
         count = -1;
     }
-    return luab_pusherr(L, count);
+    return (luab_pusherr(L, count));
 }
 
 /***
@@ -2402,7 +2402,7 @@ luab_symlinkat(lua_State *L)
 
     status = symlinkat(name1, fd, name2);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2442,7 +2442,7 @@ luab_unlinkat(lua_State *L)
 
     status = unlinkat(fd, path, flag);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
 
@@ -2476,7 +2476,7 @@ luab_symlink(lua_State *L)
 
     status = symlink(name1, name2);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402 */
 
@@ -2519,7 +2519,7 @@ luab_crypt(lua_State *L)
 
     value = crypt(key, salt);
 
-    return luab_pushstring(L, value);
+    return (luab_pushstring(L, value));
 }
 
 /***
@@ -2543,7 +2543,7 @@ luab_gethostid(lua_State *L)
 
     hostid = gethostid();
 
-    return luab_pusherr(L, hostid);
+    return (luab_pusherr(L, hostid));
 }
 
 /***
@@ -2582,7 +2582,7 @@ luab_lockf(lua_State *L)
 
     status = lockf(fd, function, size);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2610,7 +2610,7 @@ luab_nice(lua_State *L)
 
     status = nice(incr);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2641,7 +2641,7 @@ luab_setregid(lua_State *L)
 
     status = setregid(rgid, egid);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2672,7 +2672,7 @@ luab_setreuid(lua_State *L)
 
     status = setreuid(ruid, euid);
 
-    return luab_pusherr(L , status);
+    return (luab_pusherr(L , status));
 }
 
 #ifndef _SWAB_DECLARED
@@ -2735,7 +2735,7 @@ luab_swab(lua_State *l)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif /* _SWAB_DECLARED */
 
@@ -2753,7 +2753,7 @@ luab_sync(lua_State *L)
 
     sync();
 
-    return 0;
+    return (0);
 }
 #endif /* __XSI_VISIBLE */
 
@@ -2769,7 +2769,7 @@ luab_chroot(lua_State *L)
     dirname = luab_checklstring(L, 1, MAXPATHLEN);
     status = chroot(dirname);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -2781,7 +2781,7 @@ luab_getdtablesize(lua_State *L)
 
     size = getdtablesize();
 
-    return luab_pusherr(L, size);
+    return (luab_pusherr(L, size));
 }
 
 static int
@@ -2793,7 +2793,7 @@ luab_getpagesize(lua_State *L)
 
     size = getpagesize();
 
-    return luab_pusherr(L, size);
+    return (luab_pusherr(L, size));
 }
 
 static int
@@ -2807,7 +2807,7 @@ luab_getpass(lua_State *L)  /* XXX */
     prompt = luab_checklstring(L, 1, _PASSWORD_LEN);
     value = getpass(prompt);
 
-    return luab_pushstring(L, value);
+    return (luab_pushstring(L, value));
 }
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE */
 
@@ -2855,7 +2855,7 @@ luab_getwd(lua_State *L)
         errno = EBUSY;
         status = NULL;
     }
-    return luab_pushstring(L, status);
+    return (luab_pushstring(L, status));
 }
 
 /***
@@ -2884,7 +2884,7 @@ luab_usleep(lua_State *L)
 
     status = usleep(microseconds);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2908,7 +2908,7 @@ luab_vfork(lua_State *L)
 
     pid = vfork();
 
-    return luab_pusherr(L, pid);
+    return (luab_pusherr(L, pid));
 }
 #endif /* (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE */
 
@@ -2938,7 +2938,7 @@ luab_acct(lua_State *L)
     file = luab_checklstring(L, 1, MAXPATHLEN);
     status = acct(file);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2965,7 +2965,7 @@ luab_check_utility_compat(lua_State *L)
     utility = luab_checklstring(L, 1, MAXPATHLEN);
     status = check_utility_compat(utility);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2988,7 +2988,7 @@ luab_crypt_get_format(lua_State *L)
 
     format = crypt_get_format();
 
-    return luab_pushstring(L, format);
+    return (luab_pushstring(L, format));
 }
 
 /***
@@ -3031,7 +3031,7 @@ luab_crypt_r(lua_State *L)
 
     value = crypt_r(key, salt, data);
 
-    return luab_pushstring(L, value);
+    return (luab_pushstring(L, value));
 }
 
 /***
@@ -3058,7 +3058,7 @@ luab_crypt_set_format(lua_State *L)
     string = luab_checklstring(L, 1, MAXPATHLEN);
     status = crypt_set_format(string);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3099,7 +3099,7 @@ luab_dup3(lua_State *L)
 
     status = dup3(oldd, newd, flags);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3129,7 +3129,7 @@ luab_eaccess(lua_State *L)
     mode = luab_checkinteger(L, 2, INT_MAX);
     status = eaccess(path, mode);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3167,7 +3167,7 @@ luab_exect(lua_State *L)
 
     free(argv);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3208,7 +3208,7 @@ luab_execvP(lua_State *L)
 
     free(argv);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3236,7 +3236,7 @@ luab_feature_present(lua_State *L)
 
     status = feature_present(feature);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3324,7 +3324,7 @@ luab_getdomainname(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3380,7 +3380,7 @@ luab_getentropy(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3439,7 +3439,7 @@ luab_getgrouplist(lua_State *L)
         errno = EINVAL;
         status = -1;
     }
-    return luab_pusherr(L, ngroups);
+    return (luab_pusherr(L, ngroups));
 }
 
 /***
@@ -3495,7 +3495,7 @@ luab_getloginclass(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3536,7 +3536,7 @@ luab_pipe2(lua_State *L)
 
     free(fildes);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3572,7 +3572,7 @@ luab_lpathconf(lua_State *L)
 
     status = lpathconf(path, name);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3620,7 +3620,7 @@ luab_setdomainname(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3654,7 +3654,7 @@ luab_setgroups(lua_State *L)
 
     free(gidset);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3681,7 +3681,7 @@ luab_sethostname(lua_State *L)
     name = luab_checklstring(L, 1, MAXHOSTNAMELEN);
     status = sethostname(name, strlen(name));
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3708,7 +3708,7 @@ luab_setlogin(lua_State *L)
     name = luab_checklstring(L, 1, MAXLOGNAME);
     status = setlogin(name);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3752,7 +3752,7 @@ luab_setloginclass(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif /* __BSD_VISIBLE */
 

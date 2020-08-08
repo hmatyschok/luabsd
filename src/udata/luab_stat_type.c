@@ -104,7 +104,7 @@ Stat_set_st_dev(lua_State *L)
 
     st->st_dev = st_dev;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -118,7 +118,7 @@ Stat_get_st_dev(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_dev = st->st_dev;
 
-    return luab_pusherr(L, st_dev);
+    return (luab_pusherr(L, st_dev));
 }
 
 /* inode's number */
@@ -135,7 +135,7 @@ Stat_set_st_ino(lua_State *L)
 
     st->st_ino = st_ino;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -149,7 +149,7 @@ Stat_get_st_ino(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_ino = st->st_ino;
 
-    return luab_pusherr(L, st_ino);
+    return (luab_pusherr(L, st_ino));
 }
 
 /* number of hard links */
@@ -166,7 +166,7 @@ Stat_set_st_nlink(lua_State *L)
 
     st->st_nlink = st_nlink;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -180,7 +180,7 @@ Stat_get_st_nlink(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_nlink = st->st_nlink;
 
-    return luab_pusherr(L, st_nlink);
+    return (luab_pusherr(L, st_nlink));
 }
 
 /* inode protection mode */
@@ -197,7 +197,7 @@ Stat_set_st_mode(lua_State *L)
 
     st->st_mode = (mode_t)st_mode;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -211,7 +211,7 @@ Stat_get_st_mode(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_mode = st->st_mode;
 
-    return luab_pusherr(L, st_mode);
+    return (luab_pusherr(L, st_mode));
 }
 
 /* user ID of the file's owner */
@@ -228,7 +228,7 @@ Stat_set_st_uid(lua_State *L)
 
     st->st_uid = st_uid;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -242,7 +242,7 @@ Stat_get_st_uid(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_uid = st->st_uid;
 
-    return luab_pusherr(L, st_uid);
+    return (luab_pusherr(L, st_uid));
 }
 
 /* user ID of the file's owner */
@@ -259,7 +259,7 @@ Stat_set_st_gid(lua_State *L)
 
     st->st_gid = st_gid;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -273,7 +273,7 @@ Stat_get_st_gid(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_gid = st->st_gid;
 
-    return luab_pusherr(L, st_gid);
+    return (luab_pusherr(L, st_gid));
 }
 
 /* device type */
@@ -290,7 +290,7 @@ Stat_set_st_rdev(lua_State *L)
 
     st->st_rdev = st_rdev;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -304,7 +304,7 @@ Stat_get_st_rdev(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_rdev = st->st_rdev;
 
-    return luab_pusherr(L, st_rdev);
+    return (luab_pusherr(L, st_rdev));
 }
 
 /* time of last access */
@@ -322,7 +322,7 @@ Stat_set_st_atim_ext(lua_State *L)
 
     st->st_atim_ext = st_atim_ext;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -336,7 +336,7 @@ Stat_get_st_atim_ext(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_atim_ext = st->st_atim_ext;
 
-    return luab_pusherr(L, st_atim_ext);
+    return (luab_pusherr(L, st_atim_ext));
 }
 #endif
 
@@ -353,7 +353,7 @@ Stat_set_st_atim(lua_State *L)
 
     (void)memmove(&st->st_atim, tv, sizeof(*tv));
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -371,7 +371,7 @@ Stat_get_st_atim(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /* time of last data modification */
@@ -389,7 +389,7 @@ Stat_set_st_mtim_ext(lua_State *L)
 
     st->st_mtim_ext = st_mtim_ext;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -403,7 +403,7 @@ Stat_get_st_mtim_ext(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_mtim_ext = st->st_mtim_ext;
 
-    return luab_pusherr(L, st_mtim_ext);
+    return (luab_pusherr(L, st_mtim_ext));
 }
 #endif
 
@@ -420,7 +420,7 @@ Stat_set_st_mtim(lua_State *L)
 
     (void)memmove(&st->st_mtim, tv, sizeof(*tv));
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -438,7 +438,7 @@ Stat_get_st_mtim(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /* time of last file status change */
@@ -456,7 +456,7 @@ Stat_set_st_ctim_ext(lua_State *L)
 
     st->st_ctim_ext = st_ctim_ext;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -470,7 +470,7 @@ Stat_get_st_ctim_ext(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_ctim_ext = st->st_ctim_ext;
 
-    return luab_pusherr(L, st_ctim_ext);
+    return (luab_pusherr(L, st_ctim_ext));
 }
 #endif
 
@@ -487,7 +487,7 @@ Stat_set_st_ctim(lua_State *L)
 
     (void)memmove(&st->st_ctim, tv, sizeof(*tv));
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -507,7 +507,7 @@ Stat_get_st_ctim(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /* time of file creation */
@@ -525,7 +525,7 @@ Stat_set_st_btim_ext(lua_State *L)
 
     st->st_btim_ext = st_btim_ext;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -539,7 +539,7 @@ Stat_get_st_btim_ext(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_btim_ext = st->st_btim_ext;
 
-    return luab_pusherr(L, st_btim_ext);
+    return (luab_pusherr(L, st_btim_ext));
 }
 #endif
 
@@ -556,7 +556,7 @@ Stat_set_st_birthtim(lua_State *L)
 
     (void)memmove(&st->st_birthtim, tv, sizeof(*tv));
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -574,7 +574,7 @@ Stat_get_st_birthtim(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /* file size, in bytes */
@@ -591,7 +591,7 @@ Stat_set_st_size(lua_State *L)
 
     st->st_size = st_size;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -605,7 +605,7 @@ Stat_get_st_size(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_size = st->st_size;
 
-    return luab_pusherr(L, st_size);
+    return (luab_pusherr(L, st_size));
 }
 
 /* blocks allocated for file */
@@ -622,7 +622,7 @@ Stat_set_st_blocks(lua_State *L)
 
     st->st_blocks = st_blocks;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -636,7 +636,7 @@ Stat_get_st_blocks(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_blocks = st->st_blocks;
 
-    return luab_pusherr(L, st_blocks);
+    return (luab_pusherr(L, st_blocks));
 }
 
 /* optimal blocksize for I/O */
@@ -653,7 +653,7 @@ Stat_set_st_blksize(lua_State *L)
 
     st->st_blksize = st_blksize;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -667,7 +667,7 @@ Stat_get_st_blksize(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_blksize = st->st_blksize;
 
-    return luab_pusherr(L, st_blksize);
+    return (luab_pusherr(L, st_blksize));
 }
 
 /* user defined flags for file */
@@ -684,7 +684,7 @@ Stat_set_st_flags(lua_State *L)
 
     st->st_flags = st_flags;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -698,7 +698,7 @@ Stat_get_st_flags(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_flags = st->st_flags;
 
-    return luab_pusherr(L, st_flags);
+    return (luab_pusherr(L, st_flags));
 }
 
 /* file generation number */
@@ -715,7 +715,7 @@ Stat_set_st_gen(lua_State *L)
 
     st->st_gen = st_gen;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -729,7 +729,7 @@ Stat_get_st_gen(lua_State *L)
     st = (struct stat *)(*stat_type.get)(L, 1);
     st_gen = st->st_gen;
 
-    return luab_pusherr(L, st_gen);
+    return (luab_pusherr(L, st_gen));
 }
 
 /*
@@ -782,7 +782,7 @@ Stat_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -823,7 +823,7 @@ Stat_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -837,7 +837,7 @@ Stat_gc(lua_State *L)
 
     (void)memset_s(self, stat_type.sz, 0, stat_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -850,7 +850,7 @@ Stat_tostring(lua_State *L)
     self = luab_to_stat(L, 1);
     lua_pushfstring(L, "stat (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t stat_methods[] = {
@@ -920,7 +920,7 @@ static luab_table_t stat_methods[] = {
 static void *
 stat_create(lua_State *L, void *arg)
 {
-    return luab_new_stat(L, arg);
+    return (luab_new_stat(L, arg));
 }
 
 static void
@@ -966,5 +966,5 @@ luab_StructStat(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

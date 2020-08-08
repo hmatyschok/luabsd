@@ -93,7 +93,7 @@ sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
     sa->sa_len = len;
     sa->sa_family = af;
 
-    return 1;
+    return (1);
 }
 
 static void
@@ -184,7 +184,7 @@ SockAddr_sa_len(lua_State *L)
     sa = (struct sockaddr *)(*sockaddr_type.get)(L, 1);
     sa_len = sa->sa_len;
 
-    return luab_pusherr(L, sa_len);
+    return (luab_pusherr(L, sa_len));
 }
 
 /***
@@ -210,7 +210,7 @@ SockAddr_sa_family(lua_State *L)
     sa = (struct sockaddr *)(*sockaddr_type.get)(L, 1);
     sa_family = sa->sa_family;
 
-    return luab_pusherr(L, sa_family);
+    return (luab_pusherr(L, sa_family));
 }
 
 /***
@@ -245,7 +245,7 @@ SockAddr_get(lua_State *L)
         sockaddr_to_table(L, sa);
         break;
     }
-    return 1;
+    return (1);
 }
 
 /*
@@ -296,7 +296,7 @@ SockAddr_set_sdl_index(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -327,7 +327,7 @@ SockAddr_get_sdl_index(lua_State *L)
         errno = EPERM;
         sdl_index = -1;
     }
-    return luab_pusherr(L, sdl_index);
+    return (luab_pusherr(L, sdl_index));
 }
 
 /***
@@ -363,7 +363,7 @@ SockAddr_set_sdl_type(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -394,7 +394,7 @@ SockAddr_get_sdl_type(lua_State *L)
         errno = EPERM;
         sdl_type = -1;
     }
-    return luab_pusherr(L, sdl_type);
+    return (luab_pusherr(L, sdl_type));
 }
 
 /***
@@ -430,7 +430,7 @@ SockAddr_set_sdl_nlen(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -461,7 +461,7 @@ SockAddr_get_sdl_nlen(lua_State *L)
         errno = EPERM;
         sdl_nlen = -1;
     }
-    return luab_pusherr(L, sdl_nlen);
+    return (luab_pusherr(L, sdl_nlen));
 }
 
 /***
@@ -497,7 +497,7 @@ SockAddr_set_sdl_alen(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -528,7 +528,7 @@ SockAddr_get_sdl_alen(lua_State *L)
         errno = EPERM;
         sdl_alen = -1;
     }
-    return luab_pusherr(L, sdl_alen);
+    return (luab_pusherr(L, sdl_alen));
 }
 
 /***
@@ -559,7 +559,7 @@ SockAddr_sdl_slen(lua_State *L)
         errno = EPERM;
         sdl_slen = -1;
     }
-    return luab_pusherr(L, sdl_slen);
+    return (luab_pusherr(L, sdl_slen));
 }
 
 /*
@@ -609,7 +609,7 @@ SockAddr_set_sin_port(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -640,7 +640,7 @@ SockAddr_get_sin_port(lua_State *L)
         errno = EPERM;
         sin_port = -1;
     }
-    return luab_pusherr(L, sin_port);
+    return (luab_pusherr(L, sin_port));
 }
 
 /***
@@ -678,7 +678,7 @@ SockAddr_set_sin_addr(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -716,7 +716,7 @@ SockAddr_get_sin_addr(lua_State *L)
         errno = EPERM;
         status = luab_pushnil(L);
     }
-    return status;
+    return (status);
 }
 
 static int
@@ -730,7 +730,7 @@ SockAddr_gc(lua_State *L)
 
     (void)memset_s(self, sockaddr_type.sz, 0, sockaddr_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -743,7 +743,7 @@ SockAddr_tostring(lua_State *L)
     self = luab_to_sockaddr(L, 1);
     lua_pushfstring(L, "sockaddr (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t sockaddr_methods[] = {
@@ -771,7 +771,7 @@ static luab_table_t sockaddr_methods[] = {
 static void *
 sockaddr_create(lua_State *L, void *arg)
 {
-    return luab_new_sockaddr(L, arg);
+    return (luab_new_sockaddr(L, arg));
 }
 
 static void
@@ -829,7 +829,7 @@ luab_StructSockAddr(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -858,7 +858,7 @@ luab_StructSockAddrDL(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -902,5 +902,5 @@ luab_StructSockAddrIn(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

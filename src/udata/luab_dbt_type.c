@@ -89,7 +89,7 @@ DBT_set_data(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -131,7 +131,7 @@ DBT_get_data(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -146,7 +146,7 @@ DBT_get_size(lua_State *L)
 
     len = dbt->size;
 
-    return luab_pusherr(L, len);
+    return (luab_pusherr(L, len));
 }
 
 static int
@@ -165,7 +165,7 @@ DBT_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 static int
@@ -181,7 +181,7 @@ DBT_gc(lua_State *L)
         self->dbt.data = NULL;
         self->dbt.size = 0;
     }
-    return 0;
+    return (0);
 }
 
 static int
@@ -194,7 +194,7 @@ DBT_tostring(lua_State *L)
     self = luab_to_dbt(L, 1);
     lua_pushfstring(L, "DBT (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t dbt_methods[] = {
@@ -210,7 +210,7 @@ static luab_table_t dbt_methods[] = {
 static void *
 dbt_create(lua_State *L, void *arg)
 {
-    return luab_new_dbt(L, arg);
+    return (luab_new_dbt(L, arg));
 }
 
 static void
@@ -241,7 +241,7 @@ dbt_udata(lua_State *L, int narg)
 {
     luab_dbt_t *self = luab_to_dbt(L, narg);
 
-    return &self->dbt;
+    return (&self->dbt);
 }
 
 luab_module_t dbt_type = {
@@ -274,5 +274,5 @@ luab_StructDBT(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

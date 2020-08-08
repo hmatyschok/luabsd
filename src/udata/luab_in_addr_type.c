@@ -81,7 +81,7 @@ InAddr_set_s_addr(lua_State *L)
 
     ia->s_addr = s_addr;
 
-    return 0;
+    return (0);
 }
 
 /***
@@ -107,7 +107,7 @@ InAddr_get_s_addr(lua_State *L)
     ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
     s_addr = ia->s_addr;
 
-    return luab_pusherr(L, s_addr);
+    return (luab_pusherr(L, s_addr));
 }
 
 /***
@@ -134,7 +134,7 @@ InAddr_get(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    return 1;
+    return (1);
 }
 
 /***
@@ -175,7 +175,7 @@ InAddr_dump(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -189,7 +189,7 @@ InAddr_gc(lua_State *L)
 
     (void)memset_s(self, in_addr_type.sz, 0, in_addr_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -202,7 +202,7 @@ InAddr_tostring(lua_State *L)
     self = luab_to_in_addr(L, 1);
     lua_pushfstring(L, "in_addr (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t in_addr_methods[] = {
@@ -218,7 +218,7 @@ static luab_table_t in_addr_methods[] = {
 static void *
 in_addr_create(lua_State *L, void *arg)
 {
-    return luab_new_in_addr(L, arg);
+    return (luab_new_in_addr(L, arg));
 }
 
 static void
@@ -278,5 +278,5 @@ luab_StructInAddr(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

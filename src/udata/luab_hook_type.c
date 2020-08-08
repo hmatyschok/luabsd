@@ -82,7 +82,7 @@ Hook_set_char(lua_State *L)
 
     hook->un_int = value;
 
-    return luab_pusherr(L, 0);
+    return (luab_pusherr(L, 0));
 }
 
 static int
@@ -97,7 +97,7 @@ Hook_get_char(lua_State *L)
 
     value = (hook->un_int & UCHAR_MAX);
 
-    return luab_pusherr(L, value);
+    return (luab_pusherr(L, value));
 }
 
 static int
@@ -113,7 +113,7 @@ Hook_set_integer(lua_State *L)
 
     hook->un_int = value;
 
-    return luab_pusherr(L, 0);
+    return (luab_pusherr(L, 0));
 }
 
 static int
@@ -128,7 +128,7 @@ Hook_get_integer(lua_State *L)
 
     value = (hook->un_int & UINT_MAX);
 
-    return luab_pusherr(L, value);
+    return (luab_pusherr(L, value));
 }
 
 static int
@@ -144,7 +144,7 @@ Hook_set_long(lua_State *L)
 
     hook->un_int = value;
 
-    return luab_pusherr(L, 0);
+    return (luab_pusherr(L, 0));
 }
 
 static int
@@ -159,7 +159,7 @@ Hook_get_long(lua_State *L)
 
     value = (hook->un_int & ULONG_MAX);
 
-    return luab_pusherr(L, value);
+    return (luab_pusherr(L, value));
 }
 
 static int
@@ -175,7 +175,7 @@ Hook_set_short(lua_State *L)
 
     hook->un_int = value;
 
-    return luab_pusherr(L, 0);
+    return (luab_pusherr(L, 0));
 }
 
 static int
@@ -190,7 +190,7 @@ Hook_get_short(lua_State *L)
 
     value = (hook->un_int & USHRT_MAX);
 
-    return luab_pusherr(L, value);
+    return (luab_pusherr(L, value));
 }
 
 static int
@@ -204,7 +204,7 @@ Hook_gc(lua_State *L)
 
     (void)memset_s(self, hook_type.sz, 0, hook_type.sz);
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -217,7 +217,7 @@ Hook_tostring(lua_State *L)
     self = luab_to_hook(L, 1);
     lua_pushfstring(L, "Hook (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t hook_methods[] = {
@@ -237,7 +237,7 @@ static luab_table_t hook_methods[] = {
 static void *
 hook_create(lua_State *L, void *arg)
 {
-    return luab_new_hook(L, arg);
+    return (luab_new_hook(L, arg));
 }
 
 static void
@@ -254,7 +254,7 @@ hook_udata(lua_State *L, int narg)
 {
     luab_hook_t *self = luab_to_hook(L, narg);
 
-    return &self->hook;
+    return (&self->hook);
 }
 
 luab_module_t hook_type = {
@@ -283,5 +283,5 @@ luab_CreateHook(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

@@ -77,7 +77,7 @@ db_fname(lua_State *L, int narg)
     if (lua_type(L, narg) == LUA_TNIL)
         return NULL;
 
-    return luaL_checklstring(L, narg, NULL);
+    return (luaL_checklstring(L, narg, NULL));
 }
 
 static int
@@ -91,7 +91,7 @@ db_isclosed(luab_db_t *self)
     } else
         status = 0;
 
-    return status;
+    return (status);
 }
 
 static int
@@ -111,7 +111,7 @@ DB_close(lua_State *L)
         errno = EBADF;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -133,7 +133,7 @@ DB_del(lua_State *L)
         errno = EBADF;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -156,7 +156,7 @@ DB_get(lua_State *L)
         errno = EBADF;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -179,7 +179,7 @@ DB_put(lua_State *L)
         errno = EBADF;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -202,7 +202,7 @@ DB_seq(lua_State *L)
         errno = EBADF;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -222,7 +222,7 @@ DB_sync(lua_State *L)
         errno = EBADF;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -240,7 +240,7 @@ DB_fd(lua_State *L)
         errno = EBADF;
         fd = -1;
     }
-    return luab_pusherr(L, fd);
+    return (luab_pusherr(L, fd));
 }
 
 static int
@@ -256,7 +256,7 @@ DB_gc(lua_State *L)
         (void)(*self->db->close)(self->db);
         self->db = NULL;
     }
-    return 0;
+    return (0);
 }
 
 static int
@@ -273,7 +273,7 @@ DB_tostring(lua_State *L)
     else
         lua_pushliteral(L, "db (closed)");
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t db_methods[] = {
@@ -293,7 +293,7 @@ static luab_table_t db_methods[] = {
 static void *
 db_create(lua_State *L, void *arg)
 {
-    return luab_new_db(L, arg);
+    return (luab_new_db(L, arg));
 }
 
 static void
@@ -310,7 +310,7 @@ db_udata(lua_State *L, int narg)
 {
     luab_db_t *self = luab_to_db(L, narg);
 
-    return self->db;
+    return (self->db);
 }
 
 luab_module_t db_type = {
@@ -347,5 +347,5 @@ luab_dbopen(lua_State *L)
     } else
         status = luab_pushnil(L);
 
-    return status;
+    return (status);
 }

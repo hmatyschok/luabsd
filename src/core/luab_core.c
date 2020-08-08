@@ -106,7 +106,7 @@ luab_checkmaxargs(lua_State *L, int nmax)
     if ((narg = lua_gettop(L)) > nmax)
         luaL_error(L, "#%d args, but #%d expected", narg, nmax);
 
-    return narg;
+    return (narg);
 }
 
 int
@@ -130,7 +130,7 @@ luab_pusherr(lua_State *L, lua_Integer res)
     } else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 int
@@ -150,7 +150,7 @@ luab_pushnil(lua_State *L)
     } else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 int
@@ -175,7 +175,7 @@ luab_pushstring(lua_State *L, const char *s)
     } else
         status = luab_pushnil(L);
 
-    return status;
+    return (status);
 }
 
 /*
@@ -193,7 +193,7 @@ luab_checklstring(lua_State *L, int narg, size_t n)
     if (len > n)    /* XXX err_msg */
         luaL_argerror(L, narg, "Value too large to be stored in data type");
 
-    return buf;
+    return (buf);
 }
 
 /*
@@ -218,7 +218,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
     } else
         errno = EINVAL;
 
-    return ud;
+    return (ud);
 }
 
 /* Translate an instance of LUA_TTABLE into an argv. */
@@ -292,7 +292,7 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
         }
         lua_pop(L, 1);
     }
-    return vec;
+    return (vec);
 }
 
 /* Translate a LUA_TTABLE over LUA_TUSERDATA into an array of timespec{} items. */
@@ -318,7 +318,7 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
         }
         lua_pop(L, 1);
     }
-    return vec;
+    return (vec);
 }
 
 void
@@ -437,5 +437,5 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &dbt_type);
     luab_newmetatable(L, &db_type);
 #endif
-    return 1;
+    return (1);
 }

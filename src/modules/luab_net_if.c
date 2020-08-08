@@ -73,7 +73,7 @@ luab_if_nametoindex(lua_State *L)
     ifname = luab_checklstring(L, 1, IFNAMSIZ);
     index = if_nametoindex(ifname);
 
-    return luab_pusherr(L, index);
+    return (luab_pusherr(L, index));
 }
 
 /*

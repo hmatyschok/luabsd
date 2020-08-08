@@ -96,7 +96,7 @@ IOVec_clear(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -121,7 +121,7 @@ IOVec_clone(lua_State *L)
             (self->iov_flags & IOV_BUFF)) {
 
             if ((*iovec_type.ctor)(L, &iop) != NULL)
-                return 1;
+                return (1);
 
             status = -1;
         } else {
@@ -133,7 +133,7 @@ IOVec_clone(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -170,7 +170,7 @@ IOVec_copy_in(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -211,7 +211,7 @@ IOVec_copy_out(lua_State *L)
         errno = EBUSY;
         status = luab_pushnil(L);
     }
-    return status;
+    return (status);
 }
 
 static int
@@ -225,7 +225,7 @@ IOVec_len(lua_State *L)
     self = luab_to_iovec(L, 1);
     len = self->iov.iov_len;
 
-    return luab_pusherr(L, len);
+    return (luab_pusherr(L, len));
 }
 
 static int
@@ -239,7 +239,7 @@ IOVec_max_len(lua_State *L)
     self = luab_to_iovec(L, 1);
     len = self->iov_max_len;
 
-    return luab_pusherr(L, len);
+    return (luab_pusherr(L, len));
 }
 
 static int
@@ -286,7 +286,7 @@ IOVec_resize(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 static int
@@ -315,7 +315,7 @@ IOVec_gc(lua_State *L)
     self->iov_max_len = 0;
     self->iov_flags = 0;
 
-    return 0;
+    return (0);
 }
 
 static int
@@ -328,7 +328,7 @@ IOVec_tostring(lua_State *L)
     self = luab_to_iovec(L, 1);
     lua_pushfstring(L, "IOVec (%p)", self);
 
-    return 1;
+    return (1);
 }
 
 static luab_table_t iovec_methods[] = {
@@ -368,7 +368,7 @@ iovec_create(lua_State *L, void *arg)
     } else
         self = NULL;
 
-    return self;
+    return (self);
 }
 
 static void
@@ -438,5 +438,5 @@ luab_StructIOVec(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }

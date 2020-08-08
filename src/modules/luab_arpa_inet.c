@@ -77,7 +77,7 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
         luaL_argerror(L, narg, "Invalid argument");
         break;  /* not reached */
     }
-    return (*type->get)(L, narg);
+    return ((*type->get)(L, narg));
 }
 
 /***
@@ -112,7 +112,7 @@ luab_inet_addr(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -141,7 +141,7 @@ luab_inet_ntoa(lua_State *L)
 
     cp = inet_ntoa(*ia);
 
-    return luab_pushstring(L, cp);
+    return (luab_pushstring(L, cp));
 }
 
 /***
@@ -202,7 +202,7 @@ luab_inet_ntop(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -257,7 +257,7 @@ luab_inet_pton(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 #if __BSD_VISIBLE
@@ -290,7 +290,7 @@ luab_inet_aton(lua_State *L)
 
     status = inet_aton(cp, pin);
 
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -326,7 +326,7 @@ luab_inet_lnaof(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -366,7 +366,7 @@ luab_inet_makeaddr(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -428,7 +428,7 @@ luab_inet_neta(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -463,7 +463,7 @@ luab_inet_netof(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -498,7 +498,7 @@ luab_inet_network(lua_State *L)
     else
         status = 1;
 
-    return status;
+    return (status);
 }
 
 /***
@@ -569,7 +569,7 @@ luab_inet_net_ntop(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -632,7 +632,7 @@ luab_inet_net_pton(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -688,7 +688,7 @@ luab_inet_ntoa_r(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -759,7 +759,7 @@ luab_inet_cidr_ntop(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -820,7 +820,7 @@ luab_inet_cidr_pton(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return luab_pusherr(L, status);
+    return (luab_pusherr(L, status));
 }
 #endif /* __BSD_VISIBLE */
 
