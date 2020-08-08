@@ -37,10 +37,10 @@
 
 #include "luabsd.h"
 
+extern luab_module_t if_nameindex_type;
 extern luab_module_t sockaddr_type;
 
-extern int luab_StructSockAddrDL(lua_State *);
-extern int luab_StructSockAddrDL(lua_State *);
+extern int luab_StructIfNameIndex(lua_State *);
 
 #define LUABSD_NET_IF_LIB_ID    1596485465
 #define LUABSD_NET_IF_LIB_KEY    "if"
@@ -171,6 +171,7 @@ static luab_table_t luab_net_if_vec[] = {
     LUABSD_FUNC("if_nameindex", luab_if_nameindex),
 #endif    
     LUABSD_FUNC("if_nametoindex",   luab_if_nametoindex),
+    LUABSD_FUNC("StructIfNameIndex",    luab_StructIfNameIndex),
     LUABSD_FUNC(NULL, NULL)
 };
 

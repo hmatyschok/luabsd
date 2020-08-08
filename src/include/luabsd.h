@@ -155,6 +155,13 @@ luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
 }
 
 static __inline void
+luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
+{
+    if ((*m->ctor)(L, v) != NULL)
+        lua_rawseti(L, narg, k);
+}
+
+static __inline void
 luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
