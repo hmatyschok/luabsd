@@ -49,6 +49,59 @@ extern int luab_StructIfNameIndex(lua_State *);
 extern luab_module_t luab_net_if_lib;
 
 /***
+ * if_indextoname(3) - fetch name from interface by its corrosponding index.
+ *
+ * @function if_indextoname
+ *
+ * @param ifindex           Index, see ifntet(9).
+ * @param ifname            Empty buffer, LUA_TUSERDATA(luab_iovec_t), but
+ *                          set up with length by bsd.net.IFNAMSIZ.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage index [, err, msg ] = bsd.net.if_indextoname(ifindex)
+ */
+static int
+luab_if_indextoname(lua_State *L)
+{
+    u_int ifindex;
+    luab_iovec_t *buf;
+    caddr_t ifname;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    ifindex = luab_checkinteger(L, 1, INT_MAX);
+    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((ifname = buf->iov.iov_base) != NULL) &&
+            (buf->iov_max_len >= IFNAMSIZ) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if (if_indextoname(ifindex, ifname) != NULL) {
+                buf->iov.iov_len = strnlen(ifname, IFNAMSIZ);
+                status = 0;
+            } else
+                status = -1;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
  * if_nameindex(3) - build an array maps to set over if_nameindex{}.
  *
  * @function if_nameindex
@@ -208,10 +261,7 @@ static luab_table_t luab_net_if_vec[] = {
     LUABSD_INT("RSS_KEYLEN",    RSS_KEYLEN),
     LUABSD_INT("IFNET_PCP_NONE",    IFNET_PCP_NONE),
 #endif /* __BSD_VISIBLE */
-#if 0
-    LUABSD_FUNC("if_freenameindex", luab_if_freenameindex),
     LUABSD_FUNC("if_indextoname",   luab_if_indextoname),
-#endif
     LUABSD_FUNC("if_nameindex", luab_if_nameindex),
     LUABSD_FUNC("if_nametoindex",   luab_if_nametoindex),
     LUABSD_FUNC("StructIfNameIndex",    luab_StructIfNameIndex),
