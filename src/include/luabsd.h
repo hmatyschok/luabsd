@@ -28,19 +28,23 @@
 #define _LUABSD_H_
 
 #include <sys/types.h>
-#include <sys/uio.h>
+#include <sys/socket.h>
 
 #include <string.h>     /* XXX */
 
 __BEGIN_DECLS
 typedef union luab_type {
-    lua_Integer un_intx;
+    char        un_char;
+    short       un_short;
     int         un_int;
-    uint8_t     un_int8;
-    uint16_t    un_int16;
-    uint32_t    un_int32;
-    uint64_t    un_int64;
-    lua_Number  un_num;
+    long        un_long;
+    uint8_t     un_uint8;
+    uint16_t    un_uint16;
+    uint32_t    un_uint32;
+    uint64_t    un_uint64;
+    socklen_t   un_socklen;
+    lua_Integer un_intx;
+    lua_Number  un_numx;
     lua_CFunction   un_fn;
     const char  *un_cp;
 } luab_type_u;

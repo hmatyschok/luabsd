@@ -39,13 +39,19 @@ extern luab_module_t hook_type;
  * Interface against
  *
  *  typedef union luab_type {
- *      lua_Integer un_int;
- *      uint8_t     un_int8;
- *      uint16_t    un_int16;
- *      uint32_t    un_int32;
- *      uint64_t    un_int64;
- *      lua_Number  un_num;
+ *      char        un_char;
+ *      short       un_short;
+ *      int         un_int;
+ *      long        un_long;
+ *      uint8_t     un_uint8;
+ *      uint16_t    un_uint16;
+ *      uint32_t    un_uint32;
+ *      uint64_t    un_uint64;
+ *      socklen_t   un_socklen;
+ *      lua_Integer un_intx;
+ *      lua_Number  un_numx;
  *      lua_CFunction   un_fn;
+ *      const char  *un_cp;
  *  } luab_type_u;
  *
  * by
@@ -80,7 +86,7 @@ Hook_set_char(lua_State *L)
     hook = (luab_type_u *)(*hook_type.get)(L, 1);
     value = luab_checkinteger(L, 2, UCHAR_MAX);
 
-    hook->un_int = value;
+    hook->un_char = (char)value;
 
     return (luab_pusherr(L, 0));
 }
@@ -95,69 +101,7 @@ Hook_get_char(lua_State *L)
 
     hook = (luab_type_u *)(*hook_type.get)(L, 1);
 
-    value = (hook->un_int & UCHAR_MAX);
-
-    return (luab_pusherr(L, value));
-}
-
-static int
-Hook_set_integer(lua_State *L)
-{
-    luab_type_u *hook;
-    lua_Integer value;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    hook = (luab_type_u *)(*hook_type.get)(L, 1);
-    value = luab_checkinteger(L, 2, UINT_MAX);
-
-    hook->un_int = value;
-
-    return (luab_pusherr(L, 0));
-}
-
-static int
-Hook_get_integer(lua_State *L)
-{
-    luab_type_u *hook;
-    lua_Integer value;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    hook = (luab_type_u *)(*hook_type.get)(L, 1);
-
-    value = (hook->un_int & UINT_MAX);
-
-    return (luab_pusherr(L, value));
-}
-
-static int
-Hook_set_long(lua_State *L)
-{
-    luab_type_u *hook;
-    lua_Integer value;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    hook = (luab_type_u *)(*hook_type.get)(L, 1);
-    value = luab_checkinteger(L, 2, ULONG_MAX);
-
-    hook->un_int = value;
-
-    return (luab_pusherr(L, 0));
-}
-
-static int
-Hook_get_long(lua_State *L)
-{
-    luab_type_u *hook;
-    lua_Integer value;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    hook = (luab_type_u *)(*hook_type.get)(L, 1);
-
-    value = (hook->un_int & ULONG_MAX);
+    value = (hook->un_intx & UCHAR_MAX);
 
     return (luab_pusherr(L, value));
 }
@@ -173,7 +117,7 @@ Hook_set_short(lua_State *L)
     hook = (luab_type_u *)(*hook_type.get)(L, 1);
     value = luab_checkinteger(L, 2, USHRT_MAX);
 
-    hook->un_int = value;
+    hook->un_short = (short)value;
 
     return (luab_pusherr(L, 0));
 }
@@ -188,7 +132,101 @@ Hook_get_short(lua_State *L)
 
     hook = (luab_type_u *)(*hook_type.get)(L, 1);
 
-    value = (hook->un_int & USHRT_MAX);
+    value = (hook->un_intx & USHRT_MAX);
+
+    return (luab_pusherr(L, value));
+}
+
+
+static int
+Hook_set_int(lua_State *L)
+{
+    luab_type_u *hook;
+    lua_Integer value;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    hook = (luab_type_u *)(*hook_type.get)(L, 1);
+    value = luab_checkinteger(L, 2, UINT_MAX);
+
+    hook->un_int = (int)value;
+
+    return (luab_pusherr(L, 0));
+}
+
+static int
+Hook_get_int(lua_State *L)
+{
+    luab_type_u *hook;
+    lua_Integer value;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    hook = (luab_type_u *)(*hook_type.get)(L, 1);
+
+    value = (hook->un_intx & UINT_MAX);
+
+    return (luab_pusherr(L, value));
+}
+
+static int
+Hook_set_long(lua_State *L)
+{
+    luab_type_u *hook;
+    lua_Integer value;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    hook = (luab_type_u *)(*hook_type.get)(L, 1);
+    value = luab_checkinteger(L, 2, ULONG_MAX);
+
+    hook->un_long = (long)value;
+
+    return (luab_pusherr(L, 0));
+}
+
+static int
+Hook_get_long(lua_State *L)
+{
+    luab_type_u *hook;
+    lua_Integer value;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    hook = (luab_type_u *)(*hook_type.get)(L, 1);
+
+    value = (hook->un_intx & ULONG_MAX);
+
+    return (luab_pusherr(L, value));
+}
+
+static int
+Hook_set_socklen(lua_State *L)
+{
+    luab_type_u *hook;
+    lua_Integer value;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    hook = (luab_type_u *)(*hook_type.get)(L, 1);
+    value = luab_checkinteger(L, 2, INT_MAX);
+
+    hook->un_socklen = (socklen_t)value;
+
+    return (luab_pusherr(L, 0));
+}
+
+static int
+Hook_get_socklen(lua_State *L)
+{
+    luab_type_u *hook;
+    lua_Integer value;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    hook = (luab_type_u *)(*hook_type.get)(L, 1);
+
+    value = (hook->un_intx & INT_MAX);
 
     return (luab_pusherr(L, value));
 }
@@ -222,13 +260,15 @@ Hook_tostring(lua_State *L)
 
 static luab_table_t hook_methods[] = {
     LUABSD_FUNC("set_char", Hook_set_char),
-    LUABSD_FUNC("set_integer",  Hook_set_integer),
+    LUABSD_FUNC("set_int",  Hook_set_int),
     LUABSD_FUNC("set_long", Hook_set_long),
     LUABSD_FUNC("set_short",    Hook_set_short),
+    LUABSD_FUNC("set_socklen",  Hook_set_socklen),
     LUABSD_FUNC("get_char", Hook_get_char),
-    LUABSD_FUNC("get_integer",  Hook_get_integer),
+    LUABSD_FUNC("get_int",  Hook_get_int),
     LUABSD_FUNC("get_long", Hook_get_long),
     LUABSD_FUNC("get_short",    Hook_get_short),
+    LUABSD_FUNC("get_socklen",  Hook_get_socklen),
     LUABSD_FUNC("__gc", Hook_gc),
     LUABSD_FUNC("__tostring",   Hook_tostring),
     LUABSD_FUNC(NULL, NULL)

@@ -41,6 +41,8 @@ extern int luab_StructSockAddr(lua_State *);
 
 extern luab_module_t luab_sys_socket_lib;
 
+
+
 /***
  * socket(2) - create an endpoint for communication
  *
@@ -54,10 +56,10 @@ extern luab_module_t luab_sys_socket_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (fd [, nil, nil]) on success or
+ *          (s [, nil, nil]) on success or
  *          (0, (errno, strerror(errno)))
  *
- * @usage fd [, err, msg ] = bsd.sys.socket.socket(ifname)
+ * @usage s [, err, msg ] = bsd.sys.socket.socket(ifname)
  */
 static int
 luab_socket(lua_State *L)
@@ -65,7 +67,7 @@ luab_socket(lua_State *L)
     int domain;
     int type;
     int protocol;
-    int fd;
+    int s;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -73,9 +75,9 @@ luab_socket(lua_State *L)
     type = luab_checkinteger(L, 2, INT_MAX);
     protocol = luab_checkinteger(L, 3, INT_MAX);
 
-    fd = socket(domain, type, protocol);
+    s = socket(domain, type, protocol);
 
-    return luab_pusherr(L, fd);
+    return luab_pusherr(L, s);
 }
 
 /*
