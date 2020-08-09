@@ -41,6 +41,43 @@ extern int luab_StructSockAddr(lua_State *);
 
 extern luab_module_t luab_sys_socket_lib;
 
+/***
+ * socket(2) - create an endpoint for communication
+ *
+ * @function socket
+ *
+ * @param domain            Specifies communication domain(9), where Inter
+ *                          Process Communication (IPC) takes place.
+ * @param type              Specifies semantics of communication for IPC.
+ * @param protocol          Specifies used for IPC by socket(9) utilized
+ *                          particular Protocol.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (fd [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage fd [, err, msg ] = bsd.sys.socket.socket(ifname)
+ */
+static int
+luab_socket(lua_State *L)
+{
+    int domain;
+    int type;
+    int protocol;
+    int fd;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    domain = luab_checkinteger(L, 1, INT_MAX);
+    type = luab_checkinteger(L, 2, INT_MAX);
+    protocol = luab_checkinteger(L, 3, INT_MAX);
+
+    fd = socket(domain, type, protocol);
+
+    return luab_pusherr(L, fd);
+}
+
 /*
  * Interface against <sys/socket.h>.
  */
@@ -304,6 +341,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_INT("SF_USER_READAHEAD", SF_USER_READAHEAD),
     LUABSD_INT("SF_NOCACHE",    SF_NOCACHE),
 #endif
+    LUABSD_FUNC("socket",   luab_socket),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)
 };
