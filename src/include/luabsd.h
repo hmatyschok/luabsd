@@ -70,7 +70,6 @@ typedef struct luab_module {
     u_int32_t  cookie;        /*  date -u +'%s' */
     size_t  sz;
     const char  *name;
-    const char  *group;
     luab_table_t    *vec;
     luab_ctor_fn    ctor;
     luab_init_fn    init;

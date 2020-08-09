@@ -355,11 +355,11 @@ luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
  */
 
 static void
-luab_populate(lua_State *L, luab_table_t *vec)
+luab_populate(lua_State *L, luab_module_t *m)
 {
     luab_table_t *tok;
 
-    for (tok = vec; tok->key != NULL; tok++) {
+    for (tok = m->vec; tok->key != NULL; tok++) {
         (void)(*tok->init)(L, &tok->val);
         lua_setfield(L, -2, tok->key);
     }
@@ -367,21 +367,21 @@ luab_populate(lua_State *L, luab_table_t *vec)
 }
 
 static void
-luab_newtable(lua_State *L, luab_module_t *arg)
+luab_newtable(lua_State *L, luab_module_t *m)
 {
     lua_newtable(L);
-    luab_populate(L, arg->vec);
-    lua_setfield(L, -2, arg->name);
+    luab_populate(L, m);
+    lua_setfield(L, -2, m->name);
 }
 
 static void
-luab_newmetatable(lua_State *L, luab_module_t *arg)
+luab_newmetatable(lua_State *L, luab_module_t *m)
 {
-    luaL_newmetatable(L, arg->name);
+    luaL_newmetatable(L, m->name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
 
-    luab_populate(L, arg->vec);
+    luab_populate(L, m);
 
     lua_pop(L, 1);
 }
@@ -400,9 +400,9 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, &luab_arpa_inet_lib);
     lua_setfield(L, -2, "arpa");
 
-    lua_newtable(L);    /* XXX namespace.. */
-    luab_newtable(L, &luab_net_if_lib);
+    lua_newtable(L);
     luab_newtable(L, &luab_net_if_dl_lib);
+    luab_populate(L, &luab_net_if_lib);
     lua_setfield(L, -2, "net");
 
     lua_newtable(L);

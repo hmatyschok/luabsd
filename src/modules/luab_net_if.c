@@ -44,7 +44,7 @@ extern luab_module_t sockaddr_type;
 extern int luab_StructIfNameIndex(lua_State *);
 
 #define LUABSD_NET_IF_LIB_ID    1596485465
-#define LUABSD_NET_IF_LIB_KEY    "if"
+#define LUABSD_NET_IF_LIB_KEY    "net"
 
 extern luab_module_t luab_net_if_lib;
 
@@ -59,10 +59,10 @@ extern luab_module_t luab_net_if_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (-1 [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
  *
- * @usage index [, err, msg ] = bsd.net.if.if_nameindex(ifni)
+ * @usage index [, err, msg ] = bsd.net.if_nameindex(ifni)
  */
 static int
 luab_if_nameindex(lua_State *L)
@@ -103,7 +103,7 @@ luab_if_nameindex(lua_State *L)
  *          (index [, nil, nil]) on success or
  *          (0, (errno, strerror(errno)))
  *
- * @usage index [, err, msg ] = bsd.net["if"]if_nametoindex(ifname)
+ * @usage index [, err, msg ] = bsd.net.if_nametoindex(ifname)
  */
 static int
 luab_if_nametoindex(lua_State *L)
