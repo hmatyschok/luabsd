@@ -388,6 +388,8 @@ luab_newmetatable(lua_State *L, luab_module_t *arg)
 
 /*
  * Reflects and maps interface against API over /include.
+ *
+ * XXX Well, this will be refactored (partially), soon.
  */
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
@@ -398,7 +400,7 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, &luab_arpa_inet_lib);
     lua_setfield(L, -2, "arpa");
 
-    lua_newtable(L);
+    lua_newtable(L);    /* XXX namespace.. */
     luab_newtable(L, &luab_net_if_lib);
     luab_newtable(L, &luab_net_if_dl_lib);
     lua_setfield(L, -2, "net");
@@ -424,6 +426,7 @@ luaopen_bsd(lua_State *L)
 
     luab_newmetatable(L, &clockinfo_type);
     luab_newmetatable(L, &flock_type);
+    luab_newmetatable(L, &if_nameindex_type);
     luab_newmetatable(L, &in_addr_type);
     luab_newmetatable(L, &in6_addr_type);
     luab_newmetatable(L, &iovec_type);
