@@ -41,8 +41,6 @@ extern int luab_StructSockAddr(lua_State *);
 
 extern luab_module_t luab_sys_socket_lib;
 
-
-
 /***
  * socket(2) - create an endpoint for communication
  *

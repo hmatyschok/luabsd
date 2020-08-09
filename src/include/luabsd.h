@@ -267,15 +267,6 @@ luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 }
 
 static __inline void *
-luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (NULL);
-
-    return (luab_checkudata(L, narg, m));
-}
-
-static __inline void *
 luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     luab_iovec_t *buf;
@@ -290,6 +281,15 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
         return (buf->iov.iov_base);
     }
     return (luab_checkudata(L, narg, m));
+}
+
+static __inline void *
+luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (NULL);
+
+    return ((*m->get)(L, narg));
 }
 __END_DECLS
 
