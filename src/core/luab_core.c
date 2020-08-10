@@ -311,8 +311,8 @@ luab_checktimesvector(lua_State *L, int narg, size_t len)
     for (k = 0; lua_next(L, narg) != 0; k++) {
 
         if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isuserdata(L, -1) != 0)) {  /* XXX */
-            v = (struct timespec *)(*timespec_type.get)(L, -1);
+            (lua_isuserdata(L, -1) != 0)) {
+            v = luab_udata(L, -1, timespec_type, struct timespec *);
             (void)memmove(&vec[k], v, sizeof(struct timespec));
         } else {
             free(vec);
@@ -339,7 +339,7 @@ luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {
-            v = (struct timespec *)(*timespec_type.get)(L, -1);
+            v = luab_udata(L, -1, timespec_type, struct timespec *);
             (void)memmove(v, &vec[k], sizeof(struct timespec));
         } else {
             free(vec);
