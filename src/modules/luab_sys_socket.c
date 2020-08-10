@@ -121,6 +121,41 @@ luab_bind(lua_State *L)
 }
 
 /***
+ * connect(2) - initiate a connection on a socket(9)
+ *
+ * @function connect
+ *
+ * @param s                 By socket(2) instantiated socket(9).
+ * @param name              Protocol address of its peer.
+ * @param namelen           Self-explanatory.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.connect(s, name, namelen)
+ */
+static int
+luab_connect(lua_State *L)
+{
+    int s;
+    struct sockaddr *name;
+    socklen_t namelen;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    name = luab_udata(L, 2, sockaddr_type, struct sockaddr *);
+    namelen = (socklen_t)luab_checkinteger(L, 3, INT_MAX);
+
+    status = connect(s, name, namelen);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
  * socket(2) - create an endpoint for communication
  *
  * @function socket
@@ -469,6 +504,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
 #endif
     LUABSD_FUNC("accept",   luab_accept),
     LUABSD_FUNC("bind", luab_bind),
+    LUABSD_FUNC("connect",  luab_connect),
     LUABSD_FUNC("socket",   luab_socket),
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept4",   luab_accept4),
