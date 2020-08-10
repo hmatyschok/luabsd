@@ -880,7 +880,6 @@ luab_StructSockAddrIn(lua_State *L)
     int narg;
     struct sockaddr_in sin;
     struct sockaddr *sa;
-    in_port_t port;
     struct in_addr *addr;
     int status;
 
