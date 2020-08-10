@@ -262,7 +262,7 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
 #define luab_udata(L, narg, m, t) \
     ((t)(*(m).get)((L), (narg)))
 #define luab_udataisnil(L, narg, m, t) \
-    ((t)(luab_checkudataisnil((L), (narg), (m))))
+    ((t)(luab_checkudataisnil((L), (narg), &(m))))
 
 static __inline void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
