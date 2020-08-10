@@ -877,7 +877,6 @@ luab_StructSockAddrDL(lua_State *L)
 int
 luab_StructSockAddrIn(lua_State *L)
 {
-    int narg;
     struct sockaddr_in sin;
     struct sockaddr *sa;
     struct in_addr *addr;
@@ -886,7 +885,7 @@ luab_StructSockAddrIn(lua_State *L)
     sa = (struct sockaddr *)&sin;
     sockaddr_pci(sa, AF_INET, sizeof(sin));
 
-    switch ((narg = luab_checkmaxargs(L, 2))) {     /* FALLTHROUGH */
+    switch (luab_checkmaxargs(L, 2)) {     /* FALLTHROUGH */
     case 2:
         addr = luab_udata(L, 2, in_addr_type, struct in_addr *);
         (void)memmove(&sin.sin_addr, addr, sizeof(sin.sin_addr));
