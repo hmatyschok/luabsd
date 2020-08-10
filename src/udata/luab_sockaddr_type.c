@@ -322,7 +322,7 @@ SockAddr_get_sdl_index(lua_State *L)
     sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
-        sdl_index = sdl->sdl_index;
+        sdl_index = (int)sdl->sdl_index;
     else {
         errno = EPERM;
         sdl_index = -1;
@@ -389,7 +389,7 @@ SockAddr_get_sdl_type(lua_State *L)
     sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
-        sdl_type = sdl->sdl_type;
+        sdl_type = (int)sdl->sdl_type;
     else {
         errno = EPERM;
         sdl_type = -1;
@@ -456,7 +456,7 @@ SockAddr_get_sdl_nlen(lua_State *L)
     sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
-        sdl_nlen = sdl->sdl_nlen;
+        sdl_nlen = (int)sdl->sdl_nlen;
     else {
         errno = EPERM;
         sdl_nlen = -1;
@@ -523,7 +523,7 @@ SockAddr_get_sdl_alen(lua_State *L)
     sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
-        sdl_alen = sdl->sdl_alen;
+        sdl_alen = (int)sdl->sdl_alen;
     else {
         errno = EPERM;
         sdl_alen = -1;
@@ -554,7 +554,7 @@ SockAddr_sdl_slen(lua_State *L)
     sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
-        sdl_slen = sdl->sdl_slen;
+        sdl_slen = (int)sdl->sdl_slen;
     else {
         errno = EPERM;
         sdl_slen = -1;
@@ -668,7 +668,7 @@ SockAddr_set_sin_addr(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     sin = luab_udata(L, 1, sockaddr_type, struct sockaddr_in *);
-    sin_addr = (struct in_addr *)(*in_addr_type.get)(L, 2);
+    sin_addr = luab_udata(L, 2, in_addr_type, struct in_addr *);
 
     if (sin->sin_family == AF_INET) {
         (void)memmove(&sin->sin_addr, sin_addr, sizeof(*sin_addr));
@@ -889,7 +889,7 @@ luab_StructSockAddrIn(lua_State *L)
     sockaddr_pci(sa, AF_INET, sizeof(sin));
 
     port = (in_port_t)luab_checkinteger(L, 1, SHRT_MAX);
-    addr = (struct in_addr *)(*in_addr_type.get)(L, 2);
+    addr = luab_udata(L, 2, in_addr_type, struct in_addr *);
 
     sin.sin_port = htons(port);
 

@@ -133,7 +133,7 @@ luab_setitimer(lua_State *L)
     struct itimerval *ovalue;
     int status;
 
-    which = luab_checkinteger(L, 1, INT_MAX);
+    which = (int)luab_checkinteger(L, 1, INT_MAX);
     value = luab_udataisnil(L, 2, &itimerval_type, struct itimerval *);
     ovalue = luab_udataisnil(L, 3, &itimerval_type, struct itimerval *);
 
@@ -170,7 +170,7 @@ luab_getitimer(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    which = luab_checkinteger(L, 1, INT_MAX);
+    which = (int)luab_checkinteger(L, 1, INT_MAX);
     value = luab_udata(L, 2, itimerval_type, struct itimerval *);
 
     status = getitimer(which, value);

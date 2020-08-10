@@ -86,7 +86,7 @@ luab_open(lua_State *L)
     narg = luab_checkmaxargs(L, 3);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
-    flags = luab_checkinteger(L, 2, INT_MAX);
+    flags = (int)luab_checkinteger(L, 2, INT_MAX);
     mode = 0;
 
     if (narg == 3 && (flags & O_CREAT) != 0)
@@ -126,7 +126,7 @@ luab_creat(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
-    mode = luab_checkinteger(L, 2, ALLPERMS);
+    mode = (mode_t)luab_checkinteger(L, 2, ALLPERMS);
 
     fd = creat(path, mode);
 
@@ -162,8 +162,8 @@ luab_fcntl(lua_State *L)
 
     narg = luab_checkmaxargs(L, 3);
 
-    fd = luab_checkinteger(L, 1, INT_MAX);
-    cmd = luab_checkinteger(L, 2, INT_MAX);
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    cmd = (int)luab_checkinteger(L, 2, INT_MAX);
     arg = 0;
     argp = NULL;
 
@@ -209,8 +209,8 @@ luab_flock(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    fd = luab_checkinteger(L, 1, INT_MAX);
-    operation = luab_checkinteger(L, 2, INT_MAX);
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    operation = (int)luab_checkinteger(L, 2, INT_MAX);
 
     status = flock(fd, operation);
 
@@ -230,9 +230,9 @@ luab_openat(lua_State *L)
 
     narg = luab_checkmaxargs(L, 4);
 
-    dirfd = luab_checkinteger(L, 1, INT_MAX);
+    dirfd = (int)luab_checkinteger(L, 1, INT_MAX);
     path = luab_checklstring(L, 2, MAXPATHLEN);
-    flags = luab_checkinteger(L, 3, INT_MAX);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
     mode = 0;
 
     if (narg == 4 && (flags & O_CREAT) != 0)
@@ -256,10 +256,10 @@ luab_posix_fadvise(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    fd = luab_checkinteger(L, 1, INT_MAX);
-    offset = luab_checkinteger(L, 2, INT_MAX);
-    len = luab_checkinteger(L, 3, INT_MAX);
-    advice = luab_checkinteger(L, 4, INT_MAX);
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    offset = (off_t)luab_checkinteger(L, 2, INT_MAX);   /* XXX */
+    len = (off_t)luab_checkinteger(L, 3, INT_MAX);
+    advice = (int)luab_checkinteger(L, 4, INT_MAX);
 
     if ((errno = posix_fadvise(fd, offset, len, advice)) != 0)
         status = -1;
@@ -279,9 +279,9 @@ luab_posix_fallocate(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    fd = luab_checkinteger(L, 1, INT_MAX);
-    offset = luab_checkinteger(L, 2, INT_MAX);
-    len = luab_checkinteger(L, 3, INT_MAX);
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    offset = (off_t)luab_checkinteger(L, 2, INT_MAX);  /* XXX */
+    len = (off_t)luab_checkinteger(L, 3, INT_MAX);
 
     if ((errno = posix_fallocate(fd, offset, len)) != 0)
         status = -1;

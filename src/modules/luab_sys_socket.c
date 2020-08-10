@@ -70,7 +70,7 @@ luab_accept(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    s = luab_checkinteger(L, 1, INT_MAX);
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, &sockaddr_type, struct sockaddr *);
     hook = luab_udataisnil(L, 3, &hook_type, luab_type_u *);
 
@@ -110,9 +110,9 @@ luab_bind(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    s = luab_checkinteger(L, 1, INT_MAX);
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udata(L, 2, sockaddr_type, struct sockaddr *);
-    addrlen = luab_checkinteger(L, 3, INT_MAX);
+    addrlen = (socklen_t)luab_checkinteger(L, 3, INT_MAX);
 
     status = bind(s, addr, addrlen);
 
@@ -147,9 +147,9 @@ luab_socket(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    domain = luab_checkinteger(L, 1, INT_MAX);
-    type = luab_checkinteger(L, 2, INT_MAX);
-    protocol = luab_checkinteger(L, 3, INT_MAX);
+    domain = (int)luab_checkinteger(L, 1, INT_MAX);
+    type = (int)luab_checkinteger(L, 2, INT_MAX);
+    protocol = (int)luab_checkinteger(L, 3, INT_MAX);
 
     s = socket(domain, type, protocol);
 
@@ -187,10 +187,10 @@ luab_accept4(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    s = luab_checkinteger(L, 1, INT_MAX);
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, &sockaddr_type, struct sockaddr *);
     hook = luab_udataisnil(L, 3, &hook_type, luab_type_u *);
-    flags = luab_checkinteger(L, 4, INT_MAX);
+    flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
     if (hook != NULL)
         addrlen = &(hook->un_socklen);

@@ -73,12 +73,12 @@ static int
 BinTime_set_sec(lua_State *L)
 {
     struct bintime *bt;
-    int sec;
+    time_t sec;
 
     (void)luab_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, bintime_type, struct bintime *);
-    sec = luab_checkinteger(L, 2, INT_MAX);
+    sec = (time_t)luab_checkinteger(L, 2, INT_MAX);
 
     bt->sec = sec;
 
@@ -101,7 +101,7 @@ static int
 BinTime_get_sec(lua_State *L)
 {
     struct bintime *bt;
-    int sec;
+    time_t sec;
 
     (void)luab_checkmaxargs(L, 1);
 
@@ -129,7 +129,7 @@ BinTime_set_frac(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, bintime_type, struct bintime *);
-    frac = luab_checkinteger(L, 2, LONG_MAX);
+    frac = (uint64_t)luab_checkinteger(L, 2, LONG_MAX);
 
     bt->frac = frac;
 
@@ -320,7 +320,7 @@ luab_StructBinTime(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         bintime = NULL;
     else
-        bintime = bintime_udata(L, narg);
+        bintime = (struct bintime *)bintime_udata(L, narg);
 
     if (bintime_create(L, bintime) == NULL)
         status = luab_pushnil(L);

@@ -163,7 +163,7 @@ IfNameIndex_dump(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    data = (caddr_t)(*if_nameindex_type.get)(L, 1);
+    data = luab_udata(L, 1, if_nameindex_type, caddr_t);
 
     len = sizeof(luab_if_nameindex_t);
     max_len = len + sizeof(uint32_t);
@@ -274,7 +274,7 @@ luab_StructIfNameIndex(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         ifni = NULL;
     else
-        ifni = if_nameindex_udata(L, narg);
+        ifni = (struct if_nameindex *)if_nameindex_udata(L, narg);
 
     if (if_nameindex_create(L, ifni) == NULL)
         status = luab_pushnil(L);

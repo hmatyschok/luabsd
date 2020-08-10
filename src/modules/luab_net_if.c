@@ -74,7 +74,7 @@ luab_if_indextoname(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    ifindex = luab_checkinteger(L, 1, INT_MAX);
+    ifindex = (u_int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {

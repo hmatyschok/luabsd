@@ -265,7 +265,7 @@ luab_StructDBT(lua_State *L)
     int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 1)
-        buf = (luab_iovec_t *)(*iovec_type.get)(L, narg);
+        buf = luab_udata(L, narg, iovec_type, luab_iovec_t *);
     else
         buf = NULL;
 

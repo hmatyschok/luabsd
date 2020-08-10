@@ -79,7 +79,7 @@ CryptData_set_initialized(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
-    initialized = luab_checkinteger(L, 2, INT_MAX);
+    initialized = (int)luab_checkinteger(L, 2, INT_MAX);
 
     cd->initialized = initialized;
 
@@ -342,7 +342,7 @@ luab_StructCryptData(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         crypt_data = NULL;
     else
-        crypt_data = crypt_data_udata(L, narg);
+        crypt_data = (struct crypt_data *)crypt_data_udata(L, narg);
 
     if (crypt_data_create(L, crypt_data) == NULL)
         status = luab_pushnil(L);

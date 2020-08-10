@@ -73,7 +73,7 @@ Flock_set_l_start(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, flock_type, struct flock *);
-    l_start = luab_checkinteger(L, 2, ULONG_MAX);
+    l_start = (off_t)luab_checkinteger(L, 2, ULONG_MAX);
 
     l->l_start = l_start;
 
@@ -104,7 +104,7 @@ Flock_set_l_len(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, flock_type, struct flock *);
-    l_len = luab_checkinteger(L, 2, LONG_MAX);
+    l_len = (off_t)luab_checkinteger(L, 2, LONG_MAX);
 
     l->l_len = l_len;
 
@@ -135,7 +135,7 @@ Flock_set_l_pid(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, flock_type, struct flock *);
-    l_pid = luab_checkinteger(L, 2, INT_MAX);
+    l_pid = (pid_t)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_pid = l_pid;
 
@@ -161,14 +161,14 @@ static int
 Flock_set_l_type(lua_State *L)
 {
     struct flock *l;
-    int l_type;
+    short l_type;
 
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, flock_type, struct flock *);
-    l_type = luab_checkinteger(L, 2, SHRT_MAX);
+    l_type = (short)luab_checkinteger(L, 2, SHRT_MAX);
 
-    l->l_type = (short)l_type;
+    l->l_type = l_type;
 
     return 0;
 }
@@ -192,14 +192,14 @@ static int
 Flock_set_l_whence(lua_State *L)
 {
     struct flock *l;
-    int l_whence;
+    short l_whence;
 
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, flock_type, struct flock *);
-    l_whence = luab_checkinteger(L, 2, SHRT_MAX);
+    l_whence = (short)luab_checkinteger(L, 2, SHRT_MAX);
 
-    l->l_whence = (short)l_whence;
+    l->l_whence = l_whence;
 
     return 0;
 }
@@ -228,7 +228,7 @@ Flock_set_l_sysid(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, flock_type, struct flock *);
-    l_sysid = luab_checkinteger(L, 2, INT_MAX);
+    l_sysid = (int)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_sysid = l_sysid;
 
@@ -406,7 +406,7 @@ luab_StructFlock(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         flock = NULL;
     else
-        flock = flock_udata(L, narg);
+        flock = (struct flock *)flock_udata(L, narg);
 
     if (flock_create(L, flock) == NULL)
         status = luab_pushnil(L);

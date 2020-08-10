@@ -307,7 +307,7 @@ luab_StructIn6Addr(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         in6_addr = NULL;
     else
-        in6_addr = in6_addr_udata(L, narg);
+        in6_addr = (struct in6_addr *)in6_addr_udata(L, narg);
 
     if (in6_addr_create(L, in6_addr) == NULL)
         status = luab_pushnil(L);

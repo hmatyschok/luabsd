@@ -253,7 +253,7 @@ IOVec_resize(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
-    len = luab_checkinteger(L, 2,
+    len = (size_t)luab_checkinteger(L, 2,
 #ifdef  __LP64__
     LONG_MAX
 #else
@@ -425,7 +425,7 @@ luab_StructIOVec(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    iop.iop_buf.buf_len = luab_checkinteger(L, 1,
+    iop.iop_buf.buf_len = (size_t)luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX
 #else

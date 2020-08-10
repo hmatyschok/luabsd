@@ -126,7 +126,7 @@ DB_del(lua_State *L)
 
     if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
         k = (DBT *)(*dbt_type.get)(L, 2);
-        flags = luab_checkinteger(L, 3, INT_MAX);
+        flags = (u_int)luab_checkinteger(L, 3, INT_MAX);
 
         status = (db->del)(db, k, flags);
     } else {
@@ -149,7 +149,7 @@ DB_get(lua_State *L)
     if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
         k = (DBT *)(*dbt_type.get)(L, 2);
         v = (DBT *)(*dbt_type.get)(L, 3);
-        flags = luab_checkinteger(L, 4, INT_MAX);
+        flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (db->get)(db, k, v, flags);
     } else {
@@ -172,7 +172,7 @@ DB_put(lua_State *L)
     if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
         k = (DBT *)(*dbt_type.get)(L, 2);
         v = (DBT *)(*dbt_type.get)(L, 3);
-        flags = luab_checkinteger(L, 4, INT_MAX);
+        flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (db->put)(db, k, v, flags);
     } else {
@@ -195,7 +195,7 @@ DB_seq(lua_State *L)
     if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
         k = (DBT *)(*dbt_type.get)(L, 2);
         v = (DBT *)(*dbt_type.get)(L, 3);
-        flags = luab_checkinteger(L, 4, INT_MAX);
+        flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (db->seq)(db, k, v, flags);
     } else {
@@ -215,7 +215,7 @@ DB_sync(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
-        flags = luab_checkinteger(L, 2, INT_MAX);
+        flags = (u_int)luab_checkinteger(L, 2, INT_MAX);
 
         status = (db->sync)(db, flags);
     } else {
