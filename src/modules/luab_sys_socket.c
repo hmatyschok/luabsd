@@ -322,7 +322,7 @@ luab_connectat(lua_State *L)
 #endif  /* __BSD_VISIBLE */
 
 /***
- * getpeername(2) - getpeername a connection on a socket(9)
+ * getpeername(2) - get peer name
  *
  * @function getpeername
  *
@@ -354,6 +354,43 @@ luab_getpeername(lua_State *L)
     namelen = &(hook->un_socklen);
 
     status = getpeername(s, name, namelen);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * getsockname(2) - get socket(9) name
+ *
+ * @function getsockname
+ *
+ * @param s                 Socket bound to an adress by bind(2).
+ * @param name              Result argument, LUA_TUSERDATA(luab_sockaddr_t).
+ * @param namelen           Value-result argument, LUA_TUSERDATA(luab_hook_t).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage as [, err, msg ] = bsd.sys.socket.getsockname(s, name, namelen)
+ */
+static int
+luab_getsockname(lua_State *L)
+{
+    int s;
+    struct sockaddr *name;
+    luab_type_u *hook;
+    socklen_t *namelen;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    name = luab_udata(L, 2, sockaddr_type, struct sockaddr *);
+    hook = luab_udata(L, 3, hook_type, luab_type_u *);
+    namelen = &(hook->un_socklen);
+
+    status = getsockname(s, name, namelen);
 
     return (luab_pusherr(L, status));
 }
@@ -631,6 +668,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("connectat",    luab_connectat),
 #endif
     LUABSD_FUNC("getpeername",  luab_getpeername),
+    LUABSD_FUNC("getsockname",  luab_getsockname),
     LUABSD_FUNC("StructLinger",   luab_StructLinger),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)
