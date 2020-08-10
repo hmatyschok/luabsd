@@ -237,7 +237,48 @@ luab_accept4(lua_State *L)
 
     return (luab_pusherr(L, as));
 }
-#endif
+
+/***
+ * bindat(2) - assign a local protocol address to a socket(9)
+ *
+ * @function bindat
+ *
+ * @param fd                Specifies behaviour like call of bind(2), is
+ *
+ *                              bsd.fcntl.AT_FDCWD
+ *
+ *                          is used as argument.
+ * @param s                 By socket(2) instantiated socket(9).
+ * @param addr              Local protocol address.
+ * @param addrlen           Self-explanatory.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.bindat(fd, s, addr, addrlen)
+ */
+static int
+luab_bindat(lua_State *L)
+{
+    int fd, s;
+    struct sockaddr *addr;
+    socklen_t addrlen;
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    s = (int)luab_checkinteger(L, 2, INT_MAX);
+    addr = luab_udata(L, 3, sockaddr_type, struct sockaddr *);
+    addrlen = (socklen_t)luab_checkinteger(L, 4, INT_MAX);
+
+    status = bindat(fd, s, addr, addrlen);
+
+    return (luab_pusherr(L, status));
+}
+#endif  /* __BSD_VISIBLE */
 
 /*
  * Interface against <sys/socket.h>.
@@ -508,6 +549,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("socket",   luab_socket),
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept4",   luab_accept4),
+    LUABSD_FUNC("bindat",   luab_bindat),
 #endif
     LUABSD_FUNC("StructLinger",   luab_StructLinger),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
