@@ -410,7 +410,7 @@ luab_getsockname(lua_State *L)
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage s [, err, msg ] = bsd.sys.listen.listen(s, backlog)
+ * @usage ret [, err, msg ] = bsd.sys.listen.listen(s, backlog)
  */
 static int
 luab_listen(lua_State *L)
@@ -481,6 +481,80 @@ luab_recv(lua_State *L)
             (buf->iov_flags & IOV_BUFF)) {
 
             if ((count = recv(s, caddr, len, flags)) > 0)
+                buf->iov.iov_len = count;
+        } else {
+            errno = ENXIO;
+            count = -1;
+        }
+        buf->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+/***
+ * recvfrom(2) - receive message(s) from a socket(9)
+ *
+ * @function recvfrom
+ *
+ * @param s                 Open socket(9).
+ * @param buf               Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param len               Assumed number of bytes to be recvfrom'd.
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC,WAITFORONE}
+ *
+ *                          are all combined by inclusive or.
+ * @param from              Result argument, LUA_TUSERDATA(luab_sockaddr_t).
+ * @param fromlen           Value-result argument, LUA_TUSERDATA(luab_hook_t).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.recvfrom(s, buf, len, flags)
+ */
+static int
+luab_recvfrom(lua_State *L)
+{
+    int s;
+    luab_iovec_t *buf;
+    size_t len;
+    int flags;
+    struct sockaddr *from;
+    luab_type_u *hook;
+    socklen_t *fromlen;
+    caddr_t caddr;
+    ssize_t count;
+
+    (void)luab_checkmaxargs(L, 6);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    len = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    flags = (int)luab_checkinteger(L, 4, INT_MAX);
+    from = luab_udataisnil(L, 5, sockaddr_type, struct sockaddr *);
+    hook = luab_udata(L, 6, hook_type, luab_type_u *);
+    fromlen = &(hook->un_socklen);
+
+    if ((buf->iov_flags & IOV_LOCK) == 0) {
+        buf->iov_flags |= IOV_LOCK;
+
+        if (((caddr = buf->iov.iov_base) != NULL) &&
+            (len <= buf->iov_max_len) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((count = recvfrom(s, caddr, len, flags, from, fromlen)) > 0)
                 buf->iov.iov_len = count;
         } else {
             errno = ENXIO;
@@ -773,6 +847,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
 #endif
     LUABSD_FUNC("listen",   luab_listen),
     LUABSD_FUNC("recv", luab_recv),
+    LUABSD_FUNC("recvfrom", luab_recvfrom),
     LUABSD_FUNC("StructLinger",   luab_StructLinger),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)
