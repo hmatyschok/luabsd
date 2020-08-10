@@ -181,7 +181,7 @@ SockAddr_sa_len(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sa = (struct sockaddr *)(*sockaddr_type.get)(L, 1);
+    sa = luab_udata(L, 1, sockaddr_type, struct sockaddr *);
     sa_len = sa->sa_len;
 
     return (luab_pusherr(L, sa_len));
@@ -207,7 +207,7 @@ SockAddr_sa_family(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sa = (struct sockaddr *)(*sockaddr_type.get)(L, 1);
+    sa = luab_udata(L, 1, sockaddr_type, struct sockaddr *);
     sa_family = sa->sa_family;
 
     return (luab_pusherr(L, sa_family));
@@ -229,7 +229,7 @@ SockAddr_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sa = (struct sockaddr *)(*sockaddr_type.get)(L, 1);
+    sa = luab_udata(L, 1, sockaddr_type, struct sockaddr *);
 
     /*
      * SockAddr This switch-statement should be replaced by protosw-table.
@@ -286,7 +286,7 @@ SockAddr_set_sdl_index(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
     sdl_index = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
 
     if (sdl->sdl_family == AF_LINK) {
@@ -319,7 +319,7 @@ SockAddr_get_sdl_index(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
         sdl_index = sdl->sdl_index;
@@ -353,7 +353,7 @@ SockAddr_set_sdl_type(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
     sdl_type = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
     if (sdl->sdl_family == AF_LINK) {
@@ -386,7 +386,7 @@ SockAddr_get_sdl_type(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
         sdl_type = sdl->sdl_type;
@@ -420,7 +420,7 @@ SockAddr_set_sdl_nlen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
     sdl_nlen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
     if (sdl->sdl_family == AF_LINK) {
@@ -453,7 +453,7 @@ SockAddr_get_sdl_nlen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
         sdl_nlen = sdl->sdl_nlen;
@@ -487,7 +487,7 @@ SockAddr_set_sdl_alen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
     sdl_alen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
     if (sdl->sdl_family == AF_LINK) {    /* XXX constraint depends on IFT_XXX */
@@ -520,7 +520,7 @@ SockAddr_get_sdl_alen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
         sdl_alen = sdl->sdl_alen;
@@ -551,7 +551,7 @@ SockAddr_sdl_slen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sdl = (struct sockaddr_dl *)(*sockaddr_type.get)(L, 1);
+    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
 
     if (sdl->sdl_family == AF_LINK)
         sdl_slen = sdl->sdl_slen;
@@ -599,7 +599,7 @@ SockAddr_set_sin_port(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sin = (struct sockaddr_in *)(*sockaddr_type.get)(L, 1);
+    sin = luab_udata(L, 1, sockaddr_type, struct sockaddr_in *);
     sin_port = (in_port_t)luab_checkinteger(L, 2, SHRT_MAX);
 
     if (sin->sin_family == AF_INET) {
@@ -632,7 +632,7 @@ SockAddr_get_sin_port(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sin = (struct sockaddr_in *)(*sockaddr_type.get)(L, 1);
+    sin = luab_udata(L, 1, sockaddr_type, struct sockaddr_in *);
 
     if (sin->sin_family == AF_INET)
         sin_port = ntohs(sin->sin_port);
@@ -667,7 +667,7 @@ SockAddr_set_sin_addr(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sin = (struct sockaddr_in *)(*sockaddr_type.get)(L, 1);
+    sin = luab_udata(L, 1, sockaddr_type, struct sockaddr_in *);
     sin_addr = (struct in_addr *)(*in_addr_type.get)(L, 2);
 
     if (sin->sin_family == AF_INET) {
@@ -702,7 +702,7 @@ SockAddr_get_sin_addr(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    sin = (struct sockaddr_in *)(*sockaddr_type.get)(L, 1);
+    sin = luab_udata(L, 1, sockaddr_type, struct sockaddr_in *);
 
     if (sin->sin_family == AF_INET) {
         (void)memmove(&sin_addr, &sin->sin_addr, sizeof(sin_addr));

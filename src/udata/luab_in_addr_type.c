@@ -76,7 +76,7 @@ InAddr_set_s_addr(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
     s_addr = luab_checkinteger(L, 2, UINT_MAX);
 
     ia->s_addr = s_addr;
@@ -104,7 +104,7 @@ InAddr_get_s_addr(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
     s_addr = ia->s_addr;
 
     return (luab_pusherr(L, s_addr));
@@ -126,7 +126,7 @@ InAddr_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
 
     lua_newtable(L);
 
@@ -161,7 +161,7 @@ InAddr_dump(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    data = (caddr_t)(*in_addr_type.get)(L, 1);
+    data = luab_udata(L, 1, in_addr_type, caddr_t);
 
     len = sizeof(struct in_addr);
     max_len = len + sizeof(uint32_t);

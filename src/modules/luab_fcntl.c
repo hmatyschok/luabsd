@@ -169,7 +169,7 @@ luab_fcntl(lua_State *L)
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
-            argp = (struct flock *)(*flock_type.get)(L, narg);
+            argp = luab_udata(L, narg, flock_type, struct flock *);
         else
             arg = luab_checkinteger(L, narg, INT_MAX);
     }

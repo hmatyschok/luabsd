@@ -80,8 +80,8 @@ ItimerVal_set_it_interval(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
-    tv = (struct timespec *)(*timespec_type.get)(L, 2);
+    it = luab_udata(L, 1, itimerval_type, struct itimerval *);
+    tv = luab_udata(L, 2, timespec_type, struct timespec *);
 
     (void)memmove(&it->it_interval, tv, sizeof(*tv));
 
@@ -105,7 +105,7 @@ ItimerVal_get_it_interval(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
+    it = luab_udata(L, 1, itimerval_type, struct itimerval *);
 
     if ((*timespec_type.ctor)(L, &it->it_interval) == NULL)
         status = luab_pushnil(L);
@@ -133,8 +133,8 @@ ItimerVal_set_it_value(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
-    tv = (struct timespec *)(*timespec_type.get)(L, 2);
+    it = luab_udata(L, 1, itimerval_type, struct itimerval *);
+    tv = luab_udata(L, 2, timespec_type, struct timespec *);
 
     (void)memmove(&it->it_value, tv, sizeof(*tv));
 
@@ -158,7 +158,7 @@ ItimerVal_get_it_value(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
+    it = luab_udata(L, 1, itimerval_type, struct itimerval *);
 
     if ((*timespec_type.ctor)(L, &it->it_value) == NULL)
         status = luab_pushnil(L);
@@ -184,7 +184,7 @@ ItimerVal_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    it = (struct itimerval *)(*itimerval_type.get)(L, 1);
+    it = luab_udata(L, 1, itimerval_type, struct itimerval *);
 
     lua_newtable(L);
 
@@ -217,7 +217,7 @@ ItimerVal_dump(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    data = (caddr_t)(*itimerval_type.get)(L, 1);
+    data = luab_udata(L, 1, itimerval_type, caddr_t);
 
     len = sizeof(struct itimerval);
     max_len = len + sizeof(uint32_t);

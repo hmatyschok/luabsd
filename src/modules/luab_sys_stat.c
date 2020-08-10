@@ -177,7 +177,7 @@ luab_futimens(lua_State *L)
 
     fd = luab_checkinteger(L, 1, INT_MAX);
 
-    if (lua_isnil(L, 2) != 0)
+    if (lua_isnil(L, 2) != 0)   /* XXX */
         times = luab_checktimesvector(L, 2, 2);
     else
         times = NULL;
@@ -230,7 +230,7 @@ luab_fstat(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     fd = luab_checkinteger(L, 1, INT_MAX);
-    sb = (struct stat *)(*stat_type.get)(L, 2);
+    sb = luab_udata(L, 2, stat_type, struct stat *);
 
     status = fstat(fd, sb);
 

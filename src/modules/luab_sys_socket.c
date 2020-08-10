@@ -33,6 +33,7 @@
 extern luab_module_t hook_type;
 extern luab_module_t sockaddr_type;
 
+extern int luab_StructLinger(lua_State *);
 extern int luab_StructSockAddr(lua_State *);
 
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
@@ -70,8 +71,8 @@ luab_accept(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     s = luab_checkinteger(L, 1, INT_MAX);
-    addr = (struct sockaddr *)luab_checkudataisnil(L, 2, &sockaddr_type);
-    hook = (luab_type_u *)luab_checkudataisnil(L, 3, &hook_type);
+    addr = luab_udataisnil(L, 2, &sockaddr_type, struct sockaddr *);
+    hook = luab_udataisnil(L, 3, &hook_type, luab_type_u *);
 
     if (hook != NULL)
         addrlen = &(hook->un_socklen);
@@ -110,7 +111,7 @@ luab_bind(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     s = luab_checkinteger(L, 1, INT_MAX);
-    addr = (struct sockaddr *)(*sockaddr_type.get)(L, 2);
+    addr = luab_udata(L, 2, sockaddr_type, struct sockaddr *);
     addrlen = luab_checkinteger(L, 3, INT_MAX);
 
     status = bind(s, addr, addrlen);
@@ -187,8 +188,8 @@ luab_accept4(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     s = luab_checkinteger(L, 1, INT_MAX);
-    addr = (struct sockaddr *)luab_checkudataisnil(L, 2, &sockaddr_type);
-    hook = (luab_type_u *)luab_checkudataisnil(L, 3, &hook_type);
+    addr = luab_udataisnil(L, 2, &sockaddr_type, struct sockaddr *);
+    hook = luab_udataisnil(L, 3, &hook_type, luab_type_u *);
     flags = luab_checkinteger(L, 4, INT_MAX);
 
     if (hook != NULL)
@@ -470,6 +471,9 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("socket",   luab_socket),
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept4",   luab_accept4),
+#endif
+#if 0
+    LUABSD_FUNC("StructLinger",   luab_StructLinger),
 #endif
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)

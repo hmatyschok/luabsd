@@ -134,8 +134,8 @@ luab_setitimer(lua_State *L)
     int status;
 
     which = luab_checkinteger(L, 1, INT_MAX);
-    value = (struct itimerval *)luab_checkudataisnil(L, 2, &itimerval_type);
-    ovalue = (struct itimerval *)luab_checkudataisnil(L, 3, &itimerval_type);
+    value = luab_udataisnil(L, 2, &itimerval_type, struct itimerval *);
+    ovalue = luab_udataisnil(L, 3, &itimerval_type, struct itimerval *);
 
     if (lua_type(L, narg) != LUA_TFUNCTION)
         return luaL_error(L, "Missing callout handler.");
@@ -171,7 +171,7 @@ luab_getitimer(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     which = luab_checkinteger(L, 1, INT_MAX);
-    value = (struct itimerval *)(*itimerval_type.get)(L, 2);
+    value = luab_udata(L, 2, itimerval_type, struct itimerval *);
 
     status = getitimer(which, value);
 

@@ -77,7 +77,7 @@ TimeZone_set_tz_minuteswest(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    tz = (struct timezone *)(*timezone_type.get)(L, 1);
+    tz = luab_udata(L, 1, timezone_type, struct timezone *);
     tz_minuteswest = luab_checkinteger(L, 2, INT_MAX);
 
     tz->tz_minuteswest = tz_minuteswest;
@@ -105,7 +105,7 @@ TimeZone_get_tz_minuteswest(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    tz = (struct timezone *)(*timezone_type.get)(L, 1);
+    tz = luab_udata(L, 1, timezone_type, struct timezone *);
     tz_minuteswest = tz->tz_minuteswest;
 
     return (luab_pusherr(L, tz_minuteswest));
@@ -128,7 +128,7 @@ TimeZone_set_tz_dsttime(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    tz = (struct timezone *)(*timezone_type.get)(L, 1);
+    tz = luab_udata(L, 1, timezone_type, struct timezone *);
     tz_dsttime = luab_checkinteger(L, 2, LONG_MAX);
 
     tz->tz_dsttime = tz_dsttime;
@@ -156,7 +156,7 @@ TimeZone_get_tz_dsttime(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    tz = (struct timezone *)(*timezone_type.get)(L, 1);
+    tz = luab_udata(L, 1, timezone_type, struct timezone *);
     tz_dsttime = tz->tz_dsttime;
 
     return (luab_pusherr(L, tz_dsttime));
@@ -178,7 +178,7 @@ TimeZone_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    tz = (struct timezone *)(*timezone_type.get)(L, 1);
+    tz = luab_udata(L, 1, timezone_type, struct timezone *);
 
     lua_newtable(L);
 
@@ -211,7 +211,7 @@ TimeZone_dump(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    data = (caddr_t)(*timezone_type.get)(L, 1);
+    data = luab_udata(L, 1, timezone_type, caddr_t);
 
     len = sizeof(struct timezone);
     max_len = len + sizeof(uint32_t);

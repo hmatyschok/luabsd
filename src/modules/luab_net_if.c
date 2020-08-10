@@ -62,7 +62,7 @@ extern luab_module_t luab_net_if_lib;
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage index [, err, msg ] = bsd.net.if_indextoname(ifindex)
+ * @usage ret [, err, msg ] = bsd.net.if_indextoname(ifindex)
  */
 static int
 luab_if_indextoname(lua_State *L)
@@ -75,7 +75,7 @@ luab_if_indextoname(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     ifindex = luab_checkinteger(L, 1, INT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
@@ -115,7 +115,7 @@ luab_if_indextoname(lua_State *L)
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage index [, err, msg ] = bsd.net.if_nameindex(ifni)
+ * @usage ret [, err, msg ] = bsd.net.if_nameindex(ifni)
  */
 static int
 luab_if_nameindex(lua_State *L)

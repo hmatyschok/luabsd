@@ -82,7 +82,7 @@ IfNameIndex_if_index(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = (luab_if_nameindex_t *)(*if_nameindex_type.get)(L, 1);
+    self = luab_udata(L, 1, if_nameindex_type, luab_if_nameindex_t *);
     if_index = self->if_index;
 
     return (luab_pusherr(L, if_index));
@@ -108,7 +108,7 @@ IfNameIndex_if_name(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = (luab_if_nameindex_t *)(*if_nameindex_type.get)(L, 1);
+    self = luab_udata(L, 1, if_nameindex_type, luab_if_nameindex_t *);
     if_name = self->if_name;
 
     return (luab_pushstring(L, self->if_name));
@@ -130,7 +130,7 @@ IfNameIndex_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = (luab_if_nameindex_t *)(*if_nameindex_type.get)(L, 1);
+    self = luab_udata(L, 1, if_nameindex_type, luab_if_nameindex_t *);
 
     lua_newtable(L);
 

@@ -78,7 +78,7 @@ CryptData_set_initialized(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
+    cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
     initialized = luab_checkinteger(L, 2, INT_MAX);
 
     cd->initialized = initialized;
@@ -106,7 +106,7 @@ CryptData_get_initialized(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
+    cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
     initialized = cd->initialized;
 
     return (luab_pusherr(L, initialized));
@@ -130,7 +130,7 @@ CryptData_set_buf(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
+    cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
     buf = luab_checklstring(L, 2, CRYPT_DATA_MAX);
 
     len = strlen(buf);
@@ -162,7 +162,7 @@ CryptData_get_buf(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
+    cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
     src = cd->__buf;
     len = strnlen(src, CRYPT_DATA_MAX);
 
@@ -194,7 +194,7 @@ CryptData_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    cd = (struct crypt_data *)(*crypt_data_type.get)(L, 1);
+    cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
 
     lua_newtable(L);
 
@@ -230,7 +230,7 @@ CryptData_dump(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    data = (caddr_t)(*crypt_data_type.get)(L, 1);
+    data = luab_udata(L, 1, crypt_data_type, caddr_t);
 
     len = sizeof(struct crypt_data);
     max_len = len + sizeof(uint32_t);

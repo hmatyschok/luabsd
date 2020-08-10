@@ -137,7 +137,7 @@ luab_inet_ntoa(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
 
     cp = inet_ntoa(*ia);
 
@@ -178,7 +178,7 @@ luab_inet_ntop(lua_State *L)
 
     af = luab_checkinteger(L, 1, INT_MAX);
     src = luab_checkxaddr(L, 2, af, &size);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 3);
+    buf = luab_udata(L, 3, iovec_type, luab_iovec_t *);
     size = luab_checkinteger(L, 4, INT_MAX);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -237,7 +237,7 @@ luab_inet_pton(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     af = luab_checkinteger(L, 1, INT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -286,7 +286,7 @@ luab_inet_aton(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
-    pin = (struct in_addr *)(*in_addr_type.get)(L, 2);
+    pin = luab_udata(L, 2, in_addr_type, struct in_addr *);
 
     status = inet_aton(cp, pin);
 
@@ -317,7 +317,7 @@ luab_inet_lnaof(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
 
     lna.s_addr = inet_lnaof(*ia);
 
@@ -356,8 +356,8 @@ luab_inet_makeaddr(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    net = (struct in_addr *)(*in_addr_type.get)(L, 1);
-    lna = (struct in_addr *)(*in_addr_type.get)(L, 2);
+    net = luab_udata(L, 1, in_addr_type, struct in_addr *);
+    lna = luab_udata(L, 2, in_addr_type, struct in_addr *);
 
     ia = inet_makeaddr(net->s_addr, lna->s_addr);
 
@@ -397,8 +397,8 @@ luab_inet_neta(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    src = (struct in_addr *)(*in_addr_type.get)(L, 1);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    src = luab_udata(L, 1, in_addr_type, struct in_addr *);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     size = luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -454,7 +454,7 @@ luab_inet_netof(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = (struct in_addr *)(*in_addr_type.get)(L, 1);
+    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
 
     net.s_addr = inet_netof(*ia);
 
@@ -539,7 +539,7 @@ luab_inet_net_ntop(lua_State *L)
     af = luab_checkinteger(L, 1, INT_MAX);
     src = luab_checkxaddr(L, 2, af, &size);
     bits = luab_checkinteger(L, 3, UINT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 4);
+    buf = luab_udata(L, 4, iovec_type, luab_iovec_t *);
     size = luab_checkinteger(L, 5,
 #ifdef  __LP64__
     LONG_MAX
@@ -605,7 +605,7 @@ luab_inet_net_pton(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     af = luab_checkinteger(L, 1, INT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
     size = luab_checkinteger(L, 4,
 #ifdef  __LP64__
@@ -663,8 +663,8 @@ luab_inet_ntoa_r(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    in = (struct in_addr *)(*in_addr_type.get)(L, 1);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    in = luab_udata(L, 1, in_addr_type, struct in_addr *);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     size = luab_checkinteger(L, 3, INT_MAX);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -729,7 +729,7 @@ luab_inet_cidr_ntop(lua_State *L)
     af = luab_checkinteger(L, 1, INT_MAX);
     src = luab_checkxaddr(L, 2, af, &size);
     bits = luab_checkinteger(L, 3, UINT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 4);
+    buf = luab_udata(L, 4, iovec_type, luab_iovec_t *);
     size = luab_checkinteger(L, 5,
 #ifdef  __LP64__
     LONG_MAX
@@ -798,9 +798,9 @@ luab_inet_cidr_pton(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     af = luab_checkinteger(L, 1, INT_MAX);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
-    un = (luab_type_u *)(*hook_type.get)(L, 4);
+    un = luab_udata(L, 4, hook_type, luab_type_u *);
     bits = &(un->un_int);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {

@@ -70,8 +70,8 @@ DBT_set_data(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    dbt = (DBT *)(*dbt_type.get)(L, 1);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    dbt = luab_udata(L, 1, dbt_type, DBT *);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
@@ -103,8 +103,8 @@ DBT_get_data(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    dbt = (DBT *)(*dbt_type.get)(L, 1);
-    buf = (luab_iovec_t *)(*iovec_type.get)(L, 2);
+    dbt = luab_udata(L, 1, dbt_type, DBT *);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
@@ -142,7 +142,7 @@ DBT_get_size(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    dbt = (DBT *)(*dbt_type.get)(L, 1);
+    dbt = luab_udata(L, 1, dbt_type, DBT *);
 
     len = dbt->size;
 
@@ -156,7 +156,7 @@ DBT_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    dbt = (DBT *)(*dbt_type.get)(L, 1);
+    dbt = luab_udata(L, 1, dbt_type, DBT *);
 
     lua_newtable(L);
 
