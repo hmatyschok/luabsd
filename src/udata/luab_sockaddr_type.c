@@ -872,7 +872,7 @@ luab_StructSockAddrDL(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr_in [, err, msg ]= bsd.arpa.inet.StructSockAddrIn(port, addr)
+ * @usage sockaddr_in [, err, msg ]= bsd.arpa.inet.StructSockAddrIn([ port [, addr ]])
  */
 int
 luab_StructSockAddrIn(lua_State *L)
@@ -882,7 +882,6 @@ luab_StructSockAddrIn(lua_State *L)
     struct sockaddr *sa;
     struct in_addr *addr;
     int status;
-
 
     sa = (struct sockaddr *)&sin;
     sockaddr_pci(sa, AF_INET, sizeof(sin));
