@@ -877,25 +877,28 @@ luab_StructSockAddrDL(lua_State *L)
 int
 luab_StructSockAddrIn(lua_State *L)
 {
+    int narg;
     struct sockaddr_in sin;
     struct sockaddr *sa;
     in_port_t port;
     struct in_addr *addr;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
 
     sa = (struct sockaddr *)&sin;
     sockaddr_pci(sa, AF_INET, sizeof(sin));
 
-    port = (in_port_t)luab_checkinteger(L, 1, SHRT_MAX);
-    addr = luab_udata(L, 2, in_addr_type, struct in_addr *);
-
-    sin.sin_port = htons(port);
-
-    (void)memmove(&sin.sin_addr, addr, sizeof(sin.sin_addr));
-
-    sin.sin_addr.s_addr = htonl(sin.sin_addr.s_addr);
+    switch ((narg = luab_checkmaxargs(L, 2))) {     /* FALLTHROUGH */
+    case 2:
+        addr = luab_udata(L, 2, in_addr_type, struct in_addr *);
+        (void)memmove(&sin.sin_addr, addr, sizeof(sin.sin_addr));
+    case 1:
+        sin.sin_port = (in_port_t)luab_checkinteger(L, 1, SHRT_MAX);
+    default:
+        sin.sin_addr.s_addr = htonl(sin.sin_addr.s_addr);
+        sin.sin_port = htons(sin.sin_port);
+        break;
+    }
 
     if (sockaddr_create(L, sa) == NULL)
         status = luab_pushnil(L);
