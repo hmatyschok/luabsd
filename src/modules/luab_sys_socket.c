@@ -278,6 +278,47 @@ luab_bindat(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
+
+/***
+ * connectat(2) - initiate a connectation on a socket(9)
+ *
+ * @function connectat
+ *
+ * @param fd                Specifies behaviour like call of bind(2), is
+ *
+ *                              bsd.fcntl.AT_FDCWD
+ *
+ *                          is used as argument. 
+ * @param s                 By socket(2) instantiated socket(9).
+ * @param name              Protocol address of its peer.
+ * @param namelen           Self-explanatory.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.connectat(fd s, name, namelen)
+ */
+static int
+luab_connectat(lua_State *L)
+{
+    int fd, s;
+    struct sockaddr *name;
+    socklen_t namelen;
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    s = (int)luab_checkinteger(L, 2, INT_MAX);
+    name = luab_udata(L, 3, sockaddr_type, struct sockaddr *);
+    namelen = (socklen_t)luab_checkinteger(L, 4, INT_MAX);
+
+    status = connectat(fd, s, name, namelen);
+
+    return (luab_pusherr(L, status));
+}
 #endif  /* __BSD_VISIBLE */
 
 /*
@@ -550,6 +591,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept4",   luab_accept4),
     LUABSD_FUNC("bindat",   luab_bindat),
+    LUABSD_FUNC("connectat",    luab_connectat),
 #endif
     LUABSD_FUNC("StructLinger",   luab_StructLinger),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
