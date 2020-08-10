@@ -395,6 +395,37 @@ luab_getsockname(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * listen(2) - listens for connections on a socket(9)
+ *
+ * @function listen
+ *
+ * @param s                 Specifies socket(9).
+ * @param backlog           Specifies backlog.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage s [, err, msg ] = bsd.sys.listen.listen(s, backlog)
+ */
+static int
+luab_listen(lua_State *L)
+{
+    int s, backlog;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    backlog = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    status = listen(s, backlog);
+
+    return (luab_pusherr(L, status));
+}
+
 /*
  * Interface against <sys/socket.h>.
  */
@@ -669,6 +700,10 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
 #endif
     LUABSD_FUNC("getpeername",  luab_getpeername),
     LUABSD_FUNC("getsockname",  luab_getsockname),
+#if 0
+    LUABSD_FUNC("getsockopt",   luab_getsockopt),
+#endif
+    LUABSD_FUNC("listen",   luab_listen),
     LUABSD_FUNC("StructLinger",   luab_StructLinger),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)
