@@ -105,8 +105,7 @@ inspects during
         end
     end
 
-It is obvious, parametrical information are encapsulated by instances of
-LUA_TUSERDATA and its elements or properties are accessible  
+It is obvious,  
 
     local mt = getmetatable(it_probe);
 
@@ -116,7 +115,8 @@ LUA_TUSERDATA and its elements or properties are accessible
         print("", k, v)
     end
 
-through get / set routines:
+parametrical information are encapsulated by instances of LUA_TUSERDATA.
+Therefore, its properties are accessible through get / set routines:
 
     tv = it_probe:get_it_value()
 
