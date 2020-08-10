@@ -86,7 +86,7 @@ luab_accept(lua_State *L)
 /***
  * bind(2) - assign a local protocol address to a socket(9)
  *
- * @function accept
+ * @function bind
  *
  * @param s                 By socket(2) instantiated socket(9).
  * @param addr              Local protocol address.
@@ -97,7 +97,7 @@ luab_accept(lua_State *L)
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage as [, err, msg ] = bsd.sys.socket.bind(s, addr, addrlen)
+ * @usage ret [, err, msg ] = bsd.sys.socket.bind(s, addr, addrlen)
  */
 static int
 luab_bind(lua_State *L)
@@ -111,7 +111,7 @@ luab_bind(lua_State *L)
 
     s = luab_checkinteger(L, 1, INT_MAX);
     addr = (struct sockaddr *)(*sockaddr_type.get)(L, 2);
-    addrlen = = luab_checkinteger(L, 3, INT_MAX);
+    addrlen = luab_checkinteger(L, 3, INT_MAX);
 
     status = bind(s, addr, addrlen);
 
@@ -466,6 +466,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_INT("SF_NOCACHE",    SF_NOCACHE),
 #endif
     LUABSD_FUNC("accept",   luab_accept),
+    LUABSD_FUNC("bind", luab_bind),
     LUABSD_FUNC("socket",   luab_socket),
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept4",   luab_accept4),
