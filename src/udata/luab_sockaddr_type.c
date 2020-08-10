@@ -812,7 +812,7 @@ luab_module_t sockaddr_type = {
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr_in [, err, msg ]= bsd.sys.socket.StructSockAddr(sockaddr)
+ * @usage sockaddr [, err, msg ]= bsd.sys.socket.StructSockAddr(sockaddr)
  */
 int
 luab_StructSockAddr(lua_State *L)
@@ -872,7 +872,7 @@ luab_StructSockAddrDL(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr_in [, err, msg ]= bsd.arpa.inet.StructSockAddrIn([ port [, addr ]])
+ * @usage sockaddr [, err, msg ] = bsd.arpa.inet.StructSockAddrIn([ port [, addr ]])
  */
 int
 luab_StructSockAddrIn(lua_State *L)
