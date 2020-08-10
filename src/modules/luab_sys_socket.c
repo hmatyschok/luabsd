@@ -24,14 +24,13 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/socket.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 
 #include "luabsd.h"
 
+extern luab_module_t hook_type;
 extern luab_module_t sockaddr_type;
 
 extern int luab_StructSockAddr(lua_State *);
@@ -40,6 +39,84 @@ extern int luab_StructSockAddr(lua_State *);
 #define LUABSD_SYS_SOCKET_LIB_KEY   "socket"
 
 extern luab_module_t luab_sys_socket_lib;
+
+/***
+ * accept(2) - accept a connection on a socket(9)
+ *
+ * @function accept
+ *
+ * @param s                 Socket bound to an adress by bind(2).
+ * @param addr              Optional result argument maps to address of its
+ *                          peer, otherwise it will be set to nil.
+ * @param addrlen           Optional value-result argument, otherwise it will
+ *                          be set to nil.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (as [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage as [, err, msg ] = bsd.sys.socket.accept(s, addr, addrlen)
+ */
+static int
+luab_accept(lua_State *L)
+{
+    int s;
+    struct sockaddr *addr;
+    luab_type_u *hook;
+    socklen_t *addrlen;
+    int as;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    s = luab_checkinteger(L, 1, INT_MAX);
+    addr = (struct sockaddr *)luab_checkudataisnil(L, 2, &sockaddr_type);
+    hook = (luab_type_u *)luab_checkudataisnil(L, 3, &hook_type);
+
+    if (hook != NULL)
+        addrlen = &(hook->un_socklen);
+    else
+        addrlen = NULL;
+
+    as = accept(s, addr, addrlen);
+
+    return (luab_pusherr(L, as));
+}
+
+/***
+ * bind(2) - assign a local protocol address to a socket(9)
+ *
+ * @function accept
+ *
+ * @param s                 By socket(2) instantiated socket(9).
+ * @param addr              Local protocol address.
+ * @param addrlen           Self-explanatory.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage as [, err, msg ] = bsd.sys.socket.bind(s, addr, addrlen)
+ */
+static int
+luab_bind(lua_State *L)
+{
+    int s;
+    struct sockaddr *addr;
+    socklen_t addrlen;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    s = luab_checkinteger(L, 1, INT_MAX);
+    addr = (struct sockaddr *)(*sockaddr_type.get)(L, 2);
+    addrlen = = luab_checkinteger(L, 3, INT_MAX);
+
+    status = bind(s, addr, addrlen);
+
+    return (luab_pusherr(L, status));
+}
 
 /***
  * socket(2) - create an endpoint for communication
@@ -55,9 +132,9 @@ extern luab_module_t luab_sys_socket_lib;
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (s [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
+ *          (-1, (errno, strerror(errno)))
  *
- * @usage s [, err, msg ] = bsd.sys.socket.socket(ifname)
+ * @usage s [, err, msg ] = bsd.sys.socket.socket(domain, type, protocol)
  */
 static int
 luab_socket(lua_State *L)
@@ -75,8 +152,55 @@ luab_socket(lua_State *L)
 
     s = socket(domain, type, protocol);
 
-    return luab_pusherr(L, s);
+    return (luab_pusherr(L, s));
 }
+
+#if __BSD_VISIBLE
+/***
+ * accept4(2) - accept a connection on a socket(9)
+ *
+ * @function accept
+ *
+ * @param s                 Socket bound to an adress by bind(2).
+ * @param addr              Optional result argument maps to address of its
+ *                          peer, otherwise it will be set to nil.
+ * @param addrlen           Optional value-result argument, otherwise it will
+ *                          be set to nil.
+ * @param flags             See accept4(2) for further details.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (as [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage as [, err, msg ] = bsd.sys.socket.accept4(s, addr, addrlen, flags)
+ */
+static int
+luab_accept4(lua_State *L)
+{
+    int s;
+    struct sockaddr *addr;
+    luab_type_u *hook;
+    socklen_t *addrlen;
+    int flags, as;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    s = luab_checkinteger(L, 1, INT_MAX);
+    addr = (struct sockaddr *)luab_checkudataisnil(L, 2, &sockaddr_type);
+    hook = (luab_type_u *)luab_checkudataisnil(L, 3, &hook_type);
+    flags = luab_checkinteger(L, 4, INT_MAX);
+
+    if (hook != NULL)
+        addrlen = &(hook->un_socklen);
+    else
+        addrlen = NULL;
+
+    as = accept4(s, addr, addrlen, flags);
+
+    return (luab_pusherr(L, as));
+}
+#endif
 
 /*
  * Interface against <sys/socket.h>.
@@ -341,7 +465,11 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_INT("SF_USER_READAHEAD", SF_USER_READAHEAD),
     LUABSD_INT("SF_NOCACHE",    SF_NOCACHE),
 #endif
+    LUABSD_FUNC("accept",   luab_accept),
     LUABSD_FUNC("socket",   luab_socket),
+#if __BSD_VISIBLE
+    LUABSD_FUNC("accept4",   luab_accept4),
+#endif
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)
 };
