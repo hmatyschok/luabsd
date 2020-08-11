@@ -65,9 +65,9 @@ int luab_StructLinger(lua_State *);
  *
  * @function set_l_onoff
  *
- * @param l_onoff               Option.
+ * @param val               Option.
  *
- * @usage linger:set_l_onoff(l_onoff)
+ * @usage linger:set_l_onoff(val)
  */
 static int
 Linger_set_l_onoff(lua_State *L)
@@ -92,10 +92,10 @@ Linger_set_l_onoff(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (onoff [, nil, nil]) on success or
- *          (onoff, (errno, strerror(errno)))
+ *          (val [, nil, nil]) on success or
+ *          (val, (errno, strerror(errno)))
  *
- * @usage onoff [, err, msg ] = linger:get_l_onoff()
+ * @usage val [, err, msg ] = linger:get_l_onoff()
  */
 static int
 Linger_get_l_onoff(lua_State *L)
@@ -116,9 +116,9 @@ Linger_get_l_onoff(lua_State *L)
  *
  * @function set_l_linger
  *
- * @param l_linger          Specifies l_linger.
+ * @param val          Specifies l_linger.
  *
- * @usage linger:set_l_linger(l_linger)
+ * @usage linger:set_l_linger(val)
  */
 static int
 Linger_set_l_linger(lua_State *L)
@@ -143,10 +143,10 @@ Linger_set_l_linger(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (linger [, nil, nil]) on success or
- *          (linger, (errno, strerror(errno)))
+ *          (val [, nil, nil]) on success or
+ *          (val, (errno, strerror(errno)))
  *
- * @usage linger [, err, msg ] = linger:get_l_linger()
+ * @usage val [, err, msg ] = linger:get_l_linger()
  */
 static int
 Linger_get_l_linger(lua_State *L)
@@ -211,7 +211,7 @@ Linger_dump(lua_State *L)
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-    data = (caddr_t)(*linger_type.get)(L, 1);
+    data = luab_udata(L, 1, linger_type, caddr_t);
 
     len = sizeof(struct linger);
     max_len = len + sizeof(uint32_t);

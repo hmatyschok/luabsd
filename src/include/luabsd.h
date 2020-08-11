@@ -86,8 +86,8 @@ typedef struct luab_buf {
 } luab_buf_t;
 
 typedef struct luab_iovec_param {
-    luab_buf_t  iop_buf;    /* allocated memory, iov_base */
-    luab_buf_t  iop_data;   /* data */
+    luab_buf_t  iop_buf;    /* addr. of allocated memory region, iov_base */
+    luab_buf_t  iop_data;   /* supplied data */
     u_int   iop_flags;
 } luab_iovec_param_t;
 
@@ -110,6 +110,9 @@ extern luab_module_t iovec_type;
 
 #define SDL_DATA_MAX_LEN    46     /* XXX */
 #define SDL_ADDR_MAX_LEN    (SDL_DATA_MAX_LEN - IFNAMSIZ)
+
+int luab_buf_alloc(luab_buf_t *, size_t);
+int luab_buf_free(luab_buf_t *);
 
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);

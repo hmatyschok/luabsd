@@ -101,6 +101,52 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
  */
 
 int
+luab_buf_alloc(luab_buf_t *buf, size_t len)
+{
+    caddr_t bp;
+    int status;
+
+    if (buf != NULL && len > 0) {
+        if (buf->buf_data != NULL)
+            bp = realloc(buf->buf_data, len);
+        else
+            bp = malloc(len);
+
+        if (bp != NULL) {
+            (void)memset_s(bp, len, 0, len);
+
+            buf->buf_data = bp;
+            buf->buf_len = len;
+
+            status = 0;
+        } else
+            status = -1;
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
+luab_buf_free(luab_buf_t *buf)
+{
+    int status;
+
+    if (buf != NULL) {
+        if (buf->buf_data != NULL)
+            free(buf->buf_data);
+
+        buf->buf_len = 0;
+        status = 0;
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
 luab_checkmaxargs(lua_State *L, int nmax)
 {
     int narg;

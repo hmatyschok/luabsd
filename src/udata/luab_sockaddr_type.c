@@ -812,7 +812,7 @@ luab_module_t sockaddr_type = {
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ]= bsd.sys.socket.StructSockAddr(sockaddr)
+ * @usage sockaddr [, err, msg ]= bsd.sys.socket.StructSockAddr([ sockaddr ])
  */
 int
 luab_StructSockAddr(lua_State *L)
@@ -820,9 +820,10 @@ luab_StructSockAddr(lua_State *L)
     struct sockaddr *sa;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
-
-    sa = (struct sockaddr *)sockaddr_udata(L, 1);
+    if (luab_checkmaxargs(L, 1) == 1)
+        sa = (struct sockaddr *)sockaddr_udata(L, 1);
+    else
+        sa = NULL;
 
     if (sockaddr_create(L, sa) == NULL)
         status = luab_pushnil(L);
