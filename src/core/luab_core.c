@@ -134,9 +134,10 @@ luab_buf_free(luab_buf_t *buf)
     int status;
 
     if (buf != NULL) {
-        if (buf->buf_data != NULL)
+        if (buf->buf_data != NULL) {
             free(buf->buf_data);
-
+            buf->buf_data = NULL;
+        }
         buf->buf_len = 0;
         status = 0;
     } else {
