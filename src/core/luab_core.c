@@ -101,10 +101,35 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
  */
 
 int
+luab_buf_clear(luab_buf_t *buf)
+{
+    int status;
+
+    if (buf != NULL && buf->buf_data != NULL) {
+        if ((buf->buf_flags & IOV_LOCK) == 0) {
+            buf->buf_flags |= IOV_LOCK;
+
+            (void)memset_s(buf->buf_data, buf->buf_len, 0, buf->buf_len);
+
+            status = 0;
+
+            buf->buf_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (status);
+}
+
+int
 luab_buf_alloc(luab_buf_t *buf, size_t len)
 {
-    caddr_t bp;
     int status;
+    caddr_t bp;
 
     if (buf != NULL && len > 0) {
         if (buf->buf_data != NULL)
@@ -129,17 +154,85 @@ luab_buf_alloc(luab_buf_t *buf, size_t len)
 }
 
 int
+luab_buf_copy_in(luab_buf_t *buf, caddr_t data, size_t len)
+{
+    int status;
+    
+    if (buf != NULL && data != NULL && len > 0) {
+        if ((buf->buf_flags & IOV_LOCK) == 0) {
+            buf->buf_flags |= IOV_LOCK;
+
+            if ((buf->buf_data != NULL) &&
+                (len < buf->buf_len)) {
+                (void)memmove(buf->buf_data, data, len);
+
+                status = 0;
+            } else {
+                errno = EINVAL;
+                status = -1;
+            }
+            buf->buf_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
+luab_buf_copy_out(luab_buf_t *buf, caddr_t data, size_t len)
+{
+    int status;
+
+    if (buf != NULL && data != NULL && len > 0) {
+        if ((buf->buf_flags & IOV_LOCK) == 0) {
+            buf->buf_flags |= IOV_LOCK;
+
+            if ((buf->buf_data != NULL) &&
+                (len < buf->buf_len)) {
+                (void)memmove(data, buf->buf_data, len);
+
+                status = 0;
+            } else {
+                errno = EINVAL;
+                status = -1;
+            }
+            buf->buf_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
 luab_buf_free(luab_buf_t *buf)
 {
     int status;
 
-    if (buf != NULL) {
-        if (buf->buf_data != NULL) {
+    if (buf != NULL && buf->buf_data != NULL) {
+        if ((buf->buf_flags & IOV_LOCK) == 0) {
+            buf->buf_flags |= IOV_LOCK;
+
             free(buf->buf_data);
             buf->buf_data = NULL;
+            buf->buf_len = 0;
+
+            status = 0;
+
+            buf->buf_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
         }
-        buf->buf_len = 0;
-        status = 0;
     } else {
         errno = EINVAL;
         status = -1;
