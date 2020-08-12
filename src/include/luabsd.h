@@ -126,6 +126,8 @@ const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
 
 const char **    luab_checkargv(lua_State *, int);
+
+void *  luab_newvector(lua_State *, int, size_t);
 void *  luab_newlvector(lua_State *, int, size_t, size_t);
 int *   luab_checklintvector(lua_State *, int, size_t);
 
