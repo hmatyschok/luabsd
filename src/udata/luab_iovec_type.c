@@ -353,7 +353,7 @@ iovec_create(lua_State *L, void *arg)
 
     if ((iop = (luab_iovec_param_t *)arg) != NULL) {
         if ((len = iop->iop_buf.buf_len) > 0) {
-
+            
             if ((iop->iop_buf.buf_data = calloc(1, len)) != NULL)
                 iop->iop_flags = IOV_BUFF;
             else

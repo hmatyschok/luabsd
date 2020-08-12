@@ -133,7 +133,6 @@ int *   luab_checklintvector(lua_State *, int, size_t);
 
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
 
-
 /*
  * Operations on stack.
  */
