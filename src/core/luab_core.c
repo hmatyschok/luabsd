@@ -410,7 +410,7 @@ luab_checkargv(lua_State *L, int narg)
 
 /* Allocate an array by cardinality of given table */
 void *
-luab_newvector(lua_State *L, int narg, size_t len, size_t size)
+luab_newlvector(lua_State *L, int narg, size_t len, size_t size)
 {
     size_t n = luab_checkltable(L, narg, len);
     void *vec;
@@ -426,11 +426,11 @@ luab_newvector(lua_State *L, int narg, size_t len, size_t size)
 
 /* Translate an instance of LUA_TTABLE into an array of integers. */
 int *
-luab_checkintvector(lua_State *L, int narg, size_t len)
+luab_checklintvector(lua_State *L, int narg, size_t len)
 {
     int *vec, k, v;
 
-    vec = luab_newvector(L, narg, len, sizeof(int));
+    vec = luab_newlvector(L, narg, len, sizeof(int));
 
     lua_pushnil(L);
 
@@ -447,59 +447,6 @@ luab_checkintvector(lua_State *L, int narg, size_t len)
         lua_pop(L, 1);
     }
     return (vec);
-}
-
-/* Translate a LUA_TTABLE over LUA_TUSERDATA into an array of timespec{} items. */
-struct timespec *
-luab_checktimesvector(lua_State *L, int narg, size_t len)
-{
-    struct timespec *vec, *v;
-    int k;
-
-    vec = luab_newvector(L, narg, len, sizeof(struct timespec));
-
-    lua_pushnil(L);
-
-    for (k = 0; lua_next(L, narg) != 0; k++) {
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isuserdata(L, -1) != 0)) {
-            v = luab_udata(L, -1, timespec_type, struct timespec *);
-            (void)memmove(&vec[k], v, sizeof(struct timespec));
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
-        lua_pop(L, 1);
-    }
-    return (vec);
-}
-
-void
-luab_pushtimesvector(lua_State *L, int narg, size_t len, void *arg)
-{
-    struct timespec *vec, *v;
-    int k;
-
-    (void)luab_checkltable(L, narg, len);
-
-    vec = (struct timespec *)arg;
-
-    lua_pushnil(L);
-
-    for (k = 0; lua_next(L, narg) != 0; k++) {
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isuserdata(L, -1) != 0)) {
-            v = luab_udata(L, -1, timespec_type, struct timespec *);
-            (void)memmove(v, &vec[k], sizeof(struct timespec));
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
-        lua_pop(L, 1);
-    }
-    free(vec);
 }
 
 /*

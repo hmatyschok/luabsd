@@ -96,12 +96,12 @@ h_signal(int arg __unused)
 
 /* Translate a LUA_TTABLE into an array of gid_t items. */
 static gid_t *
-luab_checkgidset(lua_State *L, int narg, size_t len)
+luab_checklgidset(lua_State *L, int narg, size_t len)
 {
     gid_t *vec, v;
     int k;
 
-    vec = luab_newvector(L, narg, len, sizeof(gid_t));
+    vec = luab_newlvector(L, narg, len, sizeof(gid_t));
 
     lua_pushnil(L);
 
@@ -1069,7 +1069,7 @@ luab_pipe(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    fildes = luab_checkintvector(L, 1, 2);
+    fildes = luab_checklintvector(L, 1, 2);
     status = pipe(fildes);
 
     free(fildes);
@@ -3529,7 +3529,7 @@ luab_pipe2(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    fildes = luab_checkintvector(L, 1, 2);
+    fildes = luab_checklintvector(L, 1, 2);
     flags = (int)luab_checkinteger(L, 2, INT_MAX);
 
     status = pipe2(fildes, flags);
@@ -3648,7 +3648,7 @@ luab_setgroups(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     ngroups = (int)luab_checkinteger(L, 1, INT_MAX);
-    gidset = luab_checkgidset(L, 2, ngroups);
+    gidset = luab_checklgidset(L, 2, ngroups);
 
     status = setgroups(ngroups, gidset);
 

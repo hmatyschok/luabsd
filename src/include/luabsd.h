@@ -121,16 +121,16 @@ int luab_buf_free(luab_buf_t *);
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);
-void    luab_pushtimesvector(lua_State *, int, size_t, void *);
 
-const char **    luab_checkargv(lua_State *, int);
-int *   luab_checkintvector(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
-struct timespec *   luab_checktimesvector(lua_State *, int, size_t);
+
+const char **    luab_checkargv(lua_State *, int);
+void *  luab_newlvector(lua_State *, int, size_t, size_t);
+int *   luab_checklintvector(lua_State *, int, size_t);
 
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
-void *  luab_newvector(lua_State *, int, size_t, size_t);
+
 
 /*
  * Operations on stack.
