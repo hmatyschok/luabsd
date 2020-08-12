@@ -97,7 +97,7 @@ luab_module_t luab_core_lib = {
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
- * Common ops. and subr.
+ * Common methods on generic buffer.
  */
 
 int
@@ -240,6 +240,10 @@ luab_buf_free(luab_buf_t *buf)
     return (status);
 }
 
+/*
+ * Common ops. and subr.
+ */
+
 int
 luab_checkmaxargs(lua_State *L, int nmax)
 {
@@ -363,7 +367,11 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
     return (ud);
 }
 
-/* Translate an instance of LUA_TTABLE into an argv. */
+/*
+ * Operations on argv for family (of functions) over exec(2). 
+ *
+ * Translate an instance of LUA_TTABLE into an argv.
+ */
 const char **
 luab_checkargv(lua_State *L, int narg)
 {
@@ -395,6 +403,10 @@ luab_checkargv(lua_State *L, int narg)
     }
     return argv;
 }
+
+/*
+ * Vector operations.
+ */
 
 /* Allocate an array by cardinality of given table */
 void *

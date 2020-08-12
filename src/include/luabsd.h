@@ -228,11 +228,13 @@ luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
     return ((luaL_checkinteger(L, narg)) & (b_msk));
 }
 
-static __inline void
+static __inline int
 luab_checktable(lua_State *L, int narg)
 {
     if (lua_istable(L, narg) == 0)
         luaL_argerror(L, narg, "Table expected");
+
+    return (lua_rawlen(L, narg));
 }
 
 static __inline size_t
@@ -240,9 +242,7 @@ luab_checkltable(lua_State *L, int narg, size_t len)
 {
     size_t n;
 
-    luab_checktable(L, narg);
-
-    if ((n = lua_rawlen(L, narg)) != len)
+    if ((n = luab_checktable(L, narg)) != len)
         luaL_argerror(L, narg, "Size mismatch");
 
     return (n);
