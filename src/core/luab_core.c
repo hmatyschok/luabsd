@@ -157,7 +157,7 @@ int
 luab_buf_copy_in(luab_buf_t *buf, caddr_t data, size_t len)
 {
     int status;
-    
+
     if (buf != NULL && data != NULL && len > 0) {
         if ((buf->buf_flags & IOV_LOCK) == 0) {
             buf->buf_flags |= IOV_LOCK;
@@ -368,7 +368,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 }
 
 /*
- * Operations on argv for family (of functions) over exec(2). 
+ * Operations on argv for family (of functions) over exec(2).
  *
  * Translate an instance of LUA_TTABLE into an argv.
  */
@@ -408,12 +408,33 @@ luab_checkargv(lua_State *L, int narg)
  * Vector operations.
  */
 
-/* Allocate an array by cardinality of given table */
+/* Allocate an array by cardinality of given table. */
+void *
+luab_newvector(lua_State *L, int narg, size_t size)
+{
+    size_t n;
+    void *vec;
+
+    if ((n = luab_checktable(L, narg)) == 0)
+        luaL_argerror(L, narg, "Empty table");
+
+    if (size == 0)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    if ((vec = calloc(n, size)) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    return (vec);
+}
+
+/* Allocate an array by constraint less equal from cardinality of given table. */
 void *
 luab_newlvector(lua_State *L, int narg, size_t len, size_t size)
 {
-    size_t n = luab_checkltable(L, narg, len);
+    size_t n;
     void *vec;
+
+    n = luab_checkltable(L, narg, len);
 
     if (size == 0)
         luaL_argerror(L, narg, "Invalid argument");
