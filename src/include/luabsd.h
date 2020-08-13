@@ -186,6 +186,11 @@ luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
         iop.iop_data.buf_len = len;
         iop.iop_data.buf_data = v;
 
+        /*
+         * Best effort, this means try to push things
+         * on stack at least is possible, regardless
+         * if allocationg memory is possible or not.
+         */
         if ((buf = (*iovec_type.ctor)(L, &iop)) != NULL)
             lua_setfield(L, narg, k);
     }
@@ -220,7 +225,7 @@ luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 }
 
 /*
- * Accessor for evaluation of function arguments.
+ * Accessor for evaluation of argv.
  */
 
 static __inline lua_Integer

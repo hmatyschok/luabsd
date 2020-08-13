@@ -12,6 +12,7 @@ SRCS+=	luab_if_nameindex_type.c
 SRCS+=	luab_in_addr_type.c
 SRCS+=	luab_in6_addr_type.c
 SRCS+=	luab_iovec_type.c
+# SRCS+=	luab_msghdr_type.c
 SRCS+=	luab_itimerval_type.c
 SRCS+=	luab_linger_type.c
 SRCS+=	luab_sockaddr_type.c

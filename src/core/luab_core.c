@@ -476,33 +476,33 @@ luab_checklintvector(lua_State *L, int narg, size_t len)
  */
 
 static void
-luab_populate(lua_State *L, luab_module_t *m)
+luab_populate(lua_State *L, int narg, luab_module_t *m)
 {
     luab_table_t *tok;
 
     for (tok = m->vec; tok->key != NULL; tok++) {
         (void)(*tok->init)(L, &tok->val);
-        lua_setfield(L, -2, tok->key);
+        lua_setfield(L, narg, tok->key);
     }
     lua_pop(L, 0);
 }
 
 static void
-luab_newtable(lua_State *L, luab_module_t *m)
+luab_newtable(lua_State *L, int narg, luab_module_t *m)
 {
     lua_newtable(L);
-    luab_populate(L, m);
-    lua_setfield(L, -2, m->name);
+    luab_populate(L, narg, m);
+    lua_setfield(L, narg, m->name);
 }
 
 static void
 luab_newmetatable(lua_State *L, luab_module_t *m)
 {
-    luaL_newmetatable(L, m->name);
+    luaL_newmetatable(L, m->name);  /* XXX */
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
 
-    luab_populate(L, m);
+    luab_populate(L, -2, m);
 
     lua_pop(L, 1);
 }
@@ -518,30 +518,30 @@ luaopen_bsd(lua_State *L)
     lua_newtable(L);
 
     lua_newtable(L);
-    luab_newtable(L, &luab_arpa_inet_lib);
+    luab_newtable(L, -2, &luab_arpa_inet_lib);
     lua_setfield(L, -2, "arpa");
 
     lua_newtable(L);
-    luab_newtable(L, &luab_net_if_dl_lib);
-    luab_populate(L, &luab_net_if_lib);
+    luab_newtable(L, -2, &luab_net_if_dl_lib);
+    luab_populate(L, -2, &luab_net_if_lib);
     lua_setfield(L, -2, "net");
 
     lua_newtable(L);
-    luab_newtable(L, &luab_sys_file_lib);
-    luab_newtable(L, &luab_sys_stat_lib);
-    luab_newtable(L, &luab_sys_time_lib);
-    luab_newtable(L, &luab_sys_uio_lib);
-    luab_newtable(L, &luab_sys_unistd_lib);
-    luab_newtable(L, &luab_sys_socket_lib);
+    luab_newtable(L, -2, &luab_sys_file_lib);
+    luab_newtable(L, -2, &luab_sys_stat_lib);
+    luab_newtable(L, -2, &luab_sys_time_lib);
+    luab_newtable(L, -2, &luab_sys_uio_lib);
+    luab_newtable(L, -2, &luab_sys_unistd_lib);
+    luab_newtable(L, -2, &luab_sys_socket_lib);
     lua_setfield(L, -2, "sys");
 
-    luab_newtable(L, &luab_core_lib);
-    luab_newtable(L, &luab_db_lib);
-    luab_newtable(L, &luab_fcntl_lib);
-    luab_newtable(L, &luab_stdlib_lib);
-    luab_newtable(L, &luab_time_lib);
-    luab_newtable(L, &luab_unistd_lib);
-    luab_newtable(L, &luab_uuid_lib);
+    luab_newtable(L, -2, &luab_core_lib);
+    luab_newtable(L, -2, &luab_db_lib);
+    luab_newtable(L, -2, &luab_fcntl_lib);
+    luab_newtable(L, -2, &luab_stdlib_lib);
+    luab_newtable(L, -2, &luab_time_lib);
+    luab_newtable(L, -2, &luab_unistd_lib);
+    luab_newtable(L, -2, &luab_uuid_lib);
 
     lua_pushvalue(L, -1);
 
