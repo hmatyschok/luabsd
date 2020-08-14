@@ -85,11 +85,51 @@ int luab_StructMsgHdr(lua_State *);
 static void
 msghdr_free_iov(struct msghdr *msg)
 {
-    if (msg->msg_iov != NULL) {
+    struct iovec *iov;
+    int i, iovlen;
+    
+    if (((iov = msg->msg_iov) != NULL) &&
+        ((iovlen = msg->msg_iovlen) > 0)) {
+
+        for (i = 0; i < iovlen; i++) {
+            if (iov->iov_base != NULL) {
+                free(iov->iov_base);
+                iov->iov_base = NULL;
+                iov->iov_len = 0;
+            }
+        }
         free(msg->msg_iov);
         msg->msg_iov = NULL;
         msg->msg_iovlen = 0;
     }
+}
+
+static int
+msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
+{
+    luab_iovec_t *buf;
+    struct iovec *src;
+    struct iovec *dst;
+    int status;
+
+    /* XXX well, race-cond. with gc, but this will be resolved, today. */
+
+    if ((buf = luab_isiovec(L, narg)) != NULL) {
+        buf->iov_flags |= IOV_LOCK;
+
+        src = &(buf->iov);
+        dst = &(iov[idx]);
+
+        (void)memmove(dst, src, sizeof(buf->iov));
+
+        buf->iov_flags &= ~IOV_LOCK;
+
+        status = 0;
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
 }
 
 static int
@@ -335,10 +375,7 @@ static int
 MsgHdr_set_msg_iov(lua_State *L)
 {
     struct msghdr *msg;
-    luab_iovec_t *buf;
     struct iovec *iov;
-    struct iovec *src;
-    struct iovec *dst;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
@@ -363,21 +400,7 @@ MsgHdr_set_msg_iov(lua_State *L)
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {
 
-            if ((buf = luab_isiovec(L, -1)) != NULL) {
-                buf->iov_flags |= IOV_LOCK;
-
-                src = &(buf->iov);
-                dst = &(iov[msg->msg_iovlen]);
-
-                (void)memmove(dst, src, sizeof(buf->iov));
-
-                buf->iov_flags &= ~IOV_LOCK;
-            } else {
-                errno = EINVAL;
-                status = -1;
-                break;
-            }
-            status = 0;
+            status = msghdr_init_iov(L, -1, iov, msg->msg_iovlen);
         } else {
             errno = EINVAL;
             status = -1;
