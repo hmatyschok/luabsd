@@ -87,7 +87,7 @@ msghdr_free_iov(struct msghdr *msg)
 {
     struct iovec *iov;
     int i, iovlen;
-    
+
     if (((iov = msg->msg_iov) != NULL) &&
         ((iovlen = msg->msg_iovlen) > 0)) {
 
@@ -112,21 +112,36 @@ msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
     struct iovec *dst;
     int status;
 
-    /* XXX well, race-cond. with gc, but this will be resolved, today. */
+    /* XXX well, race-cond. with gc, on case of IOV_BUFF resolved. */
 
-    if ((buf = luab_isiovec(L, narg)) != NULL) {
+    if (((buf = luab_isiovec(L, narg)) != NULL) &&
+        (buf->iov_flags & (IOV_PROXY|IOV_BUFF))) {
         buf->iov_flags |= IOV_LOCK;
 
         src = &(buf->iov);
         dst = &(iov[idx]);
 
-        (void)memmove(dst, src, sizeof(buf->iov));
+        if (buf->iov_flags & IOV_BUFF) {
 
+            if ((dst->iov_base = calloc(1, buf->iov_max_len)) != NULL) {
+
+                if (src->iov_len > 0) {
+                    (void)memmove(dst->iov_base, src->iov_base, src->iov_len);
+                    dst->iov_len = src->iov_len;
+                } else
+                    dst->iov_len = buf->iov_max_len; /* XXX */
+
+                status = 0;
+            } else
+                status = -1;
+
+        } else {
+            errno = EOPNOTSUPP;
+            status = -1;
+        }
         buf->iov_flags &= ~IOV_LOCK;
-
-        status = 0;
     } else {
-        errno = EINVAL;
+        errno = ENXIO;
         status = -1;
     }
     return (status);
