@@ -34,9 +34,11 @@
 
 extern luab_module_t hook_type;
 extern luab_module_t linger_type;
+extern luab_module_t msghdr_type;
 extern luab_module_t sockaddr_type;
 
 extern int luab_StructLinger(lua_State *);
+extern int luab_StructMsgHdr(lua_State *);
 extern int luab_StructSockAddr(lua_State *);
 
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
@@ -848,7 +850,11 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("listen",   luab_listen),
     LUABSD_FUNC("recv", luab_recv),
     LUABSD_FUNC("recvfrom", luab_recvfrom),
-    LUABSD_FUNC("StructLinger",   luab_StructLinger),
+#if 0
+    LUABSD_FUNC("recvfrom", luab_recvmsg),
+#endif
+    LUABSD_FUNC("StructLinger", luab_StructLinger),
+    LUABSD_FUNC("StructMsgHdr", luab_StructMsgHdr),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
     LUABSD_INT(NULL, 0)
 };

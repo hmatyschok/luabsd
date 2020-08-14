@@ -44,6 +44,7 @@ extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;
 extern luab_module_t itimerval_type;
 extern luab_module_t linger_type;
+extern luab_module_t msghdr_type;
 extern luab_module_t sockaddr_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
@@ -553,6 +554,7 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &iovec_type);
     luab_newmetatable(L, &itimerval_type);
     luab_newmetatable(L, &linger_type);
+    luab_newmetatable(L, &msghdr_type);
     luab_newmetatable(L, &sockaddr_type);
     luab_newmetatable(L, &stat_type);
     luab_newmetatable(L, &timezone_type);
