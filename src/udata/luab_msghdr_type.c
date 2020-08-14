@@ -59,8 +59,8 @@ extern luab_module_t msghdr_type;
 #define MH_MAX_BUF  2
 
 /*
- * Attributes *msg_{name,control} maps to mh_buf[MH_{NAME,CONTROL}] avoids
- * race-conditions with gc, if e. g. local variables got re-assigned, etc.
+ * By reffered *msg_{name,control} data maps to mh_buf[MH_{NAME,CONTROL}] avoids
+ * race-cond. with gc.
  */
 
 typedef struct luab_msghdr {
