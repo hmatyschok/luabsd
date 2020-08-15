@@ -59,8 +59,8 @@ extern luab_module_t msghdr_type;
 #define MH_MAX_BUF  2
 
 /*
- * By reffered *msg_{name,control} data maps to mh_buf[MH_{NAME,CONTROL}] avoids
- * race-cond. with gc.
+ * By *msg_{name,control} reffered data maps to mh_buf[MH_{NAME,CONTROL}] avoids
+ * possible race-cond. with gc.
  */
 
 typedef struct luab_msghdr {
@@ -129,7 +129,7 @@ msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
                     (void)memmove(dst->iov_base, src->iov_base, src->iov_len);
                     dst->iov_len = src->iov_len;
                 } else
-                    dst->iov_len = buf->iov_max_len; /* XXX */
+                    dst->iov_len = buf->iov_max_len;
 
                 status = 0;
             } else

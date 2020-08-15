@@ -441,9 +441,9 @@ luab_listen(lua_State *L)
  * @param flags             Flags argument over
  *
  *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC,WAITFORONE}
+ *                                  DONTWAIT,CMSG_CLOEXEC}
  *
- *                          are all combined by inclusive or.
+ *                          may combined by inclusive or.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -507,9 +507,9 @@ luab_recv(lua_State *L)
  * @param flags             Flags argument over
  *
  *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC,WAITFORONE}
+ *                                  DONTWAIT,CMSG_CLOEXEC}
  *
- *                          are all combined by inclusive or.
+ *                          may combined by inclusive or.
  * @param from              Result argument, LUA_TUSERDATA(luab_sockaddr_t).
  * @param fromlen           Value-result argument, LUA_TUSERDATA(luab_hook_t).
  *
@@ -565,6 +565,96 @@ luab_recvfrom(lua_State *L)
         buf->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+/***
+ * recvmsg(2) - receive message(s) from a socket(9)
+ *
+ * @function recvmsg
+ *
+ * @param s                 File drscriptor denotes by socket(2) opened socket(9).
+ * @param msg               Instance of LUA_TUSERDATA(luab_msghdr_t).
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC}
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.recvmsg(s, buf, len, flags)
+ */
+static int
+luab_recvmsg(lua_State *L)
+{
+    int s;
+    struct msghdr *msg;
+    int flags;
+    ssize_t count;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    msg = luab_udata(L, 2, msghdr_type, struct msghdr *);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if ((msg->msg_iov != NULL) &&
+        (msg->msg_iovlen > 0))
+        count = recvmsg(s, msg, flags);
+    else {
+        errno = ENXIO;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+/***
+ * sendmsg(2) - send message(s) from a socket(9)
+ *
+ * @function sendmsg
+ *
+ * @param s                 File drscriptor denotes by socket(2) opened socket(9).
+ * @param msg               Instance of LUA_TUSERDATA(luab_msghdr_t).
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC}
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.sendmsg(s, buf, len, flags)
+ */
+static int
+luab_sendmsg(lua_State *L)
+{
+    int s;
+    struct msghdr *msg;
+    int flags;
+    ssize_t count;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    msg = luab_udata(L, 2, msghdr_type, struct msghdr *);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if ((msg->msg_iov != NULL) &&
+        (msg->msg_iovlen > 0))
+        count = sendmsg(s, msg, flags);
+    else {
+        errno = ENXIO;
         count = -1;
     }
     return (luab_pusherr(L, count));
@@ -850,9 +940,8 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("listen",   luab_listen),
     LUABSD_FUNC("recv", luab_recv),
     LUABSD_FUNC("recvfrom", luab_recvfrom),
-#if 0
-    LUABSD_FUNC("recvfrom", luab_recvmsg),
-#endif
+    LUABSD_FUNC("recvmsg", luab_recvmsg),
+    LUABSD_FUNC("sendmsg", luab_sendmsg),
     LUABSD_FUNC("StructLinger", luab_StructLinger),
     LUABSD_FUNC("StructMsgHdr", luab_StructMsgHdr),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
