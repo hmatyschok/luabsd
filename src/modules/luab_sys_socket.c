@@ -615,7 +615,50 @@ luab_recvmsg(lua_State *L)
     return (luab_pusherr(L, count));
 }
 
+/***
+ * sendmsg(2) - send message(s) from a socket(9)
+ *
+ * @function sendmsg
+ *
+ * @param s                 File drscriptor denotes by socket(2) opened socket(9).
+ * @param msg               Instance of LUA_TUSERDATA(luab_msghdr_t).
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC}
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.sendmsg(s, buf, len, flags)
+ */
+static int
+luab_sendmsg(lua_State *L)
+{
+    int s;
+    struct msghdr *msg;
+    int flags;
+    ssize_t count;
 
+    (void)luab_checkmaxargs(L, 3);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    msg = luab_udata(L, 2, msghdr_type, struct msghdr *);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if ((msg->msg_iov != NULL) &&
+        (msg->msg_iovlen > 0))
+        count = sendmsg(s, msg, flags);
+    else {
+        errno = ENXIO;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
 
 /*
  * Interface against <sys/socket.h>.
