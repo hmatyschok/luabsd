@@ -26,7 +26,10 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/un.h>
+
 #include <netinet/in.h>
+
 #include <net/if.h>
 #include <net/if_dl.h>
 
@@ -80,6 +83,10 @@ typedef struct luab_sockaddr {
 int luab_StructSockAddr(lua_State *);
 int luab_StructSockAddrDL(lua_State *);
 int luab_StructSockAddrIn(lua_State *);
+
+#define SUN_MAX_PATH    103
+
+int luab_StructSockAddrUn(lua_State *);
 
 /*
  * Subr.
@@ -161,6 +168,22 @@ sockaddr_in_to_table(lua_State *L, void *arg)
     lua_pushvalue(L, -1);
 }
 
+static void
+sockaddr_un_to_table(lua_State *L, void *arg)
+{
+    struct sockaddr_un *sun;
+
+    sun = (struct sockaddr_un *)arg;
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "sun_len", sun->sun_len);
+    luab_setinteger(L, -2, "sun_family", sun->sun_family);
+    luab_setstring(L, -2, "sun_path", sun->sun_path);
+
+    lua_pushvalue(L, -1);
+}
+
 /***
  * Get value for length.
  *
@@ -235,6 +258,9 @@ SockAddr_get(lua_State *L)
      * SockAddr This switch-statement should be replaced by protosw-table.
      */
     switch (sa->sa_family) {
+    case AF_UNIX:
+        sockaddr_un_to_table(L, sa);
+        break;
     case AF_INET:
         sockaddr_in_to_table(L, sa);
         break;
@@ -719,6 +745,91 @@ SockAddr_get_sin_addr(lua_State *L)
     return (status);
 }
 
+
+/*
+ * Socket address for UNIX IPC domain.
+ *
+ *  struct sockaddr_un {
+ *      unsigned char   sun_len;
+ *      sa_family_t sun_family;
+ *      char    sun_path[104];
+ *  };
+ */
+
+/***
+ * Set path.
+ *
+ * @function set_sun_path
+ *
+ * @param path              Specifies path for socket(9).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = sockaddr:set_sun_path(path)
+ */
+static int
+SockAddr_set_sun_path(lua_State *L)
+{
+    struct sockaddr_un *sun;
+    const char *sun_path;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    sun = luab_udata(L, 1, sockaddr_type, struct sockaddr_un *);
+    sun_path = luab_checklstring(L, 1, SUN_MAX_PATH);
+
+    if (sun->sun_family == AF_UNIX) {
+        (void)memmove(sun->sun_path, sun_path, strlen(sun_path));
+        status = 0;
+    } else {
+        errno = EPERM;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * Get path.
+ *
+ * @function get_sun_path
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (path [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage path [, err, msg ] = sockaddr:get_sun_path()
+ */
+static int
+SockAddr_get_sun_path(lua_State *L)
+{
+    struct sockaddr_un *sun;
+    char *sun_path;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sun = luab_udata(L, 1, sockaddr_type, struct sockaddr_un *);
+
+    if (sun->sun_family == AF_UNIX) {
+        sun_path = sun->sun_path;
+        status = luab_pushstring(L, sun_path);
+    } else {
+        errno = EPERM;
+        status = luab_pushnil(L);
+    }
+    return (status);
+}
+
+
+/*
+ * Meta-methods.
+ */
+
 static int
 SockAddr_gc(lua_State *L)
 {
@@ -756,6 +867,7 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("set_sdl_alen",    SockAddr_set_sdl_alen),
     LUABSD_FUNC("set_sin_port", SockAddr_set_sin_port),
     LUABSD_FUNC("set_sin_addr", SockAddr_set_sin_addr),
+    LUABSD_FUNC("set_sun_path", SockAddr_set_sun_path),
     LUABSD_FUNC("get",  SockAddr_get),
     LUABSD_FUNC("get_sdl_index",    SockAddr_get_sdl_index),
     LUABSD_FUNC("get_sdl_type",    SockAddr_get_sdl_type),
@@ -763,6 +875,7 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("get_sdl_alen",    SockAddr_get_sdl_alen),
     LUABSD_FUNC("get_sin_port", SockAddr_get_sin_port),
     LUABSD_FUNC("get_sin_addr", SockAddr_get_sin_addr),
+    LUABSD_FUNC("get_sun_path", SockAddr_get_sun_path),
     LUABSD_FUNC("__gc", SockAddr_gc),
     LUABSD_FUNC("__tostring",   SockAddr_tostring),
     LUABSD_FUNC(NULL, NULL)
@@ -895,6 +1008,44 @@ luab_StructSockAddrIn(lua_State *L)
     default:
         sin.sin_addr.s_addr = htonl(sin.sin_addr.s_addr);
         sin.sin_port = htons(sin.sin_port);
+        break;
+    }
+
+    if (sockaddr_create(L, sa) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return (status);
+}
+
+/***
+ * Ctor for sockaddr_un{}.
+ *
+ * @function StructSockAddrUn
+ *
+ * @param path              Specifies path or filename.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.StructSockAddrUn([ path ])
+ */
+int
+luab_StructSockAddrUn(lua_State *L)
+{
+    struct sockaddr_un sun;
+    struct sockaddr *sa;
+    const char *sun_path;
+    int status;
+
+    sa = (struct sockaddr *)&sun;
+    sockaddr_pci(sa, AF_UNIX, sizeof(sun));
+
+    switch (luab_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
+    case 1:
+        sun_path = luab_checklstring(L, 1, SUN_MAX_PATH);
+        (void)memmove(sun.sun_path, sun_path, strlen(sun_path));
+    default:
         break;
     }
 
