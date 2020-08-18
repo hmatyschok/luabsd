@@ -83,14 +83,11 @@ typedef struct luab_sockaddr {
 int luab_StructSockAddr(lua_State *);
 int luab_StructSockAddrDL(lua_State *);
 int luab_StructSockAddrIn(lua_State *);
+int luab_StructSockAddrIn6(lua_State *);
 
 #define SUN_MAX_PATH    103
 
 int luab_StructSockAddrUn(lua_State *);
-
-/*
- * Subr.
- */
 
 static int
 sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
@@ -169,6 +166,29 @@ sockaddr_in_to_table(lua_State *L, void *arg)
 }
 
 static void
+sockaddr_in6_to_table(lua_State *L, void *arg)
+{
+    struct sockaddr_in6 *sin6;
+    struct in6_addr sin6_addr;
+
+    sin6 = (struct sockaddr_in6 *)arg;
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "sin6_len", sin6->sin6_len);
+    luab_setinteger(L, -2, "sin6_family", sin6->sin6_family);
+    luab_setinteger(L, -2, "sin6_port", ntohs(sin6->sin6_port));
+    luab_setinteger(L, -2, "sin6_flowinfo", ntohl(sin6->sin6_flowinfo));
+
+    (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
+    luab_setudata(L, -2, &in6_addr_type, "sin6_addr", &sin6_addr);
+
+    luab_setinteger(L, -2, "sin6_scope_id", ntohl(sin6->sin6_scope_id));
+
+    lua_pushvalue(L, -1);
+}
+
+static void
 sockaddr_un_to_table(lua_State *L, void *arg)
 {
     struct sockaddr_un *sun;
@@ -183,6 +203,10 @@ sockaddr_un_to_table(lua_State *L, void *arg)
 
     lua_pushvalue(L, -1);
 }
+
+/*
+ * Accessor for immutable properties
+ */
 
 /***
  * Get value for length.
@@ -217,10 +241,10 @@ SockAddr_sa_len(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (af [, nil, nil]) on success or
- *          (af, (errno, strerror(errno)))
+ *          (domain [, nil, nil]) on success or
+ *          (domain, (errno, strerror(errno)))
  *
- * @usage af [, err, msg ] = sockaddr:sa_family()
+ * @usage domain [, err, msg ] = sockaddr:sa_family()
  */
 static int
 SockAddr_sa_family(lua_State *L)
@@ -236,8 +260,12 @@ SockAddr_sa_family(lua_State *L)
     return (luab_pusherr(L, sa_family));
 }
 
+/*
+ * Generic accessor.
+ */
+
 /***
- * Translate (generic) socket address into LUA_TTABLE.
+ * Translate LUA_TUSERDATA(luab_socket_t) into LUA_TTABLE.
  *
  * @function get
  *
@@ -255,7 +283,7 @@ SockAddr_get(lua_State *L)
     sa = luab_udata(L, 1, sockaddr_type, struct sockaddr *);
 
     /*
-     * SockAddr This switch-statement should be replaced by protosw-table.
+     * XXX replacement by protosw-table.
      */
     switch (sa->sa_family) {
     case AF_UNIX:
@@ -263,6 +291,8 @@ SockAddr_get(lua_State *L)
         break;
     case AF_INET:
         sockaddr_in_to_table(L, sa);
+    case AF_INET6:
+        sockaddr_in6_to_table(L, sa);
         break;
     case AF_LINK:
         sockaddr_dl_to_table(L, sa);
@@ -745,6 +775,295 @@ SockAddr_get_sin_addr(lua_State *L)
     return (status);
 }
 
+/*
+ * Socket address for inet6(4) domain(9).
+ *
+ *  struct sockaddr_in6 {
+ *      uint8_t		sin6_len;
+ *      sa_family_t	sin6_family;
+ *      in_port_t	sin6_port;
+ *      uint32_t	sin6_flowinfo;
+ *      struct in6_addr	sin6_addr;
+ *      uint32_t	sin6_scope_id;
+ *  };
+ *
+ * Implicit conversion between network / host byteorder.
+ */
+
+/***
+ * Set ID for SAP at OSI-L4 (Socket Layer, Transport Layer).
+ *
+ * @function set_sin6_port
+ *
+ * @param port              Specifies port ID, see /etc/services.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, msg] = sockaddr:set_sin6_port(port)
+ */
+static int
+SockAddr_set_sin6_port(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    in_port_t sin6_port;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+    sin6_port = (in_port_t)luab_checkinteger(L, 2, SHRT_MAX);
+
+    if (sin6->sin6_family == AF_INET6) {
+        sin6->sin6_port = htons(sin6_port);
+        status = 0;
+    } else {
+        errno = EPERM;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * Get ID for SAP at OSI-L4 (Socket Layer, Transport Layer).
+ *
+ * @function get_sin6_port
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (port [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage port [, err, msg ] = sockaddr:get_sin6_port()
+ */
+static int
+SockAddr_get_sin6_port(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    int sin6_port;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+
+    if (sin6->sin6_family == AF_INET6)
+        sin6_port = ntohs(sin6->sin6_port);
+    else {
+        errno = EPERM;
+        sin6_port = -1;
+    }
+    return (luab_pusherr(L, sin6_port));
+}
+
+/***
+ * Set inet6(4) Flow Label.
+ *
+ * @function set_sin6_flowinfo
+ *
+ * @param info              Specifies Flow Label, see RFC6437.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, msg] = sockaddr:set_sin6_flowinfo(flowinfo)
+ */
+static int
+SockAddr_set_sin6_flowinfo(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    uint32_t sin6_flowinfo;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+    sin6_flowinfo = (uint32_t)luab_checkinteger(L, 2, INT_MAX);
+
+    if (sin6->sin6_family == AF_INET6) {
+        sin6->sin6_flowinfo = htonl(sin6_flowinfo);
+        status = 0;
+    } else {
+        errno = EPERM;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * Get inet6(4) Flow Label, RFC6437.
+ *
+ * @function get_sin6_flowinfo
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (flowinfo [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage flowinfo [, err, msg ] = sockaddr:get_sin6_flowinfo()
+ */
+static int
+SockAddr_get_sin6_flowinfo(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    long sin6_flowinfo;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+
+    if (sin6->sin6_family == AF_INET6)
+        sin6_flowinfo = ntohl(sin6->sin6_flowinfo);
+    else {
+        errno = EPERM;
+        sin6_flowinfo = -1;
+    }
+    return (luab_pusherr(L, sin6_flowinfo));
+}
+
+/***
+ * Set ID for SAP at OSI-L3 (Protocol Layer, Network Layer).
+ *
+ * @function set_sin6_addr
+ *
+ * @param addr              Specifies ip6(4) address by instance
+ *                          of LUA_TUSERDATA(luab_in6_addr_t).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = sockaddr:set_sin6_addr(addr)
+ */
+static int
+SockAddr_set_sin6_addr(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    struct in6_addr *sin6_addr;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+    sin6_addr = luab_udata(L, 2, in6_addr_type, struct in6_addr *);
+
+    if (sin6->sin6_family == AF_INET6) {
+        (void)memmove(&sin6->sin6_addr, sin6_addr, sizeof(*sin6_addr));
+        status = 0;
+    } else {
+        errno = EPERM;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * Get ID for SAP at OSI-L3 (Protocol Layer, Network Layer).
+ *
+ * @function get_sin6_addr
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage addr [, err, msg ] = sockaddr:get_sin6_addr()
+ */
+static int
+SockAddr_get_sin6_addr(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    struct in6_addr sin6_addr;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+
+    if (sin6->sin6_family == AF_INET6) {
+        (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
+
+        if ((*in6_addr_type.ctor)(L, &sin6_addr) == NULL)
+            status = luab_pushnil(L);
+        else
+            status = 1;
+    } else {
+        errno = EPERM;
+        status = luab_pushnil(L);
+    }
+    return (status);
+}
+
+/***
+ * Set inet6(4) scope ID.
+ *
+ * @function set_sin6_scope_id
+ *
+ * @param id                Specifies scope ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, msg] = sockaddr:set_sin6_scope_id(id)
+ */
+static int
+SockAddr_set_sin6_scope_id(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    uint32_t sin6_scope_id;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+    sin6_scope_id = (uint32_t)luab_checkinteger(L, 2, INT_MAX);
+
+    if (sin6->sin6_family == AF_INET6) {
+        sin6->sin6_scope_id = htonl(sin6_scope_id);
+        status = 0;
+    } else {
+        errno = EPERM;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * Get inet6(4) zone index.
+ *
+ * @function get_sin6_scope_id
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (id [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage id [, err, msg ] = sockaddr:get_sin6_scope_id()
+ */
+static int
+SockAddr_get_sin6_scope_id(lua_State *L)
+{
+    struct sockaddr_in6 *sin6;
+    long sin6_scope_id;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sin6 = luab_udata(L, 1, sockaddr_type, struct sockaddr_in6 *);
+
+    if (sin6->sin6_family == AF_INET6)
+        sin6_scope_id = ntohl(sin6->sin6_scope_id);
+    else {
+        errno = EPERM;
+        sin6_scope_id = -1;
+    }
+    return (luab_pusherr(L, sin6_scope_id));
+}
 
 /*
  * Socket address for UNIX IPC domain.
@@ -867,6 +1186,10 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("set_sdl_alen",    SockAddr_set_sdl_alen),
     LUABSD_FUNC("set_sin_port", SockAddr_set_sin_port),
     LUABSD_FUNC("set_sin_addr", SockAddr_set_sin_addr),
+    LUABSD_FUNC("set_sin6_port",    SockAddr_set_sin6_port),
+    LUABSD_FUNC("set_sin6_flowinfo",    SockAddr_set_sin6_flowinfo),
+    LUABSD_FUNC("set_sin6_addr",    SockAddr_set_sin6_addr),
+    LUABSD_FUNC("set_sin6_scope_id",    SockAddr_set_sin6_scope_id),
     LUABSD_FUNC("set_sun_path", SockAddr_set_sun_path),
     LUABSD_FUNC("get",  SockAddr_get),
     LUABSD_FUNC("get_sdl_index",    SockAddr_get_sdl_index),
@@ -875,6 +1198,10 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("get_sdl_alen",    SockAddr_get_sdl_alen),
     LUABSD_FUNC("get_sin_port", SockAddr_get_sin_port),
     LUABSD_FUNC("get_sin_addr", SockAddr_get_sin_addr),
+    LUABSD_FUNC("get_sin6_port",    SockAddr_get_sin6_port),
+    LUABSD_FUNC("get_sin6_flowinfo",    SockAddr_get_sin6_flowinfo),
+    LUABSD_FUNC("get_sin6_addr",    SockAddr_get_sin6_addr),
+    LUABSD_FUNC("get_sin6_scope_id",    SockAddr_get_sin6_scope_id),
     LUABSD_FUNC("get_sun_path", SockAddr_get_sun_path),
     LUABSD_FUNC("__gc", SockAddr_gc),
     LUABSD_FUNC("__tostring",   SockAddr_tostring),
@@ -1008,6 +1335,57 @@ luab_StructSockAddrIn(lua_State *L)
     default:
         sin.sin_addr.s_addr = htonl(sin.sin_addr.s_addr);
         sin.sin_port = htons(sin.sin_port);
+        break;
+    }
+
+    if (sockaddr_create(L, sa) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return (status);
+}
+
+/***
+ * Ctor for sockaddr_in6{}.
+ *
+ * @function StructSockAddrIn
+ *
+ * @param port              Specifies port ID, see /etc/services.
+ * @param info              Specifies Flow Label, see RFC6437,.
+ * @param addr              Specifies ip(4) address by instance
+ *                          of LUA_TUSERDATA(luab_in_addr_t).
+ * @param id                Specifies scope ID.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage sockaddr [, err, msg ] = bsd.arpa.inet.StructSockAddrIn6([ port [, info [, addr [, id ]]]])
+ */
+int
+luab_StructSockAddrIn6(lua_State *L)
+{
+    struct sockaddr_in6 sin6;
+    struct sockaddr *sa;
+    struct in6_addr *addr;
+    int status;
+
+    sa = (struct sockaddr *)&sin6;
+    sockaddr_pci(sa, AF_INET6, sizeof(sin6));
+
+    switch (luab_checkmaxargs(L, 4)) {     /* FALLTHROUGH */
+    case 4:
+        sin6.sin6_scope_id = (uint32_t)luab_checkinteger(L, 4, INT_MAX);
+    case 3:
+        addr = luab_udata(L, 3, in6_addr_type, struct in6_addr *);
+        (void)memmove(&sin6.sin6_addr, addr, sizeof(sin6.sin6_addr));
+    case 2:
+        sin6.sin6_flowinfo = (uint32_t)luab_checkinteger(L, 2, INT_MAX);
+    case 1:
+        sin6.sin6_port = (in_port_t)luab_checkinteger(L, 1, SHRT_MAX);
+    default:
+        sin6.sin6_scope_id = htons(sin6.sin6_scope_id);
+        sin6.sin6_flowinfo = htons(sin6.sin6_flowinfo);
+        sin6.sin6_port = htons(sin6.sin6_port);
         break;
     }
 

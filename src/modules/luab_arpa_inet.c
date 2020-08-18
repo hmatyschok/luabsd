@@ -45,7 +45,9 @@ extern luab_module_t sockaddr_type;
 
 extern int luab_StructInAddr(lua_State *);
 extern int luab_StructIn6Addr(lua_State *);
-extern int luab_StructSockAddrIn(lua_State *);
+
+extern int luab_StructSockAddrIn(lua_State *);  /* XXX */
+extern int luab_StructSockAddrIn6(lua_State *);
 
 #define LUABSD_ARPA_INET_LIB_ID    1595780686
 #define LUABSD_ARPA_INET_LIB_KEY   "inet"
@@ -869,6 +871,7 @@ static luab_table_t luab_arpa_inet_vec[] = {
 
     /* XXX wrong, because maps to <netinet/in.h> */
     LUABSD_FUNC("StructSockAddrIn", luab_StructSockAddrIn),
+    LUABSD_FUNC("StructSockAddrIn6", luab_StructSockAddrIn6),
     LUABSD_FUNC(NULL, NULL)
 };
 
