@@ -25,6 +25,7 @@
  */
 
 #include <errno.h>
+#include <stdlib.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -36,6 +37,7 @@ extern luab_module_t hook_type;
 extern luab_module_t linger_type;
 extern luab_module_t msghdr_type;
 extern luab_module_t sockaddr_type;
+extern luab_module_t timespec_type;
 
 extern int luab_StructLinger(lua_State *);
 extern int luab_StructMsgHdr(lua_State *);
@@ -45,6 +47,44 @@ extern int luab_StructSockAddr(lua_State *);
 #define LUABSD_SYS_SOCKET_LIB_KEY   "socket"
 
 extern luab_module_t luab_sys_socket_lib;
+
+/*
+ * Subr.
+ */
+
+/*
+ * Evaluate LUA_TTABLE(LUA_TUSERDATA(luab_msghdr_t)) and translate this into
+ * an array of mmsghdr{} items.
+ */
+static struct mmsghdr *
+luab_checkmsgvec(lua_State *L, int narg)
+{
+    struct mmsghdr *vec;
+    struct msghdr *msg;
+    int k;
+
+    vec = luab_newvector(L, narg, sizeof(struct mmsghdr));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
+            msg = luab_udata(L, -1, msghdr_type, struct msghdr *);
+            (void)memmove(&(vec[k].msg_hdr), msg, sizeof(struct msghdr));
+        } else {
+            free(vec);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
+
+/*
+ * Service primitives.
+ */
 
 /***
  * accept(2) - accept a connection on a socket(9)
@@ -589,7 +629,7 @@ luab_recvfrom(lua_State *L)
  *          (count [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage count [, err, msg ] = bsd.sys.socket.recvmsg(s, buf, len, flags)
+ * @usage count [, err, msg ] = bsd.sys.socket.recvmsg(s, msg, flags)
  */
 static int
 luab_recvmsg(lua_State *L)
@@ -614,6 +654,62 @@ luab_recvmsg(lua_State *L)
     }
     return (luab_pusherr(L, count));
 }
+
+#if __BSD_VISIBLE
+/***
+ * recvmmsg(2) - receive multiple message(s) at a call from a socket(9)
+ *
+ * @function recvmmsg
+ *
+ * @param s                 File drscriptor denotes by socket(2) opened socket(9).
+ * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(luab_msghdr_t)).
+ * @param vlen              Constraint for #n received messages.
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC,WAITFORONE}
+ *
+ *                          may combined by inclusive or.
+ * @param timeout           Specifies timeout, if !nil.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.recvmmsg(s, msgvec, vlen, flags, timeout)
+ */
+static int
+luab_recvmmsg(lua_State *L)
+{
+    int s;
+    struct mmsghdr *msgvec;
+    size_t vlen;
+    int flags;
+    struct timespec *timeout;
+    ssize_t count;
+
+    (void)luab_checkmaxargs(L, 5);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    msgvec = luab_checkmsgvec(L, 2);
+    vlen = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    flags = (int)luab_checkinteger(L, 4, INT_MAX);
+    timeout = luab_udataisnil(L, 5, timespec_type, struct timespec *);
+
+    count = recvmmsg(s, msgvec, vlen, flags, timeout);
+
+    free(msgvec);
+
+    return (luab_pusherr(L, count));
+}
+#endif
 
 /***
  * sendmsg(2) - send message(s) from a socket(9)
@@ -941,6 +1037,9 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("recv", luab_recv),
     LUABSD_FUNC("recvfrom", luab_recvfrom),
     LUABSD_FUNC("recvmsg", luab_recvmsg),
+#if __BSD_VISIBLE
+    LUABSD_FUNC("recvmmesg",    luab_recvmmsg),
+#endif
     LUABSD_FUNC("sendmsg", luab_sendmsg),
     LUABSD_FUNC("StructLinger", luab_StructLinger),
     LUABSD_FUNC("StructMsgHdr", luab_StructMsgHdr),

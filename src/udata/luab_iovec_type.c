@@ -401,7 +401,7 @@ iovec_init(void *ud, void *arg)
 static void *
 iovec_udata(lua_State *L, int narg)
 {
-    return luab_to_iovec(L, narg);
+    return (luab_to_iovec(L, narg));
 }
 
 luab_module_t iovec_type = {

@@ -52,6 +52,13 @@ extern luab_module_t msghdr_type;
  *      socklen_t    msg_controllen;
  *      int      msg_flags;
  *  };
+ *
+ * and
+ *
+ *  struct mmsghdr {
+ *      struct msghdr   msg_hdr;
+ *      ssize_t     msg_len;
+ *  };
  */
 
 #define MH_NAME     0
@@ -59,13 +66,14 @@ extern luab_module_t msghdr_type;
 #define MH_MAX_BUF  2
 
 /*
- * By *msg_{name,control} reffered data maps to mh_buf[MH_{NAME,CONTROL}] avoids
+ * By *msg_{name,control} reffered data maps to msg_buf[MH_{NAME,CONTROL}] avoids
  * possible race-cond. with gc.
  */
 
 typedef struct luab_msghdr {
-    struct msghdr   mh_msg;
-    luab_buf_t      mh_buf[MH_MAX_BUF+1];
+    struct msghdr   msg_hdr;
+    ssize_t         msg_len;
+    luab_buf_t      msg_buf[MH_MAX_BUF+1];
 } luab_msghdr_t;
 
 #define luab_new_msghdr(L, arg) \
@@ -104,6 +112,7 @@ msghdr_free_iov(struct msghdr *msg)
     }
 }
 
+/* select n-th luab_iovec{} by #idx and initialize iov{} maps to #idx */
 static int
 msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
 {
@@ -112,7 +121,7 @@ msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
     struct iovec *dst;
     int status;
 
-    /* XXX well, race-cond. with gc, on case of IOV_BUFF resolved. */
+    /* XXX well, race-cond. with gc, due to the case of IOV_BUFF resolved. */
 
     if (((buf = luab_isiovec(L, narg)) != NULL) &&
         (buf->iov_flags & (IOV_PROXY|IOV_BUFF))) {
@@ -174,7 +183,7 @@ msghdr_populate_iovec(lua_State *L, int narg, struct msghdr *msg, int new)
 }
 
 /*
- * Accessor for immutable properties.
+ * Accessor on immutable properties.
  */
 
 /***
@@ -203,7 +212,6 @@ MsgHdr_msg_iovlen(lua_State *L)
     return (luab_pusherr(L, msg_iovlen));
 }
 
-
 /***
  * Get flags on received message.
  *
@@ -230,8 +238,34 @@ MsgHdr_msg_flags(lua_State *L)
     return (luab_pusherr(L, msg_flags));
 }
 
+/***
+ * Get amount of by {recv,send}mmsg(2) rx'd / tx'd bytes.
+ *
+ * @function msg_len
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (size [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage flags [, err, msg ] = msghdr:msg_len()
+ */
+static int
+MsgHdr_msg_len(lua_State *L)
+{
+    struct mmsghdr *msg;
+    int msg_len;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    msg = luab_udata(L, 1, msghdr_type, struct mmsghdr *);
+    msg_len = msg->msg_len;
+
+    return (luab_pusherr(L, msg_len));
+}
+
 /*
- * Accessor.
+ * Common accessor on mutuable properties.
  */
 
 /***
@@ -263,8 +297,8 @@ MsgHdr_set_msg_name(lua_State *L)
     self = luab_to_msghdr(L, 1);
     sa = luab_udataisnil(L, 2, sockaddr_type, struct sockaddr *);
 
-    msg = &(self->mh_msg);
-    buf = &(self->mh_buf[MH_NAME]);
+    msg = &(self->msg_hdr);
+    buf = &(self->msg_buf[MH_NAME]);
 
     if ((name = (caddr_t)sa) != NULL) {
         if ((status = luab_buf_copy_in(buf, name, sa->sa_len)) == 0)
@@ -467,6 +501,10 @@ MsgHdr_get_msg_iov(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/*
+ * Metamethods.
+ */
+
 /***
  * Fetch this as instance of LUA_TTABLE.
  *
@@ -501,10 +539,6 @@ MsgHdr_get(lua_State *L)
     return (1);
 }
 
-/*
- * Metamethods.
- */
-
 static int
 MsgHdr_gc(lua_State *L)
 {
@@ -514,7 +548,7 @@ MsgHdr_gc(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_msghdr(L, 1);
-    buf = self->mh_buf;
+    buf = self->msg_buf;
 
     while (buf->buf_data != NULL)
         luab_buf_free(buf++);
@@ -540,6 +574,7 @@ MsgHdr_tostring(lua_State *L)
 static luab_table_t msghdr_methods[] = {
     LUABSD_FUNC("msg_iovlen",  MsgHdr_msg_iovlen),
     LUABSD_FUNC("msg_flags",    MsgHdr_msg_flags),
+    LUABSD_FUNC("msg_len",  MsgHdr_msg_len),
 /*  LUABSD_FUNC("msg_controllen",   MsgHdr_msg_controllen), */
     LUABSD_FUNC("set_msg_name", MsgHdr_set_msg_name),
     LUABSD_FUNC("set_msg_namelen",  MsgHdr_set_msg_namelen),
@@ -588,7 +623,7 @@ msghdr_init(void *ud, void *arg)
     if (((self = (luab_msghdr_t *)ud) != NULL) &&
         ((src = (luab_buf_t *)arg) != NULL)) {
 
-        dst = self->mh_buf;
+        dst = self->msg_buf;
 
         while (src->buf_data != NULL) {
             dst->buf_len = src->buf_len;
@@ -604,7 +639,7 @@ msghdr_udata(lua_State *L, int narg)
 {
     luab_msghdr_t *self = luab_to_msghdr(L, narg);
 
-    return (&self->mh_msg);
+    return (&self->msg_hdr);
 }
 
 luab_module_t msghdr_type = {
