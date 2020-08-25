@@ -756,6 +756,59 @@ luab_sendmsg(lua_State *L)
     return (luab_pusherr(L, count));
 }
 
+#if __BSD_VISIBLE
+/***
+ * sendmmsg(2) - send multiple message(s) at a call from a socket(9)
+ *
+ * @function sendmmsg
+ *
+ * @param s                 File drscriptor denotes by socket(2) opened socket(9).
+ * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(luab_msghdr_t)).
+ * @param vlen              Constraint for transmission of #n messages.
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
+ *                                  DONTWAIT,EOF,NOSIGNAL}
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.sendmmsg(s, msgvec, vlen, flags)
+ */
+static int
+luab_sendmmsg(lua_State *L)
+{
+    int s;
+    struct mmsghdr *msgvec;
+    size_t vlen;
+    int flags;
+    ssize_t count;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    msgvec = luab_checkmsgvec(L, 2);
+    vlen = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    flags = (int)luab_checkinteger(L, 4, INT_MAX);
+
+    count = sendmmsg(s, msgvec, vlen, flags);
+
+    free(msgvec);
+
+    return (luab_pusherr(L, count));
+}
+#endif
+
 /*
  * Interface against <sys/socket.h>.
  */
@@ -1041,6 +1094,9 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("recvmmesg",    luab_recvmmsg),
 #endif
     LUABSD_FUNC("sendmsg", luab_sendmsg),
+#if __BSD_VISIBLE
+    LUABSD_FUNC("sendmmesg",    luab_sendmmsg),
+#endif
     LUABSD_FUNC("StructLinger", luab_StructLinger),
     LUABSD_FUNC("StructMsgHdr", luab_StructMsgHdr),
     LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
