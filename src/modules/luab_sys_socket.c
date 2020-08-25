@@ -720,8 +720,8 @@ luab_recvmmsg(lua_State *L)
  * @param msg               Instance of LUA_TUSERDATA(luab_msghdr_t).
  * @param flags             Flags argument over
  *
- *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC}
+ *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
+ *                                  DONTWAIT,EOF,NOSIGNAL}
  *
  *                          may combined by inclusive or.
  *
@@ -730,7 +730,7 @@ luab_recvmmsg(lua_State *L)
  *          (count [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage count [, err, msg ] = bsd.sys.socket.sendmsg(s, buf, len, flags)
+ * @usage count [, err, msg ] = bsd.sys.socket.sendmsg(s, msg, flags)
  */
 static int
 luab_sendmsg(lua_State *L)
