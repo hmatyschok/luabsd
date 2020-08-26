@@ -337,7 +337,7 @@ luab_islstring(lua_State *L, int narg, size_t n)
     size_t len;
 
     if ((buf = luaL_tolstring(L, narg, &len)) != NULL) {
-        if (len <= n)
+        if (n <= len)
             return (buf);
     }
     return (NULL);

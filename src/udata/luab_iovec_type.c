@@ -180,16 +180,14 @@ IOVec_copy_in(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
+    src = iovec_checklxarg(L, 2, self->iov_max_len);
+    len = self->iov_max_len;
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
 
-        src = iovec_checklxarg(L, 2, self->iov_max_len);
-
         if (((dst = self->iov.iov_base) != NULL) &&
             (self->iov_flags & IOV_BUFF)) {
-
-            len = strlen(src);
             (void)memmove(dst, src, len);
             self->iov.iov_len = len;
             status = len;
@@ -453,7 +451,8 @@ luab_StructIOVec(lua_State *L)
     luab_iovec_t *self;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);  /* XXX */
+    /* XXX well, this will be refactored, but not yet */
+    (void)luab_checkmaxargs(L, 1);
 
     (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
