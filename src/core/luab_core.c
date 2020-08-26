@@ -331,6 +331,19 @@ luab_pushstring(lua_State *L, const char *s)
  */
 
 const char *
+luab_islstring(lua_State *L, int narg, size_t n)
+{
+    const char *buf;
+    size_t len;
+
+    if ((buf = luaL_tolstring(L, narg, &len)) != NULL) {
+        if (len <= n)
+            return (buf);
+    }
+    return (NULL);
+}
+
+const char *
 luab_checklstring(lua_State *L, int narg, size_t n)
 {
     const char *buf;

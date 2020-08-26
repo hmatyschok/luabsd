@@ -122,6 +122,13 @@ int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);
 
+/*
+ * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
+ * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
+ * the same thing without throwing an error.
+ */
+
+const char *    luab_islstring(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 int luab_checkmaxargs(lua_State *, int);
 
