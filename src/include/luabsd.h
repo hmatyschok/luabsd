@@ -69,7 +69,7 @@ typedef struct luab_table {
 
 typedef struct luab_udata {
     TAILQ_ENTRY(luab_udata)     ud_list;
-    TAILQ_HEAD(, luab_udata)    ud_cache;
+    TAILQ_HEAD(, luab_udata)    ud_hooks;
     u_int32_t   ud_cookie;        /*  date -u +'%s' */
 } luab_udata_t;
 
