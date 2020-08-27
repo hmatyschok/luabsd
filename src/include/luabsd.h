@@ -29,6 +29,7 @@
 
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/queue.h>
 
 #include <string.h>     /* XXX */
 
@@ -91,6 +92,10 @@ typedef struct luab_iovec_param {
     luab_buf_t  iop_data;   /* supplied data */
     u_int   iop_flags;
 } luab_iovec_param_t;
+
+typedef struct luab_udata {
+    TAILQ_ENTRY(luab_udata) ud_list;
+} luab_udata_t;
 
 typedef struct luab_iovec {
     struct iovec    iov;
