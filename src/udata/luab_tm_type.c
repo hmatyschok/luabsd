@@ -54,6 +54,7 @@ extern luab_module_t tm_type;
  */
 
 typedef struct luab_tm {
+    luab_udata_t    ud_softc;
     struct tm    tm;
 } luab_tm_t;
 

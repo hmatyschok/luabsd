@@ -47,6 +47,7 @@ extern luab_module_t if_nameindex_type;
  * Attributes are immutable.
  */
 typedef struct luab_if_nameindex {
+    luab_udata_t    ud_softc;
     u_int   if_index;
     char    if_name[IFNAMSIZ];
 } luab_if_nameindex_t;

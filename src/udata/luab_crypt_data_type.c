@@ -45,6 +45,7 @@ extern luab_module_t crypt_data_type;
  */
 
 typedef struct luab_crypt_data {
+    luab_udata_t        ud_softc;
     struct crypt_data    crypt_data;
 } luab_crypt_data_t;
 

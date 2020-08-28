@@ -48,6 +48,7 @@ extern luab_module_t dbt_type;
  */
 
 typedef struct luab_dbt {
+    luab_udata_t    ud_softc;
     DBT dbt;
 } luab_dbt_t;
 

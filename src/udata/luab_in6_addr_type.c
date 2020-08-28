@@ -52,6 +52,7 @@ extern luab_module_t in6_addr_type;
  */
 
 typedef struct luab_in6_addr {
+    luab_udata_t    ud_softc;
     struct in6_addr    in6_addr;
 } luab_in6_addr_t;
 #define s6_addr32   __u6_addr.__u6_addr32

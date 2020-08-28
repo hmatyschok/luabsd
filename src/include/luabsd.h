@@ -100,6 +100,7 @@ typedef struct luab_iovec_param {
 } luab_iovec_param_t;
 
 typedef struct luab_iovec {
+    luab_udata_t    ud_softc;
     struct iovec    iov;
     size_t  iov_max_len;
     u_int   iov_flags;

@@ -61,6 +61,7 @@ extern luab_module_t db_type;
 #define LUABSD_DB_TYPE   "DB*"
 
 typedef struct luab_db {
+    luab_udata_t    ud_softc;
     DB  *db;
 } luab_db_t;
 

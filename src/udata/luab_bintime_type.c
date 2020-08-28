@@ -46,6 +46,7 @@ extern luab_module_t bintime_type;
  */
 
 typedef struct luab_bintime {
+    luab_udata_t    ud_softc;
     struct bintime    bintime;
 } luab_bintime_t;
 

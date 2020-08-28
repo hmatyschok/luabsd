@@ -69,6 +69,7 @@ extern luab_module_t sockaddr_type;
  */
 
 typedef struct luab_sockaddr {
+    luab_udata_t        ud_softc;
     struct sockaddr_storage sockaddr;
 } luab_sockaddr_t;
 

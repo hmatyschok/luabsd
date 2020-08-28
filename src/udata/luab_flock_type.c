@@ -49,6 +49,7 @@ extern luab_module_t flock_type;
  */
 
 typedef struct luab_flock {
+    luab_udata_t    ud_softc;
     struct flock    flock;
 } luab_flock_t;
 

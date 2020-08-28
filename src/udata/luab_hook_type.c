@@ -62,7 +62,8 @@ extern luab_module_t hook_type;
  */
 
 typedef struct luab_hook {
-    luab_type_u hook;
+    luab_udata_t    ud_softc;
+    luab_type_u     hook;
 } luab_hook_t;
 
 #define luab_new_hook(L, arg) \

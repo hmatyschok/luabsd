@@ -45,6 +45,7 @@ extern luab_module_t in_addr_type;
  */
 
 typedef struct luab_in_addr {
+    luab_udata_t    ud_softc;
     struct in_addr    in_addr;
 } luab_in_addr_t;
 

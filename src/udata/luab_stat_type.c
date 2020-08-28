@@ -76,6 +76,7 @@ extern luab_module_t stat_type;
  */
 
 typedef struct luab_stat {
+    luab_udata_t    ud_softc;
     struct stat    stat;
 } luab_stat_t;
 

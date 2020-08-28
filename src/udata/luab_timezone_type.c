@@ -46,6 +46,7 @@ extern luab_module_t timezone_type;
  */
 
 typedef struct luab_timezone {
+    luab_udata_t        ud_softc;
     struct timezone    timezone;
 } luab_timezone_t;
 

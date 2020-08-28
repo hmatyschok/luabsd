@@ -48,6 +48,7 @@ extern luab_module_t itimerval_type;
  */
 
 typedef struct luab_itimerval {
+    luab_udata_t        ud_softc;
     struct itimerval    itimerval;
 } luab_itimerval_t;
 

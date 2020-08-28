@@ -46,6 +46,7 @@ extern luab_module_t timespec_type;
  */
 
 typedef struct luab_timespec {
+    luab_udata_t        ud_softc;
     struct timespec    timespec;
 } luab_timespec_t;
 

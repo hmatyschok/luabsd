@@ -49,6 +49,7 @@ extern luab_module_t clockinfo_type;
  */
 
 typedef struct luab_clockinfo {
+    luab_udata_t        ud_softc;
     struct clockinfo    clockinfo;
 } luab_clockinfo_t;
 

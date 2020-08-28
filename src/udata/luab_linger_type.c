@@ -46,6 +46,7 @@ extern luab_module_t linger_type;
  */
 
 typedef struct luab_linger {
+    luab_udata_t    ud_softc;
     struct linger    linger;
 } luab_linger_t;
 

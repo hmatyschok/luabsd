@@ -71,6 +71,7 @@ extern luab_module_t msghdr_type;
  */
 
 typedef struct luab_msghdr {
+    luab_udata_t    ud_softc;
     struct msghdr   msg_hdr;
     ssize_t         msg_len;
     luab_buf_t      msg_buf[MH_MAX_BUF+1];
