@@ -364,12 +364,15 @@ luab_checklstring(lua_State *L, int narg, size_t n)
 void *
 luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 {
-    void *ud = NULL;
+    luab_udata_t *ud = NULL;
 
     if (m != NULL) {
         if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
             (void)memset_s(ud, m->sz, 0, m->sz);
 
+            TAILQ_INIT(&ud->ud_hooks);
+            ud->ud_cookie = m->cookie;
+            
             if (m->init != NULL && arg != NULL)
                 (*m->init)(ud, arg);
 

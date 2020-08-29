@@ -67,15 +67,16 @@ typedef struct luab_table {
 #define LUABSD_STR(k, v) \
     LUABSD_REG(luab_initstring, k, .val.un_cp = v)
 
+typedef void *  (*luab_ctor_fn)(lua_State *, void *);
+typedef void  (*luab_init_fn)(void *, void *);
+typedef void  (*luab_fini_fn)(void *);
+typedef void *  (*luab_udata_fn)(lua_State *, int);
+
 typedef struct luab_udata {
     TAILQ_ENTRY(luab_udata)     ud_list;
     TAILQ_HEAD(, luab_udata)    ud_hooks;
     u_int32_t   ud_cookie;        /*  date -u +'%s' */
 } luab_udata_t;
-
-typedef void *  (*luab_ctor_fn)(lua_State *, void *);
-typedef void  (*luab_init_fn)(void *, void *);
-typedef void *  (*luab_udata_fn)(lua_State *, int);
 
 typedef struct luab_module {
     u_int32_t  cookie;        /*  date -u +'%s' */
@@ -84,6 +85,7 @@ typedef struct luab_module {
     luab_table_t    *vec;
     luab_ctor_fn    ctor;
     luab_init_fn    init;
+    luab_init_fn    fini;
     luab_udata_fn    get;
 } luab_module_t;
 
