@@ -85,7 +85,7 @@ typedef struct luab_module {
     luab_table_t    *vec;
     luab_ctor_fn    ctor;
     luab_init_fn    init;
-    luab_init_fn    fini;
+    luab_fini_fn    fini;
     luab_udata_fn    get;
 } luab_module_t;
 
