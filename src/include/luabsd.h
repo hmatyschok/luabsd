@@ -72,12 +72,6 @@ typedef void  (*luab_init_fn)(void *, void *);
 typedef void  (*luab_fini_fn)(void *);
 typedef void *  (*luab_udata_fn)(lua_State *, int);
 
-typedef struct luab_udata {
-    TAILQ_ENTRY(luab_udata)     ud_list;
-    TAILQ_HEAD(, luab_udata)    ud_hooks;
-    u_int32_t   ud_cookie;        /*  date -u +'%s' */
-} luab_udata_t;
-
 typedef struct luab_module {
     u_int32_t  cookie;        /*  date -u +'%s' */
     size_t  sz;
@@ -88,6 +82,12 @@ typedef struct luab_module {
     luab_fini_fn    fini;
     luab_udata_fn    get;
 } luab_module_t;
+
+typedef struct luab_udata {
+    TAILQ_ENTRY(luab_udata)     ud_list;
+    TAILQ_HEAD(, luab_udata)    ud_hooks;
+    luab_module_t   *ud_m;
+} luab_udata_t;
 
 typedef struct luab_buf {
     size_t  buf_len;

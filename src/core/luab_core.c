@@ -371,8 +371,9 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
             (void)memset_s(ud, m->sz, 0, m->sz);
 
             TAILQ_INIT(&ud->ud_hooks);
-            ud->ud_cookie = m->cookie;
-            
+
+            ud->ud_m = m;
+
             if (m->init != NULL && arg != NULL)
                 (*m->init)(ud, arg);
 
