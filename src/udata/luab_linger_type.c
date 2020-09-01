@@ -284,7 +284,7 @@ linger_init(void *ud, void *arg)
 }
 
 static void *
-linger_udata(lua_State *L, int narg)
+linger_get(lua_State *L, int narg)
 {
     luab_linger_t *self = luab_to_linger(L, narg);
 
@@ -297,7 +297,7 @@ luab_module_t linger_type = {
     .vec = linger_methods,
     .ctor = linger_create,
     .init = linger_init,
-    .get = linger_udata,
+    .get = linger_get,
     .sz = sizeof(luab_linger_t),
 };
 
@@ -321,7 +321,7 @@ luab_StructLinger(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         linger = NULL;
     else
-        linger = (struct linger *)linger_udata(L, narg);
+        linger = (struct linger *)linger_get(L, narg);
 
     if (linger_create(L, linger) == NULL)
         status = luab_pushnil(L);

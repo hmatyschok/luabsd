@@ -238,7 +238,7 @@ dbt_init(void *ud, void *arg)
 }
 
 static void *
-dbt_udata(lua_State *L, int narg)
+dbt_get(lua_State *L, int narg)
 {
     luab_dbt_t *self = luab_to_dbt(L, narg);
 
@@ -251,7 +251,7 @@ luab_module_t dbt_type = {
     .vec = dbt_methods,
     .ctor = dbt_create,
     .init = dbt_init,
-    .get = dbt_udata,
+    .get = dbt_get,
     .sz = sizeof(luab_dbt_t),
 };
 

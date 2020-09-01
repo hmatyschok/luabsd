@@ -240,7 +240,7 @@ if_nameindex_init(void *ud, void *arg)
 }
 
 static void *
-if_nameindex_udata(lua_State *L, int narg)
+if_nameindex_get(lua_State *L, int narg)
 {
     return (luab_to_if_nameindex(L, narg));
 }
@@ -251,7 +251,7 @@ luab_module_t if_nameindex_type = {
     .vec = if_nameindex_methods,
     .ctor = if_nameindex_create,
     .init = if_nameindex_init,
-    .get = if_nameindex_udata,
+    .get = if_nameindex_get,
     .sz = sizeof(luab_if_nameindex_t),
 };
 
@@ -275,7 +275,7 @@ luab_StructIfNameIndex(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         ifni = NULL;
     else
-        ifni = (struct if_nameindex *)if_nameindex_udata(L, narg);
+        ifni = if_nameindex_get(L, narg);
 
     if (if_nameindex_create(L, ifni) == NULL)
         status = luab_pushnil(L);

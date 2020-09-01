@@ -284,7 +284,7 @@ bintime_init(void *ud, void *arg)
 }
 
 static void *
-bintime_udata(lua_State *L, int narg)
+bintime_get(lua_State *L, int narg)
 {
     luab_bintime_t *self = luab_to_bintime(L, narg);
 
@@ -297,7 +297,7 @@ luab_module_t bintime_type = {
     .vec = bintime_methods,
     .ctor = bintime_create,
     .init = bintime_init,
-    .get = bintime_udata,
+    .get = bintime_get,
     .sz = sizeof(luab_bintime_t),
 };
 
@@ -321,7 +321,7 @@ luab_StructBinTime(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         bintime = NULL;
     else
-        bintime = (struct bintime *)bintime_udata(L, narg);
+        bintime = (struct bintime *)bintime_get(L, narg);
 
     if (bintime_create(L, bintime) == NULL)
         status = luab_pushnil(L);

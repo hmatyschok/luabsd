@@ -398,7 +398,7 @@ clockinfo_init(void *ud, void *arg)
 }
 
 static void *
-clockinfo_udata(lua_State *L, int narg)
+clockinfo_get(lua_State *L, int narg)
 {
     luab_clockinfo_t *self = luab_to_clockinfo(L, narg);
 
@@ -411,7 +411,7 @@ luab_module_t clockinfo_type = {
     .vec = clockinfo_methods,
     .ctor = clockinfo_create,
     .init = clockinfo_init,
-    .get = clockinfo_udata,
+    .get = clockinfo_get,
     .sz = sizeof(luab_clockinfo_t),
 };
 
@@ -438,7 +438,7 @@ luab_StructClockInfo(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         clockinfo = NULL;
     else
-        clockinfo = (struct clockinfo *)clockinfo_udata(L, narg);
+        clockinfo = clockinfo_get(L, narg);
 
     if (clockinfo_create(L, clockinfo) == NULL)
         status = luab_pushnil(L);

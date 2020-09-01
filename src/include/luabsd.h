@@ -70,7 +70,7 @@ typedef struct luab_table {
 typedef void *  (*luab_ctor_fn)(lua_State *, void *);
 typedef void  (*luab_init_fn)(void *, void *);
 typedef void  (*luab_fini_fn)(void *);
-typedef void *  (*luab_udata_fn)(lua_State *, int);
+typedef void *  (*luab_get_fn)(lua_State *, int);
 
 typedef struct luab_module {
     u_int32_t  cookie;        /*  date -u +'%s' */
@@ -80,7 +80,7 @@ typedef struct luab_module {
     luab_ctor_fn    ctor;
     luab_init_fn    init;
     luab_fini_fn    fini;
-    luab_udata_fn    get;
+    luab_get_fn    get;
 } luab_module_t;
 
 typedef struct luab_udata {

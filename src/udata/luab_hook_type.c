@@ -291,7 +291,7 @@ hook_init(void *ud, void *arg)
 }
 
 static void *
-hook_udata(lua_State *L, int narg)
+hook_get(lua_State *L, int narg)
 {
     luab_hook_t *self = luab_to_hook(L, narg);
 
@@ -304,7 +304,7 @@ luab_module_t hook_type = {
     .vec = hook_methods,
     .ctor = hook_create,
     .init = hook_init,
-    .get = hook_udata,
+    .get = hook_get,
     .sz = sizeof(luab_hook_t),
 };
 
@@ -317,7 +317,7 @@ luab_CreateHook(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         hook = NULL;
     else
-        hook = hook_udata(L, narg);
+        hook = hook_get(L, narg);
 
     if (hook_create(L, hook) == NULL)
         status = luab_pushnil(L);

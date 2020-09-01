@@ -1227,7 +1227,7 @@ sockaddr_init(void *ud, void *arg)
 }
 
 static void *
-sockaddr_udata(lua_State *L, int narg)
+sockaddr_get(lua_State *L, int narg)
 {
     luab_sockaddr_t *self = luab_to_sockaddr(L, narg);
 
@@ -1240,7 +1240,7 @@ luab_module_t sockaddr_type = {
     .vec = sockaddr_methods,
     .ctor = sockaddr_create,
     .init = sockaddr_init,
-    .get = sockaddr_udata,
+    .get = sockaddr_get,
     .sz = sizeof(luab_sockaddr_t),
 };
 
@@ -1262,7 +1262,7 @@ luab_StructSockAddr(lua_State *L)
     int status;
 
     if (luab_checkmaxargs(L, 1) == 1)
-        sa = (struct sockaddr *)sockaddr_udata(L, 1);
+        sa = (struct sockaddr *)sockaddr_get(L, 1);
     else
         sa = NULL;
 

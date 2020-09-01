@@ -380,7 +380,7 @@ flock_init(void *ud, void *arg)
 }
 
 static void *
-flock_udata(lua_State *L, int narg)
+flock_get(lua_State *L, int narg)
 {
     luab_flock_t *self = luab_to_flock(L, narg);
 
@@ -393,7 +393,7 @@ luab_module_t flock_type = {
     .vec = flock_methods,
     .ctor = flock_create,
     .init = flock_init,
-    .get = flock_udata,
+    .get = flock_get,
     .sz = sizeof(luab_flock_t),
 };
 
@@ -407,7 +407,7 @@ luab_StructFlock(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         flock = NULL;
     else
-        flock = (struct flock *)flock_udata(L, narg);
+        flock = flock_get(L, narg);
 
     if (flock_create(L, flock) == NULL)
         status = luab_pushnil(L);

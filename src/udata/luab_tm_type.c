@@ -757,7 +757,7 @@ tm_init(void *ud, void *arg)
 }
 
 static void *
-tm_udata(lua_State *L, int narg)
+tm_get(lua_State *L, int narg)
 {
     luab_tm_t *self = luab_to_tm(L, narg);
 
@@ -770,7 +770,7 @@ luab_module_t tm_type = {
     .vec = tm_methods,
     .ctor = tm_create,
     .init = tm_init,
-    .get = tm_udata,
+    .get = tm_get,
     .sz = sizeof(luab_tm_t),
 };
 
@@ -797,7 +797,7 @@ luab_StructTM(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         tm = NULL;
     else
-        tm = tm_udata(L, narg);
+        tm = tm_get(L, narg);
 
     if (tm_create(L, tm) == NULL)
         status = luab_pushnil(L);

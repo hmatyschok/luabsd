@@ -284,7 +284,7 @@ timezone_init(void *ud, void *arg)
 }
 
 static void *
-timezone_udata(lua_State *L, int narg)
+timezone_get(lua_State *L, int narg)
 {
     luab_timezone_t *self = luab_to_timezone(L, narg);
 
@@ -297,7 +297,7 @@ luab_module_t timezone_type = {
     .vec = timezone_methods,
     .ctor = timezone_create,
     .init = timezone_init,
-    .get = timezone_udata,
+    .get = timezone_get,
     .sz = sizeof(luab_timezone_t),
 };
 
@@ -321,7 +321,7 @@ luab_StructTimeZone(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         timezone = NULL;
     else
-        timezone = timezone_udata(L, narg);
+        timezone = timezone_get(L, narg);
 
     if (timezone_create(L, timezone) == NULL)
         status = luab_pushnil(L);
