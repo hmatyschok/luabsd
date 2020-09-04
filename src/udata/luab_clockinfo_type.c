@@ -57,7 +57,7 @@ typedef struct luab_clockinfo {
     ((luab_clockinfo_t *)luab_newuserdata(L, &clockinfo_type, (arg)))
 #define luab_to_clockinfo(L, narg) \
     (luab_toldata((L), (narg), &clockinfo_type, \
-        luab_clockinfo_t *, sizeof(struct clockinfo)))
+        struct clockinfo *, sizeof(struct clockinfo)))
 
 #define LUABSD_CLOCKINFO_TYPE_ID    1594164272
 #define LUABSD_CLOCKINFO_TYPE    "CLOCKINFO*"
@@ -69,14 +69,14 @@ int luab_StructClockInfo(lua_State *L);
  *
  * @function set_hz
  *
- * @param hz            Frequency.
+ * @param attr              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (hz [, nil, nil]) on success or
- *          (hz, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage hz [, err, msg ] = clockinfo:set_hz(hz)
+ * @usage attr [, err, msg ] = clockinfo:set_hz(attr)
  */
 static int
 ClockInfo_set_hz(lua_State *L)
@@ -101,10 +101,10 @@ ClockInfo_set_hz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (hz [, nil, nil]) on success or
- *          (hz, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage hz [, err, msg ] = clockinfo:get_hz()
+ * @usage attr [, err, msg ] = clockinfo:get_hz()
  */
 static int
 ClockInfo_get_hz(lua_State *L)
@@ -125,14 +125,14 @@ ClockInfo_get_hz(lua_State *L)
  *
  * @function set_tick
  *
- * @param tick            Tick.
+ * @param attr              Tick.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (tick [, nil, nil]) on success or
- *          (tick, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage tick [, err, msg ] = clockinfo:get_tick(tick)
+ * @usage attr [, err, msg ] = clockinfo:set_tick(attr)
  */
 static int
 ClockInfo_set_tick(lua_State *L)
@@ -157,10 +157,10 @@ ClockInfo_set_tick(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (tick [, nil, nil]) on success or
- *          (tick, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage tick [, err, msg ] = clockinfo:get_tick()
+ * @usage attr [, err, msg ] = clockinfo:get_tick()
  */
 static int
 ClockInfo_get_tick(lua_State *L)
@@ -181,14 +181,14 @@ ClockInfo_get_tick(lua_State *L)
  *
  * @function set_stathz
  *
- * @param stathz            Frequency.
+ * @param attr              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (stathz [, nil, nil]) on success or
- *          (stathz, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage stathz [, err, msg ] = clockinfo:set_stathz(stathz)
+ * @usage attr [, err, msg ] = clockinfo:set_stathz(attr)
  */
 static int
 ClockInfo_set_stathz(lua_State *L)
@@ -213,10 +213,10 @@ ClockInfo_set_stathz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (stathz [, nil, nil]) on success or
- *          (stathz, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage stathz [, err, msg ] = clockinfo:get_stathz()
+ * @usage attr [, err, msg ] = clockinfo:get_stathz()
  */
 static int
 ClockInfo_get_stathz(lua_State *L)
@@ -237,14 +237,14 @@ ClockInfo_get_stathz(lua_State *L)
  *
  * @function set_profhz
  *
- * @param profhz            Frequency.
+ * @param attr              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (profhz [, nil, nil]) on success or
- *          (profhz, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage profhz [, err, msg ] = clockinfo:set_profhz(profhz)
+ * @usage attr [, err, msg ] = clockinfo:set_profhz(attr)
  */
 static int
 ClockInfo_set_profhz(lua_State *L)
@@ -269,10 +269,10 @@ ClockInfo_set_profhz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (profhz [, nil, nil]) on success or
- *          (profhz, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage profhz [, err, msg ] = clockinfo:get_profhz()
+ * @usage attr [, err, msg ] = clockinfo:get_profhz()
  */
 static int
 ClockInfo_get_profhz(lua_State *L)
@@ -405,9 +405,7 @@ clockinfo_init(void *ud, void *arg)
 static void *
 clockinfo_udata(lua_State *L, int narg)
 {
-    luab_clockinfo_t *self = luab_to_clockinfo(L, narg);
-
-    return (&self->clockinfo);
+    return (luab_to_clockinfo(L, narg));
 }
 
 luab_module_t clockinfo_type = {

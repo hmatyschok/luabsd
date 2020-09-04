@@ -54,7 +54,7 @@ typedef struct luab_timespec {
     ((luab_timespec_t *)luab_newuserdata(L, &timespec_type, (arg)))
 #define luab_to_timespec(L, narg) \
     (luab_toldata((L), (narg), &timespec_type, \
-        luab_timespec_t *, sizeof(struct timespec)))
+        struct timespec *, sizeof(struct timespec)))
 
 #define LUABSD_TIMESPEC_TYPE_ID    1594034844
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
@@ -279,11 +279,9 @@ timespec_init(void *ud, void *arg)
 }
 
 static void *
-timespec_udata(lua_State *L, int narg)  /* XXX */
+timespec_udata(lua_State *L, int narg)
 {
-    luab_timespec_t *self = luab_to_timespec(L, narg);
-
-    return (&self->timespec);
+    return (luab_to_timespec(L, narg));
 }
 
 luab_module_t timespec_type = {

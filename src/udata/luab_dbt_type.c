@@ -55,7 +55,7 @@ typedef struct luab_dbt {
 #define luab_new_dbt(L, arg) \
     ((luab_dbt_t *)luab_newuserdata(L, &dbt_type, (arg)))
 #define luab_to_dbt(L, narg) \
-    (luab_todata((L), (narg), &dbt_type, luab_dbt_t *))
+    (luab_toudata((L), (narg), &dbt_type))
 
 #define LUABSD_DBT_TYPE_ID    1596025036
 #define LUABSD_DBT_TYPE   "DBT*"
@@ -172,15 +172,15 @@ DBT_get(lua_State *L)
 static int
 DBT_gc(lua_State *L)
 {
-    luab_dbt_t *self;
+    DBT *dbt;
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = luab_to_dbt(L, 1);
+    dbt = luab_to_dbt(L, 1);
 
-    if (self->dbt.data != NULL) {
-        self->dbt.data = NULL;
-        self->dbt.size = 0;
+    if (dbt->data != NULL) {
+        dbt->data = NULL;
+        dbt->size = 0;
     }
     return (0);
 }
@@ -233,9 +233,7 @@ dbt_init(void *ud, void *arg)
 static void *
 dbt_udata(lua_State *L, int narg)
 {
-    luab_dbt_t *self = luab_to_dbt(L, narg);
-
-    return (&self->dbt);
+    return (luab_to_dbt(L, narg));
 }
 
 luab_module_t dbt_type = {

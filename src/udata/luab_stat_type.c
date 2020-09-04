@@ -84,7 +84,7 @@ typedef struct luab_stat {
     ((luab_stat_t *)luab_newuserdata(L, &stat_type, (arg)))
 #define luab_to_stat(L, narg) \
     (luab_toldata((L), (narg), &stat_type, \
-        luab_stat_t *, sizeof(struct stat)))
+        struct stat *, sizeof(struct stat)))
 
 #define LUABSD_STAT_TYPE_ID    1594028586
 #define LUABSD_STAT_TYPE    "STAT*"
@@ -919,9 +919,7 @@ stat_init(void *ud, void *arg)
 static void *
 stat_udata(lua_State *L, int narg)
 {
-    luab_stat_t *self = luab_to_stat(L, narg);
-
-    return (&self->stat);
+    return (luab_to_stat(L, narg));
 }
 
 luab_module_t stat_type = {

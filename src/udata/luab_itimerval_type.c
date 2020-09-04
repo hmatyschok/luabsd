@@ -56,7 +56,7 @@ typedef struct luab_itimerval {
     ((luab_itimerval_t *)luab_newuserdata(L, &itimerval_type, (arg)))
 #define luab_to_itimerval(L, narg) \
     (luab_toldata((L), (narg), &itimerval_type, \
-        luab_itimerval_t *, sizeof(struct itimerval)))
+        struct itimerval *, sizeof(struct itimerval)))
 
 #define LUABSD_ITIMERVAL_TYPE_ID    1594110231
 #define LUABSD_ITIMERVAL_TYPE    "ITIMERVAL*"
@@ -277,9 +277,7 @@ itimerval_init(void *ud, void *arg)
 static void *
 itimerval_udata(lua_State *L, int narg)
 {
-    luab_itimerval_t *self = luab_to_itimerval(L, narg);
-
-    return (&self->itimerval);
+    return (luab_to_itimerval(L, narg));
 }
 
 luab_module_t itimerval_type = {

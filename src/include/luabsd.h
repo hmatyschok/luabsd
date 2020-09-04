@@ -312,10 +312,6 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
     ((t)luab_checkudata((L), (narg), (m)))
 #define luab_toldata(L, narg, m, t, len) \
     ((t)luab_checkludata((L), (narg), (m), (len)))
-#define luab_toudata(L, narg, m) \
-    ((luab_udata_t *)luab_checkudata((L), (narg), (m)))
-#define luab_toludata(L, narg, m, len) \
-    ((luab_udata_t *)luab_checkludata((L), (narg), (m), (len)))
 #define luab_udata(L, narg, m, t) \
     ((t)(*(m).get)((L), (narg)))
 #define luab_udataisnil(L, narg, m, t) \
@@ -328,9 +324,17 @@ luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 }
 
 static __inline void *
+luab_toudata(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
+
+    return (ud + 1);
+}
+
+static __inline void *
 luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
-    luab_iovec_t *buf;
+    luab_iovec_t *buf;  /* XXX namespace */
 
     if ((buf = luab_isiovec(L, narg)) != NULL) {
         if (buf->iov.iov_base == NULL)
@@ -341,7 +345,7 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 
         return (buf->iov.iov_base);
     }
-    return (luab_checkudata(L, narg, m));
+    return (luab_toudata(L, narg, m));
 }
 
 static __inline void *
@@ -360,7 +364,7 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 
     (void)luab_checkmaxargs(L, narg);
 
-    self = luab_toudata(L, narg, m);
+    self = luab_todata(L, narg, m, luab_udata_t *);
 
     (void)memset_s(self, m->sz, 0, m->sz);
 
@@ -374,7 +378,7 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
 
     (void)luab_checkmaxargs(L, narg);
 
-    self = luab_toudata(L, narg, m);
+    self = luab_todata(L, narg, m, luab_udata_t *);
     lua_pushfstring(L, "%s (%p)", m->name, self);
 
     return (1);

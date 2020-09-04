@@ -54,7 +54,7 @@ typedef struct luab_bintime {
     ((luab_bintime_t *)luab_newuserdata(L, &bintime_type, (arg)))
 #define luab_to_bintime(L, narg) \
     (luab_toldata((L), (narg), &bintime_type, \
-        luab_bintime_t *, sizeof(struct bintime)))
+        struct bintime *, sizeof(struct bintime)))
 
 #define LUABSD_BINTIME_TYPE_ID    1594161740
 #define LUABSD_BINTIME_TYPE    "BINTIME*"
@@ -66,9 +66,14 @@ int luab_StructBinTime(lua_State *);
  *
  * @function set_sec
  *
- * @param sec           Seconds.
+ * @param attr              Seconds.
  *
- * @usage sec [, err, msg ] = bintime:set_sec(sec)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
+ *
+ * @usage attr [, err, msg ] = bintime:set_sec(attr)
  */
 static int
 BinTime_set_sec(lua_State *L)
@@ -93,10 +98,10 @@ BinTime_set_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (sec [, nil, nil]) on success or
- *          (sec, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage sec [, err, msg ] = bintime:get_sec()
+ * @usage attr [, err, msg ] = bintime:get_sec()
  */
 static int
 BinTime_get_sec(lua_State *L)
@@ -117,9 +122,14 @@ BinTime_get_sec(lua_State *L)
  *
  * @function set_frac
  *
- * @param frac          Specifies frac.
+ * @param attr              Specifies frac.
  *
- * @usage frac [, err, msg ] = bintime:set_frac(frac)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
+ *
+ * @usage attr [, err, msg ] = bintime:set_frac(attr)
  */
 static int
 BinTime_set_frac(lua_State *L)
@@ -144,10 +154,10 @@ BinTime_set_frac(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (frac [, nil, nil]) on success or
- *          (frac, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage frac [, err, msg ] = bintime:get_frac()
+ * @usage attr [, err, msg ] = bintime:get_frac()
  */
 static int
 BinTime_get_frac(lua_State *L)
@@ -271,9 +281,7 @@ bintime_init(void *ud, void *arg)
 static void *
 bintime_udata(lua_State *L, int narg)
 {
-    luab_bintime_t *self = luab_to_bintime(L, narg);
-
-    return (&self->bintime);
+    return (luab_to_bintime(L, narg));
 }
 
 luab_module_t bintime_type = {

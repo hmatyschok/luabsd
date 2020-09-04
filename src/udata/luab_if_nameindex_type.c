@@ -55,8 +55,7 @@ typedef struct luab_if_nameindex {
 #define luab_new_if_nameindex(L, arg) \
     ((luab_if_nameindex_t *)luab_newuserdata(L, &if_nameindex_type, (arg)))
 #define luab_to_if_nameindex(L, narg) \
-    (luab_toldata((L), (narg), &if_nameindex_type, \
-        luab_if_nameindex_t *, sizeof(struct luab_if_nameindex)))
+    (luab_toudata((L), (narg), &if_nameindex_type))
 
 #define LUABSD_IF_NAMEINDEX_TYPE_ID    1596840702
 #define LUABSD_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
@@ -78,13 +77,13 @@ int luab_StructIfNameIndex(lua_State *);
 static int
 IfNameIndex_if_index(lua_State *L)
 {
-    luab_if_nameindex_t *self;
+    struct if_nameindex *ifni;
     u_int if_index;
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = luab_udata(L, 1, if_nameindex_type, luab_if_nameindex_t *);
-    if_index = self->if_index;
+    ifni = luab_udata(L, 1, if_nameindex_type, struct if_nameindex *);
+    if_index = ifni->if_index;
 
     return (luab_pusherr(L, if_index));
 }
@@ -104,15 +103,15 @@ IfNameIndex_if_index(lua_State *L)
 static int
 IfNameIndex_if_name(lua_State *L)
 {
-    luab_if_nameindex_t *self;
+    struct if_nameindex *ifni;
     char *if_name;
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = luab_udata(L, 1, if_nameindex_type, luab_if_nameindex_t *);
-    if_name = self->if_name;
+    ifni = luab_udata(L, 1, if_nameindex_type, struct if_nameindex *);
+    if_name = ifni->if_name;
 
-    return (luab_pushstring(L, self->if_name));
+    return (luab_pushstring(L, ifni->if_name));
 }
 
 /***
@@ -127,58 +126,20 @@ IfNameIndex_if_name(lua_State *L)
 static int
 IfNameIndex_get(lua_State *L)
 {
-    luab_if_nameindex_t *self;
+    struct if_nameindex *ifni;
 
     (void)luab_checkmaxargs(L, 1);
 
-    self = luab_udata(L, 1, if_nameindex_type, luab_if_nameindex_t *);
+    ifni = luab_udata(L, 1, if_nameindex_type, struct if_nameindex *);
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "if_index", self->if_index);
-    luab_setstring(L, -2, "if_name", self->if_name);
+    luab_setinteger(L, -2, "if_index", ifni->if_index);
+    luab_setstring(L, -2, "if_name", ifni->if_name);
 
     lua_pushvalue(L, -1);
 
     return (1);
-}
-
-/***
- * Copy if_nameindex{} into LUA_TUSERDATA(luab_iovec_t).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage iovec [, err, msg ] = if_nameindex:dump()
- */
-static int
-IfNameIndex_dump(lua_State *L)
-{
-    luab_iovec_param_t iop;
-    size_t len, max_len;
-    caddr_t data;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-    data = luab_udata(L, 1, if_nameindex_type, caddr_t);
-
-    len = sizeof(luab_if_nameindex_t);
-    max_len = len + sizeof(uint32_t);
-
-    iop.iop_buf.buf_len = max_len;
-    iop.iop_data.buf_data = data;
-    iop.iop_data.buf_len = len;
-
-    if ((*iovec_type.ctor)(L, &iop) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
 }
 
 static int
@@ -194,10 +155,9 @@ IfNameIndex_tostring(lua_State *L)
 }
 
 static luab_table_t if_nameindex_methods[] = {
-    LUABSD_FUNC("get",  IfNameIndex_get),
     LUABSD_FUNC("if_index",   IfNameIndex_if_index),
     LUABSD_FUNC("if_name",  IfNameIndex_if_name),
-    LUABSD_FUNC("dump", IfNameIndex_dump),
+    LUABSD_FUNC("get",  IfNameIndex_get),
     LUABSD_FUNC("__gc", IfNameIndex_gc),
     LUABSD_FUNC("__tostring",   IfNameIndex_tostring),
     LUABSD_FUNC(NULL, NULL)

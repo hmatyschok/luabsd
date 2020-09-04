@@ -62,7 +62,7 @@ typedef struct luab_tm {
     ((luab_tm_t *)luab_newuserdata(L, &tm_type, (arg)))
 #define luab_to_tm(L, narg) \
     (luab_toldata((L), (narg), &tm_type, \
-        luab_tm_t *, sizeof(struct tm)))
+        struct tm *, sizeof(struct tm)))
 
 #define LUABSD_TM_TYPE_ID    1594168426
 #define LUABSD_TM_TYPE    "TM*"
@@ -794,9 +794,7 @@ tm_init(void *ud, void *arg)
 static void *
 tm_udata(lua_State *L, int narg)
 {
-    luab_tm_t *self = luab_to_tm(L, narg);
-
-    return (&self->tm);
+    return (luab_to_tm(L, narg));
 }
 
 luab_module_t tm_type = {

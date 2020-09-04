@@ -53,7 +53,7 @@ typedef struct luab_in_addr {
     ((luab_in_addr_t *)luab_newuserdata(L, &in_addr_type, (arg)))
 #define luab_to_in_addr(L, narg) \
     (luab_toldata((L), (narg), &in_addr_type, \
-        luab_in_addr_t *, sizeof(struct in_addr)))
+        struct in_addr *, sizeof(struct in_addr)))
 
 #define LUABSD_INADDR_TYPE_ID    1595799233
 #define LUABSD_INADDR_TYPE    "INADDR*"
@@ -65,9 +65,14 @@ int luab_StructInAddr(lua_State *);
  *
  * @function set_s_addr
  *
- * @param s_addr            Ipv4 address.
+ * @param id                IPv4 address.
  *
- * @usage in_addr:set_s_addr(s_addr)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (id [, nil, nil]) on success or
+ *          (id, (errno, strerror(errno)))
+ *
+ * @usage id [, err, mag ] = in_addr:set_s_addr(id)
  */
 static int
 InAddr_set_s_addr(lua_State *L)
@@ -82,7 +87,7 @@ InAddr_set_s_addr(lua_State *L)
 
     ia->s_addr = s_addr;
 
-    return (0);
+    return (luab_pusherr(L, s_addr));
 }
 
 /***
@@ -92,10 +97,10 @@ InAddr_set_s_addr(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (addr [, nil, nil]) on success or
- *          (addr, (errno, strerror(errno)))
+ *          (id [, nil, nil]) on success or
+ *          (id, (errno, strerror(errno)))
  *
- * @usage addr = in_addr:get_s_addr()
+ * @usage id [, err, msg ] = in_addr:get_s_addr()
  */
 static int
 InAddr_get_s_addr(lua_State *L)
@@ -219,9 +224,7 @@ in_addr_init(void *ud, void *arg)
 static void *
 in_addr_udata(lua_State *L, int narg)
 {
-    luab_in_addr_t *self = luab_to_in_addr(L, narg);
-
-    return (&self->in_addr);
+    return (luab_to_in_addr(L, narg));
 }
 
 luab_module_t in_addr_type = {

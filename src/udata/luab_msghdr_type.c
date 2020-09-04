@@ -68,6 +68,8 @@ extern luab_module_t msghdr_type;
 /*
  * By *msg_{name,control} reffered data maps to msg_buf[MH_{NAME,CONTROL}] avoids
  * possible race-cond. with gc.
+ *
+ * XXX msg_buf[MH_{NAME,CONTROL}] shall replaced by hooks.
  */
 
 typedef struct luab_msghdr {
@@ -629,7 +631,7 @@ msghdr_init(void *ud, void *arg)
 }
 
 static void *
-msghdr_udata(lua_State *L, int narg)
+msghdr_udata(lua_State *L, int narg)    /* XXX */
 {
     luab_msghdr_t *self = luab_to_msghdr(L, narg);
 

@@ -61,7 +61,7 @@ typedef struct luab_in6_addr {
     ((luab_in6_addr_t *)luab_newuserdata(L, &in6_addr_type, (arg)))
 #define luab_to_in6_addr(L, narg) \
     (luab_toldata((L), (narg), &in6_addr_type, \
-        luab_in6_addr_t *, sizeof(struct in6_addr)))
+        struct in6_addr *, sizeof(struct in6_addr)))
 
 #define LUABSD_IN6ADDR_TYPE_ID    1595890830
 #define LUABSD_IN6ADDR_TYPE    "IN6ADDR*"
@@ -255,9 +255,7 @@ in6_addr_init(void *ud, void *arg)
 static void *
 in6_addr_udata(lua_State *L, int narg)
 {
-    luab_in6_addr_t *self = luab_to_in6_addr(L, narg);
-
-    return (&self->in6_addr);
+    return (luab_to_in6_addr(L, narg));
 }
 
 luab_module_t in6_addr_type = {

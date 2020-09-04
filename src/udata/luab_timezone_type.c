@@ -54,7 +54,7 @@ typedef struct luab_timezone {
     ((luab_timezone_t *)luab_newuserdata(L, &timezone_type, (arg)))
 #define luab_to_timezone(L, narg) \
     (luab_toldata((L), (narg), &timezone_type, \
-        luab_timezone_t *, sizeof(struct timezone)))
+        struct timezone *, sizeof(struct timezone)))
 
 #define LUABSD_TIMEZONE_TYPE_ID    1594159943
 #define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
@@ -281,9 +281,7 @@ timezone_init(void *ud, void *arg)
 static void *
 timezone_udata(lua_State *L, int narg)
 {
-    luab_timezone_t *self = luab_to_timezone(L, narg);
-
-    return (&self->timezone);
+    return (luab_to_timezone(L, narg));
 }
 
 luab_module_t timezone_type = {

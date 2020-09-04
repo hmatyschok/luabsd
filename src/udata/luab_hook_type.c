@@ -69,7 +69,7 @@ typedef struct luab_hook {
 #define luab_new_hook(L, arg) \
     ((luab_hook_t *)luab_newuserdata(L, &hook_type, (arg)))
 #define luab_to_hook(L, narg) \
-    (luab_todata((L), (narg), &hook_type, luab_hook_t *))
+    (luab_toudata((L), (narg), &hook_type))
 
 #define LUABSD_HOOK_TYPE_ID    1595975665
 #define LUABSD_HOOK_TYPE   "HOOK*"
@@ -241,13 +241,6 @@ Hook_gc(lua_State *L)
 static int
 Hook_tostring(lua_State *L)
 {
-    luab_hook_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_hook(L, 1);
-    lua_pushfstring(L, "Hook (%p)", self);
-
     return (luab_tostring(L, 1, &hook_type));
 }
 
@@ -285,9 +278,7 @@ hook_init(void *ud, void *arg)
 static void *
 hook_udata(lua_State *L, int narg)
 {
-    luab_hook_t *self = luab_to_hook(L, narg);
-
-    return (&self->hook);
+    return (luab_to_hook(L, narg));
 }
 
 luab_module_t hook_type = {

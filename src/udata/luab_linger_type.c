@@ -54,7 +54,7 @@ typedef struct luab_linger {
     ((luab_linger_t *)luab_newuserdata(L, &linger_type, (arg)))
 #define luab_to_linger(L, narg) \
     (luab_toldata((L), (narg), &linger_type, \
-        luab_linger_t *, sizeof(struct linger)))
+        struct linger *, sizeof(struct linger)))
 
 #define LUABSD_LINGER_TYPE_ID    1597012436
 #define LUABSD_LINGER_TYPE    "LINGER*"
@@ -281,9 +281,7 @@ linger_init(void *ud, void *arg)
 static void *
 linger_udata(lua_State *L, int narg)
 {
-    luab_linger_t *self = luab_to_linger(L, narg);
-
-    return (&self->linger);
+    return (luab_to_linger(L, narg));
 }
 
 luab_module_t linger_type = {

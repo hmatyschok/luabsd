@@ -55,7 +55,7 @@ typedef struct luab_crypt_data {
     ((luab_crypt_data_t *)luab_newuserdata(L, &crypt_data_type, (arg)))
 #define luab_to_crypt_data(L, narg) \
     (luab_toldata((L), (narg), &crypt_data_type, \
-        luab_crypt_data_t *, sizeof(struct crypt_data)))
+        struct crypt_data *, sizeof(struct crypt_data)))
 
 #define LUABSD_CRYPT_DATA_TYPE_ID    1595491033
 #define LUABSD_CRYPT_DATA_TYPE    "CRYPTDATA*"
@@ -253,6 +253,9 @@ CryptData_dump(lua_State *L)
     return (status);
 }
 
+/*
+ * Meta-methods
+ */
 
 static int
 CryptData_gc(lua_State *L)
@@ -295,9 +298,7 @@ crypt_data_init(void *ud, void *arg)
 static void *
 crypt_data_udata(lua_State *L, int narg)
 {
-    luab_crypt_data_t *self = luab_to_crypt_data(L, narg);
-
-    return (&self->crypt_data);
+    return (luab_to_crypt_data(L, narg));
 }
 
 luab_module_t crypt_data_type = {

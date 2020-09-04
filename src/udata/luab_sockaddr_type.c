@@ -76,7 +76,7 @@ typedef struct luab_sockaddr {
 #define luab_new_sockaddr(L, arg) \
     ((luab_sockaddr_t *)luab_newuserdata(L, &sockaddr_type, (arg)))
 #define luab_to_sockaddr(L, narg) \
-    (luab_todata((L), (narg), &sockaddr_type, luab_sockaddr_t *))
+    (luab_toudata((L), (narg), &sockaddr_type))
 
 #define LUABSD_SOCKADDR_TYPE_ID    1595755513
 #define LUABSD_SOCKADDR_TYPE   "SOCKADDR*"
@@ -1215,9 +1215,7 @@ sockaddr_init(void *ud, void *arg)
 static void *
 sockaddr_udata(lua_State *L, int narg)
 {
-    luab_sockaddr_t *self = luab_to_sockaddr(L, narg);
-
-    return (&self->sockaddr);
+    return (luab_to_sockaddr(L, narg));
 }
 
 luab_module_t sockaddr_type = {
