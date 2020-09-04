@@ -189,30 +189,7 @@ In6Addr_get(lua_State *L)
 static int
 In6Addr_dump(lua_State *L)
 {
-    luab_iovec_param_t iop;
-    size_t len, max_len;
-    caddr_t data;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-    data = luab_udata(L, 1, in6_addr_type, caddr_t);
-
-    len = sizeof(struct in6_addr);
-    max_len = len + sizeof(uint32_t);
-
-    iop.iop_buf.buf_len = max_len;
-    iop.iop_data.buf_data = data;
-    iop.iop_data.buf_len = len;
-
-    if ((*iovec_type.ctor)(L, &iop) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_dump(L, 1, &in6_addr_type, sizeof(struct in6_addr)));
 }
 
 static int

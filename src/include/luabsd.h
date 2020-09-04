@@ -358,6 +358,33 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
 }
 
 static __inline int
+luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
+{
+    luab_iovec_param_t iop;
+    caddr_t data;
+    size_t max_len;
+    int status;
+
+    (void)luab_checkmaxargs(L, narg);
+
+    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+    data = (caddr_t)(*m->get)(L, narg);
+    max_len = len + sizeof(uint32_t);
+
+    iop.iop_buf.buf_len = max_len;
+    iop.iop_data.buf_data = data;
+    iop.iop_data.buf_len = len;
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return (status);
+}
+
+static __inline int
 luab_gc(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *self;
