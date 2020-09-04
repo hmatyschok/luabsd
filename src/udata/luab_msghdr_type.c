@@ -562,14 +562,7 @@ MsgHdr_gc(lua_State *L)
 static int
 MsgHdr_tostring(lua_State *L)
 {
-    luab_msghdr_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_msghdr(L, 1);
-    lua_pushfstring(L, "msghdr (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &msghdr_type));
 }
 
 static luab_table_t msghdr_methods[] = {

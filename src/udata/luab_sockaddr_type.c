@@ -1154,28 +1154,13 @@ SockAddr_get_sun_path(lua_State *L)
 static int
 SockAddr_gc(lua_State *L)
 {
-    luab_sockaddr_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_sockaddr(L, 1);
-
-    (void)memset_s(self, sockaddr_type.sz, 0, sockaddr_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &sockaddr_type));
 }
 
 static int
 SockAddr_tostring(lua_State *L)
 {
-    luab_sockaddr_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_sockaddr(L, 1);
-    lua_pushfstring(L, "sockaddr (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &sockaddr_type));
 }
 
 static luab_table_t sockaddr_methods[] = {

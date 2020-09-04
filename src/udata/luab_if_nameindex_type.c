@@ -184,28 +184,13 @@ IfNameIndex_dump(lua_State *L)
 static int
 IfNameIndex_gc(lua_State *L)
 {
-    luab_if_nameindex_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_if_nameindex(L, 1);
-
-    (void)memset_s(self, if_nameindex_type.sz, 0, if_nameindex_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &if_nameindex_type));
 }
 
 static int
 IfNameIndex_tostring(lua_State *L)
 {
-    luab_if_nameindex_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_if_nameindex(L, 1);
-    lua_pushfstring(L, "if_nameindex (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &if_nameindex_type));
 }
 
 static luab_table_t if_nameindex_methods[] = {

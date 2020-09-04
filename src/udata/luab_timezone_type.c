@@ -66,9 +66,14 @@ int luab_StructTimeZone(lua_State *);
  *
  * @function set_tz_minuteswest
  *
- * @param zone          Specifies value in minutes.
+ * @param attr              Specifies value in minutes.
  *
- * @usage timezone:set_tz_minuteswest(min)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
+ *
+ * @usage attr [, err, msg ] = timezone:get_tz_minuteswest(attr)
  */
 static int
 TimeZone_set_tz_minuteswest(lua_State *L)
@@ -83,7 +88,7 @@ TimeZone_set_tz_minuteswest(lua_State *L)
 
     tz->tz_minuteswest = tz_minuteswest;
 
-    return (0);
+    return (luab_pusherr(L, tz_minuteswest));
 }
 
 /***
@@ -93,10 +98,10 @@ TimeZone_set_tz_minuteswest(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (zone [, nil, nil]) on success or
- *          (zone, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage zone [, err, msg ] = timezone:get_tz_minuteswest()
+ * @usage attr [, err, msg ] = timezone:get_tz_minuteswest()
  */
 static int
 TimeZone_get_tz_minuteswest(lua_State *L)
@@ -117,9 +122,14 @@ TimeZone_get_tz_minuteswest(lua_State *L)
  *
  * @function set_tz_dsttime
  *
- * @param dst           Specifies dst correction.
+ * @param attr              Value.
  *
- * @usage timezone:set_tz_dsttime(dst)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
+ *
+ * @usage attr [, err, msg ] = timezone:set_tz_dsttime(attr)
  */
 static int
 TimeZone_set_tz_dsttime(lua_State *L)
@@ -134,7 +144,7 @@ TimeZone_set_tz_dsttime(lua_State *L)
 
     tz->tz_dsttime = tz_dsttime;
 
-    return (0);
+    return (luab_pusherr(L, tz_dsttime));
 }
 
 /***
@@ -144,10 +154,10 @@ TimeZone_set_tz_dsttime(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (dst [, nil, nil]) on success or
- *          (dst, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage dst [, err, msg ] = timezone:get_tz_dsttime()
+ * @usage attr [, err, msg ] = timezone:get_tz_dsttime()
  */
 static int
 TimeZone_get_tz_dsttime(lua_State *L)
@@ -232,28 +242,13 @@ TimeZone_dump(lua_State *L)
 static int
 TimeZone_gc(lua_State *L)
 {
-    luab_timezone_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_timezone(L, 1);
-
-    (void)memset_s(self, timezone_type.sz, 0, timezone_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &timezone_type));
 }
 
 static int
 TimeZone_tostring(lua_State *L)
 {
-    luab_timezone_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_timezone(L, 1);
-    lua_pushfstring(L, "timezone (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &timezone_type));
 }
 
 static luab_table_t timezone_methods[] = {

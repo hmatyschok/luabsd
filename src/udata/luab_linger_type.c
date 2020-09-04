@@ -66,9 +66,14 @@ int luab_StructLinger(lua_State *);
  *
  * @function set_l_onoff
  *
- * @param val               Option.
+ * @param attr              Option.
  *
- * @usage linger:set_l_onoff(val)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
+ *
+ * @usage attr [, err, msg ] = linger:set_l_onoff(attr)
  */
 static int
 Linger_set_l_onoff(lua_State *L)
@@ -83,7 +88,7 @@ Linger_set_l_onoff(lua_State *L)
 
     l->l_onoff = l_onoff;
 
-    return (0);
+    return (luab_pusherr(L, l_onoff));
 }
 
 /***
@@ -93,10 +98,10 @@ Linger_set_l_onoff(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (val [, nil, nil]) on success or
- *          (val, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage val [, err, msg ] = linger:get_l_onoff()
+ * @usage attr [, err, msg ] = linger:get_l_onoff()
  */
 static int
 Linger_get_l_onoff(lua_State *L)
@@ -117,9 +122,14 @@ Linger_get_l_onoff(lua_State *L)
  *
  * @function set_l_linger
  *
- * @param val          Specifies l_linger.
+ * @param attr              Specifies l_linger.
  *
- * @usage linger:set_l_linger(val)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
+ *
+ * @usage attr [, err, msg ] = linger:set_l_linger(attr)
  */
 static int
 Linger_set_l_linger(lua_State *L)
@@ -134,7 +144,7 @@ Linger_set_l_linger(lua_State *L)
 
     l->l_linger = l_linger;
 
-    return (0);
+    return (luab_pusherr(L, l_linger));
 }
 
 /***
@@ -144,10 +154,10 @@ Linger_set_l_linger(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (val [, nil, nil]) on success or
- *          (val, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage val [, err, msg ] = linger:get_l_linger()
+ * @usage attr [, err, msg ] = linger:get_l_linger()
  */
 static int
 Linger_get_l_linger(lua_State *L)
@@ -232,28 +242,13 @@ Linger_dump(lua_State *L)
 static int
 Linger_gc(lua_State *L)
 {
-    luab_linger_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_linger(L, 1);
-
-    (void)memset_s(self, linger_type.sz, 0, linger_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &linger_type));
 }
 
 static int
 Linger_tostring(lua_State *L)
 {
-    luab_linger_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_linger(L, 1);
-    lua_pushfstring(L, "linger (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &linger_type));
 }
 
 static luab_table_t linger_methods[] = {

@@ -182,28 +182,13 @@ InAddr_dump(lua_State *L)
 static int
 InAddr_gc(lua_State *L)
 {
-    luab_in_addr_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_in_addr(L, 1);
-
-    (void)memset_s(self, in_addr_type.sz, 0, in_addr_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &in_addr_type));
 }
 
 static int
 InAddr_tostring(lua_State *L)
 {
-    luab_in_addr_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_in_addr(L, 1);
-    lua_pushfstring(L, "in_addr (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &in_addr_type));
 }
 
 static luab_table_t in_addr_methods[] = {

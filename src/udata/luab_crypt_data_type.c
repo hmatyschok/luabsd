@@ -67,9 +67,14 @@ int luab_StructCryptData(lua_State *);
  *
  * @function set_initialized
  *
- * @param arg           Integer.
+ * @param attr              Integer.
  *
- * @usage crypt_data:set_initialized(arg)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
+ *
+ * @usage attr [, err, msg ] = crypt_data:set_initialized(attr)
  */
 static int
 CryptData_set_initialized(lua_State *L)
@@ -84,7 +89,7 @@ CryptData_set_initialized(lua_State *L)
 
     cd->initialized = initialized;
 
-    return (0);
+    return (luab_pusherr(L, initialized));
 }
 
 /***
@@ -94,10 +99,10 @@ CryptData_set_initialized(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (initialized [, nil, nil]) on success or
- *          (initialized, (errno, strerror(errno)))
+ *          (attr [, nil, nil]) on success or
+ *          (attr, (errno, strerror(errno)))
  *
- * @usage initialized [, err, msg ] = crypt_data:get_initialized()
+ * @usage attr [, err, msg ] = crypt_data:get_initialized()
  */
 static int
 CryptData_get_initialized(lua_State *L)
@@ -252,29 +257,13 @@ CryptData_dump(lua_State *L)
 static int
 CryptData_gc(lua_State *L)
 {
-    luab_crypt_data_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_crypt_data(L, 1);
-
-    (void)memset_s(self, crypt_data_type.sz, 0, crypt_data_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &crypt_data_type));
 }
 
 static int
 CryptData_tostring(lua_State *L)
 {
-    luab_crypt_data_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_crypt_data(L, 1);
-
-    lua_pushfstring(L, "crypt_data (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &crypt_data_type));
 }
 
 static luab_table_t crypt_data_methods[] = {

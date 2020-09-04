@@ -238,28 +238,13 @@ ItimerVal_dump(lua_State *L)
 static int
 ItimerVal_gc(lua_State *L)
 {
-    luab_itimerval_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_itimerval(L, 1);
-
-    (void)memset_s(self, itimerval_type.sz, 0, itimerval_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &itimerval_type));
 }
 
 static int
 ItimerVal_tostring(lua_State *L)
 {
-    luab_itimerval_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_itimerval(L, 1);
-    lua_pushfstring(L, "itimerval (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &itimerval_type));
 }
 
 static luab_table_t itimerval_methods[] = {

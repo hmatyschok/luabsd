@@ -68,7 +68,7 @@ int luab_StructBinTime(lua_State *);
  *
  * @param sec           Seconds.
  *
- * @usage bintime:set_sec(sec)
+ * @usage sec [, err, msg ] = bintime:set_sec(sec)
  */
 static int
 BinTime_set_sec(lua_State *L)
@@ -83,7 +83,7 @@ BinTime_set_sec(lua_State *L)
 
     bt->sec = sec;
 
-    return (0);
+    return (luab_pusherr(L, sec));
 }
 
 /***
@@ -119,7 +119,7 @@ BinTime_get_sec(lua_State *L)
  *
  * @param frac          Specifies frac.
  *
- * @usage bintime:set_frac(frac)
+ * @usage frac [, err, msg ] = bintime:set_frac(frac)
  */
 static int
 BinTime_set_frac(lua_State *L)
@@ -134,7 +134,7 @@ BinTime_set_frac(lua_State *L)
 
     bt->frac = frac;
 
-    return (0);
+    return (luab_pusherr(L, frac));
 }
 
 /***
@@ -232,28 +232,13 @@ BinTime_dump(lua_State *L)
 static int
 BinTime_gc(lua_State *L)
 {
-    luab_bintime_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_bintime(L, 1);
-
-    (void)memset_s(self, bintime_type.sz, 0, bintime_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &bintime_type));
 }
 
 static int
 BinTime_tostring(lua_State *L)
 {
-    luab_bintime_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_bintime(L, 1);
-    lua_pushfstring(L, "bintime (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &bintime_type));
 }
 
 static luab_table_t bintime_methods[] = {

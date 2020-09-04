@@ -351,14 +351,7 @@ IOVec_gc(lua_State *L)
 static int
 IOVec_tostring(lua_State *L)
 {
-    luab_iovec_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_iovec(L, 1);
-    lua_pushfstring(L, "IOVec (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &iovec_type));
 }
 
 static luab_table_t iovec_methods[] = {

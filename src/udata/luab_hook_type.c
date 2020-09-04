@@ -89,7 +89,7 @@ Hook_set_char(lua_State *L)
 
     hook->un_char = (char)value;
 
-    return (luab_pusherr(L, 0));
+    return (luab_pusherr(L, hook->un_char));
 }
 
 static int
@@ -120,7 +120,7 @@ Hook_set_short(lua_State *L)
 
     hook->un_short = (short)value;
 
-    return (luab_pusherr(L, 0));
+    return (luab_pusherr(L, hook->un_short));
 }
 
 static int
@@ -152,7 +152,7 @@ Hook_set_int(lua_State *L)
 
     hook->un_int = (int)value;
 
-    return (luab_pusherr(L, 0));
+    return (luab_pusherr(L, hook->un_int));
 }
 
 static int
@@ -183,7 +183,7 @@ Hook_set_long(lua_State *L)
 
     hook->un_long = (long)value;
 
-    return (luab_pusherr(L, 0));
+    return (luab_pusherr(L, hook->un_long));
 }
 
 static int
@@ -214,7 +214,7 @@ Hook_set_socklen(lua_State *L)
 
     hook->un_socklen = (socklen_t)value;
 
-    return (luab_pusherr(L, 0));
+    return (luab_pusherr(L, hook->un_socklen));
 }
 
 static int
@@ -235,15 +235,7 @@ Hook_get_socklen(lua_State *L)
 static int
 Hook_gc(lua_State *L)
 {
-    luab_hook_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_hook(L, 1);
-
-    (void)memset_s(self, hook_type.sz, 0, hook_type.sz);
-
-    return (0);
+    return (luab_gc(L, 1, &hook_type));
 }
 
 static int
@@ -256,7 +248,7 @@ Hook_tostring(lua_State *L)
     self = luab_to_hook(L, 1);
     lua_pushfstring(L, "Hook (%p)", self);
 
-    return (1);
+    return (luab_tostring(L, 1, &hook_type));
 }
 
 static luab_table_t hook_methods[] = {

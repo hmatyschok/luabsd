@@ -312,6 +312,10 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
     ((t)luab_checkudata((L), (narg), (m)))
 #define luab_toldata(L, narg, m, t, len) \
     ((t)luab_checkludata((L), (narg), (m), (len)))
+#define luab_toudata(L, narg, m) \
+    ((luab_udata_t *)luab_checkudata((L), (narg), (m)))
+#define luab_toludata(L, narg, m, len) \
+    ((luab_udata_t *)luab_checkludata((L), (narg), (m), (len)))
 #define luab_udata(L, narg, m, t) \
     ((t)(*(m).get)((L), (narg)))
 #define luab_udataisnil(L, narg, m, t) \
@@ -347,6 +351,33 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
         return (NULL);
 
     return ((*m->get)(L, narg));
+}
+
+static __inline int
+luab_gc(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *self;
+
+    (void)luab_checkmaxargs(L, narg);
+
+    self = luab_toudata(L, narg, m);
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return (0);
+}
+
+static __inline int
+luab_tostring(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *self;
+
+    (void)luab_checkmaxargs(L, narg);
+
+    self = luab_toudata(L, narg, m);
+    lua_pushfstring(L, "%s (%p)", m->name, self);
+
+    return (1);
 }
 __END_DECLS
 

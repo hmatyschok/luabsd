@@ -188,14 +188,7 @@ DBT_gc(lua_State *L)
 static int
 DBT_tostring(lua_State *L)
 {
-    luab_dbt_t *self;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_dbt(L, 1);
-    lua_pushfstring(L, "DBT (%p)", self);
-
-    return (1);
+    return (luab_tostring(L, 1, &dbt_type));
 }
 
 static luab_table_t dbt_methods[] = {
