@@ -304,7 +304,7 @@ crypt_data_init(void *ud, void *arg)
 }
 
 static void *
-crypt_data_get(lua_State *L, int narg)
+crypt_data_udata(lua_State *L, int narg)
 {
     luab_crypt_data_t *self = luab_to_crypt_data(L, narg);
 
@@ -317,7 +317,7 @@ luab_module_t crypt_data_type = {
     .vec = crypt_data_methods,
     .ctor = crypt_data_create,
     .init = crypt_data_init,
-    .get = crypt_data_get,
+    .get = crypt_data_udata,
     .sz = sizeof(luab_crypt_data_t),
 };
 
@@ -343,7 +343,7 @@ luab_StructCryptData(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         crypt_data = NULL;
     else
-        crypt_data = crypt_data_get(L, narg);
+        crypt_data = crypt_data_udata(L, narg);
 
     if (crypt_data_create(L, crypt_data) == NULL)
         status = luab_pushnil(L);

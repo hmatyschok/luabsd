@@ -429,7 +429,7 @@ iovec_init(void *ud, void *arg)
 }
 
 static void *
-iovec_get(lua_State *L, int narg)
+iovec_udata(lua_State *L, int narg)
 {
     return (luab_to_iovec(L, narg));
 }
@@ -440,7 +440,7 @@ luab_module_t iovec_type = {
     .vec = iovec_methods,
     .ctor = iovec_create,
     .init = iovec_init,
-    .get = iovec_get,
+    .get = iovec_udata,
     .sz = sizeof(luab_iovec_t),
 };
 

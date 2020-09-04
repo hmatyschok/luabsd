@@ -932,7 +932,7 @@ stat_init(void *ud, void *arg)
 }
 
 static void *
-stat_get(lua_State *L, int narg)
+stat_udata(lua_State *L, int narg)
 {
     luab_stat_t *self = luab_to_stat(L, narg);
 
@@ -945,7 +945,7 @@ luab_module_t stat_type = {
     .vec = stat_methods,
     .ctor = stat_create,
     .init = stat_init,
-    .get = stat_get,
+    .get = stat_udata,
     .sz = sizeof(luab_stat_t),
 };
 
@@ -958,7 +958,7 @@ luab_StructStat(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         stat = NULL;
     else
-        stat = stat_get(L, narg);
+        stat = stat_udata(L, narg);
 
     if (stat_create(L, stat) == NULL)
         status = luab_pushnil(L);

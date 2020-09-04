@@ -290,7 +290,7 @@ itimerval_init(void *ud, void *arg)
 }
 
 static void *
-itimerval_get(lua_State *L, int narg)
+itimerval_udata(lua_State *L, int narg)
 {
     luab_itimerval_t *self = luab_to_itimerval(L, narg);
 
@@ -303,7 +303,7 @@ luab_module_t itimerval_type = {
     .vec = itimerval_methods,
     .ctor = itimerval_create,
     .init = itimerval_init,
-    .get = itimerval_get,
+    .get = itimerval_udata,
     .sz = sizeof(luab_itimerval_t),
 };
 
@@ -327,7 +327,7 @@ luab_StructItimerVal(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         itimerval = NULL;
     else
-        itimerval = itimerval_get(L, narg);
+        itimerval = itimerval_udata(L, narg);
 
     if (itimerval_create(L, itimerval) == NULL)
         status = luab_pushnil(L);

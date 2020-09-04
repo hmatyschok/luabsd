@@ -307,7 +307,7 @@ db_init(void *ud, void *arg)
 }
 
 static void *
-db_get(lua_State *L, int narg)
+db_udata(lua_State *L, int narg)
 {
     luab_db_t *self = luab_to_db(L, narg);
 
@@ -320,7 +320,7 @@ luab_module_t db_type = {
     .vec = db_methods,
     .ctor = db_create,
     .init = db_init,
-    .get = db_get,
+    .get = db_udata,
     .sz = sizeof(luab_db_t),
 };
 

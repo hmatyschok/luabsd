@@ -232,7 +232,7 @@ in_addr_init(void *ud, void *arg)
 }
 
 static void *
-in_addr_get(lua_State *L, int narg)
+in_addr_udata(lua_State *L, int narg)
 {
     luab_in_addr_t *self = luab_to_in_addr(L, narg);
 
@@ -245,7 +245,7 @@ luab_module_t in_addr_type = {
     .vec = in_addr_methods,
     .ctor = in_addr_create,
     .init = in_addr_init,
-    .get = in_addr_get,
+    .get = in_addr_udata,
     .sz = sizeof(luab_in_addr_t),
 };
 
@@ -272,7 +272,7 @@ luab_StructInAddr(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         in_addr = NULL;
     else
-        in_addr = in_addr_get(L, narg);
+        in_addr = in_addr_udata(L, narg);
 
     if (in_addr_create(L, in_addr) == NULL)
         status = luab_pushnil(L);

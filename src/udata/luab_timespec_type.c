@@ -284,7 +284,7 @@ timespec_init(void *ud, void *arg)
 }
 
 static void *
-timespec__get(lua_State *L, int narg)
+timespec_udata(lua_State *L, int narg)
 {
     luab_timespec_t *self = luab_to_timespec(L, narg);
 
@@ -297,7 +297,7 @@ luab_module_t timespec_type = {
     .vec = timespec_methods,
     .ctor = timespec_create,
     .init = timespec_init,
-    .get = timespec__get,
+    .get = timespec_udata,
     .sz = sizeof(luab_timespec_t),
 };
 
@@ -321,7 +321,7 @@ luab_StructTimeSpec(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         timespec = NULL;
     else
-        timespec = timespec__get(L, narg);
+        timespec = timespec_udata(L, narg);
 
     if (timespec_create(L, timespec) == NULL)
         status = luab_pushnil(L);

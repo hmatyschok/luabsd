@@ -268,7 +268,7 @@ in6_addr_init(void *ud, void *arg)
 }
 
 static void *
-in6_addr_get(lua_State *L, int narg)
+in6_addr_udata(lua_State *L, int narg)
 {
     luab_in6_addr_t *self = luab_to_in6_addr(L, narg);
 
@@ -281,7 +281,7 @@ luab_module_t in6_addr_type = {
     .vec = in6_addr_methods,
     .ctor = in6_addr_create,
     .init = in6_addr_init,
-    .get = in6_addr_get,
+    .get = in6_addr_udata,
     .sz = sizeof(luab_in6_addr_t),
 };
 
@@ -308,7 +308,7 @@ luab_StructIn6Addr(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         in6_addr = NULL;
     else
-        in6_addr = in6_addr_get(L, narg);
+        in6_addr = in6_addr_udata(L, narg);
 
     if (in6_addr_create(L, in6_addr) == NULL)
         status = luab_pushnil(L);
