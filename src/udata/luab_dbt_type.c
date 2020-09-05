@@ -79,7 +79,7 @@ DBT_set_data(lua_State *L)
 
         if (((dbt->data = buf->iov.iov_base) != NULL) &&
             ((dbt->size = buf->iov.iov_len) > 0) &&
-            (buf->iov_flags & IOV_BUFF))
+            (buf->iov_flags & (IOV_BUFF|IOV_PROXY)))
             status = 0;
         else {
             errno = EINVAL;
@@ -217,7 +217,7 @@ dbt_init(void *ud, void *arg)
         ((buf = (luab_iovec_t *)arg) != NULL)) {
 
         if (((buf->iov_flags & IOV_LOCK) == 0) &&
-            (buf->iov_flags & IOV_BUFF) &&
+            (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
             (buf->iov.iov_base != NULL) &&
             (buf->iov.iov_len > 0)) {
             buf->iov_flags |= IOV_LOCK;

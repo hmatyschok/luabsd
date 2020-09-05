@@ -74,29 +74,29 @@ int luab_StructTM(lua_State *);
  *
  * @function set_tm_sec
  *
- * @param attr              Seconds.
+ * @param data              Seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:set_tm_sec(attr)
+ * @usage data [, err, msg ] = tm:set_tm_sec(data)
  */
 static int
 TM_set_tm_sec(lua_State *L)
 {
     struct tm *tm;
-    int tm_sec;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_sec = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_sec = tm_sec;
+    tm->tm_sec = data;
 
-    return (luab_pusherr(L, tm_sec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -106,23 +106,23 @@ TM_set_tm_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_sec()
+ * @usage data [, err, msg ] = tm:get_tm_sec()
  */
 static int
 TM_get_tm_sec(lua_State *L)
 {
     struct tm *tm;
-    int tm_sec;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_sec = tm->tm_sec;
+    data = tm->tm_sec;
 
-    return (luab_pusherr(L, tm_sec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -130,29 +130,29 @@ TM_get_tm_sec(lua_State *L)
  *
  * @function set_tm_min
  *
- * @param attr              Minutes.
+ * @param data              Minutes.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, min ] = tm:set_tm_min(attr)
+ * @usage data [, err, min ] = tm:set_tm_min(data)
  */
 static int
 TM_set_tm_min(lua_State *L)
 {
     struct tm *tm;
-    int tm_min;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_min = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_min = tm_min;
+    tm->tm_min = data;
 
-    return (luab_pusherr(L, tm_min));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -162,23 +162,23 @@ TM_set_tm_min(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, min ] = tm:get_tm_min()
+ * @usage data [, err, min ] = tm:get_tm_min()
  */
 static int
 TM_get_tm_min(lua_State *L)
 {
     struct tm *tm;
-    int tm_min;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_min = tm->tm_min;
+    data = tm->tm_min;
 
-    return (luab_pusherr(L, tm_min));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -186,29 +186,29 @@ TM_get_tm_min(lua_State *L)
  *
  * @function set_tm_hour
  *
- * @param attr              Hour.
+ * @param data              Hour.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:set_tm_hour(attr)
+ * @usage data [, err, msg ] = tm:set_tm_hour(data)
  */
 static int
 TM_set_tm_hour(lua_State *L)
 {
     struct tm *tm;
-    int tm_hour;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_hour = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_hour = tm_hour;
+    tm->tm_hour = data;
 
-    return (luab_pusherr(L, tm_hour));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -218,23 +218,23 @@ TM_set_tm_hour(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_hour()
+ * @usage data [, err, msg ] = tm:get_tm_hour()
  */
 static int
 TM_get_tm_hour(lua_State *L)
 {
     struct tm *tm;
-    int tm_hour;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_hour = tm->tm_hour;
+    data = tm->tm_hour;
 
-    return (luab_pusherr(L, tm_hour));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -242,29 +242,29 @@ TM_get_tm_hour(lua_State *L)
  *
  * @function set_tm_mday
  *
- * @param attr              Day.
+ * @param data              Day.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:set_tm_mday(attr)
+ * @usage data [, err, msg ] = tm:set_tm_mday(data)
  */
 static int
 TM_set_tm_mday(lua_State *L)
 {
     struct tm *tm;
-    int tm_mday;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_mday = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_mday = tm_mday;
+    tm->tm_mday = data;
 
-    return (luab_pusherr(L, tm_mday));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -274,23 +274,23 @@ TM_set_tm_mday(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_mday()
+ * @usage data [, err, msg ] = tm:get_tm_mday()
  */
 static int
 TM_get_tm_mday(lua_State *L)
 {
     struct tm *tm;
-    int tm_mday;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_mday = tm->tm_mday;
+    data = tm->tm_mday;
 
-    return (luab_pusherr(L, tm_mday));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -298,29 +298,29 @@ TM_get_tm_mday(lua_State *L)
  *
  * @function set_tm_mon
  *
- * @param attr              Month.
+ * @param data              Month.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:set_tm_mon(attr)
+ * @usage data [, err, msg ] = tm:set_tm_mon(data)
  */
 static int
 TM_set_tm_mon(lua_State *L)
 {
     struct tm *tm;
-    int tm_mon;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_mon = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_mon = tm_mon;
+    tm->tm_mon = data;
 
-    return (luab_pusherr(L, tm_mon));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -330,23 +330,23 @@ TM_set_tm_mon(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_mon()
+ * @usage data [, err, msg ] = tm:get_tm_mon()
  */
 static int
 TM_get_tm_mon(lua_State *L)
 {
     struct tm *tm;
-    int tm_mon;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_mon = tm->tm_mon;
+    data = tm->tm_mon;
 
-    return (luab_pusherr(L, tm_mon));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -354,29 +354,29 @@ TM_get_tm_mon(lua_State *L)
  *
  * @function set_tm_year
  *
- * @param attr              Seconds.
+ * @param data              Seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:set_tm_year(attr)
+ * @usage data [, err, msg ] = tm:set_tm_year(data)
  */
 static int
 TM_set_tm_year(lua_State *L)
 {
     struct tm *tm;
-    int tm_year;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_year = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_year = tm_year;
+    tm->tm_year = data;
 
-    return (luab_pusherr(L, tm_year));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -386,23 +386,23 @@ TM_set_tm_year(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_year()
+ * @usage data [, err, msg ] = tm:get_tm_year()
  */
 static int
 TM_get_tm_year(lua_State *L)
 {
     struct tm *tm;
-    int tm_year;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_year = tm->tm_year;
+    data = tm->tm_year;
 
-    return (luab_pusherr(L, tm_year));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -410,29 +410,29 @@ TM_get_tm_year(lua_State *L)
  *
  * @function set_tm_wday
  *
- * @param attr              Day.
+ * @param data              Day.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:set_tm_wday(attr)
+ * @usage data [, err, msg ] = tm:set_tm_wday(data)
  */
 static int
 TM_set_tm_wday(lua_State *L)
 {
     struct tm *tm;
-    int tm_wday;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_wday = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_wday = tm_wday;
+    tm->tm_wday = data;
 
-    return (luab_pusherr(L, tm_wday));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -442,23 +442,23 @@ TM_set_tm_wday(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_wday()
+ * @usage data [, err, msg ] = tm:get_tm_wday()
  */
 static int
 TM_get_tm_wday(lua_State *L)
 {
     struct tm *tm;
-    int tm_wday;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_wday = tm->tm_wday;
+    data = tm->tm_wday;
 
-    return (luab_pusherr(L, tm_wday));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -466,29 +466,29 @@ TM_get_tm_wday(lua_State *L)
  *
  * @function set_tm_yday
  *
- * @param attr              Day.
+ * @param data              Day.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ]= tm:set_tm_yday(attr)
+ * @usage data [, err, msg ]= tm:set_tm_yday(data)
  */
 static int
 TM_set_tm_yday(lua_State *L)
 {
     struct tm *tm;
-    int tm_yday;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_yday = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_yday = tm_yday;
+    tm->tm_yday = data;
 
-    return (luab_pusherr(L, tm_yday));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -498,23 +498,23 @@ TM_set_tm_yday(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ]= tm:get_tm_yday()
+ * @usage data [, err, msg ]= tm:get_tm_yday()
  */
 static int
 TM_get_tm_yday(lua_State *L)
 {
     struct tm *tm;
-    int tm_yday;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_yday = tm->tm_yday;
+    data = tm->tm_yday;
 
-    return (luab_pusherr(L, tm_yday));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -522,29 +522,29 @@ TM_get_tm_yday(lua_State *L)
  *
  * @function set_tm_isdst
  *
- * @param attr              Daylight Savings Time.
+ * @param data              Daylight Savings Time.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_isdst(attr)
+ * @usage data [, err, msg ] = tm:get_tm_isdst(data)
  */
 static int
 TM_set_tm_isdst(lua_State *L)
 {
     struct tm *tm;
-    int tm_isdst;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_isdst = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tm->tm_isdst = tm_isdst;
+    tm->tm_isdst = data;
 
-    return (luab_pusherr(L, tm_isdst));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -554,23 +554,23 @@ TM_set_tm_isdst(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_isdst()
+ * @usage data [, err, msg ] = tm:get_tm_isdst()
  */
 static int
 TM_get_tm_isdst(lua_State *L)
 {
     struct tm *tm;
-    int tm_isdst;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_isdst = tm->tm_isdst;
+    data = tm->tm_isdst;
 
-    return (luab_pusherr(L, tm_isdst));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -578,29 +578,29 @@ TM_get_tm_isdst(lua_State *L)
  *
  * @function set_tm_gmtoff
  *
- * @param attr              Offset.
+ * @param data              Offset.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:set_tm_gmtoff(attr)
+ * @usage data [, err, msg ] = tm:set_tm_gmtoff(data)
  */
 static int
 TM_set_tm_gmtoff(lua_State *L)
 {
     struct tm *tm;
-    long tm_gmtoff;
+    long data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_gmtoff = (long)luab_checkinteger(L, 2, LONG_MAX);
+    data = (long)luab_checkinteger(L, 2, LONG_MAX);
 
-    tm->tm_gmtoff = tm_gmtoff;
+    tm->tm_gmtoff = data;
 
-    return (luab_pusherr(L, tm_gmtoff));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -610,23 +610,23 @@ TM_set_tm_gmtoff(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = tm:get_tm_gmtoff()
+ * @usage data [, err, msg ] = tm:get_tm_gmtoff()
  */
 static int
 TM_get_tm_gmtoff(lua_State *L)
 {
     struct tm *tm;
-    long tm_gmtoff;
+    long data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_gmtoff = tm->tm_gmtoff;
+    data = tm->tm_gmtoff;
 
-    return (luab_pusherr(L, tm_gmtoff));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -645,14 +645,14 @@ static int
 TM_tm_zone(lua_State *L)
 {
     struct tm *tm;
-    char *tm_zone;
+    char *data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tm = luab_udata(L, 1, tm_type, struct tm *);
-    tm_zone = tm->tm_zone;
+    data = tm->tm_zone;
 
-    return (luab_pushstring(L, tm_zone));
+    return (luab_pushstring(L, data));
 }
 
 /***

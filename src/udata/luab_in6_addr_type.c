@@ -73,9 +73,9 @@ int luab_StructIn6Addr(lua_State *);
  *
  * @function set_s6_addr
  *
- * @param s6_addr           LUA_TTABLE(uint32_t) with cardinality of 4.
+ * @param id           LUA_TTABLE(uint32_t) with cardinality of #4.
  *
- * @usage in6_addr:set_s6_addr(s_addr)
+ * @usage in6_addr:set_s6_addr(id)
  */
 static int
 In6Addr_set_s6_addr(lua_State *L)
@@ -110,9 +110,9 @@ In6Addr_set_s6_addr(lua_State *L)
  *
  * @function get_s6_addr
  *
- * @return (LUA_TTABLE) with cardinality of 4 over uint32_t.
+ * @return (LUA_TTABLE) with cardinality of #4 (over uint32_t).
  *
- * @usage s6_addr = in6_addr:get_s6_addr()
+ * @usage id = in6_addr:get_s6_addr()
  */
 static int
 In6Addr_get_s6_addr(lua_State *L)
@@ -147,28 +147,13 @@ static int
 In6Addr_get(lua_State *L)
 {
     struct in6_addr *ia;
-    luaL_Buffer buf;
-    caddr_t dst, src;
-    size_t len;
 
     (void)luab_checkmaxargs(L, 1);
 
     ia = luab_udata(L, 1, in6_addr_type, struct in6_addr *);
-    len = sizeof(ia->__u6_addr);
-    src = ia->s6_addr;
 
     lua_newtable(L);
-
-    luaL_buffinit(L, &buf);
-    dst = luaL_prepbuffsize(&buf, len);
-
-    (void)memmove(dst, src, len);
-
-    luaL_addsize(&buf, len);
-    luaL_pushresult(&buf);
-
-    lua_setfield(L, -2, "s6_addr");
-
+    luab_setbuff(L, -2, "s6_addr", ia->s6_addr, sizeof(ia->__u6_addr));
     lua_pushvalue(L, -1);
 
     return (1);

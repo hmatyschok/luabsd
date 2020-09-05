@@ -66,29 +66,29 @@ int luab_StructBinTime(lua_State *);
  *
  * @function set_sec
  *
- * @param attr              Seconds.
+ * @param data              Seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = bintime:set_sec(attr)
+ * @usage data [, err, msg ] = bintime:set_sec(data)
  */
 static int
 BinTime_set_sec(lua_State *L)
 {
     struct bintime *bt;
-    time_t sec;
+    time_t data;
 
     (void)luab_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, bintime_type, struct bintime *);
-    sec = (time_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (time_t)luab_checkinteger(L, 2, INT_MAX);
 
-    bt->sec = sec;
+    bt->sec = data;
 
-    return (luab_pusherr(L, sec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -98,23 +98,23 @@ BinTime_set_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = bintime:get_sec()
+ * @usage data [, err, msg ] = bintime:get_sec()
  */
 static int
 BinTime_get_sec(lua_State *L)
 {
     struct bintime *bt;
-    time_t sec;
+    time_t data;
 
     (void)luab_checkmaxargs(L, 1);
 
     bt = luab_udata(L, 1, bintime_type, struct bintime *);
-    sec = bt->sec;
+    data = bt->sec;
 
-    return (luab_pusherr(L, sec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -122,29 +122,29 @@ BinTime_get_sec(lua_State *L)
  *
  * @function set_frac
  *
- * @param attr              Specifies frac.
+ * @param data              Specifies frac.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = bintime:set_frac(attr)
+ * @usage data [, err, msg ] = bintime:set_frac(data)
  */
 static int
 BinTime_set_frac(lua_State *L)
 {
     struct bintime *bt;
-    uint64_t frac;
+    uint64_t data;
 
     (void)luab_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, bintime_type, struct bintime *);
-    frac = (uint64_t)luab_checkinteger(L, 2, LONG_MAX);
+    data = (uint64_t)luab_checkinteger(L, 2, LONG_MAX);
 
-    bt->frac = frac;
+    bt->frac = data;
 
-    return (luab_pusherr(L, frac));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -154,23 +154,23 @@ BinTime_set_frac(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = bintime:get_frac()
+ * @usage data [, err, msg ] = bintime:get_frac()
  */
 static int
 BinTime_get_frac(lua_State *L)
 {
     struct bintime *bt;
-    uint64_t frac;
+    uint64_t data;
 
     (void)luab_checkmaxargs(L, 1);
 
     bt = luab_udata(L, 1, bintime_type, struct bintime *);
-    frac = bt->frac;
+    data = bt->frac;
 
-    return (luab_pusherr(L, frac));
+    return (luab_pusherr(L, data));
 }
 
 /***

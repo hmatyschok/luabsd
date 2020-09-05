@@ -66,29 +66,29 @@ int luab_StructTimeZone(lua_State *);
  *
  * @function set_tz_minuteswest
  *
- * @param attr              Specifies value in minutes.
+ * @param data              Specifies value in minutes.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timezone:get_tz_minuteswest(attr)
+ * @usage data [, err, msg ] = timezone:get_tz_minuteswest(data)
  */
 static int
 TimeZone_set_tz_minuteswest(lua_State *L)
 {
     struct timezone *tz;
-    int tz_minuteswest;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tz = luab_udata(L, 1, timezone_type, struct timezone *);
-    tz_minuteswest = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tz->tz_minuteswest = tz_minuteswest;
+    tz->tz_minuteswest = data;
 
-    return (luab_pusherr(L, tz_minuteswest));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -98,23 +98,23 @@ TimeZone_set_tz_minuteswest(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timezone:get_tz_minuteswest()
+ * @usage data [, err, msg ] = timezone:get_tz_minuteswest()
  */
 static int
 TimeZone_get_tz_minuteswest(lua_State *L)
 {
     struct timezone *tz;
-    int tz_minuteswest;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tz = luab_udata(L, 1, timezone_type, struct timezone *);
-    tz_minuteswest = tz->tz_minuteswest;
+    data = tz->tz_minuteswest;
 
-    return (luab_pusherr(L, tz_minuteswest));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -122,29 +122,29 @@ TimeZone_get_tz_minuteswest(lua_State *L)
  *
  * @function set_tz_dsttime
  *
- * @param attr              Value.
+ * @param data              Value.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timezone:set_tz_dsttime(attr)
+ * @usage data [, err, msg ] = timezone:set_tz_dsttime(data)
  */
 static int
 TimeZone_set_tz_dsttime(lua_State *L)
 {
     struct timezone *tz;
-    int tz_dsttime;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tz = luab_udata(L, 1, timezone_type, struct timezone *);
-    tz_dsttime = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    tz->tz_dsttime = tz_dsttime;
+    tz->tz_dsttime = data;
 
-    return (luab_pusherr(L, tz_dsttime));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -154,23 +154,23 @@ TimeZone_set_tz_dsttime(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timezone:get_tz_dsttime()
+ * @usage data [, err, msg ] = timezone:get_tz_dsttime()
  */
 static int
 TimeZone_get_tz_dsttime(lua_State *L)
 {
     struct timezone *tz;
-    int tz_dsttime;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tz = luab_udata(L, 1, timezone_type, struct timezone *);
-    tz_dsttime = tz->tz_dsttime;
+    data = tz->tz_dsttime;
 
-    return (luab_pusherr(L, tz_dsttime));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -192,10 +192,8 @@ TimeZone_get(lua_State *L)
     tz = luab_udata(L, 1, timezone_type, struct timezone *);
 
     lua_newtable(L);
-
     luab_setinteger(L, -2, "tz_minuteswest", tz->tz_minuteswest);
     luab_setinteger(L, -2, "tz_dsttime", tz->tz_dsttime);
-
     lua_pushvalue(L, -1);
 
     return (1);

@@ -188,10 +188,8 @@ ItimerVal_get(lua_State *L)
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
 
     lua_newtable(L);
-
     luab_setudata(L, -2, &timespec_type, "it_interval", &it->it_interval);
     luab_setudata(L, -2, &timespec_type, "it_value", &it->it_value);
-
     lua_pushvalue(L, -1);
 
     return (1);

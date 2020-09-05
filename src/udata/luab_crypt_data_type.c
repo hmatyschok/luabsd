@@ -67,29 +67,29 @@ int luab_StructCryptData(lua_State *);
  *
  * @function set_initialized
  *
- * @param attr              Integer.
+ * @param data              Integer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = crypt_data:set_initialized(attr)
+ * @usage data [, err, msg ] = crypt_data:set_initialized(data)
  */
 static int
 CryptData_set_initialized(lua_State *L)
 {
     struct crypt_data *cd;
-    int initialized;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
-    initialized = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    cd->initialized = initialized;
+    cd->initialized = data;
 
-    return (luab_pusherr(L, initialized));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -99,23 +99,23 @@ CryptData_set_initialized(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = crypt_data:get_initialized()
+ * @usage data [, err, msg ] = crypt_data:get_initialized()
  */
 static int
 CryptData_get_initialized(lua_State *L)
 {
     struct crypt_data *cd;
-    int initialized;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
-    initialized = cd->initialized;
+    data = cd->initialized;
 
-    return (luab_pusherr(L, initialized));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -303,9 +303,8 @@ luab_module_t crypt_data_type = {
 int
 luab_StructCryptData(lua_State *L)
 {
-    int narg;
     struct crypt_data *crypt_data;
-    int status;
+    int narg, status;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         crypt_data = NULL;

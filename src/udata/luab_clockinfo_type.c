@@ -69,29 +69,29 @@ int luab_StructClockInfo(lua_State *L);
  *
  * @function set_hz
  *
- * @param attr              Frequency.
+ * @param data              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:set_hz(attr)
+ * @usage data [, err, msg ] = clockinfo:set_hz(data)
  */
 static int
 ClockInfo_set_hz(lua_State *L)
 {
     struct clockinfo *ci;
-    int hz;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    hz = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    ci->hz = hz;
+    ci->hz = data;
 
-    return (luab_pusherr(L, hz));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -101,23 +101,23 @@ ClockInfo_set_hz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:get_hz()
+ * @usage data [, err, msg ] = clockinfo:get_hz()
  */
 static int
 ClockInfo_get_hz(lua_State *L)
 {
     struct clockinfo *ci;
-    int hz;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    hz = ci->hz;
+    data = ci->hz;
 
-    return (luab_pusherr(L, hz));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -125,29 +125,29 @@ ClockInfo_get_hz(lua_State *L)
  *
  * @function set_tick
  *
- * @param attr              Tick.
+ * @param data              Tick.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:set_tick(attr)
+ * @usage data [, err, msg ] = clockinfo:set_tick(data)
  */
 static int
 ClockInfo_set_tick(lua_State *L)
 {
     struct clockinfo *ci;
-    int tick;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    tick = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    ci->tick = tick;
+    ci->tick = data;
 
-    return (luab_pusherr(L, tick));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -157,23 +157,23 @@ ClockInfo_set_tick(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:get_tick()
+ * @usage data [, err, msg ] = clockinfo:get_tick()
  */
 static int
 ClockInfo_get_tick(lua_State *L)
 {
     struct clockinfo *ci;
-    int tick;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    tick = ci->tick;
+    data = ci->tick;
 
-    return (luab_pusherr(L, tick));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -181,29 +181,29 @@ ClockInfo_get_tick(lua_State *L)
  *
  * @function set_stathz
  *
- * @param attr              Frequency.
+ * @param data              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:set_stathz(attr)
+ * @usage data [, err, msg ] = clockinfo:set_stathz(data)
  */
 static int
 ClockInfo_set_stathz(lua_State *L)
 {
     struct clockinfo *ci;
-    int stathz;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    stathz = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    ci->stathz = stathz;
+    ci->stathz = data;
 
-    return (luab_pusherr(L, stathz));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -213,23 +213,23 @@ ClockInfo_set_stathz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:get_stathz()
+ * @usage data [, err, msg ] = clockinfo:get_stathz()
  */
 static int
 ClockInfo_get_stathz(lua_State *L)
 {
     struct clockinfo *ci;
-    int stathz;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    stathz = ci->stathz;
+    data = ci->stathz;
 
-    return (luab_pusherr(L, stathz));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -237,29 +237,29 @@ ClockInfo_get_stathz(lua_State *L)
  *
  * @function set_profhz
  *
- * @param attr              Frequency.
+ * @param data              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:set_profhz(attr)
+ * @usage data [, err, msg ] = clockinfo:set_profhz(data)
  */
 static int
 ClockInfo_set_profhz(lua_State *L)
 {
     struct clockinfo *ci;
-    int profhz;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    profhz = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    ci->profhz = profhz;
+    ci->profhz = data;
 
-    return (luab_pusherr(L, profhz));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -269,23 +269,23 @@ ClockInfo_set_profhz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = clockinfo:get_profhz()
+ * @usage data [, err, msg ] = clockinfo:get_profhz()
  */
 static int
 ClockInfo_get_profhz(lua_State *L)
 {
     struct clockinfo *ci;
-    int profhz;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-    profhz = ci->profhz;
+    data = ci->profhz;
 
-    return (luab_pusherr(L, profhz));
+    return (luab_pusherr(L, data));
 }
 
 /***

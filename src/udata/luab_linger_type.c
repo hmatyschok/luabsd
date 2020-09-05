@@ -66,29 +66,29 @@ int luab_StructLinger(lua_State *);
  *
  * @function set_l_onoff
  *
- * @param attr              Option.
+ * @param data              Option.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = linger:set_l_onoff(attr)
+ * @usage data [, err, msg ] = linger:set_l_onoff(data)
  */
 static int
 Linger_set_l_onoff(lua_State *L)
 {
     struct linger *l;
-    int l_onoff;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, linger_type, struct linger *);
-    l_onoff = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    l->l_onoff = l_onoff;
+    l->l_onoff = data;
 
-    return (luab_pusherr(L, l_onoff));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -98,23 +98,23 @@ Linger_set_l_onoff(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = linger:get_l_onoff()
+ * @usage data [, err, msg ] = linger:get_l_onoff()
  */
 static int
 Linger_get_l_onoff(lua_State *L)
 {
     struct linger *l;
-    int l_onoff;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, linger_type, struct linger *);
-    l_onoff = l->l_onoff;
+    data = l->l_onoff;
 
-    return (luab_pusherr(L, l_onoff));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -122,29 +122,29 @@ Linger_get_l_onoff(lua_State *L)
  *
  * @function set_l_linger
  *
- * @param attr              Specifies l_linger.
+ * @param data              Specifies l_linger.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = linger:set_l_linger(attr)
+ * @usage data [, err, msg ] = linger:set_l_linger(data)
  */
 static int
 Linger_set_l_linger(lua_State *L)
 {
     struct linger *l;
-    int l_linger;
+    int data;
 
     (void)luab_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, linger_type, struct linger *);
-    l_linger = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, INT_MAX);
 
-    l->l_linger = l_linger;
+    l->l_linger = data;
 
-    return (luab_pusherr(L, l_linger));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -154,23 +154,23 @@ Linger_set_l_linger(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = linger:get_l_linger()
+ * @usage data [, err, msg ] = linger:get_l_linger()
  */
 static int
 Linger_get_l_linger(lua_State *L)
 {
     struct linger *l;
-    int l_linger;
+    int data;
 
     (void)luab_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, linger_type, struct linger *);
-    l_linger = l->l_linger;
+    data = l->l_linger;
 
-    return (luab_pusherr(L, l_linger));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -192,10 +192,8 @@ Linger_get(lua_State *L)
     l = luab_udata(L, 1, linger_type, struct linger *);
 
     lua_newtable(L);
-
     luab_setinteger(L, -2, "l_onoff", l->l_onoff);
     luab_setinteger(L, -2, "l_linger", l->l_linger);
-
     lua_pushvalue(L, -1);
 
     return (1);

@@ -66,29 +66,29 @@ int luab_StructTimeSpec(lua_State *);
  *
  * @function set_tv_sec
  *
- * @param attr              Specifies value in seconds.
+ * @param data              Specifies value in seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timespec:set_tv_sec(attr)
+ * @usage data [, err, msg ] = timespec:set_tv_sec(data)
  */
 static int
 TimeSpec_set_tv_sec(lua_State *L)
 {
     struct timespec *tv;
-    time_t tv_sec;
+    time_t data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tv = luab_udata(L, 1, timespec_type, struct timespec *);
-    tv_sec = (time_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (time_t)luab_checkinteger(L, 2, INT_MAX);
 
-    tv->tv_sec = tv_sec;
+    tv->tv_sec = data;
 
-    return (luab_pusherr(L, tv_sec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -98,23 +98,23 @@ TimeSpec_set_tv_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timespec:get_tv_sec()
+ * @usage data [, err, msg ] = timespec:get_tv_sec()
  */
 static int
 TimeSpec_get_tv_sec(lua_State *L)
 {
     struct timespec *tv;
-    time_t tv_sec;
+    time_t data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tv = luab_udata(L, 1, timespec_type, struct timespec *);
-    tv_sec = tv->tv_sec;
+    data = tv->tv_sec;
 
-    return (luab_pusherr(L, tv_sec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -122,29 +122,29 @@ TimeSpec_get_tv_sec(lua_State *L)
  *
  * @function set_tv_nsec
  *
- * @param attr              Specifies value in nanoneconds.
+ * @param data              Specifies value in nanoneconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timespec:set_tv_nsec(attr)
+ * @usage data [, err, msg ] = timespec:set_tv_nsec(data)
  */
 static int
 TimeSpec_set_tv_nsec(lua_State *L)
 {
     struct timespec *tv;
-    long tv_nsec;
+    long data;
 
     (void)luab_checkmaxargs(L, 2);
 
     tv = luab_udata(L, 1, timespec_type, struct timespec *);
-    tv_nsec = (long)luab_checkinteger(L, 2, LONG_MAX);
+    data = (long)luab_checkinteger(L, 2, LONG_MAX);
 
-    tv->tv_nsec = tv_nsec;
+    tv->tv_nsec = data;
 
-    return (luab_pusherr(L, tv_nsec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -154,23 +154,23 @@ TimeSpec_set_tv_nsec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (attr [, nil, nil]) on success or
- *          (attr, (errno, strerror(errno)))
+ *          (data [, nil, nil]) on success or
+ *          (data, (errno, strerror(errno)))
  *
- * @usage attr [, err, msg ] = timespec:get_tv_nsec()
+ * @usage data [, err, msg ] = timespec:get_tv_nsec()
  */
 static int
 TimeSpec_get_tv_nsec(lua_State *L)
 {
     struct timespec *tv;
-    long tv_nsec;
+    long data;
 
     (void)luab_checkmaxargs(L, 1);
 
     tv = luab_udata(L, 1, timespec_type, struct timespec *);
-    tv_nsec = tv->tv_nsec;
+    data = tv->tv_nsec;
 
-    return (luab_pusherr(L, tv_nsec));
+    return (luab_pusherr(L, data));
 }
 
 /***
@@ -192,10 +192,8 @@ TimeSpec_get(lua_State *L)
     tv = luab_udata(L, 1, timespec_type, struct timespec *);
 
     lua_newtable(L);
-
     luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
     luab_setinteger(L, -2, "tv_nsec", tv->tv_nsec);
-
     lua_pushvalue(L, -1);
 
     return (1);

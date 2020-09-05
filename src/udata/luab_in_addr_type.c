@@ -78,16 +78,16 @@ static int
 InAddr_set_s_addr(lua_State *L)
 {
     struct in_addr *ia;
-    in_addr_t s_addr;
+    in_addr_t id;
 
     (void)luab_checkmaxargs(L, 2);
 
     ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
-    s_addr = (in_addr_t)luab_checkinteger(L, 2, UINT_MAX);
+    id = (in_addr_t)luab_checkinteger(L, 2, UINT_MAX);
 
-    ia->s_addr = s_addr;
+    ia->s_addr = id;
 
-    return (luab_pusherr(L, s_addr));
+    return (luab_pusherr(L, id));
 }
 
 /***
@@ -106,14 +106,14 @@ static int
 InAddr_get_s_addr(lua_State *L)
 {
     struct in_addr *ia;
-    in_addr_t s_addr;
+    in_addr_t id;
 
     (void)luab_checkmaxargs(L, 1);
 
     ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
-    s_addr = ia->s_addr;
+    id = ia->s_addr;
 
-    return (luab_pusherr(L, s_addr));
+    return (luab_pusherr(L, id));
 }
 
 /***
@@ -135,9 +135,7 @@ InAddr_get(lua_State *L)
     ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
 
     lua_newtable(L);
-
     luab_setinteger(L, -2, "s_addr", ia->s_addr);
-
     lua_pushvalue(L, -1);
 
     return (1);
