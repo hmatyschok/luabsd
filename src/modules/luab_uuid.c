@@ -41,10 +41,14 @@
 extern luab_module_t luab_uuid_lib;
 
 /*
- * XXX re-implementation in progress..
+ * Interface against <uuid.h>.
  */
 
-static luab_table_t luab_uuid_vec[] = { /* uuid.h */
+static luab_table_t luab_uuid_vec[] = {
+    LUABSD_INT("uuid_s_ok", uuid_s_ok),
+    LUABSD_INT("uuid_s_bad_version",    uuid_s_bad_version),
+    LUABSD_INT("uuid_s_invalid_string_uuid",    uuid_s_invalid_string_uuid),
+    LUABSD_INT("uuid_s_no_memory",  uuid_s_no_memory),
     LUABSD_FUNC(NULL, NULL)
 };
 
