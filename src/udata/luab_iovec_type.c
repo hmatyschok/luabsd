@@ -179,8 +179,7 @@ static int
 IOVec_copy_out(lua_State *L)
 {
     luab_iovec_t *self;
-    luaL_Buffer b;
-    caddr_t src, dst;
+    caddr_t buf;
     size_t len;
     int status;
 
@@ -191,20 +190,10 @@ IOVec_copy_out(lua_State *L)
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
 
-        if (((src = self->iov.iov_base) != NULL) &&
-            ((len = self->iov.iov_len) > 0)) {
-
-                luaL_buffinit(L, &b);
-
-                dst = luaL_prepbuffsize(&b, len);
-
-                (void)memmove(dst, src, len);
-
-                luaL_addsize(&b, len);
-                luaL_pushresult(&b);
-
-                status = 1;
-        } else {
+        if (((buf = self->iov.iov_base) != NULL) &&
+            ((len = self->iov.iov_len) > 0))
+            status = luab_pushldata(L, buf, len);
+        else {
             errno = ENXIO;
             status = luab_pushnil(L);
         }

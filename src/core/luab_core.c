@@ -267,6 +267,38 @@ luab_pushstring(lua_State *L, const char *s)
     return (status);
 }
 
+int
+luab_pushldata(lua_State *L, caddr_t s, size_t len)
+{
+    int save_errno = errno;
+    luaL_Buffer b;
+    caddr_t buf, msg;
+    int status;
+
+    if (s != NULL) {
+        luaL_buffinit(L, &b);
+        buf = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(buf, s, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        if (save_errno != 0) {
+            lua_pushinteger(L, save_errno);
+            msg = strerror(save_errno);
+            lua_pushstring(L, msg);
+            status = 3;
+        } else {
+            msg = NULL;
+            status = 1;
+        }
+    } else
+        status = luab_pushnil(L);
+
+    return (status);
+}
+
 /*
  * Operations on atomic (or primitive) data types.
  */
@@ -431,7 +463,7 @@ luab_checklintvector(lua_State *L, int narg, size_t len)
 }
 
 /*
- * Service primitives subset of <core>. 
+ * Service primitives subset of <core>.
  */
 
 #define LUABSD_CORE_LIB_ID    1595987973

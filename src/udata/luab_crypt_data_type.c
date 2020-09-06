@@ -162,26 +162,16 @@ static int
 CryptData_get_buf(lua_State *L)
 {
     struct crypt_data *cd;
-    luaL_Buffer b;
-    caddr_t dst, src;
+    caddr_t buf;
     size_t len;
 
     (void)luab_checkmaxargs(L, 1);
 
     cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
-    src = cd->__buf;
-    len = strnlen(src, CRYPT_DATA_MAX);
+    buf = cd->__buf;
+    len = strnlen(buf, CRYPT_DATA_MAX);
 
-    luaL_buffinit(L, &b);
-
-    dst = luaL_prepbuffsize(&b, len);
-
-    (void)memmove(dst, src, len);
-
-    luaL_addsize(&b, len);
-    luaL_pushresult(&b);
-
-    return (1);
+    return (luab_pushldata(L, buf, len));
 }
 
 /***
