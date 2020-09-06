@@ -712,32 +712,32 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
  */
 
 static int
-luab_uuidgen(lua_State *L)
+luab_uuid(lua_State *L)
 {
     uuid_t uuid;
-    char *buf;
-    uint32_t status;
+    caddr_t buf;
+    int status;
 
     (void)luab_checkmaxargs(L, 0);
 
     if ((status = uuidgen(&uuid, 1)) != 0)
-        return luab_pusherr(L, status);
+        status = luab_pusherr(L, status);
+    else {
+        uuid_to_string(&uuid, &buf, &status);
 
-    uuid_to_string(&uuid, &buf, &status);
-
-    if (status != uuid_s_ok) {
-        errno = ENOMEM;
-        return luab_pusherr(L, status);
+        if (status == (int)uuid_s_ok) {
+            status = luab_pushldata(L, buf, strlen(buf));
+            free(buf);
+        } else {
+            errno = ENOMEM;
+            status = luab_pusherr(L, status);
+        }
     }
-
-    lua_pushlstring(L, buf, strlen(buf));
-    free(buf);
-
-    return (1);
+    return (status);
 }
 
 static luab_table_t luab_core_vec[] = {
-    LUABSD_FUNC("uuidgen",    luab_uuidgen),
+    LUABSD_FUNC("uuid",    luab_uuid),
     LUABSD_FUNC("CreateHook",   luab_CreateHook),
     LUABSD_FUNC(NULL, NULL)
 };
