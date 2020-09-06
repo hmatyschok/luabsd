@@ -31,6 +31,7 @@
 #include <net/if_dl.h>
 
 #include <errno.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

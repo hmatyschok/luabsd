@@ -31,8 +31,6 @@
 #include <sys/socket.h>
 #include <sys/queue.h>
 
-#include <string.h>     /* XXX */
-
 __BEGIN_DECLS
 typedef union luab_type {
     char        un_char;
@@ -128,32 +126,14 @@ int luab_buf_copy_in(luab_buf_t *, caddr_t, size_t);
 int luab_buf_copy_out(luab_buf_t *, caddr_t, size_t);
 int luab_buf_free(luab_buf_t *);
 
+/*
+ * Operations on stack.
+ */
+
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);
 int luab_pushldata(lua_State *, caddr_t, size_t);
-
-/*
- * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
- * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
- * the same thing without throwing an error.
- */
-
-const char *    luab_islstring(lua_State *, int, size_t);
-const char *    luab_checklstring(lua_State *, int, size_t);
-int luab_checkmaxargs(lua_State *, int);
-
-const char **    luab_checkargv(lua_State *, int);
-
-void *  luab_newvector(lua_State *, int, size_t);
-void *  luab_newlvector(lua_State *, int, size_t, size_t);
-int *   luab_checklintvector(lua_State *, int, size_t);
-
-void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
-
-/*
- * Operations on stack.
- */
 
 static __inline void
 luab_initinteger(lua_State *L, luab_type_u *un)
@@ -173,133 +153,41 @@ luab_initstring(lua_State *L, luab_type_u *un)
     lua_pushstring(L, un->un_cp);
 }
 
+void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
+void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
+void    luab_rawsetbuff(lua_State *, int, lua_Integer, void *, size_t);
+void    luab_setbuff(lua_State *, int, const char *, void *, size_t);
+void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
+void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
+void    luab_setstring(lua_State *, int, const char *, const char *);
+void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
+
 /*
- * Accessor for table manipulation.
+ * Operations on data types.
+ * 
+ * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
+ * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
+ * the same thing without throwing an error.
  */
 
-static __inline void
-luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_rawseti(L, narg, k);
-}
+const char *    luab_islstring(lua_State *, int, size_t);
+const char *    luab_checklstring(lua_State *, int, size_t);
 
-static __inline void
-luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
-{
-    if ((*m->ctor)(L, v) != NULL)
-        lua_rawseti(L, narg, k);
-}
-
-static __inline void
-luab_rawsetbuff(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
-{
-    luab_iovec_param_t iop;
-    luab_iovec_t *buf;
-
-    if (len > 0) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_buf.buf_len = len + sizeof(uint32_t);
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
-
-        /*
-         * Best effort, this means try to push things
-         * on stack at least is possible, regardless
-         * if allocationg memory is possible or not.
-         */
-        if ((buf = (*iovec_type.ctor)(L, &iop)) != NULL)
-            lua_rawseti(L, narg, k);
-    }
-}
-
-static __inline void
-luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
-{
-    luab_iovec_param_t iop;
-    luab_iovec_t *buf;
-
-    if (len > 0) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_buf.buf_len = len + sizeof(uint32_t);
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
-
-        /*
-         * Best effort, this means try to push things
-         * on stack at least is possible, regardless
-         * if allocationg memory is possible or not.
-         */
-        if ((buf = (*iovec_type.ctor)(L, &iop)) != NULL)
-            lua_setfield(L, narg, k);
-    }
-}
-
-static __inline void
-luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
-{
-    lua_pushcfunction(L, v);
-    lua_setfield(L, narg, k);
-}
-
-static __inline void
-luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_setfield(L, narg, k);
-}
-
-static __inline void
-luab_setstring(lua_State *L, int narg, const char *k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_setfield(L, narg, k);
-}
-
-static __inline void
-luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
-{
-    if ((*m->ctor)(L, v) != NULL)
-        lua_setfield(L, narg, k);
-}
+lua_Integer luab_tointeger(lua_State *, int, lua_Integer);
+lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
 
 /*
  * Accessor for evaluation of argv.
  */
+int luab_checkmaxargs(lua_State *, int);
+int luab_checktable(lua_State *, int);
 
-static __inline lua_Integer
-luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((luaL_checkinteger(L, narg)) & (b_msk));
-}
+size_t  luab_checkltable(lua_State *, int, size_t);
+const char **    luab_checkargv(lua_State *, int);
 
-static __inline int
-luab_checktable(lua_State *L, int narg)
-{
-    if (lua_istable(L, narg) == 0)
-        luaL_argerror(L, narg, "Table expected");
-
-    return (lua_rawlen(L, narg));
-}
-
-static __inline size_t
-luab_checkltable(lua_State *L, int narg, size_t len)
-{
-    size_t n;
-
-    if ((n = luab_checktable(L, narg)) != len)
-        luaL_argerror(L, narg, "Size mismatch");
-
-    return (n);
-}
-
-static __inline lua_Integer
-luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((lua_tointeger(L, narg)) & (b_msk));
-}
+void *  luab_newvector(lua_State *, int, size_t);
+void *  luab_newlvector(lua_State *, int, size_t, size_t);
+int *   luab_checklintvector(lua_State *, int, size_t);
 
 /*
  * Accessor for evaluation of LUA_TUSERDATA.
@@ -318,127 +206,25 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
 #define luab_udataisnil(L, narg, m, t) \
     ((t)(luab_checkudataisnil((L), (narg), &(m))))
 
-static __inline void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
-{
-    return (luaL_checkudata(L, narg, m->name));
-}
+void *  luab_checkudata(lua_State *, int, luab_module_t *);
+void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
+void *  luab_toudata(lua_State *, int, luab_module_t *);
+void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
+void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 
-static __inline void *
-luab_toudata(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
+const char *    luab_iovec_islxarg(lua_State *, int, size_t);
+const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
 
-    return (ud + 1);
-}
 
-static __inline void *
-luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
-{
-    luab_iovec_t *buf;  /* XXX namespace */
 
-    if ((buf = luab_isiovec(L, narg)) != NULL) {
-        if (buf->iov.iov_base == NULL)
-            luaL_argerror(L, narg, "Invalid argument.");
-
-        if (buf->iov.iov_len != len)
-            luaL_argerror(L, narg, "Invalid argument.");
-
-        return (buf->iov.iov_base);
-    }
-    return (luab_toudata(L, narg, m));
-}
-
-static __inline void *
-luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (NULL);
-
-    return ((*m->get)(L, narg));
-}
-
-static __inline const char *
-luab_iovec_islxarg(lua_State *L, int narg, size_t len)
-{
-    luab_iovec_t *buf;
-
-    if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
-        (len <= buf->iov_max_len))
-        return (buf->iov.iov_base);
-
-    return (luab_islstring(L, narg, len));
-}
-
-static __inline const char *
-luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
-{
-    const char *buf;
-
-    if ((buf = luab_iovec_islxarg(L, narg, len)) == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    return (buf);
-}
-
-static __inline int
-luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
-{
-    luab_iovec_param_t iop;
-    caddr_t data;
-    size_t max_len;
-    int status;
-
-    (void)luab_checkmaxargs(L, narg);
-
-    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-    data = (caddr_t)(*m->get)(L, narg);
-    max_len = len + sizeof(uint32_t);
-
-    iop.iop_buf.buf_len = max_len;
-    iop.iop_data.buf_data = data;
-    iop.iop_data.buf_len = len;
-
-    if ((*iovec_type.ctor)(L, &iop) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
-}
 
 /*
- * Subr. on meta-tables.
+ * Service primitives subset of <core>.
  */
 
-static __inline int
-luab_gc(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_udata_t *self;
-
-    (void)luab_checkmaxargs(L, narg);
-
-    self = luab_todata(L, narg, m, luab_udata_t *);
-
-    (void)memset_s(self, m->sz, 0, m->sz);
-
-    return (0);
-}
-
-static __inline int
-luab_tostring(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_udata_t *self;
-
-    (void)luab_checkmaxargs(L, narg);
-
-    self = luab_todata(L, narg, m, luab_udata_t *);
-    lua_pushfstring(L, "%s (%p)", m->name, self);
-
-    return (1);
-}
+int luab_dump(lua_State *, int, luab_module_t *, size_t);
+int luab_gc(lua_State *, int, luab_module_t *);
+int luab_tostring(lua_State *, int, luab_module_t *);
 __END_DECLS
 
 #endif /* _LUABSD_H_ */

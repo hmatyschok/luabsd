@@ -184,19 +184,8 @@ luaopen_bsd(lua_State *L)
 }
 
 /*
- * Common ops. and subr.
+ * Operations on stack.
  */
-
-int
-luab_checkmaxargs(lua_State *L, int nmax)
-{
-    int narg;
-
-    if ((narg = lua_gettop(L)) > nmax)
-        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
-
-    return (narg);
-}
 
 int
 luab_pusherr(lua_State *L, lua_Integer res)
@@ -299,9 +288,109 @@ luab_pushldata(lua_State *L, caddr_t s, size_t len)
     return (status);
 }
 
+void
+luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+void
+luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
+{
+    if ((*m->ctor)(L, v) != NULL)
+        lua_rawseti(L, narg, k);
+}
+
+void
+luab_rawsetbuff(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
+{
+    luab_iovec_param_t iop;
+    luab_iovec_t *buf;
+
+    if (len > 0) {
+        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+        iop.iop_buf.buf_len = len + sizeof(uint32_t);
+        iop.iop_data.buf_len = len;
+        iop.iop_data.buf_data = v;
+
+        /*
+         * Best effort, this means try to push things
+         * on stack at least is possible, regardless
+         * if allocationg memory is possible or not.
+         */
+        if ((buf = (*iovec_type.ctor)(L, &iop)) != NULL)
+            lua_rawseti(L, narg, k);
+    }
+}
+
+void
+luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
+{
+    luab_iovec_param_t iop;
+    luab_iovec_t *buf;
+
+    if (len > 0) {
+        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+        iop.iop_buf.buf_len = len + sizeof(uint32_t);
+        iop.iop_data.buf_len = len;
+        iop.iop_data.buf_data = v;
+
+        /*
+         * Best effort, this means try to push things
+         * on stack at least is possible, regardless
+         * if allocationg memory is possible or not.
+         */
+        if ((buf = (*iovec_type.ctor)(L, &iop)) != NULL)
+            lua_setfield(L, narg, k);
+    }
+}
+
+void
+luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
+{
+    lua_pushcfunction(L, v);
+    lua_setfield(L, narg, k);
+}
+
+void
+luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_setfield(L, narg, k);
+}
+
+void
+luab_setstring(lua_State *L, int narg, const char *k, const char *v)
+{
+    lua_pushstring(L, v);
+    lua_setfield(L, narg, k);
+}
+
+void
+luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
+{
+    if ((*m->ctor)(L, v) != NULL)
+        lua_setfield(L, narg, k);
+}
+
 /*
  * Operations on atomic (or primitive) data types.
  */
+
+lua_Integer
+luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((luaL_checkinteger(L, narg)) & (b_msk));
+}
+
+lua_Integer
+luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((lua_tointeger(L, narg)) & (b_msk));
+}
 
 const char *
 luab_islstring(lua_State *L, int narg, size_t n)
@@ -328,6 +417,103 @@ luab_checklstring(lua_State *L, int narg, size_t n)
         luaL_argerror(L, narg, "Value too large to be stored in data type");
 
     return (buf);
+}
+
+/*
+ * Vector operations.
+ */
+
+int
+luab_checkmaxargs(lua_State *L, int nmax)
+{
+    int narg;
+
+    if ((narg = lua_gettop(L)) > nmax)
+        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
+
+    return (narg);
+}
+
+int
+luab_checktable(lua_State *L, int narg)
+{
+    if (lua_istable(L, narg) == 0)
+        luaL_argerror(L, narg, "Table expected");
+
+    return (lua_rawlen(L, narg));
+}
+
+size_t
+luab_checkltable(lua_State *L, int narg, size_t len)
+{
+    size_t n;
+
+    if ((n = luab_checktable(L, narg)) != len)
+        luaL_argerror(L, narg, "Size mismatch");
+
+    return (n);
+}
+
+/* Allocate an array by cardinality of given table. */
+void *
+luab_newvector(lua_State *L, int narg, size_t size)
+{
+    size_t n;
+    void *vec;
+
+    if ((n = luab_checktable(L, narg)) == 0)
+        luaL_argerror(L, narg, "Empty table");
+
+    if (size == 0)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    if ((vec = calloc(n, size)) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    return (vec);
+}
+
+/* Allocate an array by constraint less equal from cardinality of given table. */
+void *
+luab_newlvector(lua_State *L, int narg, size_t len, size_t size)
+{
+    size_t n;
+    void *vec;
+
+    n = luab_checkltable(L, narg, len);
+
+    if (size == 0)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    if ((vec = calloc(n, size)) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    return (vec);
+}
+
+/* Translate an instance of LUA_TTABLE into an array of integers. */
+int *
+luab_checklintvector(lua_State *L, int narg, size_t len)
+{
+    int *vec, k, v;
+
+    vec = luab_newlvector(L, narg, len, sizeof(int));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
+            v = (int)luab_tointeger(L, -1, UINT_MAX);
+            vec[k] = v;
+        } else {
+            free(vec);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+        lua_pop(L, 1);
+    }
+    return (vec);
 }
 
 /*
@@ -396,75 +582,127 @@ luab_checkargv(lua_State *L, int narg)
     return argv;
 }
 
-/*
- * Vector operations.
- */
-
-/* Allocate an array by cardinality of given table. */
 void *
-luab_newvector(lua_State *L, int narg, size_t size)
+luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
-    size_t n;
-    void *vec;
-
-    if ((n = luab_checktable(L, narg)) == 0)
-        luaL_argerror(L, narg, "Empty table");
-
-    if (size == 0)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    if ((vec = calloc(n, size)) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
-
-    return (vec);
+    return (luaL_checkudata(L, narg, m->name));
 }
 
-/* Allocate an array by constraint less equal from cardinality of given table. */
 void *
-luab_newlvector(lua_State *L, int narg, size_t len, size_t size)
+luab_toudata(lua_State *L, int narg, luab_module_t *m)
 {
-    size_t n;
-    void *vec;
+    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
 
-    n = luab_checkltable(L, narg, len);
-
-    if (size == 0)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    if ((vec = calloc(n, size)) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
-
-    return (vec);
+    return (ud + 1);
 }
 
-/* Translate an instance of LUA_TTABLE into an array of integers. */
-int *
-luab_checklintvector(lua_State *L, int narg, size_t len)
+void *
+luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
-    int *vec, k, v;
+    luab_iovec_t *buf;  /* XXX namespace */
 
-    vec = luab_newlvector(L, narg, len, sizeof(int));
+    if ((buf = luab_isiovec(L, narg)) != NULL) {
+        if (buf->iov.iov_base == NULL)
+            luaL_argerror(L, narg, "Invalid argument.");
 
-    lua_pushnil(L);
+        if (buf->iov.iov_len != len)
+            luaL_argerror(L, narg, "Invalid argument.");
 
-    for (k = 0; lua_next(L, narg) != 0; k++) {
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isnumber(L, -1) != 0)) {
-            v = (int)luab_tointeger(L, -1, UINT_MAX);
-            vec[k] = v;
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
-        lua_pop(L, 1);
+        return (buf->iov.iov_base);
     }
-    return (vec);
+    return (luab_toudata(L, narg, m));
+}
+
+void *
+luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (NULL);
+
+    return ((*m->get)(L, narg));
+}
+
+const char *
+luab_iovec_islxarg(lua_State *L, int narg, size_t len)
+{
+    luab_iovec_t *buf;
+
+    if (((buf = luab_isiovec(L, narg)) != NULL) &&
+        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
+        (len <= buf->iov_max_len))
+        return (buf->iov.iov_base);
+
+    return (luab_islstring(L, narg, len));
+}
+
+const char *
+luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
+{
+    const char *buf;
+
+    if ((buf = luab_iovec_islxarg(L, narg, len)) == NULL)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    return (buf);
 }
 
 /*
  * Service primitives subset of <core>.
  */
+
+int
+luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
+{
+    luab_iovec_param_t iop;
+    caddr_t data;
+    size_t max_len;
+    int status;
+
+    (void)luab_checkmaxargs(L, narg);
+
+    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+    data = (caddr_t)(*m->get)(L, narg);
+    max_len = len + sizeof(uint32_t);
+
+    iop.iop_buf.buf_len = max_len;
+    iop.iop_data.buf_data = data;
+    iop.iop_data.buf_len = len;
+
+    if ((*iovec_type.ctor)(L, &iop) == NULL)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return (status);
+}
+
+int
+luab_gc(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *self;
+
+    (void)luab_checkmaxargs(L, narg);
+
+    self = luab_todata(L, narg, m, luab_udata_t *);
+
+    (void)memset_s(self, m->sz, 0, m->sz);
+
+    return (0);
+}
+
+int
+luab_tostring(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *self;
+
+    (void)luab_checkmaxargs(L, narg);
+
+    self = luab_todata(L, narg, m, luab_udata_t *);
+    lua_pushfstring(L, "%s (%p)", m->name, self);
+
+    return (1);
+}
 
 #define LUABSD_CORE_LIB_ID    1595987973
 #define LUABSD_CORE_LIB_KEY   "core"
