@@ -41,36 +41,10 @@
 extern luab_module_t luab_uuid_lib;
 
 /*
- * Interface against uuidgen(2), derived from implementation of uuidgen(1).
+ * XXX re-implementation in progress..
  */
 
-static int
-luab_uuidgen(lua_State *L)
-{
-    uuid_t uuid;
-    char *buf;
-    uint32_t status;
-
-    (void)luab_checkmaxargs(L, 0);
-
-    if ((status = uuidgen(&uuid, 1)) != 0)
-        return luab_pusherr(L, status);
-
-    uuid_to_string(&uuid, &buf, &status);
-
-    if (status != uuid_s_ok) {
-        errno = ENOMEM;
-        return luab_pusherr(L, status);
-    }
-
-    lua_pushlstring(L, buf, strlen(buf));
-    free(buf);
-
-    return (1);
-}
-
 static luab_table_t luab_uuid_vec[] = { /* uuid.h */
-    LUABSD_FUNC("uuidgen",    luab_uuidgen),
     LUABSD_FUNC(NULL, NULL)
 };
 

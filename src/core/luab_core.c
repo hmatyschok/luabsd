@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <uuid.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -82,21 +83,105 @@ extern luab_module_t luab_uuid_lib;
 
 extern int luab_CreateHook(lua_State *);
 
-#define LUABSD_CORE_LIB_ID    1595987973
-#define LUABSD_CORE_LIB_KEY   "core"
-
-static luab_table_t luab_core_vec[] = {
-    LUABSD_FUNC("CreateHook",   luab_CreateHook),
-    LUABSD_FUNC(NULL, NULL)
-};
-
-luab_module_t luab_core_lib = {
-    .cookie = LUABSD_CORE_LIB_ID,
-    .name = LUABSD_CORE_LIB_KEY,
-    .vec = luab_core_vec,
-};
-
 LUAMOD_API int  luaopen_bsd(lua_State *);
+
+/*
+ * Common subr. for initializiation, those are
+ * called during runtime of package.loadlib().
+ */
+
+static void
+luab_populate(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_table_t *tok;
+
+    for (tok = m->vec; tok->key != NULL; tok++) {
+        (void)(*tok->init)(L, &tok->val);
+        lua_setfield(L, narg, tok->key);
+    }
+    lua_pop(L, 0);
+}
+
+static void
+luab_newtable(lua_State *L, int narg, luab_module_t *m)
+{
+    lua_newtable(L);
+    luab_populate(L, narg, m);
+    lua_setfield(L, narg, m->name);
+}
+
+static void
+luab_newmetatable(lua_State *L, luab_module_t *m)
+{
+    luaL_newmetatable(L, m->name);  /* XXX */
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -2, "__index");
+
+    luab_populate(L, -2, m);
+
+    lua_pop(L, 1);
+}
+
+/*
+ * Reflects and maps interface against API over /include.
+ *
+ * XXX Well, this will be refactored (partially), soon.
+ */
+LUAMOD_API int
+luaopen_bsd(lua_State *L)
+{
+    lua_newtable(L);
+
+    lua_newtable(L);
+    luab_newtable(L, -2, &luab_arpa_inet_lib);
+    lua_setfield(L, -2, "arpa");
+
+    lua_newtable(L);
+    luab_newtable(L, -2, &luab_net_if_dl_lib);
+    luab_populate(L, -2, &luab_net_if_lib);
+    lua_setfield(L, -2, "net");
+
+    lua_newtable(L);
+    luab_newtable(L, -2, &luab_sys_file_lib);
+    luab_newtable(L, -2, &luab_sys_stat_lib);
+    luab_newtable(L, -2, &luab_sys_time_lib);
+    luab_newtable(L, -2, &luab_sys_uio_lib);
+    luab_newtable(L, -2, &luab_sys_un_lib);
+    luab_newtable(L, -2, &luab_sys_unistd_lib);
+    luab_newtable(L, -2, &luab_sys_socket_lib);
+    lua_setfield(L, -2, "sys");
+
+    luab_newtable(L, -2, &luab_core_lib);
+    luab_newtable(L, -2, &luab_db_lib);
+    luab_newtable(L, -2, &luab_fcntl_lib);
+    luab_newtable(L, -2, &luab_stdlib_lib);
+    luab_newtable(L, -2, &luab_time_lib);
+    luab_newtable(L, -2, &luab_unistd_lib);
+    luab_newtable(L, -2, &luab_uuid_lib);
+
+    lua_pushvalue(L, -1);
+
+    luab_newmetatable(L, &clockinfo_type);
+    luab_newmetatable(L, &flock_type);
+    luab_newmetatable(L, &if_nameindex_type);
+    luab_newmetatable(L, &in_addr_type);
+    luab_newmetatable(L, &in6_addr_type);
+    luab_newmetatable(L, &iovec_type);
+    luab_newmetatable(L, &itimerval_type);
+    luab_newmetatable(L, &linger_type);
+    luab_newmetatable(L, &msghdr_type);
+    luab_newmetatable(L, &sockaddr_type);
+    luab_newmetatable(L, &stat_type);
+    luab_newmetatable(L, &timezone_type);
+    luab_newmetatable(L, &timespec_type);
+#if __BSD_VISIBLE
+    luab_newmetatable(L, &bintime_type);
+    luab_newmetatable(L, &crypt_data_type);
+    luab_newmetatable(L, &dbt_type);
+    luab_newmetatable(L, &db_type);
+#endif
+    return (1);
+}
 
 /*
  * Common methods on generic buffer.
@@ -490,99 +575,49 @@ luab_checklintvector(lua_State *L, int narg, size_t len)
 }
 
 /*
- * Common subr. for initializiation, those are
- * called during runtime of package.loadlib().
+ * Service primitives subset of <core>. 
  */
 
-static void
-luab_populate(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_table_t *tok;
-
-    for (tok = m->vec; tok->key != NULL; tok++) {
-        (void)(*tok->init)(L, &tok->val);
-        lua_setfield(L, narg, tok->key);
-    }
-    lua_pop(L, 0);
-}
-
-static void
-luab_newtable(lua_State *L, int narg, luab_module_t *m)
-{
-    lua_newtable(L);
-    luab_populate(L, narg, m);
-    lua_setfield(L, narg, m->name);
-}
-
-static void
-luab_newmetatable(lua_State *L, luab_module_t *m)
-{
-    luaL_newmetatable(L, m->name);  /* XXX */
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
-
-    luab_populate(L, -2, m);
-
-    lua_pop(L, 1);
-}
+#define LUABSD_CORE_LIB_ID    1595987973
+#define LUABSD_CORE_LIB_KEY   "core"
 
 /*
- * Reflects and maps interface against API over /include.
- *
- * XXX Well, this will be refactored (partially), soon.
+ * Interface against uuidgen(2), derived from implementation of uuidgen(1).
  */
-LUAMOD_API int
-luaopen_bsd(lua_State *L)
+
+static int
+luab_uuidgen(lua_State *L)
 {
-    lua_newtable(L);
+    uuid_t uuid;
+    char *buf;
+    uint32_t status;
 
-    lua_newtable(L);
-    luab_newtable(L, -2, &luab_arpa_inet_lib);
-    lua_setfield(L, -2, "arpa");
+    (void)luab_checkmaxargs(L, 0);
 
-    lua_newtable(L);
-    luab_newtable(L, -2, &luab_net_if_dl_lib);
-    luab_populate(L, -2, &luab_net_if_lib);
-    lua_setfield(L, -2, "net");
+    if ((status = uuidgen(&uuid, 1)) != 0)
+        return luab_pusherr(L, status);
 
-    lua_newtable(L);
-    luab_newtable(L, -2, &luab_sys_file_lib);
-    luab_newtable(L, -2, &luab_sys_stat_lib);
-    luab_newtable(L, -2, &luab_sys_time_lib);
-    luab_newtable(L, -2, &luab_sys_uio_lib);
-    luab_newtable(L, -2, &luab_sys_un_lib);
-    luab_newtable(L, -2, &luab_sys_unistd_lib);
-    luab_newtable(L, -2, &luab_sys_socket_lib);
-    lua_setfield(L, -2, "sys");
+    uuid_to_string(&uuid, &buf, &status);
 
-    luab_newtable(L, -2, &luab_core_lib);
-    luab_newtable(L, -2, &luab_db_lib);
-    luab_newtable(L, -2, &luab_fcntl_lib);
-    luab_newtable(L, -2, &luab_stdlib_lib);
-    luab_newtable(L, -2, &luab_time_lib);
-    luab_newtable(L, -2, &luab_unistd_lib);
-    luab_newtable(L, -2, &luab_uuid_lib);
+    if (status != uuid_s_ok) {
+        errno = ENOMEM;
+        return luab_pusherr(L, status);
+    }
 
-    lua_pushvalue(L, -1);
+    lua_pushlstring(L, buf, strlen(buf));
+    free(buf);
 
-    luab_newmetatable(L, &clockinfo_type);
-    luab_newmetatable(L, &flock_type);
-    luab_newmetatable(L, &if_nameindex_type);
-    luab_newmetatable(L, &in_addr_type);
-    luab_newmetatable(L, &in6_addr_type);
-    luab_newmetatable(L, &iovec_type);
-    luab_newmetatable(L, &itimerval_type);
-    luab_newmetatable(L, &linger_type);
-    luab_newmetatable(L, &msghdr_type);
-    luab_newmetatable(L, &sockaddr_type);
-    luab_newmetatable(L, &stat_type);
-    luab_newmetatable(L, &timezone_type);
-    luab_newmetatable(L, &timespec_type);
-#if __BSD_VISIBLE
-    luab_newmetatable(L, &bintime_type);
-    luab_newmetatable(L, &crypt_data_type);
-    luab_newmetatable(L, &dbt_type);
-    luab_newmetatable(L, &db_type);
-#endif
     return (1);
 }
+
+static luab_table_t luab_core_vec[] = {
+    LUABSD_FUNC("uuidgen",    luab_uuidgen),
+    LUABSD_FUNC("CreateHook",   luab_CreateHook),
+    LUABSD_FUNC(NULL, NULL)
+};
+
+luab_module_t luab_core_lib = {
+    .cookie = LUABSD_CORE_LIB_ID,
+    .name = LUABSD_CORE_LIB_KEY,
+    .vec = luab_core_vec,
+};

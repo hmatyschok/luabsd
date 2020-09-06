@@ -32,7 +32,7 @@ as described in db(3):
 
 A key / value pair 
 
-    local key = bsd.uuid.uuidgen()
+    local key = bsd.core.uuidgen()
     local value = "Hello world!"
 
 may created by utilizing
