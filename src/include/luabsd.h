@@ -357,6 +357,30 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
     return ((*m->get)(L, narg));
 }
 
+static __inline const char *
+luab_iovec_islxarg(lua_State *L, int narg, size_t len)
+{
+    luab_iovec_t *buf;
+
+    if (((buf = luab_isiovec(L, narg)) != NULL) &&
+        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
+        (len <= buf->iov_max_len))
+        return (buf->iov.iov_base);
+
+    return (luab_islstring(L, narg, len));
+}
+
+static __inline const char *
+luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
+{
+    const char *buf;
+
+    if ((buf = luab_iovec_islxarg(L, narg, len)) == NULL)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    return (buf);
+}
+
 static __inline int
 luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
@@ -383,6 +407,10 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 
     return (status);
 }
+
+/*
+ * Subr. on meta-tables.
+ */
 
 static __inline int
 luab_gc(lua_State *L, int narg, luab_module_t *m)

@@ -66,34 +66,6 @@ extern luab_module_t iovec_type;
 int luab_StructIOVec(lua_State *);
 
 /*
- * Subr.
- */
-
-static const char *
-iovec_islxarg(lua_State *L, int narg, size_t len)
-{
-    luab_iovec_t *buf;
-
-    if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
-        (len <= buf->iov_max_len))
-        return (buf->iov.iov_base);
-
-    return (luab_islstring(L, narg, len));
-}
-
-static const char *
-iovec_checklxarg(lua_State *L, int narg, size_t len)
-{
-    const char *buf;
-
-    if ((buf = iovec_islxarg(L, narg, len)) == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    return (buf);
-}
-
-/*
  * Service primitives, accessor.
  */
 
@@ -180,7 +152,7 @@ IOVec_copy_in(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
-    src = iovec_checklxarg(L, 2, self->iov_max_len);
+    src = luab_iovec_checklxarg(L, 2, self->iov_max_len);
     len = self->iov_max_len;
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
