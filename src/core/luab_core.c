@@ -250,9 +250,10 @@ luab_pushstring(lua_State *L, const char *s)
             status = 3;
         } else
             status = 1;
-    } else
+    } else {
+        errno = EINVAL;
         status = luab_pushnil(L);
-
+    }
     return (status);
 }
 
@@ -264,7 +265,7 @@ luab_pushldata(lua_State *L, caddr_t s, size_t len)
     caddr_t buf, msg;
     int status;
 
-    if (s != NULL) {
+    if (s != NULL && len > 0) {
         luaL_buffinit(L, &b);
         buf = luaL_prepbuffsize(&b, len);
 
@@ -282,11 +283,50 @@ luab_pushldata(lua_State *L, caddr_t s, size_t len)
             msg = NULL;
             status = 1;
         }
-    } else
+    } else {
+        errno = EINVAL;
         status = luab_pushnil(L);
-
+    }
     return (status);
 }
+
+int
+luab_pushliovec(lua_State *L, caddr_t s, size_t len)
+{
+    int save_errno = errno;
+    luab_iovec_param_t iop;
+    caddr_t msg;
+    int status;
+
+    if (s != NULL && len > 0) {
+        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+        iop.iop_buf.buf_len = len;
+        iop.iop_data.buf_len = len;
+        iop.iop_data.buf_data = s;
+
+        if ((*iovec_type.ctor)(L, &iop) != NULL) {
+            if (save_errno != 0) {
+                lua_pushinteger(L, save_errno);
+                msg = strerror(save_errno);
+                lua_pushstring(L, msg);
+                status = 3;
+            } else {
+                msg = NULL;
+                status = 1;
+            }
+        } else
+            status = luab_pushnil(L);
+    } else {
+        errno = EINVAL;
+        status = luab_pushnil(L);
+    }
+    return (status);
+}
+
+/*
+ * Operations on LUA_TTABLE.
+ */
 
 void
 luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
@@ -661,7 +701,7 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
     data = (caddr_t)(*m->get)(L, narg);
     max_len = len + sizeof(uint32_t);
 
-    iop.iop_buf.buf_len = max_len;
+    iop.iop_buf.buf_len = max_len;  /* XXX redundant code-section */
     iop.iop_data.buf_data = data;
     iop.iop_data.buf_len = len;
 

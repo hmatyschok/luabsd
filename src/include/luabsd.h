@@ -133,7 +133,9 @@ int luab_buf_free(luab_buf_t *);
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);
+
 int luab_pushldata(lua_State *, caddr_t, size_t);
+int luab_pushliovec(lua_State *, caddr_t, size_t);
 
 static __inline void
 luab_initinteger(lua_State *L, luab_type_u *un)
