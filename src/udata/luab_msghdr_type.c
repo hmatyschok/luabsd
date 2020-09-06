@@ -175,7 +175,7 @@ msghdr_populate_iovec(lua_State *L, int narg, struct msghdr *msg, int new)
             lua_pushnil(L);
 
         for (i = 0, j = 1; i < msg->msg_iovlen; i++, j++, iov++)
-            luab_rawsetbuff(L, narg, j, iov->iov_base, iov->iov_len);
+            luab_rawsetiovec(L, narg, j, iov->iov_base, iov->iov_len);
 
         lua_pop(L, 0);
         status = 0;

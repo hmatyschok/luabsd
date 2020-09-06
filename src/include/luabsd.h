@@ -155,7 +155,7 @@ luab_initstring(lua_State *L, luab_type_u *un)
 
 void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
 void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
-void    luab_rawsetbuff(lua_State *, int, lua_Integer, void *, size_t);
+void    luab_rawsetiovec(lua_State *, int, lua_Integer, void *, size_t);
 
 void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
 void    luab_setinteger(lua_State *, int, const char *, lua_Integer);

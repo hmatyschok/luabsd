@@ -298,30 +298,28 @@ luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
 void
 luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
 {
+    /*
+     * Best effort, this means try to push things on
+     * stack at least as it's possible, regardless
+     * if allocation of memory is possible or not.
+     */
     if ((*m->ctor)(L, v) != NULL)
         lua_rawseti(L, narg, k);
 }
 
 void
-luab_rawsetbuff(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
+luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
-    luab_iovec_t *buf;
 
-    if (len > 0) {
+    if (len > 0) {  /* XXX redundant code-section */
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-        iop.iop_buf.buf_len = len + sizeof(uint32_t);
+        iop.iop_buf.buf_len = len;
         iop.iop_data.buf_len = len;
         iop.iop_data.buf_data = v;
 
-        /*
-         * Best effort, this means try to push things
-         * on stack at least is possible, regardless
-         * if allocationg memory is possible or not.
-         */
-        if ((buf = (*iovec_type.ctor)(L, &iop)) != NULL)
-            lua_rawseti(L, narg, k);
+        luab_rawsetudata(L, narg, &iovec_type, k, &iop);
     }
 }
 
@@ -363,7 +361,7 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
 
-    if (len > 0) {  /* XXX */
+    if (len > 0) {  /* XXX redundant code-section */
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
         iop.iop_buf.buf_len = len;
