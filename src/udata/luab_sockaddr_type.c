@@ -115,7 +115,7 @@ sockaddr_to_table(lua_State *L, void *arg)
     luab_setinteger(L, -2, "sa_family", sa->sa_family);
 
     len = sa->sa_len - sizeof(u_char) - sizeof(sa_family_t);
-    luab_setbuff(L, -2, "sa_data", sa->sa_data, len);
+    luab_setiovec(L, -2, "sa_data", sa->sa_data, len);
 
     lua_pushvalue(L, -1);
 }
@@ -140,7 +140,7 @@ sockaddr_dl_to_table(lua_State *L, void *arg)
     luab_setinteger(L, -2, "sdl_slen", sdl->sdl_slen);
 
     len = sdl->sdl_nlen + sdl->sdl_alen + sdl->sdl_slen;
-    luab_setbuff(L, -2, "sdl_data", sdl->sdl_data, len);
+    luab_setiovec(L, -2, "sdl_data", sdl->sdl_data, len);
 
     lua_pushvalue(L, -1);
 }

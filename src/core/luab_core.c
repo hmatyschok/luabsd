@@ -326,29 +326,6 @@ luab_rawsetbuff(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 }
 
 void
-luab_setbuff(lua_State *L, int narg, const char *k, void *v, size_t len)
-{
-    luab_iovec_param_t iop;
-    luab_iovec_t *buf;
-
-    if (len > 0) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_buf.buf_len = len + sizeof(uint32_t);
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
-
-        /*
-         * Best effort, this means try to push things
-         * on stack at least is possible, regardless
-         * if allocationg memory is possible or not.
-         */
-        if ((buf = (*iovec_type.ctor)(L, &iop)) != NULL)
-            lua_setfield(L, narg, k);
-    }
-}
-
-void
 luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
 {
     lua_pushcfunction(L, v);
@@ -372,8 +349,29 @@ luab_setstring(lua_State *L, int narg, const char *k, const char *v)
 void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
+    /*
+     * Best effort, this means try to push things on
+     * stack at least as it's possible, regardless
+     * if allocation of memory is possible or not.
+     */
     if ((*m->ctor)(L, v) != NULL)
         lua_setfield(L, narg, k);
+}
+
+void
+luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
+{
+    luab_iovec_param_t iop;
+
+    if (len > 0) {  /* XXX */
+        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+        iop.iop_buf.buf_len = len;
+        iop.iop_data.buf_len = len;
+        iop.iop_data.buf_data = v;
+
+        luab_setudata(L, narg, &iovec_type, k, &iop);
+    }
 }
 
 /*

@@ -161,7 +161,7 @@ DBT_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setbuff(L, -2, "data", dbt->data, dbt->size);
+    luab_setiovec(L, -2, "data", dbt->data, dbt->size);
     luab_setinteger(L, -2, "size", dbt->size);
 
     lua_pushvalue(L, -1);

@@ -153,7 +153,7 @@ In6Addr_get(lua_State *L)
     ia = luab_udata(L, 1, in6_addr_type, struct in6_addr *);
 
     lua_newtable(L);
-    luab_setbuff(L, -2, "s6_addr", ia->s6_addr, sizeof(ia->__u6_addr));
+    luab_setiovec(L, -2, "s6_addr", ia->s6_addr, sizeof(ia->__u6_addr));
     lua_pushvalue(L, -1);
 
     return (1);
