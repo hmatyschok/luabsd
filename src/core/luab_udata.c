@@ -132,21 +132,21 @@ luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
 /*
  * Operations on stack.
  */
- 
+
 int
-luab_pushliovec(lua_State *L, caddr_t s, size_t len, size_t max_len)
+luab_pushliovec(lua_State *L, void *v, size_t len, size_t max_len)
 {
     int save_errno = errno;
     luab_iovec_param_t iop;
     caddr_t msg;
     int status;
 
-    if (s != NULL && len > 0 && max_len >= len) {
+    if (v != NULL && len > 0 && max_len >= len) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
         iop.iop_buf.buf_len = max_len;
         iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = s;
+        iop.iop_data.buf_data = v;
 
         if ((*iovec_type.ctor)(L, &iop) != NULL) {
             if (save_errno != 0) {

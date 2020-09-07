@@ -51,6 +51,7 @@ extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
 extern luab_module_t timezone_type;
 extern luab_module_t tm_type;
+extern luab_module_t uuid_type;
 
 #if __BSD_VISIBLE
 extern luab_module_t dbt_type;
@@ -177,6 +178,7 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &stat_type);
     luab_newmetatable(L, &timezone_type);
     luab_newmetatable(L, &timespec_type);
+    luab_newmetatable(L, &uuid_type);
 #if __BSD_VISIBLE
     luab_newmetatable(L, &bintime_type);
     luab_newmetatable(L, &crypt_data_type);
@@ -371,7 +373,7 @@ int
 luab_pusherr(lua_State *L, lua_Integer res)
 {
     int save_errno = errno;
-    char *msg;
+    caddr_t msg;
     int status;
 
     lua_pushinteger(L, res);
@@ -395,7 +397,7 @@ int
 luab_pushnil(lua_State *L)
 {
     int save_errno = errno;
-    char *msg;
+    caddr_t msg;
     int status;
 
     lua_pushnil(L);
@@ -438,18 +440,18 @@ luab_pushstring(lua_State *L, const char *s)
 }
 
 int
-luab_pushldata(lua_State *L, caddr_t s, size_t len)
+luab_pushldata(lua_State *L, void *v, size_t len)
 {
     int save_errno = errno;
     luaL_Buffer b;
     caddr_t buf, msg;
     int status;
 
-    if (s != NULL && len > 0) {
+    if (v != NULL && len > 0) {
         luaL_buffinit(L, &b);
         buf = luaL_prepbuffsize(&b, len);
 
-        (void)memmove(buf, s, len);
+        (void)memmove(buf, v, len);
 
         luaL_addsize(&b, len);
         luaL_pushresult(&b);
@@ -544,10 +546,18 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
     return (1);
 }
 
-/*
+/***
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
+ *
+ * @function uuid
+ *
+ * @return (LUA_TSTRING [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (uuid [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage uuid [, err, msg ] = bsd.core.uuid()
  */
-
 static int
 luab_uuid(lua_State *L)
 {
