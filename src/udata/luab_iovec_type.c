@@ -389,7 +389,6 @@ int
 luab_StructIOVec(lua_State *L)
 {
     luab_iovec_param_t iop;
-    luab_iovec_t *self;
     int status;
 
     /* XXX well, this will be refactored, but not yet */
@@ -405,7 +404,7 @@ luab_StructIOVec(lua_State *L)
 #endif
     );
 
-    if ((self = iovec_create(L, &iop)) == NULL)
+    if (iovec_create(L, &iop) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
