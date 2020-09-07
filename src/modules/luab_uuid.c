@@ -35,12 +35,52 @@
 
 #include "luabsd.h"
 
-extern int luab_uuid_create(lua_State *);
+extern luab_module_t hook_type;
+extern luab_module_t uuid_type;
 
 #define LUABSD_UUID_LIB_ID    1593623310
 #define LUABSD_UUID_LIB_KEY "uuid"
 
 extern luab_module_t luab_uuid_lib;
+
+
+/***
+ * uuid(3) - generator function.
+ *
+ * @function uuid_create
+ *
+ * @param status                    (LUA_T{NIL,USERDATA(hook)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (uuid [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage uuid = bsd.uuid.uuid_create([ status ])
+ */
+static int
+luab_uuid_create(lua_State *L)
+{
+    luab_type_u *un;
+    uint32_t *status;
+    uuid_t uuid;
+
+    switch (luab_checkmaxargs(L, 1)) {
+    case 1:
+        if ((un = luab_udataisnil(L, 1, hook_type, luab_type_u *)) != NULL)
+            status = &(un->un_uint32);
+        else
+            status = NULL;
+        break;
+    default:
+        un = NULL;
+        status = NULL;
+        break;
+    }
+    uuid_create(&uuid, status);
+    
+    return (luab_pushudata(L, &uuid_type, &uuid));
+}
 
 /*
  * Interface against <uuid.h>.

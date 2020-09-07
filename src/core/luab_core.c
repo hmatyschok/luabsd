@@ -40,6 +40,7 @@
 
 extern luab_module_t clockinfo_type;
 extern luab_module_t flock_type;
+extern luab_module_t hook_type;
 extern luab_module_t if_nameindex_type;
 extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;
@@ -167,6 +168,7 @@ luaopen_bsd(lua_State *L)
 
     luab_newmetatable(L, &clockinfo_type);
     luab_newmetatable(L, &flock_type);
+    luab_newmetatable(L, &hook_type);
     luab_newmetatable(L, &if_nameindex_type);
     luab_newmetatable(L, &in_addr_type);
     luab_newmetatable(L, &in6_addr_type);
@@ -362,7 +364,7 @@ luab_checkargv(lua_State *L, int narg)
         }
         lua_pop(L, 1);
     }
-    return argv;
+    return (argv);
 }
 
 /*
@@ -516,7 +518,7 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
     (void)luab_checkmaxargs(L, narg);
     data = (caddr_t)(*m->get)(L, narg);
 
-    return (luab_pushliovec(L, data, len, len));
+    return (luab_pushiovec(L, data, len, len));
 }
 
 int
@@ -568,7 +570,7 @@ luab_uuid(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
 
     if ((status = uuidgen(&uuid, 1)) != 0)
-        status = luab_pusherr(L, status);
+        status = luab_pushnil(L);
     else {
         uuid_to_string(&uuid, &buf, &status);
 

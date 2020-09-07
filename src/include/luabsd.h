@@ -130,13 +130,6 @@ int luab_buf_free(luab_buf_t *);
  * Operations on stack.
  */
 
-int luab_pusherr(lua_State *, lua_Integer);
-int luab_pushnil(lua_State *);
-int luab_pushstring(lua_State *, const char *);
-
-int luab_pushldata(lua_State *, void *, size_t);
-int luab_pushliovec(lua_State *, void *, size_t, size_t);
-
 static __inline void
 luab_initinteger(lua_State *L, luab_type_u *un)
 {
@@ -155,6 +148,19 @@ luab_initstring(lua_State *L, luab_type_u *un)
     lua_pushstring(L, un->un_cp);
 }
 
+int luab_pusherr(lua_State *, lua_Integer);
+int luab_pushnil(lua_State *);
+int luab_pushstring(lua_State *, const char *);
+int luab_pushldata(lua_State *, void *, size_t);
+
+void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
+int luab_pushudata(lua_State *, luab_module_t *, void *);
+int luab_pushiovec(lua_State *, void *, size_t, size_t);
+
+/*
+ * Operations on LUA_TTABLE.
+ */
+
 void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
 void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
 void    luab_rawsetiovec(lua_State *, int, lua_Integer, void *, size_t);
@@ -167,8 +173,6 @@ void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 /*
- * Operations on data types.
- * 
  * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
  * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
  * the same thing without throwing an error.
@@ -181,8 +185,9 @@ lua_Integer luab_tointeger(lua_State *, int, lua_Integer);
 lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
 
 /*
- * Accessor for evaluation of argv.
+ * Accessor evaluates argv.
  */
+
 int luab_checkmaxargs(lua_State *, int);
 int luab_checktable(lua_State *, int);
 
@@ -194,10 +199,8 @@ void *  luab_newlvector(lua_State *, int, size_t, size_t);
 int *   luab_checklintvector(lua_State *, int, size_t);
 
 /*
- * Accessor for evaluation of LUA_TUSERDATA.
+ * Accessor evaluates LUA_TUSERDATA.
  */
-
-void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
 
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), (m)))

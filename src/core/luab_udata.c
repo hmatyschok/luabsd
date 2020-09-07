@@ -41,6 +41,80 @@
  */
 
 void *
+luab_checkudata(lua_State *L, int narg, luab_module_t *m)
+{
+    return (luaL_checkudata(L, narg, m->name));
+}
+
+void *
+luab_toudata(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
+
+    return (ud + 1);
+}
+
+void *
+luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
+{
+    luab_iovec_t *iov;
+    void *buf;
+
+    if ((iov = luab_isiovec(L, narg)) != NULL) {
+        if (iov->iov.iov_base == NULL)
+            luaL_argerror(L, narg, "Invalid argument.");
+
+        if (iov->iov.iov_len != len)
+            luaL_argerror(L, narg, "Invalid argument.");
+
+        buf = iov->iov.iov_base;
+    } else
+        buf = luab_toudata(L, narg, m);
+
+    return (buf);
+}
+
+void *
+luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (NULL);
+
+    return ((*m->get)(L, narg));
+}
+
+const char *
+luab_iovec_islxarg(lua_State *L, int narg, size_t len)
+{
+    luab_iovec_t *iov;
+    const char *buf;
+
+    if (((iov = luab_isiovec(L, narg)) != NULL) &&
+        (iov->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
+        (len <= iov->iov_max_len))
+        buf = iov->iov.iov_base;
+    else
+        buf = luab_islstring(L, narg, len);
+
+    return (buf);
+}
+
+const char *
+luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
+{
+    const char *buf;
+
+    if ((buf = luab_iovec_islxarg(L, narg, len)) == NULL)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    return (buf);
+}
+
+/*
+ * Operations on stack.
+ */
+
+void *
 luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 {
     luab_udata_t *ud = NULL;
@@ -65,90 +139,17 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
     return (ud);
 }
 
-void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
-{
-    return (luaL_checkudata(L, narg, m->name));
-}
-
-void *
-luab_toudata(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
-
-    return (ud + 1);
-}
-
-void *
-luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
-{
-    luab_iovec_t *buf;  /* XXX namespace */
-
-    if ((buf = luab_isiovec(L, narg)) != NULL) {
-        if (buf->iov.iov_base == NULL)
-            luaL_argerror(L, narg, "Invalid argument.");
-
-        if (buf->iov.iov_len != len)
-            luaL_argerror(L, narg, "Invalid argument.");
-
-        return (buf->iov.iov_base);
-    }
-    return (luab_toudata(L, narg, m));
-}
-
-void *
-luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (NULL);
-
-    return ((*m->get)(L, narg));
-}
-
-const char *
-luab_iovec_islxarg(lua_State *L, int narg, size_t len)
-{
-    luab_iovec_t *buf;
-
-    if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
-        (len <= buf->iov_max_len))
-        return (buf->iov.iov_base);
-
-    return (luab_islstring(L, narg, len));
-}
-
-const char *
-luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
-{
-    const char *buf;
-
-    if ((buf = luab_iovec_islxarg(L, narg, len)) == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    return (buf);
-}
-
-/*
- * Operations on stack.
- */
-
 int
-luab_pushliovec(lua_State *L, void *v, size_t len, size_t max_len)
+luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
 {
     int save_errno = errno;
-    luab_iovec_param_t iop;
     caddr_t msg;
     int status;
 
-    if (v != NULL && len > 0 && max_len >= len) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+    if (m != NULL) {
 
-        iop.iop_buf.buf_len = max_len;
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
+        if ((*m->ctor)(L, arg) != NULL) {
 
-        if ((*iovec_type.ctor)(L, &iop) != NULL) {
             if (save_errno != 0) {
                 lua_pushinteger(L, save_errno);
                 msg = strerror(save_errno);
@@ -160,6 +161,27 @@ luab_pushliovec(lua_State *L, void *v, size_t len, size_t max_len)
             }
         } else
             status = luab_pushnil(L);
+    } else {
+        errno = EINVAL;
+        status = luab_pushnil(L);
+    }
+    return (status);
+}
+
+int
+luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
+{
+    luab_iovec_param_t iop;
+    int status;
+
+    if (v != NULL && len > 0 && max_len >= len) {
+        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+
+        iop.iop_buf.buf_len = max_len;
+        iop.iop_data.buf_len = len;
+        iop.iop_data.buf_data = v;
+
+        status = luab_pushudata(L, &iovec_type, &iop);
     } else {
         errno = EINVAL;
         status = luab_pushnil(L);

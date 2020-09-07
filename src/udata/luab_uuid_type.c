@@ -25,8 +25,8 @@
  */
 
 #include <sys/param.h>
-#include <sys/uuid.h>
 
+#include <uuid.h>
 #include <string.h>
 
 #include <lua.h>
@@ -63,8 +63,6 @@ typedef struct luab_uuid {
 
 #define LUABSD_UUID_TYPE_ID    1599304529
 #define LUABSD_UUID_TYPE    "UUID*"
-
-int luab_uuid_create(lua_State *);
 
 /***
  * Set value for low field of the timestamp.
@@ -506,7 +504,7 @@ static luab_table_t uuid_methods[] = {
 };
 
 static void *
-uuid_create(lua_State *L, void *arg)
+_uuid_create(lua_State *L, void *arg)
 {
     return (luab_new_uuid(L, arg));
 }
@@ -530,41 +528,8 @@ luab_module_t uuid_type = {
     .cookie = LUABSD_UUID_TYPE_ID,
     .name = LUABSD_UUID_TYPE,
     .vec = uuid_methods,
-    .ctor = uuid_create,
+    .ctor = _uuid_create,
     .init = uuid_init,
     .get = uuid_udata,
     .sz = sizeof(luab_uuid_t),
 };
-
-/***
- * Ctor.
- *
- * @function uuid_create
- *
- * @param               Instance of LUA_TUSERDATA(luab_uuid_t), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (uuid [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage uuid = bsd.uuid.uuid_create([ uuid ])
- */
-int
-luab_uuid_create(lua_State *L)
-{
-    struct uuid *uuid;
-    int narg, status;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        uuid = NULL;
-    else
-        uuid = uuid_udata(L, narg);
-
-    if (uuid_create(L, uuid) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
-}
