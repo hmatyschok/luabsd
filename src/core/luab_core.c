@@ -83,6 +83,9 @@ extern luab_module_t luab_uuid_lib;
 
 extern int luab_CreateHook(lua_State *);
 
+#define LUABSD_CORE_LIB_ID    1595987973
+#define LUABSD_CORE_LIB_KEY   "core"
+
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
@@ -181,235 +184,6 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &db_type);
 #endif
     return (1);
-}
-
-/*
- * Operations on stack.
- */
-
-int
-luab_pusherr(lua_State *L, lua_Integer res)
-{
-    int save_errno = errno;
-    char *msg;
-    int status;
-
-    lua_pushinteger(L, res);
-
-    if (save_errno != 0 && res < 0) {
-        lua_pushinteger(L, save_errno);
-        msg = strerror(save_errno);
-        lua_pushstring(L, msg);
-        status = 3;
-    } else if (save_errno == res) {
-        msg = strerror(save_errno);
-        lua_pushstring(L, msg);
-        status = 2;
-    } else
-        status = 1;
-
-    return (status);
-}
-
-int
-luab_pushnil(lua_State *L)
-{
-    int save_errno = errno;
-    char *msg;
-    int status;
-
-    lua_pushnil(L);
-
-    if (save_errno != 0) {
-        lua_pushinteger(L, save_errno);
-        msg = strerror(save_errno);
-        lua_pushstring(L, msg);
-        status = 3;
-    } else
-        status = 1;
-
-    return (status);
-}
-
-int
-luab_pushstring(lua_State *L, const char *s)
-{
-    int save_errno = errno;
-    caddr_t msg;
-    size_t len;
-    int status;
-
-    if (s != NULL) {
-        len = strnlen(s, LUAL_BUFFERSIZE);
-        lua_pushlstring(L, s, len);
-
-        if (save_errno != 0) {
-            lua_pushinteger(L, save_errno);
-            msg = strerror(save_errno);
-            lua_pushstring(L, msg);
-            status = 3;
-        } else
-            status = 1;
-    } else {
-        errno = EINVAL;
-        status = luab_pushnil(L);
-    }
-    return (status);
-}
-
-int
-luab_pushldata(lua_State *L, caddr_t s, size_t len)
-{
-    int save_errno = errno;
-    luaL_Buffer b;
-    caddr_t buf, msg;
-    int status;
-
-    if (s != NULL && len > 0) {
-        luaL_buffinit(L, &b);
-        buf = luaL_prepbuffsize(&b, len);
-
-        (void)memmove(buf, s, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        if (save_errno != 0) {
-            lua_pushinteger(L, save_errno);
-            msg = strerror(save_errno);
-            lua_pushstring(L, msg);
-            status = 3;
-        } else {
-            msg = NULL;
-            status = 1;
-        }
-    } else {
-        errno = EINVAL;
-        status = luab_pushnil(L);
-    }
-    return (status);
-}
-
-int
-luab_pushliovec(lua_State *L, caddr_t s, size_t len, size_t max_len)
-{
-    int save_errno = errno;
-    luab_iovec_param_t iop;
-    caddr_t msg;
-    int status;
-
-    if (s != NULL && len > 0 && max_len >= len) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_buf.buf_len = max_len;
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = s;
-
-        if ((*iovec_type.ctor)(L, &iop) != NULL) {
-            if (save_errno != 0) {
-                lua_pushinteger(L, save_errno);
-                msg = strerror(save_errno);
-                lua_pushstring(L, msg);
-                status = 3;
-            } else {
-                msg = NULL;
-                status = 1;
-            }
-        } else
-            status = luab_pushnil(L);
-    } else {
-        errno = EINVAL;
-        status = luab_pushnil(L);
-    }
-    return (status);
-}
-
-/*
- * Operations on LUA_TTABLE.
- */
-
-void
-luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-void
-luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
-{
-    /*
-     * Best effort, this means try to push things on
-     * stack at least as it's possible, regardless
-     * if allocation of memory is possible or not.
-     */
-    if ((*m->ctor)(L, v) != NULL)
-        lua_rawseti(L, narg, k);
-}
-
-void
-luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
-{
-    luab_iovec_param_t iop;
-
-    if (len > 0) {  /* XXX redundant code-section */
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_buf.buf_len = len;
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
-
-        luab_rawsetudata(L, narg, &iovec_type, k, &iop);
-    }
-}
-
-void
-luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
-{
-    lua_pushcfunction(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setstring(lua_State *L, int narg, const char *k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
-{
-    /*
-     * Best effort, this means try to push things on
-     * stack at least as it's possible, regardless
-     * if allocation of memory is possible or not.
-     */
-    if ((*m->ctor)(L, v) != NULL)
-        lua_setfield(L, narg, k);
-}
-
-void
-luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
-{
-    luab_iovec_param_t iop;
-
-    if (len > 0) {  /* XXX redundant code-section */
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_buf.buf_len = len;
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
-
-        luab_setudata(L, narg, &iovec_type, k, &iop);
-    }
 }
 
 /*
@@ -553,35 +327,6 @@ luab_checklintvector(lua_State *L, int narg, size_t len)
 }
 
 /*
- * Operations on Complex Data Types.
- */
-
-void *
-luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
-{
-    luab_udata_t *ud = NULL;
-
-    if (m != NULL) {
-        if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
-            (void)memset_s(ud, m->sz, 0, m->sz);
-
-            TAILQ_INIT(&ud->ud_hooks);
-
-            ud->ud_m = m;
-
-            if (m->init != NULL && arg != NULL)
-                (*m->init)(ud, arg);
-
-            luaL_setmetatable(L, m->name);
-        } else
-            errno = ENOMEM;
-    } else
-        errno = EINVAL;
-
-    return (ud);
-}
-
-/*
  * Operations on argv for family (of functions) over exec(2).
  *
  * Translate an instance of LUA_TTABLE into an argv.
@@ -618,69 +363,145 @@ luab_checkargv(lua_State *L, int narg)
     return argv;
 }
 
-void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
+/*
+ * Operations on stack.
+ */
+
+int
+luab_pusherr(lua_State *L, lua_Integer res)
 {
-    return (luaL_checkudata(L, narg, m->name));
+    int save_errno = errno;
+    char *msg;
+    int status;
+
+    lua_pushinteger(L, res);
+
+    if (save_errno != 0 && res < 0) {
+        lua_pushinteger(L, save_errno);
+        msg = strerror(save_errno);
+        lua_pushstring(L, msg);
+        status = 3;
+    } else if (save_errno == res) {
+        msg = strerror(save_errno);
+        lua_pushstring(L, msg);
+        status = 2;
+    } else
+        status = 1;
+
+    return (status);
 }
 
-void *
-luab_toudata(lua_State *L, int narg, luab_module_t *m)
+int
+luab_pushnil(lua_State *L)
 {
-    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
+    int save_errno = errno;
+    char *msg;
+    int status;
 
-    return (ud + 1);
+    lua_pushnil(L);
+
+    if (save_errno != 0) {
+        lua_pushinteger(L, save_errno);
+        msg = strerror(save_errno);
+        lua_pushstring(L, msg);
+        status = 3;
+    } else
+        status = 1;
+
+    return (status);
 }
 
-void *
-luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
+int
+luab_pushstring(lua_State *L, const char *s)
 {
-    luab_iovec_t *buf;  /* XXX namespace */
+    int save_errno = errno;
+    caddr_t msg;
+    size_t len;
+    int status;
 
-    if ((buf = luab_isiovec(L, narg)) != NULL) {
-        if (buf->iov.iov_base == NULL)
-            luaL_argerror(L, narg, "Invalid argument.");
+    if (s != NULL) {
+        len = strnlen(s, LUAL_BUFFERSIZE);
+        lua_pushlstring(L, s, len);
 
-        if (buf->iov.iov_len != len)
-            luaL_argerror(L, narg, "Invalid argument.");
-
-        return (buf->iov.iov_base);
+        if (save_errno != 0) {
+            lua_pushinteger(L, save_errno);
+            msg = strerror(save_errno);
+            lua_pushstring(L, msg);
+            status = 3;
+        } else
+            status = 1;
+    } else {
+        errno = EINVAL;
+        status = luab_pushnil(L);
     }
-    return (luab_toudata(L, narg, m));
+    return (status);
 }
 
-void *
-luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
+int
+luab_pushldata(lua_State *L, caddr_t s, size_t len)
 {
-    if (lua_isnil(L, narg) != 0)
-        return (NULL);
+    int save_errno = errno;
+    luaL_Buffer b;
+    caddr_t buf, msg;
+    int status;
 
-    return ((*m->get)(L, narg));
+    if (s != NULL && len > 0) {
+        luaL_buffinit(L, &b);
+        buf = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(buf, s, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        if (save_errno != 0) {
+            lua_pushinteger(L, save_errno);
+            msg = strerror(save_errno);
+            lua_pushstring(L, msg);
+            status = 3;
+        } else {
+            msg = NULL;
+            status = 1;
+        }
+    } else {
+        errno = EINVAL;
+        status = luab_pushnil(L);
+    }
+    return (status);
 }
 
-const char *
-luab_iovec_islxarg(lua_State *L, int narg, size_t len)
+/*
+ * Operations on LUA_TTABLE.
+ */
+
+void
+luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
 {
-    luab_iovec_t *buf;
-
-    if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
-        (len <= buf->iov_max_len))
-        return (buf->iov.iov_base);
-
-    return (luab_islstring(L, narg, len));
+    lua_pushinteger(L, v);
+    lua_rawseti(L, narg, k);
 }
 
-const char *
-luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
+void
+luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
 {
-    const char *buf;
-
-    if ((buf = luab_iovec_islxarg(L, narg, len)) == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    return (buf);
+    lua_pushcfunction(L, v);
+    lua_setfield(L, narg, k);
 }
+
+void
+luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_setfield(L, narg, k);
+}
+
+void
+luab_setstring(lua_State *L, int narg, const char *k, const char *v)
+{
+    lua_pushstring(L, v);
+    lua_setfield(L, narg, k);
+}
+
 
 /*
  * Service primitives subset of <core>.
@@ -723,9 +544,6 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
 
     return (1);
 }
-
-#define LUABSD_CORE_LIB_ID    1595987973
-#define LUABSD_CORE_LIB_KEY   "core"
 
 /*
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
