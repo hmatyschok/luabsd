@@ -359,7 +359,7 @@ UUID_get_clock_seq_low(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
+ *          (str [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
  * @usage str [, err, msg ] = uuid:set_node(data)
@@ -387,7 +387,7 @@ UUID_set_node(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
+ *          (str [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
  * @usage str [, err, msg ] = uuid:get_node()
@@ -396,7 +396,7 @@ static int
 UUID_get_node(lua_State *L)
 {
     struct uuid *uuid;
-    void *data;
+    caddr_t data;
 
     (void)luab_checkmaxargs(L, 1);
 
@@ -420,7 +420,7 @@ UUID_get_node(lua_State *L)
  *              clock_seq_hi_and_reserved   = (LUA_TNUMBER),
  *              clock_low                   = (LUA_TNUMBER),
  *              node                        = (LUA_TUSERDATA(iovec)),
- *          } 
+ *          }
  *
  * @usage t = uuid:get()
  */
