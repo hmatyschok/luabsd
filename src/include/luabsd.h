@@ -88,9 +88,9 @@ typedef struct luab_udata {
 } luab_udata_t;
 
 typedef struct luab_buf {
-    size_t  buf_len;
-    caddr_t buf_data;
-    u_int   buf_flags;
+    size_t      buf_len;
+    caddr_t     buf_data;
+    u_int       buf_flags;
 } luab_buf_t;
 
 typedef struct luab_iovec_param {
@@ -197,6 +197,8 @@ int *   luab_checklintvector(lua_State *, int, size_t);
  * Accessor for evaluation of LUA_TUSERDATA.
  */
 
+void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
+
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), (m)))
 #define luab_isiovec(L, narg) \
@@ -211,16 +213,12 @@ int *   luab_checklintvector(lua_State *, int, size_t);
     ((t)(luab_checkudataisnil((L), (narg), &(m))))
 
 void *  luab_checkudata(lua_State *, int, luab_module_t *);
-void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
 void *  luab_toudata(lua_State *, int, luab_module_t *);
 void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
 void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 
 const char *    luab_iovec_islxarg(lua_State *, int, size_t);
 const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
-
-
-
 
 /*
  * Service primitives subset of <core>.

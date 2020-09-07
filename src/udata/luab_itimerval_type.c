@@ -61,7 +61,7 @@ typedef struct luab_itimerval {
 #define LUABSD_ITIMERVAL_TYPE_ID    1594110231
 #define LUABSD_ITIMERVAL_TYPE    "ITIMERVAL*"
 
-int luab_StructItimerVal(lua_State *);
+int luab_itimerval_create(lua_State *);
 
 /* timer interval */
 /***
@@ -268,16 +268,16 @@ luab_module_t itimerval_type = {
 /***
  * Ctor.
  *
- * @function StructItimerVal
+ * @function itimerval_create
  *
  * @param itimerval                 Instance of LUA_TUSERDATA(luab_itimerval_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage itimerval [, err, msg ] = bsd.sys.time.StructItimerVal([ itimerval ])
+ * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ itimerval ])
  */
 int
-luab_StructItimerVal(lua_State *L)
+luab_itimerval_create(lua_State *L)
 {
     struct itimerval *itimerval;
     int narg, status;

@@ -59,7 +59,7 @@ typedef struct luab_timespec {
 #define LUABSD_TIMESPEC_TYPE_ID    1594034844
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
 
-int luab_StructTimeSpec(lua_State *);
+int luab_timespec_create(lua_State *);
 
 /***
  * Set value for tv_sec.
@@ -272,16 +272,16 @@ luab_module_t timespec_type = {
 /***
  * Ctor.
  *
- * @function StructTimeSpec
+ * @function timespec_create
  *
  * @param timespec                    Instance of LUA_TUSERDATA(luab_timespec_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage timespec [, err, msg ] = bsd.sys.time.StructTimeSpec([ timespec ])
+ * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ timespec ])
  */
 int
-luab_StructTimeSpec(lua_State *L)
+luab_timespec_create(lua_State *L)
 {
     struct timespec *timespec;
     int narg, status;

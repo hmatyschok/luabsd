@@ -56,13 +56,13 @@ extern luab_module_t timezone_type;
 extern luab_module_t bintime_type;
 #endif
 
-extern int  luab_StructClockInfo(lua_State *);
-extern int  luab_StructItimerVal(lua_State *);
-extern int  luab_StructTimeSpec(lua_State *);
-extern int  luab_StructTimeZone(lua_State *);
+extern int  luab_clockinfo_create(lua_State *);
+extern int  luab_itimerval_create(lua_State *);
+extern int  luab_timespec_create(lua_State *);
+extern int  luab_timezone_create(lua_State *);
 
 #if __BSD_VISIBLE
-extern int luab_StructBinTime(lua_State *);
+extern int luab_bintime_create(lua_State *);
 #endif
 
 #define LUABSD_SYS_TIME_LIB_ID    1593623310
@@ -219,12 +219,12 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUABSD_FUNC("getitimer",    luab_getitimer),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_FUNC("StructBinTime",    luab_StructBinTime),
+    LUABSD_FUNC("bintime_create",    luab_bintime_create),
 #endif
-    LUABSD_FUNC("StructClockInfo",  luab_StructClockInfo),
-    LUABSD_FUNC("StructItimerVal",  luab_StructItimerVal),
-    LUABSD_FUNC("StructTimeSpec",   luab_StructTimeSpec),
-    LUABSD_FUNC("StructTimeZone",   luab_StructTimeZone),
+    LUABSD_FUNC("clockinfo_create",  luab_clockinfo_create),
+    LUABSD_FUNC("itimerval_create",  luab_itimerval_create),
+    LUABSD_FUNC("timespec_create",   luab_timespec_create),
+    LUABSD_FUNC("timezone_create",   luab_timezone_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

@@ -40,9 +40,9 @@ extern luab_module_t msghdr_type;
 extern luab_module_t sockaddr_type;
 extern luab_module_t timespec_type;
 
-extern int luab_StructLinger(lua_State *);
-extern int luab_StructMsgHdr(lua_State *);
-extern int luab_StructSockAddr(lua_State *);
+extern int luab_linger_create(lua_State *);
+extern int luab_msghdr_create(lua_State *);
+extern int luab_sockaddr_create(lua_State *);
 
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
 #define LUABSD_SYS_SOCKET_LIB_KEY   "socket"
@@ -1098,9 +1098,9 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
 #if __BSD_VISIBLE
     LUABSD_FUNC("sendmmesg",    luab_sendmmsg),
 #endif
-    LUABSD_FUNC("StructLinger", luab_StructLinger),
-    LUABSD_FUNC("StructMsgHdr", luab_StructMsgHdr),
-    LUABSD_FUNC("StructSockAddr",   luab_StructSockAddr),
+    LUABSD_FUNC("linger_create", luab_linger_create),
+    LUABSD_FUNC("msghdr_create", luab_msghdr_create),
+    LUABSD_FUNC("sockaddr_create",   luab_sockaddr_create),
     LUABSD_INT(NULL, 0)
 };
 

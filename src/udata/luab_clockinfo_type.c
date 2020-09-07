@@ -62,7 +62,7 @@ typedef struct luab_clockinfo {
 #define LUABSD_CLOCKINFO_TYPE_ID    1594164272
 #define LUABSD_CLOCKINFO_TYPE    "CLOCKINFO*"
 
-int luab_StructClockInfo(lua_State *L);
+int luab_clockinfo_create(lua_State *L);
 
 /***
  * Set clock frequency.
@@ -398,7 +398,7 @@ luab_module_t clockinfo_type = {
 /***
  * Ctor.
  *
- * @function StructClockInfo
+ * @function clockinfo_create
  *
  * @param clockinfo                 Instance of LUA_TUSERDATA(luab_clockinfo_t).
  *
@@ -407,10 +407,10 @@ luab_module_t clockinfo_type = {
  *          (clockinfo [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage clockinfo [, err, msg ] = bsd.sys.time.StructClockInfo([ clockinfo ])
+ * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ clockinfo ])
  */
 int
-luab_StructClockInfo(lua_State *L)
+luab_clockinfo_create(lua_State *L)
 {
     struct clockinfo *clockinfo;
     int narg, status;

@@ -88,7 +88,7 @@ typedef struct luab_msghdr {
 #define LUABSD_MSGHDR_TYPE_ID    1597320239
 #define LUABSD_MSGHDR_TYPE    "MSGHDR*"
 
-int luab_StructMsgHdr(lua_State *);
+int luab_msghdr_create(lua_State *);
 
 /*
  * Subr.
@@ -652,14 +652,14 @@ luab_module_t msghdr_type = {
 /***
  * Ctor.
  *
- * @function StructMsgHdr
+ * @function msghdr_create
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage msghdr = bsd.sys.socket.StructMsgHdr()
+ * @usage msghdr = bsd.sys.socket.msghdr_create()
  */
 int
-luab_StructMsgHdr(lua_State *L)
+luab_msghdr_create(lua_State *L)
 {
     int status;
 

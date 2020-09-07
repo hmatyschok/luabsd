@@ -62,7 +62,7 @@ typedef struct luab_flock {
 #define LUABSD_FLOCK_TYPE_ID    1593623399
 #define LUABSD_FLOCK_TYPE    "FLOCK*"
 
-int luab_StructFlock(lua_State *);
+int luab_flock_create(lua_State *);
 
 /* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
 static int
@@ -358,7 +358,7 @@ luab_module_t flock_type = {
 };
 
 int
-luab_StructFlock(lua_State *L)
+luab_flock_create(lua_State *L)
 {
     struct flock *flock;
     int narg, status;

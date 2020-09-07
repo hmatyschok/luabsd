@@ -63,7 +63,7 @@ extern luab_module_t iovec_type;
 #define LUABSD_IOVEC_TYPE_ID    1594559731
 #define LUABSD_IOVEC_TYPE   "IOVEC*"
 
-int luab_StructIOVec(lua_State *);
+int luab_iovec_create(lua_State *);
 
 /*
  * Service primitives, accessor.
@@ -386,7 +386,7 @@ luab_module_t iovec_type = {
 };
 
 int
-luab_StructIOVec(lua_State *L)
+luab_iovec_create(lua_State *L)
 {
     luab_iovec_param_t iop;
     int status;

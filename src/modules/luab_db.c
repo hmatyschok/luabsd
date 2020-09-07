@@ -41,7 +41,7 @@
 #if __BSD_VISIBLE
 extern luab_module_t db_type;
 
-extern int luab_StructDBT(lua_State *);
+extern int luab_dbt_create(lua_State *);
 extern int luab_dbopen(lua_State *);
 #endif
 
@@ -77,7 +77,7 @@ static luab_table_t luab_db_vec[] = {   /* db.h */
     LUABSD_INT("DB_RECNO",   DB_RECNO),
 #if __BSD_VISIBLE
     LUABSD_FUNC("dbopen", luab_dbopen),
-    LUABSD_FUNC("StructDBT",    luab_StructDBT),
+    LUABSD_FUNC("dbt_create",    luab_dbt_create),
 #endif
     LUABSD_FUNC(NULL, NULL)
 };

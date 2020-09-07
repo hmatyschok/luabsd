@@ -40,7 +40,7 @@
 extern luab_module_t timespec_type;
 extern luab_module_t stat_type;
 
-extern int luab_StructStat(lua_State *);
+extern int luab_stat_create(lua_State *);
 
 #define LUABSD_SYS_STAT_LIB_ID    1593623310
 #define LUABSD_SYS_STAT_LIB_KEY    "stat"
@@ -571,7 +571,7 @@ static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
 #if __XSI_VISIBLE >= 700
     LUABSD_FUNC("mknodat",    luab_mknodat),
 #endif
-    LUABSD_FUNC("StructStat",   luab_StructStat),
+    LUABSD_FUNC("stat_create",   luab_stat_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

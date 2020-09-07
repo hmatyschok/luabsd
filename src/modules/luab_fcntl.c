@@ -39,7 +39,7 @@
 
 extern luab_module_t flock_type;
 
-extern int  luab_StructFlock(lua_State *);
+extern int  luab_flock_create(lua_State *);
 
 #define LUABSD_FCNTL_LIB_ID    1593623310
 #define LUABSD_FCNTL_LIB_KEY    "fcntl"
@@ -407,7 +407,7 @@ static luab_table_t luab_fcntl_vec[] = {    /* fcntl.h */
     LUABSD_FUNC("posix_fadvise",    luab_posix_fadvise),
     LUABSD_FUNC("posix_fallocate",  luab_posix_fallocate),
 #endif
-    LUABSD_FUNC("StructFlock", luab_StructFlock),
+    LUABSD_FUNC("flock_create", luab_flock_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

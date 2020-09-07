@@ -60,7 +60,7 @@ typedef struct luab_if_nameindex {
 #define LUABSD_IF_NAMEINDEX_TYPE_ID    1596840702
 #define LUABSD_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
 
-int luab_StructIfNameIndex(lua_State *);
+int luab_if_nameindex_create(lua_State *);
 
 /***
  * Get value for if_index.
@@ -203,16 +203,16 @@ luab_module_t if_nameindex_type = {
 /***
  * Ctor.
  *
- * @function StructIfNameIndex
+ * @function if_nameindex_create
  *
  * @param if_nameindex                    Instance of LUA_TUSERDATA(luab_if_nameindex_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage if_nameindex [, err, msg ] = bsd.sys.time.StructIfNameIndex([ if_nameindex ])
+ * @usage if_nameindex [, err, msg ] = bsd.sys.time.if_nameindex_create([ if_nameindex ])
  */
 int
-luab_StructIfNameIndex(lua_State *L)
+luab_if_nameindex_create(lua_State *L)
 {
     struct if_nameindex *ifni;
     int narg, status;

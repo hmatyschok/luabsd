@@ -36,7 +36,7 @@
 
 #include "luabsd.h"
 
-extern int luab_StructIOVec(lua_State *);
+extern int luab_iovec_create(lua_State *);
 
 #define LUABSD_SYS_UIO_LIB_ID    1594559271
 #define LUABSD_SYS_UIO_LIB_KEY   "uio"
@@ -55,7 +55,7 @@ static luab_table_t luab_sys_uio_vec[] = {   /* sys/uio.h */
     LUABSD_INT("UIO_SYSSPACE",  UIO_SYSSPACE),
     LUABSD_INT("UIO_NOCOPY",    UIO_NOCOPY),
 #endif /* __BSD_VISIBLE */
-    LUABSD_FUNC("StructIOVec",  luab_StructIOVec),
+    LUABSD_FUNC("iovec_create",  luab_iovec_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

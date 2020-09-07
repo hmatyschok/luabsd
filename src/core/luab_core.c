@@ -81,7 +81,7 @@ extern luab_module_t luab_time_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
-extern int luab_CreateHook(lua_State *);
+extern int luab_hook_create(lua_State *);
 
 #define LUABSD_CORE_LIB_ID    1595987973
 #define LUABSD_CORE_LIB_KEY   "core"
@@ -502,7 +502,6 @@ luab_setstring(lua_State *L, int narg, const char *k, const char *v)
     lua_setfield(L, narg, k);
 }
 
-
 /*
  * Service primitives subset of <core>.
  */
@@ -576,7 +575,7 @@ luab_uuid(lua_State *L)
 
 static luab_table_t luab_core_vec[] = {
     LUABSD_FUNC("uuid",    luab_uuid),
-    LUABSD_FUNC("CreateHook",   luab_CreateHook),
+    LUABSD_FUNC("hook_create",   luab_hook_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

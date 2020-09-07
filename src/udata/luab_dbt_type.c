@@ -60,7 +60,7 @@ typedef struct luab_dbt {
 #define LUABSD_DBT_TYPE_ID    1596025036
 #define LUABSD_DBT_TYPE   "DBT*"
 
-int luab_StructDBT(lua_State *);
+int luab_dbt_create(lua_State *);
 
 static int
 DBT_set_data(lua_State *L)
@@ -251,7 +251,7 @@ luab_module_t dbt_type = {
  * XXX etc., but not yet at this developement stage.
  */
 int
-luab_StructDBT(lua_State *L)
+luab_dbt_create(lua_State *L)
 {
     luab_iovec_t *buf;
     int narg, status;

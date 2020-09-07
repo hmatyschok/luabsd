@@ -89,7 +89,7 @@ typedef struct luab_stat {
 #define LUABSD_STAT_TYPE_ID    1594028586
 #define LUABSD_STAT_TYPE    "STAT*"
 
-int luab_StructStat(lua_State *);
+int luab_stat_create(lua_State *);
 
 /* inode's device */
 static int
@@ -910,7 +910,7 @@ luab_module_t stat_type = {
 };
 
 int
-luab_StructStat(lua_State *L)
+luab_stat_create(lua_State *L)
 {
     struct stat *stat;
     int narg, status;

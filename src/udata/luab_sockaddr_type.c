@@ -81,14 +81,14 @@ typedef struct luab_sockaddr {
 #define LUABSD_SOCKADDR_TYPE_ID    1595755513
 #define LUABSD_SOCKADDR_TYPE   "SOCKADDR*"
 
-int luab_StructSockAddr(lua_State *);
-int luab_StructSockAddrDL(lua_State *);
-int luab_StructSockAddrIn(lua_State *);
-int luab_StructSockAddrIn6(lua_State *);
+int luab_sockaddr_create(lua_State *);
+int luab_sockaddr_dl_create(lua_State *);
+int luab_sockaddr_in_create(lua_State *);
+int luab_sockaddr_in6_create(lua_State *);
 
 #define SUN_MAX_PATH    103
 
-int luab_StructSockAddrUn(lua_State *);
+int luab_sockaddr_un_create(lua_State *);
 
 static int
 sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
@@ -1231,16 +1231,16 @@ luab_module_t sockaddr_type = {
 /***
  * Generic ctor.
  *
- * @function StructSockAddr
+ * @function sockaddr_create
  *
  * @param sockaddr          Template, LUA_TUSERDATA(luab_sockaddr_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ]= bsd.sys.socket.StructSockAddr([ sockaddr ])
+ * @usage sockaddr [, err, msg ]= bsd.sys.socket.sockaddr_create([ sockaddr ])
  */
 int
-luab_StructSockAddr(lua_State *L)
+luab_sockaddr_create(lua_State *L)
 {
     struct sockaddr *sa;
     int status;
@@ -1261,14 +1261,14 @@ luab_StructSockAddr(lua_State *L)
 /***
  * Ctor for sockaddr_dl{}.
  *
- * @function StructSockAddrDL
+ * @function sockaddr_dl_create
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr_dl [, err, msg ]= bsd.net.if_dl.StructSockAddrDL()
+ * @usage sockaddr_dl [, err, msg ]= bsd.net.if_dl.sockaddr_dl_create()
  */
 int
-luab_StructSockAddrDL(lua_State *L)
+luab_sockaddr_dl_create(lua_State *L)
 {
     struct sockaddr_dl sdl;
     struct sockaddr *sa;
@@ -1290,7 +1290,7 @@ luab_StructSockAddrDL(lua_State *L)
 /***
  * Ctor for sockaddr_in{}.
  *
- * @function StructSockAddrIn
+ * @function sockaddr_in_create
  *
  * @param port              Specifies port ID, see /etc/services.
  * @param addr              Specifies ip(4) address by instance
@@ -1298,10 +1298,10 @@ luab_StructSockAddrDL(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.arpa.inet.StructSockAddrIn([ port [, addr ]])
+ * @usage sockaddr [, err, msg ] = bsd.arpa.inet.sockaddr_in_create([ port [, addr ]])
  */
 int
-luab_StructSockAddrIn(lua_State *L)
+luab_sockaddr_in_create(lua_State *L)
 {
     struct sockaddr_in sin;
     struct sockaddr *sa;
@@ -1334,7 +1334,7 @@ luab_StructSockAddrIn(lua_State *L)
 /***
  * Ctor for sockaddr_in6{}.
  *
- * @function StructSockAddrIn
+ * @function sockaddr_in_create
  *
  * @param port              Specifies port ID, see /etc/services.
  * @param info              Specifies Flow Label, see RFC6437,.
@@ -1344,10 +1344,10 @@ luab_StructSockAddrIn(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.arpa.inet.StructSockAddrIn6([ port [, info [, addr [, id ]]]])
+ * @usage sockaddr [, err, msg ] = bsd.arpa.inet.sockaddr_in6_create([ port [, info [, addr [, id ]]]])
  */
 int
-luab_StructSockAddrIn6(lua_State *L)
+luab_sockaddr_in6_create(lua_State *L)
 {
     struct sockaddr_in6 sin6;
     struct sockaddr *sa;
@@ -1385,16 +1385,16 @@ luab_StructSockAddrIn6(lua_State *L)
 /***
  * Ctor for sockaddr_un{}.
  *
- * @function StructSockAddrUn
+ * @function sockaddr_un_create
  *
  * @param path              Specifies path or filename.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.sys.socket.StructSockAddrUn([ path ])
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
  */
 int
-luab_StructSockAddrUn(lua_State *L)
+luab_sockaddr_un_create(lua_State *L)
 {
     struct sockaddr_un sun;
     struct sockaddr *sa;

@@ -43,11 +43,11 @@ extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;
 extern luab_module_t sockaddr_type;
 
-extern int luab_StructInAddr(lua_State *);
-extern int luab_StructIn6Addr(lua_State *);
+extern int luab_in_addr_create(lua_State *);
+extern int luab_in6_addr_create(lua_State *);
 
-extern int luab_StructSockAddrIn(lua_State *);  /* XXX */
-extern int luab_StructSockAddrIn6(lua_State *);
+extern int luab_sockaddr_in_create(lua_State *);  /* XXX */
+extern int luab_sockaddr_in6_create(lua_State *);
 
 #define LUABSD_ARPA_INET_LIB_ID    1595780686
 #define LUABSD_ARPA_INET_LIB_KEY   "inet"
@@ -866,12 +866,12 @@ static luab_table_t luab_arpa_inet_vec[] = {
     LUABSD_FUNC("inet_nsap_ntoa",   luab_inet_nsap_ntoa),
 #endif
 #endif /* __BSD_VISIBLE */
-    LUABSD_FUNC("StructInAddr", luab_StructInAddr),
-    LUABSD_FUNC("StructIn6Addr", luab_StructIn6Addr),
+    LUABSD_FUNC("in_addr_create", luab_in_addr_create),
+    LUABSD_FUNC("in6_addr_create", luab_in6_addr_create),
 
     /* XXX wrong, because maps to <netinet/in.h> */
-    LUABSD_FUNC("StructSockAddrIn", luab_StructSockAddrIn),
-    LUABSD_FUNC("StructSockAddrIn6", luab_StructSockAddrIn6),
+    LUABSD_FUNC("sockaddr_in_create", luab_sockaddr_in_create),
+    LUABSD_FUNC("sockaddr_in6_create", luab_sockaddr_in6_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

@@ -59,7 +59,7 @@ typedef struct luab_timezone {
 #define LUABSD_TIMEZONE_TYPE_ID    1594159943
 #define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
 
-int luab_StructTimeZone(lua_State *);
+int luab_timezone_create(lua_State *);
 
 /***
  * Set value for minutes west of Greenwich.
@@ -272,16 +272,16 @@ luab_module_t timezone_type = {
 /***
  * Ctor.
  *
- * @function StructTimeZone
+ * @function timezone_create
  *
  * @param timezone              Instance of LUA_TUSERDATE(luab_timezone_t).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage timezone [, err, msg ] = bsd.sys.time.StructTimeZone([ timezone ])
+ * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ timezone ])
  */
 int
-luab_StructTimeZone(lua_State *L)
+luab_timezone_create(lua_State *L)
 {
     struct timezone *timezone;
     int narg, status;

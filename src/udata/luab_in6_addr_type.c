@@ -66,7 +66,7 @@ typedef struct luab_in6_addr {
 #define LUABSD_IN6ADDR_TYPE_ID    1595890830
 #define LUABSD_IN6ADDR_TYPE    "IN6ADDR*"
 
-int luab_StructIn6Addr(lua_State *);
+int luab_in6_addr_create(lua_State *);
 
 /***
  * Copyin IPv6 address.
@@ -233,7 +233,7 @@ luab_module_t in6_addr_type = {
 /***
  * Ctor.
  *
- * @function StructIn6Addr
+ * @function in6_addr_create
  *
  * @param in6_addr           Instance of LUA_TUSERDATA(luab_in6_addr_t), optional.
  *
@@ -242,10 +242,10 @@ luab_module_t in6_addr_type = {
  *          (in6_addr [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage in6_addr [, err, msg ] = bsd.sys.time.StructIn6Addr([ in6_addr ])
+ * @usage in6_addr [, err, msg ] = bsd.sys.time.in6_addr_create([ in6_addr ])
  */
 int
-luab_StructIn6Addr(lua_State *L)
+luab_in6_addr_create(lua_State *L)
 {
     struct in6_addr *in6_addr;
     int narg, status;

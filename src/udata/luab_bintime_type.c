@@ -59,7 +59,7 @@ typedef struct luab_bintime {
 #define LUABSD_BINTIME_TYPE_ID    1594161740
 #define LUABSD_BINTIME_TYPE    "BINTIME*"
 
-int luab_StructBinTime(lua_State *);
+int luab_bintime_create(lua_State *);
 
 /***
  * Set value for sytem time.
@@ -274,16 +274,16 @@ luab_module_t bintime_type = {
 /***
  * Ctor.
  *
- * @function StructBinTime
+ * @function bintime_create
  *
  * @param               Optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage bt = bsd.sys.time.StructBinTime([ bt ])
+ * @usage bt = bsd.sys.time.bintime_create([ bt ])
  */
 int
-luab_StructBinTime(lua_State *L)
+luab_bintime_create(lua_State *L)
 {
     struct bintime *bintime;
     int narg, status;

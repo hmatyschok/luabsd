@@ -49,7 +49,7 @@
 #include "luabsd.h"
 
 extern luab_module_t crypt_data_type;
-extern int luab_StructCryptData(lua_State *);
+extern int luab_crypt_data_create(lua_State *);
 
 #define LUABSD_UNISTD_LIB_ID    1593623310
 #define LUABSD_UNISTD_LIB_KEY   "unistd"
@@ -4124,7 +4124,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
     LUABSD_FUNC("setloginclass",    luab_setloginclass),
-    LUABSD_FUNC("StructCryptData",  luab_StructCryptData),
+    LUABSD_FUNC("crypt_data_create",  luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
     LUABSD_FUNC(NULL, NULL)
 };

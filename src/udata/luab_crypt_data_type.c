@@ -60,7 +60,7 @@ typedef struct luab_crypt_data {
 #define LUABSD_CRYPT_DATA_TYPE_ID    1595491033
 #define LUABSD_CRYPT_DATA_TYPE    "CRYPTDATA*"
 
-int luab_StructCryptData(lua_State *);
+int luab_crypt_data_create(lua_State *);
 
 /***
  * Set param denotes initializiation.
@@ -281,17 +281,17 @@ luab_module_t crypt_data_type = {
 /***
  * Ctor.
  *
- * @function StructCryptData
+ * @function crypt_data_create
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (crypt_data [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage crypt_data [, err, msg ] = bsd.sys.time.StructCryptData([ crypt_data ])
+ * @usage crypt_data [, err, msg ] = bsd.sys.time.crypt_data_create([ crypt_data ])
  */
 int
-luab_StructCryptData(lua_State *L)
+luab_crypt_data_create(lua_State *L)
 {
     struct crypt_data *crypt_data;
     int narg, status;

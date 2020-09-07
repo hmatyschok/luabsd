@@ -59,7 +59,7 @@ typedef struct luab_linger {
 #define LUABSD_LINGER_TYPE_ID    1597012436
 #define LUABSD_LINGER_TYPE    "LINGER*"
 
-int luab_StructLinger(lua_State *);
+int luab_linger_create(lua_State *);
 
 /***
  * Set value for option on / off.
@@ -272,16 +272,16 @@ luab_module_t linger_type = {
 /***
  * Ctor.
  *
- * @function StructLinger
+ * @function linger_create
  *
  * @param               Instance of LUA_TUSERDATA(luab_linger_t), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
  *
- * @usage linger = bsd.sys.socket.StructLinger([ linger ])
+ * @usage linger = bsd.sys.socket.linger_create([ linger ])
  */
 int
-luab_StructLinger(lua_State *L)
+luab_linger_create(lua_State *L)
 {
     struct linger *linger;
     int narg, status;

@@ -42,7 +42,7 @@
 extern luab_module_t if_nameindex_type;
 extern luab_module_t sockaddr_type;
 
-extern int luab_StructIfNameIndex(lua_State *);
+extern int luab_if_nameindex_create(lua_State *);
 
 #define LUABSD_NET_IF_LIB_ID    1596485465
 #define LUABSD_NET_IF_LIB_KEY    "net"
@@ -265,7 +265,7 @@ static luab_table_t luab_net_if_vec[] = {
     LUABSD_FUNC("if_indextoname",   luab_if_indextoname),
     LUABSD_FUNC("if_nameindex", luab_if_nameindex),
     LUABSD_FUNC("if_nametoindex",   luab_if_nametoindex),
-    LUABSD_FUNC("StructIfNameIndex",    luab_StructIfNameIndex),
+    LUABSD_FUNC("if_nameindex_create",    luab_if_nameindex_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

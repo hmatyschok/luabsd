@@ -58,7 +58,7 @@ typedef struct luab_in_addr {
 #define LUABSD_INADDR_TYPE_ID    1595799233
 #define LUABSD_INADDR_TYPE    "INADDR*"
 
-int luab_StructInAddr(lua_State *);
+int luab_in_addr_create(lua_State *);
 
 /***
  * Set IPv4 address.
@@ -215,7 +215,7 @@ luab_module_t in_addr_type = {
 /***
  * Ctor.
  *
- * @function StructInAddr
+ * @function in_addr_create
  *
  * @param in_addr           Instance of LUA_TUSERDATA(luab_in_addr_t), optional.
  *
@@ -224,10 +224,10 @@ luab_module_t in_addr_type = {
  *          (in_addr [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage in_addr [, err, msg ] = bsd.sys.time.StructInAddr([ in_addr ])
+ * @usage in_addr [, err, msg ] = bsd.sys.time.in_addr_create([ in_addr ])
  */
 int
-luab_StructInAddr(lua_State *L)
+luab_in_addr_create(lua_State *L)
 {
     struct in_addr *in_addr;
     int narg, status;

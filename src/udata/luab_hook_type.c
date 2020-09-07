@@ -74,7 +74,7 @@ typedef struct luab_hook {
 #define LUABSD_HOOK_TYPE_ID    1595975665
 #define LUABSD_HOOK_TYPE   "HOOK*"
 
-int luab_CreateHook(lua_State *);
+int luab_hook_create(lua_State *);
 
 static int
 Hook_set_char(lua_State *L)
@@ -292,7 +292,7 @@ luab_module_t hook_type = {
 };
 
 int
-luab_CreateHook(lua_State *L)
+luab_hook_create(lua_State *L)
 {
     luab_type_u *hook;
     int narg, status;

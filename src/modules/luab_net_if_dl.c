@@ -41,7 +41,7 @@
 
 extern luab_module_t sockaddr_type;
 
-extern int luab_StructSockAddrDL(lua_State *);
+extern int luab_sockaddr_dl_create(lua_State *);
 
 #define LUABSD_NET_IF_DL_LIB_ID    1596382827
 #define LUABSD_NET_IF_DL_LIB_KEY    "if_dl"
@@ -143,7 +143,7 @@ luab_link_ntoa(lua_State *L)
 static luab_table_t luab_net_if_dl_vec[] = {
     LUABSD_FUNC("link_addr",    luab_link_addr),
     LUABSD_FUNC("link_ntoa",    luab_link_ntoa),
-    LUABSD_FUNC("StructSockAddrDL", luab_StructSockAddrDL),
+    LUABSD_FUNC("sockaddr_dl_create", luab_sockaddr_dl_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

@@ -34,7 +34,7 @@
 
 extern luab_module_t sockaddr_type;
 
-extern int luab_StructSockAddrUn(lua_State *);
+extern int luab_sockaddr_un_create(lua_State *);
 
 #define LUABSD_SYS_UN_LIB_ID    1597545462
 #define LUABSD_SYS_UN_LIB_KEY    "un"
@@ -52,7 +52,7 @@ static luab_table_t luab_sys_un_vec[] = {
     LUABSD_INT("LOCAL_CONNWAIT",    LOCAL_CONNWAIT),
     LUABSD_INT("LOCAL_VENDOR",  LOCAL_VENDOR),
 #endif
-    LUABSD_FUNC("StructSockAddrUn", luab_StructSockAddrUn),
+    LUABSD_FUNC("sockaddr_un_create", luab_sockaddr_un_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

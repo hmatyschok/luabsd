@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
  * All rights reserved.
@@ -22,6 +23,11 @@
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
+ */
+
+/*-
+ *  COPYRIGHT (C) 1986 Gary S. Brown.  You may use this program, or
+ *  code or tables extracted from it, as desired without restriction.
  */
 
 #include <errno.h>
@@ -101,9 +107,11 @@ luab_buf_copy_in(luab_buf_t *buf, caddr_t data, size_t len)
             buf->buf_flags |= IOV_LOCK;
 
             if ((buf->buf_data != NULL) &&
-                (len < buf->buf_len)) {
+                (len <= buf->buf_len)) {
                 (void)memmove(buf->buf_data, data, len);
-
+#if 0
+                luab_buf_crc32(buf);
+#endif
                 status = 0;
             } else {
                 errno = EINVAL;

@@ -67,7 +67,7 @@ typedef struct luab_tm {
 #define LUABSD_TM_TYPE_ID    1594168426
 #define LUABSD_TM_TYPE    "TM*"
 
-int luab_StructTM(lua_State *);
+int luab_tm_create(lua_State *);
 
 /***
  * Set value for seconds after the minute [0-60].
@@ -787,7 +787,7 @@ luab_module_t tm_type = {
 /***
  * Ctor.
  *
- * @function StructTM
+ * @function tm_create
  *
  * @param tm            Instance of LUA_TUSERDATA(luab_tm_t).
  *
@@ -796,10 +796,10 @@ luab_module_t tm_type = {
  *          (tm [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage tm [, err, msg ] = bsd.sys.time.StructTM([ tm ])
+ * @usage tm [, err, msg ] = bsd.sys.time.tm_create([ tm ])
  */
 int
-luab_StructTM(lua_State *L)
+luab_tm_create(lua_State *L)
 {
     struct tm *tm;
     int narg, status;

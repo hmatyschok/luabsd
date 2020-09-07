@@ -37,20 +37,20 @@ A key / value pair
 
 may created by utilizing
 
-    local buf_key = bsd.sys.uio.StructIOVec(#key)
-    local buf_value = bsd.sys.uio.StructIOVec(#value)
+    local buf_key = bsd.sys.uio.iovec_create(#key)
+    local buf_value = bsd.sys.uio.iovec_create(#value)
 
     buf_key:copy_in(key)
     buf_value:copy_in(value)
 
 buffer maps to
 
-    local dbt_key = bsd.db.StructDBT(buf_key)
-    local dbt_value = bsd.db.StructDBT(buf_value)
+    local dbt_key = bsd.db.dbt_create(buf_key)
+    local dbt_value = bsd.db.dbt_create(buf_value)
 
 a set of data base thang
 
-    local dbt_result = bsd.db.StructDBT()
+    local dbt_result = bsd.db.dbt_create()
 
 those implements proxy pattern for operations on db(3):
 
@@ -67,7 +67,7 @@ Therefore, a callout may implemented as follows:
     
         ret, err, msg = db:get(dbt_key, dbt_result, 0)
 
-        buf_result = bsd.sys.uio.StructIOVec(dbt_result:get_size())
+        buf_result = bsd.sys.uio.iovec_create(dbt_result:get_size())
         dbt_result:get_data(buf_result)
 
         print("event:", buf_result:copy_out())
@@ -79,8 +79,8 @@ by utilizing setitimer(2) API:
 
     local timer = bsd.sys.time.ITIMER_REAL
     
-    local tv = bsd.sys.time.StructTimeSpec()
-    local it_callout = bsd.sys.time.StructItimerVal()
+    local tv = bsd.sys.time.timespec_create()
+    local it_callout = bsd.sys.time.itimerval_create()
 
     tv:set_tv_sec(3)
 
@@ -90,7 +90,7 @@ by utilizing setitimer(2) API:
 
 where
 
-    local it_probe = bsd.sys.time.StructItimerVal()
+    local it_probe = bsd.sys.time.itimerval_create()
 
 inspects during
 
@@ -124,7 +124,7 @@ Therefore, its properties are accessible through get / set routines:
 
 But on the other hand, data (e. g. maps to stat{}, see sys/stat.h)
 
-    local sb = bsd.sys.stat.StructStat()
+    local sb = bsd.sys.stat.stat_create()
     local fd = db:fd()
 
     ret, err, msg = bsd.sys.stat.fstat(fd, sb)
