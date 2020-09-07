@@ -107,7 +107,6 @@ static int
 IOVec_clone(lua_State *L)
 {
     luab_iovec_t *self;
-    luab_iovec_param_t iop;
     int status;
 
     (void)luab_checkmaxargs(L, 1);
@@ -117,27 +116,15 @@ IOVec_clone(lua_State *L)
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
 
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
+        status = luab_pushliovec(L, self->iov.iov_base,
+            self->iov.iov_len, self->iov_max_len);
 
-        if (((iop.iop_data.buf_data = self->iov.iov_base) != NULL) &&
-            ((iop.iop_data.buf_len = self->iov.iov_len) > 0) &&
-            ((iop.iop_buf.buf_len = self->iov_max_len) > 0) &&
-            (self->iov_flags & IOV_BUFF)) {
-
-            if ((*iovec_type.ctor)(L, &iop) != NULL)
-                return (1);
-
-            status = -1;
-        } else {
-            errno = ENXIO;
-            status = -1;
-        }
         self->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
-        status = -1;
+        status = luab_pushnil(L);
     }
-    return (luab_pusherr(L, status));
+    return (status);
 }
 
 static int
