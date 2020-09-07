@@ -568,7 +568,7 @@ luab_uuid(lua_State *L)
             free(buf);
         } else {
             errno = ENOMEM;
-            status = luab_pusherr(L, status);
+            status = luab_pushnil(L);
         }
     }
     return (status);
