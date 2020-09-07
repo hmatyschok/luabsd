@@ -74,7 +74,7 @@ int luab_itimerval_create(lua_State *);
  * @usage itimerval:set_it_interval(timespec)
  */
 static int
-ItimerVal_set_it_interval(lua_State *L)
+ITIMERVAL_set_it_interval(lua_State *L)
 {
     struct itimerval *it;
     struct timespec *tv;
@@ -99,7 +99,7 @@ ItimerVal_set_it_interval(lua_State *L)
  * @usage timespec [, err, msg ] = itimerval:get_it_interval()
  */
 static int
-ItimerVal_get_it_interval(lua_State *L)
+ITIMERVAL_get_it_interval(lua_State *L)
 {
     struct itimerval *it;
     int status;
@@ -127,7 +127,7 @@ ItimerVal_get_it_interval(lua_State *L)
  * @usage itimerval:set_it_value(timespec)
  */
 static int
-ItimerVal_set_it_value(lua_State *L)
+ITIMERVAL_set_it_value(lua_State *L)
 {
     struct itimerval *it;
     struct timespec *tv;
@@ -152,7 +152,7 @@ ItimerVal_set_it_value(lua_State *L)
  * @usage timespec [, err, msg ] = itimerval:get_it_value()
  */
 static int
-ItimerVal_get_it_value(lua_State *L)
+ITIMERVAL_get_it_value(lua_State *L)
 {
     struct itimerval *it;
     int status;
@@ -179,7 +179,7 @@ ItimerVal_get_it_value(lua_State *L)
  * @usage t = itimerval:get()
  */
 static int
-ItimerVal_get(lua_State *L)
+ITIMERVAL_get(lua_State *L)
 {
     struct itimerval *it;
 
@@ -205,32 +205,32 @@ ItimerVal_get(lua_State *L)
  * @usage iovec [, err, msg ] = itimerval:dump()
  */
 static int
-ItimerVal_dump(lua_State *L)
+ITIMERVAL_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &itimerval_type, sizeof(struct itimerval)));
 }
 
 static int
-ItimerVal_gc(lua_State *L)
+ITIMERVAL_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &itimerval_type));
 }
 
 static int
-ItimerVal_tostring(lua_State *L)
+ITIMERVAL_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &itimerval_type));
 }
 
 static luab_table_t itimerval_methods[] = {
-    LUABSD_FUNC("set_it_interval",  ItimerVal_set_it_interval),
-    LUABSD_FUNC("set_it_value", ItimerVal_set_it_value),
-    LUABSD_FUNC("get",  ItimerVal_get),
-    LUABSD_FUNC("get_it_interval",  ItimerVal_get_it_interval),
-    LUABSD_FUNC("get_it_value", ItimerVal_get_it_value),
-    LUABSD_FUNC("dump", ItimerVal_dump),
-    LUABSD_FUNC("__gc", ItimerVal_gc),
-    LUABSD_FUNC("__tostring",   ItimerVal_tostring),
+    LUABSD_FUNC("set_it_interval",  ITIMERVAL_set_it_interval),
+    LUABSD_FUNC("set_it_value", ITIMERVAL_set_it_value),
+    LUABSD_FUNC("get",  ITIMERVAL_get),
+    LUABSD_FUNC("get_it_interval",  ITIMERVAL_get_it_interval),
+    LUABSD_FUNC("get_it_value", ITIMERVAL_get_it_value),
+    LUABSD_FUNC("dump", ITIMERVAL_dump),
+    LUABSD_FUNC("__gc", ITIMERVAL_gc),
+    LUABSD_FUNC("__tostring",   ITIMERVAL_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

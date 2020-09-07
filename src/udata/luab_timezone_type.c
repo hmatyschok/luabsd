@@ -76,7 +76,7 @@ int luab_timezone_create(lua_State *);
  * @usage data [, err, msg ] = timezone:get_tz_minuteswest(data)
  */
 static int
-TimeZone_set_tz_minuteswest(lua_State *L)
+TIMEZONE_set_tz_minuteswest(lua_State *L)
 {
     struct timezone *tz;
     int data;
@@ -104,7 +104,7 @@ TimeZone_set_tz_minuteswest(lua_State *L)
  * @usage data [, err, msg ] = timezone:get_tz_minuteswest()
  */
 static int
-TimeZone_get_tz_minuteswest(lua_State *L)
+TIMEZONE_get_tz_minuteswest(lua_State *L)
 {
     struct timezone *tz;
     int data;
@@ -132,7 +132,7 @@ TimeZone_get_tz_minuteswest(lua_State *L)
  * @usage data [, err, msg ] = timezone:set_tz_dsttime(data)
  */
 static int
-TimeZone_set_tz_dsttime(lua_State *L)
+TIMEZONE_set_tz_dsttime(lua_State *L)
 {
     struct timezone *tz;
     int data;
@@ -160,7 +160,7 @@ TimeZone_set_tz_dsttime(lua_State *L)
  * @usage data [, err, msg ] = timezone:get_tz_dsttime()
  */
 static int
-TimeZone_get_tz_dsttime(lua_State *L)
+TIMEZONE_get_tz_dsttime(lua_State *L)
 {
     struct timezone *tz;
     int data;
@@ -183,7 +183,7 @@ TimeZone_get_tz_dsttime(lua_State *L)
  * @usage t = timezone:get()
  */
 static int
-TimeZone_get(lua_State *L)
+TIMEZONE_get(lua_State *L)
 {
     struct timezone *tz;
 
@@ -209,32 +209,32 @@ TimeZone_get(lua_State *L)
  * @usage iovec [, err, msg ] = timezone:dump()
  */
 static int
-TimeZone_dump(lua_State *L)
+TIMEZONE_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &timezone_type, sizeof(struct timezone)));
 }
 
 static int
-TimeZone_gc(lua_State *L)
+TIMEZONE_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &timezone_type));
 }
 
 static int
-TimeZone_tostring(lua_State *L)
+TIMEZONE_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &timezone_type));
 }
 
 static luab_table_t timezone_methods[] = {
-    LUABSD_FUNC("set_tz_minuteswest",   TimeZone_set_tz_minuteswest),
-    LUABSD_FUNC("set_tz_dsttime",   TimeZone_set_tz_dsttime),
-    LUABSD_FUNC("get",  TimeZone_get),
-    LUABSD_FUNC("get_tz_minuteswest",   TimeZone_get_tz_minuteswest),
-    LUABSD_FUNC("get_tz_dsttime",   TimeZone_get_tz_dsttime),
-    LUABSD_FUNC("dump", TimeZone_dump),
-    LUABSD_FUNC("__gc", TimeZone_gc),
-    LUABSD_FUNC("__tostring",   TimeZone_tostring),
+    LUABSD_FUNC("set_tz_minuteswest",   TIMEZONE_set_tz_minuteswest),
+    LUABSD_FUNC("set_tz_dsttime",   TIMEZONE_set_tz_dsttime),
+    LUABSD_FUNC("get",  TIMEZONE_get),
+    LUABSD_FUNC("get_tz_minuteswest",   TIMEZONE_get_tz_minuteswest),
+    LUABSD_FUNC("get_tz_dsttime",   TIMEZONE_get_tz_dsttime),
+    LUABSD_FUNC("dump", TIMEZONE_dump),
+    LUABSD_FUNC("__gc", TIMEZONE_gc),
+    LUABSD_FUNC("__tostring",   TIMEZONE_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

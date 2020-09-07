@@ -76,7 +76,7 @@ int luab_bintime_create(lua_State *);
  * @usage data [, err, msg ] = bintime:set_sec(data)
  */
 static int
-BinTime_set_sec(lua_State *L)
+BINTIME_set_sec(lua_State *L)
 {
     struct bintime *bt;
     time_t data;
@@ -104,7 +104,7 @@ BinTime_set_sec(lua_State *L)
  * @usage data [, err, msg ] = bintime:get_sec()
  */
 static int
-BinTime_get_sec(lua_State *L)
+BINTIME_get_sec(lua_State *L)
 {
     struct bintime *bt;
     time_t data;
@@ -132,7 +132,7 @@ BinTime_get_sec(lua_State *L)
  * @usage data [, err, msg ] = bintime:set_frac(data)
  */
 static int
-BinTime_set_frac(lua_State *L)
+BINTIME_set_frac(lua_State *L)
 {
     struct bintime *bt;
     uint64_t data;
@@ -160,7 +160,7 @@ BinTime_set_frac(lua_State *L)
  * @usage data [, err, msg ] = bintime:get_frac()
  */
 static int
-BinTime_get_frac(lua_State *L)
+BINTIME_get_frac(lua_State *L)
 {
     struct bintime *bt;
     uint64_t data;
@@ -183,7 +183,7 @@ BinTime_get_frac(lua_State *L)
  * @usage t = bintime:get()
  */
 static int
-BinTime_get(lua_State *L)
+BINTIME_get(lua_State *L)
 {
     struct bintime *bt;
 
@@ -211,32 +211,32 @@ BinTime_get(lua_State *L)
  * @usage iovec [, err, msg ] = bintime:dump()
  */
 static int
-BinTime_dump(lua_State *L)
+BINTIME_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &bintime_type, sizeof(struct bintime)));
 }
 
 static int
-BinTime_gc(lua_State *L)
+BINTIME_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &bintime_type));
 }
 
 static int
-BinTime_tostring(lua_State *L)
+BINTIME_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &bintime_type));
 }
 
 static luab_table_t bintime_methods[] = {
-    LUABSD_FUNC("set_sec",  BinTime_set_sec),
-    LUABSD_FUNC("set_frac", BinTime_set_frac),
-    LUABSD_FUNC("get",  BinTime_get),
-    LUABSD_FUNC("get_sec",  BinTime_get_sec),
-    LUABSD_FUNC("get_frac", BinTime_get_frac),
-    LUABSD_FUNC("dump", BinTime_dump),
-    LUABSD_FUNC("__gc", BinTime_gc),
-    LUABSD_FUNC("__tostring",   BinTime_tostring),
+    LUABSD_FUNC("set_sec",  BINTIME_set_sec),
+    LUABSD_FUNC("set_frac", BINTIME_set_frac),
+    LUABSD_FUNC("get",  BINTIME_get),
+    LUABSD_FUNC("get_sec",  BINTIME_get_sec),
+    LUABSD_FUNC("get_frac", BINTIME_get_frac),
+    LUABSD_FUNC("dump", BINTIME_dump),
+    LUABSD_FUNC("__gc", BINTIME_gc),
+    LUABSD_FUNC("__tostring",   BINTIME_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

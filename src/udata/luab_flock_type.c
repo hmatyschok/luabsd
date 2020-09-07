@@ -66,7 +66,7 @@ int luab_flock_create(lua_State *);
 
 /* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
 static int
-Flock_set_l_start(lua_State *L)
+FLOCK_set_l_start(lua_State *L)
 {
     struct flock *l;
     off_t data;
@@ -82,7 +82,7 @@ Flock_set_l_start(lua_State *L)
 }
 
 static int
-Flock_get_l_start(lua_State *L)
+FLOCK_get_l_start(lua_State *L)
 {
     struct flock *l;
     off_t data;
@@ -97,7 +97,7 @@ Flock_get_l_start(lua_State *L)
 
 /* len = 0 means until end of file */
 static int
-Flock_set_l_len(lua_State *L)
+FLOCK_set_l_len(lua_State *L)
 {
     struct flock *l;
     off_t data;
@@ -113,7 +113,7 @@ Flock_set_l_len(lua_State *L)
 }
 
 static int
-Flock_get_l_len(lua_State *L)
+FLOCK_get_l_len(lua_State *L)
 {
     struct flock *l;
     off_t data;
@@ -128,7 +128,7 @@ Flock_get_l_len(lua_State *L)
 
 /* lock owner */
 static int
-Flock_set_l_pid(lua_State *L)
+FLOCK_set_l_pid(lua_State *L)
 {
     struct flock *l;
     pid_t data;
@@ -144,7 +144,7 @@ Flock_set_l_pid(lua_State *L)
 }
 
 static int
-Flock_get_l_pid(lua_State *L)
+FLOCK_get_l_pid(lua_State *L)
 {
     struct flock *l;
     pid_t data;
@@ -159,7 +159,7 @@ Flock_get_l_pid(lua_State *L)
 
 /* lock type: read/write, etc. */
 static int
-Flock_set_l_type(lua_State *L)
+FLOCK_set_l_type(lua_State *L)
 {
     struct flock *l;
     short data;
@@ -175,7 +175,7 @@ Flock_set_l_type(lua_State *L)
 }
 
 static int
-Flock_get_l_type(lua_State *L)
+FLOCK_get_l_type(lua_State *L)
 {
     struct flock *l;
     int data;
@@ -190,7 +190,7 @@ Flock_get_l_type(lua_State *L)
 
 /* type of l_start */
 static int
-Flock_set_l_whence(lua_State *L)
+FLOCK_set_l_whence(lua_State *L)
 {
     struct flock *l;
     short data;
@@ -206,7 +206,7 @@ Flock_set_l_whence(lua_State *L)
 }
 
 static int
-Flock_get_l_whence(lua_State *L)
+FLOCK_get_l_whence(lua_State *L)
 {
     struct flock *l;
     int data;
@@ -221,7 +221,7 @@ Flock_get_l_whence(lua_State *L)
 
 /* remote system id or zero for local */
 static int
-Flock_set_l_sysid(lua_State *L)
+FLOCK_set_l_sysid(lua_State *L)
 {
     struct flock *l;
     int data;
@@ -237,7 +237,7 @@ Flock_set_l_sysid(lua_State *L)
 }
 
 static int
-Flock_get_l_sysid(lua_State *L)
+FLOCK_get_l_sysid(lua_State *L)
 {
     struct flock *l;
     int data;
@@ -254,7 +254,7 @@ Flock_get_l_sysid(lua_State *L)
  * Maps attributes on flock{} to an instance of LUA_TTABLE.
  */
 static int
-Flock_get(lua_State *L)
+FLOCK_get(lua_State *L)
 {
     struct flock *l;
 
@@ -289,40 +289,40 @@ Flock_get(lua_State *L)
  * @usage iovec [, err, msg ] = flock:dump()
  */
 static int
-Flock_dump(lua_State *L)
+FLOCK_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &flock_type, sizeof(struct flock)));
 }
 
 static int
-Flock_gc(lua_State *L)
+FLOCK_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &flock_type));
 }
 
 static int
-Flock_tostring(lua_State *L)
+FLOCK_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &flock_type));
 }
 
 static luab_table_t flock_methods[] = {
-    LUABSD_FUNC("set_l_start",  Flock_set_l_start),
-    LUABSD_FUNC("set_l_len",    Flock_set_l_len),
-    LUABSD_FUNC("set_l_pid",    Flock_set_l_pid),
-    LUABSD_FUNC("set_l_type",   Flock_set_l_type),
-    LUABSD_FUNC("set_l_whence", Flock_set_l_whence),
-    LUABSD_FUNC("set_l_sysid",  Flock_set_l_sysid),
-    LUABSD_FUNC("get",  Flock_get),
-    LUABSD_FUNC("get_l_start",  Flock_get_l_start),
-    LUABSD_FUNC("get_l_len",    Flock_get_l_len),
-    LUABSD_FUNC("get_l_pid",    Flock_get_l_pid),
-    LUABSD_FUNC("get_l_type",   Flock_get_l_type),
-    LUABSD_FUNC("get_l_whence", Flock_get_l_whence),
-    LUABSD_FUNC("get_l_sysid",  Flock_get_l_sysid),
-    LUABSD_FUNC("dump", Flock_dump),
-    LUABSD_FUNC("__gc", Flock_gc),
-    LUABSD_FUNC("__tostring",   Flock_tostring),
+    LUABSD_FUNC("set_l_start",  FLOCK_set_l_start),
+    LUABSD_FUNC("set_l_len",    FLOCK_set_l_len),
+    LUABSD_FUNC("set_l_pid",    FLOCK_set_l_pid),
+    LUABSD_FUNC("set_l_type",   FLOCK_set_l_type),
+    LUABSD_FUNC("set_l_whence", FLOCK_set_l_whence),
+    LUABSD_FUNC("set_l_sysid",  FLOCK_set_l_sysid),
+    LUABSD_FUNC("get",  FLOCK_get),
+    LUABSD_FUNC("get_l_start",  FLOCK_get_l_start),
+    LUABSD_FUNC("get_l_len",    FLOCK_get_l_len),
+    LUABSD_FUNC("get_l_pid",    FLOCK_get_l_pid),
+    LUABSD_FUNC("get_l_type",   FLOCK_get_l_type),
+    LUABSD_FUNC("get_l_whence", FLOCK_get_l_whence),
+    LUABSD_FUNC("get_l_sysid",  FLOCK_get_l_sysid),
+    LUABSD_FUNC("dump", FLOCK_dump),
+    LUABSD_FUNC("__gc", FLOCK_gc),
+    LUABSD_FUNC("__tostring",   FLOCK_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

@@ -77,7 +77,7 @@ typedef struct luab_hook {
 int luab_hook_create(lua_State *);
 
 static int
-Hook_set_char(lua_State *L)
+HOOK_set_char(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -93,7 +93,7 @@ Hook_set_char(lua_State *L)
 }
 
 static int
-Hook_get_char(lua_State *L)
+HOOK_get_char(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -108,7 +108,7 @@ Hook_get_char(lua_State *L)
 }
 
 static int
-Hook_set_short(lua_State *L)
+HOOK_set_short(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -124,7 +124,7 @@ Hook_set_short(lua_State *L)
 }
 
 static int
-Hook_get_short(lua_State *L)
+HOOK_get_short(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -140,7 +140,7 @@ Hook_get_short(lua_State *L)
 
 
 static int
-Hook_set_int(lua_State *L)
+HOOK_set_int(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -156,7 +156,7 @@ Hook_set_int(lua_State *L)
 }
 
 static int
-Hook_get_int(lua_State *L)
+HOOK_get_int(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -171,7 +171,7 @@ Hook_get_int(lua_State *L)
 }
 
 static int
-Hook_set_long(lua_State *L)
+HOOK_set_long(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -187,7 +187,7 @@ Hook_set_long(lua_State *L)
 }
 
 static int
-Hook_get_long(lua_State *L)
+HOOK_get_long(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -202,7 +202,7 @@ Hook_get_long(lua_State *L)
 }
 
 static int
-Hook_set_socklen(lua_State *L)
+HOOK_set_socklen(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -218,7 +218,7 @@ Hook_set_socklen(lua_State *L)
 }
 
 static int
-Hook_get_socklen(lua_State *L)
+HOOK_get_socklen(lua_State *L)
 {
     luab_type_u *hook;
     lua_Integer value;
@@ -233,30 +233,30 @@ Hook_get_socklen(lua_State *L)
 }
 
 static int
-Hook_gc(lua_State *L)
+HOOK_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &hook_type));
 }
 
 static int
-Hook_tostring(lua_State *L)
+HOOK_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &hook_type));
 }
 
 static luab_table_t hook_methods[] = {
-    LUABSD_FUNC("set_char", Hook_set_char),
-    LUABSD_FUNC("set_int",  Hook_set_int),
-    LUABSD_FUNC("set_long", Hook_set_long),
-    LUABSD_FUNC("set_short",    Hook_set_short),
-    LUABSD_FUNC("set_socklen",  Hook_set_socklen),
-    LUABSD_FUNC("get_char", Hook_get_char),
-    LUABSD_FUNC("get_int",  Hook_get_int),
-    LUABSD_FUNC("get_long", Hook_get_long),
-    LUABSD_FUNC("get_short",    Hook_get_short),
-    LUABSD_FUNC("get_socklen",  Hook_get_socklen),
-    LUABSD_FUNC("__gc", Hook_gc),
-    LUABSD_FUNC("__tostring",   Hook_tostring),
+    LUABSD_FUNC("set_char", HOOK_set_char),
+    LUABSD_FUNC("set_int",  HOOK_set_int),
+    LUABSD_FUNC("set_long", HOOK_set_long),
+    LUABSD_FUNC("set_short",    HOOK_set_short),
+    LUABSD_FUNC("set_socklen",  HOOK_set_socklen),
+    LUABSD_FUNC("get_char", HOOK_get_char),
+    LUABSD_FUNC("get_int",  HOOK_get_int),
+    LUABSD_FUNC("get_long", HOOK_get_long),
+    LUABSD_FUNC("get_short",    HOOK_get_short),
+    LUABSD_FUNC("get_socklen",  HOOK_get_socklen),
+    LUABSD_FUNC("__gc", HOOK_gc),
+    LUABSD_FUNC("__tostring",   HOOK_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

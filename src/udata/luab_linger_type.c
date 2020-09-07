@@ -76,7 +76,7 @@ int luab_linger_create(lua_State *);
  * @usage data [, err, msg ] = linger:set_l_onoff(data)
  */
 static int
-Linger_set_l_onoff(lua_State *L)
+LINGER_set_l_onoff(lua_State *L)
 {
     struct linger *l;
     int data;
@@ -104,7 +104,7 @@ Linger_set_l_onoff(lua_State *L)
  * @usage data [, err, msg ] = linger:get_l_onoff()
  */
 static int
-Linger_get_l_onoff(lua_State *L)
+LINGER_get_l_onoff(lua_State *L)
 {
     struct linger *l;
     int data;
@@ -132,7 +132,7 @@ Linger_get_l_onoff(lua_State *L)
  * @usage data [, err, msg ] = linger:set_l_linger(data)
  */
 static int
-Linger_set_l_linger(lua_State *L)
+LINGER_set_l_linger(lua_State *L)
 {
     struct linger *l;
     int data;
@@ -160,7 +160,7 @@ Linger_set_l_linger(lua_State *L)
  * @usage data [, err, msg ] = linger:get_l_linger()
  */
 static int
-Linger_get_l_linger(lua_State *L)
+LINGER_get_l_linger(lua_State *L)
 {
     struct linger *l;
     int data;
@@ -183,7 +183,7 @@ Linger_get_l_linger(lua_State *L)
  * @usage t = linger:get()
  */
 static int
-Linger_get(lua_State *L)
+LINGER_get(lua_State *L)
 {
     struct linger *l;
 
@@ -209,32 +209,32 @@ Linger_get(lua_State *L)
  * @usage iovec [, err, msg ] = linger:dump()
  */
 static int
-Linger_dump(lua_State *L)
+LINGER_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &linger_type, sizeof(struct linger)));
 }
 
 static int
-Linger_gc(lua_State *L)
+LINGER_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &linger_type));
 }
 
 static int
-Linger_tostring(lua_State *L)
+LINGER_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &linger_type));
 }
 
 static luab_table_t linger_methods[] = {
-    LUABSD_FUNC("set_l_onoff",  Linger_set_l_onoff),
-    LUABSD_FUNC("set_l_linger", Linger_set_l_linger),
-    LUABSD_FUNC("get",  Linger_get),
-    LUABSD_FUNC("get_l_onoff",  Linger_get_l_onoff),
-    LUABSD_FUNC("get_l_linger", Linger_get_l_linger),
-    LUABSD_FUNC("dump", Linger_dump),
-    LUABSD_FUNC("__gc", Linger_gc),
-    LUABSD_FUNC("__tostring",   Linger_tostring),
+    LUABSD_FUNC("set_l_onoff",  LINGER_set_l_onoff),
+    LUABSD_FUNC("set_l_linger", LINGER_set_l_linger),
+    LUABSD_FUNC("get",  LINGER_get),
+    LUABSD_FUNC("get_l_onoff",  LINGER_get_l_onoff),
+    LUABSD_FUNC("get_l_linger", LINGER_get_l_linger),
+    LUABSD_FUNC("dump", LINGER_dump),
+    LUABSD_FUNC("__gc", LINGER_gc),
+    LUABSD_FUNC("__tostring",   LINGER_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

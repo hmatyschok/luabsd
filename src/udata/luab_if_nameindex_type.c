@@ -75,7 +75,7 @@ int luab_if_nameindex_create(lua_State *);
  * @usage index [, err, msg ] = if_nameindex:if_index()
  */
 static int
-IfNameIndex_if_index(lua_State *L)
+IF_NAMEINDEX_if_index(lua_State *L)
 {
     struct if_nameindex *ifni;
     u_int if_index;
@@ -101,7 +101,7 @@ IfNameIndex_if_index(lua_State *L)
  * @usage name [, err, msg ]= if_nameindex:if_name()
  */
 static int
-IfNameIndex_if_name(lua_State *L)
+IF_NAMEINDEX_if_name(lua_State *L)
 {
     struct if_nameindex *ifni;
     char *if_name;
@@ -124,7 +124,7 @@ IfNameIndex_if_name(lua_State *L)
  * @usage t = if_nameindex:get()
  */
 static int
-IfNameIndex_get(lua_State *L)
+IF_NAMEINDEX_get(lua_State *L)
 {
     struct if_nameindex *ifni;
 
@@ -143,23 +143,23 @@ IfNameIndex_get(lua_State *L)
 }
 
 static int
-IfNameIndex_gc(lua_State *L)
+IF_NAMEINDEX_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &if_nameindex_type));
 }
 
 static int
-IfNameIndex_tostring(lua_State *L)
+IF_NAMEINDEX_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &if_nameindex_type));
 }
 
 static luab_table_t if_nameindex_methods[] = {
-    LUABSD_FUNC("if_index",   IfNameIndex_if_index),
-    LUABSD_FUNC("if_name",  IfNameIndex_if_name),
-    LUABSD_FUNC("get",  IfNameIndex_get),
-    LUABSD_FUNC("__gc", IfNameIndex_gc),
-    LUABSD_FUNC("__tostring",   IfNameIndex_tostring),
+    LUABSD_FUNC("if_index",   IF_NAMEINDEX_if_index),
+    LUABSD_FUNC("if_name",  IF_NAMEINDEX_if_name),
+    LUABSD_FUNC("get",  IF_NAMEINDEX_get),
+    LUABSD_FUNC("__gc", IF_NAMEINDEX_gc),
+    LUABSD_FUNC("__tostring",   IF_NAMEINDEX_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

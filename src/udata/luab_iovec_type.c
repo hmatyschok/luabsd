@@ -70,7 +70,7 @@ int luab_iovec_create(lua_State *);
  */
 
 static int
-IOVec_clear(lua_State *L)
+IOVEC_clear(lua_State *L)
 {
     luab_iovec_t *self;
     caddr_t buf;
@@ -104,7 +104,7 @@ IOVec_clear(lua_State *L)
 }
 
 static int
-IOVec_clone(lua_State *L)
+IOVEC_clone(lua_State *L)
 {
     luab_iovec_t *self;
     int status;
@@ -128,7 +128,7 @@ IOVec_clone(lua_State *L)
 }
 
 static int
-IOVec_copy_in(lua_State *L)
+IOVEC_copy_in(lua_State *L)
 {
     luab_iovec_t *self;
     const char *src;
@@ -163,7 +163,7 @@ IOVec_copy_in(lua_State *L)
 }
 
 static int
-IOVec_copy_out(lua_State *L)
+IOVEC_copy_out(lua_State *L)
 {
     luab_iovec_t *self;
     caddr_t buf;
@@ -193,7 +193,7 @@ IOVec_copy_out(lua_State *L)
 }
 
 static int
-IOVec_len(lua_State *L)
+IOVEC_len(lua_State *L)
 {
     luab_iovec_t *self;
     size_t len;
@@ -207,7 +207,7 @@ IOVec_len(lua_State *L)
 }
 
 static int
-IOVec_max_len(lua_State *L)
+IOVEC_max_len(lua_State *L)
 {
     luab_iovec_t *self;
     size_t len;
@@ -221,7 +221,7 @@ IOVec_max_len(lua_State *L)
 }
 
 static int
-IOVec_resize(lua_State *L)
+IOVEC_resize(lua_State *L)
 {
     luab_iovec_t *self;
     size_t len;
@@ -268,7 +268,7 @@ IOVec_resize(lua_State *L)
 }
 
 static int
-IOVec_gc(lua_State *L)
+IOVEC_gc(lua_State *L)
 {
     luab_iovec_t *self;
     caddr_t buf;
@@ -297,21 +297,21 @@ IOVec_gc(lua_State *L)
 }
 
 static int
-IOVec_tostring(lua_State *L)
+IOVEC_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &iovec_type));
 }
 
 static luab_table_t iovec_methods[] = {
-    LUABSD_FUNC("clear",    IOVec_clear),
-    LUABSD_FUNC("clone",    IOVec_clone),
-    LUABSD_FUNC("copy_in",  IOVec_copy_in),
-    LUABSD_FUNC("copy_out",  IOVec_copy_out),
-    LUABSD_FUNC("len",  IOVec_len),
-    LUABSD_FUNC("max_len",  IOVec_max_len),
-    LUABSD_FUNC("resize",   IOVec_resize),
-    LUABSD_FUNC("__gc", IOVec_gc),
-    LUABSD_FUNC("__tostring",   IOVec_tostring),
+    LUABSD_FUNC("clear",    IOVEC_clear),
+    LUABSD_FUNC("clone",    IOVEC_clone),
+    LUABSD_FUNC("copy_in",  IOVEC_copy_in),
+    LUABSD_FUNC("copy_out",  IOVEC_copy_out),
+    LUABSD_FUNC("len",  IOVEC_len),
+    LUABSD_FUNC("max_len",  IOVEC_max_len),
+    LUABSD_FUNC("resize",   IOVEC_resize),
+    LUABSD_FUNC("__gc", IOVEC_gc),
+    LUABSD_FUNC("__tostring",   IOVEC_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

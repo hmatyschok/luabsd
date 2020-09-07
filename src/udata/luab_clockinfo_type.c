@@ -79,7 +79,7 @@ int luab_clockinfo_create(lua_State *L);
  * @usage data [, err, msg ] = clockinfo:set_hz(data)
  */
 static int
-ClockInfo_set_hz(lua_State *L)
+CLOCKINIFO_set_hz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -107,7 +107,7 @@ ClockInfo_set_hz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_hz()
  */
 static int
-ClockInfo_get_hz(lua_State *L)
+CLOCKINIFO_get_hz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -135,7 +135,7 @@ ClockInfo_get_hz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:set_tick(data)
  */
 static int
-ClockInfo_set_tick(lua_State *L)
+CLOCKINIFO_set_tick(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -163,7 +163,7 @@ ClockInfo_set_tick(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_tick()
  */
 static int
-ClockInfo_get_tick(lua_State *L)
+CLOCKINIFO_get_tick(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -191,7 +191,7 @@ ClockInfo_get_tick(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:set_stathz(data)
  */
 static int
-ClockInfo_set_stathz(lua_State *L)
+CLOCKINIFO_set_stathz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -219,7 +219,7 @@ ClockInfo_set_stathz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_stathz()
  */
 static int
-ClockInfo_get_stathz(lua_State *L)
+CLOCKINIFO_get_stathz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -247,7 +247,7 @@ ClockInfo_get_stathz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:set_profhz(data)
  */
 static int
-ClockInfo_set_profhz(lua_State *L)
+CLOCKINIFO_set_profhz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -275,7 +275,7 @@ ClockInfo_set_profhz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_profhz()
  */
 static int
-ClockInfo_get_profhz(lua_State *L)
+CLOCKINIFO_get_profhz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -298,7 +298,7 @@ ClockInfo_get_profhz(lua_State *L)
  * @usage t = clockinfo:get()
  */
 static int
-ClockInfo_get(lua_State *L)
+CLOCKINIFO_get(lua_State *L)
 {
     struct clockinfo *ci;
 
@@ -331,36 +331,36 @@ ClockInfo_get(lua_State *L)
  * @usage iovec [, err, msg ] = clockinfo:dump()
  */
 static int
-ClockInfo_dump(lua_State *L)
+CLOCKINIFO_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &clockinfo_type, sizeof(struct clockinfo)));
 }
 
 static int
-ClockInfo_gc(lua_State *L)
+CLOCKINIFO_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &clockinfo_type));
 }
 
 static int
-ClockInfo_tostring(lua_State *L)
+CLOCKINIFO_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &clockinfo_type));
 }
 
 static luab_table_t clockinfo_methods[] = {
-    LUABSD_FUNC("set_hz",   ClockInfo_set_hz),
-    LUABSD_FUNC("set_tickc",    ClockInfo_set_tick),
-    LUABSD_FUNC("set_stathz",   ClockInfo_set_stathz),
-    LUABSD_FUNC("set_profhz",   ClockInfo_set_profhz),
-    LUABSD_FUNC("get",  ClockInfo_get),
-    LUABSD_FUNC("get_hz",  ClockInfo_get_hz),
-    LUABSD_FUNC("get_tick", ClockInfo_get_tick),
-    LUABSD_FUNC("get_stathz",   ClockInfo_get_stathz),
-    LUABSD_FUNC("get_profhz",   ClockInfo_get_profhz),
-    LUABSD_FUNC("dump", ClockInfo_dump),
-    LUABSD_FUNC("__gc", ClockInfo_gc),
-    LUABSD_FUNC("__tostring",   ClockInfo_tostring),
+    LUABSD_FUNC("set_hz",   CLOCKINIFO_set_hz),
+    LUABSD_FUNC("set_tickc",    CLOCKINIFO_set_tick),
+    LUABSD_FUNC("set_stathz",   CLOCKINIFO_set_stathz),
+    LUABSD_FUNC("set_profhz",   CLOCKINIFO_set_profhz),
+    LUABSD_FUNC("get",  CLOCKINIFO_get),
+    LUABSD_FUNC("get_hz",  CLOCKINIFO_get_hz),
+    LUABSD_FUNC("get_tick", CLOCKINIFO_get_tick),
+    LUABSD_FUNC("get_stathz",   CLOCKINIFO_get_stathz),
+    LUABSD_FUNC("get_profhz",   CLOCKINIFO_get_profhz),
+    LUABSD_FUNC("dump", CLOCKINIFO_dump),
+    LUABSD_FUNC("__gc", CLOCKINIFO_gc),
+    LUABSD_FUNC("__tostring",   CLOCKINIFO_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

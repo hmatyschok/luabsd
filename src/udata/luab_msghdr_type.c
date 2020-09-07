@@ -203,7 +203,7 @@ msghdr_populate_iovec(lua_State *L, int narg, struct msghdr *msg, int new)
  * @usage size [, err, msg ] = msghdr:msg_iovlen()
  */
 static int
-MsgHdr_msg_iovlen(lua_State *L)
+MSGHDR_msg_iovlen(lua_State *L)
 {
     struct msghdr *msg;
     int msg_iovlen;
@@ -229,7 +229,7 @@ MsgHdr_msg_iovlen(lua_State *L)
  * @usage flags [, err, msg ] = msghdr:msg_flags()
  */
 static int
-MsgHdr_msg_flags(lua_State *L)
+MSGHDR_msg_flags(lua_State *L)
 {
     struct msghdr *msg;
     int msg_flags;
@@ -255,7 +255,7 @@ MsgHdr_msg_flags(lua_State *L)
  * @usage flags [, err, msg ] = msghdr:msg_len()
  */
 static int
-MsgHdr_msg_len(lua_State *L)
+MSGHDR_msg_len(lua_State *L)
 {
     struct mmsghdr *msg;
     int msg_len;
@@ -287,7 +287,7 @@ MsgHdr_msg_len(lua_State *L)
  * @usage ret [, err, msg ] = msghdr:set_msg_name(name)
  */
 static int
-MsgHdr_set_msg_name(lua_State *L)
+MSGHDR_set_msg_name(lua_State *L)
 {
     luab_msghdr_t *self;
     struct sockaddr *sa;
@@ -330,7 +330,7 @@ MsgHdr_set_msg_name(lua_State *L)
  * @usage ret [, err, msg ] = msghdr:get_msg_name(name)
  */
 static int
-MsgHdr_get_msg_name(lua_State *L)
+MSGHDR_get_msg_name(lua_State *L)
 {
     struct msghdr *msg;
     struct sockaddr *dst;
@@ -368,7 +368,7 @@ MsgHdr_get_msg_name(lua_State *L)
  * @usage ret [, err, msg ] = msghdr:set_msg_namelen(size)
  */
 static int
-MsgHdr_set_msg_namelen(lua_State *L)
+MSGHDR_set_msg_namelen(lua_State *L)
 {
     struct msghdr *msg;
     socklen_t msg_namelen;
@@ -396,7 +396,7 @@ MsgHdr_set_msg_namelen(lua_State *L)
  * @usage size [, err, msg ] = msghdr:get_msg_namelen()
  */
 static int
-MsgHdr_get_msg_namelen(lua_State *L)
+MSGHDR_get_msg_namelen(lua_State *L)
 {
     struct msghdr *msg;
     socklen_t msg_namelen;
@@ -425,7 +425,7 @@ MsgHdr_get_msg_namelen(lua_State *L)
  * @usage ret [, err, msg ] = msghdr:set_msg_iov(t)
  */
 static int
-MsgHdr_set_msg_iov(lua_State *L)
+MSGHDR_set_msg_iov(lua_State *L)
 {
     struct msghdr *msg;
     struct iovec *iov;
@@ -489,7 +489,7 @@ MsgHdr_set_msg_iov(lua_State *L)
  * @usage ret [, err, msg ] = msghdr:get_msg_iov()
  */
 static int
-MsgHdr_get_msg_iov(lua_State *L)
+MSGHDR_get_msg_iov(lua_State *L)
 {
     struct msghdr *msg;
     int status;
@@ -519,7 +519,7 @@ MsgHdr_get_msg_iov(lua_State *L)
  * @usage t = msghdr:get()
  */
 static int
-MsgHdr_get(lua_State *L)
+MSGHDR_get(lua_State *L)
 {
     struct msghdr *msg;
 
@@ -544,7 +544,7 @@ MsgHdr_get(lua_State *L)
 }
 
 static int
-MsgHdr_gc(lua_State *L)
+MSGHDR_gc(lua_State *L)
 {
     luab_msghdr_t *self;
     luab_buf_t *buf;
@@ -563,29 +563,29 @@ MsgHdr_gc(lua_State *L)
 }
 
 static int
-MsgHdr_tostring(lua_State *L)
+MSGHDR_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &msghdr_type));
 }
 
 static luab_table_t msghdr_methods[] = {
-    LUABSD_FUNC("msg_iovlen",  MsgHdr_msg_iovlen),
-    LUABSD_FUNC("msg_flags",    MsgHdr_msg_flags),
-    LUABSD_FUNC("msg_len",  MsgHdr_msg_len),
-/*  LUABSD_FUNC("msg_controllen",   MsgHdr_msg_controllen), */
-    LUABSD_FUNC("set_msg_name", MsgHdr_set_msg_name),
-    LUABSD_FUNC("set_msg_namelen",  MsgHdr_set_msg_namelen),
-    LUABSD_FUNC("set_msg_iov",  MsgHdr_set_msg_iov),
-/*  LUABSD_FUNC("set_msg_control",  MsgHdr_set_msg_control), */
-    LUABSD_FUNC("set_msg_flags",  MsgHdr_set_msg_iov),
-    LUABSD_FUNC("get",  MsgHdr_get),
-    LUABSD_FUNC("get_msg_name", MsgHdr_get_msg_name),
-    LUABSD_FUNC("get_msg_namelen",  MsgHdr_get_msg_namelen),
-    LUABSD_FUNC("get_msg_iov",  MsgHdr_get_msg_iov),
-/*  LUABSD_FUNC("get_msg_control",  MsgHdr_get_msg_control), */
-    LUABSD_FUNC("get_msg_flags",  MsgHdr_get_msg_iov),
-    LUABSD_FUNC("__gc", MsgHdr_gc),
-    LUABSD_FUNC("__tostring",   MsgHdr_tostring),
+    LUABSD_FUNC("msg_iovlen",  MSGHDR_msg_iovlen),
+    LUABSD_FUNC("msg_flags",    MSGHDR_msg_flags),
+    LUABSD_FUNC("msg_len",  MSGHDR_msg_len),
+/*  LUABSD_FUNC("msg_controllen",   MSGHDR_msg_controllen), */
+    LUABSD_FUNC("set_msg_name", MSGHDR_set_msg_name),
+    LUABSD_FUNC("set_msg_namelen",  MSGHDR_set_msg_namelen),
+    LUABSD_FUNC("set_msg_iov",  MSGHDR_set_msg_iov),
+/*  LUABSD_FUNC("set_msg_control",  MSGHDR_set_msg_control), */
+    LUABSD_FUNC("set_msg_flags",  MSGHDR_set_msg_iov),
+    LUABSD_FUNC("get",  MSGHDR_get),
+    LUABSD_FUNC("get_msg_name", MSGHDR_get_msg_name),
+    LUABSD_FUNC("get_msg_namelen",  MSGHDR_get_msg_namelen),
+    LUABSD_FUNC("get_msg_iov",  MSGHDR_get_msg_iov),
+/*  LUABSD_FUNC("get_msg_control",  MSGHDR_get_msg_control), */
+    LUABSD_FUNC("get_msg_flags",  MSGHDR_get_msg_iov),
+    LUABSD_FUNC("__gc", MSGHDR_gc),
+    LUABSD_FUNC("__tostring",   MSGHDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

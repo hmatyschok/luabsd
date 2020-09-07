@@ -77,7 +77,7 @@ int luab_crypt_data_create(lua_State *);
  * @usage data [, err, msg ] = crypt_data:set_initialized(data)
  */
 static int
-CryptData_set_initialized(lua_State *L)
+CRYPT_DATA_set_initialized(lua_State *L)
 {
     struct crypt_data *cd;
     int data;
@@ -105,7 +105,7 @@ CryptData_set_initialized(lua_State *L)
  * @usage data [, err, msg ] = crypt_data:get_initialized()
  */
 static int
-CryptData_get_initialized(lua_State *L)
+CRYPT_DATA_get_initialized(lua_State *L)
 {
     struct crypt_data *cd;
     int data;
@@ -128,7 +128,7 @@ CryptData_get_initialized(lua_State *L)
  * @usage crypt_data:set_buf(data)
  */
 static int
-CryptData_set_buf(lua_State *L)
+CRYPT_DATA_set_buf(lua_State *L)
 {
     struct crypt_data *cd;
     const char *buf;
@@ -159,7 +159,7 @@ CryptData_set_buf(lua_State *L)
  * @usage data = crypt_data:get_buf()
  */
 static int
-CryptData_get_buf(lua_State *L)
+CRYPT_DATA_get_buf(lua_State *L)
 {
     struct crypt_data *cd;
     caddr_t buf;
@@ -184,7 +184,7 @@ CryptData_get_buf(lua_State *L)
  * @usage t = crypt_data:get()
  */
 static int
-CryptData_get(lua_State *L)
+CRYPT_DATA_get(lua_State *L)
 {
     struct crypt_data *cd;
 
@@ -215,7 +215,7 @@ CryptData_get(lua_State *L)
  * @usage iovec [, err, msg ] = crypt_data:dump()
  */
 static int
-CryptData_dump(lua_State *L)
+CRYPT_DATA_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &crypt_data_type, sizeof(struct crypt_data)));
 }
@@ -225,26 +225,26 @@ CryptData_dump(lua_State *L)
  */
 
 static int
-CryptData_gc(lua_State *L)
+CRYPT_DATA_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &crypt_data_type));
 }
 
 static int
-CryptData_tostring(lua_State *L)
+CRYPT_DATA_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &crypt_data_type));
 }
 
 static luab_table_t crypt_data_methods[] = {
-    LUABSD_FUNC("set_initialized",   CryptData_set_initialized),
-    LUABSD_FUNC("set_buf",   CryptData_set_buf),
-    LUABSD_FUNC("get",  CryptData_get),
-    LUABSD_FUNC("get_initialized",   CryptData_get_initialized),
-    LUABSD_FUNC("get_buf",   CryptData_get_buf),
-    LUABSD_FUNC("dump", CryptData_dump),
-    LUABSD_FUNC("__gc", CryptData_gc),
-    LUABSD_FUNC("__tostring",   CryptData_tostring),
+    LUABSD_FUNC("set_initialized",   CRYPT_DATA_set_initialized),
+    LUABSD_FUNC("set_buf",   CRYPT_DATA_set_buf),
+    LUABSD_FUNC("get",  CRYPT_DATA_get),
+    LUABSD_FUNC("get_initialized",   CRYPT_DATA_get_initialized),
+    LUABSD_FUNC("get_buf",   CRYPT_DATA_get_buf),
+    LUABSD_FUNC("dump", CRYPT_DATA_dump),
+    LUABSD_FUNC("__gc", CRYPT_DATA_gc),
+    LUABSD_FUNC("__tostring",   CRYPT_DATA_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 
