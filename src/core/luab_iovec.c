@@ -131,7 +131,7 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
  */
 
 int
-luab_iovec_sync(lua_State *L, luab_iovec_t *iov, int fd, size_t *n)
+luab_iovec_write(lua_State *L, luab_iovec_t *iov, int fd, size_t *n)
 {
     caddr_t buf;
     size_t nbytes;
