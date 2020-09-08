@@ -1097,13 +1097,13 @@ static int
 luab_read(lua_State *L)
 {
     int fd;
-    luab_iovec_t *iov;
+    luab_iovec_t *buf;
     size_t nbytes;
 
     (void)luab_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    iov = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -1111,7 +1111,7 @@ luab_read(lua_State *L)
     INT_MAX
 #endif
     );
-    return (luab_iovec_read(L, fd, iov, &nbytes));
+    return (luab_iovec_read(L, fd, buf, &nbytes));
 }
 
 /***
@@ -1492,13 +1492,13 @@ static int
 luab_write(lua_State *L)
 {
     int fd;
-    luab_iovec_t *iov;
+    luab_iovec_t *buf;
     size_t nbytes;
 
     (void)luab_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    iov = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -1506,7 +1506,7 @@ luab_write(lua_State *L)
     INT_MAX
 #endif
     );
-    return (luab_iovec_write(L, fd, iov, &nbytes));
+    return (luab_iovec_write(L, fd, buf, &nbytes));
 }
 
 /***

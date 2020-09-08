@@ -73,7 +73,7 @@ static int
 IOVEC_clear(lua_State *L)
 {
     luab_iovec_t *self;
-    caddr_t buf;
+    caddr_t dp;
     size_t len;
     int status;
 
@@ -84,10 +84,10 @@ IOVEC_clear(lua_State *L)
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
 
-        if (((buf = self->iov.iov_base) != NULL) &&
+        if (((dp = self->iov.iov_base) != NULL) &&
             ((len = self->iov_max_len) > 0) &&
             (self->iov_flags & IOV_BUFF)) {
-            (void)memset_s(buf, len, 0, len);
+            (void)memset_s(dp, len, 0, len);
             len = self->iov.iov_len;
             self->iov.iov_len = 0;
             status = len;
@@ -166,7 +166,7 @@ static int
 IOVEC_copy_out(lua_State *L)
 {
     luab_iovec_t *self;
-    caddr_t buf;
+    caddr_t dp;
     size_t len;
     int status;
 
@@ -177,9 +177,9 @@ IOVEC_copy_out(lua_State *L)
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
 
-        if (((buf = self->iov.iov_base) != NULL) &&
+        if (((dp = self->iov.iov_base) != NULL) &&
             ((len = self->iov.iov_len) > 0))
-            status = luab_pushldata(L, buf, len);
+            status = luab_pushldata(L, dp, len);
         else {
             errno = ENXIO;
             status = luab_pushnil(L);
@@ -271,7 +271,7 @@ static int
 IOVEC_gc(lua_State *L)
 {
     luab_iovec_t *self;
-    caddr_t buf;
+    caddr_t dp;
     size_t len;
 
     (void)luab_checkmaxargs(L, 1);
@@ -280,12 +280,12 @@ IOVEC_gc(lua_State *L)
 
     if ((self->iov.iov_base != NULL) &&
         (self->iov_flags & IOV_BUFF)) {
-        buf = self->iov.iov_base;
+        dp = self->iov.iov_base;
         len = self->iov_max_len;
 
-        (void)memset_s(buf, len, 0, len);
+        (void)memset_s(dp, len, 0, len);
 
-        free(buf);
+        free(dp);
 
         self->iov.iov_base = NULL;
     }

@@ -41,28 +41,28 @@
 const char *
 luab_iovec_islxarg(lua_State *L, int narg, size_t len)
 {
-    luab_iovec_t *iov;
-    const char *buf;
+    luab_iovec_t *buf;
+    const char *dp;
 
-    if (((iov = luab_isiovec(L, narg)) != NULL) &&
-        (iov->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
-        (len <= iov->iov_max_len))
-        buf = iov->iov.iov_base;
+    if (((buf = luab_isiovec(L, narg)) != NULL) &&
+        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
+        (len <= buf->iov_max_len))
+        dp = buf->iov.iov_base;
     else
-        buf = luab_islstring(L, narg, len);
+        dp = luab_islstring(L, narg, len);
 
-    return (buf);
+    return (dp);
 }
 
 const char *
 luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
 {
-    const char *buf;
+    const char *dp;
 
-    if ((buf = luab_iovec_islxarg(L, narg, len)) == NULL)
+    if ((dp = luab_iovec_islxarg(L, narg, len)) == NULL)
         luaL_argerror(L, narg, "Invalid argument");
 
-    return (buf);
+    return (dp);
 }
 
 /*
@@ -131,33 +131,33 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
  */
 
 int
-luab_iovec_read(lua_State *L, int fd, luab_iovec_t *iov, size_t *n)
+luab_iovec_read(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
 {
-    caddr_t buf;
+    caddr_t dp;
     size_t nbytes;
     ssize_t count;
 
-    if ((iov != NULL) &&
-        (iov->iov_flags & IOV_BUFF) &&
-        ((buf = iov->iov.iov_base) != NULL)) {
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
 
-        if ((iov->iov_flags & IOV_LOCK) == 0) {
-            iov->iov_flags |= IOV_LOCK;
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
 
             if (n == NULL)
-                nbytes = iov->iov_max_len;
+                nbytes = buf->iov_max_len;
             else
                 nbytes = *n;
 
-            if (nbytes <= iov->iov_max_len) {
+            if (nbytes <= buf->iov_max_len) {
 
-                if ((count = read(fd, buf, nbytes)) > 0)
-                    iov->iov.iov_len = count;
+                if ((count = read(fd, dp, nbytes)) > 0)
+                    buf->iov.iov_len = count;
             } else {
                 errno = ENXIO;
                 count = -1;
             }
-            iov->iov_flags &= ~IOV_LOCK;
+            buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
             count = -1;
@@ -170,31 +170,31 @@ luab_iovec_read(lua_State *L, int fd, luab_iovec_t *iov, size_t *n)
 }
 
 int
-luab_iovec_write(lua_State *L, int fd, luab_iovec_t *iov, size_t *n)
+luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
 {
-    caddr_t buf;
+    caddr_t dp;
     size_t nbytes;
     ssize_t count;
 
-    if ((iov != NULL) &&
-        (iov->iov_flags & IOV_BUFF) &&
-        ((buf = iov->iov.iov_base) != NULL)) {
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
 
-        if ((iov->iov_flags & IOV_LOCK) == 0) {
-            iov->iov_flags |= IOV_LOCK;
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
 
             if (n == NULL)
-                nbytes = iov->iov.iov_len;
+                nbytes = buf->iov.iov_len;
             else
                 nbytes = *n;
 
-            if (nbytes <= iov->iov.iov_len)
-                count = write(fd, buf, nbytes);
+            if (nbytes <= buf->iov.iov_len)
+                count = write(fd, dp, nbytes);
             else {
                 errno = ENXIO;
                 count = -1;
             }
-            iov->iov_flags &= ~IOV_LOCK;
+            buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
             count = -1;
