@@ -8,7 +8,7 @@ e. g. *BSD, GNU/Linux, Minix, QNX, etc.
 
     local bsd = require("bsd")
 
-As an example, a database may created,
+As an example, a database may created as described in db(3) [1]:
 
     local _fname = "example.db"
     local _flags = bit32.bor(
@@ -26,11 +26,9 @@ As an example, a database may created,
     )
     local _type = bsd.db.DB_BTREE
 
-as described in db(3) [1]:
-
     local db = bsd.db.dbopen(_fname, _flags, _mode, _type)
 
-A key / value pair
+A key/value pair
 
     local key = bsd.core.uuid()
     local value = "Hello world!"
@@ -49,7 +47,7 @@ buffer maps to a set of data base thang
     local dbt_value = bsd.db.dbt_create(buf_value)
     local dbt_result = bsd.db.dbt_create()
 
-those implements proxy pattern for operations as described in db(3):
+those implements an interface for operations as described in db(3):
 
     _flags = bsd.db.R_NOOVERWRITE
 
@@ -69,12 +67,12 @@ Therefore, a callout may implemented e. g.
 
         local k, v = buf_key:copy_out(), buf_result:copy_out()
 
-        print("event:", "(k,v) =", "(" .. k .. "," .. v .. ")")
+        print("event:", "(k,v) =", "(" .. k .. "," .. v .. ")\n")
 
         expired = true;
     end
 
-by utilizing setitimer(2) [2] or interval timer:
+by utilizing setitimer(2) or interval timer [2]:
 
     local tv = bsd.sys.time.timespec_create()
     tv:set_tv_sec(3)
@@ -98,7 +96,7 @@ by utilizing setitimer(2) [2] or interval timer:
         end
     end
 
-It is obvious, Cstructures are encapsulated (or embedded) by LUA_TUSERDATA:
+It is obvious, C structures are encapsulated (or embedded) by LUA_TUSERDATA:
 
     local mt = getmetatable(it_probe);
 
@@ -109,7 +107,7 @@ It is obvious, Cstructures are encapsulated (or embedded) by LUA_TUSERDATA:
     end
     print("")
 
-Commonly, those are accessible through get/set routines:
+Those are accessible through get/set routines:
 
     tv = it_probe:get_it_value()
 
@@ -134,6 +132,8 @@ As mentioned before, C Structures are accessible
             print_table(t, pfx)
         end
     end
+
+by
 
     function print_table(t, pfx)
 
