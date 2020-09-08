@@ -291,21 +291,30 @@ luab_module_t hook_type = {
     .sz = sizeof(luab_hook_t),
 };
 
+/***
+ * Generator function.
+ *
+ * @function hook_create
+ *
+ * @param data          (LUA_T{NIL,USERDATA(hook)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (hook [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage hook [, err, msg ] = bsd.core.hook_create([ data ])
+ */
 int
 luab_hook_create(lua_State *L)
 {
-    luab_type_u *hook;
-    int narg, status;
+    luab_type_u *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        hook = NULL;
+        data = NULL;
     else
-        hook = hook_udata(L, narg);
+        data = hook_udata(L, narg);
 
-    if (hook_create(L, hook) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &hook_type, data));
 }

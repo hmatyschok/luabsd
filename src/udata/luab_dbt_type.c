@@ -250,21 +250,31 @@ luab_module_t dbt_type = {
  * XXX Well, argv from ctor should accept more args,
  * XXX etc., but not yet at this developement stage.
  */
+
+/***
+ * Generator function.
+ *
+ * @function dbt_create
+ *
+ * @param data          (LUA_T{NIL,USERDATA(iovec)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (dbt [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage dbt [, err, msg ] = bsd.db.dbt_create([ data ])
+ */
 int
 luab_dbt_create(lua_State *L)
 {
-    luab_iovec_t *buf;
-    int narg, status;
+    luab_iovec_t *data;
+    int narg;
 
-    if ((narg = luab_checkmaxargs(L, 1)) == 1)
-        buf = luab_udata(L, narg, iovec_type, luab_iovec_t *);
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
     else
-        buf = NULL;
+        data = luab_udata(L, narg, iovec_type, luab_iovec_t *);
 
-    if (dbt_create(L, buf) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &dbt_type, data));
 }

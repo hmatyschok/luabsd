@@ -357,21 +357,30 @@ luab_module_t flock_type = {
     .sz = sizeof(luab_flock_t),
 };
 
+/***
+ * Generator function.
+ *
+ * @function flock_create
+ *
+ * @param data          (LUA_T{NIL,USERDATA(flock)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (flock [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage flock [, err, msg ] = bsd.sys.fcntl.flock_create([ data ])
+ */
 int
 luab_flock_create(lua_State *L)
 {
-    struct flock *flock;
-    int narg, status;
+    struct flock *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        flock = NULL;
+        data = NULL;
     else
-        flock = flock_udata(L, narg);
+        data = flock_udata(L, narg);
 
-    if (flock_create(L, flock) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &flock_type, data));
 }

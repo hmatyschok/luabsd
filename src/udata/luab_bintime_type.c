@@ -272,31 +272,29 @@ luab_module_t bintime_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function bintime_create
  *
- * @param               Optional.
+ * @param data                      (LUA_T{NIL,USERDATA(bintime)}), optional.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage bt = bsd.sys.time.bintime_create([ bt ])
+ *          (bintime [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ data ])
  */
 int
 luab_bintime_create(lua_State *L)
 {
-    struct bintime *bintime;
-    int narg, status;
+    struct bintime *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        bintime = NULL;
+        data = NULL;
     else
-        bintime = bintime_udata(L, narg);
+        data = bintime_udata(L, narg);
 
-    if (bintime_create(L, bintime) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &bintime_type, data));
 }

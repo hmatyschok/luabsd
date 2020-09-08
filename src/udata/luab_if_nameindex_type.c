@@ -201,31 +201,29 @@ luab_module_t if_nameindex_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function if_nameindex_create
  *
- * @param if_nameindex                    Instance of LUA_TUSERDATA(luab_if_nameindex_t).
+ * @param data          (LUA_T{NIL,USERDATA(if_nameindex)}), optional.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage if_nameindex [, err, msg ] = bsd.sys.time.if_nameindex_create([ if_nameindex ])
+ *          (if_nameindex [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage if_nameindex [, err, msg ] = bsd.net.if_nameindex_create([ data ])
  */
 int
 luab_if_nameindex_create(lua_State *L)
 {
-    struct if_nameindex *ifni;
-    int narg, status;
+    struct if_nameindex *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        ifni = NULL;
+        data = NULL;
     else
-        ifni = if_nameindex_udata(L, narg);
+        data = if_nameindex_udata(L, narg);
 
-    if (if_nameindex_create(L, ifni) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &if_nameindex_type, data));
 }

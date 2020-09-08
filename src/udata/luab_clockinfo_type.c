@@ -396,34 +396,29 @@ luab_module_t clockinfo_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function clockinfo_create
  *
- * @param clockinfo                 Instance of LUA_TUSERDATA(luab_clockinfo_t).
+ * @param data          (LUA_T{NIL,USERDATA(clockinfo)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (clockinfo [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ clockinfo ])
+ * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ data ])
  */
 int
 luab_clockinfo_create(lua_State *L)
 {
-    struct clockinfo *clockinfo;
-    int narg, status;
+    struct clockinfo *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        clockinfo = NULL;
+        data = NULL;
     else
-        clockinfo = clockinfo_udata(L, narg);
+        data = clockinfo_udata(L, narg);
 
-    if (clockinfo_create(L, clockinfo) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &clockinfo_type, data));
 }

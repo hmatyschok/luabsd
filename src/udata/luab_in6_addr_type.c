@@ -231,34 +231,29 @@ luab_module_t in6_addr_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function in6_addr_create
  *
- * @param in6_addr           Instance of LUA_TUSERDATA(luab_in6_addr_t), optional.
+ * @param data          (LUA_T{NIL,USERDATA(in6_addr)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (in6_addr [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage in6_addr [, err, msg ] = bsd.sys.time.in6_addr_create([ in6_addr ])
+ * @usage in6_addr [, err, msg ] = bsd.arpa.inet.in6_addr_create([ data ])
  */
 int
 luab_in6_addr_create(lua_State *L)
 {
-    struct in6_addr *in6_addr;
-    int narg, status;
+    struct in6_addr *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        in6_addr = NULL;
+        data = NULL;
     else
-        in6_addr = in6_addr_udata(L, narg);
+        data = in6_addr_udata(L, narg);
 
-    if (in6_addr_create(L, in6_addr) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &in6_addr_type, data));
 }
