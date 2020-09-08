@@ -2,13 +2,13 @@
 libluabsd - toolbox for implementing (web-based) software for (embedded) systems
 ================================================================================
 
-This library provides an easy customizable interface as extension of the Lua 
+This library provides an easy customizable interface as extension of the Lua
 (5.2.4) language against APIs those are common on Unix-like Operating Systems,
 e. g. *BSD, GNU/Linux, Minix, QNX, etc.
 
     local bsd = require("bsd")
 
-As an example, a database may creat,
+As an example, a database may created,
 
     local _fname = "example.db"
     local _flags = bit32.bor(
@@ -26,11 +26,11 @@ As an example, a database may creat,
     )
     local _type = bsd.db.DB_BTREE
 
-as described in db(3):
+as described in db(3) [1]:
 
-    db = bsd.db.dbopen(_fname, _flags, _mode, _type)
+    local db = bsd.db.dbopen(_fname, _flags, _mode, _type)
 
-A key / value pair 
+A key / value pair
 
     local key = bsd.core.uuid()
     local value = "Hello world!"
@@ -43,56 +43,49 @@ may created by utilizing
     buf_key:copy_in(key)
     buf_value:copy_in(value)
 
-buffer maps to
+buffer maps to a set of data base thang
 
     local dbt_key = bsd.db.dbt_create(buf_key)
     local dbt_value = bsd.db.dbt_create(buf_value)
-
-a set of data base thang
-
     local dbt_result = bsd.db.dbt_create()
 
-those implements proxy pattern for operations on db(3):
+those implements proxy pattern for operations as described in db(3):
 
     _flags = bsd.db.R_NOOVERWRITE
 
-    ret, err, msg = db:put(dbt_key, dbt_value, _flags)
+    local ret, err, msg = db:put(dbt_key, dbt_value, _flags)
 
-Therefore, a callout may implemented as follows:
+Therefore, a callout may implemented e. g.
 
-    fetch = true
-    expired = false
+    local fetch = true
+    local expired = false
 
     local function event()
-    
+
         ret, err, msg = db:get(dbt_key, dbt_result, 0)
 
         buf_result = bsd.sys.uio.iovec_create(dbt_result:get_size())
         dbt_result:get_data(buf_result)
 
-        print("event:", buf_result:copy_out())
+        local k, v = buf_key:copy_out(), buf_result:copy_out()
+
+        print("event:", "(k,v) =", "(" .. k .. "," .. v .. ")")
 
         expired = true;
     end
 
-by utilizing setitimer(2) API:
+by utilizing setitimer(2) [2] or interval timer:
 
-    local timer = bsd.sys.time.ITIMER_REAL
-    
     local tv = bsd.sys.time.timespec_create()
-    local it_callout = bsd.sys.time.itimerval_create()
-
     tv:set_tv_sec(3)
 
+    local it_callout = bsd.sys.time.itimerval_create()
     it_callout:set_it_value(tv)
 
-    ret, err, msg = bsd.sys.time.setitimer(timer, it_callout, nil, event)
-
-where
-
     local it_probe = bsd.sys.time.itimerval_create()
+    local timer = bsd.sys.time.ITIMER_REAL
 
-inspects during
+    ret, err, msg = bsd.sys.time.setitimer(timer, it_callout, nil, event)
 
     while true do -- do something
         if expired then
@@ -105,7 +98,7 @@ inspects during
         end
     end
 
-It is obvious,  
+It is obvious, Cstructures are encapsulated (or embedded) by LUA_TUSERDATA:
 
     local mt = getmetatable(it_probe);
 
@@ -114,46 +107,15 @@ It is obvious,
     for k, v in pairs(mt) do
         print("", k, v)
     end
+    print("")
 
-parametrical information are encapsulated by instances of LUA_TUSERDATA.
-Therefore, its properties are accessible through get / set routines:
+Commonly, those are accessible through get/set routines:
 
     tv = it_probe:get_it_value()
 
-    print(" -> ", it_probe, tv, "tv_sec: " .. tv:get_tv_sec())
+    print(" -> ", it_probe, tv, "tv_sec: " .. tv:get_tv_sec(), "\n")
 
-But on the other hand, data (e. g. maps to stat{}, see sys/stat.h)
-
-    local sb = bsd.sys.stat.stat_create()
-    local fd = db:fd()
-
-    ret, err, msg = bsd.sys.stat.fstat(fd, sb)
-
-    ret, err, msg = db:sync(0)
-    ret, err, msg = db:close()
-
-is accessible by utilizing
-
-    function print_table(t, pfx)
-
-        table.sort(t)
-
-        for k, v in pairs(t) do
-            if type(v) == "userdata" then
-                print_udata(k, v, pfx)
-                print("")
-            else
-                print(pfx, k, v)
-
-                if type(v) == "table" then
-                    for p, q in pairs(v) do
-                        print_udata(pfx .. p, q, pfx)
-                    end
-                    print("")
-                end
-            end
-        end
-    end
+As mentioned before, C Structures are accessible
 
     function print_udata(i, j, pfx)
 
@@ -173,8 +135,78 @@ is accessible by utilizing
         end
     end
 
-tables.
+    function print_table(t, pfx)
+
+        table.sort(t)
+
+        for k, v in pairs(t) do
+            if type(v) == "userdata" then
+                print_udata(k, v, pfx)
+            else
+                print(pfx, k, v)
+
+                if type(v) == "table" then
+                    for p, q in pairs(v) do
+                        print_udata(pfx .. p, q, pfx)
+                    end
+                end
+            end
+        end
+        print("")
+    end
+
+by utilizing LUA_TTABLES:
+
+    local sb = bsd.sys.stat.stat_create()
+    local fd = db:fd()
+
+    ret, err, msg = bsd.sys.stat.fstat(fd, sb)
+
+    ret, err, msg = db:sync(0)
+    ret, err, msg = db:close()
 
     print_udata("struct", sb, "")
+
+    _fname = "example.file"
+    _flags = bit32.bor(
+        bsd.fcntl.O_CREAT,
+        bsd.fcntl.O_TRUNC,
+        bsd.fcntl.O_RDWR
+    )
+    fd, err, msg = bsd.fcntl.open(_fname, _flags, _mode)
+
+    print(" open() ", fd, err, msg, "\n")
+
+    local tv = sb:get_st_atim()
+    print_udata("struct", tv, "")
+
+    local tv_buf = tv:dump()
+
+    print(" tv_buf   :", tv_buf, tv_buf:copy_out(), "\n")
+
+    print(" write(2) :", bsd.unistd.write(fd, tv_buf, tv_buf:len()))
+    print(" close(2) :", bsd.unistd.close(fd))
+
+    _flags = bit32.bor(
+        bsd.fcntl.O_RDWR
+    )
+    fd, err, msg = bsd.fcntl.open(_fname, _flags, _mode)
+
+    local data_buf = bsd.sys.uio.iovec_create(tv_buf:len())
+
+    print(" read(2) :", bsd.unistd.read(fd, data_buf, tv_buf:len()))
+    print(" close(2) :", bsd.unistd.close(fd))
+
+    print(" data_buf   :", data_buf, data_buf:copy_out(), "\n")
+
+    local tv_new = bsd.sys.time.timespec_create(data_buf)
+
+    print_udata("struct", tv_new, "")
+
+References
+----------
+
+[1] FreeBSD Library Functions Manual, dbopen -- database access methods, https://www.freebsd.org/cgi/man.cgi?db(3)
+[1] FreeBSD System Calls Manual, getitimer, setitimer -- get/set value of interval timer, https://www.freebsd.org/cgi/man.cgi?setitimer(2)
 
 </code></pre>
