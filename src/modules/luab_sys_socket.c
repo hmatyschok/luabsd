@@ -693,6 +693,52 @@ luab_recvmmsg(lua_State *L)
 #endif
 
 /***
+ * send(2) - send message(s) from a socket(9)
+ *
+ * @function send
+ *
+ * @param s                 Open socket(9).
+ * @param msg               Instance of (LUA_TUSERDATA(iovec)).
+ * @param len               Assumed number of bytes to be send'd.
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC}
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.send(s, msg, len, flags)
+ */
+static int
+luab_send(lua_State *L)
+{
+    int s;
+    luab_iovec_t *msg;
+    size_t len;
+    int flags;
+    
+    (void)luab_checkmaxargs(L, 3);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    msg = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    len = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    flags = (int)luab_checkinteger(L, 4, INT_MAX);
+
+    return (luab_iovec_send(L, s, msg, &len, flags));
+}
+
+/***
  * sendmsg(2) - send message(s) from a socket(9)
  *
  * @function sendmsg
@@ -1074,6 +1120,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
 #if __BSD_VISIBLE
     LUABSD_FUNC("recvmmesg",    luab_recvmmsg),
 #endif
+    LUABSD_FUNC("send", luab_send),
     LUABSD_FUNC("sendmsg", luab_sendmsg),
 #if __BSD_VISIBLE
     LUABSD_FUNC("sendmmesg",    luab_sendmmsg),
