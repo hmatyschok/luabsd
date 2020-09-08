@@ -181,7 +181,8 @@ utilizing LUA_TTABLES:
     print_udata("struct", tv, "")
 
     local tv_buf = tv:dump()
-    print_udata("struct", tv_buf, "")
+
+    print_udata("tv_buf", tv_buf, "")
 
     print(" write(2) :", bsd.unistd.write(fd, tv_buf, tv_buf:len()))
     print(" close(2) :", bsd.unistd.close(fd), "\n")
@@ -196,7 +197,7 @@ utilizing LUA_TTABLES:
     print(" read(2) :", bsd.unistd.read(fd, data_buf, tv_buf:len()))
     print(" close(2) :", bsd.unistd.close(fd), "\n")
 
-    print_udata("struct", data_buf, "")
+    print_udata("data_buf", data_buf, "")
 
     local tv_new = bsd.sys.time.timespec_create(data_buf)
 
@@ -205,7 +206,12 @@ utilizing LUA_TTABLES:
 References
 ----------
 
-[1] FreeBSD Library Functions Manual, dbopen -- database access methods, https://www.freebsd.org/cgi/man.cgi?db(3)
-[1] FreeBSD System Calls Manual, getitimer, setitimer -- get/set value of interval timer, https://www.freebsd.org/cgi/man.cgi?setitimer(2)
+[1] FreeBSD Library Functions Manual,
+     "dbopen -- database access methods",
+     https://www.freebsd.org/cgi/man.cgi?db(3)
+
+[2] FreeBSD System Calls Manual,
+     "getitimer, setitimer -- get/set value of interval timer",
+     https://www.freebsd.org/cgi/man.cgi?setitimer(2)
 
 </code></pre>
