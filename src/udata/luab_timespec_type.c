@@ -270,31 +270,29 @@ luab_module_t timespec_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function timespec_create
  *
- * @param timespec                    Instance of LUA_TUSERDATA(luab_timespec_t).
+ * @param data          (LUA_T{NIL,USERDATA(timespec)}), optional.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ timespec ])
+ *          (timespec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ data ])
  */
 int
 luab_timespec_create(lua_State *L)
 {
-    struct timespec *timespec;
-    int narg, status;
+    struct timespec *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        timespec = NULL;
+        data = NULL;
     else
-        timespec = timespec_udata(L, narg);
+        data = timespec_udata(L, narg);
 
-    if (timespec_create(L, timespec) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &timespec_type, data));
 }

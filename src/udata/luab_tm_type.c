@@ -785,34 +785,29 @@ luab_module_t tm_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function tm_create
  *
- * @param tm            Instance of LUA_TUSERDATA(luab_tm_t).
+ * @param data          (LUA_T{NIL,USERDATA(tm)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (tm [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage tm [, err, msg ] = bsd.sys.time.tm_create([ tm ])
+ * @usage tm [, err, msg ] = bsd.time.tm_create([ data ])
  */
 int
 luab_tm_create(lua_State *L)
 {
-    struct tm *tm;
-    int narg, status;
+    struct tm *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        tm = NULL;
+        data = NULL;
     else
-        tm = tm_udata(L, narg);
+        data = tm_udata(L, narg);
 
-    if (tm_create(L, tm) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &tm_type, data));
 }

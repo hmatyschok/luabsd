@@ -650,25 +650,23 @@ luab_module_t msghdr_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function msghdr_create
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @param data          (LUA_T{NIL,USERDATA(msghdr)}), optional.
  *
- * @usage msghdr = bsd.sys.socket.msghdr_create()
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (msghdr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage msghdr [, err, msg ] = bsd.sys.socket.msghdr_create([ data ])
  */
 int
 luab_msghdr_create(lua_State *L)
 {
-    int status;
-
     (void)luab_checkmaxargs(L, 0);
 
-    if (msghdr_create(L, NULL) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &msghdr_type, NULL));
 }

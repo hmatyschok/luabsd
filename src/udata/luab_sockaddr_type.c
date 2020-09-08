@@ -1229,66 +1229,61 @@ luab_module_t sockaddr_type = {
 };
 
 /***
- * Generic ctor.
+ * Generator function.
  *
  * @function sockaddr_create
  *
- * @param sockaddr          Template, LUA_TUSERDATA(luab_sockaddr_t).
+ * @param data          (LUA_T{NIL,USERDATA(sockaddr)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ]= bsd.sys.socket.sockaddr_create([ sockaddr ])
+ *          (sockaddr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_create([ data ])
  */
 int
 luab_sockaddr_create(lua_State *L)
 {
-    struct sockaddr *sa;
-    int status;
+    struct sockaddr *data;
+    int narg;
 
-    if (luab_checkmaxargs(L, 1) == 1)
-        sa = sockaddr_udata(L, 1);
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
     else
-        sa = NULL;
+        data = sockaddr_udata(L, narg);
 
-    if (sockaddr_create(L, sa) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &sockaddr_type, data));
 }
 
 /***
- * Ctor for sockaddr_dl{}.
+ * Generator function.
  *
  * @function sockaddr_dl_create
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr_dl [, err, msg ]= bsd.net.if_dl.sockaddr_dl_create()
+ *          (sockaddr_dl [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr_dl [, err, msg ] = bsd.sys.socket.sockaddr_dl_create([ data ])
  */
 int
 luab_sockaddr_dl_create(lua_State *L)
 {
     struct sockaddr_dl sdl;
-    struct sockaddr *sa;
-    int status;
+    struct sockaddr *data;
 
     (void)luab_checkmaxargs(L, 0);
 
-    sa = (struct sockaddr *)&sdl;
-    sockaddr_pci(sa, AF_LINK, sizeof(sdl));
+    data = (struct sockaddr *)&sdl;
+    sockaddr_pci(data, AF_LINK, sizeof(sdl));
 
-    if (sockaddr_create(L, sa) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &sockaddr_type, data));
 }
 
 /***
- * Ctor for sockaddr_in{}.
+ * Generator function.
  *
  * @function sockaddr_in_create
  *
@@ -1298,18 +1293,20 @@ luab_sockaddr_dl_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.arpa.inet.sockaddr_in_create([ port [, addr ]])
+ *          (sockaddr_in [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr_in [, err, msg ] = bsd.arpa.inet.sockaddr_in_create([ port [, addr ]])
  */
 int
 luab_sockaddr_in_create(lua_State *L)
 {
     struct sockaddr_in sin;
-    struct sockaddr *sa;
+    struct sockaddr *data;
     struct in_addr *addr;
-    int status;
 
-    sa = (struct sockaddr *)&sin;
-    sockaddr_pci(sa, AF_INET, sizeof(sin));
+    data = (struct sockaddr *)&sin;
+    sockaddr_pci(data, AF_INET, sizeof(sin));
 
     switch (luab_checkmaxargs(L, 2)) {     /* FALLTHROUGH */
     case 2:
@@ -1322,19 +1319,13 @@ luab_sockaddr_in_create(lua_State *L)
         sin.sin_port = htons(sin.sin_port);
         break;
     }
-
-    if (sockaddr_create(L, sa) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &sockaddr_type, data));
 }
 
 /***
- * Ctor for sockaddr_in6{}.
+ * Generator function.
  *
- * @function sockaddr_in_create
+ * @function sockaddr_in6_create
  *
  * @param port              Specifies port ID, see /etc/services.
  * @param info              Specifies Flow Label, see RFC6437,.
@@ -1344,18 +1335,20 @@ luab_sockaddr_in_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.arpa.inet.sockaddr_in6_create([ port [, info [, addr [, id ]]]])
+ *          (sockaddr_in6 [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr_in6 [, err, msg ] = bsd.arpa.inet.sockaddr_in6_create([ port [, info [, addr [, id ]]]])
  */
 int
 luab_sockaddr_in6_create(lua_State *L)
 {
     struct sockaddr_in6 sin6;
-    struct sockaddr *sa;
+    struct sockaddr *data;
     struct in6_addr *addr;
-    int status;
 
-    sa = (struct sockaddr *)&sin6;
-    sockaddr_pci(sa, AF_INET6, sizeof(sin6));
+    data = (struct sockaddr *)&sin6;
+    sockaddr_pci(data, AF_INET6, sizeof(sin6));
 
     switch (luab_checkmaxargs(L, 4)) {     /* FALLTHROUGH */
     case 4:
@@ -1373,17 +1366,11 @@ luab_sockaddr_in6_create(lua_State *L)
         sin6.sin6_port = htons(sin6.sin6_port);
         break;
     }
-
-    if (sockaddr_create(L, sa) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &sockaddr_type, data));
 }
 
 /***
- * Ctor for sockaddr_un{}.
+ * Generator function.
  *
  * @function sockaddr_un_create
  *
@@ -1391,18 +1378,20 @@ luab_sockaddr_in6_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
+ *          (sockaddr_un [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr_un [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
  */
 int
 luab_sockaddr_un_create(lua_State *L)
 {
     struct sockaddr_un sun;
-    struct sockaddr *sa;
+    struct sockaddr *data;
     const char *sun_path;
-    int status;
 
-    sa = (struct sockaddr *)&sun;
-    sockaddr_pci(sa, AF_UNIX, sizeof(sun));
+    data = (struct sockaddr *)&sun;
+    sockaddr_pci(data, AF_UNIX, sizeof(sun));
 
     switch (luab_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
     case 1:
@@ -1411,11 +1400,5 @@ luab_sockaddr_un_create(lua_State *L)
     default:
         break;
     }
-
-    if (sockaddr_create(L, sa) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &sockaddr_type, data));
 }

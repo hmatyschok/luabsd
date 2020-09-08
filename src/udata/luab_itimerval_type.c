@@ -266,31 +266,29 @@ luab_module_t itimerval_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function itimerval_create
  *
- * @param itimerval                 Instance of LUA_TUSERDATA(luab_itimerval_t).
+ * @param data          (LUA_T{NIL,USERDATA(itimerval)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ itimerval ])
+ *          (itimerval [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ data ])
  */
 int
 luab_itimerval_create(lua_State *L)
 {
-    struct itimerval *itimerval;
-    int narg, status;
+    struct itimerval *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        itimerval = NULL;
+        data = NULL;
     else
-        itimerval = itimerval_udata(L, narg);
+        data = itimerval_udata(L, narg);
 
-    if (itimerval_create(L, itimerval) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &itimerval_type, data));
 }

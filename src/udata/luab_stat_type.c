@@ -909,21 +909,30 @@ luab_module_t stat_type = {
     .sz = sizeof(luab_stat_t),
 };
 
+/***
+ * Generator function.
+ *
+ * @function stat_create
+ *
+ * @param data          (LUA_T{NIL,USERDATA(stat)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (stat [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage stat [, err, msg ] = bsd.sys.stat.stat_create([ data ])
+ */
 int
 luab_stat_create(lua_State *L)
 {
-    struct stat *stat;
-    int narg, status;
+    struct stat *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        stat = NULL;
+        data = NULL;
     else
-        stat = stat_udata(L, narg);
+        data = stat_udata(L, narg);
 
-    if (stat_create(L, stat) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &stat_type, data));
 }

@@ -270,31 +270,29 @@ luab_module_t linger_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function linger_create
  *
- * @param               Instance of LUA_TUSERDATA(luab_linger_t), optional.
+ * @param data          (LUA_T{NIL,USERDATA(linger)}), optional.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage linger = bsd.sys.socket.linger_create([ linger ])
+ *          (linger [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage linger [, err, msg ] = bsd.sys.socket.linger_create([ data ])
  */
 int
 luab_linger_create(lua_State *L)
 {
-    struct linger *linger;
-    int narg, status;
+    struct linger *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        linger = NULL;
+        data = NULL;
     else
-        linger = linger_udata(L, narg);
+        data = linger_udata(L, narg);
 
-    if (linger_create(L, linger) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &linger_type, data));
 }

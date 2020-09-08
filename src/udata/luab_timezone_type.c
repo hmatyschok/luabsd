@@ -270,31 +270,29 @@ luab_module_t timezone_type = {
 };
 
 /***
- * Ctor.
+ * Generator function.
  *
  * @function timezone_create
  *
- * @param timezone              Instance of LUA_TUSERDATE(luab_timezone_t).
+ * @param data          (LUA_T{NIL,USERDATA(timezone)}), optional.
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_TSTRING ])
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ timezone ])
+ *          (timezone [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ data ])
  */
 int
 luab_timezone_create(lua_State *L)
 {
-    struct timezone *timezone;
-    int narg, status;
+    struct timezone *data;
+    int narg;
 
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        timezone = NULL;
+        data = NULL;
     else
-        timezone = timezone_udata(L, narg);
+        data = timezone_udata(L, narg);
 
-    if (timezone_create(L, timezone) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &timezone_type, data));
 }
