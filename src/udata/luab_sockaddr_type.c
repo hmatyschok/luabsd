@@ -766,7 +766,7 @@ SOCKADDR_get_sin_addr(lua_State *L)
         (void)memmove(&sin_addr, &sin->sin_addr, sizeof(sin_addr));
         sin_addr.s_addr = ntohl(sin_addr.s_addr);
 
-        if ((*in_addr_type.ctor)(L, &sin_addr) == NULL)
+        if ((*in_addr_type.create)(L, &sin_addr) == NULL)
             status = luab_pushnil(L);
         else
             status = 1;
@@ -989,7 +989,7 @@ SOCKADDR_get_sin6_addr(lua_State *L)
     if (sin6->sin6_family == AF_INET6) {
         (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
 
-        if ((*in6_addr_type.ctor)(L, &sin6_addr) == NULL)
+        if ((*in6_addr_type.create)(L, &sin6_addr) == NULL)
             status = luab_pushnil(L);
         else
             status = 1;
@@ -1222,7 +1222,7 @@ luab_module_t sockaddr_type = {
     .cookie = LUABSD_SOCKADDR_TYPE_ID,
     .name = LUABSD_SOCKADDR_TYPE,
     .vec = sockaddr_methods,
-    .ctor = sockaddr_create,
+    .create = sockaddr_create,
     .init = sockaddr_init,
     .get = sockaddr_udata,
     .sz = sizeof(luab_sockaddr_t),

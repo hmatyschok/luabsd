@@ -367,7 +367,7 @@ STAT_get_st_atim(lua_State *L)
 
     st = luab_udata(L, 1, stat_type, struct stat *);
 
-    if ((*timespec_type.ctor)(L, &st->st_atim) == NULL)
+    if ((*timespec_type.create)(L, &st->st_atim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -434,7 +434,7 @@ STAT_get_st_mtim(lua_State *L)
 
     st = luab_udata(L, 1, stat_type, struct stat *);
 
-    if ((*timespec_type.ctor)(L, &st->st_mtim) == NULL)
+    if ((*timespec_type.create)(L, &st->st_mtim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -501,7 +501,7 @@ STAT_get_st_ctim(lua_State *L)
 
     st = luab_udata(L, 1, stat_type, struct stat *);
 
-    if ((*timespec_type.ctor)(L, &st->st_ctim) == NULL)
+    if ((*timespec_type.create)(L, &st->st_ctim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -568,7 +568,7 @@ STAT_get_st_birthtim(lua_State *L)
 
     st = luab_udata(L, 1, stat_type, struct stat *);
 
-    if ((*timespec_type.ctor)(L, &st->st_birthtim) == NULL)
+    if ((*timespec_type.create)(L, &st->st_birthtim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -903,7 +903,7 @@ luab_module_t stat_type = {
     .cookie = LUABSD_STAT_TYPE_ID,
     .name = LUABSD_STAT_TYPE,
     .vec = stat_methods,
-    .ctor = stat_create,
+    .create = stat_create,
     .init = stat_init,
     .get = stat_udata,
     .sz = sizeof(luab_stat_t),

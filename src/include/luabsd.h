@@ -75,7 +75,7 @@ typedef struct luab_module {
     size_t  sz;
     const char  *name;
     luab_table_t    *vec;
-    luab_ctor_fn    ctor;
+    luab_ctor_fn    create;
     luab_init_fn    init;
     luab_fini_fn    fini;
     luab_get_fn    get;

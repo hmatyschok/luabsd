@@ -108,7 +108,7 @@ ITIMERVAL_get_it_interval(lua_State *L)
 
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
 
-    if ((*timespec_type.ctor)(L, &it->it_interval) == NULL)
+    if ((*timespec_type.create)(L, &it->it_interval) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -161,7 +161,7 @@ ITIMERVAL_get_it_value(lua_State *L)
 
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
 
-    if ((*timespec_type.ctor)(L, &it->it_value) == NULL)
+    if ((*timespec_type.create)(L, &it->it_value) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -259,7 +259,7 @@ luab_module_t itimerval_type = {
     .cookie = LUABSD_ITIMERVAL_TYPE_ID,
     .name = LUABSD_ITIMERVAL_TYPE,
     .vec = itimerval_methods,
-    .ctor = itimerval_create,
+    .create = itimerval_create,
     .init = itimerval_init,
     .get = itimerval_udata,
     .sz = sizeof(luab_itimerval_t),

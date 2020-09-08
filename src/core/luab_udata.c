@@ -152,9 +152,9 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
     caddr_t msg;
     int status;
 
-    if (m != NULL && m->ctor != NULL) {
+    if (m != NULL && m->create != NULL) {
 
-        if ((*m->ctor)(L, arg) != NULL) {
+        if ((*m->create)(L, arg) != NULL) {
 
             if (save_errno != 0) {
                 lua_pushinteger(L, save_errno);
@@ -203,13 +203,13 @@ void
 luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
 {
 
-    if (m != NULL && m->ctor != NULL) {
+    if (m != NULL && m->create != NULL) {
         /*
          * Best effort, this means try to push things on
          * stack at least as it's possible, regardless
          * if allocation of memory is possible or not.
          */
-        if ((*m->ctor)(L, v) != NULL)
+        if ((*m->create)(L, v) != NULL)
             lua_rawseti(L, narg, k);
     }
 }
@@ -233,13 +233,13 @@ luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
-    if (m != NULL && m->ctor != NULL) {
+    if (m != NULL && m->create != NULL) {
         /*
          * Best effort, this means try to push things on
          * stack at least as it's possible, regardless
          * if allocation of memory is possible or not.
          */
-        if ((*m->ctor)(L, v) != NULL)
+        if ((*m->create)(L, v) != NULL)
             lua_setfield(L, narg, k);
     }
 }
