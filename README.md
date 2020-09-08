@@ -155,7 +155,7 @@ by
         print("")
     end
 
-by utilizing LUA_TTABLES:
+utilizing LUA_TTABLES:
 
     local sb = bsd.sys.stat.stat_create()
     local fd = db:fd()
