@@ -66,7 +66,42 @@ extern luab_module_t iovec_type;
 int luab_iovec_create(lua_State *);
 
 
+/***
+ * Schow properties of (LUA_TUSERDATA(iovec)) by LUA_TTABLE.
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              iov_base    = (LUA_TSTRING) or (LUA_TNIL),
+ *              iov_len     = (LUA_TNUMBER),
+ *              iov_max_len = (LUA_TNUMBER),
+ *              iov_flags   = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = iovec:get()
+ */
+static int
+IOVEC_get(lua_State *L)
+{
+    luab_iovec_t *self;
 
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+
+    lua_newtable(L);
+
+    luab_setldata(L, -2, "iov_base", self->iov.iov_base, self->iov.iov_len);
+    luab_setinteger(L, -2, "iov_len", self->iov.iov_len);
+    luab_setinteger(L, -2, "iov_max_len", self->iov_max_len);
+    luab_setinteger(L, -2, "iov_max_len", self->iov_flags);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
 
 static int
 IOVEC_clear(lua_State *L)
@@ -306,6 +341,7 @@ static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("clone",    IOVEC_clone),
     LUABSD_FUNC("copy_in",  IOVEC_copy_in),
     LUABSD_FUNC("copy_out",  IOVEC_copy_out),
+    LUABSD_FUNC("get",  IOVEC_get),
     LUABSD_FUNC("len",  IOVEC_len),
     LUABSD_FUNC("max_len",  IOVEC_max_len),
     LUABSD_FUNC("resize",   IOVEC_resize),

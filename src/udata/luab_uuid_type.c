@@ -440,7 +440,7 @@ UUID_get(lua_State *L)
     luab_setinteger(L, -2, "clock_seq_hi_and_reserved",
         uuid->clock_seq_hi_and_reserved);
     luab_setinteger(L, -2, "clock_seq_low", uuid->clock_seq_low);
-    luab_setiovec(L, -2, "node", uuid->node, _UUID_NODE_LEN);
+    luab_setldata(L, -2, "node", uuid->node, _UUID_NODE_LEN);
 
     lua_pushvalue(L, -1);
 
