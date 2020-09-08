@@ -185,7 +185,7 @@ utilizing LUA_TTABLES:
     print(" tv_buf   :", tv_buf, tv_buf:copy_out(), "\n")
 
     print(" write(2) :", bsd.unistd.write(fd, tv_buf, tv_buf:len()))
-    print(" close(2) :", bsd.unistd.close(fd))
+    print(" close(2) :", bsd.unistd.close(fd), "\n")
 
     _flags = bit32.bor(
         bsd.fcntl.O_RDWR

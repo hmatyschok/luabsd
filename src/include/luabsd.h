@@ -223,6 +223,7 @@ void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 const char *    luab_iovec_islxarg(lua_State *, int, size_t);
 const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
 
+int luab_iovec_read(lua_State *, luab_iovec_t *, int, size_t *);
 int luab_iovec_write(lua_State *, luab_iovec_t *, int, size_t *);
 
 /*
