@@ -117,19 +117,19 @@ As mentioned before, C Structures are accessible
 
     function print_udata(i, j, pfx)
 
-        local t = nil
+        local k = nil
+
+        if j.get ~= nil then
+            k = j:get()
+        else
+            k = j
+        end
 
         print(pfx, i, j)
         pfx = pfx .. "\t"
 
-        if j.get ~= nil then
-            t = j:get()
-        else
-            t = j
-        end
-
-        if type(t) == "table" then
-            print_table(t, pfx)
+        if type(k) == "table" then
+            print_table(k, pfx)
         end
     end
 
@@ -181,8 +181,7 @@ utilizing LUA_TTABLES:
     print_udata("struct", tv, "")
 
     local tv_buf = tv:dump()
-
-    print(" tv_buf   :", tv_buf, tv_buf:copy_out(), "\n")
+    print_udata("struct", tv_buf, "")
 
     print(" write(2) :", bsd.unistd.write(fd, tv_buf, tv_buf:len()))
     print(" close(2) :", bsd.unistd.close(fd), "\n")
@@ -195,9 +194,9 @@ utilizing LUA_TTABLES:
     local data_buf = bsd.sys.uio.iovec_create(tv_buf:len())
 
     print(" read(2) :", bsd.unistd.read(fd, data_buf, tv_buf:len()))
-    print(" close(2) :", bsd.unistd.close(fd))
+    print(" close(2) :", bsd.unistd.close(fd), "\n")
 
-    print(" data_buf   :", data_buf, data_buf:copy_out(), "\n")
+    print_udata("struct", data_buf, "")
 
     local tv_new = bsd.sys.time.timespec_create(data_buf)
 
