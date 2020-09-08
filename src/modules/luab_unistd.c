@@ -1111,7 +1111,7 @@ luab_read(lua_State *L)
     INT_MAX
 #endif
     );
-    return (luab_iovec_read(L, iov, fd, &nbytes));
+    return (luab_iovec_read(L, fd, iov, &nbytes));
 }
 
 /***
@@ -1506,7 +1506,7 @@ luab_write(lua_State *L)
     INT_MAX
 #endif
     );
-    return (luab_iovec_write(L, iov, fd, &nbytes));
+    return (luab_iovec_write(L, fd, iov, &nbytes));
 }
 
 /***
