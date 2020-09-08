@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/socket.h>
+
 #include <errno.h>
 #include <string.h>
 #include <unistd.h>
@@ -127,7 +129,7 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 }
 
 /*
- * I/O
+ * File I/O.
  */
 
 int
@@ -150,7 +152,6 @@ luab_iovec_read(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
                 nbytes = *n;
 
             if (nbytes <= buf->iov_max_len) {
-
                 if ((count = read(fd, dp, nbytes)) > 0)
                     buf->iov.iov_len = count;
             } else {
@@ -287,3 +288,82 @@ luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
     return (luab_pusherr(L, count));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
+
+/*
+ * Socket I/O.
+ */
+
+int
+luab_iovec_recv(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
+{
+    caddr_t dp;
+    size_t nbytes;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (n == NULL)
+                nbytes = buf->iov_max_len;
+            else
+                nbytes = *n;
+
+            if (nbytes <= buf->iov_max_len) {
+                if ((count = recv(s, dp, nbytes, flags)) > 0)
+                    buf->iov.iov_len = count;
+            } else {
+                errno = ENXIO;
+                count = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+int
+luab_iovec_send(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
+{
+    caddr_t dp;
+    size_t nbytes;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (n == NULL)
+                nbytes = buf->iov.iov_len;
+            else
+                nbytes = *n;
+
+            if (nbytes <= buf->iov.iov_len)
+                count = send(s, dp, nbytes, flags);
+            else {
+                errno = ENXIO;
+                count = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}

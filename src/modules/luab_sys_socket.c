@@ -500,9 +500,7 @@ luab_recv(lua_State *L)
     luab_iovec_t *buf;
     size_t len;
     int flags;
-    caddr_t caddr;
-    ssize_t count;
-
+    
     (void)luab_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
@@ -516,25 +514,7 @@ luab_recv(lua_State *L)
     );
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        if (((caddr = buf->iov.iov_base) != NULL) &&
-            (len <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
-
-            if ((count = recv(s, caddr, len, flags)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = ENXIO;
-            count = -1;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        count = -1;
-    }
-    return (luab_pusherr(L, count));
+    return (luab_iovec_recv(L, s, buf, &len, flags));
 }
 
 /***
