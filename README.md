@@ -132,33 +132,49 @@ But on the other hand, data (e. g. maps to stat{}, see sys/stat.h)
     ret, err, msg = db:sync(0)
     ret, err, msg = db:close()
 
-is accessible by 
+is accessible by utilizing
 
-    function print_udata(i, j, pfx)
+    function print_table(t, pfx)
 
-        print(pfx, i, j)
+        table.sort(t)
 
-        pfx = pfx .. "\t"
+        for k, v in pairs(t) do
+            if type(v) == "userdata" then
+                print_udata(k, v, pfx)
+                print("")
+            else
+                print(pfx, k, v)
 
-        if j.get ~= nil then
-            local t = j:get()
-
-            table.sort(t)
-
-            for k, v in pairs(t) do
-                if type(v) == "userdata" then
-                    print_udata(k, v, pfx)
+                if type(v) == "table" then
+                    for p, q in pairs(v) do
+                        print_udata(pfx .. p, q, pfx)
+                    end
                     print("")
-                else
-                    print(pfx, k, v)
                 end
             end
         end
     end
 
-utilizing
+    function print_udata(i, j, pfx)
+
+        local t = nil
+
+        print(pfx, i, j)
+        pfx = pfx .. "\t"
+
+        if j.get ~= nil then
+            t = j:get()
+        else
+            t = j
+        end
+
+        if type(t) == "table" then
+            print_table(t, pfx)
+        end
+    end
+
+tables.
 
     print_udata("struct", sb, "")
 
-tables.
 </code></pre>

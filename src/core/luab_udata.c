@@ -180,7 +180,7 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
     luab_iovec_param_t iop;
     int status;
 
-    if (v != NULL && len > 0 && max_len >= len) {
+    if (len > 0 && max_len >= len) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
         iop.iop_buf.buf_len = max_len;

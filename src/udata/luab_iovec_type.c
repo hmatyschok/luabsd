@@ -388,26 +388,16 @@ luab_module_t iovec_type = {
 int
 luab_iovec_create(lua_State *L)
 {
-    luab_iovec_param_t iop;
-    int status;
+    size_t len;
 
-    /* XXX well, this will be refactored, but not yet */
     (void)luab_checkmaxargs(L, 1);
-
-    (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-    iop.iop_buf.buf_len = (size_t)luab_checkinteger(L, 1,
+    
+    len = (size_t)luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX
 #else
     INT_MAX
 #endif
     );
-
-    if (iovec_create(L, &iop) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushiovec(L, NULL, len, len));
 }
