@@ -225,6 +225,14 @@ const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
 
 int luab_iovec_read(lua_State *, int, luab_iovec_t *, size_t *);
 int luab_iovec_write(lua_State *, int, luab_iovec_t *, size_t *);
+/* 1003.1-2001 */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+int luab_iovec_readlink(lua_State *, const char *, luab_iovec_t *, size_t *);
+#endif
+#if __POSIX_VISIBLE >= 200809
+int luab_iovec_readlinkat(lua_State *, int, const char *,
+    luab_iovec_t *, size_t *);
+#endif
 
 /*
  * Service primitives subset of <core>.

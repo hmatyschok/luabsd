@@ -205,3 +205,87 @@ luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
     }
     return (luab_pusherr(L, count));
 }
+
+/* 1003.1-2001 */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+int
+luab_iovec_readlink(lua_State *L, const char *path, luab_iovec_t *buf, size_t *n)
+{
+    caddr_t dp;
+    size_t nbytes;
+    ssize_t count;
+
+    if ((path != NULL) && (buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (n == NULL)
+                nbytes = buf->iov_max_len;
+            else
+                nbytes = *n;
+
+            if (nbytes <= buf->iov_max_len) {
+
+                if ((count = readlink(path, dp, nbytes)) > 0)
+                    buf->iov.iov_len = count;
+            } else {
+                errno = ENXIO;
+                count = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
+
+#if __POSIX_VISIBLE >= 200809
+int
+luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
+    luab_iovec_t *buf, size_t *n)
+{
+    caddr_t dp;
+    size_t nbytes;
+    ssize_t count;
+
+    if ((path != NULL) && (buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (n == NULL)
+                nbytes = buf->iov_max_len;
+            else
+                nbytes = *n;
+
+            if (nbytes <= buf->iov_max_len) {
+
+                if ((count = readlinkat(fd, path, dp, nbytes)) > 0)
+                    buf->iov.iov_len = count;
+            } else {
+                errno = ENXIO;
+                count = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+#endif /* __POSIX_VISIBLE >= 200809 */

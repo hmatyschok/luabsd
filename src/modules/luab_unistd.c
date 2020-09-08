@@ -1693,8 +1693,6 @@ luab_readlink(lua_State *L)
     const char * path;
     luab_iovec_t *buf;
     size_t bufsiz;
-    caddr_t caddr;
-    ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -1707,26 +1705,7 @@ luab_readlink(lua_State *L)
     INT_MAX
 #endif
     );
-
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        if (((caddr = buf->iov.iov_base) != NULL) &&
-            (bufsiz <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
-
-            if ((count = readlink(path, caddr, bufsiz)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = ENXIO;
-            count = -1;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        count = -1;
-    }
-    return (luab_pusherr(L, count));
+    return (luab_iovec_readlink(L, path, buf, &bufsiz));
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
 
@@ -2278,7 +2257,7 @@ luab_linkat(lua_State *L)
  *          (count [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage count [, err, msg ] = bsd.unistd.readlinkat(fd,path, buf, bufsize)
+ * @usage count [, err, msg ] = bsd.unistd.readlinkat(fd, path, buf, bufsize)
  */
 static int
 luab_readlinkat(lua_State *L)
@@ -2287,8 +2266,6 @@ luab_readlinkat(lua_State *L)
     const char *path;
     luab_iovec_t *buf;
     size_t bufsize;
-    caddr_t caddr;
-    ssize_t count;
 
     (void)luab_checkmaxargs(L, 4);
 
@@ -2302,26 +2279,7 @@ luab_readlinkat(lua_State *L)
     INT_MAX
 #endif
     );
-
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        if (((caddr = buf->iov.iov_base) != NULL) &&
-            (bufsize <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
-
-            if ((count = readlink(path, caddr, bufsize)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = ENXIO;
-            count = -1;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        count = -1;
-    }
-    return (luab_pusherr(L, count));
+    return (luab_iovec_readlinkat(L, fd, path, buf, &bufsize));
 }
 
 /***
