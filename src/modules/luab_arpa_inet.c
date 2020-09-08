@@ -122,7 +122,7 @@ luab_inet_addr(lua_State *L)
  *
  * @function inet_ntoa
  *
- * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t).
+ * @param in                    Instance of (LUA_TUSERDATA(in_addr)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -155,7 +155,7 @@ luab_inet_ntoa(lua_State *L)
  * @param src                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
  *                              for binary representation of character string
  *                              denotes OSI-L3 address.
- * @param dst                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ * @param dst                   Instance of (LUA_TUSERDATA(iovec)) for
  *                              character String to be interpreted as address.
  * @param size                  Specifies constraint, size of character string.
  *
@@ -219,7 +219,7 @@ luab_inet_ntop(lua_State *L)
  * @function inet_pton
  *
  * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ * @param src                   Instance of (LUA_TUSERDATA(iovec)) for
  *                              character String to be interpreted as address.
  * @param dst                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
  *                              for binary representation of character string
@@ -275,7 +275,7 @@ luab_inet_pton(lua_State *L)
  * @function inet_aton
  *
  * @param cp                    Character String to be interpreted as address.
- * @param pin                   Instance of LUA_TUSERDATA(luab_in_addr_t).
+ * @param pin                   Instance of (LUA_TUSERDATA(in_addr)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -306,7 +306,7 @@ luab_inet_aton(lua_State *L)
  *
  * @function inet_lnaof
  *
- * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t),
+ * @param in                    Instance of (LUA_TUSERDATA(in_addr)),
  *                              denotes internet address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -342,9 +342,9 @@ luab_inet_lnaof(lua_State *L)
  *
  * @function inet_makeaddr
  *
- * @param net                   Instance of LUA_TUSERDATA(luab_in_addr_t),
+ * @param net                   Instance of (LUA_TUSERDATA(in_addr)),
  *                              denotes internet network number.
- * @param lna                   Instance of LUA_TUSERDATA(luab_in_addr_t),
+ * @param lna                   Instance of (LUA_TUSERDATA(in_addr)),
  *                              denotes local network address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -382,9 +382,9 @@ luab_inet_makeaddr(lua_State *L)
  *
  * @function inet_neta
  *
- * @param src                   Instance of LUA_TUSERDATA(luab_in_addr_t),
+ * @param src                   Instance of (LUA_TUSERDATA(in_addr)),
  *                              denotes internet network number.
- * @param dst                   Buffer, instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param dst                   Buffer, instance of (LUA_TUSERDATA(iovec)).
  * @param size                  Minimum size of character string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -444,7 +444,7 @@ luab_inet_neta(lua_State *L)
  *
  * @function inet_netof
  *
- * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t).
+ * @param in                    Instance of (LUA_TUSERDATA(in_addr)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -520,7 +520,7 @@ luab_inet_network(lua_State *L)
  *                              denotes OSI-L3 address.
  * @param bits                  Cardinality of bitvector subset of OSI-L3
  *                              address masks network portion from address.
- * @param dst                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ * @param dst                   Instance of (LUA_TUSERDATA(iovec)) for
  *                              character String to be interpreted as address.
  * @param size                  Specifies constraint, size of character string.
  *
@@ -586,7 +586,7 @@ luab_inet_net_ntop(lua_State *L)
  * @function inet_net_pton
  *
  * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ * @param src                   Instance of (LUA_TUSERDATA(iovec)) for
  *                              character String to be interpreted as address.
  * @param dst                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
  *                              for binary representation of character string
@@ -648,8 +648,8 @@ luab_inet_net_pton(lua_State *L)
  *
  * @function inet_ntoa_r
  *
- * @param in                    Instance of LUA_TUSERDATA(luab_in_addr_t).
- * @param buf                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ * @param in                    Instance of (LUA_TUSERDATA(in_addr)).
+ * @param buf                   Instance of (LUA_TUSERDATA(iovec)) for
  *                              character String to be interpreted as address.
  * @param size                  Length of string.
  *
@@ -716,7 +716,7 @@ luab_inet_ntoa_r(lua_State *L)
  *                              denotes OSI-L3 address.
  * @param bits                  Cardinality of bitvector subset of OSI-L3
  *                              address masks network portion from address.
- * @param dst                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ * @param dst                   Instance of (LUA_TUSERDATA(iovec)) for
  *                              character String to be interpreted as address.
  * @param size                  Specifies constraint, size of character string.
  *
@@ -782,7 +782,7 @@ luab_inet_cidr_ntop(lua_State *L)
  * @function inet_cidr_pton
  *
  * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of LUA_TUSERDATA(luab_iovec_t) for
+ * @param src                   Instance of (LUA_TUSERDATA(iovec)) for
  *                              character String to be interpreted as address.
  * @param dst                   Instance of LUA_TUSERDATA(luab_in{6}_addr_t)
  *                              for binary representation of character string

@@ -448,7 +448,7 @@ UUID_get(lua_State *L)
 }
 
 /***
- * Copy uuid{} into LUA_TUSERDATA(luab_iovec_t).
+ * Copy uuid{} into (LUA_TUSERDATA(iovec)).
  *
  * @function dump
  *

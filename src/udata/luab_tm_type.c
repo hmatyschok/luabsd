@@ -695,7 +695,7 @@ TM_get(lua_State *L)
 }
 
 /***
- * Copy tm{} into LUA_TUSERDATA(luab_iovec_t).
+ * Copy tm{} into (LUA_TUSERDATA(iovec)).
  *
  * @function dump
  *

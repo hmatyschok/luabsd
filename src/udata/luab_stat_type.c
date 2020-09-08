@@ -785,7 +785,7 @@ STAT_get(lua_State *L)
 }
 
 /***
- * Copy stat{} into LUA_TUSERDATA(luab_iovec_t).
+ * Copy stat{} into (LUA_TUSERDATA(iovec)).
  *
  * @function dump
  *

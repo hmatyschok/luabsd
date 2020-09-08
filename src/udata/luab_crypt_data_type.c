@@ -203,7 +203,7 @@ CRYPT_DATA_get(lua_State *L)
 }
 
 /***
- * Copy crypt_data{} into LUA_TUSERDATA(luab_iovec_t).
+ * Copy crypt_data{} into (LUA_TUSERDATA(iovec)).
  *
  * @function dump
  *

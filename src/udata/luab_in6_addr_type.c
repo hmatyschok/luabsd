@@ -160,7 +160,7 @@ IN6_ADDR_get(lua_State *L)
 }
 
 /***
- * Copy in6_addr{} into LUA_TUSERDATA(luab_iovec_t).
+ * Copy in6_addr{} into (LUA_TUSERDATA(iovec)).
  *
  * @function dump
  *

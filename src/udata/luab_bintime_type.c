@@ -202,7 +202,7 @@ BINTIME_get(lua_State *L)
 }
 
 /***
- * Copy bintime{} into LUA_TUSERDATA(luab_iovec_t).
+ * Copy bintime{} into (LUA_TUSERDATA(iovec)).
  *
  * @function dump
  *

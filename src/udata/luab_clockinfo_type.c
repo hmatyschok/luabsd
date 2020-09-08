@@ -319,7 +319,7 @@ CLOCKINIFO_get(lua_State *L)
 }
 
 /***
- * Copy clockinfo{} into LUA_TUSERDATA(luab_iovec_t).
+ * Copy clockinfo{} into (LUA_TUSERDATA(iovec)).
  *
  * @function dump
  *

@@ -372,8 +372,8 @@ luab_connectat(lua_State *L)
  * @function getpeername
  *
  * @param s                 Socket bound to an adress by bind(2).
- * @param name              Result argument, LUA_TUSERDATA(luab_sockaddr_t).
- * @param namelen           Value-result argument, LUA_TUSERDATA(luab_hook_t).
+ * @param name              Result argument, (LUA_TUSERDATA(sockaddr)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(hook)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -409,8 +409,8 @@ luab_getpeername(lua_State *L)
  * @function getsockname
  *
  * @param s                 Socket bound to an adress by bind(2).
- * @param name              Result argument, LUA_TUSERDATA(luab_sockaddr_t).
- * @param namelen           Value-result argument, LUA_TUSERDATA(luab_hook_t).
+ * @param name              Result argument, (LUA_TUSERDATA(sockaddr)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(hook)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -477,7 +477,7 @@ luab_listen(lua_State *L)
  * @function recv
  *
  * @param s                 Open socket(9).
- * @param buf               Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param buf               Instance of (LUA_TUSERDATA(iovec)).
  * @param len               Assumed number of bytes to be recv'd.
  * @param flags             Flags argument over
  *
@@ -543,7 +543,7 @@ luab_recv(lua_State *L)
  * @function recvfrom
  *
  * @param s                 Open socket(9).
- * @param buf               Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param buf               Instance of (LUA_TUSERDATA(iovec)).
  * @param len               Assumed number of bytes to be recvfrom'd.
  * @param flags             Flags argument over
  *
@@ -551,8 +551,8 @@ luab_recv(lua_State *L)
  *                                  DONTWAIT,CMSG_CLOEXEC}
  *
  *                          may combined by inclusive or.
- * @param from              Result argument, LUA_TUSERDATA(luab_sockaddr_t).
- * @param fromlen           Value-result argument, LUA_TUSERDATA(luab_hook_t).
+ * @param from              Result argument, (LUA_TUSERDATA(sockaddr)).
+ * @param fromlen           Value-result argument, (LUA_TUSERDATA(hook)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

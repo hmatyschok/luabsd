@@ -586,7 +586,7 @@ luab_fpathconf(lua_State *L)
  *
  * @function getwd
  *
- * @param buf               Source location, LUA_TUSERDATA(luab_iovec_t).
+ * @param buf               Source location, (LUA_TUSERDATA(iovec)).
  * @param size              Size in bytes.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING}])
@@ -2681,8 +2681,8 @@ luab_setreuid(lua_State *L)
  *
  * @function swab
  *
- * @param in_buf            Source location, LUA_TUSERDATA(luab_iovec_t).
- * @param out_buf           Destination location, LUA_TUSERDATA(luab_iovec_t).
+ * @param in_buf            Source location, (LUA_TUSERDATA(iovec)).
+ * @param out_buf           Destination location, (LUA_TUSERDATA(iovec)).
  * @param len               Length.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -2817,7 +2817,7 @@ luab_getpass(lua_State *L)  /* XXX */
  *
  * @function getwd
  *
- * @param buf               Source location, LUA_TUSERDATA(luab_iovec_t).
+ * @param buf               Source location, (LUA_TUSERDATA(iovec)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING}])
  *
@@ -3006,7 +3006,7 @@ luab_crypt_get_format(lua_State *L)
  *                           #3 Traditional
  *
  *                          form.
- * @param data              Instance of LUA_TUSERDATA(luab_crypt_data_t).
+ * @param data              Instance of (LUA_TUSERDATA(crypt_data)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3276,7 +3276,7 @@ luab_fflagstostr(lua_State *L)
  *
  * @function getdomainname
  *
- * @param name              Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param name              Instance of (LUA_TUSERDATA(iovec)).
  * @param namelen           Maximum size of buffer maps to name.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3332,7 +3332,7 @@ luab_getdomainname(lua_State *L)
  *
  * @function getentropy
  *
- * @param buf               Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param buf               Instance of (LUA_TUSERDATA(iovec)).
  * @param buflen            Maximum capacity for used buffer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3447,7 +3447,7 @@ luab_getgrouplist(lua_State *L)
  *
  * @function getloginclass
  *
- * @param name              Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param name              Instance of (LUA_TUSERDATA(iovec)).
  * @param len               Maximum capacity for used buffer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3580,7 +3580,7 @@ luab_lpathconf(lua_State *L)
  *
  * @function getdomainname
  *
- * @param name              Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param name              Instance of (LUA_TUSERDATA(iovec)).
  * @param namelen           Maximum size of buffer maps to name.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3716,7 +3716,7 @@ luab_setlogin(lua_State *L)
  *
  * @function Setloginclass
  *
- * @param name              Instance of LUA_TUSERDATA(luab_iovec_t).
+ * @param name              Instance of (LUA_TUSERDATA(iovec)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
