@@ -43,6 +43,9 @@
 void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
+    if (m == NULL)
+        luaL_argerror(L, narg, "Invalid argument");
+
     return (luaL_checkudata(L, narg, m->name));
 }
 
@@ -80,7 +83,10 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
     if (lua_isnil(L, narg) != 0)
         return (NULL);
 
-    return ((*m->get)(L, narg));
+    if (m != NULL && m->get != NULL)
+        return ((*m->get)(L, narg));
+
+    return (NULL);
 }
 
 const char *
@@ -146,7 +152,7 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
     caddr_t msg;
     int status;
 
-    if (m != NULL) {
+    if (m != NULL && m->ctor != NULL) {
 
         if ((*m->ctor)(L, arg) != NULL) {
 
@@ -196,13 +202,16 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
 void
 luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
 {
-    /*
-     * Best effort, this means try to push things on
-     * stack at least as it's possible, regardless
-     * if allocation of memory is possible or not.
-     */
-    if ((*m->ctor)(L, v) != NULL)
-        lua_rawseti(L, narg, k);
+
+    if (m != NULL && m->ctor != NULL) {
+        /*
+         * Best effort, this means try to push things on
+         * stack at least as it's possible, regardless
+         * if allocation of memory is possible or not.
+         */
+        if ((*m->ctor)(L, v) != NULL)
+            lua_rawseti(L, narg, k);
+    }
 }
 
 void
@@ -210,7 +219,7 @@ luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
 
-    if (len > 0) {  /* XXX redundant code-section */
+    if (v != NULL && len > 0) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
         iop.iop_buf.buf_len = len;
@@ -224,13 +233,15 @@ luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
-    /*
-     * Best effort, this means try to push things on
-     * stack at least as it's possible, regardless
-     * if allocation of memory is possible or not.
-     */
-    if ((*m->ctor)(L, v) != NULL)
-        lua_setfield(L, narg, k);
+    if (m != NULL && m->ctor != NULL) {
+        /*
+         * Best effort, this means try to push things on
+         * stack at least as it's possible, regardless
+         * if allocation of memory is possible or not.
+         */
+        if ((*m->ctor)(L, v) != NULL)
+            lua_setfield(L, narg, k);
+    }
 }
 
 void
@@ -238,7 +249,7 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
 
-    if (len > 0) {  /* XXX redundant code-section */
+    if (v != NULL && len > 0) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
         iop.iop_buf.buf_len = len;

@@ -56,7 +56,7 @@ extern luab_module_t luab_uuid_lib;
  *          (uuid [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage uuid = bsd.uuid.uuid_create([ status ])
+ * @usage uuid = bsd.uuid.uuid_create([ status or nil ])
  */
 static int
 luab_uuid_create(lua_State *L)
@@ -82,6 +82,44 @@ luab_uuid_create(lua_State *L)
     return (luab_pushudata(L, &uuid_type, &uuid));
 }
 
+/***
+ * uuid(3) - generator function.
+ *
+ * @function uuid_create_nil
+ *
+ * @param status                    (LUA_T{NIL,USERDATA(hook)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (uuid [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage uuid = bsd.uuid.uuid_create_nil([ status or nil ])
+ */
+static int
+luab_uuid_create_nil(lua_State *L)
+{
+    luab_type_u *un;
+    uint32_t *status;
+    uuid_t uuid;
+
+    switch (luab_checkmaxargs(L, 1)) {
+    case 1:
+        if ((un = luab_udataisnil(L, 1, hook_type, luab_type_u *)) != NULL)
+            status = &(un->un_uint32);
+        else
+            status = NULL;
+        break;
+    default:
+        un = NULL;
+        status = NULL;
+        break;
+    }
+    uuid_create_nil(&uuid, status);
+    
+    return (luab_pushudata(L, &uuid_type, &uuid));
+}
+
 /*
  * Interface against <uuid.h>.
  */
@@ -92,6 +130,7 @@ static luab_table_t luab_uuid_vec[] = {
     LUABSD_INT("uuid_s_invalid_string_uuid",    uuid_s_invalid_string_uuid),
     LUABSD_INT("uuid_s_no_memory",  uuid_s_no_memory),
     LUABSD_FUNC("uuid_create",  luab_uuid_create),
+    LUABSD_FUNC("uuid_create_nil",  luab_uuid_create_nil),
     LUABSD_FUNC(NULL, NULL)
 };
 
