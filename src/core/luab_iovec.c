@@ -26,6 +26,7 @@
 
 #include <errno.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -34,7 +35,7 @@
 #include "luabsd.h"
 
 /*
- * Generic service primitives on (LUA_TUSERDATA(iovec)). 
+ * Generic service primitives on (LUA_TUSERDATA(iovec)).
  */
 
 const char *
@@ -123,4 +124,45 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 
         luab_setudata(L, narg, &iovec_type, k, &iop);
     }
+}
+
+/*
+ * I/O
+ */
+
+int
+luab_iovec_sync(lua_State *L, luab_iovec_t *iov, int fd, size_t *n)
+{
+    caddr_t buf;
+    size_t nbytes;
+    ssize_t count;
+
+    if ((iov != NULL) &&
+        ((buf = iov->iov.iov_base) != NULL)) {
+
+        if ((iov->iov_flags & IOV_LOCK) == 0) {
+            iov->iov_flags |= IOV_LOCK;
+
+            if (n == NULL)
+                nbytes = iov->iov.iov_len;
+            else
+                nbytes = *n;
+
+            if ((nbytes <= iov->iov.iov_len) &&
+                (iov->iov_flags & IOV_BUFF))
+                count = write(fd, buf, nbytes);
+            else {
+                errno = ENXIO;
+                count = -1;
+            }
+            iov->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
 }

@@ -1513,15 +1513,13 @@ static int
 luab_write(lua_State *L)
 {
     int fd;
-    luab_iovec_t *buf;
+    luab_iovec_t *iov;
     size_t nbytes;
-    caddr_t caddr;
-    ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    iov = luab_udata(L, 2, iovec_type, luab_iovec_t *);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -1529,24 +1527,7 @@ luab_write(lua_State *L)
     INT_MAX
 #endif
     );
-
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        if (((caddr = buf->iov.iov_base) != NULL) &&
-            (nbytes <= buf->iov.iov_len) &&
-            (buf->iov_flags & IOV_BUFF))
-            count = write(fd, caddr, nbytes);
-        else {
-            errno = ENXIO;
-            count = -1;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        count = -1;
-    }
-    return (luab_pusherr(L, count));
+    return (luab_iovec_sync(L, iov, fd, &nbytes));
 }
 
 /***
