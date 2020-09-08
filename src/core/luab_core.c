@@ -209,12 +209,12 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
 const char *
 luab_islstring(lua_State *L, int narg, size_t n)
 {
-    const char *buf;
+    const char *dp;
     size_t len;
 
-    if ((buf = luaL_tolstring(L, narg, &len)) != NULL) {
+    if ((dp = luaL_tolstring(L, narg, &len)) != NULL) {
         if (n <= len)
-            return (buf);
+            return (dp);
     }
     return (NULL);
 }
@@ -222,15 +222,15 @@ luab_islstring(lua_State *L, int narg, size_t n)
 const char *
 luab_checklstring(lua_State *L, int narg, size_t n)
 {
-    const char *buf;
+    const char *dp;
     size_t len;
 
-    buf = luaL_checklstring(L, narg, &len);
+    dp = luaL_checklstring(L, narg, &len);
 
     if (len > n)    /* XXX err_msg */
         luaL_argerror(L, narg, "Value too large to be stored in data type");
 
-    return (buf);
+    return (dp);
 }
 
 /*
@@ -282,16 +282,16 @@ luab_pushnil(lua_State *L)
 }
 
 int
-luab_pushstring(lua_State *L, const char *s)
+luab_pushstring(lua_State *L, const char *dp)
 {
     int save_errno = errno;
     caddr_t msg;
     size_t len;
     int status;
 
-    if (s != NULL) {
-        len = strnlen(s, LUAL_BUFFERSIZE);
-        lua_pushlstring(L, s, len);
+    if (dp != NULL) {
+        len = strnlen(dp, LUAL_BUFFERSIZE);
+        lua_pushlstring(L, dp, len);
 
         if (save_errno != 0) {
             lua_pushinteger(L, save_errno);
@@ -312,14 +312,14 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 {
     int save_errno = errno;
     luaL_Buffer b;
-    caddr_t buf, msg;
+    caddr_t dp, msg;
     int status;
 
     if (v != NULL && len > 0) {
         luaL_buffinit(L, &b);
-        buf = luaL_prepbuffsize(&b, len);
+        dp = luaL_prepbuffsize(&b, len);
 
-        (void)memmove(buf, v, len);
+        (void)memmove(dp, v, len);
 
         luaL_addsize(&b, len);
         luaL_pushresult(&b);
@@ -352,6 +352,32 @@ luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
 }
 
 void
+luab_rawsetstring(lua_State *L, int narg, lua_Integer k, const char *v)
+{
+    lua_pushstring(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+void
+luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t dp;
+
+    if (v != NULL && len > 0) {  /* XXX redundant code-section */
+        luaL_buffinit(L, &b);
+        dp = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(dp, v, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        lua_rawseti(L, narg, k);
+    }
+}
+
+void
 luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
 {
     lua_pushcfunction(L, v);
@@ -372,6 +398,25 @@ luab_setstring(lua_State *L, int narg, const char *k, const char *v)
     lua_setfield(L, narg, k);
 }
 
+void
+luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t dp;
+
+    if (v != NULL && len > 0) { /* XXX redundant code-section */
+        luaL_buffinit(L, &b);
+        dp = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(dp, v, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        lua_setfield(L, narg, k);
+    }
+}
+
 /*
  * Generic service primitives, subset of <core>.
  */
@@ -390,16 +435,16 @@ luab_checkmaxargs(lua_State *L, int nmax)
 int
 luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
-    caddr_t data;
+    caddr_t dp;
 
     (void)luab_checkmaxargs(L, narg);
 
     if (m != NULL && m->get != NULL)
-        data = (caddr_t)(*m->get)(L, narg);
+        dp = (caddr_t)(*m->get)(L, narg);
     else
-        data = NULL;
+        dp = NULL;
 
-    return (luab_pushiovec(L, data, len, len));
+    return (luab_pushiovec(L, dp, len, len));
 }
 
 int

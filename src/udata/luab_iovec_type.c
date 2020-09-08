@@ -65,9 +65,8 @@ extern luab_module_t iovec_type;
 
 int luab_iovec_create(lua_State *);
 
-/*
- * Service primitives, accessor.
- */
+
+
 
 static int
 IOVEC_clear(lua_State *L)
@@ -391,7 +390,7 @@ luab_iovec_create(lua_State *L)
     size_t len;
 
     (void)luab_checkmaxargs(L, 1);
-    
+
     len = (size_t)luab_checkinteger(L, 1,
 #ifdef  __LP64__
     LONG_MAX

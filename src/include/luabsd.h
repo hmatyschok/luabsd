@@ -162,12 +162,16 @@ int luab_pushiovec(lua_State *, void *, size_t, size_t);
  */
 
 void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
+void    luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
+void    luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
+
 void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
 void    luab_rawsetiovec(lua_State *, int, lua_Integer, void *, size_t);
 
 void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
 void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
 void    luab_setstring(lua_State *, int, const char *, const char *);
+void    luab_setldata(lua_State *, int, const char *, void *, size_t);
 
 void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
