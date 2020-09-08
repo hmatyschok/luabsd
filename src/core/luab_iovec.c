@@ -228,7 +228,6 @@ luab_iovec_readlink(lua_State *L, const char *path, luab_iovec_t *buf, size_t *n
                 nbytes = *n;
 
             if (nbytes <= buf->iov_max_len) {
-
                 if ((count = readlink(path, dp, nbytes)) > 0)
                     buf->iov.iov_len = count;
             } else {
@@ -270,7 +269,6 @@ luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
                 nbytes = *n;
 
             if (nbytes <= buf->iov_max_len) {
-
                 if ((count = readlinkat(fd, path, dp, nbytes)) > 0)
                     buf->iov.iov_len = count;
             } else {
