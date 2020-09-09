@@ -89,14 +89,15 @@ extern int luab_hook_create(lua_State *);
 #define LUABSD_CORE_LIB_KEY   "core"
 
 static const char *copyright =
-    "Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>\n"
-    "All rights reserved.\n\n"
-    " The implementation of the interface against alarm(3) and setitimer(2)\n"
-    " is derived from:\n\n"
-    " lalarm.c\n"
-    " an alarm library for Lua based on signal(3)\n"
-    " Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>\n"
-    " 28 Jul 2018 12:47:52\n\n\n";
+    " Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>\n"
+    " All rights reserved.\n\n"
+    "  The implementation of the interface against alarm(3) and setitimer(2)\n"
+    "  is derived from:\n\n"
+    "   lalarm.c\n"
+    "   an alarm library for Lua based on signal(3)\n"
+    "   Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>\n"
+    "   28 Jul 2018 12:47:52\n\n"
+    "\n";
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 

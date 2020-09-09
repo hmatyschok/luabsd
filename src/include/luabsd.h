@@ -109,10 +109,12 @@ typedef struct luab_iovec {
 #define IOV_LOCK    0x00000001
 #define IOV_PROXY   0x00000002
 #define IOV_BUFF    0x00000004
+#define IOV_DUMP    0x00000008
 #else
 #define IOV_LOCK    0x0001
 #define IOV_PROXY   0x0002
 #define IOV_BUFF    0x0004
+#define IOV_DUMP    0x0008
 #endif
 
 extern luab_module_t iovec_type;
