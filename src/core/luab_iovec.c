@@ -77,13 +77,15 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
     luab_iovec_param_t iop;
     int status;
 
-    if (len > 0 && max_len >= len) {
+    if (max_len >= len) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
         iop.iop_buf.buf_len = max_len;
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
 
+        if (v != NULL && len > 0) {
+            iop.iop_data.buf_len = len;
+            iop.iop_data.buf_data = v;
+        }
         status = luab_pushudata(L, &iovec_type, &iop);
     } else {
         errno = EINVAL;
