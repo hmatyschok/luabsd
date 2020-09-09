@@ -472,12 +472,12 @@ iovec_create(lua_State *L, void *arg)
 {
     luab_iovec_param_t *iop;
     luab_iovec_t *self;
-    size_t len;
+    size_t max_len;
 
     if ((iop = (luab_iovec_param_t *)arg) != NULL) {
-        if ((len = iop->iop_buf.buf_len) > 0) {
+        if ((max_len = iop->iop_buf.buf_len) > 0) {
 
-            if (luab_buf_alloc(&iop->iop_buf, len) != 0)
+            if (luab_buf_alloc(&iop->iop_buf, max_len) != 0)
                 iop->iop_flags = IOV_PROXY;
             else
                 iop->iop_flags = IOV_BUFF;
