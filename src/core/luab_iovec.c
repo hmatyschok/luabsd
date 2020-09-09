@@ -80,11 +80,11 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
     if (max_len >= len) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-        iop.iop_buf.buf_len = max_len;
+        iop.iop_buf.iov_len = max_len;
 
         if (v != NULL && len > 0) {
-            iop.iop_data.buf_len = len;
-            iop.iop_data.buf_data = v;
+            iop.iop_data.iov_len = len;
+            iop.iop_data.iov_base = v;
         }
         status = luab_pushudata(L, &iovec_type, &iop);
     } else {
@@ -106,9 +106,9 @@ luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
     if (v != NULL && len > 0) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-        iop.iop_buf.buf_len = len;
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
+        iop.iop_buf.iov_len = len;
+        iop.iop_data.iov_len = len;
+        iop.iop_data.iov_base = v;
 
         luab_rawsetudata(L, narg, &iovec_type, k, &iop);
     }
@@ -122,9 +122,9 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
     if (v != NULL && len > 0) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-        iop.iop_buf.buf_len = len;
-        iop.iop_data.buf_len = len;
-        iop.iop_data.buf_data = v;
+        iop.iop_buf.iov_len = len;
+        iop.iop_data.iov_len = len;
+        iop.iop_data.iov_base = v;
 
         luab_setudata(L, narg, &iovec_type, k, &iop);
     }

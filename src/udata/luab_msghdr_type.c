@@ -77,7 +77,7 @@ typedef struct luab_msghdr {
     luab_udata_t    ud_softc;
     struct msghdr   msg_hdr;
     ssize_t         msg_len;
-    luab_buf_t      msg_buf[MH_MAX_BUF+1];
+    struct iovec    msg_buf[MH_MAX_BUF+1];
 } luab_msghdr_t;
 
 #define luab_new_msghdr(L, arg) \
@@ -292,7 +292,7 @@ MSGHDR_set_msg_name(lua_State *L)
     luab_msghdr_t *self;
     struct sockaddr *sa;
     struct msghdr *msg;
-    luab_buf_t *buf;
+    struct iovec *buf;
     caddr_t name;
     int status;
 
@@ -306,7 +306,7 @@ MSGHDR_set_msg_name(lua_State *L)
 
     if ((name = (caddr_t)sa) != NULL) {
         if ((status = luab_buf_copy_in(buf, name, sa->sa_len)) == 0)
-            msg->msg_name = buf->buf_data;
+            msg->msg_name = buf->iov_base;
     } else {
         if ((status = luab_buf_clear(buf)) == 0)
             msg->msg_name = NULL;
@@ -547,14 +547,14 @@ static int
 MSGHDR_gc(lua_State *L)
 {
     luab_msghdr_t *self;
-    luab_buf_t *buf;
+    struct iovec *buf;
 
     (void)luab_checkmaxargs(L, 1);
 
     self = luab_to_msghdr(L, 1);
     buf = self->msg_buf;
 
-    while (buf->buf_data != NULL)
+    while (buf->iov_base != NULL)
         luab_buf_free(buf++);
 
     (void)memset_s(self, msghdr_type.sz, 0, msghdr_type.sz);
@@ -592,7 +592,7 @@ static luab_table_t msghdr_methods[] = {
 static void *
 msghdr_create(lua_State *L, void *arg __unused)
 {
-    luab_buf_t buf[MH_MAX_BUF+1];
+    struct iovec buf[MH_MAX_BUF+1];
     luab_msghdr_t *self;
     int i;
 
@@ -615,16 +615,16 @@ static void
 msghdr_init(void *ud, void *arg)
 {
     luab_msghdr_t *self;
-    luab_buf_t *src, *dst;
+    struct iovec *src, *dst;
 
     if (((self = (luab_msghdr_t *)ud) != NULL) &&
-        ((src = (luab_buf_t *)arg) != NULL)) {
+        ((src = (struct iovec *)arg) != NULL)) {
 
         dst = self->msg_buf;
 
-        while (src->buf_data != NULL) {
-            dst->buf_len = src->buf_len;
-            dst->buf_data = src->buf_data;
+        while (src->iov_base != NULL) {
+            dst->iov_len = src->iov_len;
+            dst->iov_base = src->iov_base;
 
             dst++; src++;
         }

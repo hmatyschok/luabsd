@@ -284,14 +284,33 @@ IOVEC_copy_in(lua_State *L)
 {
     luab_iovec_t *self;
     const char *data;
+/*    caddr_t dp; */
     size_t len;
+/*    int status; */
 
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
     data = luab_iovec_checklxarg(L, 2, self->iov_max_len);
     len = self->iov_max_len;
+/*
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
 
+        if (((dp = self->iov.iov_base) != NULL) &&
+            (self->iov_flags & IOV_BUFF)) {
+            (void)memmove(dp, data, len);
+            self->iov.iov_len = len;
+            status = 0;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        status = -1;
+    } */
     return (luab_iovec_copy_in(L, self, data, len));
 }
 
@@ -605,7 +624,7 @@ iovec_create(lua_State *L, void *arg)
     size_t max_len;
 
     if ((iop = (luab_iovec_param_t *)arg) != NULL) {
-        if ((max_len = iop->iop_buf.buf_len) > 1) {
+        if ((max_len = iop->iop_buf.iov_len) > 1) {
 
             if (luab_buf_alloc(&iop->iop_buf, max_len) != 0)
                 iop->iop_flags = IOV_PROXY;
@@ -635,19 +654,19 @@ iovec_init(void *ud, void *arg)
     if (((self = (luab_iovec_t *)ud) != NULL) &&
         ((iop = (luab_iovec_param_t *)arg) != NULL)) {
 
-        self->iov_max_len = iop->iop_buf.buf_len;
-        self->iov.iov_base = iop->iop_buf.buf_data;
-        self->iov_flags = iop->iop_flags;
-
+        self->iov.iov_base = iop->iop_buf.iov_base;
+        self->iov_max_len = iop->iop_buf.iov_len;
+        
         if (((max_len = self->iov_max_len) > 1) &&
             ((dst = self->iov.iov_base) != NULL)) {
 
-            if (((src = iop->iop_data.buf_data) != NULL) &&
-                ((len = iop->iop_data.buf_len) <= max_len)) {
+            if (((src = iop->iop_data.iov_base) != NULL) &&
+                ((len = iop->iop_data.iov_len) <= max_len)) {
                 (void)memmove(dst, src, len);
                 self->iov.iov_len = len;
             }
         }
+        self->iov_flags = iop->iop_flags;
     }
 }
 

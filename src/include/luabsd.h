@@ -85,15 +85,10 @@ typedef struct luab_udata {
     luab_module_t   *ud_m;
 } luab_udata_t;
 
-typedef struct luab_buf {
-    size_t      buf_len;
-    caddr_t     buf_data;
-    u_int       buf_flags;
-} luab_buf_t;
 
 typedef struct luab_iovec_param {
-    luab_buf_t  iop_buf;    /* addr. of allocated memory region, iov_base */
-    luab_buf_t  iop_data;   /* supplied data */
+    struct iovec    iop_buf;    /* addr. of allocated memory region, iov_base */
+    struct iovec    iop_data;   /* supplied data */
     u_int   iop_flags;
 } luab_iovec_param_t;
 
@@ -120,11 +115,11 @@ extern luab_module_t iovec_type;
 #define SDL_DATA_MAX_LEN    46     /* XXX */
 #define SDL_ADDR_MAX_LEN    (SDL_DATA_MAX_LEN - IFNAMSIZ)
 
-int luab_buf_clear(luab_buf_t *);
-int luab_buf_alloc(luab_buf_t *, size_t);
-int luab_buf_copy_in(luab_buf_t *, caddr_t, size_t);
-int luab_buf_copy_out(luab_buf_t *, caddr_t, size_t);
-int luab_buf_free(luab_buf_t *);
+int luab_buf_clear(struct iovec *);
+int luab_buf_alloc(struct iovec *, size_t);
+int luab_buf_copy_in(struct iovec *, caddr_t, size_t);
+int luab_buf_copy_out(struct iovec *, caddr_t, size_t);
+int luab_buf_free(struct iovec *);
 
 /*
  * Operations on stack.

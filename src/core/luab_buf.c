@@ -25,6 +25,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/uio.h>
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -36,27 +38,17 @@
 #include "luabsd.h"
 
 /*
- * Common methods on generic buffer.
+ * Common methods on generic iovfer.
  */
 
 int
-luab_buf_clear(luab_buf_t *buf)
+luab_buf_clear(struct iovec *iov)
 {
     int status;
 
-    if (buf != NULL && buf->buf_data != NULL) {
-        if ((buf->buf_flags & IOV_LOCK) == 0) {
-            buf->buf_flags |= IOV_LOCK;
-
-            (void)memset_s(buf->buf_data, buf->buf_len, 0, buf->buf_len);
-
-            status = 0;
-
-            buf->buf_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = -1;
-        }
+    if (iov != NULL && iov->iov_base != NULL) {
+        (void)memset_s(iov->iov_base, iov->iov_len, 0, iov->iov_len);
+        status = 0;
     } else {
         errno = ENXIO;
         status = -1;
@@ -65,22 +57,23 @@ luab_buf_clear(luab_buf_t *buf)
 }
 
 int
-luab_buf_alloc(luab_buf_t *buf, size_t len)
+luab_buf_alloc(struct iovec *iov, size_t len)
 {
     int status;
     caddr_t bp;
 
-    if (buf != NULL && len > 0) {
-        if (buf->buf_data != NULL)
-            bp = realloc(buf->buf_data, len);
+    if (iov != NULL && len > 0) {
+
+        if (iov->iov_base != NULL)
+            bp = realloc(iov->iov_base, len);
         else
             bp = malloc(len);
 
         if (bp != NULL) {
             (void)memset_s(bp, len, 0, len);
 
-            buf->buf_data = bp;
-            buf->buf_len = len;
+            iov->iov_base = bp;
+            iov->iov_len = len;
 
             status = 0;
         } else
@@ -93,28 +86,18 @@ luab_buf_alloc(luab_buf_t *buf, size_t len)
 }
 
 int
-luab_buf_copy_in(luab_buf_t *buf, caddr_t data, size_t len)
+luab_buf_copy_in(struct iovec *iov, caddr_t data, size_t len)
 {
     int status;
 
-    if (buf != NULL && data != NULL && len > 0) {
-        if ((buf->buf_flags & IOV_LOCK) == 0) {
-            buf->buf_flags |= IOV_LOCK;
+    if (iov != NULL && data != NULL) {
 
-            if ((buf->buf_data != NULL) &&
-                (len <= buf->buf_len)) {
-                (void)memmove(buf->buf_data, data, len);
-#if 0
-                luab_buf_crc32(buf);
-#endif
-                status = 0;
-            } else {
-                errno = EINVAL;
-                status = -1;
-            }
-            buf->buf_flags &= ~IOV_LOCK;
+        if ((iov->iov_base != NULL) &&
+            (len <= iov->iov_len)) {
+            (void)memmove(iov->iov_base, data, len);
+            status = 0;
         } else {
-            errno = EBUSY;
+            errno = ENXIO;
             status = -1;
         }
     } else {
@@ -125,55 +108,40 @@ luab_buf_copy_in(luab_buf_t *buf, caddr_t data, size_t len)
 }
 
 int
-luab_buf_copy_out(luab_buf_t *buf, caddr_t data, size_t len)
+luab_buf_copy_out(struct iovec *iov, caddr_t data, size_t len)
 {
     int status;
 
-    if (buf != NULL && data != NULL && len > 0) {
-        if ((buf->buf_flags & IOV_LOCK) == 0) {
-            buf->buf_flags |= IOV_LOCK;
+    if (iov != NULL && data != NULL) {
 
-            if ((buf->buf_data != NULL) &&
-                (len < buf->buf_len)) {
-                (void)memmove(data, buf->buf_data, len);
-
-                status = 0;
-            } else {
-                errno = EINVAL;
-                status = -1;
-            }
-            buf->buf_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = -1;
-        }
-    } else {
-        errno = EINVAL;
-        status = -1;
-    }
-    return (status);
-}
-
-int
-luab_buf_free(luab_buf_t *buf)
-{
-    int status;
-
-    if (buf != NULL && buf->buf_data != NULL) {
-        if ((buf->buf_flags & IOV_LOCK) == 0) {
-            buf->buf_flags |= IOV_LOCK;
-
-            free(buf->buf_data);
-            buf->buf_data = NULL;
-            buf->buf_len = 0;
+        if ((iov->iov_base != NULL) &&
+            (len <= iov->iov_len)) {
+            (void)memmove(data, iov->iov_base, len);
 
             status = 0;
-
-            buf->buf_flags &= ~IOV_LOCK;
         } else {
-            errno = EBUSY;
+            errno = ENXIO;
             status = -1;
         }
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
+luab_buf_free(struct iovec *iov)
+{
+    int status;
+
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
+            free(iov->iov_base);
+            iov->iov_base = NULL;
+        }
+        iov->iov_len = 0;
+        status = 0;
     } else {
         errno = EINVAL;
         status = -1;
