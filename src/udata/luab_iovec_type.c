@@ -65,9 +65,86 @@ extern luab_module_t iovec_type;
 
 int luab_iovec_create(lua_State *);
 
+/*
+ * Accessor for immutable properties.
+ */
 
 /***
- * Schow properties of (LUA_TUSERDATA(iovec)) by (LUA_TTABLE).
+ * Get length of stored data.
+ *
+ * @function len
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (nbytes [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage nbytes [, err, msg ] = iovec:len()
+ */
+static int
+IOVEC_len(lua_State *L)
+{
+    luab_iovec_t *self;
+    size_t nbytes;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        nbytes = self->iov.iov_len;
+
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        nbytes = -1;
+    }
+    return (luab_pusherr(L, nbytes));
+}
+
+/***
+ * Get capacity.
+ *
+ * @function max_len
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (nbytes [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage nbytes [, err, msg ] = iovec:max_len()
+ */
+static int
+IOVEC_max_len(lua_State *L)
+{
+    luab_iovec_t *self;
+    size_t nbytes;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        nbytes = self->iov_max_len;
+
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        nbytes = -1;
+    }
+    return (luab_pusherr(L, nbytes));
+}
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Copy data from attributes of (LUA_TUSERDATA(iovec)) into (LUA_TTABLE).
  *
  * @function get
  *
@@ -102,6 +179,46 @@ IOVEC_get(lua_State *L)
 
     return (1);
 }
+
+/***
+ * Generator function, creates deep copy as instance of (LUA_TUSERDATA(iovec)).
+ *
+ * @function clone
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = iovec:clone()
+ */
+static int
+IOVEC_clone(lua_State *L)
+{
+    luab_iovec_t *self;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        status = luab_pushiovec(L, self->iov.iov_base,
+            self->iov.iov_len, self->iov_max_len);
+
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        status = luab_pushnil(L);
+    }
+    return (status);
+}
+
+/*
+ * Storage-methods.
+ */
 
 /***
  * Zero-out.
@@ -146,42 +263,6 @@ IOVEC_clear(lua_State *L)
         status = -1;
     }
     return (luab_pusherr(L, status));
-}
-
-/***
- * Generator function, creates deep copy.
- *
- * @function clone
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = iovec:clone()
- */
-static int
-IOVEC_clone(lua_State *L)
-{
-    luab_iovec_t *self;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_iovec(L, 1);
-
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        status = luab_pushiovec(L, self->iov.iov_base,
-            self->iov.iov_len, self->iov_max_len);
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = luab_pushnil(L);
-    }
-    return (status);
 }
 
 /***
@@ -276,77 +357,7 @@ IOVEC_copy_out(lua_State *L)
 }
 
 /***
- * Get length of stored data.
- *
- * @function len
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage nbytes [, err, msg ] = iovec:len()
- */
-static int
-IOVEC_len(lua_State *L)
-{
-    luab_iovec_t *self;
-    size_t nbytes;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_iovec(L, 1);
-
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        nbytes = self->iov.iov_len;
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        nbytes = -1;
-    }
-    return (luab_pusherr(L, nbytes));
-}
-
-/***
- * Get capacity.
- *
- * @function max_len
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage nbytes [, err, msg ] = iovec:max_len()
- */
-static int
-IOVEC_max_len(lua_State *L)
-{
-    luab_iovec_t *self;
-    size_t nbytes;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_iovec(L, 1);
-
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        nbytes = self->iov_max_len;
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        nbytes = -1;
-    }
-    return (luab_pusherr(L, nbytes));
-}
-
-/***
- * Reallocate by realloc(3).
+ * Reallocate buffer maps to iov_base.
  *
  * @function resize
  *
@@ -382,7 +393,7 @@ IOVEC_resize(lua_State *L)
         self->iov_flags |= IOV_LOCK;
 
         if (((src = self->iov.iov_base) != NULL) &&
-            (self->iov_flags & IOV_BUFF) && (len > 0)) {
+            (self->iov_flags & IOV_BUFF) && (len > 1)) {
 
             if ((dst = realloc(src, len)) != NULL) {
                 self->iov.iov_base = dst;
@@ -407,7 +418,7 @@ IOVEC_resize(lua_State *L)
 }
 
 /*
- * Methods of meta-table.
+ * Meta-methods.
  */
 
 static int
@@ -475,7 +486,7 @@ iovec_create(lua_State *L, void *arg)
     size_t max_len;
 
     if ((iop = (luab_iovec_param_t *)arg) != NULL) {
-        if ((max_len = iop->iop_buf.buf_len) > 0) {
+        if ((max_len = iop->iop_buf.buf_len) > 1) {
 
             if (luab_buf_alloc(&iop->iop_buf, max_len) != 0)
                 iop->iop_flags = IOV_PROXY;
@@ -538,16 +549,18 @@ luab_module_t iovec_type = {
 };
 
 /***
- * Generator function, creates instance of (LUA_TUSERDATA(iovec)).
+ * Generator function, creates an instance of (LUA_TUSERDATA(iovec)).
  *
  * @function iovec_create
+ *
+ * @param max_len           Denodes capacity in bytes.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (iovec [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg ] = bsd.sys.uio.iovec_create(max_len)
+ * @usage iovec [, err, msg ] = bsd.sys.uio.iovec_create(max_len)
  */
 
 int
