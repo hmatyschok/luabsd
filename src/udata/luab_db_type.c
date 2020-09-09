@@ -78,7 +78,7 @@ static int
 db_close(DB *db)
 {
     int status;
-    (void)printf("%s: (%d,%s)\n", __func__, errno, strerror(errno));
+
     if (db != NULL)
         status = (*db->close)(db);
     else {
