@@ -121,8 +121,6 @@ As mentioned before, C Structures are accessible
 
         if j.get ~= nil then
             k = j:get()
-        else
-            k = j
         end
 
         print(pfx, i, j)
