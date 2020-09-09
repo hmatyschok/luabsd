@@ -131,6 +131,77 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 }
 
 /*
+ * Generic accessor.
+ */
+
+/* v -> buf */
+int
+luab_iovec_copy_in(lua_State *L, luab_iovec_t *buf, const void *v, size_t len)
+{
+    caddr_t dp;
+    int status;
+
+    if (((buf != NULL && v != NULL)) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (len <= buf->iov_max_len) {
+                (void)memmove(dp, v, len);
+                buf->iov.iov_len = len;
+                status = 0;
+            } else {
+                errno = ENXIO;
+                status = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/* buf -> data */
+int
+luab_iovec_copy_out(lua_State *L, luab_iovec_t *buf, void *v, size_t len)
+{
+    caddr_t dp;
+    int status;
+
+    if (((buf != NULL && v != NULL)) &&
+        (buf->iov_flags & IOV_BUFF) &&
+        ((dp = buf->iov.iov_base) != NULL)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (len <= buf->iov_max_len) {
+                (void)memmove(v, dp, len);
+                status = 0;
+            } else {
+                errno = ENXIO;
+                status = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/*
  * File I/O.
  */
 

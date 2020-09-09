@@ -284,9 +284,7 @@ IOVEC_copy_in(lua_State *L)
 {
     luab_iovec_t *self;
     const char *data;
-    caddr_t dp;
     size_t len;
-    int status;
 
     (void)luab_checkmaxargs(L, 2);
 
@@ -294,24 +292,7 @@ IOVEC_copy_in(lua_State *L)
     data = luab_iovec_checklxarg(L, 2, self->iov_max_len);
     len = self->iov_max_len;
 
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        if (((dp = self->iov.iov_base) != NULL) &&
-            (self->iov_flags & IOV_BUFF)) {
-            (void)memmove(dp, data, len);
-            self->iov.iov_len = len;
-            status = 0;
-        } else {
-            errno = ENXIO;
-            status = -1;
-        }
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = -1;
-    }
-    return (luab_pusherr(L, status));
+    return (luab_iovec_copy_in(L, self, data, len));
 }
 
 /***

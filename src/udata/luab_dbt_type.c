@@ -96,41 +96,13 @@ DBT_get_data(lua_State *L)
 {
     DBT *dbt;
     luab_iovec_t *buf;
-    caddr_t src, dst;
-    size_t len;
-    int status;
 
     (void)luab_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, dbt_type, DBT *);
     buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        if (((src = dbt->data) != NULL) &&
-            ((len = dbt->size) > 0)) {
-
-            if (((dst = buf->iov.iov_base) != NULL) &&
-                (len <= buf->iov_max_len) &&
-                (buf->iov_flags & IOV_BUFF)) {
-                (void)memmove(dst, src, len);
-                buf->iov.iov_len = len;
-                status = 0;
-            } else {
-                errno = EINVAL;
-                status = -1;
-            }
-        } else {
-            errno = ENXIO;
-            status = -1;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = -1;
-    }
-    return (luab_pusherr(L, status));
+    return (luab_iovec_copy_in(L, buf, dbt->data, dbt->size));
 }
 
 static int
