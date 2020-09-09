@@ -658,7 +658,7 @@ iovec_init(void *ud, void *arg)
         self->iov.iov_base = iop->iop_buf.buf_data;
         self->iov_flags = iop->iop_flags;
 
-        if (((max_len = self->iov_max_len) > 0) &&
+        if (((max_len = self->iov_max_len) > 1) &&
             ((dst = self->iov.iov_base) != NULL)) {
 
             if (((src = iop->iop_data.buf_data) != NULL) &&
