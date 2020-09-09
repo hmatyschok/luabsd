@@ -67,7 +67,6 @@ typedef struct luab_table {
 
 typedef void *  (*luab_ctor_fn)(lua_State *, void *);
 typedef void  (*luab_init_fn)(void *, void *);
-typedef void  (*luab_fini_fn)(void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
 
 typedef struct luab_module {
@@ -77,7 +76,6 @@ typedef struct luab_module {
     luab_table_t    *vec;
     luab_ctor_fn    create;
     luab_init_fn    init;
-    luab_fini_fn    fini;
     luab_get_fn    get;
 } luab_module_t;
 

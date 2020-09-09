@@ -39,10 +39,8 @@
 #include "luabsd.h"
 
 #if __BSD_VISIBLE
+extern luab_module_t dbt_type;
 extern luab_module_t db_type;
-
-extern int luab_dbt_create(lua_State *);
-extern int luab_dbopen(lua_State *);
 #endif
 
 #define LUABSD_DB_LIB_ID    1593623310
@@ -50,11 +48,78 @@ extern int luab_dbopen(lua_State *);
 
 extern luab_module_t luab_db_lib;
 
+#if __BSD_VISIBLE
+/***
+ * Generator function, creates instance of (LUA_TUSERDATA(dbt)).
+ *
+ * @function dbt_create
+ *
+ * @param data          (LUA_T{NIL,USERDATA(iovec)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (dbt [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage dbt [, err, msg ] = bsd.db.dbt_create([ data ])
+ */
+static int
+luab_dbt_create(lua_State *L)
+{
+    luab_iovec_t *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, iovec_type, luab_iovec_t *);
+
+    return (luab_pushudata(L, &dbt_type, data));
+}
+
+/***
+ * dbopen(3) - database access methods
+ *
+ * @function dbopen
+ *
+ * @param file                      Name by (LUA_TSTRING) or (LUA_TNIL)
+ *                                  creates an in-memory db(3) file.
+ * @param flags                     Same as specified for open(2).
+ * @param mode                      Same as specified for open(2).
+ * @param type                      Specifies DBTYPE as defined in <db.h>.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (db [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = bsd.db.dbopen(file, flags, mode, type)
+ */
+static int
+luab_dbopen(lua_State *L)
+{
+    const char *file;
+    int flags, mode, type;
+    DB *db;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    file = luab_islstring(L, 1, MAXPATHLEN);
+    flags = luab_checkinteger(L, 2, INT_MAX);
+    mode = luab_checkinteger(L, 3, INT_MAX);
+    type = luab_checkinteger(L, 4, INT_MAX);
+
+    db = dbopen(file, flags, mode, type, NULL);
+
+    return (luab_pushudata(L, &db_type, db));
+}
+#endif /* __BSD_VISIBLE */
+
 /*
- * Interface against db(3).
+ * Interface against <db.h>.
  */
 
-static luab_table_t luab_db_vec[] = {   /* db.h */
+static luab_table_t luab_db_vec[] = {
     LUABSD_INT("RET_ERROR", RET_ERROR),
     LUABSD_INT("RET_SUCCESS",   RET_SUCCESS),
     LUABSD_INT("RET_SPECIAL",   RET_SPECIAL),

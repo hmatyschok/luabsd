@@ -60,8 +60,6 @@ typedef struct luab_dbt {
 #define LUABSD_DBT_TYPE_ID    1596025036
 #define LUABSD_DBT_TYPE   "DBT*"
 
-int luab_dbt_create(lua_State *);
-
 static int
 DBT_set_data(lua_State *L)
 {
@@ -245,36 +243,3 @@ luab_module_t dbt_type = {
     .get = dbt_udata,
     .sz = sizeof(luab_dbt_t),
 };
-
-/*
- * XXX Well, argv from ctor should accept more args,
- * XXX etc., but not yet at this developement stage.
- */
-
-/***
- * Generator function.
- *
- * @function dbt_create
- *
- * @param data          (LUA_T{NIL,USERDATA(iovec)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (dbt [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage dbt [, err, msg ] = bsd.db.dbt_create([ data ])
- */
-int
-luab_dbt_create(lua_State *L)
-{
-    luab_iovec_t *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, iovec_type, luab_iovec_t *);
-
-    return (luab_pushudata(L, &dbt_type, data));
-}

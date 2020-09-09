@@ -691,7 +691,7 @@ luab_module_t iovec_type = {
  *
  * @function iovec_create
  *
- * @param max_len           Denodes capacity in bytes.
+ * @param max_len           Capacity in bytes.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -700,7 +700,6 @@ luab_module_t iovec_type = {
  *
  * @usage iovec [, err, msg ] = bsd.sys.uio.iovec_create(max_len)
  */
-
 int
 luab_iovec_create(lua_State *L)
 {

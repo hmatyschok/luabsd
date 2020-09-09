@@ -68,33 +68,42 @@ typedef struct luab_db {
 #define luab_new_db(L, arg) \
     ((luab_db_t *)luab_newuserdata(L, &db_type, (arg)))
 #define luab_to_db(L, narg) \
-    luab_todata((L), (narg), &db_type, luab_db_t *)
+    (luab_todata((L), (narg), &db_type, luab_db_t *))
 
-int luab_dbopen(lua_State *);
-
-static const char *
-db_fname(lua_State *L, int narg)
-{
-    if (lua_type(L, narg) == LUA_TNIL)
-        return NULL;
-
-    return (luaL_checklstring(L, narg, NULL));
-}
+/*
+ * Subr.
+ */
 
 static int
-db_isclosed(luab_db_t *self)
+db_close(DB *db)
 {
     int status;
-
-    if (self->db == NULL) {
+    (void)printf("%s: (%d,%s)\n", __func__, errno, strerror(errno));
+    if (db != NULL)
+        status = (*db->close)(db);
+    else {
         errno = EBADF;
         status = -1;
-    } else
-        status = 0;
-
+    }
     return (status);
 }
 
+/*
+ * Database access methods.
+ */
+
+/***
+ * Close the db(3).
+ *
+ * @function close
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:close()
+ */
 static int
 DB_close(lua_State *L)
 {
@@ -105,16 +114,31 @@ DB_close(lua_State *L)
 
     self = luab_to_db(L, 1);
 
-    if (db_isclosed(self) == 0) {
-        if ((status = (self->db->close)(self->db)) == 0)
-            self->db = NULL;
-    } else {
-        errno = EBADF;
-        status = -1;
-    }
+    if ((status = db_close(self->db)) == 0)
+        self->db = NULL;
+
     return (luab_pusherr(L, status));
 }
 
+/***
+ * Remove key/data pairs from the db(3).
+ *
+ * @function del
+ *
+ * @param key               Instance of (LUA_TUSERDATA(dbt)).
+ * @param flags             May be set
+ *
+ *                              bsd.db.R_CURSOR or 0
+ *
+ *                          as possible value.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          ({0,1} [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:del(key, flags)
+ */
 static int
 DB_del(lua_State *L)
 {
@@ -125,18 +149,33 @@ DB_del(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
-        k = (DBT *)(*dbt_type.get)(L, 2);
+    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 3, INT_MAX);
 
-        status = (db->del)(db, k, flags);
-    } else {
-        errno = EBADF;
+        status = (*db->del)(db, k, flags);
+    } else
         status = -1;
-    }
+
     return (luab_pusherr(L, status));
 }
 
+/***
+ * Keyed retrieval from from the db(3).
+ *
+ * @function get
+ *
+ * @param key               Instance of (LUA_TUSERDATA(dbt)).
+ * @param data              Instance of (LUA_TUSERDATA(dbt)).
+ * @param flags             Set to 0.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          ({0,1} [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:get(key, data, flags)
+ */
 static int
 DB_get(lua_State *L)
 {
@@ -147,19 +186,39 @@ DB_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
-        k = (DBT *)(*dbt_type.get)(L, 2);
-        v = (DBT *)(*dbt_type.get)(L, 3);
+    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, dbt_type, DBT *);
+        v = luab_udata(L, 3, dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
-        status = (db->get)(db, k, v, flags);
-    } else {
-        errno = EBADF;
+        status = (*db->get)(db, k, v, flags);
+    } else
         status = -1;
-    }
+
     return (luab_pusherr(L, status));
 }
 
+/***
+ * Store key/data pairs in the db(3).
+ *
+ * @function put
+ *
+ * @param key               Instance of (LUA_TUSERDATA(dbt)).
+ * @param data              Instance of (LUA_TUSERDATA(dbt)).
+ * @param flags             May be set from
+ *
+ *                              bsd.db.R_{CURSOR,I{AFTER,BEFORE},
+ *                                  NOOVERWRITE,SETCURSOR}
+ *
+ *                          as possible value.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          ({0,1} [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:put(key, data, flags)
+ */
 static int
 DB_put(lua_State *L)
 {
@@ -170,19 +229,38 @@ DB_put(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
-        k = (DBT *)(*dbt_type.get)(L, 2);
-        v = (DBT *)(*dbt_type.get)(L, 3);
+    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, dbt_type, DBT *);
+        v = luab_udata(L, 3, dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
-        status = (db->put)(db, k, v, flags);
-    } else {
-        errno = EBADF;
+        status = (*db->put)(db, k, v, flags);
+    } else
         status = -1;
-    }
+
     return (luab_pusherr(L, status));
 }
 
+/***
+ * Sequential key/data pair retrieval from the db(3).
+ *
+ * @function seq
+ *
+ * @param key               Instance of (LUA_TUSERDATA(dbt)).
+ * @param data              Instance of (LUA_TUSERDATA(dbt)).
+ * @param flags             May be set from
+ *
+ *                              bsd.db.R_{CURSOR,FIRST,LAST,NEXT,PREV}
+ *
+ *                          as possible value.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          ({0,1,2} [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:seq(key, data, flags)
+ */
 static int
 DB_seq(lua_State *L)
 {
@@ -193,19 +271,36 @@ DB_seq(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
-        k = (DBT *)(*dbt_type.get)(L, 2);
-        v = (DBT *)(*dbt_type.get)(L, 3);
+    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, dbt_type, DBT *);
+        v = luab_udata(L, 3, dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
-        status = (db->seq)(db, k, v, flags);
-    } else {
-        errno = EBADF;
+        status = (*db->seq)(db, k, v, flags);
+    } else
         status = -1;
-    }
+
     return (luab_pusherr(L, status));
 }
 
+/***
+ * Flush any cached information to storage device.
+ *
+ * @function sync
+ *
+ * @param flags             May be set
+ *
+ *                              bsd.db.R_RECNOSYNC or 0
+ *
+ *                          as possible value.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:sync(flags)
+ */
 static int
 DB_sync(lua_State *L)
 {
@@ -215,17 +310,28 @@ DB_sync(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
+    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
         flags = (u_int)luab_checkinteger(L, 2, INT_MAX);
 
-        status = (db->sync)(db, flags);
-    } else {
-        errno = EBADF;
+        status = (*db->sync)(db, flags);
+    } else
         status = -1;
-    }
+
     return (luab_pusherr(L, status));
 }
 
+/***
+ * Return a file descriptor from underlying db(3).
+ *
+ * @function fd
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:fd()
+ */
 static int
 DB_fd(lua_State *L)
 {
@@ -234,15 +340,17 @@ DB_fd(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    if ((db = (DB *)(*db_type.get)(L, 1)) != NULL) {
-
-        fd = (db->fd)(db);
-    } else {
-        errno = EBADF;
+    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL)
+        fd = (*db->fd)(db);
+    else
         fd = -1;
-    }
+
     return (luab_pusherr(L, fd));
 }
+
+/*
+ * Meta-methods.
+ */
 
 static int
 DB_gc(lua_State *L)
@@ -253,10 +361,9 @@ DB_gc(lua_State *L)
 
     self = luab_to_db(L, 1);
 
-    if (db_isclosed(self) == 0) {
-        (void)(*self->db->close)(self->db);
+    if (db_close(self->db) == 0)
         self->db = NULL;
-    }
+
     return (0);
 }
 
@@ -269,13 +376,17 @@ DB_tostring(lua_State *L)
 
     self = luab_to_db(L, 1);
 
-    if (db_isclosed(self) == 0)
+    if (self->db != NULL)
         lua_pushfstring(L, "db (%p)", self->db);
     else
         lua_pushliteral(L, "db (closed)");
 
     return (1);
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t db_methods[] = {
     LUABSD_FUNC("close",  DB_close),
@@ -290,11 +401,20 @@ static luab_table_t db_methods[] = {
     LUABSD_FUNC(NULL, NULL)
 };
 
-
 static void *
 db_create(lua_State *L, void *arg)
 {
-    return (luab_new_db(L, arg));
+    luab_db_t *self;
+    DB* db;
+
+    if ((db = (DB *)arg) != NULL) {
+
+        if ((self = luab_new_db(L, db)) == NULL)
+            (void)(*db->close)(db);
+    } else
+        self = NULL;
+
+    return (self);
 }
 
 static void
@@ -311,6 +431,9 @@ db_udata(lua_State *L, int narg)
 {
     luab_db_t *self = luab_to_db(L, narg);
 
+    if (self->db == NULL)
+        errno = EBADF;
+
     return (self->db);
 }
 
@@ -323,30 +446,3 @@ luab_module_t db_type = {
     .get = db_udata,
     .sz = sizeof(luab_db_t),
 };
-
-int
-luab_dbopen(lua_State *L)
-{
-    const char *fname;
-    int flags, mode, type;
-    DB *db;
-    int status;
-
-    (void)luab_checkmaxargs(L, 4);
-
-    fname = db_fname(L, 1);
-    flags = luab_checkinteger(L, 2, INT_MAX);
-    mode = luab_checkinteger(L, 3, INT_MAX);
-    type = luab_checkinteger(L, 4, INT_MAX);
-
-    if ((db = dbopen(fname, flags, mode, type, NULL)) != NULL) {
-        if (db_create(L, db) == NULL) {
-            (void)(db->close)(db);
-            status = luab_pushnil(L);
-        } else
-            status = 1;
-    } else
-        status = luab_pushnil(L);
-
-    return (status);
-}
