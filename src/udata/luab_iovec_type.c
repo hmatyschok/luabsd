@@ -418,6 +418,140 @@ IOVEC_resize(lua_State *L)
 }
 
 /*
+ * File I/O.
+ */
+
+/***
+ * Read input from file into instance of (LUA_TUSERDATA(iovec)).
+ *
+ * @function read
+ *
+ * @param fd                Open file descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = iovec:read(fd)
+ */
+static int
+IOVEC_read(lua_State *L)
+{
+    luab_iovec_t *self;
+    int fd;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    self = luab_to_iovec(L, 1);
+    fd = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    return (luab_iovec_read(L, fd, self, NULL));
+}
+
+/***
+ * Write output from instance of (LUA_TUSERDAT(iovec)).
+ *
+ * @function write
+ *
+ * @param fd                Open file descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = iovec:write(fd)
+ */
+static int
+IOVEC_write(lua_State *L)
+{
+    luab_iovec_t *self;
+    int fd;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    self = luab_to_iovec(L, 1);
+    fd = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    return (luab_iovec_write(L, fd, self, NULL));
+}
+
+/*
+ * Socket I/O.
+ */
+
+/***
+ * Receive message(s) from a socket(9).
+ *
+ * @function recv
+ *
+ * @param s                 Open socket(9).
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC}
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = iovec:recv(s, flags)
+ */
+static int
+IOVEC_recv(lua_State *L)
+{
+    luab_iovec_t *self;
+    int s, flags;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    self = luab_to_iovec(L, 1);
+    s = (int)luab_checkinteger(L, 2, INT_MAX);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    return (luab_iovec_recv(L, s, self, NULL, flags));
+}
+
+/***
+ * Send message(s) from a socket(9).
+ *
+ * @function send
+ *
+ * @param s                 Open socket(9).
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
+ *                                  DONTWAIT,CMSG_CLOEXEC}
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = iovec:send(s, flags)
+ */
+static int
+IOVEC_send(lua_State *L)
+{
+    luab_iovec_t *self;
+    int s, flags;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    self = luab_to_iovec(L, 1);
+    s = (int)luab_checkinteger(L, 2, INT_MAX);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    return (luab_iovec_send(L, s, self, NULL, flags));
+}
+
+/*
  * Meta-methods.
  */
 
@@ -461,14 +595,18 @@ IOVEC_tostring(lua_State *L)
  */
 
 static luab_table_t iovec_methods[] = {
+    LUABSD_FUNC("get",  IOVEC_get),
+    LUABSD_FUNC("len",  IOVEC_len),
+    LUABSD_FUNC("max_len",  IOVEC_max_len),
     LUABSD_FUNC("clear",    IOVEC_clear),
     LUABSD_FUNC("clone",    IOVEC_clone),
     LUABSD_FUNC("copy_in",  IOVEC_copy_in),
     LUABSD_FUNC("copy_out",  IOVEC_copy_out),
-    LUABSD_FUNC("get",  IOVEC_get),
-    LUABSD_FUNC("len",  IOVEC_len),
-    LUABSD_FUNC("max_len",  IOVEC_max_len),
     LUABSD_FUNC("resize",   IOVEC_resize),
+    LUABSD_FUNC("read", IOVEC_read),
+    LUABSD_FUNC("write",    IOVEC_write),
+    LUABSD_FUNC("recv", IOVEC_recv),
+    LUABSD_FUNC("send", IOVEC_send),
     LUABSD_FUNC("__gc", IOVEC_gc),
     LUABSD_FUNC("__tostring",   IOVEC_tostring),
     LUABSD_FUNC(NULL, NULL)

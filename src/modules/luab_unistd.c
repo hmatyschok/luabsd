@@ -1083,7 +1083,7 @@ luab_pipe(lua_State *L)
  * @function read
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of luab_iovec_t.
+ * @param buf               Instance of (LUA_TUSERDATA(iovec)).
  * @param nbytes            Assumed number of bytes to be read.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -1390,7 +1390,7 @@ luab_ttyname(lua_State *L)
  * @function ttyname_r
  *
  * @param fd                File descriptor refers to a valid terminal device.
- * @param buf               Buffer, instance of luab_iovec_t, capable hold
+ * @param buf               Buffer, instance of (LUA_TUSERDATA(iovec), capable hold
  *                          requested user name.
  * @param len               Specifies the length in bytes of requested
  *                          tty(4) name.
@@ -1478,7 +1478,7 @@ luab_unlink(lua_State *L)
  * @function write
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of luab_iovec_t.
+ * @param buf               Instance of (LUA_TUSERDATA(iovec)).
  * @param nbytes            Number of bytes for write operation.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -1920,7 +1920,7 @@ luab_lchown(lua_State *L)
  * @function pread
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of luab_iovec_t.
+ * @param buf               Instance of (LUA_TUSERDATA(iovec)).
  * @param nbytes            Assumed number of bytes to be read.
  * @param offset            Location, where data to be read.
  *
@@ -1981,7 +1981,7 @@ luab_pread(lua_State *L)
  * @function pwrite
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of luab_iovec_t.
+ * @param buf               Instance of (LUA_TUSERDATA(iovec)).
  * @param nbytes            Number of bytes for write operation.
  * @param offset            Specifies position for write operation.
  *
@@ -2079,7 +2079,7 @@ luab_truncate(lua_State *L)
  *
  * @function getlogin_r
  *
- * @param name              Buffer, instance of luab_iovec_t, capable hold
+ * @param name              Buffer, instance of (LUA_TUSERDATA(iovec), capable hold
  *                          requested user name.
  * @param len               Specifies the length in bytes of requested user name.
  *

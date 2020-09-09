@@ -72,7 +72,7 @@ typedef void *  (*luab_get_fn)(lua_State *, int);
 
 typedef struct luab_module {
     u_int32_t  cookie;        /*  date -u +'%s' */
-    size_t  sz;
+    ssize_t  sz;
     const char  *name;
     luab_table_t    *vec;
     luab_ctor_fn    create;
