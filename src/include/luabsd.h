@@ -85,9 +85,8 @@ typedef struct luab_udata {
     luab_module_t   *ud_m;
 } luab_udata_t;
 
-
 typedef struct luab_iovec_param {
-    struct iovec    iop_buf;    /* addr. of allocated memory region, iov_base */
+    struct iovec    iop_iov;    /* addr. of allocated memory region, iov_base */
     struct iovec    iop_data;   /* supplied data */
     u_int   iop_flags;
 } luab_iovec_param_t;
@@ -116,10 +115,14 @@ extern luab_module_t iovec_type;
 #define SDL_ADDR_MAX_LEN    (SDL_DATA_MAX_LEN - IFNAMSIZ)
 
 int luab_buf_clear(struct iovec *);
-int luab_buf_alloc(struct iovec *, size_t);
-int luab_buf_copy_in(struct iovec *, caddr_t, size_t);
-int luab_buf_copy_out(struct iovec *, caddr_t, size_t);
 int luab_buf_free(struct iovec *);
+
+int luab_buf_alloc(struct iovec *, size_t);
+int luab_buf_realloc(struct iovec *, size_t);
+
+int luab_buf_copyin(struct iovec *, const void *, size_t);
+int luab_buf_copyout(struct iovec *, void *, size_t);
+
 
 /*
  * Operations on stack.
@@ -178,6 +181,7 @@ void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
  */
 
 const char *    luab_islstring(lua_State *, int, size_t);
+const char *    luab_tolstring(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
 lua_Integer luab_tointeger(lua_State *, int, lua_Integer);
@@ -222,8 +226,8 @@ void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 const char *    luab_iovec_islxarg(lua_State *, int, size_t);
 const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
 
-int luab_iovec_copy_in(lua_State *, luab_iovec_t *, const void *, size_t);
-int luab_iovec_copy_out(lua_State *, luab_iovec_t *, void *, size_t);
+int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
+int luab_iovec_copyout(lua_State *, luab_iovec_t *, void *, size_t);
 
 int luab_iovec_read(lua_State *, int, luab_iovec_t *, size_t *);
 int luab_iovec_write(lua_State *, int, luab_iovec_t *, size_t *);

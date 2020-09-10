@@ -305,7 +305,7 @@ MSGHDR_set_msg_name(lua_State *L)
     buf = &(self->msg_buf[MH_NAME]);
 
     if ((name = (caddr_t)sa) != NULL) {
-        if ((status = luab_buf_copy_in(buf, name, sa->sa_len)) == 0)
+        if ((status = luab_buf_copyin(buf, name, sa->sa_len)) == 0)
             msg->msg_name = buf->iov_base;
     } else {
         if ((status = luab_buf_clear(buf)) == 0)

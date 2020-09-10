@@ -75,6 +75,8 @@ DBT_set_data(lua_State *L)
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
+    /* XXX race-condition with lua-gc */
+
         if (((dbt->data = buf->iov.iov_base) != NULL) &&
             ((dbt->size = buf->iov.iov_len) > 0) &&
             (buf->iov_flags & (IOV_BUFF|IOV_PROXY)))
@@ -102,7 +104,7 @@ DBT_get_data(lua_State *L)
     dbt = luab_udata(L, 1, dbt_type, DBT *);
     buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
-    return (luab_iovec_copy_in(L, buf, dbt->data, dbt->size));
+    return (luab_iovec_copyin(L, buf, dbt->data, dbt->size));
 }
 
 static int
@@ -114,7 +116,6 @@ DBT_get_size(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     dbt = luab_udata(L, 1, dbt_type, DBT *);
-
     len = dbt->size;
 
     return (luab_pusherr(L, len));

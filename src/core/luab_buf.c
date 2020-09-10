@@ -38,63 +38,22 @@
 #include "luabsd.h"
 
 /*
- * Common methods on generic iovfer.
+ *
+ * bp refers iov->iov_base.
+ * dp refers external data.
  */
 
 int
 luab_buf_clear(struct iovec *iov)
 {
-    int status;
-
-    if (iov != NULL && iov->iov_base != NULL) {
-        (void)memset_s(iov->iov_base, iov->iov_len, 0, iov->iov_len);
-        status = 0;
-    } else {
-        errno = ENXIO;
-        status = -1;
-    }
-    return (status);
-}
-
-int
-luab_buf_alloc(struct iovec *iov, size_t len)
-{
-    int status;
     caddr_t bp;
-
-    if (iov != NULL && len > 0) {
-
-        if (iov->iov_base != NULL)
-            bp = realloc(iov->iov_base, len);
-        else
-            bp = malloc(len);
-
-        if (bp != NULL) {
-            (void)memset_s(bp, len, 0, len);
-
-            iov->iov_base = bp;
-            iov->iov_len = len;
-
-            status = 0;
-        } else
-            status = -1;
-    } else {
-        errno = EINVAL;
-        status = -1;
-    }
-    return (status);
-}
-
-int
-luab_buf_copy_in(struct iovec *iov, caddr_t data, size_t len)
-{
+    size_t len;
     int status;
 
-    if (iov != NULL && data != NULL) {
-
-        if ((iov->iov_base != NULL) &&
-            (len <= iov->iov_len)) {
-            (void)memmove(iov->iov_base, data, len);
+    if (iov != NULL) {
+        if (((bp = iov->iov_base) != NULL) &&
+            ((len = iov->iov_len) > 1)) {
+            (void)memset_s(bp, len, 0, len);
             status = 0;
         } else {
             errno = ENXIO;
@@ -108,15 +67,83 @@ luab_buf_copy_in(struct iovec *iov, caddr_t data, size_t len)
 }
 
 int
-luab_buf_copy_out(struct iovec *iov, caddr_t data, size_t len)
+luab_buf_alloc(struct iovec *iov, size_t len)
 {
     int status;
 
-    if (iov != NULL && data != NULL) {
+    if (iov != NULL && len > 1) {
 
-        if ((iov->iov_base != NULL) &&
+        if ((iov->iov_base = malloc(len)) != NULL) {
+            (void)memset_s(iov->iov_base, len, 0, len);
+            iov->iov_len = len;
+            status = 0;
+        } else {
+            iov->iov_len = 0;
+            status = -1;
+        }
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
+luab_buf_realloc(struct iovec *iov, size_t len)
+{
+    caddr_t bp;
+    int status;
+
+    if (iov != NULL && len > 1) {
+
+        if ((bp = realloc(iov->iov_base, len)) != NULL) {
+            iov->iov_base = bp;
+            iov->iov_len = len;
+            status = 0;
+        } else
+            status = -1;
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
+luab_buf_copyin(struct iovec *iov, const void *v, size_t len)
+{
+    caddr_t bp;
+    int status;
+
+    if (iov != NULL && v != NULL) {
+
+        if (((bp = iov->iov_base) != NULL) &&
             (len <= iov->iov_len)) {
-            (void)memmove(data, iov->iov_base, len);
+            (void)memmove(bp, v, len);
+
+            status = 0;
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+    } else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (status);
+}
+
+int
+luab_buf_copyout(struct iovec *iov, void *v, size_t len)
+{
+    caddr_t bp;
+    int status;
+
+    if (iov != NULL && v != NULL) {
+
+        if (((bp = iov->iov_base) != NULL) &&
+            (len <= iov->iov_len)) {
+            (void)memmove(v, bp, len);
 
             status = 0;
         } else {

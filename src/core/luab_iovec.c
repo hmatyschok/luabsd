@@ -47,11 +47,10 @@ luab_iovec_islxarg(lua_State *L, int narg, size_t len)
     const char *dp;
 
     if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
-        (len <= buf->iov_max_len))
+        (len <= buf->iov_max_len))      /* XXX */
         dp = buf->iov.iov_base;
     else
-        dp = luab_islstring(L, narg, len);
+        dp = luab_tolstring(L, narg, len);
 
     return (dp);
 }
@@ -80,9 +79,9 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
     if (max_len >= len) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-        iop.iop_buf.iov_len = max_len;
+        iop.iop_iov.iov_len = max_len;
 
-        if (v != NULL && len > 0) {
+        if (v != NULL && len > 1) {
             iop.iop_data.iov_len = len;
             iop.iop_data.iov_base = v;
         }
@@ -103,10 +102,10 @@ luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
 
-    if (v != NULL && len > 0) {
+    if (v != NULL && len > 1) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-        iop.iop_buf.iov_len = len;
+        iop.iop_iov.iov_len = len;
         iop.iop_data.iov_len = len;
         iop.iop_data.iov_base = v;
 
@@ -119,10 +118,10 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
 
-    if (v != NULL && len > 0) {
+    if (v != NULL && len > 1) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
-        iop.iop_buf.iov_len = len;
+        iop.iop_iov.iov_len = len;
         iop.iop_data.iov_len = len;
         iop.iop_data.iov_base = v;
 
@@ -136,26 +135,26 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 
 /* v -> buf */
 int
-luab_iovec_copy_in(lua_State *L, luab_iovec_t *buf, const void *v, size_t len)
+luab_iovec_copyin(lua_State *L, luab_iovec_t *buf, const void *v, size_t len)
 {
-    caddr_t dp;
+    struct iovec *iov;
+    size_t olen;
     int status;
 
-    if (((buf != NULL && v != NULL)) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+    if ((buf != NULL) &&
+        (len <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
 
-            if (len <= buf->iov_max_len) {
-                (void)memmove(dp, v, len);
-                buf->iov.iov_len = len;
-                status = 0;
-            } else {
-                errno = ENXIO;
-                status = -1;
-            }
+            iov = &(buf->iov);
+            olen = iov->iov_len;
+            iov->iov_len = len;
+
+            if ((status = luab_buf_copyin(iov, v, len)) != 0)
+                iov->iov_len = olen;
+
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
@@ -170,25 +169,21 @@ luab_iovec_copy_in(lua_State *L, luab_iovec_t *buf, const void *v, size_t len)
 
 /* buf -> data */
 int
-luab_iovec_copy_out(lua_State *L, luab_iovec_t *buf, void *v, size_t len)
+luab_iovec_copyout(lua_State *L, luab_iovec_t *buf, void *v, size_t len)
 {
-    caddr_t dp;
+    struct iovec *iov;
     int status;
 
-    if (((buf != NULL && v != NULL)) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+    if ((buf != NULL) &&
+        (len <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
 
-            if (len <= buf->iov_max_len) {
-                (void)memmove(v, dp, len);
-                status = 0;
-            } else {
-                errno = ENXIO;
-                status = -1;
-            }
+            iov = &(buf->iov);
+            status = luab_buf_copyout(iov, v, len);
+
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
@@ -213,8 +208,7 @@ luab_iovec_read(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
     ssize_t count;
 
     if ((buf != NULL) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -224,7 +218,9 @@ luab_iovec_read(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
             else
                 nbytes = *n;
 
-            if (nbytes <= buf->iov_max_len) {
+            if (((dp = buf->iov.iov_base) != NULL) &&
+                (nbytes <= buf->iov_max_len)) {
+
                 if ((count = read(fd, dp, nbytes)) > 0)
                     buf->iov.iov_len = count;
             } else {
@@ -251,8 +247,7 @@ luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
     ssize_t count;
 
     if ((buf != NULL) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -262,7 +257,8 @@ luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
             else
                 nbytes = *n;
 
-            if (nbytes <= buf->iov.iov_len)
+            if (((dp = buf->iov.iov_base) != NULL) &&
+                (nbytes <= buf->iov_max_len))
                 count = write(fd, dp, nbytes);
             else {
                 errno = ENXIO;
@@ -289,9 +285,9 @@ luab_iovec_readlink(lua_State *L, const char *path, luab_iovec_t *buf, size_t *n
     size_t nbytes;
     ssize_t count;
 
-    if ((path != NULL) && (buf != NULL) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+    if ((path != NULL) &&
+        (buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -301,7 +297,9 @@ luab_iovec_readlink(lua_State *L, const char *path, luab_iovec_t *buf, size_t *n
             else
                 nbytes = *n;
 
-            if (nbytes <= buf->iov_max_len) {
+            if (((dp = buf->iov.iov_base) != NULL) &&
+                (nbytes <= buf->iov_max_len)) {
+
                 if ((count = readlink(path, dp, nbytes)) > 0)
                     buf->iov.iov_len = count;
             } else {
@@ -330,9 +328,9 @@ luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
     size_t nbytes;
     ssize_t count;
 
-    if ((path != NULL) && (buf != NULL) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+    if ((path != NULL) &&
+        (buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -342,7 +340,9 @@ luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
             else
                 nbytes = *n;
 
-            if (nbytes <= buf->iov_max_len) {
+            if (((dp = buf->iov.iov_base) != NULL) &&
+                (nbytes <= buf->iov_max_len)) {
+
                 if ((count = readlinkat(fd, path, dp, nbytes)) > 0)
                     buf->iov.iov_len = count;
             } else {
@@ -374,8 +374,7 @@ luab_iovec_recv(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
     ssize_t count;
 
     if ((buf != NULL) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -385,7 +384,9 @@ luab_iovec_recv(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
             else
                 nbytes = *n;
 
-            if (nbytes <= buf->iov_max_len) {
+            if (((dp = buf->iov.iov_base) != NULL) &&
+                (nbytes <= buf->iov_max_len)) {
+
                 if ((count = recv(s, dp, nbytes, flags)) > 0)
                     buf->iov.iov_len = count;
             } else {
@@ -412,8 +413,7 @@ luab_iovec_send(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
     ssize_t count;
 
     if ((buf != NULL) &&
-        (buf->iov_flags & IOV_BUFF) &&
-        ((dp = buf->iov.iov_base) != NULL)) {
+        (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -423,7 +423,8 @@ luab_iovec_send(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
             else
                 nbytes = *n;
 
-            if (nbytes <= buf->iov.iov_len)
+            if (((dp = buf->iov.iov_base) != NULL) &&
+                (nbytes <= buf->iov_max_len))
                 count = send(s, dp, nbytes, flags);
             else {
                 errno = ENXIO;
