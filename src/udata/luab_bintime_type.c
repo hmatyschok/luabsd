@@ -202,7 +202,7 @@ BINTIME_get(lua_State *L)
 }
 
 /***
- * Copy bintime{} into (LUA_TUSERDATA(iovec)).
+ * Copy bintime{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
@@ -276,7 +276,7 @@ luab_module_t bintime_type = {
  *
  * @function bintime_create
  *
- * @param data                      (LUA_T{NIL,USERDATA(bintime)}), optional.
+ * @param data                      (LUA_T{NIL,USERDATA(BINTIME)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

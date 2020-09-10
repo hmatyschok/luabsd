@@ -417,7 +417,7 @@ UUID_get_node(lua_State *L)
  *              time_hi_and_version         = (LUA_TNUMBER),
  *              clock_seq_hi_and_reserved   = (LUA_TNUMBER),
  *              clock_low                   = (LUA_TNUMBER),
- *              node                        = (LUA_TUSERDATA(iovec)),
+ *              node                        = (LUA_TUSERDATA(IOVEC)),
  *          }
  *
  * @usage t = uuid:get()
@@ -448,7 +448,7 @@ UUID_get(lua_State *L)
 }
 
 /***
- * Copy uuid{} into (LUA_TUSERDATA(iovec)).
+ * Copy uuid{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *

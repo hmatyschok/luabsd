@@ -203,7 +203,7 @@ CRYPT_DATA_get(lua_State *L)
 }
 
 /***
- * Copy crypt_data{} into (LUA_TUSERDATA(iovec)).
+ * Copy crypt_data{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
@@ -283,7 +283,7 @@ luab_module_t crypt_data_type = {
  *
  * @function crypt_data_create
  *
- * @param data          (LUA_T{NIL,USERDATA(crypt_data)}), optional.
+ * @param data          (LUA_T{NIL,USERDATA(CRYPT_DATA)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

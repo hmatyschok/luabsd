@@ -200,7 +200,7 @@ TIMEZONE_get(lua_State *L)
 }
 
 /***
- * Copy timezone{} into (LUA_TUSERDATA(iovec)).
+ * Copy timezone{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *

@@ -55,7 +55,7 @@ extern luab_module_t luab_net_if_lib;
  * @function if_indextoname
  *
  * @param ifindex           Index, see ifntet(9).
- * @param ifname            Empty buffer, (LUA_TUSERDATA(iovec)), but
+ * @param ifname            Empty buffer, (LUA_TUSERDATA(IOVEC)), but
  *                          set up with length by bsd.net.IFNAMSIZ.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])

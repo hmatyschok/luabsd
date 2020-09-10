@@ -49,7 +49,7 @@ extern luab_module_t luab_uuid_lib;
  *
  * @function uuid_create
  *
- * @param status                    (LUA_T{NIL,USERDATA(hook)}), optional.
+ * @param status                    (LUA_T{NIL,USERDATA(HOOK)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -87,7 +87,7 @@ luab_uuid_create(lua_State *L)
  *
  * @function uuid_create_nil
  *
- * @param status                    (LUA_T{NIL,USERDATA(hook)}), optional.
+ * @param status                    (LUA_T{NIL,USERDATA(HOOK)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

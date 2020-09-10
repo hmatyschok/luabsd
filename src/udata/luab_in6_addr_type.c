@@ -160,7 +160,7 @@ IN6_ADDR_get(lua_State *L)
 }
 
 /***
- * Copy in6_addr{} into (LUA_TUSERDATA(iovec)).
+ * Copy in6_addr{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
@@ -235,7 +235,7 @@ luab_module_t in6_addr_type = {
  *
  * @function in6_addr_create
  *
- * @param data          (LUA_T{NIL,USERDATA(in6_addr)}), optional.
+ * @param data          (LUA_T{NIL,USERDATA(IN6_ADDR)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

@@ -319,7 +319,7 @@ CLOCKINIFO_get(lua_State *L)
 }
 
 /***
- * Copy clockinfo{} into (LUA_TUSERDATA(iovec)).
+ * Copy clockinfo{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
@@ -400,7 +400,7 @@ luab_module_t clockinfo_type = {
  *
  * @function clockinfo_create
  *
- * @param data          (LUA_T{NIL,USERDATA(clockinfo)}), optional.
+ * @param data          (LUA_T{NIL,USERDATA(CLOCKINFO)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

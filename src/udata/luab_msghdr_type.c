@@ -277,7 +277,7 @@ MSGHDR_msg_len(lua_State *L)
  *
  * @function set_msg_name
  *
- * @param name              Instance of (LUA_TUSERDATA(iovec)) or nil.
+ * @param name              Instance of (LUA_TUSERDATA(IOVEC)) or nil.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -414,7 +414,7 @@ MSGHDR_get_msg_namelen(lua_State *L)
  *
  * @function set_msg_iov
  *
- * @param t                 LUA_TTABLE((LUA_TUSERDATA(iovec))).
+ * @param t                 LUA_TTABLE((LUA_TUSERDATA(IOVEC))).
  *
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -478,7 +478,7 @@ MSGHDR_set_msg_iov(lua_State *L)
  * @function get_msg_iov
  *
  * @param t                 Value-result argument, instance of
- *                          LUA_TTABLE((LUA_TUSERDATA(iovec)))
+ *                          LUA_TTABLE((LUA_TUSERDATA(IOVEC)))
  *                          with cardinality of 0.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])

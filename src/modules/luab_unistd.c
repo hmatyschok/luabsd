@@ -586,7 +586,7 @@ luab_fpathconf(lua_State *L)
  *
  * @function getwd
  *
- * @param buf               Source location, (LUA_TUSERDATA(iovec)).
+ * @param buf               Source location, (LUA_TUSERDATA(IOVEC)).
  * @param size              Size in bytes.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING}])
@@ -1083,7 +1083,7 @@ luab_pipe(lua_State *L)
  * @function read
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of (LUA_TUSERDATA(iovec)).
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
  * @param nbytes            Assumed number of bytes to be read.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -1390,7 +1390,7 @@ luab_ttyname(lua_State *L)
  * @function ttyname_r
  *
  * @param fd                File descriptor refers to a valid terminal device.
- * @param buf               Buffer, instance of (LUA_TUSERDATA(iovec), capable hold
+ * @param buf               Buffer, instance of (LUA_TUSERDATA(IOVEC), capable hold
  *                          requested user name.
  * @param len               Specifies the length in bytes of requested
  *                          tty(4) name.
@@ -1478,7 +1478,7 @@ luab_unlink(lua_State *L)
  * @function write
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of (LUA_TUSERDATA(iovec)).
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
  * @param nbytes            Number of bytes for write operation.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -1920,7 +1920,7 @@ luab_lchown(lua_State *L)
  * @function pread
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of (LUA_TUSERDATA(iovec)).
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
  * @param nbytes            Assumed number of bytes to be read.
  * @param offset            Location, where data to be read.
  *
@@ -1981,7 +1981,7 @@ luab_pread(lua_State *L)
  * @function pwrite
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of (LUA_TUSERDATA(iovec)).
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
  * @param nbytes            Number of bytes for write operation.
  * @param offset            Specifies position for write operation.
  *
@@ -2079,8 +2079,8 @@ luab_truncate(lua_State *L)
  *
  * @function getlogin_r
  *
- * @param name              Buffer, instance of (LUA_TUSERDATA(iovec), capable hold
- *                          requested user name.
+ * @param name              Buffer, instance of (LUA_TUSERDATA(IOVEC), capable
+ *                          hold requested user name.
  * @param len               Specifies the length in bytes of requested user name.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -2599,8 +2599,8 @@ luab_setreuid(lua_State *L)
  *
  * @function swab
  *
- * @param in_buf            Source location, (LUA_TUSERDATA(iovec)).
- * @param out_buf           Destination location, (LUA_TUSERDATA(iovec)).
+ * @param in_buf            Source location, (LUA_TUSERDATA(IOVEC)).
+ * @param out_buf           Destination location, (LUA_TUSERDATA(IOVEC)).
  * @param len               Length.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -2735,7 +2735,7 @@ luab_getpass(lua_State *L)  /* XXX */
  *
  * @function getwd
  *
- * @param buf               Source location, (LUA_TUSERDATA(iovec)).
+ * @param buf               Source location, (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING}])
  *
@@ -2924,7 +2924,7 @@ luab_crypt_get_format(lua_State *L)
  *                           #3 Traditional
  *
  *                          form.
- * @param data              Instance of (LUA_TUSERDATA(crypt_data)).
+ * @param data              Instance of (LUA_TUSERDATA(CRYPT_DATA)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3194,7 +3194,7 @@ luab_fflagstostr(lua_State *L)
  *
  * @function getdomainname
  *
- * @param name              Instance of (LUA_TUSERDATA(iovec)).
+ * @param name              Instance of (LUA_TUSERDATA(IOVEC)).
  * @param namelen           Maximum size of buffer maps to name.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3250,7 +3250,7 @@ luab_getdomainname(lua_State *L)
  *
  * @function getentropy
  *
- * @param buf               Instance of (LUA_TUSERDATA(iovec)).
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
  * @param buflen            Maximum capacity for used buffer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3365,7 +3365,7 @@ luab_getgrouplist(lua_State *L)
  *
  * @function getloginclass
  *
- * @param name              Instance of (LUA_TUSERDATA(iovec)).
+ * @param name              Instance of (LUA_TUSERDATA(IOVEC)).
  * @param len               Maximum capacity for used buffer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3498,7 +3498,7 @@ luab_lpathconf(lua_State *L)
  *
  * @function getdomainname
  *
- * @param name              Instance of (LUA_TUSERDATA(iovec)).
+ * @param name              Instance of (LUA_TUSERDATA(IOVEC)).
  * @param namelen           Maximum size of buffer maps to name.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -3634,7 +3634,7 @@ luab_setlogin(lua_State *L)
  *
  * @function Setloginclass
  *
- * @param name              Instance of (LUA_TUSERDATA(iovec)).
+ * @param name              Instance of (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

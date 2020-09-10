@@ -277,7 +277,7 @@ FLOCK_get(lua_State *L)
 }
 
 /***
- * Copy flock{} into (LUA_TUSERDATA(iovec)).
+ * Copy flock{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *

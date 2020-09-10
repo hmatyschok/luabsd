@@ -125,7 +125,7 @@ DB_close(lua_State *L)
  *
  * @function del
  *
- * @param key               Instance of (LUA_TUSERDATA(dbt)).
+ * @param key               Instance of (LUA_TUSERDATA(DBT)).
  * @param flags             May be set
  *
  *                              bsd.db.R_CURSOR or 0
@@ -165,8 +165,8 @@ DB_del(lua_State *L)
  *
  * @function get
  *
- * @param key               Instance of (LUA_TUSERDATA(dbt)).
- * @param data              Instance of (LUA_TUSERDATA(dbt)).
+ * @param key               Instance of (LUA_TUSERDATA(DBT)).
+ * @param data              Instance of (LUA_TUSERDATA(DBT)).
  * @param flags             Set to 0.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -203,8 +203,8 @@ DB_get(lua_State *L)
  *
  * @function put
  *
- * @param key               Instance of (LUA_TUSERDATA(dbt)).
- * @param data              Instance of (LUA_TUSERDATA(dbt)).
+ * @param key               Instance of (LUA_TUSERDATA(DBT)).
+ * @param data              Instance of (LUA_TUSERDATA(DBT)).
  * @param flags             May be set from
  *
  *                              bsd.db.R_{CURSOR,I{AFTER,BEFORE},
@@ -246,8 +246,8 @@ DB_put(lua_State *L)
  *
  * @function seq
  *
- * @param key               Instance of (LUA_TUSERDATA(dbt)).
- * @param data              Instance of (LUA_TUSERDATA(dbt)).
+ * @param key               Instance of (LUA_TUSERDATA(DBT)).
+ * @param data              Instance of (LUA_TUSERDATA(DBT)).
  * @param flags             May be set from
  *
  *                              bsd.db.R_{CURSOR,FIRST,LAST,NEXT,PREV}

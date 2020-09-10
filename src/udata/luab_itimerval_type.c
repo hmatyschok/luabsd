@@ -69,7 +69,7 @@ int luab_itimerval_create(lua_State *);
  *
  * @function set_it_interval
  *
- * @param timespec                  Instance of LUA_TUSERDATA(luab_timespec_t).
+ * @param timespec                  Instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @usage itimerval:set_it_interval(timespec)
  */
@@ -122,7 +122,7 @@ ITIMERVAL_get_it_interval(lua_State *L)
  *
  * @function set_it_value
  *
- * @param timespec                  Instance of LUA_TUSERDATA(luab_timespec_t).
+ * @param timespec                  Instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @usage itimerval:set_it_value(timespec)
  */
@@ -196,7 +196,7 @@ ITIMERVAL_get(lua_State *L)
 }
 
 /***
- * Copy itimerval{} into (LUA_TUSERDATA(iovec)).
+ * Copy itimerval{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
@@ -270,7 +270,7 @@ luab_module_t itimerval_type = {
  *
  * @function itimerval_create
  *
- * @param data          (LUA_T{NIL,USERDATA(itimerval)}), optional.
+ * @param data          (LUA_T{NIL,USERDATA(ITIMERVAL)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

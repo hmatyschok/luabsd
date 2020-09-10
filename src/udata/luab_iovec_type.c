@@ -144,7 +144,7 @@ IOVEC_max_len(lua_State *L)
  */
 
 /***
- * Copy data from attributes of (LUA_TUSERDATA(iovec)) into (LUA_TTABLE).
+ * Copy data from attributes of (LUA_TUSERDATA(IOVEC)) into (LUA_TTABLE).
  *
  * @function get
  *
@@ -181,7 +181,7 @@ IOVEC_get(lua_State *L)
 }
 
 /***
- * Generator function, creates deep copy as instance of (LUA_TUSERDATA(iovec)).
+ * Generator function, creates deep copy as instance of (LUA_TUSERDATA(IOVEC)).
  *
  * @function clone
  *
@@ -266,7 +266,7 @@ IOVEC_clear(lua_State *L)
  *
  * @function copy_in
  *
- * @param data              Either (LUA_TSTRING) or (LUA_TUSERDATA(iovec)).
+ * @param data              Either (LUA_TSTRING) or (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -391,7 +391,7 @@ IOVEC_resize(lua_State *L)
  */
 
 /***
- * Read input from file into instance of (LUA_TUSERDATA(iovec)).
+ * Read input from file into instance of (LUA_TUSERDATA(IOVEC)).
  *
  * @function read
  *

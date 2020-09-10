@@ -37,7 +37,7 @@
 #include "luabsd.h"
 
 /*
- * Generic service primitives on (LUA_TUSERDATA(iovec)).
+ * Generic service primitives on (LUA_TUSERDATA(IOVEC)).
  */
 
 const char *

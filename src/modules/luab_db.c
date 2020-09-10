@@ -50,11 +50,11 @@ extern luab_module_t luab_db_lib;
 
 #if __BSD_VISIBLE
 /***
- * Generator function, creates instance of (LUA_TUSERDATA(dbt)).
+ * Generator function, creates instance of (LUA_TUSERDATA(DBT)).
  *
  * @function dbt_create
  *
- * @param data          (LUA_T{NIL,USERDATA(iovec)}), optional.
+ * @param data          (LUA_T{NIL,USERDATA(IOVEC)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

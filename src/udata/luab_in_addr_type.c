@@ -142,7 +142,7 @@ IN_ADDR_get(lua_State *L)
 }
 
 /***
- * Copy in_addr{} into (LUA_TUSERDATA(iovec)).
+ * Copy in_addr{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *

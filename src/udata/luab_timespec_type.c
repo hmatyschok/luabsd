@@ -200,7 +200,7 @@ TIMESPEC_get(lua_State *L)
 }
 
 /***
- * Copy timespec{} into (LUA_TUSERDATA(iovec)).
+ * Copy timespec{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *

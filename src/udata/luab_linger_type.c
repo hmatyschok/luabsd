@@ -200,7 +200,7 @@ LINGER_get(lua_State *L)
 }
 
 /***
- * Copy linger{} into (LUA_TUSERDATA(iovec)).
+ * Copy linger{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *

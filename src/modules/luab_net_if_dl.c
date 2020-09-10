@@ -85,7 +85,7 @@ luab_link_addr(lua_State *L)
  * @function link_ntoa
  *
  * @param sdl               Link level address.
- * @param buf               Instance of (LUA_TUSERDATA(iovec)).
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

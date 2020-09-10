@@ -707,7 +707,7 @@ SOCKADDR_get_sin_port(lua_State *L)
  * @function set_sin_addr
  *
  * @param addr              Specifies ip(4) address by instance
- *                          of (LUA_TUSERDATA(in_addr)).
+ *                          of (LUA_TUSERDATA(IN_ADDR)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1233,7 +1233,7 @@ luab_module_t sockaddr_type = {
  *
  * @function sockaddr_create
  *
- * @param data          (LUA_T{NIL,USERDATA(sockaddr)}), optional.
+ * @param data          (LUA_T{NIL,USERDATA(SOCKADDR)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1289,7 +1289,7 @@ luab_sockaddr_dl_create(lua_State *L)
  *
  * @param port              Specifies port ID, see /etc/services.
  * @param addr              Specifies ip(4) address by instance
- *                          of (LUA_TUSERDATA(in_addr)).
+ *                          of (LUA_TUSERDATA(IN_ADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1330,7 +1330,7 @@ luab_sockaddr_in_create(lua_State *L)
  * @param port              Specifies port ID, see /etc/services.
  * @param info              Specifies Flow Label, see RFC6437,.
  * @param addr              Specifies ip(4) address by instance
- *                          of (LUA_TUSERDATA(in_addr)).
+ *                          of (LUA_TUSERDATA(IN_ADDR)).
  * @param id                Specifies scope ID.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])

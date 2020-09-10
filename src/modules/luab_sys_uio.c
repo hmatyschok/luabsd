@@ -42,7 +42,7 @@
 extern luab_module_t luab_sys_uio_lib;
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(iovec)).
+ * Generator function, creates an instance of (LUA_TUSERDATA(IOVEC)).
  *
  * @function iovec_create
  *
