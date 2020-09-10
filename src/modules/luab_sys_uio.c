@@ -36,12 +36,41 @@
 
 #include "luabsd.h"
 
-extern int luab_iovec_create(lua_State *);
-
 #define LUABSD_SYS_UIO_LIB_ID    1594559271
 #define LUABSD_SYS_UIO_LIB_KEY   "uio"
 
 extern luab_module_t luab_sys_uio_lib;
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(iovec)).
+ *
+ * @function iovec_create
+ *
+ * @param max_len           Capacity in bytes.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = bsd.sys.uio.iovec_create(max_len)
+ */
+static int
+luab_iovec_create(lua_State *L)
+{
+    size_t max_len;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    max_len = (size_t)luab_checkinteger(L, 1,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    return (luab_pushiovec(L, NULL, 0, max_len));
+}
 
 /*
  * Interface against <sys/uio.h>.

@@ -560,7 +560,7 @@ IOVEC_tostring(lua_State *L)
 }
 
 /*
- * Method-table.
+ * Internal interface.
  */
 
 static luab_table_t iovec_methods[] = {
@@ -580,10 +580,6 @@ static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("__tostring",   IOVEC_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
-
-/*
- * Internal interface.
- */
 
 static void *
 iovec_create(lua_State *L, void *arg)
@@ -606,6 +602,8 @@ iovec_create(lua_State *L, void *arg)
             self = luab_newiovec(L, iop);
         else
             self = NULL;    /* XXX IOV_PROXY, not yet. */
+
+        (void)memset_s(iop, sizeof(*iop), 0, sizeof(*iop));
     } else
         self = NULL;
 
@@ -654,34 +652,3 @@ luab_module_t iovec_type = {
     .get = iovec_udata,
     .sz = sizeof(luab_iovec_t),
 };
-
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(iovec)).
- *
- * @function iovec_create
- *
- * @param max_len           Capacity in bytes.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = bsd.sys.uio.iovec_create(max_len)
- */
-int
-luab_iovec_create(lua_State *L)
-{
-    size_t max_len;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    max_len = (size_t)luab_checkinteger(L, 1,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
-    return (luab_pushiovec(L, NULL, 0, max_len));
-}
