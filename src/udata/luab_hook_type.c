@@ -74,7 +74,9 @@ typedef struct luab_hook {
 #define LUABSD_HOOK_TYPE_ID    1595975665
 #define LUABSD_HOOK_TYPE   "HOOK*"
 
-int luab_hook_create(lua_State *);
+/*
+ * Accessor.
+ */
 
 static int
 HOOK_set_char(lua_State *L)
@@ -232,6 +234,10 @@ HOOK_get_socklen(lua_State *L)
     return (luab_pusherr(L, value));
 }
 
+/*
+ * Meta-methods.
+ */
+
 static int
 HOOK_gc(lua_State *L)
 {
@@ -243,6 +249,10 @@ HOOK_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &hook_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t hook_methods[] = {
     LUABSD_FUNC("set_char", HOOK_set_char),
@@ -290,31 +300,3 @@ luab_module_t hook_type = {
     .get = hook_udata,
     .sz = sizeof(luab_hook_t),
 };
-
-/***
- * Generator function.
- *
- * @function hook_create
- *
- * @param data          (LUA_T{NIL,USERDATA(hook)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (hook [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage hook [, err, msg ] = bsd.core.hook_create([ data ])
- */
-int
-luab_hook_create(lua_State *L)
-{
-    luab_type_u *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = hook_udata(L, narg);
-
-    return (luab_pushudata(L, &hook_type, data));
-}

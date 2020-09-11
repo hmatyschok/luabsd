@@ -84,8 +84,6 @@ extern luab_module_t luab_time_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
-extern int luab_hook_create(lua_State *);
-
 #define LUABSD_CORE_LIB_ID    1595987973
 #define LUABSD_CORE_LIB_KEY   "core"
 
@@ -422,6 +420,34 @@ luab_uuid(lua_State *L)
         }
     }
     return (status);
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(HOOK)).
+ *
+ * @function hook_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (hook [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage hook [, err, msg ] = bsd.core.hook_create([ data ])
+ */
+static int
+luab_hook_create(lua_State *L)
+{
+    luab_type_u *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, hook_type, luab_type_u *);
+
+    return (luab_pushudata(L, &hook_type, data));
 }
 
 static luab_table_t luab_core_vec[] = {
