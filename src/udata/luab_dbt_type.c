@@ -61,9 +61,41 @@ typedef struct luab_dbt {
 #define LUABSD_DBT_TYPE   "DBT*"
 
 /*
+ * Accessor for immutable properties.
+ */
+
+static int
+DBT_get_size(lua_State *L)
+{
+    DBT *dbt;
+    size_t len;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    dbt = luab_udata(L, 1, dbt_type, DBT *);
+    len = dbt->size;
+
+    return (luab_pusherr(L, len));
+}
+
+/*
  * Accessor.
  */
 
+/***
+ * Bind data-source.
+ *
+ * @function set_data
+ *
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)), holds byte string.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = dbt:set_data(buf)
+ */
 static int
 DBT_set_data(lua_State *L)
 {
@@ -109,20 +141,6 @@ DBT_get_data(lua_State *L)
     buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
     return (luab_iovec_copyin(L, buf, dbt->data, dbt->size));
-}
-
-static int
-DBT_get_size(lua_State *L)
-{
-    DBT *dbt;
-    size_t len;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    dbt = luab_udata(L, 1, dbt_type, DBT *);
-    len = dbt->size;
-
-    return (luab_pusherr(L, len));
 }
 
 static int

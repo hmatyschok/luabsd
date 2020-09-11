@@ -162,39 +162,13 @@ int luab_buf_copyin(struct iovec *, const void *, size_t);
 int luab_buf_copyout(struct iovec *, void *, size_t);
 
 /*
- * API for operations on stack, [C -> stack].
+ * Generator functions, [Lua -> stack].
  */
-
-int luab_pusherr(lua_State *, lua_Integer);
-int luab_pushnil(lua_State *);
-int luab_pushstring(lua_State *, const char *);
-int luab_pushldata(lua_State *, void *, size_t);
 
 void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
-int luab_pushudata(lua_State *, luab_module_t *, void *);
-int luab_pushiovec(lua_State *, void *, size_t, size_t);
 
 /*
- * API for maniupulating (LUA_TTABLE(LUA_T*)), [C -> stack].
- */
-
-void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
-void    luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
-void    luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
-
-void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
-void    luab_rawsetiovec(lua_State *, int, lua_Integer, void *, size_t);
-
-void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
-void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
-void    luab_setstring(lua_State *, int, const char *, const char *);
-void    luab_setldata(lua_State *, int, const char *, void *, size_t);
-
-void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
-void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
-
-/*
- * Accessor evaluates n-th arg over argv, [stack -> C].
+ * Accessor, n-th arg over argv, [stack -> C].
  *
  * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
  * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
@@ -235,21 +209,32 @@ void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 const char *    luab_iovec_islxarg(lua_State *, int, size_t);
 const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
 
-int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
-int luab_iovec_copyout(lua_State *, luab_iovec_t *, void *, size_t);
+/*
+ * Accessor, [C -> stack].
+ */
 
-int luab_iovec_read(lua_State *, int, luab_iovec_t *, size_t *);
-int luab_iovec_write(lua_State *, int, luab_iovec_t *, size_t *);
-/* 1003.1-2001 */
-#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
-int luab_iovec_readlink(lua_State *, const char *, luab_iovec_t *, size_t *);
-#endif
-#if __POSIX_VISIBLE >= 200809
-int luab_iovec_readlinkat(lua_State *, int, const char *,
-    luab_iovec_t *, size_t *);
-#endif
-int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
-int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
+int luab_pusherr(lua_State *, lua_Integer);
+int luab_pushnil(lua_State *);
+int luab_pushstring(lua_State *, const char *);
+int luab_pushldata(lua_State *, void *, size_t);
+
+int luab_pushudata(lua_State *, luab_module_t *, void *);
+int luab_pushiovec(lua_State *, void *, size_t, size_t);
+
+void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
+void    luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
+void    luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
+
+void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
+void    luab_rawsetiovec(lua_State *, int, lua_Integer, void *, size_t);
+
+void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
+void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
+void    luab_setstring(lua_State *, int, const char *, const char *);
+void    luab_setldata(lua_State *, int, const char *, void *, size_t);
+
+void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
+void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 /* (LUA_TTABLE) */
 int luab_checktable(lua_State *, int);
@@ -267,6 +252,26 @@ int *   luab_checklintvector(lua_State *, int, size_t);
 int luab_dump(lua_State *, int, luab_module_t *, size_t);
 int luab_gc(lua_State *, int, luab_module_t *);
 int luab_tostring(lua_State *, int, luab_module_t *);
+
+/*
+ * Generic service primitves, complex data types. 
+ */
+
+int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
+int luab_iovec_copyout(lua_State *, luab_iovec_t *, void *, size_t);
+
+int luab_iovec_read(lua_State *, int, luab_iovec_t *, size_t *);
+int luab_iovec_write(lua_State *, int, luab_iovec_t *, size_t *);
+/* 1003.1-2001 */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+int luab_iovec_readlink(lua_State *, const char *, luab_iovec_t *, size_t *);
+#endif
+#if __POSIX_VISIBLE >= 200809
+int luab_iovec_readlinkat(lua_State *, int, const char *,
+    luab_iovec_t *, size_t *);
+#endif
+int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
+int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 __END_DECLS
 
 #endif /* _LUABSD_H_ */

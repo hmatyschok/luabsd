@@ -35,7 +35,35 @@
 #include "luabsd.h"
 
 /*
- * Generic operations on complex data types.
+ * Generator functions, [Lua -> stack].
+ */
+
+void *
+luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
+{
+    luab_udata_t *ud = NULL;
+
+    if (m != NULL) {
+        if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
+            (void)memset_s(ud, m->sz, 0, m->sz);
+
+            TAILQ_INIT(&ud->ud_hooks);
+
+            ud->ud_m = m;
+
+            if (m->init != NULL && arg != NULL)
+                (*m->init)(ud, arg);
+
+            luaL_setmetatable(L, m->name);
+        }
+    } else
+        errno = EINVAL;
+
+    return (ud);
+}
+
+/*
+ * Accessor, [stack -> C].
  */
 
 void *
@@ -88,32 +116,8 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
 }
 
 /*
- * Operations on stack.
+ * Acceesor, [C -> stack].
  */
-
-void *
-luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
-{
-    luab_udata_t *ud = NULL;
-
-    if (m != NULL) {
-        if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
-            (void)memset_s(ud, m->sz, 0, m->sz);
-
-            TAILQ_INIT(&ud->ud_hooks);
-
-            ud->ud_m = m;
-
-            if (m->init != NULL && arg != NULL)
-                (*m->init)(ud, arg);
-
-            luaL_setmetatable(L, m->name);
-        }
-    } else
-        errno = EINVAL;
-
-    return (ud);
-}
 
 int
 luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
@@ -145,7 +149,7 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
 }
 
 /*
- * Operations on LUA_TTABLE.
+ * Acceesor for (LUA_TTABLE), [C -> stack].
  */
 
 void
@@ -176,3 +180,13 @@ luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
             lua_setfield(L, narg, k);
     }
 }
+
+/*
+ * Generic accessor, linkage.
+ */
+/*
+int
+luab_addudata(lua_State *L, int narg, int xarg)
+{
+
+}*/

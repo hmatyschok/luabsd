@@ -104,6 +104,10 @@ sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
     return (1);
 }
 
+/*
+ * Generator functions.
+ */
+
 static void
 sockaddr_to_table(lua_State *L, void *arg)
 {
@@ -207,10 +211,6 @@ sockaddr_un_to_table(lua_State *L, void *arg)
 
     lua_pushvalue(L, -1);
 }
-
-/*
- * Generator functions.
- */
 
 /***
  * Generator function - translate (LUA_TUSERDATA(SOCKADDR)) into (LUA_TTABLE).
