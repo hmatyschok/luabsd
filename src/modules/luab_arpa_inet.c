@@ -43,8 +43,8 @@ extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;
 extern luab_module_t sockaddr_type;
 
-extern int luab_sockaddr_in_create(lua_State *);  /* XXX */
-extern int luab_sockaddr_in6_create(lua_State *);
+extern int  luab_sockaddr_in_create(lua_State *L);
+extern int  luab_sockaddr_in6_create(lua_State *L);
 
 #define LUABSD_ARPA_INET_LIB_ID    1595780686
 #define LUABSD_ARPA_INET_LIB_KEY   "inet"

@@ -42,7 +42,6 @@ extern luab_module_t timespec_type;
 
 extern int luab_linger_create(lua_State *);
 extern int luab_msghdr_create(lua_State *);
-extern int luab_sockaddr_create(lua_State *);
 
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
 #define LUABSD_SYS_SOCKET_LIB_KEY   "socket"
@@ -835,6 +834,38 @@ luab_sendmmsg(lua_State *L)
     return (luab_pusherr(L, count));
 }
 #endif
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
+ *
+ * @function sockaddr_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(SOCKADDR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (sockaddr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_create([ data ])
+ */
+static int
+luab_sockaddr_create(lua_State *L)
+{
+    struct sockaddr *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, sockaddr_type, struct sockaddr *);
+
+    return (luab_pushudata(L, &sockaddr_type, data));
+}
 
 /*
  * Interface against <sys/socket.h>.
