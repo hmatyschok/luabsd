@@ -49,7 +49,6 @@
 #include "luabsd.h"
 
 extern luab_module_t crypt_data_type;
-extern int luab_crypt_data_create(lua_State *);
 
 #define LUABSD_UNISTD_LIB_ID    1593623310
 #define LUABSD_UNISTD_LIB_KEY   "unistd"
@@ -3673,6 +3672,38 @@ luab_setloginclass(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __BSD_VISIBLE */
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(CRYPT_DATA)).
+ *
+ * @function crypt_data_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(CRYPT_DATA)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (crypt_data [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage crypt_data [, err, msg ] = bsd.unistd.crypt_data_create([ data ])
+ */
+static int
+luab_crypt_data_create(lua_State *L)
+{
+    struct crypt_data *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, crypt_data_type, struct crypt_data *);
+
+    return (luab_pushudata(L, &crypt_data_type, data));
+}
 
 static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_INT("STDIN_FILENO",  STDIN_FILENO),

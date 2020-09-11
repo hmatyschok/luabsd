@@ -207,34 +207,6 @@ luab_clockinfo_create(lua_State *L)
 }
 
 /***
- * Generator function - create an instance of (LUA_TUSERDATA(CRYPT_DATA)).
- *
- * @function crypt_data_create
- *
- * @param data          Instance of (LUA_TUSERDATA(CRYPT_DATA)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (crypt_data [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage crypt_data [, err, msg ] = bsd.sys.time.crypt_data_create([ data ])
- */
-static int
-luab_crypt_data_create(lua_State *L)
-{
-    struct crypt_data *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, crypt_data_type, struct crypt_data *);
-
-    return (luab_pushudata(L, &crypt_data_type, data));
-}
-
-/***
  * Generator function - create an instance of (LUA_TUSERDATA(ITIMERVAL)).
  *
  * @function itimerval_create

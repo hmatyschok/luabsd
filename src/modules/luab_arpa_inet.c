@@ -43,9 +43,6 @@ extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;
 extern luab_module_t sockaddr_type;
 
-extern int luab_in_addr_create(lua_State *);
-extern int luab_in6_addr_create(lua_State *);
-
 extern int luab_sockaddr_in_create(lua_State *);  /* XXX */
 extern int luab_sockaddr_in6_create(lua_State *);
 
@@ -470,7 +467,6 @@ luab_inet_network(lua_State *L)
 {
     const char *cp;
     struct in_addr ia;
-    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
@@ -836,7 +832,7 @@ luab_in_addr_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, in_addr, struct in_addr *);
+        data = luab_udata(L, narg, in_addr_type, struct in_addr *);
 
     return (luab_pushudata(L, &in_addr_type, data));
 }
@@ -864,7 +860,7 @@ luab_in6_addr_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, in6_addr, struct in6_addr *);
+        data = luab_udata(L, narg, in6_addr_type, struct in6_addr *);
 
     return (luab_pushudata(L, &in6_addr_type, data));
 }

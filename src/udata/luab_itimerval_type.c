@@ -34,15 +34,15 @@
 
 #include "luabsd.h"
 
-extern luab_module_t timespec_type;
+extern luab_module_t timeval_type;
 extern luab_module_t itimerval_type;
 
 /*
  * Interface against
  *
  *  struct itimerval {
- *      struct  timespec it_interval;
- *      struct  timespec it_value;
+ *      struct  timeval it_interval;
+ *      struct  timeval it_value;
  *  };
  *
  */
@@ -89,8 +89,8 @@ ITIMERVAL_get(lua_State *L)
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
 
     lua_newtable(L);
-    luab_setudata(L, -2, &timespec_type, "it_interval", &it->it_interval);
-    luab_setudata(L, -2, &timespec_type, "it_value", &it->it_value);
+    luab_setudata(L, -2, &timeval_type, "it_interval", &it->it_interval);
+    luab_setudata(L, -2, &timeval_type, "it_value", &it->it_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -101,7 +101,7 @@ ITIMERVAL_get(lua_State *L)
  *
  * @function dump
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,USERDATA(TIMEVAL)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (data [, nil, nil]) on success or
  *          (data, (errno, strerror(errno)))
@@ -123,25 +123,25 @@ ITIMERVAL_dump(lua_State *L)
  *
  * @function set_it_interval
  *
- * @param timespec          Instance of (LUA_TUSERDATA(TIMESPEC)).
+ * @param timeval          Instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
  *          (0, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg ] = itimerval:set_it_interval(timespec)
+ * @usage ret [, err, msg ] = itimerval:set_it_interval(timeval)
  */
 static int
 ITIMERVAL_set_it_interval(lua_State *L)
 {
     struct itimerval *it;
-    struct timespec *tv;
+    struct timeval *tv;
 
     (void)luab_checkmaxargs(L, 2);
 
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
-    tv = luab_udata(L, 2, timespec_type, struct timespec *);
+    tv = luab_udata(L, 2, timeval_type, struct timeval *);
 
     (void)memmove(&it->it_interval, tv, sizeof(*tv));
 
@@ -153,22 +153,22 @@ ITIMERVAL_set_it_interval(lua_State *L)
  *
  * @function get_it_interval
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,USERDATA(TIMEVAL)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timespec [, err, msg ] = itimerval:get_it_interval()
+ * @usage timeval [, err, msg ] = itimerval:get_it_interval()
  */
 static int
 ITIMERVAL_get_it_interval(lua_State *L)
 {
     struct itimerval *it;
-    struct timespec *tv;
+    struct timeval *tv;
 
     (void)luab_checkmaxargs(L, 1);
 
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
     tv = &(it->it_interval);
 
-    return (luab_pushudata(L, &timespec_type, tv, struct timespec *));
+    return (luab_pushudata(L, &timeval_type, tv));
 }
 
 /* current value */
@@ -177,25 +177,25 @@ ITIMERVAL_get_it_interval(lua_State *L)
  *
  * @function set_it_value
  *
- * @param timespec          Instance of (LUA_TUSERDATA(TIMESPEC)).
+ * @param timeval          Instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
  *          (0, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg ] = itimerval:set_it_value(timespec)
+ * @usage ret [, err, msg ] = itimerval:set_it_value(timeval)
  */
 static int
 ITIMERVAL_set_it_value(lua_State *L)
 {
     struct itimerval *it;
-    struct timespec *tv;
+    struct timeval *tv;
 
     (void)luab_checkmaxargs(L, 2);
 
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
-    tv = luab_udata(L, 2, timespec_type, struct timespec *);
+    tv = luab_udata(L, 2, timeval_type, struct timeval *);
 
     (void)memmove(&it->it_value, tv, sizeof(*tv));
 
@@ -207,22 +207,22 @@ ITIMERVAL_set_it_value(lua_State *L)
  *
  * @function get_it_value
  *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,USERDATA(TIMEVAL)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timespec [, err, msg ] = itimerval:get_it_value()
+ * @usage timeval [, err, msg ] = itimerval:get_it_value()
  */
 static int
 ITIMERVAL_get_it_value(lua_State *L)
 {
     struct itimerval *it;
-    struct timespec *tv;
+    struct timeval *tv;
 
     (void)luab_checkmaxargs(L, 1);
 
     it = luab_udata(L, 1, itimerval_type, struct itimerval *);
     tv = &(it->it_value);
 
-    return (luab_pushudata(L, &timespec_type, tv, struct timespec *));
+    return (luab_pushudata(L, &timeval_type, tv));
 }
 
 /*
