@@ -33,8 +33,9 @@
 
 __BEGIN_DECLS
 /*
- * Method table.
+ * Definitiions for API method table.
  */
+
 typedef union luab_type {
     char        un_char;
     short       un_short;
@@ -87,7 +88,7 @@ luab_initstring(lua_State *L, luab_type_u *un)
 }
 
 /*
- * Module descriptor.
+ * Definitions for module/udata descriptor.
  */
 
 typedef void *  (*luab_ctor_fn)(lua_State *, void *);
@@ -119,8 +120,8 @@ typedef struct luab_udata {
  */
 
 typedef struct luab_iovec_param {
-    struct iovec    iop_iov;    /* addr. of allocated memory region, iov_base */
-    struct iovec    iop_data;   /* supplied data */
+    struct iovec    iop_iov;    /* maps-to allocated memory region, iov_base */
+    struct iovec    iop_data;   /* maps-to supplied data */
     u_int   iop_flags;
 } luab_iovec_param_t;
 
@@ -209,7 +210,6 @@ lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
 const char *    luab_islstring(lua_State *, int, size_t);
 const char *    luab_tolstring(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
-
 
 /* (LUA_TUSERDATA(XXX)) */
 #define luab_isdata(L, narg, m, t) \
