@@ -32,6 +32,9 @@
 #include <sys/queue.h>
 
 __BEGIN_DECLS
+/*
+ * Method table.
+ */
 typedef union luab_type {
     char        un_char;
     short       un_short;
@@ -47,10 +50,6 @@ typedef union luab_type {
     lua_CFunction   un_fn;
     const char  *un_cp;
 } luab_type_u;
-
-/*
- * Method table.
- */
 
 typedef void    (*luab_table_fn)(lua_State *, luab_type_u *);
 
@@ -175,7 +174,7 @@ int luab_pushudata(lua_State *, luab_module_t *, void *);
 int luab_pushiovec(lua_State *, void *, size_t, size_t);
 
 /*
- * API for maniupulating (LUA_TTABLE), [C -> LUA].
+ * API for maniupulating (LUA_TTABLE(LUA_T*)), [C -> LUA].
  */
 
 void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
@@ -201,19 +200,20 @@ void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
  * the same thing without throwing an error.
  */
 
+int luab_checkmaxargs(lua_State *, int);
+
+/* Atomic data types. */
+lua_Integer luab_tointeger(lua_State *, int, lua_Integer);
+lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
+
 const char *    luab_islstring(lua_State *, int, size_t);
 const char *    luab_tolstring(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
-lua_Integer luab_tointeger(lua_State *, int, lua_Integer);
-lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
 
-int luab_checkmaxargs(lua_State *, int);
-
+/* (LUA_TUSERDATA(XXX)) */
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), (m)))
-#define luab_isiovec(L, narg) \
-    (luab_isdata((L), (narg), iovec_type.name, luab_iovec_t *))
 #define luab_todata(L, narg, m, t) \
     ((t)luab_checkudata((L), (narg), (m)))
 #define luab_toldata(L, narg, m, t, len) \
@@ -229,6 +229,9 @@ void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
 void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 
 /* (LUA_TUSERDATA(IOVEC)) */
+#define luab_isiovec(L, narg) \
+    (luab_isdata((L), (narg), iovec_type.name, luab_iovec_t *))
+
 const char *    luab_iovec_islxarg(lua_State *, int, size_t);
 const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
 
