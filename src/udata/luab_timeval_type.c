@@ -34,37 +34,37 @@
 
 #include "luabsd.h"
 
-extern luab_module_t timespec_type;
+extern luab_module_t timeval_type;
 
 /*
  * Interface against
  *
- *  struct timespec {
- *      time_t  tv_sec;
- *      long    tv_nsec;
+ *  struct timeval {
+ *      time_t      tv_sec;
+ *      suseconds_t tv_usec;
  *  };
  */
 
-typedef struct luab_timespec {
+typedef struct luab_timeval {
     luab_udata_t        ud_softc;
-    struct timespec    timespec;
-} luab_timespec_t;
+    struct timeval    timeval;
+} luab_timeval_t;
 
-#define luab_new_timespec(L, arg) \
-    ((luab_timespec_t *)luab_newuserdata(L, &timespec_type, (arg)))
-#define luab_to_timespec(L, narg) \
-    (luab_toldata((L), (narg), &timespec_type, \
-        struct timespec *, sizeof(struct timespec)))
+#define luab_new_timeval(L, arg) \
+    ((luab_timeval_t *)luab_newuserdata(L, &timeval_type, (arg)))
+#define luab_to_timeval(L, narg) \
+    (luab_toldata((L), (narg), &timeval_type, \
+        struct timeval *, sizeof(struct timeval)))
 
-#define LUABSD_TIMESPEC_TYPE_ID    1594034844
-#define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
+#define LUABSD_TIMEVAL_TYPE_ID    1599788349
+#define LUABSD_TIMEVAL_TYPE    "TIMEVAL*"
 
 /*
  * Generator functions.
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(TIMESPEC)) into (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(TIMEVAL)) into (LUA_TTABLE).
  *
  * @function get
  *
@@ -72,30 +72,30 @@ typedef struct luab_timespec {
  *
  *          t = {
  *              tv_sec  = (LUA_TNUMBER),
- *              tv_nsec = (LUA_TNUMBER),
+ *              tv_usec = (LUA_TNUMBER),
  *          }
  *
- * @usage t = timespec:get()
+ * @usage t = timeval:get()
  */
 static int
-TIMESPEC_get(lua_State *L)
+TIMEVAL_get(lua_State *L)
 {
-    struct timespec *tv;
+    struct timeval *tv;
 
     (void)luab_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, timeval_type, struct timeval *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
-    luab_setinteger(L, -2, "tv_nsec", tv->tv_nsec);
+    luab_setinteger(L, -2, "tv_usec", tv->tv_usec);
     lua_pushvalue(L, -1);
 
     return (1);
 }
 
 /***
- * Generator function - translate timespec{} into (LUA_TUSERDATA(IOVEC)).
+ * Generator function - translate timeval{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
@@ -104,12 +104,12 @@ TIMESPEC_get(lua_State *L)
  *          (iovec [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage iovec [, err, msg ] = timespec:dump()
+ * @usage iovec [, err, msg ] = timeval:dump()
  */
 static int
-TIMESPEC_dump(lua_State *L)
+TIMEVAL_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &timespec_type, sizeof(struct timespec)));
+    return (luab_dump(L, 1, &timeval_type, sizeof(struct timeval)));
 }
 
 /*
@@ -128,17 +128,17 @@ TIMESPEC_dump(lua_State *L)
  *          (data [, nil, nil]) on success or
  *          (data, (errno, strerror(errno)))
  *
- * @usage data [, err, msg ] = timespec:set_tv_sec(data)
+ * @usage data [, err, msg ] = timeval:set_tv_sec(data)
  */
 static int
-TIMESPEC_set_tv_sec(lua_State *L)
+TIMEVAL_set_tv_sec(lua_State *L)
 {
-    struct timespec *tv;
+    struct timeval *tv;
     time_t data;
 
     (void)luab_checkmaxargs(L, 2);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, timeval_type, struct timeval *);
     data = (time_t)luab_checkinteger(L, 2, INT_MAX);
 
     tv->tv_sec = data;
@@ -156,26 +156,26 @@ TIMESPEC_set_tv_sec(lua_State *L)
  *          (data [, nil, nil]) on success or
  *          (data, (errno, strerror(errno)))
  *
- * @usage data [, err, msg ] = timespec:get_tv_sec()
+ * @usage data [, err, msg ] = timeval:get_tv_sec()
  */
 static int
-TIMESPEC_get_tv_sec(lua_State *L)
+TIMEVAL_get_tv_sec(lua_State *L)
 {
-    struct timespec *tv;
+    struct timeval *tv;
     time_t data;
 
     (void)luab_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, timeval_type, struct timeval *);
     data = tv->tv_sec;
 
     return (luab_pusherr(L, data));
 }
 
 /***
- * Set value for tv_nsec.
+ * Set value for tv_usec.
  *
- * @function set_tv_nsec
+ * @function set_tv_usec
  *
  * @param data              Specifies value in nanoneconds.
  *
@@ -184,46 +184,46 @@ TIMESPEC_get_tv_sec(lua_State *L)
  *          (data [, nil, nil]) on success or
  *          (data, (errno, strerror(errno)))
  *
- * @usage data [, err, msg ] = timespec:set_tv_nsec(data)
+ * @usage data [, err, msg ] = timeval:set_tv_usec(data)
  */
 static int
-TIMESPEC_set_tv_nsec(lua_State *L)
+TIMEVAL_set_tv_usec(lua_State *L)
 {
-    struct timespec *tv;
+    struct timeval *tv;
     long data;
 
     (void)luab_checkmaxargs(L, 2);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, timeval_type, struct timeval *);
     data = (long)luab_checkinteger(L, 2, LONG_MAX);
 
-    tv->tv_nsec = data;
+    tv->tv_usec = data;
 
     return (luab_pusherr(L, data));
 }
 
 /***
- * Get value for tv_nsec.
+ * Get value for tv_usec.
  *
- * @function get_tv_nsec
+ * @function get_tv_usec
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (data [, nil, nil]) on success or
  *          (data, (errno, strerror(errno)))
  *
- * @usage data [, err, msg ] = timespec:get_tv_nsec()
+ * @usage data [, err, msg ] = timeval:get_tv_usec()
  */
 static int
-TIMESPEC_get_tv_nsec(lua_State *L)
+TIMEVAL_get_tv_usec(lua_State *L)
 {
-    struct timespec *tv;
+    struct timeval *tv;
     long data;
 
     (void)luab_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
-    data = tv->tv_nsec;
+    tv = luab_udata(L, 1, timeval_type, struct timeval *);
+    data = tv->tv_usec;
 
     return (luab_pusherr(L, data));
 }
@@ -233,60 +233,60 @@ TIMESPEC_get_tv_nsec(lua_State *L)
  */
 
 static int
-TIMESPEC_gc(lua_State *L)
+TIMEVAL_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &timespec_type));
+    return (luab_gc(L, 1, &timeval_type));
 }
 
 static int
-TIMESPEC_tostring(lua_State *L)
+TIMEVAL_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &timespec_type));
+    return (luab_tostring(L, 1, &timeval_type));
 }
 
 /*
  * Internal interface.
  */
 
-static luab_table_t timespec_methods[] = {
-    LUABSD_FUNC("set_tv_sec",   TIMESPEC_set_tv_sec),
-    LUABSD_FUNC("set_tv_nsec",  TIMESPEC_set_tv_nsec),
-    LUABSD_FUNC("get",  TIMESPEC_get),
-    LUABSD_FUNC("get_tv_sec",   TIMESPEC_get_tv_sec),
-    LUABSD_FUNC("get_tv_nsec",  TIMESPEC_get_tv_nsec),
-    LUABSD_FUNC("dump", TIMESPEC_dump),
-    LUABSD_FUNC("__gc", TIMESPEC_gc),
-    LUABSD_FUNC("__tostring",   TIMESPEC_tostring),
+static luab_table_t timeval_methods[] = {
+    LUABSD_FUNC("set_tv_sec",   TIMEVAL_set_tv_sec),
+    LUABSD_FUNC("set_tv_usec",  TIMEVAL_set_tv_usec),
+    LUABSD_FUNC("get",  TIMEVAL_get),
+    LUABSD_FUNC("get_tv_sec",   TIMEVAL_get_tv_sec),
+    LUABSD_FUNC("get_tv_usec",  TIMEVAL_get_tv_usec),
+    LUABSD_FUNC("dump", TIMEVAL_dump),
+    LUABSD_FUNC("__gc", TIMEVAL_gc),
+    LUABSD_FUNC("__tostring",   TIMEVAL_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 
 static void *
-timespec_create(lua_State *L, void *arg)
+timeval_create(lua_State *L, void *arg)
 {
-    return (luab_new_timespec(L, arg));
+    return (luab_new_timeval(L, arg));
 }
 
 static void
-timespec_init(void *ud, void *arg)
+timeval_init(void *ud, void *arg)
 {
-    luab_timespec_t *self;
+    luab_timeval_t *self;
 
-    if (((self = (luab_timespec_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->timespec, arg, sizeof(self->timespec));
+    if (((self = (luab_timeval_t *)ud) != NULL) && (arg != NULL))
+        (void)memmove(&self->timeval, arg, sizeof(self->timeval));
 }
 
 static void *
-timespec_udata(lua_State *L, int narg)
+timeval_udata(lua_State *L, int narg)
 {
-    return (luab_to_timespec(L, narg));
+    return (luab_to_timeval(L, narg));
 }
 
-luab_module_t timespec_type = {
-    .cookie = LUABSD_TIMESPEC_TYPE_ID,
-    .name = LUABSD_TIMESPEC_TYPE,
-    .vec = timespec_methods,
-    .create = timespec_create,
-    .init = timespec_init,
-    .get = timespec_udata,
-    .sz = sizeof(luab_timespec_t),
+luab_module_t timeval_type = {
+    .cookie = LUABSD_TIMEVAL_TYPE_ID,
+    .name = LUABSD_TIMEVAL_TYPE,
+    .vec = timeval_methods,
+    .create = timeval_create,
+    .init = timeval_init,
+    .get = timeval_udata,
+    .sz = sizeof(luab_timeval_t),
 };

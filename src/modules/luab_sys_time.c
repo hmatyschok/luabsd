@@ -51,6 +51,7 @@
 extern luab_module_t clockinfo_type;
 extern luab_module_t itimerval_type;
 extern luab_module_t timespec_type;
+extern luab_module_t timeval_type;
 extern luab_module_t timezone_type;
 
 #if __BSD_VISIBLE
@@ -266,11 +267,11 @@ luab_itimerval_create(lua_State *L)
 }
 
 /***
- * Generator function - create an instance of (LUA_TUSERDATA(TIMEVAL)).
+ * Generator function - create an instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @function timespec_create
  *
- * @param data          Instance of (LUA_TUSERDATA(TIMEVAL)).
+ * @param data          Instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -291,6 +292,34 @@ luab_timespec_create(lua_State *L)
         data = luab_udata(L, narg, timespec_type, struct timespec *);
 
     return (luab_pushudata(L, &timespec_type, data));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(TIMEVAL)).
+ *
+ * @function timeval_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(TIMEVAL)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (timeval [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage timeval [, err, msg ] = bsd.sys.time.timeval_create([ data ])
+ */
+static int
+luab_timeval_create(lua_State *L)
+{
+    struct timeval *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, timeval_type, struct timeval *);
+
+    return (luab_pushudata(L, &timeval_type, data));
 }
 
 /***
@@ -370,6 +399,7 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUABSD_FUNC("clockinfo_create",  luab_clockinfo_create),
     LUABSD_FUNC("itimerval_create",  luab_itimerval_create),
     LUABSD_FUNC("timespec_create",   luab_timespec_create),
+    LUABSD_FUNC("timeval_create",   luab_timeval_create),
     LUABSD_FUNC("timezone_create",   luab_timezone_create),
     LUABSD_FUNC(NULL, NULL)
 };

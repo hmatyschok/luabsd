@@ -50,6 +50,7 @@ extern luab_module_t msghdr_type;
 extern luab_module_t sockaddr_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
+extern luab_module_t timeval_type;
 extern luab_module_t timezone_type;
 extern luab_module_t tm_type;
 extern luab_module_t uuid_type;
@@ -540,6 +541,7 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, &stat_type);
     luab_newmetatable(L, &timezone_type);
     luab_newmetatable(L, &timespec_type);
+    luab_newmetatable(L, &timeval_type);
     luab_newmetatable(L, &uuid_type);
 #if __BSD_VISIBLE
     luab_newmetatable(L, &bintime_type);

@@ -74,7 +74,7 @@ Therefore, a callout may implemented e. g.
 
 by utilizing setitimer(2) or interval timer [2]:
 
-    local tv = bsd.sys.time.timespec_create()
+    local tv = bsd.sys.time.timeval_create()
     tv:set_tv_sec(3)
 
     local it_callout = bsd.sys.time.itimerval_create()
