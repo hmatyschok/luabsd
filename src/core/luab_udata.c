@@ -108,8 +108,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
                 (*m->init)(ud, arg);
 
             luaL_setmetatable(L, m->name);
-        } else
-            errno = ENOMEM;
+        }
     } else
         errno = EINVAL;
 

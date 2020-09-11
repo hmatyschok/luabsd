@@ -162,7 +162,7 @@ int luab_buf_copyin(struct iovec *, const void *, size_t);
 int luab_buf_copyout(struct iovec *, void *, size_t);
 
 /*
- * API for operations on stack, [C -> LUA].
+ * API for operations on stack, [C -> stack].
  */
 
 int luab_pusherr(lua_State *, lua_Integer);
@@ -175,7 +175,7 @@ int luab_pushudata(lua_State *, luab_module_t *, void *);
 int luab_pushiovec(lua_State *, void *, size_t, size_t);
 
 /*
- * API for maniupulating (LUA_TTABLE(LUA_T*)), [C -> LUA].
+ * API for maniupulating (LUA_TTABLE(LUA_T*)), [C -> stack].
  */
 
 void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
@@ -194,7 +194,7 @@ void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 /*
- * Accessor evaluates n-th arg over argv, [LUA -> C].
+ * Accessor evaluates n-th arg over argv, [stack -> C].
  *
  * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
  * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
