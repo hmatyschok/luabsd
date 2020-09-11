@@ -62,7 +62,72 @@ typedef struct luab_flock {
 #define LUABSD_FLOCK_TYPE_ID    1593623399
 #define LUABSD_FLOCK_TYPE    "FLOCK*"
 
-int luab_flock_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(FLOCK)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              l_start     = (LUA_TNUMBER),
+ *              l_len       = (LUA_TNUMBER),
+ *              l_pid       = (LUA_TNUMBER),
+ *              l_type      = (LUA_TNUMBER),
+ *              l_whence    = (LUA_TNUMBER),
+ *              l_sysid     = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = flock:get()
+ */
+static int
+FLOCK_get(lua_State *L)
+{
+    struct flock *l;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    l = luab_udata(L, 1, flock_type, struct flock *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "l_start", l->l_start);
+    luab_setinteger(L, -2, "l_len", l->l_len);
+    luab_setinteger(L, -2, "l_pid", l->l_pid);
+    luab_setinteger(L, -2, "l_type", l->l_type);
+    luab_setinteger(L, -2, "l_whence", l->l_whence);
+    luab_setinteger(L, -2, "l_sysid", l->l_sysid);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate flock{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = flock:dump()
+ */
+static int
+FLOCK_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &flock_type, sizeof(struct flock)));
+}
+
+/*
+ * Accessor.
+ */
 
 /* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */
 static int
@@ -251,48 +316,8 @@ FLOCK_get_l_sysid(lua_State *L)
 }
 
 /*
- * Maps attributes on flock{} to an instance of LUA_TTABLE.
+ * Meta-methods.
  */
-static int
-FLOCK_get(lua_State *L)
-{
-    struct flock *l;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    l = luab_udata(L, 1, flock_type, struct flock *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "l_start", l->l_start);
-    luab_setinteger(L, -2, "l_len", l->l_len);
-    luab_setinteger(L, -2, "l_pid", l->l_pid);
-    luab_setinteger(L, -2, "l_type", l->l_type);
-    luab_setinteger(L, -2, "l_whence", l->l_whence);
-    luab_setinteger(L, -2, "l_sysid", l->l_sysid);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy flock{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = flock:dump()
- */
-static int
-FLOCK_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &flock_type, sizeof(struct flock)));
-}
 
 static int
 FLOCK_gc(lua_State *L)
@@ -306,6 +331,10 @@ FLOCK_tostring(lua_State *L)
     return (luab_tostring(L, 1, &flock_type));
 }
 
+/*
+ * Internal interface.
+ */
+ 
 static luab_table_t flock_methods[] = {
     LUABSD_FUNC("set_l_start",  FLOCK_set_l_start),
     LUABSD_FUNC("set_l_len",    FLOCK_set_l_len),
@@ -356,31 +385,3 @@ luab_module_t flock_type = {
     .get = flock_udata,
     .sz = sizeof(luab_flock_t),
 };
-
-/***
- * Generator function.
- *
- * @function flock_create
- *
- * @param data          (LUA_T{NIL,USERDATA(flock)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (flock [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage flock [, err, msg ] = bsd.sys.fcntl.flock_create([ data ])
- */
-int
-luab_flock_create(lua_State *L)
-{
-    struct flock *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = flock_udata(L, narg);
-
-    return (luab_pushudata(L, &flock_type, data));
-}

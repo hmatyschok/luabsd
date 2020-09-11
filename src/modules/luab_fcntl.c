@@ -39,15 +39,13 @@
 
 extern luab_module_t flock_type;
 
-extern int  luab_flock_create(lua_State *);
-
 #define LUABSD_FCNTL_LIB_ID    1593623310
 #define LUABSD_FCNTL_LIB_KEY    "fcntl"
 
 extern luab_module_t luab_fcntl_lib;
 
 /*
- * Interface against service primitives on <fcntl.h>.
+ * Service primitives.
  */
 
 /***
@@ -193,7 +191,7 @@ luab_fcntl(lua_State *L)
  *
  *                              bsd.sys.file.LOCK_*,
  *
- *                          over <sys/file,h>.
+ *                          over <sys/file.h>.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -292,7 +290,43 @@ luab_posix_fallocate(lua_State *L)
 }
 #endif
 
-static luab_table_t luab_fcntl_vec[] = {    /* fcntl.h */
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(FLOCK)).
+ *
+ * @function flock_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(FLOCK)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (flock [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage flock [, err, msg ] = bsd.fcntl.flock_create([ data ])
+ */
+static int
+luab_flock_create(lua_State *L)
+{
+    struct flock *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, flock_type, struct flock *);
+
+    return (luab_pushudata(L, &flock_type, data));
+}
+
+/*
+ * Interface against <fcntl.h>.
+ */
+
+static luab_table_t luab_fcntl_vec[] = {
     LUABSD_INT("O_RDONLY", O_RDONLY),
     LUABSD_INT("O_WRONLY", O_WRONLY),
     LUABSD_INT("O_RDWR",   O_RDWR),

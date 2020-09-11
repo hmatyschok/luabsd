@@ -59,7 +59,64 @@ typedef struct luab_bintime {
 #define LUABSD_BINTIME_TYPE_ID    1594161740
 #define LUABSD_BINTIME_TYPE    "BINTIME*"
 
-int luab_bintime_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(BINTIME)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              sec     = (LUA_TNUMBER),
+ *              frac    = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = bintime:get()
+ */
+static int
+BINTIME_get(lua_State *L)
+{
+    struct bintime *bt;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    bt = luab_udata(L, 1, bintime_type, struct bintime *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "sec", bt->sec);
+    luab_setinteger(L, -2, "frac", bt->frac);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate bintime{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = bintime:dump()
+ */
+static int
+BINTIME_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &bintime_type, sizeof(struct bintime)));
+}
+
+/*
+ * Accessor.
+ */
 
 /***
  * Set value for sytem time.
@@ -173,48 +230,9 @@ BINTIME_get_frac(lua_State *L)
     return (luab_pusherr(L, data));
 }
 
-/***
- * Translate bintime{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = bintime:get()
+/*
+ * Meta-methods.
  */
-static int
-BINTIME_get(lua_State *L)
-{
-    struct bintime *bt;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    bt = luab_udata(L, 1, bintime_type, struct bintime *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "sec", bt->sec);
-    luab_setinteger(L, -2, "frac", bt->frac);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy bintime{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage iovec [, err, msg ] = bintime:dump()
- */
-static int
-BINTIME_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &bintime_type, sizeof(struct bintime)));
-}
 
 static int
 BINTIME_gc(lua_State *L)
@@ -227,6 +245,10 @@ BINTIME_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &bintime_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t bintime_methods[] = {
     LUABSD_FUNC("set_sec",  BINTIME_set_sec),
@@ -270,31 +292,3 @@ luab_module_t bintime_type = {
     .get = bintime_udata,
     .sz = sizeof(luab_bintime_t),
 };
-
-/***
- * Generator function.
- *
- * @function bintime_create
- *
- * @param data                      (LUA_T{NIL,USERDATA(BINTIME)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (bintime [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ data ])
- */
-int
-luab_bintime_create(lua_State *L)
-{
-    struct bintime *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = bintime_udata(L, narg);
-
-    return (luab_pushudata(L, &bintime_type, data));
-}

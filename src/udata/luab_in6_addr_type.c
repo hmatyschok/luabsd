@@ -66,16 +66,74 @@ typedef struct luab_in6_addr {
 #define LUABSD_IN6_ADDR_TYPE_ID    1595890830
 #define LUABSD_IN6_ADDR_TYPE    "IN6_ADDR*"
 
-int luab_in6_addr_create(lua_State *);
+/*
+ * Generator functions.
+ */
 
+/***
+ * Generator function - translate (LUA_TUSERDATA(IN6_ADDR)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              s6_addr = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = in6_addr:get()
+ */
+static int
+IN6_ADDR_get(lua_State *L)
+{
+    struct in6_addr *ia;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ia = luab_udata(L, 1, in6_addr_type, struct in6_addr *);
+
+    lua_newtable(L);
+    luab_setldata(L, -2, "s6_addr", &ia->s6_addr, sizeof(ia->__u6_addr));
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate in6_addr{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = in6_addr:dump()
+ */
+static int
+IN6_ADDR_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &in6_addr_type, sizeof(struct in6_addr)));
+}
+
+/*
+ * Accessor.
+ */
+ 
 /***
  * Copyin IPv6 address.
  *
  * @function set_s6_addr
  *
- * @param id           LUA_TTABLE(uint32_t) with cardinality of #4.
+ * @param data              LUA_TTABLE(uint32_t) with cardinality of #4.
  *
- * @usage in6_addr:set_s6_addr(id)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = in6_addr:set_s6_addr(id)
  */
 static int
 IN6_ADDR_set_s6_addr(lua_State *L)
@@ -89,7 +147,7 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 
     (void)luab_checkltable(L, 2, 4);
 
-    lua_pushnil(L);
+    lua_pushnil(L); /* Traverse through whole table. */
 
     for (k = 0; lua_next(L, 2) != 0; k++) {
 
@@ -102,7 +160,7 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 
         lua_pop(L, 1);
     }
-    return (0);
+    return (luab_pusherr(L, 0));
 }
 
 /***
@@ -112,7 +170,7 @@ IN6_ADDR_set_s6_addr(lua_State *L)
  *
  * @return (LUA_TTABLE) with cardinality of #4 (over uint32_t).
  *
- * @usage id = in6_addr:get_s6_addr()
+ * @usage t = in6_addr:get_s6_addr()
  */
 static int
 IN6_ADDR_get_s6_addr(lua_State *L)
@@ -134,48 +192,9 @@ IN6_ADDR_get_s6_addr(lua_State *L)
     return (1);
 }
 
-/***
- * Translate in6_addr{} into byte string.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = in6_addr:get()
+/*
+ * Meta-methods
  */
-static int
-IN6_ADDR_get(lua_State *L)
-{
-    struct in6_addr *ia;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    ia = luab_udata(L, 1, in6_addr_type, struct in6_addr *);
-
-    lua_newtable(L);
-    luab_setiovec(L, -2, "s6_addr", ia->s6_addr, sizeof(ia->__u6_addr));
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy in6_addr{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = in6_addr:dump()
- */
-static int
-IN6_ADDR_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &in6_addr_type, sizeof(struct in6_addr)));
-}
 
 static int
 IN6_ADDR_gc(lua_State *L)
@@ -188,6 +207,10 @@ IN6_ADDR_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &in6_addr_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t in6_addr_methods[] = {
     LUABSD_FUNC("set_s6_addr",  IN6_ADDR_set_s6_addr),
@@ -229,31 +252,3 @@ luab_module_t in6_addr_type = {
     .get = in6_addr_udata,
     .sz = sizeof(luab_in6_addr_t),
 };
-
-/***
- * Generator function.
- *
- * @function in6_addr_create
- *
- * @param data          (LUA_T{NIL,USERDATA(IN6_ADDR)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (in6_addr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage in6_addr [, err, msg ] = bsd.arpa.inet.in6_addr_create([ data ])
- */
-int
-luab_in6_addr_create(lua_State *L)
-{
-    struct in6_addr *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = in6_addr_udata(L, narg);
-
-    return (luab_pushudata(L, &in6_addr_type, data));
-}

@@ -38,9 +38,11 @@
 #include "luabsd.h"
 
 /*
- *
- * bp refers iov->iov_base.
- * dp refers external data.
+ * Generic service primitives for iovec{}.
+ * 
+ *   #1 bp refers iov->iov_base.
+ * 
+ *   #2 dp or v refers external data.
  */
 
 int

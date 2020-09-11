@@ -37,7 +37,7 @@
 #include "luabsd.h"
 
 /*
- * Generic service primitives on (LUA_TUSERDATA(IOVEC)).
+ * Internal API for (LUA_TUSERDATA(IOVEC)).
  */
 
 const char *
@@ -94,7 +94,7 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
 }
 
 /*
- * Operations on LUA_TTABLE.
+ * Operations on (LUA_TTABLE).
  */
 
 void

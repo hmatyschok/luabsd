@@ -60,6 +60,10 @@ typedef struct luab_dbt {
 #define LUABSD_DBT_TYPE_ID    1596025036
 #define LUABSD_DBT_TYPE   "DBT*"
 
+/*
+ * Accessor.
+ */
+
 static int
 DBT_set_data(lua_State *L)
 {
@@ -140,6 +144,10 @@ DBT_get(lua_State *L)
     return (1);
 }
 
+/*
+ * Meta-methods.
+ */
+
 static int
 DBT_gc(lua_State *L)
 {
@@ -161,6 +169,10 @@ DBT_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &dbt_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t dbt_methods[] = {
     LUABSD_FUNC("set_data",  DBT_set_data),

@@ -55,11 +55,11 @@ extern int luab_sockaddr_in6_create(lua_State *);
 extern luab_module_t luab_arpa_inet_lib;
 
 /*
- * Fetch LUA_TUSERDATA(luab_module_t) by AF_XXX.
- *
- * XXX Well, I'll should refactor and externalize this function - the
- * XXX switch-statement shall replaced by a so called "protosw-table",
- * XXX but not yet at this stage.
+ * Subr.
+ */
+
+/*
+ * f: (AF_XXX) -> (LUA_TUSERDATA(XXX))
  */
 static void *
 luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
@@ -82,12 +82,16 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
     return ((*type->get)(L, narg));
 }
 
+/*
+ * Service primitves.
+ */
+
 /***
  * inet_addr(3) - Internet address manipulation routines
  *
  * @function inet_addr
  *
- * @param cp                    String denotes IPv4 address.
+ * @param cp                    String represents IPv4 address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -101,20 +105,13 @@ luab_inet_addr(lua_State *L)
 {
     const char *cp;
     struct in_addr ia;
-    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
-
     ia.s_addr = inet_addr(cp);
 
-    if (luab_newuserdata(L, &in_addr_type, &ia) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &in_addr_type, &ia));
 }
 
 /***
@@ -122,7 +119,7 @@ luab_inet_addr(lua_State *L)
  *
  * @function inet_ntoa
  *
- * @param in                    Instance of (LUA_TUSERDATA(IN_ADDR)).
+ * @param ia                    Instance of (LUA_TUSERDATA(IN_ADDR)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -140,7 +137,6 @@ luab_inet_ntoa(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
-
     cp = inet_ntoa(*ia);
 
     return (luab_pushstring(L, cp));
@@ -152,11 +148,12 @@ luab_inet_ntoa(lua_State *L)
  * @function inet_ntop
  *
  * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of (LUA_TUSERDATA(IN6_ADDR))
- *                              for binary representation of character string
+ * @param src                   Instance of (LUA_TUSERDATA(IN6_ADDR)) holds a
+ *                              binary representation of character string
  *                              denotes OSI-L3 address.
- * @param dst                   Instance of (LUA_TUSERDATA(IOVEC)) for
- *                              character String to be interpreted as address.
+ * @param dst                   Instance of (LUA_TUSERDATA(IOVEC)) holds a
+ *                              character String to be interpreted as IPv4
+ *                              address.
  * @param size                  Specifies constraint, size of character string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -219,10 +216,10 @@ luab_inet_ntop(lua_State *L)
  * @function inet_pton
  *
  * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of (LUA_TUSERDATA(IOVEC)) for
+ * @param src                   Instance of (LUA_TUSERDATA(IOVEC)) holds a
  *                              character String to be interpreted as address.
- * @param dst                   Instance of (LUA_TUSERDATA(IN6_ADDR))
- *                              for binary representation of character string
+ * @param dst                   Instance of (LUA_TUSERDATA(IN6_ADDR)) holds
+ *                              binary representation of character string
  *                              denotes OSI-L3 address.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -321,20 +318,13 @@ luab_inet_lnaof(lua_State *L)
 {
     struct in_addr *ia;
     struct in_addr lna;
-    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
     ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
-
     lna.s_addr = inet_lnaof(*ia);
 
-    if (luab_newuserdata(L, &in_addr_type, &lna) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &in_addr_type, &lna));
 }
 
 /***
@@ -342,10 +332,10 @@ luab_inet_lnaof(lua_State *L)
  *
  * @function inet_makeaddr
  *
- * @param net                   Instance of (LUA_TUSERDATA(IN_ADDR)),
- *                              denotes internet network number.
- * @param lna                   Instance of (LUA_TUSERDATA(IN_ADDR)),
- *                              denotes local network address.
+ * @param net                   Instance of (LUA_TUSERDATA(IN_ADDR)), holds
+ *                              an internet network number.
+ * @param lna                   Instance of (LUA_TUSERDATA(IN_ADDR)), holds
+ *                              a local network address.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -360,7 +350,6 @@ luab_inet_makeaddr(lua_State *L)
     struct in_addr *net;
     struct in_addr *lna;
     struct in_addr ia;
-    int status;
 
     (void)luab_checkmaxargs(L, 2);
 
@@ -369,12 +358,7 @@ luab_inet_makeaddr(lua_State *L)
 
     ia = inet_makeaddr(net->s_addr, lna->s_addr);
 
-    if (luab_newuserdata(L, &in_addr_type, &ia) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &in_addr_type, &ia));
 }
 
 /***
@@ -382,8 +366,8 @@ luab_inet_makeaddr(lua_State *L)
  *
  * @function inet_neta
  *
- * @param src                   Instance of (LUA_TUSERDATA(IN_ADDR)),
- *                              denotes internet network number.
+ * @param src                   Instance of (LUA_TUSERDATA(IN_ADDR)), holds
+ *                              an internet network number.
  * @param dst                   Buffer, instance of (LUA_TUSERDATA(IOVEC)).
  * @param size                  Minimum size of character string.
  *
@@ -444,34 +428,27 @@ luab_inet_neta(lua_State *L)
  *
  * @function inet_netof
  *
- * @param in                    Instance of (LUA_TUSERDATA(IN_ADDR)).
+ * @param ia                    Instance of (LUA_TUSERDATA(IN_ADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (in_addr [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage net [, err, msg] = bsd.arpa.inet.inet_netof(in)
+ * @usage net [, err, msg] = bsd.arpa.inet.inet_netof(ia)
  */
 static int
 luab_inet_netof(lua_State *L)
 {
     struct in_addr *ia;
     struct in_addr net;
-    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
     ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
-
     net.s_addr = inet_netof(*ia);
 
-    if (luab_newuserdata(L, &in_addr_type, &net) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &in_addr_type, &net));
 }
 
 /***
@@ -498,15 +475,9 @@ luab_inet_network(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
-
     ia.s_addr = inet_network(cp);
 
-    if (luab_newuserdata(L, &in_addr_type, &ia) == NULL)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_pushudata(L, &in_addr_type, &ia));
 }
 
 /***
@@ -515,7 +486,7 @@ luab_inet_network(lua_State *L)
  * @function inet_net_ntop
  *
  * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of (LUA_TUSERDATA(IN6_ADDR))
+ * @param src                   Instance of (LUA_TUSERDATA(IN{6}_ADDR))
  *                              for binary representation of character string
  *                              denotes OSI-L3 address.
  * @param bits                  Cardinality of bitvector subset of OSI-L3
@@ -588,7 +559,7 @@ luab_inet_net_ntop(lua_State *L)
  * @param af                    Specifies address fromat over protocol domain(9).
  * @param src                   Instance of (LUA_TUSERDATA(IOVEC)) for
  *                              character String to be interpreted as address.
- * @param dst                   Instance of (LUA_TUSERDATA(IN6_ADDR))
+ * @param dst                   Instance of (LUA_TUSERDATA(IN{6}_ADDR))
  *                              for binary representation of character string
  *                              denotes OSI-L3 address.
  * @param size                  Specifies constraint, size of character string.
@@ -649,7 +620,7 @@ luab_inet_net_pton(lua_State *L)
  * @function inet_ntoa_r
  *
  * @param in                    Instance of (LUA_TUSERDATA(IN_ADDR)).
- * @param buf                   Instance of (LUA_TUSERDATA(IOVEC)) for
+ * @param buf                   Instance of (LUA_TUSERDATA(IOVEC)) holds a
  *                              character String to be interpreted as address.
  * @param size                  Length of string.
  *
@@ -711,7 +682,7 @@ luab_inet_ntoa_r(lua_State *L)
  * @function inet_cidr_ntop
  *
  * @param af                    Specifies address fromat over protocol domain(9).
- * @param src                   Instance of (LUA_TUSERDATA(IN6_ADDR))
+ * @param src                   Instance of (LUA_TUSERDATA(IN{6}_ADDR))
  *                              for binary representation of character string
  *                              denotes OSI-L3 address.
  * @param bits                  Cardinality of bitvector subset of OSI-L3
@@ -784,7 +755,7 @@ luab_inet_cidr_ntop(lua_State *L)
  * @param af                    Specifies address fromat over protocol domain(9).
  * @param src                   Instance of (LUA_TUSERDATA(IOVEC)) for
  *                              character String to be interpreted as address.
- * @param dst                   Instance of (LUA_TUSERDATA(IN6_ADDR))
+ * @param dst                   Instance of (LUA_TUSERDATA(IN{6}_ADDR))
  *                              for binary representation of character string
  *                              denotes OSI-L3 address.
  * @param bits                  Cardinality of bitvector subset of OSI-L3
@@ -837,6 +808,66 @@ luab_inet_cidr_pton(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __BSD_VISIBLE */
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(IN_ADDR)).
+ *
+ * @function in_addr_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(IN_ADDR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (in_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage in_addr [, err, msg ] = bsd.arpa.inet.in_addr_create([ data ])
+ */
+static int
+luab_in_addr_create(lua_State *L)
+{
+    struct in_addr *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, in_addr, struct in_addr *);
+
+    return (luab_pushudata(L, &in_addr_type, data));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(IN6_ADDR)).
+ *
+ * @function in6_addr_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(IN6_ADDR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (in6_addr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage in6_addr [, err, msg ] = bsd.arpa.inet.in6_addr_create([ data ])
+ */
+static int
+luab_in6_addr_create(lua_State *L)
+{
+    struct in6_addr *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, in6_addr, struct in6_addr *);
+
+    return (luab_pushudata(L, &in6_addr_type, data));
+}
 
 /*
  * Interface against <arpa/inet.h>.

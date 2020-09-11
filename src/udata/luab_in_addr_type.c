@@ -58,7 +58,60 @@ typedef struct luab_in_addr {
 #define LUABSD_IN_ADDR_TYPE_ID    1595799233
 #define LUABSD_IN_ADDR_TYPE    "IN_ADDR*"
 
-int luab_in_addr_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(IN_ADDR)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              s_addr  = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = in_addr:get()
+ */
+static int
+IN_ADDR_get(lua_State *L)
+{
+    struct in_addr *ia;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
+
+    lua_newtable(L);
+    luab_setinteger(L, -2, "s_addr", ia->s_addr);
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate in_addr{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = in_addr:dump()
+ */
+static int
+IN_ADDR_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &in_addr_type, sizeof(struct in_addr)));
+}
+
+/*
+ * Accessor.
+ */
 
 /***
  * Set IPv4 address.
@@ -116,48 +169,9 @@ IN_ADDR_get_s_addr(lua_State *L)
     return (luab_pusherr(L, id));
 }
 
-/***
- * Translate in_addr{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = in_addr:get()
+/*
+ * Meta-methods.
  */
-static int
-IN_ADDR_get(lua_State *L)
-{
-    struct in_addr *ia;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    ia = luab_udata(L, 1, in_addr_type, struct in_addr *);
-
-    lua_newtable(L);
-    luab_setinteger(L, -2, "s_addr", ia->s_addr);
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy in_addr{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = in_addr:dump()
- */
-static int
-IN_ADDR_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &in_addr_type, sizeof(struct in_addr)));
-}
 
 static int
 IN_ADDR_gc(lua_State *L)
@@ -170,6 +184,10 @@ IN_ADDR_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &in_addr_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t in_addr_methods[] = {
     LUABSD_FUNC("set_s_addr",  IN_ADDR_set_s_addr),
@@ -211,32 +229,3 @@ luab_module_t in_addr_type = {
     .get = in_addr_udata,
     .sz = sizeof(luab_in_addr_t),
 };
-
-/***
- * Generator function.
- *
- * @function in_addr_create
- *
- * @param data          (LUA_T{NIL,USERDATA(in_addr)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (in_addr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage in_addr [, err, msg ] = bsd.arpa.inet.in_addr_create([ data ])
- */
-int
-luab_in_addr_create(lua_State *L)
-{
-    struct in_addr *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = in_addr_udata(L, narg);
-
-    return (luab_pushudata(L, &in_addr_type, data));
-}
-

@@ -59,7 +59,62 @@ typedef struct luab_timezone {
 #define LUABSD_TIMEZONE_TYPE_ID    1594159943
 #define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
 
-int luab_timezone_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(TIMEZONE)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              tz_minuteswest  = (LUA_TNUMBER),
+ *              tz_dsttime      = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = timezone:get()
+ */
+static int
+TIMEZONE_get(lua_State *L)
+{
+    struct timezone *tz;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    tz = luab_udata(L, 1, timezone_type, struct timezone *);
+
+    lua_newtable(L);
+    luab_setinteger(L, -2, "tz_minuteswest", tz->tz_minuteswest);
+    luab_setinteger(L, -2, "tz_dsttime", tz->tz_dsttime);
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate timezone{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = timezone:dump()
+ */
+static int
+TIMEZONE_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &timezone_type, sizeof(struct timezone)));
+}
+
+/*
+ * Accessor.
+ */
 
 /***
  * Set value for minutes west of Greenwich.
@@ -173,46 +228,9 @@ TIMEZONE_get_tz_dsttime(lua_State *L)
     return (luab_pusherr(L, data));
 }
 
-/***
- * Translate timezone{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = timezone:get()
+/*
+ * Meta-methods.
  */
-static int
-TIMEZONE_get(lua_State *L)
-{
-    struct timezone *tz;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    tz = luab_udata(L, 1, timezone_type, struct timezone *);
-
-    lua_newtable(L);
-    luab_setinteger(L, -2, "tz_minuteswest", tz->tz_minuteswest);
-    luab_setinteger(L, -2, "tz_dsttime", tz->tz_dsttime);
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy timezone{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage iovec [, err, msg ] = timezone:dump()
- */
-static int
-TIMEZONE_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &timezone_type, sizeof(struct timezone)));
-}
 
 static int
 TIMEZONE_gc(lua_State *L)
@@ -225,6 +243,10 @@ TIMEZONE_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &timezone_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t timezone_methods[] = {
     LUABSD_FUNC("set_tz_minuteswest",   TIMEZONE_set_tz_minuteswest),
@@ -268,31 +290,3 @@ luab_module_t timezone_type = {
     .get = timezone_udata,
     .sz = sizeof(luab_timezone_t),
 };
-
-/***
- * Generator function.
- *
- * @function timezone_create
- *
- * @param data          (LUA_T{NIL,USERDATA(timezone)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (timezone [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ data ])
- */
-int
-luab_timezone_create(lua_State *L)
-{
-    struct timezone *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = timezone_udata(L, narg);
-
-    return (luab_pushudata(L, &timezone_type, data));
-}

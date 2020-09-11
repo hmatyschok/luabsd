@@ -60,7 +60,64 @@ typedef struct luab_crypt_data {
 #define LUABSD_CRYPT_DATA_TYPE_ID    1595491033
 #define LUABSD_CRYPT_DATA_TYPE    "CRYPTDATA*"
 
-int luab_crypt_data_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(CRYPT_DATA)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              initialized = (LUA_TNUMBER),
+ *              buf         = (LUA_TSTRING),
+ *          }
+ *
+ * @usage t = crypt_data:get()
+ */
+static int
+CRYPT_DATA_get(lua_State *L)
+{
+    struct crypt_data *cd;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "initialized", cd->initialized);
+    luab_setldata(L, -2, "buf", cd->__buf, CRYPT_DATA_MAX);   /* XXX */
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate crypt_data{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = crypt_data:dump()
+ */
+static int
+CRYPT_DATA_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &crypt_data_type, sizeof(struct crypt_data)));
+}
+
+/*
+ * Accessor.
+ */
 
 /***
  * Set param denotes initializiation.
@@ -123,9 +180,14 @@ CRYPT_DATA_get_initialized(lua_State *L)
  *
  * @function copyin
  *
- * @param data          Byte string.
+ * @param data              Byte string.
  *
- * @usage crypt_data:set_buf(data)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = crypt_data:set_buf(data)
  */
 static int
 CRYPT_DATA_set_buf(lua_State *L)
@@ -139,11 +201,11 @@ CRYPT_DATA_set_buf(lua_State *L)
     cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
     buf = luab_checklstring(L, 2, CRYPT_DATA_MAX);
 
-    len = strlen(buf);
+    len = strnlen(buf, CRYPT_DATA_MAX);
 
     (void)memmove(cd->__buf, buf, len);
 
-    return (0);
+    return (luab_pusherr(L, 0));
 }
 
 /***
@@ -156,7 +218,7 @@ CRYPT_DATA_set_buf(lua_State *L)
  *          (data [, nil, nil]) on success or
  *          (data, (errno, strerror(errno)))
  *
- * @usage data = crypt_data:get_buf()
+ * @usage data [err, msg ] = crypt_data:get_buf()
  */
 static int
 CRYPT_DATA_get_buf(lua_State *L)
@@ -174,52 +236,6 @@ CRYPT_DATA_get_buf(lua_State *L)
     return (luab_pushldata(L, buf, len));
 }
 
-/***
- * Translate crypt_data{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = crypt_data:get()
- */
-static int
-CRYPT_DATA_get(lua_State *L)
-{
-    struct crypt_data *cd;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "initialized", cd->initialized);
-    luab_setstring(L, -2, "buf", cd->__buf);   /* XXX */
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy crypt_data{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = crypt_data:dump()
- */
-static int
-CRYPT_DATA_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &crypt_data_type, sizeof(struct crypt_data)));
-}
-
 /*
  * Meta-methods
  */
@@ -235,6 +251,10 @@ CRYPT_DATA_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &crypt_data_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t crypt_data_methods[] = {
     LUABSD_FUNC("set_initialized",   CRYPT_DATA_set_initialized),
@@ -277,31 +297,3 @@ luab_module_t crypt_data_type = {
     .get = crypt_data_udata,
     .sz = sizeof(luab_crypt_data_t),
 };
-
-/***
- * Generator function.
- *
- * @function crypt_data_create
- *
- * @param data          (LUA_T{NIL,USERDATA(CRYPT_DATA)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (crypt_data [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage crypt_data [, err, msg ] = bsd.unistd.crypt_data_create([ data ])
- */
-int
-luab_crypt_data_create(lua_State *L)
-{
-    struct crypt_data *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = crypt_data_udata(L, narg);
-
-    return (luab_pushudata(L, &crypt_data_type, data));
-}

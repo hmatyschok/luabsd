@@ -59,7 +59,62 @@ typedef struct luab_timespec {
 #define LUABSD_TIMESPEC_TYPE_ID    1594034844
 #define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
 
-int luab_timespec_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(TIMESPEC)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              tv_sec  = (LUA_TNUMBER),
+ *              tv_nsec = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = timespec:get()
+ */
+static int
+TIMESPEC_get(lua_State *L)
+{
+    struct timespec *tv;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+
+    lua_newtable(L);
+    luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
+    luab_setinteger(L, -2, "tv_nsec", tv->tv_nsec);
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate timespec{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = timespec:dump()
+ */
+static int
+TIMESPEC_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &timespec_type, sizeof(struct timespec)));
+}
+
+/*
+ * Accessor.
+ */
 
 /***
  * Set value for tv_sec.
@@ -173,46 +228,9 @@ TIMESPEC_get_tv_nsec(lua_State *L)
     return (luab_pusherr(L, data));
 }
 
-/***
- * Translate timespec{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = timespec:get()
+/*
+ * Meta-methods.
  */
-static int
-TIMESPEC_get(lua_State *L)
-{
-    struct timespec *tv;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
-
-    lua_newtable(L);
-    luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
-    luab_setinteger(L, -2, "tv_nsec", tv->tv_nsec);
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy timespec{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage iovec [, err, msg ] = timespec:dump()
- */
-static int
-TIMESPEC_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &timespec_type, sizeof(struct timespec)));
-}
 
 static int
 TIMESPEC_gc(lua_State *L)
@@ -225,6 +243,10 @@ TIMESPEC_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &timespec_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t timespec_methods[] = {
     LUABSD_FUNC("set_tv_sec",   TIMESPEC_set_tv_sec),
@@ -268,31 +290,3 @@ luab_module_t timespec_type = {
     .get = timespec_udata,
     .sz = sizeof(luab_timespec_t),
 };
-
-/***
- * Generator function.
- *
- * @function timespec_create
- *
- * @param data          (LUA_T{NIL,USERDATA(timespec)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (timespec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ data ])
- */
-int
-luab_timespec_create(lua_State *L)
-{
-    struct timespec *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = timespec_udata(L, narg);
-
-    return (luab_pushudata(L, &timespec_type, data));
-}

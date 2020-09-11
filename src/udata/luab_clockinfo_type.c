@@ -62,7 +62,69 @@ typedef struct luab_clockinfo {
 #define LUABSD_CLOCKINFO_TYPE_ID    1594164272
 #define LUABSD_CLOCKINFO_TYPE    "CLOCKINFO*"
 
-int luab_clockinfo_create(lua_State *L);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(CLOCKINFO)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              hz      = (LUA_TNUMBER),
+ *              tick    = (LUA_TNUMBER),
+ *              spare   = (LUA_TNUMBER),
+ *              stathz  = (LUA_TNUMBER),
+ *              profhz  = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = clockinfo:get()
+ */
+static int
+CLOCKINIFO_get(lua_State *L)
+{
+    struct clockinfo *ci;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "hz", ci->hz);
+    luab_setinteger(L, -2, "tick", ci->tick);
+    luab_setinteger(L, -2, "stathz", ci->stathz);
+    luab_setinteger(L, -2, "profhz", ci->stathz);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate clockinfo{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = clockinfo:dump()
+ */
+static int
+CLOCKINIFO_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &clockinfo_type, sizeof(struct clockinfo)));
+}
+
+/*
+ * Accessor.
+ */
 
 /***
  * Set clock frequency.
@@ -288,53 +350,9 @@ CLOCKINIFO_get_profhz(lua_State *L)
     return (luab_pusherr(L, data));
 }
 
-/***
- * Translate clockinfo{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = clockinfo:get()
+/*
+ * Meta-methods.
  */
-static int
-CLOCKINIFO_get(lua_State *L)
-{
-    struct clockinfo *ci;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    ci = luab_udata(L, 1, clockinfo_type, struct clockinfo *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "hz", ci->hz);
-    luab_setinteger(L, -2, "tick", ci->tick);
-    luab_setinteger(L, -2, "stathz", ci->stathz);
-    luab_setinteger(L, -2, "profhz", ci->stathz);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy clockinfo{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = clockinfo:dump()
- */
-static int
-CLOCKINIFO_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &clockinfo_type, sizeof(struct clockinfo)));
-}
 
 static int
 CLOCKINIFO_gc(lua_State *L)
@@ -347,6 +365,10 @@ CLOCKINIFO_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &clockinfo_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t clockinfo_methods[] = {
     LUABSD_FUNC("set_hz",   CLOCKINIFO_set_hz),
@@ -394,31 +416,3 @@ luab_module_t clockinfo_type = {
     .get = clockinfo_udata,
     .sz = sizeof(luab_clockinfo_t),
 };
-
-/***
- * Generator function.
- *
- * @function clockinfo_create
- *
- * @param data          (LUA_T{NIL,USERDATA(CLOCKINFO)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (clockinfo [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ data ])
- */
-int
-luab_clockinfo_create(lua_State *L)
-{
-    struct clockinfo *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = clockinfo_udata(L, narg);
-
-    return (luab_pushudata(L, &clockinfo_type, data));
-}

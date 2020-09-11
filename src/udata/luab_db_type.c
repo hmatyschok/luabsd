@@ -161,6 +161,34 @@ DB_del(lua_State *L)
 }
 
 /***
+ * Return a file descriptor from underlying db(3).
+ *
+ * @function fd
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = db:fd()
+ */
+static int
+DB_fd(lua_State *L)
+{
+    DB *db;
+    int fd;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL)
+        fd = (*db->fd)(db);
+    else
+        fd = -1;
+
+    return (luab_pusherr(L, fd));
+}
+
+/***
  * Keyed retrieval from from the db(3).
  *
  * @function get
@@ -318,34 +346,6 @@ DB_sync(lua_State *L)
         status = -1;
 
     return (luab_pusherr(L, status));
-}
-
-/***
- * Return a file descriptor from underlying db(3).
- *
- * @function fd
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = db:fd()
- */
-static int
-DB_fd(lua_State *L)
-{
-    DB *db;
-    int fd;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL)
-        fd = (*db->fd)(db);
-    else
-        fd = -1;
-
-    return (luab_pusherr(L, fd));
 }
 
 /*

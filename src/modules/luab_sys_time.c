@@ -56,22 +56,13 @@ extern luab_module_t timezone_type;
 extern luab_module_t bintime_type;
 #endif
 
-extern int  luab_clockinfo_create(lua_State *);
-extern int  luab_itimerval_create(lua_State *);
-extern int  luab_timespec_create(lua_State *);
-extern int  luab_timezone_create(lua_State *);
-
-#if __BSD_VISIBLE
-extern int luab_bintime_create(lua_State *);
-#endif
-
 #define LUABSD_SYS_TIME_LIB_ID    1593623310
 #define LUABSD_SYS_TIME_LIB_KEY    "time"
 
 extern luab_module_t luab_sys_time_lib;
 
 /*
- * Interface against components or service primitives on sys/time.h.
+ * Subr.
  */
 
 static sigset_t nsigset;
@@ -123,6 +114,10 @@ h_signal(void *arg __unused)
 out:
     pthread_exit(NULL);
 }
+
+/*
+ * Service primitves.
+ */
 
 static int
 luab_setitimer(lua_State *L)
@@ -179,6 +174,184 @@ luab_getitimer(lua_State *L)
 }
 #endif
 
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(CLOCKINFO)).
+ *
+ * @function clockinfo_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(CLOCKINFO)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (clockinfo [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ data ])
+ */
+static int
+luab_clockinfo_create(lua_State *L)
+{
+    struct clockinfo *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, clockinfo_type, struct clockinfo *);
+
+    return (luab_pushudata(L, &clockinfo_type, data));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(CRYPT_DATA)).
+ *
+ * @function crypt_data_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(CRYPT_DATA)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (crypt_data [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage crypt_data [, err, msg ] = bsd.sys.time.crypt_data_create([ data ])
+ */
+static int
+luab_crypt_data_create(lua_State *L)
+{
+    struct crypt_data *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, crypt_data_type, struct crypt_data *);
+
+    return (luab_pushudata(L, &crypt_data_type, data));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(ITIMERVAL)).
+ *
+ * @function itimerval_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(ITIMERVAL)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (itimerval [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ data ])
+ */
+static int
+luab_itimerval_create(lua_State *L)
+{
+    struct itimerval *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, itimerval_type, struct itimerval *);
+
+    return (luab_pushudata(L, &itimerval_type, data));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @function timespec_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (timespec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ data ])
+ */
+static int
+luab_timespec_create(lua_State *L)
+{
+    struct timespec *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, timespec_type, struct timespec *);
+
+    return (luab_pushudata(L, &timespec_type, data));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(TIMEZONE)).
+ *
+ * @function timezone_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(TIMEZONE)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (timezone [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ data ])
+ */
+static int
+luab_timezone_create(lua_State *L)
+{
+    struct timezone *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, timezone_type, struct timezone *);
+
+    return (luab_pushudata(L, &timezone_type, data));
+}
+
+#if __BSD_VISIBLE
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(BINTIME)).
+ *
+ * @function bintime_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(BINTIME)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (bintime [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ data ])
+ */
+static int
+luab_bintime_create(lua_State *L)
+{
+    struct bintime *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, bintime_type, struct bintime *);
+
+    return (luab_pushudata(L, &bintime_type, data));
+}
+#endif
+
+/*
+ * Interface against <sys/time.h>.
+ */
+
 static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUABSD_INT("DST_NONE",  DST_NONE),
     LUABSD_INT("DST_USA",   DST_USA),
@@ -218,13 +391,13 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
 #if __XSI_VISIBLE
     LUABSD_FUNC("getitimer",    luab_getitimer),
 #endif
-#if __BSD_VISIBLE
-    LUABSD_FUNC("bintime_create",    luab_bintime_create),
-#endif
     LUABSD_FUNC("clockinfo_create",  luab_clockinfo_create),
     LUABSD_FUNC("itimerval_create",  luab_itimerval_create),
     LUABSD_FUNC("timespec_create",   luab_timespec_create),
     LUABSD_FUNC("timezone_create",   luab_timezone_create),
+#if __BSD_VISIBLE
+    LUABSD_FUNC("bintime_create",    luab_bintime_create),
+#endif
     LUABSD_FUNC(NULL, NULL)
 };
 

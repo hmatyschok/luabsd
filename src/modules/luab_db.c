@@ -48,35 +48,11 @@ extern luab_module_t db_type;
 
 extern luab_module_t luab_db_lib;
 
-#if __BSD_VISIBLE
-/***
- * Generator function, creates instance of (LUA_TUSERDATA(DBT)).
- *
- * @function dbt_create
- *
- * @param data          (LUA_T{NIL,USERDATA(IOVEC)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (dbt [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage dbt [, err, msg ] = bsd.db.dbt_create([ data ])
+/*
+ * Service primitives.
  */
-static int
-luab_dbt_create(lua_State *L)
-{
-    luab_iovec_t *data;
-    int narg;
 
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, iovec_type, luab_iovec_t *);
-
-    return (luab_pushudata(L, &dbt_type, data));
-}
-
+#if __BSD_VISIBLE
 /***
  * dbopen(3) - database access methods
  *
@@ -112,6 +88,38 @@ luab_dbopen(lua_State *L)
     db = dbopen(file, flags, mode, type, NULL);
 
     return (luab_pushudata(L, &db_type, db));
+}
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(DBT)).
+ *
+ * @function dbt_create
+ *
+ * @param data          (LUA_T{NIL,USERDATA(IOVEC)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (dbt [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage dbt [, err, msg ] = bsd.db.dbt_create([ data ])
+ */
+static int
+luab_dbt_create(lua_State *L)
+{
+    luab_iovec_t *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, iovec_type, luab_iovec_t *);
+
+    return (luab_pushudata(L, &dbt_type, data));
 }
 #endif /* __BSD_VISIBLE */
 
