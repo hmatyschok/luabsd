@@ -133,7 +133,7 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
  * Generic accessor.
  */
 
-/* v -> buf */
+/* dp -> buf */
 int
 luab_iovec_copyin(lua_State *L, luab_iovec_t *buf, const void *dp, size_t len)
 {
@@ -167,7 +167,7 @@ luab_iovec_copyin(lua_State *L, luab_iovec_t *buf, const void *dp, size_t len)
     return (luab_pusherr(L, status));
 }
 
-/* buf -> data */
+/* buf -> dp */
 int
 luab_iovec_copyout(lua_State *L, luab_iovec_t *buf, void *dp, size_t len)
 {
