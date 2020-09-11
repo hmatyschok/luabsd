@@ -213,6 +213,96 @@ sockaddr_un_to_table(lua_State *L, void *arg)
  */
 
 /***
+ * Generator function - translate (LUA_TUSERDATA(SOCKADDR)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *      AF_XXX:
+ *
+ *          t = {
+ *              sa_len          = (LUA_TNUMBER),
+ *              sa_family       = (LUA_TNUMBER),
+ *              sa_data         = (TUA_TSTRING),
+ *          }
+ *
+ *      AF_INET:
+ *
+ *          t = {
+ *              sin_len         = (LUA_TNUMBER),
+ *              sin_family      = (LUA_TNUMBER),
+ *              sin_port        = (TUA_TNUMBER),
+ *              sin_addr        = (LUA_TUSERDATA(IN_ADDR)),
+ *          }
+ *
+ *      AF_INET6:
+ *
+ *          t = {
+ *              sin6_len        = (LUA_TNUMBER),
+ *              sin6_family     = (LUA_TNUMBER),
+ *              sin6_port       = (TUA_TNUMBER),
+ *              sin6_flowinfo   = (TUA_TNUMBER),
+ *              sin6_addr       = (LUA_TUSERDATA(IN6_ADDR)),
+ *              sin6_scope_id   = (LUA_TNUMBER),
+ *          }
+ *
+ *      AF_LINK:
+ *
+ *          t = {
+ *              sdl_len         = (LUA_TNUMBER),
+ *              sdl_family      = (LUA_TNUMBER),
+ *              sdl_index       = (TUA_TNUMBER),
+ *              sdl_type        = (TUA_TNUMBER),
+ *              sdl_nlen        = (TUA_TNUMBER),
+ *              sdl_alen        = (TUA_TNUMBER),
+ *              sdl_slen        = (TUA_TNUMBER),
+ *              sdl_data        = (LUA_TSTRING),
+ *          }
+ *
+ *      AF_UNIX:
+ *
+ *          t = {
+ *              sun_len         = (LUA_TNUMBER),
+ *              sun_family      = (LUA_TNUMBER),
+ *              sun_path        = (TUA_TSTRING),
+ *          }
+ *
+ * @usage t = sockaddr:get()
+ */
+static int
+SOCKADDR_get(lua_State *L)
+{
+    struct sockaddr *sa;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sa = luab_udata(L, 1, sockaddr_type, struct sockaddr *);
+
+    /*
+     * XXX replacement by protosw-table.
+     */
+    switch (sa->sa_family) {
+    case AF_UNIX:
+        sockaddr_un_to_table(L, sa);
+        break;
+    case AF_INET:
+        sockaddr_in_to_table(L, sa);
+        break;
+    case AF_INET6:
+        sockaddr_in6_to_table(L, sa);
+        break;
+    case AF_LINK:
+        sockaddr_dl_to_table(L, sa);
+        break;
+    default:
+        sockaddr_to_table(L, sa);
+        break;
+    }
+    return (1);
+}
+
+/***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
  * @function sockaddr_dl_create
@@ -359,96 +449,6 @@ luab_sockaddr_un_create(lua_State *L)
         break;
     }
     return (luab_pushudata(L, &sockaddr_type, data));
-}
-
-/***
- * Generator function - translate (LUA_TUSERDATA(SOCKADDR)) into (LUA_TTABLE).
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- *      AF_XXX:
- *
- *          t = {
- *              sa_len          = (LUA_TNUMBER),
- *              sa_family       = (LUA_TNUMBER),
- *              sa_data         = (TUA_TSTRING),
- *          }
- *
- *      AF_INET:
- *
- *          t = {
- *              sin_len         = (LUA_TNUMBER),
- *              sin_family      = (LUA_TNUMBER),
- *              sin_port        = (TUA_TNUMBER),
- *              sin_addr        = (LUA_TUSERDATA(IN_ADDR)),
- *          }
- *
- *      AF_INET6:
- *
- *          t = {
- *              sin6_len        = (LUA_TNUMBER),
- *              sin6_family     = (LUA_TNUMBER),
- *              sin6_port       = (TUA_TNUMBER),
- *              sin6_flowinfo   = (TUA_TNUMBER),
- *              sin6_addr       = (LUA_TUSERDATA(IN6_ADDR)),
- *              sin6_scope_id   = (LUA_TNUMBER),
- *          }
- *
- *      AF_LINK:
- *
- *          t = {
- *              sdl_len         = (LUA_TNUMBER),
- *              sdl_family      = (LUA_TNUMBER),
- *              sdl_index       = (TUA_TNUMBER),
- *              sdl_type        = (TUA_TNUMBER),
- *              sdl_nlen        = (TUA_TNUMBER),
- *              sdl_alen        = (TUA_TNUMBER),
- *              sdl_slen        = (TUA_TNUMBER),
- *              sdl_data        = (LUA_TSTRING),
- *          }
- *
- *      AF_UNIX:
- *
- *          t = {
- *              sun_len         = (LUA_TNUMBER),
- *              sun_family      = (LUA_TNUMBER),
- *              sun_path        = (TUA_TSTRING),
- *          }
- *
- * @usage t = sockaddr:get()
- */
-static int
-SOCKADDR_get(lua_State *L)
-{
-    struct sockaddr *sa;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    sa = luab_udata(L, 1, sockaddr_type, struct sockaddr *);
-
-    /*
-     * XXX replacement by protosw-table.
-     */
-    switch (sa->sa_family) {
-    case AF_UNIX:
-        sockaddr_un_to_table(L, sa);
-        break;
-    case AF_INET:
-        sockaddr_in_to_table(L, sa);
-        break;
-    case AF_INET6:
-        sockaddr_in6_to_table(L, sa);
-        break;
-    case AF_LINK:
-        sockaddr_dl_to_table(L, sa);
-        break;
-    default:
-        sockaddr_to_table(L, sa);
-        break;
-    }
-    return (1);
 }
 
 /*

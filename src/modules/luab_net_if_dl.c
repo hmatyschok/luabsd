@@ -61,7 +61,7 @@ extern luab_module_t luab_net_if_dl_lib;
  *          (0 [, nil, nil]) on success or
  *          (0, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg] = sockaddr:set_sdl_alen(alen)
+ * @usage ret [, err, msg ] = bsd.net.if_dl.link_addr(addr, sdl)
  */
 static int
 luab_link_addr(lua_State *L)
@@ -84,15 +84,16 @@ luab_link_addr(lua_State *L)
  *
  * @function link_ntoa
  *
- * @param sdl               Link level address.
- * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param sdl               Instance of (LUA_TUSERDATA(SOCKADDR)), link level
+ *                          address.
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)), ASCII string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg] = sockaddr:link_ntoa(alen)
+ * @usage ret [, err, msg ] = bsd.net.if_dl.link_ntoa(sdl, buf)
  */
 static int
 luab_link_ntoa(lua_State *L)

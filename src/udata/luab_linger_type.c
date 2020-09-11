@@ -59,7 +59,62 @@ typedef struct luab_linger {
 #define LUABSD_LINGER_TYPE_ID    1597012436
 #define LUABSD_LINGER_TYPE    "LINGER*"
 
-int luab_linger_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(LINGER)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              l_onoff     = (LUA_TNUMBER),
+ *              l_linger    = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = linger:get()
+ */
+static int
+LINGER_get(lua_State *L)
+{
+    struct linger *l;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    l = luab_udata(L, 1, linger_type, struct linger *);
+
+    lua_newtable(L);
+    luab_setinteger(L, -2, "l_onoff", l->l_onoff);
+    luab_setinteger(L, -2, "l_linger", l->l_linger);
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate linger{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = linger:dump()
+ */
+static int
+LINGER_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &linger_type, sizeof(struct linger)));
+}
+
+/*
+ * Service primitives.
+ */
 
 /***
  * Set value for option on / off.
@@ -173,46 +228,9 @@ LINGER_get_l_linger(lua_State *L)
     return (luab_pusherr(L, data));
 }
 
-/***
- * Translate linger{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = linger:get()
+/*
+ * Meta-methods.
  */
-static int
-LINGER_get(lua_State *L)
-{
-    struct linger *l;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    l = luab_udata(L, 1, linger_type, struct linger *);
-
-    lua_newtable(L);
-    luab_setinteger(L, -2, "l_onoff", l->l_onoff);
-    luab_setinteger(L, -2, "l_linger", l->l_linger);
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy linger{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage iovec [, err, msg ] = linger:dump()
- */
-static int
-LINGER_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &linger_type, sizeof(struct linger)));
-}
 
 static int
 LINGER_gc(lua_State *L)
@@ -225,6 +243,10 @@ LINGER_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &linger_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t linger_methods[] = {
     LUABSD_FUNC("set_l_onoff",  LINGER_set_l_onoff),
@@ -268,31 +290,3 @@ luab_module_t linger_type = {
     .get = linger_udata,
     .sz = sizeof(luab_linger_t),
 };
-
-/***
- * Generator function.
- *
- * @function linger_create
- *
- * @param data          (LUA_T{NIL,USERDATA(linger)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (linger [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage linger [, err, msg ] = bsd.sys.socket.linger_create([ data ])
- */
-int
-luab_linger_create(lua_State *L)
-{
-    struct linger *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = linger_udata(L, narg);
-
-    return (luab_pushudata(L, &linger_type, data));
-}

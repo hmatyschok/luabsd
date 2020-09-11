@@ -40,7 +40,7 @@
 extern luab_module_t luab_stdlib_lib;
 
 /*
- * Components or service primitives on stdlib.h.
+ * Service primitives.
  */
 
 static int
@@ -68,7 +68,11 @@ luab_arc4random_uniform(lua_State *L)
     return (luab_pusherr(L, n));
 }
 
-static luab_table_t luab_stdlib_vec[] = {   /* stdlib.h */
+/*
+ * Interface against <stdlib.h>.
+ */
+
+static luab_table_t luab_stdlib_vec[] = {
     LUABSD_INT("EXIT_FAILURE",  EXIT_FAILURE),
     LUABSD_INT("EXIT_SUCCESS",  EXIT_SUCCESS),
     LUABSD_INT("RAND_MAX",  RAND_MAX),

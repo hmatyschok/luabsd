@@ -37,7 +37,15 @@
 
 extern luab_module_t luab_sys_file_lib;
 
-static luab_table_t luab_sys_file_vec[] = { /* sys/file.h */
+/*
+ * Service primitives.
+ */
+
+/*
+ * Interface against <sys/file.h>.
+ */
+
+static luab_table_t luab_sys_file_vec[] = {
     LUABSD_INT("DTYPE_NONE",    DTYPE_NONE),
     LUABSD_INT("DTYPE_VNODE",   DTYPE_VNODE),
     LUABSD_INT("DTYPE_SOCKET",  DTYPE_SOCKET),

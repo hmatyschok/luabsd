@@ -40,7 +40,6 @@ extern luab_module_t msghdr_type;
 extern luab_module_t sockaddr_type;
 extern luab_module_t timespec_type;
 
-extern int luab_linger_create(lua_State *);
 extern int luab_msghdr_create(lua_State *);
 
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
@@ -53,7 +52,7 @@ extern luab_module_t luab_sys_socket_lib;
  */
 
 /*
- * Evaluate LUA_TTABLE(LUA_TUSERDATA(luab_msghdr_t)) and translate this into
+ * Evaluatse (LUA_TTABLE(LUA_TUSERDATA(MSGHDR))) and translate this into
  * an array of mmsghdr{} items.
  */
 static struct mmsghdr *
@@ -596,7 +595,7 @@ luab_recvfrom(lua_State *L)
  * @function recvmsg
  *
  * @param s                 File drscriptor denotes by socket(2) opened socket(9).
- * @param msg               Instance of LUA_TUSERDATA(luab_msghdr_t).
+ * @param msg               Instance of LUA_TUSERDATA(MSGHDR).
  * @param flags             Flags argument over
  *
  *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
@@ -642,7 +641,7 @@ luab_recvmsg(lua_State *L)
  * @function recvmmsg
  *
  * @param s                 File drscriptor denotes by socket(2) opened socket(9).
- * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(luab_msghdr_t)).
+ * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(MSGHDR)).
  * @param vlen              Constraint for #n received messages.
  * @param flags             Flags argument over
  *
@@ -743,7 +742,7 @@ luab_send(lua_State *L)
  * @function sendmsg
  *
  * @param s                 File drscriptor denotes by socket(2) opened socket(9).
- * @param msg               Instance of LUA_TUSERDATA(luab_msghdr_t).
+ * @param msg               Instance of LUA_TUSERDATA(MSGHDR).
  * @param flags             Flags argument over
  *
  *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
@@ -789,7 +788,7 @@ luab_sendmsg(lua_State *L)
  * @function sendmmsg
  *
  * @param s                 File drscriptor denotes by socket(2) opened socket(9).
- * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(luab_msghdr_t)).
+ * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(MSGHDR)).
  * @param vlen              Constraint for transmission of #n messages.
  * @param flags             Flags argument over
  *
@@ -838,6 +837,34 @@ luab_sendmmsg(lua_State *L)
 /*
  * Generator functions.
  */
+
+/***
+ * Generator function.
+ *
+ * @function linger_create
+ *
+ * @param data          (LUA_T{NIL,USERDATA(linger)}), optional.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (linger [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage linger [, err, msg ] = bsd.sys.socket.linger_create([ data ])
+ */
+static int
+luab_linger_create(lua_State *L)
+{
+    struct linger *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, linger_type, struct linger *);
+
+    return (luab_pushudata(L, &linger_type, data));
+}
 
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
