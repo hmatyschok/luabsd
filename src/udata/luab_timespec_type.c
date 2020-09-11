@@ -56,15 +56,15 @@ typedef struct luab_timespec {
     (luab_toldata((L), (narg), &timespec_type, \
         struct timespec *, sizeof(struct timespec)))
 
-#define LUABSD_TIMESPEC_TYPE_ID    1594034844
-#define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
+#define LUABSD_TIMEVAL_TYPE_ID    1594034844
+#define LUABSD_TIMEVAL_TYPE    "TIMEVAL*"
 
 /*
  * Generator functions.
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(TIMESPEC)) into (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(TIMEVAL)) into (LUA_TTABLE).
  *
  * @function get
  *
@@ -78,7 +78,7 @@ typedef struct luab_timespec {
  * @usage t = timespec:get()
  */
 static int
-TIMESPEC_get(lua_State *L)
+TIMEVAL_get(lua_State *L)
 {
     struct timespec *tv;
 
@@ -107,7 +107,7 @@ TIMESPEC_get(lua_State *L)
  * @usage iovec [, err, msg ] = timespec:dump()
  */
 static int
-TIMESPEC_dump(lua_State *L)
+TIMEVAL_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &timespec_type, sizeof(struct timespec)));
 }
@@ -131,7 +131,7 @@ TIMESPEC_dump(lua_State *L)
  * @usage data [, err, msg ] = timespec:set_tv_sec(data)
  */
 static int
-TIMESPEC_set_tv_sec(lua_State *L)
+TIMEVAL_set_tv_sec(lua_State *L)
 {
     struct timespec *tv;
     time_t data;
@@ -159,7 +159,7 @@ TIMESPEC_set_tv_sec(lua_State *L)
  * @usage data [, err, msg ] = timespec:get_tv_sec()
  */
 static int
-TIMESPEC_get_tv_sec(lua_State *L)
+TIMEVAL_get_tv_sec(lua_State *L)
 {
     struct timespec *tv;
     time_t data;
@@ -187,7 +187,7 @@ TIMESPEC_get_tv_sec(lua_State *L)
  * @usage data [, err, msg ] = timespec:set_tv_nsec(data)
  */
 static int
-TIMESPEC_set_tv_nsec(lua_State *L)
+TIMEVAL_set_tv_nsec(lua_State *L)
 {
     struct timespec *tv;
     long data;
@@ -215,7 +215,7 @@ TIMESPEC_set_tv_nsec(lua_State *L)
  * @usage data [, err, msg ] = timespec:get_tv_nsec()
  */
 static int
-TIMESPEC_get_tv_nsec(lua_State *L)
+TIMEVAL_get_tv_nsec(lua_State *L)
 {
     struct timespec *tv;
     long data;
@@ -233,13 +233,13 @@ TIMESPEC_get_tv_nsec(lua_State *L)
  */
 
 static int
-TIMESPEC_gc(lua_State *L)
+TIMEVAL_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &timespec_type));
 }
 
 static int
-TIMESPEC_tostring(lua_State *L)
+TIMEVAL_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &timespec_type));
 }
@@ -249,14 +249,14 @@ TIMESPEC_tostring(lua_State *L)
  */
 
 static luab_table_t timespec_methods[] = {
-    LUABSD_FUNC("set_tv_sec",   TIMESPEC_set_tv_sec),
-    LUABSD_FUNC("set_tv_nsec",  TIMESPEC_set_tv_nsec),
-    LUABSD_FUNC("get",  TIMESPEC_get),
-    LUABSD_FUNC("get_tv_sec",   TIMESPEC_get_tv_sec),
-    LUABSD_FUNC("get_tv_nsec",  TIMESPEC_get_tv_nsec),
-    LUABSD_FUNC("dump", TIMESPEC_dump),
-    LUABSD_FUNC("__gc", TIMESPEC_gc),
-    LUABSD_FUNC("__tostring",   TIMESPEC_tostring),
+    LUABSD_FUNC("set_tv_sec",   TIMEVAL_set_tv_sec),
+    LUABSD_FUNC("set_tv_nsec",  TIMEVAL_set_tv_nsec),
+    LUABSD_FUNC("get",  TIMEVAL_get),
+    LUABSD_FUNC("get_tv_sec",   TIMEVAL_get_tv_sec),
+    LUABSD_FUNC("get_tv_nsec",  TIMEVAL_get_tv_nsec),
+    LUABSD_FUNC("dump", TIMEVAL_dump),
+    LUABSD_FUNC("__gc", TIMEVAL_gc),
+    LUABSD_FUNC("__tostring",   TIMEVAL_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 
@@ -282,8 +282,8 @@ timespec_udata(lua_State *L, int narg)
 }
 
 luab_module_t timespec_type = {
-    .cookie = LUABSD_TIMESPEC_TYPE_ID,
-    .name = LUABSD_TIMESPEC_TYPE,
+    .cookie = LUABSD_TIMEVAL_TYPE_ID,
+    .name = LUABSD_TIMEVAL_TYPE,
     .vec = timespec_methods,
     .create = timespec_create,
     .init = timespec_init,

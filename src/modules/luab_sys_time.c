@@ -23,6 +23,7 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+
 /*
  * The implementation of the interface against setitimer(2) is derived from:
  *
@@ -178,6 +179,36 @@ luab_getitimer(lua_State *L)
  * Generator functions.
  */
 
+#if __BSD_VISIBLE
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(BINTIME)).
+ *
+ * @function bintime_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(BINTIME)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (bintime [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ data ])
+ */
+static int
+luab_bintime_create(lua_State *L)
+{
+    struct bintime *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, bintime_type, struct bintime *);
+
+    return (luab_pushudata(L, &bintime_type, data));
+}
+#endif
+
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(CLOCKINFO)).
  *
@@ -235,11 +266,11 @@ luab_itimerval_create(lua_State *L)
 }
 
 /***
- * Generator function - create an instance of (LUA_TUSERDATA(TIMESPEC)).
+ * Generator function - create an instance of (LUA_TUSERDATA(TIMEVAL)).
  *
  * @function timespec_create
  *
- * @param data          Instance of (LUA_TUSERDATA(TIMESPEC)).
+ * @param data          Instance of (LUA_TUSERDATA(TIMEVAL)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -290,36 +321,6 @@ luab_timezone_create(lua_State *L)
     return (luab_pushudata(L, &timezone_type, data));
 }
 
-#if __BSD_VISIBLE
-/***
- * Generator function - create an instance of (LUA_TUSERDATA(BINTIME)).
- *
- * @function bintime_create
- *
- * @param data          Instance of (LUA_TUSERDATA(BINTIME)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (bintime [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ data ])
- */
-static int
-luab_bintime_create(lua_State *L)
-{
-    struct bintime *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, bintime_type, struct bintime *);
-
-    return (luab_pushudata(L, &bintime_type, data));
-}
-#endif
-
 /*
  * Interface against <sys/time.h>.
  */
@@ -363,13 +364,13 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
 #if __XSI_VISIBLE
     LUABSD_FUNC("getitimer",    luab_getitimer),
 #endif
+#if __BSD_VISIBLE
+    LUABSD_FUNC("bintime_create",    luab_bintime_create),
+#endif
     LUABSD_FUNC("clockinfo_create",  luab_clockinfo_create),
     LUABSD_FUNC("itimerval_create",  luab_itimerval_create),
     LUABSD_FUNC("timespec_create",   luab_timespec_create),
     LUABSD_FUNC("timezone_create",   luab_timezone_create),
-#if __BSD_VISIBLE
-    LUABSD_FUNC("bintime_create",    luab_bintime_create),
-#endif
     LUABSD_FUNC(NULL, NULL)
 };
 
