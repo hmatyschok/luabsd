@@ -42,12 +42,14 @@
 extern luab_module_t if_nameindex_type;
 extern luab_module_t sockaddr_type;
 
-extern int luab_if_nameindex_create(lua_State *);
-
 #define LUABSD_NET_IF_LIB_ID    1596485465
 #define LUABSD_NET_IF_LIB_KEY    "net"
 
 extern luab_module_t luab_net_if_lib;
+
+/*
+ * Service primitives.
+ */
 
 /***
  * if_indextoname(3) - fetch name from interface by its corrosponding index.
@@ -107,8 +109,8 @@ luab_if_indextoname(lua_State *L)
  *
  * @function if_nameindex
  *
- * @param ifni              Empty Table, LUA_TTABLE, but filled by
- *                          LUA_TUSERDATA(luab_if_nameindex_t), if
+ * @param ifni              Empty Table, (LUA_TTABLE), but filled by
+ *                          (LUA_TUSERDATA(IF_NAMEINDEX)), if
  *                          call was performed successfully.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -171,6 +173,38 @@ luab_if_nametoindex(lua_State *L)
     index = if_nametoindex(ifname);
 
     return (luab_pusherr(L, index));
+}
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(IF_NAMEINDEX)).
+ *
+ * @function if_nameindex_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(IF_NAMEINDEX)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (if_nameindex [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage if_nameindex [, err, msg ] = bsd.net.if_nameindex_create([ data ])
+ */
+static int
+luab_if_nameindex_create(lua_State *L)
+{
+    struct if_nameindex *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, if_nameindex_type, struct if_nameindex *);
+
+    return (luab_pushudata(L, &if_nameindex_type, data));
 }
 
 /*

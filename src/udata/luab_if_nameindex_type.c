@@ -60,7 +60,46 @@ typedef struct luab_if_nameindex {
 #define LUABSD_IF_NAMEINDEX_TYPE_ID    1596840702
 #define LUABSD_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
 
-int luab_if_nameindex_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(IF_NAMEINDEX)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              if_index    = (LUA_TNUMBER),
+ *              if_name     = (LUA_TSTRING),
+ *          }
+ *
+ * @usage t = if_nameindex:get()
+ */
+static int
+IF_NAMEINDEX_get(lua_State *L)
+{
+    struct if_nameindex *ifni;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ifni = luab_udata(L, 1, if_nameindex_type, struct if_nameindex *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "if_index", ifni->if_index);
+    luab_setstring(L, -2, "if_name", ifni->if_name);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/*
+ * Accessor, immutable properties.
+ */
 
 /***
  * Get value for if_index.
@@ -114,33 +153,9 @@ IF_NAMEINDEX_if_name(lua_State *L)
     return (luab_pushstring(L, ifni->if_name));
 }
 
-/***
- * Translate if_nameindex{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = if_nameindex:get()
+/*
+ * Meta-medthods.
  */
-static int
-IF_NAMEINDEX_get(lua_State *L)
-{
-    struct if_nameindex *ifni;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    ifni = luab_udata(L, 1, if_nameindex_type, struct if_nameindex *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "if_index", ifni->if_index);
-    luab_setstring(L, -2, "if_name", ifni->if_name);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
 
 static int
 IF_NAMEINDEX_gc(lua_State *L)
@@ -153,6 +168,10 @@ IF_NAMEINDEX_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &if_nameindex_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t if_nameindex_methods[] = {
     LUABSD_FUNC("if_index",   IF_NAMEINDEX_if_index),
@@ -199,31 +218,3 @@ luab_module_t if_nameindex_type = {
     .get = if_nameindex_udata,
     .sz = sizeof(luab_if_nameindex_t),
 };
-
-/***
- * Generator function.
- *
- * @function if_nameindex_create
- *
- * @param data          (LUA_T{NIL,USERDATA(if_nameindex)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (if_nameindex [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage if_nameindex [, err, msg ] = bsd.net.if_nameindex_create([ data ])
- */
-int
-luab_if_nameindex_create(lua_State *L)
-{
-    struct if_nameindex *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = if_nameindex_udata(L, narg);
-
-    return (luab_pushudata(L, &if_nameindex_type, data));
-}

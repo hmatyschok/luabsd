@@ -48,6 +48,10 @@ typedef union luab_type {
     const char  *un_cp;
 } luab_type_u;
 
+/*
+ * Method table.
+ */
+
 typedef void    (*luab_table_fn)(lua_State *, luab_type_u *);
 
 typedef struct luab_table {
@@ -65,6 +69,28 @@ typedef struct luab_table {
 #define LUABSD_STR(k, v) \
     LUABSD_REG(luab_initstring, k, .val.un_cp = v)
 
+static __inline void
+luab_initinteger(lua_State *L, luab_type_u *un)
+{
+    lua_pushinteger(L, un->un_int);
+}
+
+static __inline void
+luab_initcfunction(lua_State *L, luab_type_u *un)
+{
+    lua_pushcfunction(L, un->un_fn);
+}
+
+static __inline void
+luab_initstring(lua_State *L, luab_type_u *un)
+{
+    lua_pushstring(L, un->un_cp);
+}
+
+/*
+ * Module descriptor.
+ */
+
 typedef void *  (*luab_ctor_fn)(lua_State *, void *);
 typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
@@ -79,11 +105,19 @@ typedef struct luab_module {
     luab_get_fn    get;
 } luab_module_t;
 
+/*
+ * Interface Control Information (ICI) for (LUA_TUSERDATA(XXX)).
+ */
+
 typedef struct luab_udata {
     TAILQ_ENTRY(luab_udata)     ud_list;
     TAILQ_HEAD(, luab_udata)    ud_hooks;
     luab_module_t   *ud_m;
 } luab_udata_t;
+
+/*
+ * Dfinitions for (LUA_TUSERDATA(IOVEC)).
+ */
 
 typedef struct luab_iovec_param {
     struct iovec    iop_iov;    /* addr. of allocated memory region, iov_base */
@@ -114,6 +148,10 @@ extern luab_module_t iovec_type;
 #define SDL_DATA_MAX_LEN    46     /* XXX */
 #define SDL_ADDR_MAX_LEN    (SDL_DATA_MAX_LEN - IFNAMSIZ)
 
+/*
+ * Internal API for manipulating iovec{}'s.
+ */
+
 int luab_buf_clear(struct iovec *);
 int luab_buf_free(struct iovec *);
 
@@ -123,28 +161,9 @@ int luab_buf_realloc(struct iovec *, size_t);
 int luab_buf_copyin(struct iovec *, const void *, size_t);
 int luab_buf_copyout(struct iovec *, void *, size_t);
 
-
 /*
- * Operations on stack.
+ * API for operations on stack, [C -> LUA].
  */
-
-static __inline void
-luab_initinteger(lua_State *L, luab_type_u *un)
-{
-    lua_pushinteger(L, un->un_int);
-}
-
-static __inline void
-luab_initcfunction(lua_State *L, luab_type_u *un)
-{
-    lua_pushcfunction(L, un->un_fn);
-}
-
-static __inline void
-luab_initstring(lua_State *L, luab_type_u *un)
-{
-    lua_pushstring(L, un->un_cp);
-}
 
 int luab_pusherr(lua_State *, lua_Integer);
 int luab_pushnil(lua_State *);
@@ -156,7 +175,7 @@ int luab_pushudata(lua_State *, luab_module_t *, void *);
 int luab_pushiovec(lua_State *, void *, size_t, size_t);
 
 /*
- * Operations on LUA_TTABLE.
+ * API for maniupulating (LUA_TTABLE), [C -> LUA].
  */
 
 void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
@@ -175,6 +194,8 @@ void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 /*
+ * Accessor evaluates n-th arg over argv, [LUA -> C].
+ *
  * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
  * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
  * the same thing without throwing an error.
@@ -187,23 +208,7 @@ const char *    luab_checklstring(lua_State *, int, size_t);
 lua_Integer luab_tointeger(lua_State *, int, lua_Integer);
 lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
 
-/*
- * Accessor evaluates argv.
- */
-
 int luab_checkmaxargs(lua_State *, int);
-int luab_checktable(lua_State *, int);
-
-size_t  luab_checkltable(lua_State *, int, size_t);
-const char **    luab_checkargv(lua_State *, int);
-
-void *  luab_newvector(lua_State *, int, size_t);
-void *  luab_newlvector(lua_State *, int, size_t, size_t);
-int *   luab_checklintvector(lua_State *, int, size_t);
-
-/*
- * Accessor evaluates LUA_TUSERDATA.
- */
 
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), (m)))
@@ -223,6 +228,7 @@ void *  luab_toudata(lua_State *, int, luab_module_t *);
 void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
 void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 
+/* (LUA_TUSERDATA(IOVEC)) */
 const char *    luab_iovec_islxarg(lua_State *, int, size_t);
 const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
 
@@ -239,12 +245,20 @@ int luab_iovec_readlink(lua_State *, const char *, luab_iovec_t *, size_t *);
 int luab_iovec_readlinkat(lua_State *, int, const char *,
     luab_iovec_t *, size_t *);
 #endif
-
 int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 
+/* (LUA_TTABLE) */
+int luab_checktable(lua_State *, int);
+size_t  luab_checkltable(lua_State *, int, size_t);
+const char **    luab_checkargv(lua_State *, int);
+
+void *  luab_newvector(lua_State *, int, size_t);
+void *  luab_newlvector(lua_State *, int, size_t, size_t);
+int *   luab_checklintvector(lua_State *, int, size_t);
+
 /*
- * Service primitives subset of <core>.
+ * Generic service primitives, subset of <core>.
  */
 
 int luab_dump(lua_State *, int, luab_module_t *, size_t);
