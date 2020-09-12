@@ -84,9 +84,10 @@ luab_link_addr(lua_State *L)
  *
  * @function link_ntoa
  *
- * @param sdl               Instance of (LUA_TUSERDATA(SOCKADDR)), link level
- *                          address.
- * @param buf               Instance of (LUA_TUSERDATA(IOVEC)), ASCII string.
+ * @param sdl               Instance of (LUA_TUSERDATA(SOCKADDR)),
+ *                          link level address.
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)),
+ *                          ASCII string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

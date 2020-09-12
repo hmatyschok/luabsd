@@ -47,7 +47,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
         if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
             (void)memset_s(ud, m->sz, 0, m->sz);
 
-            TAILQ_INIT(&ud->ud_list);
+            LIST_INIT(&ud->ud_list);
 
             ud->ud_m = m;
 

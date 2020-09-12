@@ -110,9 +110,10 @@ typedef struct luab_module {
  */
 
 typedef struct luab_udata {
-    TAILQ_ENTRY(luab_udata)     ud_next;
-    TAILQ_HEAD(, luab_udata)    ud_list;
+    LIST_ENTRY(luab_udata)     ud_next;
+    LIST_HEAD(, luab_udata)    ud_list;
     luab_module_t   *ud_m;
+    time_t          ud_ts;
 } luab_udata_t;
 
 /*
@@ -261,15 +262,15 @@ int luab_tostring(lua_State *, int, luab_module_t *);
 static __inline void *
 luab_udata_insert(luab_udata_t *self, luab_udata_t *ud)
 {
-    TAILQ_INSERT_TAIL(&self->ud_list, ud, ud_next);
+    LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
 
     return (ud + 1);
 }
 
 static __inline void
-luab_udata_remove(luab_udata_t *self, luab_udata_t *ud)
+luab_udata_remove(luab_udata_t *self)
 {
-    TAILQ_REMOVE(&self->ud_list, ud, ud_next);
+    LIST_REMOVE(self, ud_next);
 }
 
 int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
