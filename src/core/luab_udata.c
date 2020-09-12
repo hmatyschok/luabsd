@@ -47,7 +47,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
         if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
             (void)memset_s(ud, m->sz, 0, m->sz);
 
-            TAILQ_INIT(&ud->ud_hooks);
+            TAILQ_INIT(&ud->ud_list);
 
             ud->ud_m = m;
 
@@ -115,6 +115,17 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
     return (NULL);
 }
 
+/* XXX experimental feature for developement of bindings. */
+void *
+luab_addudata(lua_State *L, int narg, luab_module_t *m, int xarg,
+    luab_module_t *x)
+{
+    luab_udata_t *ud0 = luab_todata(L, narg, m, luab_udata_t *);
+    luab_udata_t *ud1 = luab_todata(L, xarg, x, luab_udata_t *);
+
+    return (luab_udata_insert(ud0, ud1));
+}
+
 /*
  * Acceesor, [C -> stack].
  */
@@ -180,13 +191,3 @@ luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
             lua_setfield(L, narg, k);
     }
 }
-
-/*
- * Generic accessor, linkage.
- */
-/*
-int
-luab_addudata(lua_State *L, int narg, int xarg)
-{
-
-}*/

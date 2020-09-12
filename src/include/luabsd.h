@@ -110,8 +110,8 @@ typedef struct luab_module {
  */
 
 typedef struct luab_udata {
-    TAILQ_ENTRY(luab_udata)     ud_list;
-    TAILQ_HEAD(, luab_udata)    ud_hooks;
+    TAILQ_ENTRY(luab_udata)     ud_next;
+    TAILQ_HEAD(, luab_udata)    ud_list;
     luab_module_t   *ud_m;
 } luab_udata_t;
 
@@ -201,6 +201,7 @@ void *  luab_checkudata(lua_State *, int, luab_module_t *);
 void *  luab_toudata(lua_State *, int, luab_module_t *);
 void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
 void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
+void *  luab_addudata(lua_State *, int, luab_module_t *, int, luab_module_t *);
 
 /* (LUA_TUSERDATA(IOVEC)) */
 #define luab_isiovec(L, narg) \
@@ -256,6 +257,20 @@ int luab_tostring(lua_State *, int, luab_module_t *);
 /*
  * Generic service primitves, complex data types. 
  */
+
+static __inline void *
+luab_udata_insert(luab_udata_t *self, luab_udata_t *ud)
+{
+    TAILQ_INSERT_TAIL(&self->ud_list, ud, ud_next);
+
+    return (ud + 1);
+}
+
+static __inline void
+luab_udata_remove(luab_udata_t *self, luab_udata_t *ud)
+{
+    TAILQ_REMOVE(&self->ud_list, ud, ud_next);
+}
 
 int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
 int luab_iovec_copyout(lua_State *, luab_iovec_t *, void *, size_t);
