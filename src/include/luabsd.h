@@ -256,7 +256,7 @@ int luab_gc(lua_State *, int, luab_module_t *);
 int luab_tostring(lua_State *, int, luab_module_t *);
 
 /*
- * Generic service primitves, complex data types. 
+ * Generic service primitves, complex data types.
  */
 
 static __inline void *
@@ -271,6 +271,21 @@ static __inline void
 luab_udata_remove(luab_udata_t *self)
 {
     LIST_REMOVE(self, ud_next);
+}
+
+static __inline void
+luab_udata_clear(luab_udata_t *self)
+{
+    luab_udata_t *ud, *ud_temp;
+
+    ud = LIST_FIRST(&self->ud_list);
+
+    while (ud != NULL) {
+        ud_temp = LIST_NEXT(ud, ud_next);
+        LIST_REMOVE(ud, ud_next);
+        ud = ud_temp;
+    }
+    LIST_INIT(&self->ud_list);
 }
 
 int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
