@@ -48,7 +48,10 @@ extern int luab_stat_create(lua_State *);
 extern luab_module_t luab_sys_stat_lib;
 
 
-/* Translate a LUA_TTABLE over LUA_TUSERDATA into an array of timespec{} items. */
+/*
+ * Translate a (LUA_TTABLE) over (LUA_TUSERDATA(TIMESPEC)) into an array of
+ * timespec{} items.
+ */
 static struct timespec *
 luab_checkltimesvector(lua_State *L, int narg, size_t len)
 {
@@ -329,6 +332,14 @@ luab_lchmod(lua_State *L)
 }
 #endif
 
+/*
+ * XXX
+ *
+ *  int stat(const char * __restrict, struct stat * __restrict);
+ */
+
+
+
 static int
 luab_mkdir(lua_State *L)
 {
@@ -385,6 +396,20 @@ luab_mknod(lua_State *L)
 #define _MKNOD_DECLARED
 #endif
 
+/***
+ * umask(2) - set file creation mode mask
+ *
+ * @function umask
+ *
+ * @param numask            Mode mask.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (oumask [, nil, nil]) on success or
+ *          (oumask, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.umask(umask)
+ */
 static int
 luab_umask(lua_State *L)
 {
@@ -394,15 +419,41 @@ luab_umask(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     numask = (mode_t)luab_checkinteger(L, 1, ALLPERMS);
-
     oumask = umask(numask);
 
-    lua_pushinteger(L, oumask);
-
-    return 1;
+    return (luab_pusherr(L, oumask));
 }
 
 #if __POSIX_VISIBLE >= 200809
+/***
+ * mkdirat(2) - make a directory file
+ *
+ * @function mkdirat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes newly created directory.
+ *
+ *                            #2 The newly created directory is relative to the
+ *                               directory associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of mkdirat(2).
+ *
+ * @param path              Specifies the directory (path).
+ * @param mode              Specifies access permissions of newly created
+ *                          directory.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.mkdirat(fd, path, mode)
+ */
 static int
 luab_mkdirat(lua_State *L)
 {
@@ -422,6 +473,35 @@ luab_mkdirat(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * mkfifoat(2) - make a fifo file
+ *
+ * @function mkfifoat 
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes newly created FIFO.
+ *
+ *                            #2 The newly created FIFO is relative to the
+ *                               directory associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of mkfifoat(2).
+ *
+ * @param path              Specifies the FIFO (with name path).
+ * @param mode              Specifies access permissions of newly created
+ *                          FIFO.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.mkfifoat(fd, path, mode)
+ */
 static int
 luab_mkfifoat(lua_State *L)
 {
@@ -441,6 +521,35 @@ luab_mkfifoat(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * mknodat(2) - make a special file node
+ *
+ * @function mknodat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes newly created node.
+ *
+ *                            #2 The newly created node is relative to the
+ *                               directory associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of mknodat(2).
+ *
+ * @param path              Specifies the system file node (path).
+ * @param mode              Specifies access permissions of newly created
+ *                          system file node.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.mknodat(fd, path, mode)
+ */
 static int
 luab_mknodat(lua_State *L)
 {
@@ -463,9 +572,11 @@ luab_mknodat(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
 
+/*
+ * Interface against <sys/stat.h>.
+ */
 
-
-static luab_table_t luab_sys_stat_vec[] = { /* sys/stat.h */
+static luab_table_t luab_sys_stat_vec[] = { 
     LUABSD_INT("S_ISUID",    S_ISUID),
     LUABSD_INT("S_ISGID",    S_ISGID),
 #if __BSD_VISIBLE
