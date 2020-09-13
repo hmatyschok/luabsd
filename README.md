@@ -156,9 +156,11 @@ by
 utilizing instaces of LUA_TTABLES:
 
     local sb = bsd.sys.stat.stat_create()
-    local fd = db:fd()
+    local fd, err, msg = db:fd()
+    print(" db:fd()", fd, err, msg, "\n")
 
     ret, err, msg = bsd.sys.stat.fstat(fd, sb)
+    print(string.format(" fstat(%d)", fd), ret, err, msg, "\n")
 
     ret, err, msg = db:sync(0)
     ret, err, msg = db:close()
@@ -172,30 +174,30 @@ utilizing instaces of LUA_TTABLES:
         bsd.fcntl.O_RDWR
     )
     fd, err, msg = bsd.fcntl.open(_fname, _flags, _mode)
-
-    print(" open() ", fd, err, msg, "\n")
+    print(string.format(" open(%s)", _fname), fd, err, msg, "\n")
 
     local tv = sb:get_st_atim()
     print_udata("struct", tv, "")
 
     local tv_buf = tv:dump()
+    print_udata("struct", tv_buf, "")
 
-    print_udata("tv_buf", tv_buf, "")
+    ret, err, msg = bsd.unistd.write(fd, tv_buf, tv_buf:len())
+    print(string.format(" write(%d)", fd), ret, err, msg, "\n")
 
-    print(" write(2) :", bsd.unistd.write(fd, tv_buf, tv_buf:len()))
-    print(" close(2) :", bsd.unistd.close(fd), "\n")
+    local off = tv_buf:len()
+    local whence = bsd.sys.unistd.SEEK_CUR
+    ret, err, msg = bsd.unistd.lseek(fd, -off, whence)
+    print(string.format(" lseek(%d,%d,%d)", fd, -off, whence), ret, err, msg, "\n")
 
-    _flags = bit32.bor(
-        bsd.fcntl.O_RDWR
-    )
-    fd, err, msg = bsd.fcntl.open(_fname, _flags, _mode)
+    local data_buf = bsd.sys.uio.iovec_create(off)
+    ret, err, msg = data_buf:read(fd)
+    print(string.format(" data_buf:read(%d)", fd), ret, err, msg, "\n")
 
-    local data_buf = bsd.sys.uio.iovec_create(tv_buf:len())
+    ret, err, msg = bsd.unistd.close(fd)
+    print(string.format(" close(%d)", fd), ret, err, msg, "\n")
 
-    print(" read(2) :", bsd.unistd.read(fd, data_buf, tv_buf:len()))
-    print(" close(2) :", bsd.unistd.close(fd), "\n")
-
-    print_udata("data_buf", data_buf, "")
+    print_udata("struct", data_buf, "")
 
     local tv_new = bsd.sys.time.timespec_create(data_buf)
 
