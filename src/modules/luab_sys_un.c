@@ -26,6 +26,8 @@
 
 #include <sys/un.h>
 
+#include <string.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -34,12 +36,48 @@
 
 extern luab_module_t sockaddr_type;
 
-extern int luab_sockaddr_un_create(lua_State *);
-
 #define LUABSD_SYS_UN_LIB_ID    1597545462
 #define LUABSD_SYS_UN_LIB_KEY    "un"
 
 extern luab_module_t luab_sys_un_lib;
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
+ *
+ * @function sockaddr_un_create
+ *
+ * @param path              Specifies path or filename.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (sockaddr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
+ */
+static int
+luab_sockaddr_un_create(lua_State *L)
+{
+    struct sockaddr_un sun;
+    struct sockaddr *data;
+    const char *sun_path;
+
+    data = (struct sockaddr *)&sun;
+    luab_sockaddr_pci(data, AF_UNIX, sizeof(sun));
+
+    switch (luab_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
+    case 1:
+        sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN);
+        (void)memmove(sun.sun_path, sun_path, strlen(sun_path));
+    default:
+        break;
+    }
+    return (luab_pushudata(L, &sockaddr_type, data));
+}
 
 /*
  * Interface against <sys/un.h>.

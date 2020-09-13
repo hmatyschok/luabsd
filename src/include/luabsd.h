@@ -305,6 +305,9 @@ int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 
 /* (LUA_TUSERDATA(SOCKET)) */
+#define LUAB_SOCK_MAXADDRLEN    SOCK_MAXADDRLEN
+#define LUAB_SOCK_MINADDRLEN    2
+
 #define LUAB_SDL_MAXDATALEN    46
 #define LUAB_SDL_MAXADDRLEN    (LUAB_SDL_MAXDATALEN - IFNAMSIZ)
 

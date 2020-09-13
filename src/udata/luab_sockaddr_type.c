@@ -24,7 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
 
@@ -76,16 +75,35 @@ typedef struct luab_sockaddr {
 #define luab_new_sockaddr(L, arg) \
     ((luab_sockaddr_t *)luab_newuserdata(L, &sockaddr_type, (arg)))
 #define luab_to_sockaddr(L, narg) \
-    (luab_toudata((L), (narg), &sockaddr_type))
+    ((struct sockaddr *)luab_checksockaddr((L), (narg)))
 
 #define LUABSD_SOCKADDR_TYPE_ID    1595755513
 #define LUABSD_SOCKADDR_TYPE   "SOCKADDR*"
 
-int luab_sockaddr_dl_create(lua_State *L);
-int luab_sockaddr_un_create(lua_State *L);
+/*
+ * Subr.
+ */
 
-int luab_sockaddr_in_create(lua_State *L);
-int luab_sockaddr_in6_create(lua_State *L);
+static void *
+luab_checksockaddr(lua_State *L, int narg)
+{
+    luab_iovec_t *iov;
+    void *buf;
+
+    if ((iov = luab_isiovec(L, narg)) != NULL) {
+        if (iov->iov.iov_base == NULL)
+            luaL_argerror(L, narg, "Invalid argument.");
+
+        if ((iov->iov.iov_len < LUAB_SOCK_MINADDRLEN) &&
+            (iov->iov.iov_len > LUAB_SOCK_MAXADDRLEN))
+            luaL_argerror(L, narg, "Invalid argument.");
+
+        buf = iov->iov.iov_base;
+    } else
+        buf = luab_toudata(L, narg, &sockaddr_type);
+
+    return (buf);
+}
 
 /*
  * Generator functions.
@@ -283,6 +301,30 @@ SOCKADDR_get(lua_State *L)
         break;
     }
     return (1);
+}
+
+/***
+ * Generator function - translate sockaddr{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = sockaddr:dump()
+ */
+static int
+SOCKADDR_dump(lua_State *L)
+{
+    struct sockaddr *sa;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sa = luab_udata(L, 1, sockaddr_type, struct sockaddr *);
+
+    return (luab_dump(L, 1, &sockaddr_type, sa->sa_len));
 }
 
 /*
@@ -1228,6 +1270,7 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("get_sin6_addr",    SOCKADDR_get_sin6_addr),
     LUABSD_FUNC("get_sin6_scope_id",    SOCKADDR_get_sin6_scope_id),
     LUABSD_FUNC("get_sun_path", SOCKADDR_get_sun_path),
+    LUABSD_FUNC("dump", SOCKADDR_dump),
     LUABSD_FUNC("__gc", SOCKADDR_gc),
     LUABSD_FUNC("__tostring",   SOCKADDR_tostring),
     LUABSD_FUNC(NULL, NULL)

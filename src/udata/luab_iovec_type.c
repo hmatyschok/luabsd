@@ -173,7 +173,7 @@ IOVEC_get(lua_State *L)
     luab_setldata(L, -2, "iov_base", self->iov.iov_base, self->iov.iov_len);
     luab_setinteger(L, -2, "iov_len", self->iov.iov_len);
     luab_setinteger(L, -2, "iov_max_len", self->iov_max_len);
-    luab_setinteger(L, -2, "iov_max_len", self->iov_flags);
+    luab_setinteger(L, -2, "iov_flags", self->iov_flags);
 
     lua_pushvalue(L, -1);
 
