@@ -942,8 +942,6 @@ luab_link(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
-#ifndef _LSEEK_DECLARED
-#define _LSEEK_DECLARED
 /***
  * lseek(2) - reposition read/write file offset
  *
@@ -978,11 +976,10 @@ luab_lseek(lua_State *L)
     offset = (off_t)luab_checkinteger(L, 2, ULONG_MAX);
     whence = (int)luab_checkinteger(L, 3, INT_MAX);
 
-    location = lseek(fildes, offset, whence);
+    location = lseek(filedes, offset, whence);
 
     return (luab_pusherr(L, location));
 }
-#endif
 
 /***
  * pathconf(2) - get configurable pathname variables
@@ -1594,8 +1591,6 @@ luab_fdatasync(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
-#ifndef _FTRUNCATE_DECLARED
-#define _FTRUNCATE_DECLARED
 /***
  * ftruncate(2) - truncate/extend a file to a specific length
  *
@@ -1630,7 +1625,6 @@ luab_ftruncate(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
-#endif
 #endif
 
 /* 1003.1-2001 */
@@ -2033,8 +2027,6 @@ luab_pwrite(lua_State *L)
     return (luab_pusherr(L, count));
 }
 
-#ifndef _TRUNCATE_DECLARED
-#define _TRUNCATE_DECLARED
 /***
  * truncate(2) - truncate / extend a file to a specific length
  *
@@ -2069,7 +2061,6 @@ luab_truncate(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
-#endif
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
 
 #if __POSIX_VISIBLE >= 199506
@@ -2591,8 +2582,6 @@ luab_setreuid(lua_State *L)
     return (luab_pusherr(L , status));
 }
 
-#ifndef _SWAB_DECLARED
-#define _SWAB_DECLARED
 /***
  * swab(3) - swap adjacent bytes
  *
@@ -2610,7 +2599,7 @@ luab_setreuid(lua_State *L)
  * @usage ret [, err, msg ] = bsd.unistd.swab(in_buf, out_buf, len)
  */
 static int
-luab_swab(lua_State *l)
+luab_swab(lua_State *L)
 {
     luab_iovec_t *in_buf, *out_buf;
     ssize_t len;
@@ -2637,7 +2626,7 @@ luab_swab(lua_State *l)
         if ((in_buf->iov.iov_len == out_buf->iov.iov_len) &&
             ((src = in_buf->iov.iov_base) != NULL) &&
             ((dst = out_buf->iov.iov_base) != NULL) &&
-            (len <= out_buf->iov.iov_len) &&
+            (len <= (ssize_t)out_buf->iov.iov_len) &&
             (in_buf->iov_flags & IOV_BUFF) &&
             (out_buf->iov_flags & IOV_BUFF)) {
             swab(src, dst, len);
@@ -2654,7 +2643,6 @@ luab_swab(lua_State *l)
     }
     return (luab_pusherr(L, status));
 }
-#endif /* _SWAB_DECLARED */
 
 /***
  * sync(2) - schedule file system updates
@@ -3937,10 +3925,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("getuid", luab_getuid),
     LUABSD_FUNC("isatty",   luab_isatty),
     LUABSD_FUNC("link", luab_link),
-#ifndef _LSEEK_DECLARED
-#define _LSEEK_DECLARED
     LUABSD_FUNC("lseek", luab_lseek),
-#endif
     LUABSD_FUNC("pathconf",    luab_pathconf),
     LUABSD_FUNC("pause",    luab_pause),
     LUABSD_FUNC("pipe", luab_pipe),
@@ -3958,7 +3943,6 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("ttyname_r",  luab_ttyname_r),
     LUABSD_FUNC("unlink",   luab_unlink),
     LUABSD_FUNC("write",    luab_write),
-
 /*
  * 1003.2-1992
  */
@@ -3973,12 +3957,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
     LUABSD_FUNC("fsync",    luab_fsync),
     LUABSD_FUNC("fdatasync",    luab_fdatasync),
-#ifndef _FTRUNCATE_DECLARED
-#define _FTRUNCATE_DECLARED
     LUABSD_FUNC("ftruncate",    luab_ftruncate),
 #endif
-#endif
-
 #if __POSIX_VISIBLE >= 199506
     LUABSD_FUNC("getlogin_r",   luab_getlogin_r),
 #endif
@@ -4004,10 +3984,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("lchown",   luab_lchown),
     LUABSD_FUNC("pread",    luab_pread),
     LUABSD_FUNC("pwrite",   luab_pwrite),
-#ifndef _TRUNCATE_DECLARED
-#define _TRUNCATE_DECLARED
     LUABSD_FUNC("truncate", luab_truncate),
-#endif
 #endif
 #if __POSIX_VISIBLE >= 200809
     LUABSD_FUNC("faccessat",   luab_faccessat),
@@ -4031,10 +4008,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("nice", luab_nice),
     LUABSD_FUNC("setregid", luab_setregid),
     LUABSD_FUNC("setreuid", luab_setreuid),
-#ifndef _SWAB_DECLARED
-#define _SWAB_DECLARED
     LUABSD_FUNC("swab", luab_swab),
-#endif
     LUABSD_FUNC("sync", luab_sync),
 #endif
 
