@@ -46,8 +46,6 @@ extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;
 extern luab_module_t sockaddr_type;
 
-#define SUN_MAX_PATH    103
-
 /*
  * Interface against
  *
@@ -285,155 +283,6 @@ SOCKADDR_get(lua_State *L)
         break;
     }
     return (1);
-}
-
-/***
- * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
- *
- * @function sockaddr_dl_create
- *
- * @param data          Instance of (LUA_TUSERDATA(SOCKADDR)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (sockaddr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage sockaddr [, err, msg ] = bsd.net.if_dl.sockaddr_dl_create([ data ])
- */
-int
-luab_sockaddr_dl_create(lua_State *L)
-{
-    struct sockaddr_dl sdl;
-    struct sockaddr *data;
-
-    (void)luab_checkmaxargs(L, 0);
-
-    data = (struct sockaddr *)&sdl;
-    luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));
-
-    return (luab_pushudata(L, &sockaddr_type, data));
-}
-
-/***
- * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
- *
- * @function sockaddr_in_create
- *
- * @param port              Specifies port ID, see /etc/services.
- * @param addr              Specifies ip(4) address by instance
- *                          of (LUA_TUSERDATA(IN_ADDR)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (sockaddr_in [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage sockaddr_in [, err, msg ] = bsd.arpa.inet.sockaddr_in_create([ port [, addr ]])
- */
-int
-luab_sockaddr_in_create(lua_State *L)
-{
-    struct sockaddr_in sin;
-    struct sockaddr *data;
-    struct in_addr *addr;
-
-    data = (struct sockaddr *)&sin;
-    luab_sockaddr_pci(data, AF_INET, sizeof(sin));
-
-    switch (luab_checkmaxargs(L, 2)) {     /* FALLTHROUGH */
-    case 2:
-        addr = luab_udata(L, 2, in_addr_type, struct in_addr *);
-        (void)memmove(&sin.sin_addr, addr, sizeof(sin.sin_addr));
-    case 1:
-        sin.sin_port = (in_port_t)luab_checkinteger(L, 1, SHRT_MAX);
-    default:
-        sin.sin_addr.s_addr = htonl(sin.sin_addr.s_addr);
-        sin.sin_port = htons(sin.sin_port);
-        break;
-    }
-    return (luab_pushudata(L, &sockaddr_type, data));
-}
-
-/***
- * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
- *
- * @function sockaddr_in6_create
- *
- * @param port              Specifies port ID, see /etc/services.
- * @param info              Specifies Flow Label, see RFC6437,.
- * @param addr              Specifies ip(4) address by instance
- *                          of (LUA_TUSERDATA(IN_ADDR)).
- * @param id                Specifies scope ID.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (sockaddr_in6 [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage sockaddr_in6 [, err, msg ] = bsd.arpa.inet.sockaddr_in6_create([ port [, info [, addr [, id ]]]])
- */
-int
-luab_sockaddr_in6_create(lua_State *L)
-{
-    struct sockaddr_in6 sin6;
-    struct sockaddr *data;
-    struct in6_addr *addr;
-
-    data = (struct sockaddr *)&sin6;
-    luab_sockaddr_pci(data, AF_INET6, sizeof(sin6));
-
-    switch (luab_checkmaxargs(L, 4)) {     /* FALLTHROUGH */
-    case 4:
-        sin6.sin6_scope_id = (uint32_t)luab_checkinteger(L, 4, INT_MAX);
-    case 3:
-        addr = luab_udata(L, 3, in6_addr_type, struct in6_addr *);
-        (void)memmove(&sin6.sin6_addr, addr, sizeof(sin6.sin6_addr));
-    case 2:
-        sin6.sin6_flowinfo = (uint32_t)luab_checkinteger(L, 2, INT_MAX);
-    case 1:
-        sin6.sin6_port = (in_port_t)luab_checkinteger(L, 1, SHRT_MAX);
-    default:
-        sin6.sin6_scope_id = htons(sin6.sin6_scope_id);
-        sin6.sin6_flowinfo = htons(sin6.sin6_flowinfo);
-        sin6.sin6_port = htons(sin6.sin6_port);
-        break;
-    }
-    return (luab_pushudata(L, &sockaddr_type, data));
-}
-
-/***
- * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
- *
- * @function sockaddr_un_create
- *
- * @param path              Specifies path or filename.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (sockaddr_un [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage sockaddr_un [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
- */
-int
-luab_sockaddr_un_create(lua_State *L)
-{
-    struct sockaddr_un sun;
-    struct sockaddr *data;
-    const char *sun_path;
-
-    data = (struct sockaddr *)&sun;
-    luab_sockaddr_pci(data, AF_UNIX, sizeof(sun));
-
-    switch (luab_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
-    case 1:
-        sun_path = luab_checklstring(L, 1, SUN_MAX_PATH);
-        (void)memmove(sun.sun_path, sun_path, strlen(sun_path));
-    default:
-        break;
-    }
-    return (luab_pushudata(L, &sockaddr_type, data));
 }
 
 /*
@@ -735,7 +584,7 @@ SOCKADDR_set_sdl_alen(lua_State *L)
     sdl_alen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
     if (sdl->sdl_family == AF_LINK) {    /* XXX constraint depends on IFT_XXX */
-        sdl->sdl_alen = sdl_alen % SDL_ADDR_MAX_LEN;
+        sdl->sdl_alen = sdl_alen % LUAB_SDL_ADDR_MAX_LEN;
         status = 0;
     } else {
         errno = EPERM;
@@ -1287,7 +1136,7 @@ SOCKADDR_set_sun_path(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     sun = luab_udata(L, 1, sockaddr_type, struct sockaddr_un *);
-    sun_path = luab_checklstring(L, 1, SUN_MAX_PATH);
+    sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN);
 
     if (sun->sun_family == AF_UNIX) {
         (void)memmove(sun->sun_path, sun_path, strlen(sun_path));

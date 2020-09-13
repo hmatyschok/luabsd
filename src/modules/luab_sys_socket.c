@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/un.h>
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,11 +51,9 @@ extern luab_module_t luab_sys_socket_lib;
 
 /*
  * Subr.
- */
-
-/*
- * Evaluatse (LUA_TTABLE(LUA_TUSERDATA(MSGHDR))) and translate this into
- * an array of mmsghdr{} items.
+ *
+ * Evaluates if set contains instances of (LUA_TTABLE(LUA_TUSERDATA(MSGHDR)))
+ * and translate its elements or items this into an array of mmsghdr{} items.
  */
 static struct mmsghdr *
 luab_checkmsgvec(lua_State *L, int narg)
@@ -894,6 +894,40 @@ luab_sockaddr_create(lua_State *L)
     return (luab_pushudata(L, &sockaddr_type, data));
 }
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
+ *
+ * @function sockaddr_un_create
+ *
+ * @param path              Specifies path or filename.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (sockaddr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
+ */
+static int
+luab_sockaddr_un_create(lua_State *L)
+{
+    struct sockaddr_un sun;
+    struct sockaddr *data;
+    const char *sun_path;
+
+    data = (struct sockaddr *)&sun;
+    luab_sockaddr_pci(data, AF_UNIX, sizeof(sun));
+
+    switch (luab_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
+    case 1:
+        sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN);
+        (void)memmove(sun.sun_path, sun_path, strlen(sun_path));
+    default:
+        break;
+    }
+    return (luab_pushudata(L, &sockaddr_type, data));
+}
+
 /*
  * Interface against <sys/socket.h>.
  */
@@ -1186,6 +1220,7 @@ static luab_table_t luab_sys_socket_vec[] = {   /* sys/socket.h */
     LUABSD_FUNC("linger_create", luab_linger_create),
     LUABSD_FUNC("msghdr_create", luab_msghdr_create),
     LUABSD_FUNC("sockaddr_create",   luab_sockaddr_create),
+    LUABSD_FUNC("sockaddr_un_create",   luab_sockaddr_un_create),
     LUABSD_INT(NULL, 0)
 };
 

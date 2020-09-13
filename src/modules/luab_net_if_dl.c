@@ -41,8 +41,6 @@
 
 extern luab_module_t sockaddr_type;
 
-extern int luab_sockaddr_dl_create(lua_State *);
-
 #define LUABSD_NET_IF_DL_LIB_ID    1596382827
 #define LUABSD_NET_IF_DL_LIB_KEY    "if_dl"
 
@@ -71,7 +69,7 @@ luab_link_addr(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    addr = luab_checklstring(L, 1, SDL_DATA_MAX_LEN); /* XXX */
+    addr = luab_checklstring(L, 1, LUAB_SDL_DATA_MAX_LEN); /* XXX */
     sdl = luab_udata(L, 2, sockaddr_type, struct sockaddr_dl *);
 
     link_addr(addr, sdl);
@@ -114,11 +112,11 @@ luab_link_ntoa(lua_State *L)
         buf->iov_flags |= IOV_LOCK;
 
         if (((dst = buf->iov.iov_base) != NULL) &&
-            (SDL_DATA_MAX_LEN <= buf->iov_max_len) &&
+            (LUAB_SDL_DATA_MAX_LEN <= buf->iov_max_len) &&
             (buf->iov_flags & IOV_BUFF)) {
 
             if ((src = link_ntoa(sdl)) != NULL) {   /* XXX static buffer */
-                len = strnlen(src, SDL_DATA_MAX_LEN);
+                len = strnlen(src, LUAB_SDL_DATA_MAX_LEN);
                 (void)memmove(dst, src, len);
                 buf->iov.iov_len = len;
                 status = 0;
@@ -136,6 +134,34 @@ luab_link_ntoa(lua_State *L)
         status = -1;
     }
     return (luab_pusherr(L, status));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
+ *
+ * @function sockaddr_dl_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(SOCKADDR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (sockaddr [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockaddr [, err, msg ] = bsd.net.if_dl.sockaddr_dl_create([ data ])
+ */
+static int
+luab_sockaddr_dl_create(lua_State *L)
+{
+    struct sockaddr_dl sdl;
+    struct sockaddr *data;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    data = (struct sockaddr *)&sdl;
+    luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));
+
+    return (luab_pushudata(L, &sockaddr_type, data));
 }
 
 /*

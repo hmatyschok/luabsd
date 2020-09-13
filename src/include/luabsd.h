@@ -146,9 +146,6 @@ typedef struct luab_iovec {
 
 extern luab_module_t iovec_type;
 
-#define SDL_DATA_MAX_LEN    46     /* XXX */
-#define SDL_ADDR_MAX_LEN    (SDL_DATA_MAX_LEN - IFNAMSIZ)
-
 /*
  * Internal API for manipulating iovec{}'s.
  */
@@ -288,6 +285,7 @@ luab_udata_clear(luab_udata_t *self)
     LIST_INIT(&self->ud_list);
 }
 
+/* (LUA_TUSERDATA(IOVEC)) */
 int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
 int luab_iovec_copyout(lua_State *, luab_iovec_t *, void *, size_t);
 
@@ -305,13 +303,16 @@ int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 
 /* (LUA_TUSERDATA(SOCKET)) */
-static __inline int
+#define LUAB_SDL_DATA_MAX_LEN    46
+#define LUAB_SDL_ADDR_MAX_LEN    (LUAB_SDL_DATA_MAX_LEN - IFNAMSIZ)
+
+#define LUAB_SUN_MAXPATHLEN    103
+
+static __inline void
 luab_sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
 {
     sa->sa_len = len;
     sa->sa_family = af;
-
-    return (1);
 }
 __END_DECLS
 
