@@ -872,6 +872,58 @@ luab_umask(lua_State *L)
 
 #if __POSIX_VISIBLE >= 200809
 /***
+ * fstatat(2) - get file status
+ *
+ * @function fstatat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Referres used file for examination.
+ *
+ *                            #2 The focussed file is relative to the directory
+ *                               associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used, when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of fstatat(2).
+ *
+ * @param path              By path named file.
+ * @param sb                Result argument, instance of (LUA_TUSERDATA(STAT)).
+ * @param flag              Passed values are formatted by inclusive or:
+ *
+ *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.fstatat(fd, path, sb, flag)
+ */
+static int
+luab_fstatat(lua_State *L)
+{
+    int fd;
+    const char *path;
+    struct stat *sb;
+    int flag;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    sb = luab_udata(L, 3, stat_type, struct stat *);
+    flag = (int)luab_checkinteger(L, 4, INT_MAX);
+
+    status = fstatat(fd, path, sb, flag);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
  * mkdirat(2) - make a directory file
  *
  * @function mkdirat
@@ -1127,6 +1179,7 @@ static luab_table_t luab_sys_stat_vec[] = {
     LUABSD_FUNC("fchmod",   luab_fchmod),
 #endif
 #if __POSIX_VISIBLE >= 200809
+    LUABSD_FUNC("fstatat", luab_fstatat),
     LUABSD_FUNC("fchmodat", luab_fchmodat),
     LUABSD_FUNC("futimens", luab_futimens),
     LUABSD_FUNC("utimensat", luab_utimensat),
