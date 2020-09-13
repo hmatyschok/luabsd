@@ -37,7 +37,11 @@
 
 extern luab_module_t luab_sys_unistd_lib;
 
-static luab_table_t luab_sys_unistd_vec[] = {   /* sys/unistd.h */
+/*
+ * Interface against <sys/unistd.h>
+ */
+
+static luab_table_t luab_sys_unistd_vec[] = {
     LUABSD_INT("_POSIX_ADVISORY_INFO",  _POSIX_ADVISORY_INFO),
     LUABSD_INT("_POSIX_ASYNCHRONOUS_IO",    _POSIX_ASYNCHRONOUS_IO),
     LUABSD_INT("_POSIX_CHOWN_RESTRICTED",   _POSIX_CHOWN_RESTRICTED),

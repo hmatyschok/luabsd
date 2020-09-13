@@ -90,19 +90,6 @@ int luab_sockaddr_in_create(lua_State *L);
 int luab_sockaddr_in6_create(lua_State *L);
 
 /*
- * Subr.
- */
-
-static int
-sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
-{
-    sa->sa_len = len;
-    sa->sa_family = af;
-
-    return (1);
-}
-
-/*
  * Generator functions.
  */
 
@@ -323,7 +310,7 @@ luab_sockaddr_dl_create(lua_State *L)
     (void)luab_checkmaxargs(L, 0);
 
     data = (struct sockaddr *)&sdl;
-    sockaddr_pci(data, AF_LINK, sizeof(sdl));
+    luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));
 
     return (luab_pushudata(L, &sockaddr_type, data));
 }
@@ -352,7 +339,7 @@ luab_sockaddr_in_create(lua_State *L)
     struct in_addr *addr;
 
     data = (struct sockaddr *)&sin;
-    sockaddr_pci(data, AF_INET, sizeof(sin));
+    luab_sockaddr_pci(data, AF_INET, sizeof(sin));
 
     switch (luab_checkmaxargs(L, 2)) {     /* FALLTHROUGH */
     case 2:
@@ -394,7 +381,7 @@ luab_sockaddr_in6_create(lua_State *L)
     struct in6_addr *addr;
 
     data = (struct sockaddr *)&sin6;
-    sockaddr_pci(data, AF_INET6, sizeof(sin6));
+    luab_sockaddr_pci(data, AF_INET6, sizeof(sin6));
 
     switch (luab_checkmaxargs(L, 4)) {     /* FALLTHROUGH */
     case 4:
@@ -437,7 +424,7 @@ luab_sockaddr_un_create(lua_State *L)
     const char *sun_path;
 
     data = (struct sockaddr *)&sun;
-    sockaddr_pci(data, AF_UNIX, sizeof(sun));
+    luab_sockaddr_pci(data, AF_UNIX, sizeof(sun));
 
     switch (luab_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
     case 1:

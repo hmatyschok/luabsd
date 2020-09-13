@@ -303,6 +303,16 @@ int luab_iovec_readlinkat(lua_State *, int, const char *,
 #endif
 int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
+
+/* (LUA_TUSERDATA(SOCKET)) */
+static __inline int
+luab_sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
+{
+    sa->sa_len = len;
+    sa->sa_family = af;
+
+    return (1);
+}
 __END_DECLS
 
 #endif /* _LUABSD_H_ */
