@@ -108,6 +108,30 @@ luab_pushltimesvector(lua_State *L, int narg, size_t len, void *arg)
  */
 
 #if __BSD_VISIBLE
+/***
+ * chflags(2) - set file flags
+ *
+ * @function chflags
+ *
+ * @param path              File pointed to by path.
+ * @param flags             File flags
+ *
+ *                             #1 bsd.sys.stat.SF_{APPEND,ARCHIVED,IMMUTABLE,
+ *                                  NOUNLINK,SNAPSHOT}
+ *
+ *                             #2 bsd.sys.stat.UF_{APPEND,ARCHIVE,HIDDEN,
+ *                                  IMMUTABLE,NODUMP,NOUNLINK,OFFLINE,
+ *                                  OPAQUE,READONLY,REPARSE,SPARSE,SYSTEM}
+ *
+ *                          are formatted by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.chflags(path, flags)
+ */
 static int
 luab_chflags(lua_State *L)
 {
@@ -125,6 +149,46 @@ luab_chflags(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * chflagsat(2) - set file flags
+ *
+ * @function chflagsat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes referenced file.
+ *
+ *                            #2 By path named file is relative to the directory
+ *                               associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of chflagsat(2).
+ *
+ * @param path              File named by path.
+ * @param flags             File flags
+ *
+ *                             #1 bsd.sys.stat.SF_{APPEND,ARCHIVED,IMMUTABLE,
+ *                                  NOUNLINK,SNAPSHOT}
+ *
+ *                             #2 bsd.sys.stat.UF_{APPEND,ARCHIVE,HIDDEN,
+ *                                  IMMUTABLE,NODUMP,NOUNLINK,OFFLINE,
+ *                                  OPAQUE,READONLY,REPARSE,SPARSE,SYSTEM}
+ *
+ *                          are formatted by inclusive or.
+ * @param atflags           Passed values are formatted by inclusive or:
+ *
+ *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.chflagsat(fd, path, flags, atflags)
+ */
 static int
 luab_chflagsat(lua_State *L)
 {
@@ -147,6 +211,41 @@ luab_chflagsat(lua_State *L)
 }
 #endif
 
+/***
+ * chmod(2) - change mode of file
+ *
+ * @function chmod
+ *
+ * @param path              File named by path.
+ * @param mode              Permission bit masks
+ *
+ *                              bsd.sys.stat.S_{
+ *                                  IRWXU,          -- RWX mask for owner
+ *                                  IRUSR,          -- R for owner
+ *                                  IWUSR,          -- W for owner
+ *                                  IXUSR,          -- X for owner
+ *                                  IRWXG,          -- RWX mask for group
+ *                                  IRGRP,          -- R for group
+ *                                  IWGRP,          -- W for group
+ *                                  IXGRP,          -- X for group
+ *                                  IRWXO,          -- RWX mask for other
+ *                                  IROTH,          -- R for other
+ *                                  IWOTH,          -- W for other
+ *                                  IXOTH,          -- X for other
+ *                                  ISUID,          -- set user id on
+ *                                  ISGID,          -- set group id on
+ *                                  ISVTX           -- sticky bit
+ *                              }
+ *
+ *                          are formatted by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.chmod(path, mode)
+ */
 static int
 luab_chmod(lua_State *L)
 {
@@ -165,6 +264,30 @@ luab_chmod(lua_State *L)
 }
 
 #if __BSD_VISIBLE
+/***
+ * fchflags(2) - set file flags
+ *
+ * @function fchflags
+ *
+ * @param fd                Filedescriptor.
+ * @param flags             File flags
+ *
+ *                             #1 bsd.sys.stat.SF_{APPEND,ARCHIVED,IMMUTABLE,
+ *                                  NOUNLINK,SNAPSHOT}
+ *
+ *                             #2 bsd.sys.stat.UF_{APPEND,ARCHIVE,HIDDEN,
+ *                                  IMMUTABLE,NODUMP,NOUNLINK,OFFLINE,
+ *                                  OPAQUE,READONLY,REPARSE,SPARSE,SYSTEM}
+ *
+ *                          are formatted by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.fchflags(path, flags)
+ */
 static int
 luab_fchflags(lua_State *L)
 {
@@ -182,8 +305,42 @@ luab_fchflags(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif
-
 #if __POSIX_VISIBLE >= 200112
+/***
+ * fchmod(2) - change mode of file
+ *
+ * @function fchmod
+ *
+ * @param fd                File named by path.
+ * @param mode              Permission bit masks
+ *
+ *                              bsd.sys.stat.S_{
+ *                                  IRWXU,          -- RWX mask for owner
+ *                                  IRUSR,          -- R for owner
+ *                                  IWUSR,          -- W for owner
+ *                                  IXUSR,          -- X for owner
+ *                                  IRWXG,          -- RWX mask for group
+ *                                  IRGRP,          -- R for group
+ *                                  IWGRP,          -- W for group
+ *                                  IXGRP,          -- X for group
+ *                                  IRWXO,          -- RWX mask for other
+ *                                  IROTH,          -- R for other
+ *                                  IWOTH,          -- W for other
+ *                                  IXOTH,          -- X for other
+ *                                  ISUID,          -- set user id on
+ *                                  ISGID,          -- set group id on
+ *                                  ISVTX           -- sticky bit
+ *                              }
+ *
+ *                          are formatted by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.fchmod(fd, mode)
+ */
 static int
 luab_fchmod(lua_State *L)
 {
@@ -201,8 +358,58 @@ luab_fchmod(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif
-
 #if __POSIX_VISIBLE >= 200809
+/***
+ * fchmodat(2) - change mode of file
+ *
+ * @function fchmodat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes newly created directory.
+ *
+ *                            #2 The newly created directory is relative to the
+ *                               directory associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of mkdirat(2).
+ *
+ * @param mode              Permission bit masks
+ *
+ *                              bsd.sys.stat.S_{
+ *                                  IRWXU,          -- RWX mask for owner
+ *                                  IRUSR,          -- R for owner
+ *                                  IWUSR,          -- W for owner
+ *                                  IXUSR,          -- X for owner
+ *                                  IRWXG,          -- RWX mask for group
+ *                                  IRGRP,          -- R for group
+ *                                  IWGRP,          -- W for group
+ *                                  IXGRP,          -- X for group
+ *                                  IRWXO,          -- RWX mask for other
+ *                                  IROTH,          -- R for other
+ *                                  IWOTH,          -- W for other
+ *                                  IXOTH,          -- X for other
+ *                                  ISUID,          -- set user id on
+ *                                  ISGID,          -- set group id on
+ *                                  ISVTX           -- sticky bit
+ *                              }
+ *
+ *                          are formatted by inclusive or.
+ *
+ * @param flag              Passed values are formatted by inclusive or:
+ *
+ *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.fchmodat(fd, path, mode, flag)
+ */
 static int
 luab_fchmodat(lua_State *L)
 {
@@ -224,6 +431,28 @@ luab_fchmodat(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * futimens(2) - set file access and modifications times
+ *
+ * @function fchflags
+ *
+ * @param fd                Filedescriptor.
+ * @param times             An instance of (LUA_TTABLE) carrying at least
+ *
+ *                              {
+ *                                  (LUA_TUSERDATA(TIMESPEC)),
+ *                                  (LUA_TUSERDATA(TIMESPEC))
+ *                              }
+ *
+ *                          two instances of (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.futimens(fd, times)
+ */
 static int
 luab_futimens(lua_State *L)
 {
@@ -721,7 +950,6 @@ static luab_table_t luab_sys_stat_vec[] = {
     LUABSD_INT("SF_NOUNLINK",   SF_NOUNLINK),
     LUABSD_INT("SF_SNAPSHOT",   SF_SNAPSHOT),
 #endif /* __BSD_VISIBLE */
-
 #if __POSIX_VISIBLE >= 200809
     LUABSD_INT("UTIME_NOW", UTIME_NOW),
     LUABSD_INT("UTIME_OMIT",    UTIME_OMIT),

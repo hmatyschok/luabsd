@@ -96,8 +96,6 @@ int luab_sockaddr_in6_create(lua_State *L);
 static int
 sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
 {
-    (void)memset_s(sa, len, 0, len);
-
     sa->sa_len = len;
     sa->sa_family = af;
 
