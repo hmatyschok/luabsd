@@ -40,15 +40,14 @@
 extern luab_module_t timespec_type;
 extern luab_module_t stat_type;
 
-extern int luab_stat_create(lua_State *);
-
 #define LUABSD_SYS_STAT_LIB_ID    1593623310
 #define LUABSD_SYS_STAT_LIB_KEY    "stat"
 
 extern luab_module_t luab_sys_stat_lib;
 
-
 /*
+ * Subr.
+ *
  * Translate a (LUA_TTABLE) over (LUA_TUSERDATA(TIMESPEC)) into an array of
  * timespec{} items.
  */
@@ -105,7 +104,7 @@ luab_pushltimesvector(lua_State *L, int narg, size_t len, void *arg)
 }
 
 /*
- * Components or service primitives over sys/stat.h.
+ * Service primitives.
  */
 
 #if __BSD_VISIBLE
@@ -332,13 +331,39 @@ luab_lchmod(lua_State *L)
 }
 #endif
 
-/*
- * XXX
+#if __POSIX_VISIBLE >= 200112
+/***
+ * lstat(2) - get file status
  *
- *  int stat(const char * __restrict, struct stat * __restrict);
+ * @function lstat
+ *
+ * @param path              File pointed to by path.
+ * @param sb                Result argument, instance of (LUA_TUSERDATA(STAT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.lstat(path, sb)
  */
+static int
+luab_lstat(lua_State *L)
+{
+    const char *path;
+    struct stat *sb;
+    int status;
 
+    (void)luab_checkmaxargs(L, 2);
 
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    sb = luab_udata(L, 2, stat_type, struct stat *);
+
+    status = lstat(path, sb);
+
+    return (luab_pusherr(L, status));
+}
+#endif
 
 static int
 luab_mkdir(lua_State *L)
@@ -395,6 +420,38 @@ luab_mknod(lua_State *L)
 }
 #define _MKNOD_DECLARED
 #endif
+
+/***
+ * stat(2) - get file status
+ *
+ * @function stat
+ *
+ * @param path              File pointed to by path.
+ * @param sb                Result argument, instance of (LUA_TUSERDATA(STAT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.stat(path, sb)
+ */
+static int
+luab_stat(lua_State *L)
+{
+    const char *path;
+    struct stat *sb;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    sb = luab_udata(L, 2, stat_type, struct stat *);
+
+    status = stat(path, sb);
+
+    return (luab_pusherr(L, status));
+}
 
 /***
  * umask(2) - set file creation mode mask
@@ -476,7 +533,7 @@ luab_mkdirat(lua_State *L)
 /***
  * mkfifoat(2) - make a fifo file
  *
- * @function mkfifoat 
+ * @function mkfifoat
  *
  * @param fd                Filedescriptor, three cases are considered here:
  *
@@ -573,10 +630,42 @@ luab_mknodat(lua_State *L)
 #endif /* __POSIX_VISIBLE >= 200809 */
 
 /*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(STAT)).
+ *
+ * @function stat_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(STAT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (stat [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage hook [, err, msg ] = bsd.sys.stat.stat_create([ data ])
+ */
+static int
+luab_stat_create(lua_State *L)
+{
+    struct stat *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, stat_type, struct stat *);
+
+    return (luab_pushudata(L, &stat_type, data));
+}
+
+/*
  * Interface against <sys/stat.h>.
  */
 
-static luab_table_t luab_sys_stat_vec[] = { 
+static luab_table_t luab_sys_stat_vec[] = {
     LUABSD_INT("S_ISUID",    S_ISUID),
     LUABSD_INT("S_ISGID",    S_ISGID),
 #if __BSD_VISIBLE
@@ -656,15 +745,11 @@ static luab_table_t luab_sys_stat_vec[] = {
     LUABSD_FUNC("fstat",    luab_fstat),
 #if __BSD_VISIBLE
     LUABSD_FUNC("lchflags", luab_lchflags),
+    LUABSD_FUNC("lchmod",   luab_lchmod),
 #endif
 #if __POSIX_VISIBLE >= 200112
-/*
- * XXX
- *
- *  int lstat(const char * __restrict, struct stat * __restrict);
- */
+    LUABSD_FUNC("lstat",    luab_lstat),
 #endif
-    LUABSD_FUNC("lchmod",   luab_lchmod),
     LUABSD_FUNC("mkdir",   luab_mkdir),
     LUABSD_FUNC("mkdirat",   luab_mkdirat),
     LUABSD_FUNC("mkfifo",   luab_mkfifo),
@@ -673,11 +758,7 @@ static luab_table_t luab_sys_stat_vec[] = {
     LUABSD_FUNC("mknod",    luab_mknod),
 #define _MKNOD_DECLARED
 #endif
-/*
- * XXX
- *
- *  int stat(const char * __restrict, struct stat * __restrict);
- */
+    LUABSD_FUNC("stat", luab_stat),
     LUABSD_FUNC("umask",    luab_umask),
 #if __XSI_VISIBLE >= 700
     LUABSD_FUNC("mknodat",    luab_mknodat),

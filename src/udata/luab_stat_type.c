@@ -89,7 +89,113 @@ typedef struct luab_stat {
 #define LUABSD_STAT_TYPE_ID    1594028586
 #define LUABSD_STAT_TYPE    "STAT*"
 
-int luab_stat_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(STAT)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              st_dev          = (LUA_TNUMBER),
+ *              st_ino          = (LUA_TNUMBER),
+ *              st_nlink        = (LUA_TNUMBER),
+ *              st_mode         = (LUA_TNUMBER),
+ *              st_uid          = (LUA_TNUMBER),
+ *              st_gid          = (LUA_TNUMBER),
+ *              st_rdev         = (LUA_TNUMBER),
+ *              st_atim_ext     = (LUA_TNUMBER),
+ *              st_atim         = (LUA_TUSERDATA(STAT)),
+ *              st_mtim_ext     = (LUA_TNUMBER),
+ *              st_mtim         = (LUA_TUSERDATA(STAT)),
+ *              st_ctim_ext     = (LUA_TNUMBER),
+ *              st_ctim         = (LUA_TUSERDATA(STAT)),
+ *              st_btim_ext     = (LUA_TNUMBER),
+ *              st_birthtim     = (LUA_TUSERDATA(STAT)),
+ *              st_size         = (LUA_TNUMBER),
+ *              st_blocks       = (LUA_TNUMBER),
+ *              st_blksize      = (LUA_TNUMBER),
+ *              st_flags        = (LUA_TNUMBER),
+ *              st_gen          = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = stat:get()
+ */
+static int
+STAT_get(lua_State *L)
+{
+    struct stat *st;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    st = luab_udata(L, 1, stat_type, struct stat *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "st_dev", st->st_dev);
+    luab_setinteger(L, -2, "st_ino", st->st_ino);
+    luab_setinteger(L, -2, "st_nlink", st->st_nlink);
+    luab_setinteger(L, -2, "st_mode", st->st_mode);
+    luab_setinteger(L, -2, "st_uid", st->st_uid);
+    luab_setinteger(L, -2, "st_gid", st->st_gid);
+    luab_setinteger(L, -2, "st_rdev", st->st_rdev);
+
+#ifdef  __STAT_TIME_T_EXT
+    luab_setinteger(L, -2, "st_atim_ext", st->st_atim_ext);
+#endif
+    luab_setudata(L, -2, &timespec_type, "st_atim", &st->st_atim);
+
+#ifdef  __STAT_TIME_T_EXT
+    luab_setinteger(L, -2, "st_mtim_ext", st->st_mtim_ext);
+#endif
+    luab_setudata(L, -2, &timespec_type, "st_mtim", &st->st_mtim);
+
+#ifdef  __STAT_TIME_T_EXT
+    luab_setinteger(L, -2, "st_ctim_ext", st->st_ctim_ext);
+#endif
+    luab_setudata(L, -2, &timespec_type, "st_ctim", &st->st_ctim);
+
+#ifdef  __STAT_TIME_T_EXT
+    luab_setinteger(L, -2, "st_btim_ext", st->st_btim_ext);
+#endif
+    luab_setudata(L, -2, &timespec_type, "st_birthtim", &st->st_birthtim);
+
+    luab_setinteger(L, -2, "st_size", st->st_size);
+    luab_setinteger(L, -2, "st_blocks", st->st_blocks);
+    luab_setinteger(L, -2, "st_blksize", st->st_blksize);
+    luab_setinteger(L, -2, "st_flags", st->st_flags);
+    luab_setinteger(L, -2, "st_gen", st->st_gen);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate stat{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = stat:dump()
+ */
+static int
+STAT_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &stat_type, sizeof(struct stat)));
+}
+
+/*
+ * Service-primitives.
+ */
 
 /* inode's device */
 static int
@@ -732,75 +838,8 @@ STAT_get_st_gen(lua_State *L)
 }
 
 /*
- * Maps attributes on stat{} to an instance of LUA_TTABLE.
+ * Meta-methods.
  */
-static int
-STAT_get(lua_State *L)
-{
-    struct stat *st;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    st = luab_udata(L, 1, stat_type, struct stat *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "st_dev", st->st_dev);
-    luab_setinteger(L, -2, "st_ino", st->st_ino);
-    luab_setinteger(L, -2, "st_nlink", st->st_nlink);
-    luab_setinteger(L, -2, "st_mode", st->st_mode);
-    luab_setinteger(L, -2, "st_uid", st->st_uid);
-    luab_setinteger(L, -2, "st_gid", st->st_gid);
-    luab_setinteger(L, -2, "st_rdev", st->st_rdev);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_atim_ext", st->st_atim_ext);
-#endif
-    luab_setudata(L, -2, &timespec_type, "st_atim", &st->st_atim);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_mtim_ext", st->st_mtim_ext);
-#endif
-    luab_setudata(L, -2, &timespec_type, "st_mtim", &st->st_mtim);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_ctim_ext", st->st_ctim_ext);
-#endif
-    luab_setudata(L, -2, &timespec_type, "st_ctim", &st->st_ctim);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_btim_ext", st->st_btim_ext);
-#endif
-    luab_setudata(L, -2, &timespec_type, "st_birthtim", &st->st_birthtim);
-
-    luab_setinteger(L, -2, "st_size", st->st_size);
-    luab_setinteger(L, -2, "st_blocks", st->st_blocks);
-    luab_setinteger(L, -2, "st_blksize", st->st_blksize);
-    luab_setinteger(L, -2, "st_flags", st->st_flags);
-    luab_setinteger(L, -2, "st_gen", st->st_gen);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy stat{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = stat:dump()
- */
-static int
-STAT_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &stat_type, sizeof(struct stat)));
-}
 
 static int
 STAT_gc(lua_State *L)
@@ -813,6 +852,10 @@ STAT_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &stat_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t stat_methods[] = {
     LUABSD_FUNC("set_st_dev",   STAT_set_st_dev),
@@ -908,31 +951,3 @@ luab_module_t stat_type = {
     .get = stat_udata,
     .sz = sizeof(luab_stat_t),
 };
-
-/***
- * Generator function.
- *
- * @function stat_create
- *
- * @param data          (LUA_T{NIL,USERDATA(stat)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (stat [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage stat [, err, msg ] = bsd.sys.stat.stat_create([ data ])
- */
-int
-luab_stat_create(lua_State *L)
-{
-    struct stat *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = stat_udata(L, narg);
-
-    return (luab_pushudata(L, &stat_type, data));
-}
