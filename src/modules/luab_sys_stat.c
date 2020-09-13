@@ -161,7 +161,7 @@ luab_chflags(lua_State *L)
  *                            #2 By path named file is relative to the directory
  *                               associated with the file descriptor.
  *
- *                            #3 The current working directory is used when
+ *                            #3 The current working directory is used, when
  *
  *                                  bsd.fcntl.AT_FDCWD
  *
@@ -371,11 +371,11 @@ luab_fchmod(lua_State *L)
  *                            #2 The newly created directory is relative to the
  *                               directory associated with the file descriptor.
  *
- *                            #3 The current working directory is used when
+ *                            #3 The current working directory is used, when
  *
  *                                  bsd.fcntl.AT_FDCWD
  *
- *                               was passed by call of mkdirat(2).
+ *                               was passed by call of fchmodat(2).
  *
  * @param mode              Permission bit masks
  *
@@ -434,7 +434,7 @@ luab_fchmodat(lua_State *L)
 /***
  * futimens(2) - set file access and modifications times
  *
- * @function fchflags
+ * @function futimens
  *
  * @param fd                Filedescriptor.
  * @param times             An instance of (LUA_TTABLE) carrying at least
@@ -477,6 +477,44 @@ luab_futimens(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * utimensat(2) - set file access and modifications times
+ *
+ * @function utimensat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes referred file.
+ *
+ *                            #2 By path named file is relative to the directory
+ *                               associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used, when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of utimensat(2).
+ *
+ * @param times             An instance of (LUA_TTABLE) carrying at least
+ *
+ *                              {
+ *                                  (LUA_TUSERDATA(TIMESPEC)),
+ *                                  (LUA_TUSERDATA(TIMESPEC))
+ *                              }
+ *
+ *                          two instances of (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @param flag              Passed values are formatted by inclusive or:
+ *
+ *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.utimensat(fd, path, times, flag)
+ */
 static int
 luab_utimensat(lua_State *L)
 {
@@ -507,6 +545,21 @@ luab_utimensat(lua_State *L)
 
 #endif /* __POSIX_VISIBLE >= 200809 */
 
+/***
+ * fstat(2) - get file status
+ *
+ * @function fstat
+ *
+ * @param fd                Filedescriptor referres used file for examination.
+ * @param sb                Result argument, instance of (LUA_TUSERDATA(STAT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.fstat(fd, sb)
+ */
 static int
 luab_fstat(lua_State *L)
 {
@@ -525,6 +578,30 @@ luab_fstat(lua_State *L)
 }
 
 #if __BSD_VISIBLE
+/***
+ * lchflags(2) - set file flags
+ *
+ * @function lchflags
+ *
+ * @param path              File named by path.
+ * @param flags             File flags
+ *
+ *                             #1 bsd.sys.stat.SF_{APPEND,ARCHIVED,IMMUTABLE,
+ *                                  NOUNLINK,SNAPSHOT}
+ *
+ *                             #2 bsd.sys.stat.UF_{APPEND,ARCHIVE,HIDDEN,
+ *                                  IMMUTABLE,NODUMP,NOUNLINK,OFFLINE,
+ *                                  OPAQUE,READONLY,REPARSE,SPARSE,SYSTEM}
+ *
+ *                          are formatted by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.lchflags(path, flags)
+ */
 static int
 luab_lchflags(lua_State *L)
 {
@@ -542,6 +619,41 @@ luab_lchflags(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * lchmod(2) - change mode of file
+ *
+ * @function lchmod
+ *
+ * @param path              File named by path.
+ * @param mode              Permission bit masks
+ *
+ *                              bsd.sys.stat.S_{
+ *                                  IRWXU,          -- RWX mask for owner
+ *                                  IRUSR,          -- R for owner
+ *                                  IWUSR,          -- W for owner
+ *                                  IXUSR,          -- X for owner
+ *                                  IRWXG,          -- RWX mask for group
+ *                                  IRGRP,          -- R for group
+ *                                  IWGRP,          -- W for group
+ *                                  IXGRP,          -- X for group
+ *                                  IRWXO,          -- RWX mask for other
+ *                                  IROTH,          -- R for other
+ *                                  IWOTH,          -- W for other
+ *                                  IXOTH,          -- X for other
+ *                                  ISUID,          -- set user id on
+ *                                  ISGID,          -- set group id on
+ *                                  ISVTX           -- sticky bit
+ *                              }
+ *
+ *                          are formatted by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.lchmod(path, mode)
+ */
 static int
 luab_lchmod(lua_State *L)
 {
@@ -559,7 +671,6 @@ luab_lchmod(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif
-
 #if __POSIX_VISIBLE >= 200112
 /***
  * lstat(2) - get file status
@@ -594,6 +705,22 @@ luab_lstat(lua_State *L)
 }
 #endif
 
+/***
+ * mkdir(2) - make a directory file
+ *
+ * @function mkdir
+ *
+ * @param path              The directory path.
+ * @param mode              Specifies access permissions, restricted
+ *                          by the umask(2) of calling process.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.mkdir(path, mode)
+ */
 static int
 luab_mkdir(lua_State *L)
 {
@@ -611,6 +738,22 @@ luab_mkdir(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * mkfifo(2) - make a fifo file
+ *
+ * @function mkfifo
+ *
+ * @param path              Specifies the FIFO (with name path).
+ * @param mode              Specifies access permissions of newly created
+ *                          FIFO.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.mkfifo(path, mode)
+ */
 static int
 luab_mkfifo(lua_State *L)
 {
@@ -629,6 +772,23 @@ luab_mkfifo(lua_State *L)
 }
 
 #if !defined(_MKNOD_DECLARED) && __XSI_VISIBLE
+/***
+ * mknod(2) - make a special file node
+ *
+ * @function mknodat
+ *
+ * @param path              Specifies the system file node (path).
+ * @param mode              Specifies access permissions of newly created
+ *                          system file node
+ * @param dev               Specification, denotes particular device.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.stat.mknodat(fd, path, mode)
+ */
 static int
 luab_mknod(lua_State *L)
 {
@@ -723,7 +883,7 @@ luab_umask(lua_State *L)
  *                            #2 The newly created directory is relative to the
  *                               directory associated with the file descriptor.
  *
- *                            #3 The current working directory is used when
+ *                            #3 The current working directory is used, when
  *
  *                                  bsd.fcntl.AT_FDCWD
  *
@@ -771,7 +931,7 @@ luab_mkdirat(lua_State *L)
  *                            #2 The newly created FIFO is relative to the
  *                               directory associated with the file descriptor.
  *
- *                            #3 The current working directory is used when
+ *                            #3 The current working directory is used, when
  *
  *                                  bsd.fcntl.AT_FDCWD
  *
@@ -819,7 +979,7 @@ luab_mkfifoat(lua_State *L)
  *                            #2 The newly created node is relative to the
  *                               directory associated with the file descriptor.
  *
- *                            #3 The current working directory is used when
+ *                            #3 The current working directory is used, when
  *
  *                                  bsd.fcntl.AT_FDCWD
  *
@@ -828,6 +988,7 @@ luab_mkfifoat(lua_State *L)
  * @param path              Specifies the system file node (path).
  * @param mode              Specifies access permissions of newly created
  *                          system file node.
+ * @param dev               Specification, denotes particular device.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
