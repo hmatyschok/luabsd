@@ -8,7 +8,7 @@ e. g. *BSD, GNU/Linux, Minix, QNX, etc.
 
     local bsd = require("bsd")
 
-As an example, a database may created as described in db(3) [1]:
+As an example, a database may be created as described in db(3) [1]:
 
     local _fname = "example.db"
     local _flags = bit32.bor(
@@ -33,7 +33,7 @@ A key/value pair
     local key = bsd.core.uuid()
     local value = "Hello world!"
 
-may created by utilizing
+may be created by utilizing
 
     local buf_key = bsd.sys.uio.iovec_create(#key)
     local buf_value = bsd.sys.uio.iovec_create(#value)
@@ -47,13 +47,13 @@ buffer maps to a set of data base thang
     local dbt_value = bsd.db.dbt_create(buf_value)
     local dbt_result = bsd.db.dbt_create()
 
-those implements an interface for operations as described in db(3):
+still implements an interface for operations as described in db(3):
 
     _flags = bsd.db.R_NOOVERWRITE
 
     local ret, err, msg = db:put(dbt_key, dbt_value, _flags)
 
-Therefore, a callout may implemented e. g.
+Therefore, a callout may be implemented e. g.
 
     local fetch = true
     local expired = false
@@ -96,7 +96,7 @@ by utilizing setitimer(2) or interval timer [2]:
         end
     end
 
-It is obvious, C structures are encapsulated (or embedded) by LUA_TUSERDATA:
+It is obvious, C structures are encapsulated by instances of LUA_TUSERDATA:
 
     local mt = getmetatable(it_probe);
 
@@ -153,7 +153,7 @@ by
         print("")
     end
 
-utilizing LUA_TTABLES:
+utilizing instaces of LUA_TTABLES:
 
     local sb = bsd.sys.stat.stat_create()
     local fd = db:fd()
@@ -204,12 +204,12 @@ utilizing LUA_TTABLES:
 References
 ----------
 
-[1] FreeBSD Library Functions Manual,
-     "dbopen -- database access methods",
-     https://www.freebsd.org/cgi/man.cgi?db(3)
+ [1] FreeBSD Library Functions Manual,
+      "dbopen -- database access methods",
+      https://www.freebsd.org/cgi/man.cgi?db(3)
 
-[2] FreeBSD System Calls Manual,
-     "getitimer, setitimer -- get/set value of interval timer",
-     https://www.freebsd.org/cgi/man.cgi?setitimer(2)
+ [2] FreeBSD System Calls Manual,
+      "getitimer, setitimer -- get/set value of interval timer",
+      https://www.freebsd.org/cgi/man.cgi?setitimer(2)
 
 </code></pre>
