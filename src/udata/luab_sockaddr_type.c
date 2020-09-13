@@ -584,7 +584,7 @@ SOCKADDR_set_sdl_alen(lua_State *L)
     sdl_alen = (u_char)luab_checkinteger(L, 2, CHAR_MAX);
 
     if (sdl->sdl_family == AF_LINK) {    /* XXX constraint depends on IFT_XXX */
-        sdl->sdl_alen = sdl_alen % LUAB_SDL_ADDR_MAX_LEN;
+        sdl->sdl_alen = sdl_alen % LUAB_SDL_MAXADDRLEN;
         status = 0;
     } else {
         errno = EPERM;

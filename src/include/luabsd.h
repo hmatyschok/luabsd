@@ -303,8 +303,8 @@ int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 
 /* (LUA_TUSERDATA(SOCKET)) */
-#define LUAB_SDL_DATA_MAX_LEN    46
-#define LUAB_SDL_ADDR_MAX_LEN    (LUAB_SDL_DATA_MAX_LEN - IFNAMSIZ)
+#define LUAB_SDL_MAXDATALEN    46
+#define LUAB_SDL_MAXADDRLEN    (LUAB_SDL_MAXDATALEN - IFNAMSIZ)
 
 #define LUAB_SUN_MAXPATHLEN    103
 
