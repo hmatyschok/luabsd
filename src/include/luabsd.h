@@ -53,11 +53,13 @@ typedef union luab_type {
 } luab_type_u;
 
 typedef void    (*luab_table_fn)(lua_State *, luab_type_u *);
+typedef void    (*luab_link_fn)(lua_State *, void *, void *);
 
 typedef struct luab_table {
     luab_table_fn   init;
     const char    *key;
     luab_type_u   val;
+    luab_link_fn    link;
 } luab_table_t;
 
 #define LUABSD_REG(fn, k, v) \
