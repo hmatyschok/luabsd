@@ -308,6 +308,8 @@ int luab_iovec_readlinkat(lua_State *, int, const char *,
     luab_iovec_t *, size_t *);
 #endif
 int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
+int luab_iovec_recvfrom(lua_State *, int , luab_iovec_t *,
+    size_t *, int, struct sockaddr *, socklen_t *);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 
 /* (LUA_TUSERDATA(SOCKADDR)) */

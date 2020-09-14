@@ -498,7 +498,7 @@ luab_recv(lua_State *L)
     luab_iovec_t *buf;
     size_t len;
     int flags;
-    
+
     (void)luab_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
@@ -542,15 +542,13 @@ luab_recv(lua_State *L)
 static int
 luab_recvfrom(lua_State *L)
 {
-    int s;                          /* XXX */
+    int s;
     luab_iovec_t *buf;
     size_t len;
     int flags;
     struct sockaddr *from;
     luab_type_u *hook;
     socklen_t *fromlen;
-    caddr_t caddr;
-    ssize_t count;
 
     (void)luab_checkmaxargs(L, 6);
 
@@ -568,25 +566,7 @@ luab_recvfrom(lua_State *L)
     hook = luab_udata(L, 6, hook_type, luab_type_u *);
     fromlen = &(hook->un_socklen);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        if (((caddr = buf->iov.iov_base) != NULL) &&
-            (len <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
-
-            if ((count = recvfrom(s, caddr, len, flags, from, fromlen)) > 0)
-                buf->iov.iov_len = count;
-        } else {
-            errno = ENXIO;
-            count = -1;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        count = -1;
-    }
-    return (luab_pusherr(L, count));
+    return (luab_iovec_recvfrom(L, s, buf, &len, flags, from, fromlen));
 }
 
 /***
@@ -719,7 +699,7 @@ luab_send(lua_State *L)
     luab_iovec_t *msg;
     size_t len;
     int flags;
-    
+
     (void)luab_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
