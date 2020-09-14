@@ -2466,7 +2466,7 @@ luab_gethostid(lua_State *L)
  * @function lockf
  *
  * @param fd                Open file descriptor.
- * @param function          Control value specifies assumed action over
+ * @param function          Control value specifies assumed action from
  *
  *                              bsd.unistd.F_{ULOCK,LOCK,TLOCK,TEST}
  *

@@ -38,7 +38,7 @@
 #include "luabsd.h"
 
 /*
- * Generic service primitives for iovec{}.
+ * Generic service primitives for handling iovec{}s.
  * 
  *   #1 bp refers iov->iov_base.
  * 

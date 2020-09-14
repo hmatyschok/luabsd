@@ -149,7 +149,7 @@ typedef struct luab_iovec {
 extern luab_module_t iovec_type;
 
 /*
- * Internal API for manipulating iovec{}'s.
+ * Internal API for manipulating iovec{}s.
  */
 
 int luab_buf_clear(struct iovec *);
@@ -170,9 +170,10 @@ void *  luab_newuserdata(lua_State *, luab_module_t *, void *);
 /*
  * Accessor, n-th arg over argv, [stack -> C].
  *
- * Each kind of luab_check{l}xxx(3) accessor evaluates, if n-th arg exists,
- * otherwise lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does
- * the same thing without throwing an error.
+ * luab_check{l}xxx(3) accessor evaluates, if n-th arg exists, otherwise
+ * lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does the same
+ * thing without throwing an error, but return NULL, if n-th arg does
+ * not exist.
  */
 
 int luab_checkmaxargs(lua_State *, int);
@@ -304,13 +305,11 @@ int luab_iovec_readlinkat(lua_State *, int, const char *,
 int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 
-/* (LUA_TUSERDATA(SOCKET)) */
+/* (LUA_TUSERDATA(SOCKADDR)) */
 #define LUAB_SOCK_MAXADDRLEN    SOCK_MAXADDRLEN
 #define LUAB_SOCK_MINADDRLEN    2
-
 #define LUAB_SDL_MAXDATALEN    46
 #define LUAB_SDL_MAXADDRLEN    (LUAB_SDL_MAXDATALEN - IFNAMSIZ)
-
 #define LUAB_SUN_MAXPATHLEN    103
 
 static __inline void
