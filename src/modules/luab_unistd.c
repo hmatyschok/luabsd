@@ -55,13 +55,11 @@ extern luab_module_t crypt_data_type;
 
 extern luab_module_t luab_unistd_lib;
 
-/*
- * Interface against components or service primitives over <unistd.h>.
- */
-
 extern char **environ;
 
-/* Subr. for luab_alerm(3). */
+/*
+ * Subr.
+ */
 
 static lua_State *saved_L;
 static lua_Hook h;
@@ -119,7 +117,10 @@ luab_checklgidset(lua_State *L, int narg, size_t len)
     return (vec);
 }
 
-/* Interface against (subset of) functions of exec(3) family. */
+/*
+ * Service primitives.
+ */
+
 /***
  * execv(3) - execute a file
  *
@@ -246,7 +247,7 @@ luab_execvp(lua_State *L)
  *
  *                              { "arg0" , "arg1" , ..., "argN" },
  *
- *                          instance of LUA_TTABLE.
+ *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -711,7 +712,11 @@ luab_getgid(lua_State *L)
  *
  * @param gidsetlen         Number of entries that may be placed on
  *                          gidset, of successfull.
- * @param gidset            Empty instance of LUA_TTABLE, but still populated
+ * @param gidset            Empty instance of
+ *
+ *                              (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)),
+ *
+ *                          but still populated
  *
  *                              { "gid0" , "gid1" , ..., "gidN" },
  *
@@ -1046,9 +1051,11 @@ luab_pause(lua_State *L)
  *
  * @function pipe
  *
- * @param filedes           Pair of file descriptors as instance of LUA_TTABLE:
+ * @param filedes           Pair of file descriptors
  *
- *                              { filedes1, filedes2 }.
+ *                              { filedes1, filedes2 },
+ *
+ *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1386,8 +1393,8 @@ luab_ttyname(lua_State *L)
  * @function ttyname_r
  *
  * @param fd                File descriptor refers to a valid terminal device.
- * @param buf               Buffer, instance of (LUA_TUSERDATA(IOVEC), capable hold
- *                          requested user name.
+ * @param buf               Buffer, instance of (LUA_TUSERDATA(IOVEC)), capable
+ *                          hold requested user name.
  * @param len               Specifies the length in bytes of requested
  *                          tty(4) name.
  *
@@ -2069,7 +2076,7 @@ luab_truncate(lua_State *L)
  *
  * @function getlogin_r
  *
- * @param name              Buffer, instance of (LUA_TUSERDATA(IOVEC), capable
+ * @param name              Buffer, instance of (LUA_TUSERDATA(IOVEC)), capable
  *                          hold requested user name.
  * @param len               Specifies the length in bytes of requested user name.
  *
@@ -2147,7 +2154,7 @@ luab_faccessat(lua_State *L)
  * @param path              Name or path of referred file.
  * @param owner             Specifies user ID.
  * @param group             Specifies group ID.
- * @param flag              The values are constructed over
+ * @param flag              The values are constructed from
  *
  *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW
  *
@@ -2197,7 +2204,7 @@ luab_fchownat(lua_State *L)
  *                          object pointed by name2.
  * @param name2             Name of file link referring object identified by
  *                          name1.
- * @param flag              The values are constructed over
+ * @param flag              The values are constructed from
  *
  *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW
  *
@@ -2318,8 +2325,8 @@ luab_symlinkat(lua_State *L)
  * @function unlinkat
  *
  * @param fd                File descriptor associated with working directory
- *                          from object pointed by name1 or associated with the object
- *                          pointed by name1.
+ *                          from object pointed by name1 or associated with the
+ *                          object pointed by name1.
  * @param path              Link identified by path.
  * @param flag              Values are constructed over
  *
