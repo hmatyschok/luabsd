@@ -38,12 +38,42 @@
 
 extern luab_module_t tm_type;
 
-extern int  luab_tm_create(lua_State *);
-
 #define LUABSD_TIME_LIB_ID    1594167179
 #define LUABSD_TIME_LIB_KEY    "time"
 
 extern luab_module_t luab_time_lib;
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(TM)).
+ *
+ * @function tm_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(TM)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (tm [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage tm [, err, msg ] = bsd.time.tm_create([ data ])
+ */
+static int
+luab_tm_create(lua_State *L)
+{
+    struct tm *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, tm_type, struct tm *);
+
+    return (luab_pushudata(L, &tm_type, data));
+}
 
 /*
  * Interface against <time.h>.
@@ -77,9 +107,6 @@ static luab_table_t luab_time_vec[] = { /* time.h */
 #endif
     LUABSD_INT("TIMER_ABSTIME", TIMER_ABSTIME),
 #endif /* !defined(TIMER_ABSTIME) && __POSIX_VISIBLE >= 200112 */
-
-
-
     LUABSD_INT("CLOCKS_PER_SEC",    CLOCKS_PER_SEC),
     LUABSD_FUNC("tm_create", luab_tm_create),
     LUABSD_FUNC(NULL, NULL)

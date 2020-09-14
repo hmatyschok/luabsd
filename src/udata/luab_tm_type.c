@@ -67,7 +67,84 @@ typedef struct luab_tm {
 #define LUABSD_TM_TYPE_ID    1594168426
 #define LUABSD_TM_TYPE    "TM*"
 
-int luab_tm_create(lua_State *);
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(TM)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              tm_sec      = (LUA_TNUMBER),
+ *              tm_min      = (LUA_TNUMBER),
+ *              tm_hour     = (LUA_TNUMBER),
+ *              tm_mday     = (LUA_TNUMBER),
+ *              tm_mon      = (LUA_TNUMBER),
+ *              tm_year     = (LUA_TNUMBER),
+ *              tm_wday     = (LUA_TNUMBER),
+ *              tm_yday     = (LUA_TNUMBER),
+ *              tm_isdst    = (LUA_TNUMBER),
+ *              tm_gmtoff   = (LUA_TNUMBER),
+ *              tm_zone     = (LUA_T{NIL,STRING}),
+ *          }
+ *
+ * @usage t = tm:get()
+ */
+static int
+TM_get(lua_State *L)
+{
+    struct tm *tm;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    tm = luab_udata(L, 1, tm_type, struct tm *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "tm_sec", tm->tm_sec);
+    luab_setinteger(L, -2, "tm_min", tm->tm_min);
+    luab_setinteger(L, -2, "tm_hour", tm->tm_hour);
+    luab_setinteger(L, -2, "tm_mday", tm->tm_mday);
+    luab_setinteger(L, -2, "tm_mon", tm->tm_mon);
+    luab_setinteger(L, -2, "tm_year", tm->tm_year);
+    luab_setinteger(L, -2, "tm_wday", tm->tm_wday);
+    luab_setinteger(L, -2, "tm_yday", tm->tm_yday);
+    luab_setinteger(L, -2, "tm_isdst", tm->tm_isdst);
+    luab_setinteger(L, -2, "tm_gmtoff", tm->tm_gmtoff);
+
+    if (tm->tm_zone != NULL)
+        luab_setstring(L, -2, "tm_zone", tm->tm_zone);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate tm{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = tm:dump()
+ */
+static int
+TM_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &tm_type, sizeof(struct tm)));
+}
+
+/*
+ * Service primitives.
+ */
 
 /***
  * Set value for seconds after the minute [0-60].
@@ -655,62 +732,9 @@ TM_tm_zone(lua_State *L)
     return (luab_pushstring(L, data));
 }
 
-/***
- * Translate tm{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = tm:get()
+/*
+ * Meta-methods.
  */
-static int
-TM_get(lua_State *L)
-{
-    struct tm *tm;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    tm = luab_udata(L, 1, tm_type, struct tm *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "tm_sec", tm->tm_sec);
-    luab_setinteger(L, -2, "tm_min", tm->tm_min);
-    luab_setinteger(L, -2, "tm_hour", tm->tm_hour);
-    luab_setinteger(L, -2, "tm_mday", tm->tm_mday);
-    luab_setinteger(L, -2, "tm_mon", tm->tm_mon);
-    luab_setinteger(L, -2, "tm_year", tm->tm_year);
-    luab_setinteger(L, -2, "tm_wday", tm->tm_wday);
-    luab_setinteger(L, -2, "tm_yday", tm->tm_yday);
-    luab_setinteger(L, -2, "tm_isdst", tm->tm_isdst);
-    luab_setinteger(L, -2, "tm_gmtoff", tm->tm_gmtoff);
-
-    if (tm->tm_zone != NULL)
-        luab_setstring(L, -2, "tm_zone", tm->tm_zone);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy tm{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = tm:dump()
- */
-static int
-TM_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &tm_type, sizeof(struct tm)));
-}
 
 static int
 TM_gc(lua_State *L)
@@ -783,31 +807,3 @@ luab_module_t tm_type = {
     .get = tm_udata,
     .sz = sizeof(luab_tm_t),
 };
-
-/***
- * Generator function.
- *
- * @function tm_create
- *
- * @param data          (LUA_T{NIL,USERDATA(tm)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (tm [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage tm [, err, msg ] = bsd.time.tm_create([ data ])
- */
-int
-luab_tm_create(lua_State *L)
-{
-    struct tm *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = tm_udata(L, narg);
-
-    return (luab_pushudata(L, &tm_type, data));
-}
