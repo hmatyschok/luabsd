@@ -542,7 +542,7 @@ luab_recv(lua_State *L)
 static int
 luab_recvfrom(lua_State *L)
 {
-    int s;
+    int s;                          /* XXX */
     luab_iovec_t *buf;
     size_t len;
     int flags;
@@ -661,7 +661,7 @@ luab_recvmsg(lua_State *L)
 static int
 luab_recvmmsg(lua_State *L)
 {
-    int s;
+    int s;                              /* XXX */
     struct mmsghdr *msgvec;
     size_t vlen;
     int flags;

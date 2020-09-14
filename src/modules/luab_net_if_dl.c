@@ -108,12 +108,12 @@ luab_link_ntoa(lua_State *L)
     sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
     buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
+    if (((dst = buf->iov.iov_base) != NULL) &&
+        (LUAB_SDL_MAXDATALEN <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
-        if (((dst = buf->iov.iov_base) != NULL) &&
-            (LUAB_SDL_MAXDATALEN <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
 
             if ((src = link_ntoa(sdl)) != NULL) {   /* XXX static buffer */
                 len = strnlen(src, LUAB_SDL_MAXDATALEN);
@@ -124,13 +124,13 @@ luab_link_ntoa(lua_State *L)
                 errno = EINVAL;
                 status = -1;
             }
+            buf->iov_flags &= ~IOV_LOCK;
         } else {
-            errno = ENXIO;
+            errno = EBUSY;
             status = -1;
         }
-        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = EBUSY;
+        errno = ENXIO;
         status = -1;
     }
     return (luab_pusherr(L, status));
