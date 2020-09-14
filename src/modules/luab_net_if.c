@@ -72,7 +72,7 @@ luab_if_indextoname(lua_State *L)
 {
     u_int ifindex;
     luab_iovec_t *buf;
-    caddr_t ifname;
+    caddr_t bp;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
@@ -80,25 +80,26 @@ luab_if_indextoname(lua_State *L)
     ifindex = (u_int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len >= IFNAMSIZ) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
-        if (((ifname = buf->iov.iov_base) != NULL) &&
-            (buf->iov_max_len >= IFNAMSIZ) &&
-            (buf->iov_flags & IOV_BUFF)) {
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
 
-            if (if_indextoname(ifindex, ifname) != NULL) {
-                buf->iov.iov_len = strnlen(ifname, IFNAMSIZ);
+            if (if_indextoname(ifindex, bp) != NULL) {
+                buf->iov.iov_len = strnlen(bp, IFNAMSIZ);
                 status = 0;
             } else
                 status = -1;
+
+            buf->iov_flags &= ~IOV_LOCK;
         } else {
-            errno = ENXIO;
+            errno = EBUSY;
             status = -1;
         }
-        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = EBUSY;
+        errno = ENXIO;
         status = -1;
     }
     return (luab_pusherr(L, status));
