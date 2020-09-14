@@ -476,8 +476,8 @@ luab_listen(lua_State *L)
  *
  * @param s                 Open socket(9).
  * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param len               Assumed number of bytes to be recv'd.
- * @param flags             Flags argument over
+ * @param len               Assumed number of bytes to be rx'd.
+ * @param flags             Flags argument, values from
  *
  *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
  *                                  DONTWAIT,CMSG_CLOEXEC}
@@ -522,8 +522,8 @@ luab_recv(lua_State *L)
  *
  * @param s                 Open socket(9).
  * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param len               Assumed number of bytes to be recvfrom'd.
- * @param flags             Flags argument over
+ * @param len               Assumed number of bytes to be rx'd.
+ * @param flags             Flags argument, values from
  *
  *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
  *                                  DONTWAIT,CMSG_CLOEXEC}
@@ -537,7 +537,7 @@ luab_recv(lua_State *L)
  *          (count [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage count [, err, msg ] = bsd.sys.socket.recvfrom(s, buf, len, flags)
+ * @usage count [, err, msg ] = bsd.sys.socket.recvfrom(s, buf, len, flags, from, fromlen)
  */
 static int
 luab_recvfrom(lua_State *L)
@@ -576,7 +576,7 @@ luab_recvfrom(lua_State *L)
  *
  * @param s                 File drscriptor denotes by socket(2) opened socket(9).
  * @param msg               Instance of LUA_TUSERDATA(MSGHDR).
- * @param flags             Flags argument over
+ * @param flags             Flags argument, values from
  *
  *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
  *                                  DONTWAIT,CMSG_CLOEXEC}
@@ -623,7 +623,7 @@ luab_recvmsg(lua_State *L)
  * @param s                 File drscriptor denotes by socket(2) opened socket(9).
  * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(MSGHDR)).
  * @param vlen              Constraint for #n received messages.
- * @param flags             Flags argument over
+ * @param flags             Flags argument, values from
  *
  *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
  *                                  DONTWAIT,CMSG_CLOEXEC,WAITFORONE}
@@ -677,11 +677,11 @@ luab_recvmmsg(lua_State *L)
  *
  * @param s                 Open socket(9).
  * @param msg               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param len               Assumed number of bytes to be send'd.
- * @param flags             Flags argument over
+ * @param len               Assumed number of bytes to be rx'd.
+ * @param flags             Flags argument, values from
  *
- *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC}
+ *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
+ *                                  DONTWAIT,EOF,NOSIGNAL}
  *
  *                          may combined by inclusive or.
  *
@@ -714,6 +714,58 @@ luab_send(lua_State *L)
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
     return (luab_iovec_send(L, s, msg, &len, flags));
+}
+
+/***
+ * sendto(2) - send message(s) from a socket(9)
+ *
+ * @function sendto
+ *
+ * @param s                 Open socket(9).
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param len               Assumed number of bytes to be tx'd.
+ * @param flags             Flags argument, values from
+ *
+ *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
+ *                                  DONTWAIT,EOF,NOSIGNAL}
+ *
+ *                          may combined by inclusive or.
+ * @param to                Result argument, (LUA_TUSERDATA(SOCKADDR)).
+ * @param tolen             Size of address.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.socket.sendto(s, buf, len, flags, to, tolen)
+ */
+static int
+luab_sendto(lua_State *L)
+{
+    int s;
+    luab_iovec_t *buf;
+    size_t len;
+    int flags;
+    struct sockaddr *to;
+    socklen_t tolen;
+
+    (void)luab_checkmaxargs(L, 6);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    len = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    flags = (int)luab_checkinteger(L, 4, INT_MAX);
+    to = luab_udataisnil(L, 5, sockaddr_type, struct sockaddr *);
+    tolen = (socklen_t)luab_checkinteger(L, 4, INT_MAX);
+  
+    return (luab_iovec_sendto(L, s, buf, &len, flags, to, tolen));
 }
 
 /***
@@ -1159,6 +1211,7 @@ static luab_table_t luab_sys_socket_vec[] = {
     LUABSD_FUNC("recvmmesg",    luab_recvmmsg),
 #endif
     LUABSD_FUNC("send", luab_send),
+    LUABSD_FUNC("sendto", luab_sendto),
     LUABSD_FUNC("sendmsg", luab_sendmsg),
 #if __BSD_VISIBLE
     LUABSD_FUNC("sendmmesg",    luab_sendmmsg),

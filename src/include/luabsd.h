@@ -311,6 +311,8 @@ int luab_iovec_recv(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_recvfrom(lua_State *, int , luab_iovec_t *,
     size_t *, int, struct sockaddr *, socklen_t *);
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
+int luab_iovec_sendto(lua_State *, int, luab_iovec_t *, size_t *,
+        int, struct sockaddr *, socklen_t);
 
 /* (LUA_TUSERDATA(SOCKADDR)) */
 #define LUAB_SOCK_MAXADDRLEN    SOCK_MAXADDRLEN

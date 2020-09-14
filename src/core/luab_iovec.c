@@ -560,3 +560,41 @@ luab_iovec_send(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
     }
     return (luab_pusherr(L, count));
 }
+
+int
+luab_iovec_sendto(lua_State *L, int s, luab_iovec_t *buf, size_t *n,
+    int flags, struct sockaddr *to, socklen_t tolen)
+{
+    caddr_t bp;
+    size_t len;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (n == NULL)
+                len = buf->iov.iov_len;
+            else
+                len = *n;
+
+            if (((bp = buf->iov.iov_base) != NULL) &&
+                (len <= buf->iov_max_len))
+                count = sendto(s, bp, len, flags, to, tolen);
+            else {
+                errno = ENXIO;
+                count = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
