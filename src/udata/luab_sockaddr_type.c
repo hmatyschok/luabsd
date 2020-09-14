@@ -94,7 +94,7 @@ luab_checksockaddr(lua_State *L, int narg)
         if (iov->iov.iov_base == NULL)
             luaL_argerror(L, narg, "Invalid argument.");
 
-        if ((iov->iov.iov_len < LUAB_SOCK_MINADDRLEN) &&
+        if ((iov->iov.iov_len < LUAB_SOCK_MINADDRLEN) ||
             (iov->iov.iov_len > LUAB_SOCK_MAXADDRLEN))
             luaL_argerror(L, narg, "Invalid argument.");
 

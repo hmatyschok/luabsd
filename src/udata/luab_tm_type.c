@@ -143,7 +143,7 @@ TM_dump(lua_State *L)
 }
 
 /*
- * Service primitives.
+ * Accessor.
  */
 
 /***
