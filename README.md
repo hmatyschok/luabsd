@@ -185,10 +185,10 @@ utilizing instaces of LUA_TTABLES:
     local tv_buf = tv:dump()
     print_udata("struct", tv_buf, "")
 
-    ret, err, msg = bsd.unistd.write(fd, tv_buf, tv_buf:len())
-    print(string.format(" write(%d)", fd), ret, err, msg, "\n")
-
     local off = tv_buf:len()
+    ret, err, msg = bsd.unistd.write(fd, tv_buf, off)
+    print(string.format(" write(%d,%d)", fd, off), ret, err, msg, "\n")
+
     local whence = bsd.sys.unistd.SEEK_CUR
     ret, err, msg = bsd.unistd.lseek(fd, -off, whence)
     print(string.format(" lseek(%d,%d,%d)", fd, -off, whence), ret, err, msg, "\n")
