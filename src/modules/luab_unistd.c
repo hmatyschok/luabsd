@@ -580,22 +580,23 @@ luab_getcwd(lua_State *L)
 #endif
     );
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len >= size) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
-        if (((bp = buf->iov.iov_base) != NULL) &&
-            (buf->iov_max_len >= size) &&
-            (buf->iov_flags & IOV_BUFF)) {
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
 
             if ((status = getcwd(bp, size)) != NULL)
                 buf->iov.iov_len = size;
+
+            buf->iov_flags &= ~IOV_LOCK;
         } else {
-            errno = ENXIO;
+            errno = EBUSY;
             status = NULL;
         }
-        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = EBUSY;
+        errno = ENXIO;
         status = NULL;
     }
     return (luab_pushstring(L, status));
@@ -1378,7 +1379,7 @@ luab_ttyname_r(lua_State *L)
     int fd;
     luab_iovec_t *buf;
     size_t len;
-    caddr_t name;
+    caddr_t bp;
     int status;
 
     (void)luab_checkmaxargs(L, 3);
@@ -1393,22 +1394,23 @@ luab_ttyname_r(lua_State *L)
 #endif
     );
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (len <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
-        if (((name = buf->iov.iov_base) != NULL) &&
-            (len <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
 
-            if ((status = ttyname_r(fd, name, len)) == 0)
+            if ((status = ttyname_r(fd, bp, len)) == 0)
                 buf->iov.iov_len = len;
+
+            buf->iov_flags &= ~IOV_LOCK;
         } else {
-            errno = ENXIO;
+            errno = EBUSY;
             status = -1;
         }
-        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = EBUSY;
+        errno = ENXIO;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1711,7 +1713,7 @@ luab_lchown(lua_State *L)
 static int
 luab_pread(lua_State *L)
 {
-    int fd;
+    int fd;                 /* XXX wrong */
     luab_iovec_t *buf;
     size_t nbytes;
     off_t offset;
@@ -1731,22 +1733,23 @@ luab_pread(lua_State *L)
 );
     offset = (off_t)luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
+    if (((caddr = buf->iov.iov_base) != NULL) &&
+        (nbytes <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
-        if (((caddr = buf->iov.iov_base) != NULL) &&
-            (nbytes <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
 
             if ((count = read(fd, caddr, nbytes)) > 0)
                 buf->iov.iov_len = count;
+
+            buf->iov_flags &= ~IOV_LOCK;
         } else {
-            errno = ENXIO;
+            errno = EBUSY;
             count = -1;
         }
-        buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = EBUSY;
+        errno = ENXIO;
         count = -1;
     }
     return (luab_pusherr(L, count));
