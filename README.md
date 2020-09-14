@@ -10,6 +10,7 @@ e. g. *BSD, GNU/Linux, Minix, QNX, etc.
 
 As an example, a database may be created as described in db(3) [1]:
 
+    local fd, ret, err, msg
     local _fname = "example.db"
     local _flags = bit32.bor(
         bsd.fcntl.O_CREAT,
@@ -26,7 +27,9 @@ As an example, a database may be created as described in db(3) [1]:
     )
     local _type = bsd.db.DB_BTREE
 
-    local db = bsd.db.dbopen(_fname, _flags, _mode, _type)
+    local db, err, msg = bsd.db.dbopen(_fname, _flags, _mode, _type)
+    print(string.format(" dbopen(%s,%d,%d,%d)",
+        _fname, _flags, _mode, _type), err, msg, "\n")
 
 A key/value pair
 
@@ -51,7 +54,7 @@ still implements an interface for operations as described in db(3):
 
     _flags = bsd.db.R_NOOVERWRITE
 
-    local ret, err, msg = db:put(dbt_key, dbt_value, _flags)
+    ret, err, msg = db:put(dbt_key, dbt_value, _flags)
 
 Therefore, a callout may be implemented e. g.
 
@@ -67,7 +70,7 @@ Therefore, a callout may be implemented e. g.
 
         local k, v = buf_key:copy_out(), buf_result:copy_out()
 
-        print("event:", "(k,v) =", "(" .. k .. "," .. v .. ")\n")
+        print(" event:", string.format("(k,v) = (%s,%s)\n", k, v))
 
         expired = true;
     end
@@ -111,7 +114,7 @@ Those are accessible through get/set routines:
 
     tv = it_probe:get_it_value()
 
-    print(" -> ", it_probe, tv, "tv_sec: " .. tv:get_tv_sec(), "\n")
+    print(" -> ", it_probe, tv, string.format("tv_sec: %s\n", tv:get_tv_sec()))
 
 As mentioned before, C Structures are accessible
 
@@ -156,7 +159,7 @@ by
 utilizing instaces of LUA_TTABLES:
 
     local sb = bsd.sys.stat.stat_create()
-    local fd, err, msg = db:fd()
+    fd, err, msg = db:fd()
     print(" db:fd()", fd, err, msg, "\n")
 
     ret, err, msg = bsd.sys.stat.fstat(fd, sb)
