@@ -49,7 +49,7 @@ typedef struct luab_crypt_data {
     struct crypt_data    crypt_data;
 } luab_crypt_data_t;
 
-#define CRYPT_DATA_MAX  256
+#define LUAB_CRYPT_DATAMAXLEN  256
 
 #define luab_new_crypt_data(L, arg) \
     ((luab_crypt_data_t *)luab_newuserdata(L, &crypt_data_type, (arg)))
@@ -90,7 +90,7 @@ CRYPT_DATA_get(lua_State *L)
     lua_newtable(L);
 
     luab_setinteger(L, -2, "initialized", cd->initialized);
-    luab_setldata(L, -2, "buf", cd->__buf, CRYPT_DATA_MAX);   /* XXX */
+    luab_setldata(L, -2, "buf", cd->__buf, LUAB_CRYPT_DATAMAXLEN);   /* XXX */
 
     lua_pushvalue(L, -1);
 
@@ -199,9 +199,9 @@ CRYPT_DATA_set_buf(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
-    buf = luab_checklstring(L, 2, CRYPT_DATA_MAX);
+    buf = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN);
 
-    len = strnlen(buf, CRYPT_DATA_MAX);
+    len = strnlen(buf, LUAB_CRYPT_DATAMAXLEN);
 
     (void)memmove(cd->__buf, buf, len);
 
@@ -231,7 +231,7 @@ CRYPT_DATA_get_buf(lua_State *L)
 
     cd = luab_udata(L, 1, crypt_data_type, struct crypt_data *);
     buf = cd->__buf;
-    len = strnlen(buf, CRYPT_DATA_MAX);
+    len = strnlen(buf, LUAB_CRYPT_DATAMAXLEN);
 
     return (luab_pushldata(L, buf, len));
 }

@@ -88,10 +88,8 @@ IF_NAMEINDEX_get(lua_State *L)
     ifni = luab_udata(L, 1, if_nameindex_type, struct if_nameindex *);
 
     lua_newtable(L);
-
     luab_setinteger(L, -2, "if_index", ifni->if_index);
     luab_setstring(L, -2, "if_name", ifni->if_name);
-
     lua_pushvalue(L, -1);
 
     return (1);

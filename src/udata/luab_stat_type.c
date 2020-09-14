@@ -194,7 +194,7 @@ STAT_dump(lua_State *L)
 }
 
 /*
- * Service-primitives.
+ * Accessor.
  */
 
 /* inode's device */

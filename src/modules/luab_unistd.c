@@ -91,6 +91,49 @@ h_signal(int arg __unused)
     lua_sethook(saved_L, h_callout, l_msk, 1);
 }
 
+/***
+ * alarm(3) - set signal timer alarm
+ *
+ * @function alarm
+ *
+ * @param seconds           For timeout specified number of seconds.
+ * @param callout           Callout routine implements an event.
+ * @param group             Group ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (sec [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage sec [, err, msg ] = bsd.unistd.alarm(seconds, callout)
+ */
+static int
+luab_alarm(lua_State *L)    /* XXX */
+{
+    int narg;
+    u_int seconds;
+    u_int status;
+
+    narg = luab_checkmaxargs(L, 2);
+
+    if ((seconds = (u_int)luab_checkinteger(L, 1, INT_MAX)) > 0) {
+
+        if (lua_type(L, narg) != LUA_TFUNCTION)
+            return luaL_error(L, "Missing callout handler.");
+
+        lua_settop(L, narg);
+        lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
+
+        saved_L = L;    /* XXX race condition */
+
+        if (signal(SIGALRM, h_signal) == SIG_ERR)
+            return luab_pusherr(L, -1);
+    }
+    status = alarm(seconds);
+
+    return (luab_pusherr(L, status));
+}
+
 /* Translate a LUA_TTABLE into an array of gid_t items. */
 static gid_t *
 luab_checklgidset(lua_State *L, int narg, size_t len)
@@ -120,204 +163,6 @@ luab_checklgidset(lua_State *L, int narg, size_t len)
 /*
  * Service primitives.
  */
-
-/***
- * execv(3) - execute a file
- *
- * @function execv
- *
- * @param path              Identifies the new process image file by its path.
- * @param argv              Argument vector:
- *
- *                              { "arg0" , "arg1" , ..., "argN" },
- *
- *                          instance of LUA_TTABLE.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.execv(path, argv)
- */
-static int
-luab_execv(lua_State *L)
-{
-    const char *path;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
-
-    status = execv(path, __DECONST(char **, argv));
-
-    free(argv);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
- * execve(2) - execute a files
- *
- * @function execve
- *
- * @param path              Identifies the new process image file by its path.
- * @param argv              Argument vector:
- *
- *                              { "arg0" , "arg1" , ..., "argN" },
- *
- *                          instance of LUA_TTABLE.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.execve(path, argv)
- */
-static int
-luab_execve(lua_State *L)
-{
-    const char *path;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
-
-    status = execve(path, __DECONST(char **, argv), environ);
-
-    free(argv);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
- * execvp(3) - execute a file
- *
- * @function execvp
- *
- * @param path              Identifies the new process image file by its path.
- * @param argv              Argument vector:
- *
- *                              { "arg0" , "arg1" , ..., "argN" },
- *
- *                          instance of LUA_TTABLE.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.execvp(path, argv)
- */
-static int
-luab_execvp(lua_State *L)
-{
-    const char *file;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    file = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
-
-    status = execvp(file, __DECONST(char **, argv));
-
-    free(argv);
-
-    return (luab_pusherr(L, status));
-}
-
-#if __POSIX_VISIBLE >= 200809
-/***
- * fexecve(2) - execute a file
- *
- * @function fexecve
- *
- * @param fd                Identifies the new process image file by open file
- *                          descriptor.
- * @param argv              Argument vector:
- *
- *                              { "arg0" , "arg1" , ..., "argN" },
- *
- *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.fexecve(fd, argv)
- */
-static int
-luab_fexecve(lua_State *L)
-{
-    int fd;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    argv = luab_checkargv(L, 2);
-
-    status = fexecve(fd, __DECONST(char **, argv), environ);
-
-    free(argv);
-
-    return (luab_pusherr(L, status));
-}
-#endif
-
-/***
- * alarm(3) - set signal timer alarm
- *
- * @function alarm
- *
- * @param seconds           For timeout specified number of seconds.
- * @param callout           Callout routine implements an event.
- * @param group             Group ID.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (sec [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage sec [, err, msg ] = bsd.unistd.alarm(seconds, callout)
- */
-static int
-luab_alarm(lua_State *L)
-{
-    int narg;
-    u_int seconds;
-    u_int status;
-
-    narg = luab_checkmaxargs(L, 2);
-
-    if ((seconds = (u_int)luab_checkinteger(L, 1, INT_MAX)) > 0) {
-
-        if (lua_type(L, narg) != LUA_TFUNCTION)
-            return luaL_error(L, "Missing callout handler.");
-
-        lua_settop(L, narg);
-        lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
-
-        saved_L = L;    /* XXX race condition */
-
-        if (signal(SIGALRM, h_signal) == SIG_ERR)
-            return luab_pusherr(L, -1);
-    }
-    status = alarm(seconds);
-
-    return (luab_pusherr(L, status));
-}
 
 /***
  * access(2) - check availability of a file
@@ -462,7 +307,7 @@ luab_closefrom(lua_State *L)
     lowfd = (int)luab_checkinteger(L, 1, INT_MAX);
     closefrom(lowfd);
 
-    return (0);
+    return (luab_pusherr(L, 0));
 }
 
 /***
@@ -522,6 +367,126 @@ luab_dup2(lua_State *L)
     fd = dup2(oldd, newd);
 
     return (luab_pusherr(L, fd));
+}
+
+/*
+ * XXX
+ *  execl(2)
+ *  execle(2)
+ */
+
+/***
+ * execv(3) - execute a file
+ *
+ * @function execv
+ *
+ * @param path              Identifies the new process image file by its path.
+ * @param argv              Argument vector:
+ *
+ *                              { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                          instance of LUA_TTABLE.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.execv(path, argv)
+ */
+static int
+luab_execv(lua_State *L)
+{
+    const char *path;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+
+    status = execv(path, __DECONST(char **, argv));
+
+    free(argv);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * execve(2) - execute a files
+ *
+ * @function execve
+ *
+ * @param path              Identifies the new process image file by its path.
+ * @param argv              Argument vector:
+ *
+ *                              { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                          instance of LUA_TTABLE.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.execve(path, argv)
+ */
+static int
+luab_execve(lua_State *L)
+{
+    const char *path;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+
+    status = execve(path, __DECONST(char **, argv), environ);
+
+    free(argv);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * execvp(3) - execute a file
+ *
+ * @function execvp
+ *
+ * @param path              Identifies the new process image file by its path.
+ * @param argv              Argument vector:
+ *
+ *                              { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                          instance of LUA_TTABLE.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.execvp(path, argv)
+ */
+static int
+luab_execvp(lua_State *L)
+{
+    const char *file;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    file = luab_checklstring(L, 1, MAXPATHLEN);
+    argv = luab_checkargv(L, 2);
+
+    status = execvp(file, __DECONST(char **, argv));
+
+    free(argv);
+
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -601,7 +566,7 @@ luab_getcwd(lua_State *L)
 {
     luab_iovec_t *buf;
     size_t size;
-    caddr_t caddr;
+    caddr_t bp;
     caddr_t status;
 
     (void)luab_checkmaxargs(L, 2);
@@ -618,11 +583,11 @@ luab_getcwd(lua_State *L)
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
 
-        if (((caddr = buf->iov.iov_base) != NULL) &&
+        if (((bp = buf->iov.iov_base) != NULL) &&
             (buf->iov_max_len >= size) &&
             (buf->iov_flags & IOV_BUFF)) {
 
-            if ((status = getcwd(caddr, size)) != NULL)
+            if ((status = getcwd(bp, size)) != NULL)
                 buf->iov.iov_len = size;
         } else {
             errno = ENXIO;
@@ -743,7 +708,7 @@ luab_getgroups(lua_State *L)
 
     gidsetlen = (int)luab_checkinteger(L, 1, INT_MAX);
 
-    luab_checktable(L, 2);
+    (void)luab_checktable(L, 2);
 
     if (gidsetlen != 0) {
         if ((gidset = alloca(gidsetlen * sizeof(gid_t))) == NULL)
@@ -954,9 +919,9 @@ luab_link(lua_State *L)
  *
  * @param filedes           Open file descriptor.
  * @param offset            Offset according to the directive whence.
- * @param whence            Specifies the directive over
+ * @param whence            Specifies the directive from
  *
- *                              bsd.sys.unistd.SEEK_*
+ *                              bsd.sys.unistd.SEEK_{SET,CUR,END,HOLE,DATA}
  *
  *                          for repositioning.
  *
@@ -1021,7 +986,7 @@ luab_pathconf(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
-
+#ifdef notyet
 /***
  * pause(3) - stop until signal
  *
@@ -1045,7 +1010,7 @@ luab_pause(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
-
+#endif
 /***
  * pipe(2) - create descriptor pair for interprocess communication
  *
@@ -1118,6 +1083,34 @@ luab_read(lua_State *L)
 }
 
 /***
+ * rmdir(2) - remove a directory file
+ *
+ * @function rmdir
+ *
+ * @param path              The file to be removed.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.rmdir(path)
+ */
+static int
+luab_rmdir(lua_State *L)
+{
+    const char *path;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    status = rmdir(path);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
  * setgid(2) - set group id
  *
  * @function setgid
@@ -1177,37 +1170,6 @@ luab_setpgid(lua_State *L)
 }
 
 /***
- * setpgrp(2) - set process group
- *
- * @function setpgrp
- *
- * @param pid               Process identifier.
- * @param pgrp              Process group for specefied process.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.setpgrp(pgrp)
- */
-static int
-luab_setpgrp(lua_State *L)
-{
-    pid_t pid, pgrp;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    pid = (pid_t)luab_checkinteger(L, 1, INT_MAX);
-    pgrp = (pid_t)luab_checkinteger(L, 2, INT_MAX);
-
-    status = setpgrp(pid, pgrp);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
  * setsid(2) - create session and set process group ID
  *
  * @function setsid
@@ -1256,6 +1218,11 @@ luab_setuid(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
+
+/*
+ * XXX
+ *  sleep(3)
+ */
 
 /***
  * sysconf(3) - get configuration system variable
@@ -1372,19 +1339,19 @@ luab_ttyname(lua_State *L)
 {
     int fd;
     char *buf;
+    int status;
 
     (void)luab_checkmaxargs(L, 1);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
 
-    if ((buf = ttyname(fd)) == NULL)
-        return luab_pushnil(L);
+    if ((buf = ttyname(fd)) != NULL) {
+        status = luab_pushstring(buf);
+        free(buf);
+    } else
+        status = luab_pushnil(L);
 
-    lua_pushlstring(L, buf, strlen(buf));
-
-    free(buf);
-
-    return (1);
+    return (status);
 }
 
 /***
@@ -1393,10 +1360,10 @@ luab_ttyname(lua_State *L)
  * @function ttyname_r
  *
  * @param fd                File descriptor refers to a valid terminal device.
- * @param buf               Buffer, instance of (LUA_TUSERDATA(IOVEC)), capable
- *                          hold requested user name.
- * @param len               Specifies the length in bytes of requested
- *                          tty(4) name.
+ * @param buf               Result argument, instance of (LUA_TUSERDATA(IOVEC)),
+ *                          capable to hold requested user name.
+ * @param len               Specifies the length in bytes for requested tty(4)
+ *                          name.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1512,33 +1479,7 @@ luab_write(lua_State *L)
     return (luab_iovec_write(L, fd, buf, &nbytes));
 }
 
-/***
- * rmdir(2) - remove a directory file
- *
- * @function rmdir
- *
- * @param path              The file to be removed.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.rmdir(path)
- */
-static int
-luab_rmdir(lua_State *L)
-{
-    const char *path;
-    int status;
 
-    (void)luab_checkmaxargs(L, 1);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    status = rmdir(path);
-
-    return (luab_pusherr(L, status));
-}
 
 /* ISO/IEC 9945-1: 1996 */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
@@ -2069,6 +2010,47 @@ luab_truncate(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
+
+#if __POSIX_VISIBLE >= 200809
+/***
+ * fexecve(2) - execute a file
+ *
+ * @function fexecve
+ *
+ * @param fd                Identifies the new process image file by open file
+ *                          descriptor.
+ * @param argv              Argument vector:
+ *
+ *                              { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.fexecve(fd, argv)
+ */
+static int
+luab_fexecve(lua_State *L)
+{
+    int fd;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    argv = luab_checkargv(L, 2);
+
+    status = fexecve(fd, __DECONST(char **, argv), environ);
+
+    free(argv);
+
+    return (luab_pusherr(L, status));
+}
+#endif
 
 #if __POSIX_VISIBLE >= 199506
 /***
@@ -3666,6 +3648,37 @@ luab_setloginclass(lua_State *L)
     }
     return (luab_pusherr(L, status));
 }
+.... set mode
+/***
+ * setpgrp(2) - set process group
+ *
+ * @function setpgrp
+ *
+ * @param pid               Process identifier.
+ * @param pgrp              Process group for specefied process.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.setpgrp(pgrp)
+ */
+static int
+luab_setpgrp(lua_State *L)
+{
+    pid_t pid, pgrp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    pid = (pid_t)luab_checkinteger(L, 1, INT_MAX);
+    pgrp = (pid_t)luab_checkinteger(L, 2, INT_MAX);
+
+    status = setpgrp(pid, pgrp);
+
+    return (luab_pusherr(L, status));
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -3934,13 +3947,14 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("link", luab_link),
     LUABSD_FUNC("lseek", luab_lseek),
     LUABSD_FUNC("pathconf",    luab_pathconf),
+#idfef notyet
     LUABSD_FUNC("pause",    luab_pause),
+#endif
     LUABSD_FUNC("pipe", luab_pipe),
     LUABSD_FUNC("read", luab_read),
     LUABSD_FUNC("rmdir",    luab_rmdir),
     LUABSD_FUNC("setgid",    luab_setgid),
     LUABSD_FUNC("setpgid",    luab_setpgid),
-    LUABSD_FUNC("setpgrp",    luab_setpgrp),
     LUABSD_FUNC("setsid", luab_setsid),
     LUABSD_FUNC("setuid", luab_setuid),
     LUABSD_FUNC("sysconf",    luab_sysconf),
@@ -4054,6 +4068,8 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
     LUABSD_FUNC("setloginclass",    luab_setloginclass),
+    LUABSD_FUNC("setpgrp",    luab_setpgrp),
+
     LUABSD_FUNC("crypt_data_create",  luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
     LUABSD_FUNC(NULL, NULL)

@@ -144,7 +144,6 @@ luab_if_nameindex(lua_State *L)
         status = -1;
 
     return (luab_pusherr(L, status));
-
 }
 
 /***

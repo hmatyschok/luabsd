@@ -87,10 +87,8 @@ BINTIME_get(lua_State *L)
     bt = luab_udata(L, 1, bintime_type, struct bintime *);
 
     lua_newtable(L);
-
     luab_setinteger(L, -2, "sec", bt->sec);
     luab_setinteger(L, -2, "frac", bt->frac);
-
     lua_pushvalue(L, -1);
 
     return (1);
