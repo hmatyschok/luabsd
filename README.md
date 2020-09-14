@@ -177,7 +177,8 @@ utilizing instaces of LUA_TTABLES:
         bsd.fcntl.O_RDWR
     )
     fd, err, msg = bsd.fcntl.open(_fname, _flags, _mode)
-    print(string.format(" open(%s)", _fname), fd, err, msg, "\n")
+    print(string.format(" open(%s,%d,%d)", _fname, _flags, _mode),
+        fd, err, msg, "\n")
 
     local tv = sb:get_st_atim()
     print_udata("struct", tv, "")
