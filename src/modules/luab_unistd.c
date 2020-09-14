@@ -1346,7 +1346,7 @@ luab_ttyname(lua_State *L)
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
 
     if ((buf = ttyname(fd)) != NULL) {
-        status = luab_pushstring(buf);
+        status = luab_pushstring(L, buf);
         free(buf);
     } else
         status = luab_pushnil(L);
@@ -1980,28 +1980,56 @@ luab_readlink(lua_State *L)
  *
  * @function gethostname
  *
- * @return (LUA_TNUMBER, LUA_TSTRING)
+ * @param name              Instance of (LUA_TUSERDATA(IOVEC)) capable
+ *                          to hold requested hostname.
+ * @param namelen           Constraint, specifies length.
  *
- *          (0, hostname) on success or
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage err, hostname = bsd.unistd.gethostname()
+ * @usage ret [, err, msg ] = bsd.unistd.gethostname(name, namelen)
  */
 static int
-luab_gethostname(lua_State *L)  /* XXX */
+luab_gethostname(lua_State *L)
 {
-    char buf[MAXHOSTNAMELEN];
+    luab_iovec_t *buf;
+    size_t namelen;
+    caddr_t name;
     int status;
 
-    (void)luab_checkmaxargs(L, 0);
+    (void)luab_checkmaxargs(L, 2);
 
-    if ((status = gethostname(buf, sizeof(buf))) != 0)
-        return (luab_pusherr(L, status));
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    namelen = (size_t)luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
 
-    lua_pushinteger(L, status);
-    lua_pushlstring(L, buf, strlen(buf));
+    if (((name = buf->iov.iov_base) != NULL) &&
+        (namelen <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
-    return (2);
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = gethostname(name, namelen)) == 0)
+                buf->iov.iov_len = namelen;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -3366,7 +3394,7 @@ luab_getloginclass(lua_State *L)
 #else
     INT_MAX
 #endif
-    );
+    );  
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
@@ -3646,7 +3674,7 @@ luab_setloginclass(lua_State *L)
     }
     return (luab_pusherr(L, status));
 }
-.... set mode
+
 /***
  * setpgrp(2) - set process group
  *
@@ -3945,7 +3973,7 @@ static luab_table_t luab_unistd_vec[] = {   /* unistd.h */
     LUABSD_FUNC("link", luab_link),
     LUABSD_FUNC("lseek", luab_lseek),
     LUABSD_FUNC("pathconf",    luab_pathconf),
-#idfef notyet
+#ifdef notyet
     LUABSD_FUNC("pause",    luab_pause),
 #endif
     LUABSD_FUNC("pipe", luab_pipe),
