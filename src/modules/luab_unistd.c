@@ -1717,7 +1717,7 @@ luab_pread(lua_State *L)
     luab_iovec_t *buf;
     size_t nbytes;
     off_t offset;
-    
+
     (void)luab_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
@@ -1749,7 +1749,7 @@ luab_pread(lua_State *L)
  *          (count [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage count [, err, msg ] = bsd.unistd.pwrite(fd, buf, nbytes)
+ * @usage count [, err, msg ] = bsd.unistd.pwrite(fd, buf, nbytes, offset)
  */
 static int
 luab_pwrite(lua_State *L)
@@ -1758,8 +1758,6 @@ luab_pwrite(lua_State *L)
     luab_iovec_t *buf;
     size_t nbytes;
     off_t offset;
-    caddr_t caddr;
-    ssize_t count;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -1774,23 +1772,7 @@ luab_pwrite(lua_State *L)
     );
     offset = (off_t)luab_checkinteger(L, 4, LONG_MAX);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        if (((caddr = buf->iov.iov_base) != NULL) &&
-            (nbytes <= buf->iov.iov_len) &&
-            (buf->iov_flags & IOV_BUFF))
-            count = pwrite(fd, caddr, nbytes, offset);
-        else {
-            errno = ENXIO;
-            count = -1;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        count = -1;
-    }
-    return (luab_pusherr(L, count));
+    return (luab_iovec_pwrite(L, fd, buf, &nbytes, offset));
 }
 
 /***
@@ -3376,7 +3358,7 @@ luab_getloginclass(lua_State *L)
 #else
     INT_MAX
 #endif
-    );  
+    );
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;

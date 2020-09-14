@@ -301,6 +301,7 @@ int luab_iovec_readlink(lua_State *, const char *, luab_iovec_t *, size_t *);
 /* 1003.1-2008 */
 #if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
 int luab_iovec_pread(lua_State *, int, luab_iovec_t *, size_t *, off_t);
+int luab_iovec_pwrite(lua_State *, int, luab_iovec_t *, size_t *, off_t);
 #endif
 #if __POSIX_VISIBLE >= 200809
 int luab_iovec_readlinkat(lua_State *, int, const char *,
