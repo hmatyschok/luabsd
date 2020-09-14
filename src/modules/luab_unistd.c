@@ -1479,8 +1479,6 @@ luab_write(lua_State *L)
     return (luab_iovec_write(L, fd, buf, &nbytes));
 }
 
-
-
 /* ISO/IEC 9945-1: 1996 */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
 /***
@@ -1573,169 +1571,7 @@ luab_ftruncate(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
-#endif
-
-/* 1003.1-2001 */
-#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
-/***
- * fchown(2) - change owner and group of a file
- *
- * @function fchown
- *
- * @param fd                File by file descriptor.
- * @param owner             User ID.
- * @param group             Group ID.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.fchown(path)
- */
-static int
-luab_fchown(lua_State *L)
-{
-    int fd;
-    uid_t owner;
-    gid_t group;
-    int status;
-
-    (void)luab_checkmaxargs(L, 3);
-
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    owner = (uid_t)luab_checkinteger(L, 2, INT_MAX);
-    group = (gid_t)luab_checkinteger(L, 3, INT_MAX);
-
-    status = fchown(fd, owner, group);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
- * readlink(2) - read value of a symbolic link
- *
- * @function readlink
- *
- * @param path              Symbolic link.
- * @param buf               Holds read contents from symbolic link.
- * @param bufsiz            Assumed number of bytes to be read.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage count [, err, msg ] = bsd.unistd.readlink(path, buf, bufsiz)
- */
-static int
-luab_readlink(lua_State *L)
-{
-    const char * path;
-    luab_iovec_t *buf;
-    size_t bufsiz;
-
-    (void)luab_checkmaxargs(L, 3);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
-    bufsiz = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
-    return (luab_iovec_readlink(L, path, buf, &bufsiz));
-}
-#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
-
-#if __POSIX_VISIBLE >= 200112
-/***
- * gethostname(3) - get name of current host
- *
- * @function gethostname
- *
- * @return (LUA_TNUMBER, LUA_TSTRING)
- *
- *          (0, hostname) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage err, hostname = bsd.unistd.gethostname()
- */
-static int
-luab_gethostname(lua_State *L)  /* XXX */
-{
-    char buf[MAXHOSTNAMELEN];
-    int status;
-
-    (void)luab_checkmaxargs(L, 0);
-
-    if ((status = gethostname(buf, sizeof(buf))) != 0)
-        return (luab_pusherr(L, status));
-
-    lua_pushinteger(L, status);
-    lua_pushlstring(L, buf, strlen(buf));
-
-    return (2);
-}
-
-/***
- * setegid(2) - set effective group ID
- *
- * @function setegid
- *
- * @param egid              Effective group ID.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.setegid(egid)
- */
-static int
-luab_setegid(lua_State *L)
-{
-    gid_t egid;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    egid = (gid_t)luab_checkinteger(L, 1, INT_MAX);
-    status = setegid(egid);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
- * seteuid(2) - set effective user ID
- *
- * @function seteuid
- *
- * @param euid              Effective user ID.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.seteuid(euid)
- */
-static int
-luab_seteuid(lua_State *L)
-{
-    uid_t euid;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    euid = (uid_t)luab_checkinteger(L, 1, INT_MAX);
-    status = seteuid(euid);
-
-    return (luab_pusherr(L, status));
-}
-#endif /* __POSIX_VISIBLE >= 200112 */
+#endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE */
 
 /* 1003.1-2008 */
 #if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
@@ -2011,47 +1847,6 @@ luab_truncate(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
 
-#if __POSIX_VISIBLE >= 200809
-/***
- * fexecve(2) - execute a file
- *
- * @function fexecve
- *
- * @param fd                Identifies the new process image file by open file
- *                          descriptor.
- * @param argv              Argument vector:
- *
- *                              { "arg0" , "arg1" , ..., "argN" },
- *
- *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.fexecve(fd, argv)
- */
-static int
-luab_fexecve(lua_State *L)
-{
-    int fd;
-    const char **argv;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    argv = luab_checkargv(L, 2);
-
-    status = fexecve(fd, __DECONST(char **, argv), environ);
-
-    free(argv);
-
-    return (luab_pusherr(L, status));
-}
-#endif
-
 #if __POSIX_VISIBLE >= 199506
 /***
  * getlogin_r(2) - get login name
@@ -2100,6 +1895,209 @@ luab_getlogin_r(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
+    return (luab_pusherr(L, status));
+}
+#endif
+
+/* 1003.1-2001 */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+/***
+ * fchown(2) - change owner and group of a file
+ *
+ * @function fchown
+ *
+ * @param fd                Open file descriptor.
+ * @param owner             User ID.
+ * @param group             Group ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.fchown(path)
+ */
+static int
+luab_fchown(lua_State *L)
+{
+    int fd;
+    uid_t owner;
+    gid_t group;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    owner = (uid_t)luab_checkinteger(L, 2, INT_MAX);
+    group = (gid_t)luab_checkinteger(L, 3, INT_MAX);
+
+    status = fchown(fd, owner, group);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * readlink(2) - read value of a symbolic link
+ *
+ * @function readlink
+ *
+ * @param path              Symbolic link.
+ * @param buf               Holds read contents from symbolic link.
+ * @param bufsiz            Assumed number of bytes to be read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.unistd.readlink(path, buf, bufsiz)
+ */
+static int
+luab_readlink(lua_State *L)
+{
+    const char * path;
+    luab_iovec_t *buf;
+    size_t bufsiz;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    bufsiz = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    return (luab_iovec_readlink(L, path, buf, &bufsiz));
+}
+#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
+
+#if __POSIX_VISIBLE >= 200112
+/***
+ * gethostname(3) - get name of current host
+ *
+ * @function gethostname
+ *
+ * @return (LUA_TNUMBER, LUA_TSTRING)
+ *
+ *          (0, hostname) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage err, hostname = bsd.unistd.gethostname()
+ */
+static int
+luab_gethostname(lua_State *L)  /* XXX */
+{
+    char buf[MAXHOSTNAMELEN];
+    int status;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    if ((status = gethostname(buf, sizeof(buf))) != 0)
+        return (luab_pusherr(L, status));
+
+    lua_pushinteger(L, status);
+    lua_pushlstring(L, buf, strlen(buf));
+
+    return (2);
+}
+
+/***
+ * setegid(2) - set effective group ID
+ *
+ * @function setegid
+ *
+ * @param egid              Effective group ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.setegid(egid)
+ */
+static int
+luab_setegid(lua_State *L)
+{
+    gid_t egid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    egid = (gid_t)luab_checkinteger(L, 1, INT_MAX);
+    status = setegid(egid);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * seteuid(2) - set effective user ID
+ *
+ * @function seteuid
+ *
+ * @param euid              Effective user ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.seteuid(euid)
+ */
+static int
+luab_seteuid(lua_State *L)
+{
+    uid_t euid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    euid = (uid_t)luab_checkinteger(L, 1, INT_MAX);
+    status = seteuid(euid);
+
+    return (luab_pusherr(L, status));
+}
+#endif /* __POSIX_VISIBLE >= 200112 */
+
+#if __POSIX_VISIBLE >= 200809
+/***
+ * fexecve(2) - execute a file
+ *
+ * @function fexecve
+ *
+ * @param fd                Identifies the new process image file by open file
+ *                          descriptor.
+ * @param argv              Argument vector:
+ *
+ *                              { "arg0" , "arg1" , ..., "argN" },
+ *
+ *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.fexecve(fd, argv)
+ */
+static int
+luab_fexecve(lua_State *L)
+{
+    int fd;
+    const char **argv;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    argv = luab_checkargv(L, 2);
+
+    status = fexecve(fd, __DECONST(char **, argv), environ);
+
+    free(argv);
+
     return (luab_pusherr(L, status));
 }
 #endif
