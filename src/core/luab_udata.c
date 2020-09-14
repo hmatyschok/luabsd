@@ -50,14 +50,14 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
             (void)memset_s(ud, m->sz, 0, m->sz);
 
             LIST_INIT(&ud->ud_list);
-
-            ud->ud_m = m;
-            ud->ud_ts = time(NULL);
-
+    
             if (m->init != NULL && arg != NULL)
                 (*m->init)(ud, arg);
 
             luaL_setmetatable(L, m->name);
+
+            ud->ud_m = m;
+            ud->ud_ts = time(NULL);
         }
     } else
         errno = EINVAL;
