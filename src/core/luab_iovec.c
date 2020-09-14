@@ -319,6 +319,48 @@ luab_iovec_readlink(lua_State *L, const char *path, luab_iovec_t *buf, size_t *n
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
 
+/* 1003.1-2008 */
+#if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
+int
+luab_iovec_pread(lua_State *L, int fd, luab_iovec_t *buf, size_t *n, off_t offset)
+{
+    caddr_t bp;
+    size_t len;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (n == NULL)
+                len = buf->iov_max_len;
+            else
+                len = *n;
+
+            if (((bp = buf->iov.iov_base) != NULL) &&
+                (len <= buf->iov_max_len)) {
+
+                if ((count = pread(fd, bp, len, offset)) > 0)
+                    buf->iov.iov_len = count;
+            } else {
+                errno = ENXIO;
+                count = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+#endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
+
 #if __POSIX_VISIBLE >= 200809
 int
 luab_iovec_readlinkat(lua_State *L, int fd, const char *path,

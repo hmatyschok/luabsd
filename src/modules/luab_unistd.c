@@ -1717,9 +1717,7 @@ luab_pread(lua_State *L)
     luab_iovec_t *buf;
     size_t nbytes;
     off_t offset;
-    caddr_t caddr;
-    ssize_t count;
-
+    
     (void)luab_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
@@ -1730,29 +1728,10 @@ luab_pread(lua_State *L)
 #else
     INT_MAX
 #endif
-);
+    );
     offset = (off_t)luab_checkinteger(L, 4, LONG_MAX);
 
-    if (((caddr = buf->iov.iov_base) != NULL) &&
-        (nbytes <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
-
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
-
-            if ((count = read(fd, caddr, nbytes)) > 0)
-                buf->iov.iov_len = count;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            count = -1;
-        }
-    } else {
-        errno = ENXIO;
-        count = -1;
-    }
-    return (luab_pusherr(L, count));
+    return (luab_iovec_pread(L, fd, buf, &nbytes, offset));
 }
 
 /***
