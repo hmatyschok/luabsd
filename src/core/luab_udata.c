@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <sys/time.h>
+
 #include <errno.h>
 #include <stdio.h>
 #include <string.h>
@@ -50,6 +52,7 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
             LIST_INIT(&ud->ud_list);
 
             ud->ud_m = m;
+            ud->ud_ts = time(NULL);
 
             if (m->init != NULL && arg != NULL)
                 (*m->init)(ud, arg);
