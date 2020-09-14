@@ -64,6 +64,75 @@ typedef struct luab_uuid {
 #define LUABSD_UUID_TYPE_ID    1599304529
 #define LUABSD_UUID_TYPE    "UUID*"
 
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(UUID)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              time_low                    = (LUA_TNUMBER),
+ *              time_mid                    = (LUA_TNUMBER),
+ *              time_hi_and_version         = (LUA_TNUMBER),
+ *              clock_seq_hi_and_reserved   = (LUA_TNUMBER),
+ *              clock_low                   = (LUA_TNUMBER),
+ *              node                        = (LUA_TUSERDATA(IOVEC)),
+ *          }
+ *
+ * @usage t = uuid:get()
+ */
+static int
+UUID_get(lua_State *L)
+{
+    struct uuid *uuid;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    uuid = luab_udata(L, 1, uuid_type, struct uuid *);
+
+    lua_newtable(L);
+
+    luab_setinteger(L, -2, "time_low", uuid->time_low);
+    luab_setinteger(L, -2, "time_mid", uuid->time_mid);
+    luab_setinteger(L, -2, "time_hi_and_version",
+        uuid->time_hi_and_version);
+    luab_setinteger(L, -2, "clock_seq_hi_and_reserved",
+        uuid->clock_seq_hi_and_reserved);
+    luab_setinteger(L, -2, "clock_seq_low", uuid->clock_seq_low);
+    luab_setldata(L, -2, "node", uuid->node, _UUID_NODE_LEN);
+
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/***
+ * Generator function - translate uuid{} into (LUA_TUSERDATA(IOVEC)).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = uuid:dump()
+ */
+static int
+UUID_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, &uuid_type, sizeof(struct uuid)));
+}
+
+/*
+ * Accessor.
+ */
+
 /***
  * Set value for low field of the timestamp.
  *
@@ -404,66 +473,9 @@ UUID_get_node(lua_State *L)
     return (luab_pushldata(L, data, _UUID_NODE_LEN));
 }
 
-/***
- * Translate uuid{} into LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- *          t = {
- *              time_low                    = (LUA_TNUMBER),
- *              time_mid                    = (LUA_TNUMBER),
- *              time_hi_and_version         = (LUA_TNUMBER),
- *              clock_seq_hi_and_reserved   = (LUA_TNUMBER),
- *              clock_low                   = (LUA_TNUMBER),
- *              node                        = (LUA_TUSERDATA(IOVEC)),
- *          }
- *
- * @usage t = uuid:get()
+/*
+ * Meta-methods.
  */
-static int
-UUID_get(lua_State *L)
-{
-    struct uuid *uuid;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    uuid = luab_udata(L, 1, uuid_type, struct uuid *);
-
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "time_low", uuid->time_low);
-    luab_setinteger(L, -2, "time_mid", uuid->time_mid);
-    luab_setinteger(L, -2, "time_hi_and_version",
-        uuid->time_hi_and_version);
-    luab_setinteger(L, -2, "clock_seq_hi_and_reserved",
-        uuid->clock_seq_hi_and_reserved);
-    luab_setinteger(L, -2, "clock_seq_low", uuid->clock_seq_low);
-    luab_setldata(L, -2, "node", uuid->node, _UUID_NODE_LEN);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
-
-/***
- * Copy uuid{} into (LUA_TUSERDATA(IOVEC)).
- *
- * @function dump
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage iovec [, err, msg ] = uuid:dump()
- */
-static int
-UUID_dump(lua_State *L)
-{
-    return (luab_dump(L, 1, &uuid_type, sizeof(struct uuid)));
-}
 
 static int
 UUID_gc(lua_State *L)
@@ -476,6 +488,10 @@ UUID_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &uuid_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t uuid_methods[] = {
     LUABSD_FUNC("set_time_low", UUID_set_time_low),
