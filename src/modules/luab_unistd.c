@@ -1220,11 +1220,6 @@ luab_setuid(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
-/*
- * XXX
- *  sleep(3)
- */
-
 /***
  * sysconf(3) - get configuration system variable
  *
@@ -1575,6 +1570,249 @@ luab_ftruncate(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE */
 
+#if __POSIX_VISIBLE >= 199506
+/***
+ * getlogin_r(2) - get login name
+ *
+ * @function getlogin_r
+ *
+ * @param name              Buffer, instance of (LUA_TUSERDATA(IOVEC)), capable
+ *                          hold requested user name.
+ * @param len               Specifies the length in bytes of requested user name.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.getlogin_r(buf, len)
+ */
+static int
+luab_getlogin_r(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t len;
+    caddr_t name;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *); /* XXX macro might defined */
+    len = (size_t)luab_checkinteger(L, 2, INT_MAX);
+
+    if (((name = buf->iov.iov_base) != NULL) &&
+        (len <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = getlogin_r(name, len)) == 0)
+                buf->iov.iov_len = len;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif
+
+/* 1003.1-2001 */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+/***
+ * fchown(2) - change owner and group of a file
+ *
+ * @function fchown
+ *
+ * @param fd                Open file descriptor.
+ * @param owner             User ID.
+ * @param group             Group ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.fchown(path)
+ */
+static int
+luab_fchown(lua_State *L)
+{
+    int fd;
+    uid_t owner;
+    gid_t group;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    owner = (uid_t)luab_checkinteger(L, 2, INT_MAX);
+    group = (gid_t)luab_checkinteger(L, 3, INT_MAX);
+
+    status = fchown(fd, owner, group);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * readlink(2) - read value of a symbolic link
+ *
+ * @function readlink
+ *
+ * @param path              Symbolic link.
+ * @param buf               Holds read contents from symbolic link.
+ * @param bufsiz            Assumed number of bytes to be read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.unistd.readlink(path, buf, bufsiz)
+ */
+static int
+luab_readlink(lua_State *L)
+{
+    const char * path;
+    luab_iovec_t *buf;
+    size_t bufsiz;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    bufsiz = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    return (luab_iovec_readlink(L, path, buf, &bufsiz));
+}
+#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
+
+#if __POSIX_VISIBLE >= 200112
+/***
+ * gethostname(3) - get name of current host
+ *
+ * @function gethostname
+ *
+ * @param name              Instance of (LUA_TUSERDATA(IOVEC)) capable
+ *                          to hold requested hostname.
+ * @param namelen           Constraint, specifies length.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.gethostname(name, namelen)
+ */
+static int
+luab_gethostname(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t namelen;
+    caddr_t dp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    namelen = (size_t)luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if (((dp = buf->iov.iov_base) != NULL) &&
+        (namelen <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = gethostname(dp, namelen)) == 0)
+                buf->iov.iov_len = namelen;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * setegid(2) - set effective group ID
+ *
+ * @function setegid
+ *
+ * @param egid              Effective group ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.setegid(egid)
+ */
+static int
+luab_setegid(lua_State *L)
+{
+    gid_t egid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    egid = (gid_t)luab_checkinteger(L, 1, INT_MAX);
+    status = setegid(egid);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * seteuid(2) - set effective user ID
+ *
+ * @function seteuid
+ *
+ * @param euid              Effective user ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.seteuid(euid)
+ */
+static int
+luab_seteuid(lua_State *L)
+{
+    uid_t euid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    euid = (uid_t)luab_checkinteger(L, 1, INT_MAX);
+    status = seteuid(euid);
+
+    return (luab_pusherr(L, status));
+}
+#endif /* __POSIX_VISIBLE >= 200112 */
+
 /* 1003.1-2008 */
 #if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
 /***
@@ -1609,7 +1847,7 @@ luab_getsid(lua_State *L)
  *
  * @function fchdir
  *
- * @param fd                The directory referenced by this file descriptor.
+ * @param fd                File descriptor of directory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1811,250 +2049,117 @@ luab_truncate(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
 
-#if __POSIX_VISIBLE >= 199506
+#if __POSIX_VISIBLE >= 200809
 /***
- * getlogin_r(2) - get login name
+ * faccessat(2) - check accessibility of a file
  *
- * @function getlogin_r
+ * @function faccessat
  *
- * @param name              Buffer, instance of (LUA_TUSERDATA(IOVEC)), capable
- *                          hold requested user name.
- * @param len               Specifies the length in bytes of requested user name.
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes referenced file.
+ *
+ *                            #2 By path named file is relative to the directory
+ *                               associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used, when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of chflagsat(2).
+ * 
+ * @param path              Name or path of referred file.
+ * @param mode              Specifies mode setting.
+ * @param flag              The values are constructed from
+ *
+ *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW
+ *
+ *                          by bitwise-inclusive OR.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg ] = bsd.unistd.getlogin_r(buf, len)
+ * @usage ret [, err, msg ] = bsd.unistd.faccessat(fd, path, owner, group, flag)
  */
 static int
-luab_getlogin_r(lua_State *L)
-{
-    luab_iovec_t *buf;
-    size_t len;
-    caddr_t name;
-    int status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *); /* XXX macro might defined */
-    len = (size_t)luab_checkinteger(L, 2, INT_MAX);
-
-    if (((name = buf->iov.iov_base) != NULL) &&
-        (len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
-
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
-
-            if ((status = getlogin_r(name, len)) == 0)
-                buf->iov.iov_len = len;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = -1;
-        }
-    } else {
-        errno = ENXIO;
-        status = -1;
-    }
-    return (luab_pusherr(L, status));
-}
-#endif
-
-/* 1003.1-2001 */
-#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
-/***
- * fchown(2) - change owner and group of a file
- *
- * @function fchown
- *
- * @param fd                Open file descriptor.
- * @param owner             User ID.
- * @param group             Group ID.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.fchown(path)
- */
-static int
-luab_fchown(lua_State *L)
+luab_faccessat(lua_State *L)
 {
     int fd;
-    uid_t owner;
-    gid_t group;
+    const char *path;
+    int mode;
+    int flag;
     int status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    owner = (uid_t)luab_checkinteger(L, 2, INT_MAX);
-    group = (gid_t)luab_checkinteger(L, 3, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    mode = (int)luab_checkinteger(L, 3, INT_MAX);
+    flag = (int)luab_checkinteger(L, 4, INT_MAX);
 
-    status = fchown(fd, owner, group);
+    status = faccessat(fd, path, mode, flag);
 
     return (luab_pusherr(L, status));
 }
 
 /***
- * readlink(2) - read value of a symbolic link
+ * fchownat(2) - change owner and group of a file
  *
- * @function readlink
+ * @function fchownat
  *
- * @param path              Symbolic link.
- * @param buf               Holds read contents from symbolic link.
- * @param bufsiz            Assumed number of bytes to be read.
+ * @param fd                Filedescriptor, three cases are considered here:
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *                            #1 Denotes referenced file.
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
+ *                            #2 By path named file is relative to the directory
+ *                               associated with the file descriptor.
  *
- * @usage count [, err, msg ] = bsd.unistd.readlink(path, buf, bufsiz)
- */
-static int
-luab_readlink(lua_State *L)
-{
-    const char * path;
-    luab_iovec_t *buf;
-    size_t bufsiz;
-
-    (void)luab_checkmaxargs(L, 3);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
-    bufsiz = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
-    return (luab_iovec_readlink(L, path, buf, &bufsiz));
-}
-#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
-
-#if __POSIX_VISIBLE >= 200112
-/***
- * gethostname(3) - get name of current host
+ *                            #3 The current working directory is used, when
  *
- * @function gethostname
+ *                                  bsd.fcntl.AT_FDCWD
  *
- * @param name              Instance of (LUA_TUSERDATA(IOVEC)) capable
- *                          to hold requested hostname.
- * @param namelen           Constraint, specifies length.
+ *                               was passed by call of fchownat(2).
+ * 
+ * @param owner             Specifies user ID.
+ * @param group             Specifies group ID.
+ * @param flag              The values are constructed from
+ *
+ *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW
+ *
+ *                          by bitwise-inclusive OR.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg ] = bsd.unistd.gethostname(name, namelen)
+ * @usage ret [, err, msg ] = bsd.unistd.fchownat(fd, path, owner, group, flag)
  */
 static int
-luab_gethostname(lua_State *L)
+luab_fchownat(lua_State *L)
 {
-    luab_iovec_t *buf;
-    size_t namelen;
-    caddr_t name;
+    int fd;
+    const char *path;
+    uid_t owner;
+    gid_t group;
+    int flag;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_checkmaxargs(L, 5);
 
-    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
-    namelen = (size_t)luab_checkinteger(L, 2,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    owner = (uid_t)luab_checkinteger(L, 3, INT_MAX);
+    group = (gid_t)luab_checkinteger(L, 4, INT_MAX);
+    flag = (int)luab_checkinteger(L, 5, INT_MAX);
 
-    if (((name = buf->iov.iov_base) != NULL) &&
-        (namelen <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
-
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
-
-            if ((status = gethostname(name, namelen)) == 0)
-                buf->iov.iov_len = namelen;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = -1;
-        }
-    } else {
-        errno = ENXIO;
-        status = -1;
-    }
-    return (luab_pusherr(L, status));
-}
-
-/***
- * setegid(2) - set effective group ID
- *
- * @function setegid
- *
- * @param egid              Effective group ID.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.setegid(egid)
- */
-static int
-luab_setegid(lua_State *L)
-{
-    gid_t egid;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    egid = (gid_t)luab_checkinteger(L, 1, INT_MAX);
-    status = setegid(egid);
+    status = fchownat(fd, path, owner, group, flag);
 
     return (luab_pusherr(L, status));
 }
 
-/***
- * seteuid(2) - set effective user ID
- *
- * @function seteuid
- *
- * @param euid              Effective user ID.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.seteuid(euid)
- */
-static int
-luab_seteuid(lua_State *L)
-{
-    uid_t euid;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    euid = (uid_t)luab_checkinteger(L, 1, INT_MAX);
-    status = seteuid(euid);
-
-    return (luab_pusherr(L, status));
-}
-#endif /* __POSIX_VISIBLE >= 200112 */
-
-#if __POSIX_VISIBLE >= 200809
 /***
  * fexecve(2) - execute a file
  *
@@ -2090,75 +2195,6 @@ luab_fexecve(lua_State *L)
     status = fexecve(fd, __DECONST(char **, argv), environ);
 
     free(argv);
-
-    return (luab_pusherr(L, status));
-}
-#endif
-
-#if __POSIX_VISIBLE >= 200809
-static int
-luab_faccessat(lua_State *L)
-{
-    int fd;
-    const char *path;
-    int mode;
-    int flag;
-    int status;
-
-    (void)luab_checkmaxargs(L, 4);
-
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    path = luab_checklstring(L, 2, MAXPATHLEN);
-    mode = (int)luab_checkinteger(L, 3, INT_MAX);
-    flag = (int)luab_checkinteger(L, 4, INT_MAX);
-
-    status = faccessat(fd, path, mode, flag);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
- * fchownat(2) - change owner and group of a file
- *
- * @function fchownat
- *
- * @param fd                File descriptor associated with working directory
- *                          from object pointed by path.
- * @param path              Name or path of referred file.
- * @param owner             Specifies user ID.
- * @param group             Specifies group ID.
- * @param flag              The values are constructed from
- *
- *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW
- *
- *                          by bitwise-inclusive OR.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.unistd.fchownat(fd, path, owner, group, flag)
- */
-static int
-luab_fchownat(lua_State *L)
-{
-    int fd;
-    const char *path;
-    uid_t owner;
-    gid_t group;
-    int flag;
-    int status;
-
-    (void)luab_checkmaxargs(L, 5);
-
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    path = luab_checklstring(L, 2, MAXPATHLEN);
-    owner = (uid_t)luab_checkinteger(L, 3, INT_MAX);
-    group = (gid_t)luab_checkinteger(L, 4, INT_MAX);
-    flag = (int)luab_checkinteger(L, 5, INT_MAX);
-
-    status = fchownat(fd, path, owner, group, flag);
 
     return (luab_pusherr(L, status));
 }
@@ -2332,7 +2368,6 @@ luab_unlinkat(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
-
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402
 /***
  * symlink(2) - make symbolic link to a file
@@ -2645,6 +2680,20 @@ luab_sync(lua_State *L)
 #endif /* __XSI_VISIBLE */
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE
+/***
+ * chroot(2) - change root directory
+ *
+ * @function chroot
+ *
+ * @param dirname           The pathname of a directory.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.chroot(dirname)
+ */
 static int
 luab_chroot(lua_State *L)
 {
@@ -2659,6 +2708,18 @@ luab_chroot(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * getdtablesize(2) - get filedescriptor limit
+ *
+ * @function getdtablesize
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (size [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.getdtablesize()
+ */
 static int
 luab_getdtablesize(lua_State *L)
 {
@@ -2671,6 +2732,18 @@ luab_getdtablesize(lua_State *L)
     return (luab_pusherr(L, size));
 }
 
+/***
+ * getpagesize(3) - get system page size
+ *
+ * @function getpagesize
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (size [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.getpagesize()
+ */
 static int
 luab_getpagesize(lua_State *L)
 {
@@ -2683,8 +2756,22 @@ luab_getpagesize(lua_State *L)
     return (luab_pusherr(L, size));
 }
 
+/***
+ * getpass(3) - get a password
+ *
+ * @function getpass
+ *
+ * @param prompt            String denotes prompt.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (value [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage value [, err, msg ] = bsd.unistd.getpass(prompt)
+ */
 static int
-luab_getpass(lua_State *L)  /* XXX */
+luab_getpass(lua_State *L)
 {
     const char *prompt;
     caddr_t value;
@@ -2717,8 +2804,7 @@ static int
 luab_getwd(lua_State *L)
 {
     luab_iovec_t *buf;
-    caddr_t bp;
-    caddr_t status;
+    caddr_t bp, status;
 
     (void)luab_checkmaxargs(L, 1);
 
@@ -2836,11 +2922,12 @@ luab_acct(lua_State *L)
  *
  * @param utility           Existing pathname.
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (1 on success or 0)
+ *          (1 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
  *
- * @usage compat = bsd.unistd.check_utility_compat(utility)
+ * @usage compat [, err, msg ] = bsd.unistd.check_utility_compat(utility)
  */
 static int
 luab_check_utility_compat(lua_State *L)
@@ -2861,11 +2948,12 @@ luab_check_utility_compat(lua_State *L)
  *
  * @function crypt_get_format
  *
- * @return (LUA_TSTRING)
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING}])
  *
- *          (format)
+ *          (format [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
  *
- * @usage format = bsd.unistd.crypt_get_format()
+ * @usage format [, err, msg ] = bsd.unistd.crypt_get_format()
  */
 static int
 luab_crypt_get_format(lua_State *L)
@@ -2929,11 +3017,12 @@ luab_crypt_r(lua_State *L)
  *
  * @param string            Specifies encoding format.
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (1 on success or 0)
+ *          (1 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
  *
- * @usage compat = bsd.unistd.crypt_set_format(utility)
+ * @usage compat [ err, msg ] = bsd.unistd.crypt_set_format(string)
  */
 static int
 luab_crypt_set_format(lua_State *L)
@@ -3030,7 +3119,7 @@ luab_eaccess(lua_State *L)
  *
  *                              { "arg0" , "arg1" , ..., "argN" },
  *
- *                          instance of LUA_TTABLE.
+ *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3069,7 +3158,7 @@ luab_exect(lua_State *L)
  *
  *                              { "arg0" , "arg1" , ..., "argN" },
  *
- *                          instance of LUA_TTABLE.
+ *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3106,9 +3195,10 @@ luab_execvP(lua_State *L)
  *
  * @param feature               Name of feature to check.
  *
- * @return (LUA_TNUMBER)
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (1 on success or 0)
+ *          (1 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.unistd.feature_present(feature)
  */
@@ -3155,7 +3245,7 @@ luab_fflagstostr(lua_State *L)
     status = luab_pushstring(L, str);
     free(str);
 
-    return status;
+    return (status);
 }
 
 /***
@@ -3279,11 +3369,16 @@ luab_getentropy(lua_State *L)
  *
  * @param name              Group name.
  * @param basegid           Base group ID.
- * @param gidset            Empty instance of LUA_TTABLE, but still populated
+ * @param gidset            Empty instance of
+ *
+ *                              (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)),
+ *
+ *                          but still populated by
  *
  *                              { "gid0" , "gid1" , ..., "gidN" },
  *
  *                          if query by (name, basegid) was successfull.
+ * 
  * @param ngroups
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
