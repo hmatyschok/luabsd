@@ -159,7 +159,7 @@ luab_checkargv(lua_State *L, int narg)
 /*
  * Accessor, [C -> stack].
  */
- 
+
 void
 luab_table_pushlgidset(lua_State *L, int narg, gid_t *gidset, int ngroups)
 {
@@ -170,7 +170,7 @@ luab_table_pushlgidset(lua_State *L, int narg, gid_t *gidset, int ngroups)
 
         for (i = 0, j = 1; i < ngroups; i++, j++)
             luab_rawsetinteger(L, narg, j, gidset[i]);
-                    
+
         lua_pop(L, 0);
     }
 }

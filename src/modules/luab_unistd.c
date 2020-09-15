@@ -58,6 +58,10 @@ extern luab_module_t luab_unistd_lib;
 
 extern char **environ;
 
+#define LUAB_SET_LEN        6   /* libc/gen/setmode.c */
+#define LUAB_SET_LEN_INCR   4
+#define LUAB_SETMAXLEN      LUAB_SETMAXLEN
+
 /*
  * Subr.
  */
@@ -3482,6 +3486,40 @@ luab_getloginclass(lua_State *L)
 }
 
 /***
+ * getmode(2) - modify mode bits
+ *
+ * @function getmode
+ *
+ * @param set               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param mode              Maximum capacity for used buffer.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage mode [, err, msg ] = bsd.unistd.getmode(set, mode)
+ */
+static int
+luab_getmode(lua_State *L)
+{
+    luab_iovec_t *buf;
+    mode_t mode;
+    caddr_t dp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    mode = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
+
+    if ((status = getmode(dp, LUAB_SETMAXLEN)) == 0)
+        status = luab_iovec_copyin(L, buf, dp, LUAB_SETMAXLEN);
+    
+    return (luab_pusherr(L, status));
+}
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
@@ -4158,6 +4196,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("getentropy",  luab_getentropy),
     LUABSD_FUNC("getgrouplist", luab_getgrouplist),
     LUABSD_FUNC("getloginclass",    luab_getloginclass),
+    LUABSD_FUNC("getmode",  luab_getmode),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
