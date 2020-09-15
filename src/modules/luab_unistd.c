@@ -34,6 +34,7 @@
  */
 
 #include <sys/param.h>
+#include <arpa/inet.h>
 
 #include <errno.h>
 #include <pwd.h>
@@ -49,6 +50,7 @@
 #include "luabsd.h"
 
 extern luab_module_t hook_type;
+extern luab_module_t in_addr_type;
 extern luab_module_t crypt_data_type;
 
 #define LUABSD_UNISTD_LIB_ID    1593623310
@@ -586,7 +588,7 @@ luab_getcwd(lua_State *L)
     );
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= size) &&
+        (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -3367,7 +3369,7 @@ luab_getentropy(lua_State *L)
     );
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= MAX_INPUT) &&
+        (buf->iov_max_len >= MAX_INPUT) &&
         (buflen <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -3485,7 +3487,7 @@ luab_getloginclass(lua_State *L)
     );
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= MAXLOGNAME) &&
+        (buf->iov_max_len >= MAXLOGNAME) &&
         (len <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -3740,7 +3742,7 @@ luab_getusershell(lua_State *L)
  *
  * @param name              Specifies user name.
  * @param basegid           Specifies user group ID.
- * 
+ *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
@@ -3761,7 +3763,102 @@ luab_initgroups(lua_State *L)
     basegid = (gid_t)luab_checkinteger(L, 2, INT_MAX);
 
     status = initgroups(name, basegid);
-    
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * iruserok(3) - routines for returning a stream to e remote command.
+ *
+ * @function iruserok
+ *
+ * @param raddr             Remote IPv4 address, (LUA_TUSERDATA(IN_ADDR)).
+ * @param superuser         Nonzero, if the local user is the superuser.
+ * @param ruser             Specifies the name of the remote user.
+ * @param luser             Specifies the name of the local user.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.iruserok(raddr, superuser, ruser, luser)
+ */
+static int
+luab_iruserok(lua_State *L)
+{
+    struct in_addr *raddr;
+    int superuser;
+    const char *ruser;
+    const char *luser;
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    raddr = luab_udata(L, 1, in_addr_type, struct in_addr *);
+    superuser = (int)luab_checkinteger(L, 2, INT_MAX);
+    ruser = luab_checklstring(L, 3, MAXLOGNAME);
+    luser = luab_checklstring(L, 4, MAXLOGNAME);
+
+    status = iruserok(raddr->s_addr, superuser, ruser, luser);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * iruserok_sa(3) - routines for returning a stream to e remote command.
+ *
+ * @function iruserok_sa
+ *
+ * @param addr              Remote IP address, (LUA_TUSERDATA(IOVEC)).
+ * @param addrlen           Specifies the length of the IP address.
+ * @param superuser         Nonzero, if the local user is the superuser.
+ * @param ruser             Specifies the name of the remote user.
+ * @param luser             Specifies the name of the local user.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.iruserok_sa(raddr, rlen, superuser, ruser, luser)
+ */
+static int
+luab_iruserok_sa(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int addrlen;
+    int superuser;
+    const char *ruser;
+    const char *luser;
+    caddr_t bp;
+    int status;
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    addrlen = (int)luab_checkinteger(L, 2, INT_MAX);
+    superuser = (int)luab_checkinteger(L, 3, INT_MAX);
+    ruser = luab_checklstring(L, 4, MAXLOGNAME);
+    luser = luab_checklstring(L, 5, MAXLOGNAME);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        ((size_t)addrlen <= buf->iov.iov_len) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            status = iruserok_sa(bp, addrlen, superuser, ruser, luser);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
     return (luab_pusherr(L, status));
 }
 
@@ -3873,8 +3970,10 @@ luab_setdomainname(lua_State *L)
     namelen = (int)luab_checkinteger(L, 2, INT_MAX);
 
     if (((bp = buf->iov.iov_base) != 0) &&
+        ((size_t)namelen <= buf->iov.iov_len) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= MAXHOSTNAMELEN) &&
-        ((size_t)namelen <= buf->iov_max_len) &&
+
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -4008,7 +4107,8 @@ luab_setloginclass(lua_State *L)
     buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= MAXLOGNAME) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len >= MAXLOGNAME) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -4056,7 +4156,8 @@ luab_setmode(lua_State *L)
     mode = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len == LUAB_SETMAXLEN) &&
+        (buf->iov.iov_len == LUAB_SETMAXLEN) &&
+        (buf->iov_max_len >= LUAB_SETMAXLEN) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -4526,6 +4627,8 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("getresuid",    luab_getresuid),
     LUABSD_FUNC("getusershell", luab_getusershell),
     LUABSD_FUNC("initgroups",   luab_initgroups),
+    LUABSD_FUNC("iruserok", luab_iruserok),
+    LUABSD_FUNC("iruserok_sa",  luab_iruserok_sa),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
