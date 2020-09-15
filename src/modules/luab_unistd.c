@@ -3115,6 +3115,28 @@ luab_eaccess(lua_State *L)
 }
 
 /***
+ * endusershell(3) - get valid user shells
+ *
+ * @function endusershell
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.endusershell()
+ */
+static int
+luab_endusershell(lua_State *L)
+{
+    (void)luab_checkmaxargs(L, 0);
+
+    endusershell();
+
+    return (luab_pusherr(L, 0));
+}
+
+/***
  * exect(3) - execute a file
  *
  * @function exect
@@ -4054,6 +4076,28 @@ luab_setpgrp(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
+
+/***
+ * setusershell(3) - get valid user shells
+ *
+ * @function setusershell
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.getusershell()
+ */
+static int
+luab_setusershell(lua_State *L)
+{
+    (void)luab_checkmaxargs(L, 0);
+
+    setusershell();
+
+    return (luab_pusherr(L, 0));
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -4432,6 +4476,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("crypt_set_format", luab_crypt_set_format),
     LUABSD_FUNC("crypt_dup3", luab_dup3),
     LUABSD_FUNC("eaccess",   luab_eaccess),
+    LUABSD_FUNC("endusershell", luab_endusershell),
     LUABSD_FUNC("exect",   luab_exect),
     LUABSD_FUNC("execvP",   luab_execvP),
     LUABSD_FUNC("feature_present",    luab_feature_present),
@@ -4455,6 +4500,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("setloginclass",    luab_setloginclass),
     LUABSD_FUNC("setmode",  luab_setmode),
     LUABSD_FUNC("setpgrp",    luab_setpgrp),
+    LUABSD_FUNC("setusershell", luab_setusershell),
 
     LUABSD_FUNC("crypt_data_create",  luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
