@@ -60,7 +60,7 @@ extern char **environ;
 
 #define LUAB_SET_LEN        6   /* libc/gen/setmode.c */
 #define LUAB_SET_LEN_INCR   4
-#define LUAB_SETMAXLEN      LUAB_SETMAXLEN
+#define LUAB_SETMAXLEN      LUAB_SET_LEN
 
 /*
  * Subr.
