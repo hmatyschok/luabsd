@@ -238,14 +238,23 @@ void    luab_setldata(lua_State *, int, const char *, void *, size_t);
 void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
-/* (LUA_TTABLE) */
+/*
+ * Accessor, (LUA_TTABLE), [stack -> C].
+ */
+
 int luab_checktable(lua_State *, int);
 size_t  luab_checkltable(lua_State *, int, size_t);
 const char **    luab_checkargv(lua_State *, int);
 
+/*
+ * Accessor, (LUA_TTABLE), [C -> stack].
+ */
+
 void *  luab_newvector(lua_State *, int, size_t);
 void *  luab_newlvector(lua_State *, int, size_t, size_t);
 int *   luab_checklintvector(lua_State *, int, size_t);
+
+void    luab_table_pushlgidset(lua_State *, int, gid_t *, int);
 
 /*
  * Generic service primitives, subset of <core>.

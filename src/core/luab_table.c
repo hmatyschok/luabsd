@@ -155,3 +155,23 @@ luab_checkargv(lua_State *L, int narg)
     }
     return (argv);
 }
+
+/*
+ * Accessor, [C -> stack].
+ */
+ 
+void
+luab_table_pushlgidset(lua_State *L, int narg, gid_t *gidset, int ngroups)
+{
+    int i, j;
+
+    if (gidset != NULL) {
+        lua_pushnil(L); /* populate Table, if any */
+
+        for (i = 0, j = 1; i < ngroups; i++, j++)
+            luab_rawsetinteger(L, narg, j, gidset[i]);
+                    
+        lua_pop(L, 0);
+    }
+}
+

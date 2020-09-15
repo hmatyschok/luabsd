@@ -48,6 +48,7 @@
 
 #include "luabsd.h"
 
+extern luab_module_t hook_type;
 extern luab_module_t crypt_data_type;
 
 #define LUABSD_UNISTD_LIB_ID    1593623310
@@ -3379,7 +3380,7 @@ luab_getentropy(lua_State *L)
  *
  *                          if query by (name, basegid) was successfull.
  * 
- * @param ngroups
+ * @param ngroups           Size, instance of (LUA_TUSERDATA(HOOK)). 
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3394,36 +3395,33 @@ luab_getgrouplist(lua_State *L)
     const char *name;
     gid_t basegid;
     gid_t *gidset;
-    int ngroups;
-    int i, j;
+    luab_type_u *hook;
+    int *ngroups;
     int status;
 
     (void)luab_checkmaxargs(L, 4);
 
-    name = luab_checklstring(L, 1, NAME_MAX);   /* XXX wrong? */
+    name = luab_checklstring(L, 1, NAME_MAX);
     basegid = (gid_t)luab_checkinteger(L, 2, INT_MAX);
 
     luab_checkltable(L, 3, 0);  /* only empty table are accepted */
 
-    ngroups = (int)luab_checkinteger(L, 4, INT_MAX);
+    hook = luab_udata(L, 4, hook_type, luab_type_u *);
+    ngroups = &(hook->un_int);
 
-    if (ngroups != 0) {
-        if ((gidset = alloca(ngroups * sizeof(gid_t))) != NULL) {
-            if ((status = getgrouplist(name, basegid, gidset, &ngroups)) == 0) {
-                lua_pushnil(L); /* populate Table, if any */
+    if (*ngroups != 0) {
 
-                for (i = 0, j = 1; i < ngroups; i++, j++)
-                    luab_rawsetinteger(L, 3, j, gidset[i]);
+        if ((gidset = alloca((*ngroups) * sizeof(gid_t))) != NULL) {
 
-                lua_pop(L, 0);
-            }
+            if ((status = getgrouplist(name, basegid, gidset, ngroups)) == 0)
+                luab_table_pushlgidset(L, 3, gidset, *ngroups);
         } else
             status = -1;
     } else {
         errno = EINVAL;
         status = -1;
     }
-    return (luab_pusherr(L, ngroups));
+    return (luab_pusherr(L, status));
 }
 
 /***
