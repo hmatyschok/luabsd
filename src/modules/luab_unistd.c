@@ -3505,7 +3505,7 @@ luab_getmode(lua_State *L)
 {
     luab_iovec_t *buf;
     mode_t mode;
-    caddr_t dp;
+    caddr_t bp;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
@@ -3513,9 +3513,25 @@ luab_getmode(lua_State *L)
     buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
     mode = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
 
-    if ((status = getmode(dp, LUAB_SETMAXLEN)) == 0)
-        status = luab_iovec_copyin(L, buf, dp, LUAB_SETMAXLEN);
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAB_SETMAXLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
 
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = getmode(bp, LUAB_SETMAXLEN)) == 0)
+                buf->iov.iov_len = LUAB_SETMAXLEN;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
     return (luab_pusherr(L, status));
 }
 
