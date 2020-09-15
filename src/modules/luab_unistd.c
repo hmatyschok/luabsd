@@ -3491,7 +3491,7 @@ luab_getloginclass(lua_State *L)
  * @function getmode
  *
  * @param set               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param mode              Maximum capacity for used buffer.
+ * @param mode              Mode bits.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3945,6 +3945,58 @@ luab_setloginclass(lua_State *L)
 }
 
 /***
+ * setmode(2) - modify mode bits
+ *
+ * @function setmode
+ *
+ * @param mode_str          Instance of (LUA_TUSERDATA(IOVEC)).
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (mode [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage mode [, err, msg ] = bsd.unistd.setmode(mode_str)
+ */
+static int
+luab_setmode(lua_State *L)
+{
+    luab_iovec_t *buf;
+    mode_t mode;
+    caddr_t bp, dp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    mode = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len == LUAB_SETMAXLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((dp = setmode(bp)) != NULL) {
+                status = luab_pushldata(L, dp, LUAB_SETMAXLEN);
+                free(dp);
+            } else
+                status = luab_pushnil(L);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = luab_pushnil(L);
+        }
+    } else {
+        errno = ENXIO;
+        status = luab_pushnil(L);
+    }
+    return (status);
+}
+
+/***
  * setpgrp(2) - set process group
  *
  * @function setpgrp
@@ -4372,6 +4424,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("sethostname",  luab_sethostname),
     LUABSD_FUNC("setlogin",   luab_setlogin),
     LUABSD_FUNC("setloginclass",    luab_setloginclass),
+    LUABSD_FUNC("setmode",  luab_setmode),
     LUABSD_FUNC("setpgrp",    luab_setpgrp),
 
     LUABSD_FUNC("crypt_data_create",  luab_crypt_data_create),
