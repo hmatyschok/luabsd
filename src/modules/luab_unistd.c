@@ -3551,7 +3551,7 @@ luab_getosreldate(lua_State *L)
  * @param s                 Open socket(9), unix(4) domain(9).
  * @param euid              Effective user ID, (LUA_TUSERDATA(HOOK)).
  * @param egid              Effective group ID, (LUA_TUSERDATA(HOOK)).
- * 
+ *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
@@ -3579,6 +3579,90 @@ luab_getpeereid(lua_State *L)
     egid = &(h2->un_uint32);
 
     status = getpeereid(s, egid, euid);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * getresgid(2) - get real, effective and saved group ID
+ *
+ * @function getresgid
+ *
+ * @param rgid              Real group ID, (LUA_TUSERDATA(HOOK)).
+ * @param egid              Effective group ID, (LUA_TUSERDATA(HOOK)).
+ * @param sgid              Saved group ID, (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.getresgid(rgid, egid, sgid)
+ */
+static int
+luab_getresgid(lua_State *L)
+{
+    luab_type_u *h1;
+    luab_type_u *h2;
+    luab_type_u *h3;
+    gid_t *rgid;
+    gid_t *egid;
+    gid_t *sgid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    h1 = luab_udata(L, 1, hook_type, luab_type_u *);
+    h2 = luab_udata(L, 2, hook_type, luab_type_u *);
+    h3 = luab_udata(L, 3, hook_type, luab_type_u *);
+
+    rgid = &(h1->un_uint32);
+    egid = &(h2->un_uint32);
+    sgid = &(h3->un_uint32);
+
+    status = getresgid(rgid, egid, sgid);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * getresuid(2) - get real, effective and saved user ID
+ *
+ * @function getresuid
+ *
+ * @param ruid              Real user ID, (LUA_TUSERDATA(HOOK)).
+ * @param euid              Effective user ID, (LUA_TUSERDATA(HOOK)).
+ * @param suid              Saved user ID, (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.getresuid(ruid, euid, suid)
+ */
+static int
+luab_getresuid(lua_State *L)
+{
+    luab_type_u *h1;
+    luab_type_u *h2;
+    luab_type_u *h3;
+    uid_t *ruid;
+    uid_t *euid;
+    uid_t *suid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    h1 = luab_udata(L, 1, hook_type, luab_type_u *);
+    h2 = luab_udata(L, 2, hook_type, luab_type_u *);
+    h3 = luab_udata(L, 3, hook_type, luab_type_u *);
+
+    ruid = &(h1->un_uint32);
+    euid = &(h2->un_uint32);
+    suid = &(h3->un_uint32);
+
+    status = getresuid(ruid, euid, suid);
 
     return (luab_pusherr(L, status));
 }
@@ -4263,6 +4347,8 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("getmode",  luab_getmode),
     LUABSD_FUNC("getosreldate", luab_getosreldate),
     LUABSD_FUNC("getpeereid",   luab_getpeereid),
+    LUABSD_FUNC("getresgid",    luab_getresgid),
+    LUABSD_FUNC("getresuid",    luab_getresuid),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
