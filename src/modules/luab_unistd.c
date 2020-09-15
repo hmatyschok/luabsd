@@ -3684,6 +3684,34 @@ luab_getresuid(lua_State *L)
 }
 
 /***
+ * getusershell(3) - get valid user shells
+ *
+ * @function getusershell
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (shell [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage shell [, err, msg ] = bsd.unistd.getusershell()
+ */
+static int
+luab_getusershell(lua_State *L)
+{
+    char *shell;
+    int status;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    if ((shell = getusershell()) != NULL)
+        status = luab_pushstring(L, shell);
+    else
+        status = luab_pushnil(L);
+
+    return (status);
+}
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
@@ -4417,6 +4445,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("getpeereid",   luab_getpeereid),
     LUABSD_FUNC("getresgid",    luab_getresgid),
     LUABSD_FUNC("getresuid",    luab_getresuid),
+    LUABSD_FUNC("getusershell", luab_getusershell),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),

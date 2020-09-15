@@ -34,7 +34,7 @@
 #include "luabsd.h"
 
 /*
- * Generic vector operations.
+ * Generic vector operations, [stack -> C].
  */
 
 int
@@ -119,11 +119,7 @@ luab_checklintvector(lua_State *L, int narg, size_t len)
     return (vec);
 }
 
-/*
- * Operations on argv for family (of functions) over exec(2).
- *
- * Translate an instance of LUA_TTABLE into an argv.
- */
+/* Translate an instance of LUA_TTABLE into an argv. */
 const char **
 luab_checkargv(lua_State *L, int narg)
 {
