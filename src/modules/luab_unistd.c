@@ -3514,7 +3514,7 @@ luab_getmode(lua_State *L)
     mode = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAB_SETMAXLEN) &&
+        (buf->iov_max_len >= LUAB_SETMAXLEN) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
