@@ -2072,7 +2072,7 @@ luab_truncate(lua_State *L)
  *                                  bsd.fcntl.AT_FDCWD
  *
  *                               was passed by call of chflagsat(2).
- * 
+ *
  * @param path              Name or path of referred file.
  * @param mode              Specifies mode setting.
  * @param flag              The values are constructed from
@@ -2126,7 +2126,7 @@ luab_faccessat(lua_State *L)
  *                                  bsd.fcntl.AT_FDCWD
  *
  *                               was passed by call of fchownat(2).
- * 
+ *
  * @param owner             Specifies user ID.
  * @param group             Specifies group ID.
  * @param flag              The values are constructed from
@@ -2829,7 +2829,7 @@ luab_getwd(lua_State *L)
         } else {
             errno = ENXIO;
             status = NULL;
-        }        
+        }
     } else {
         errno = EBUSY;
         status = NULL;
@@ -3383,8 +3383,8 @@ luab_getentropy(lua_State *L)
  *                              { "gid0" , "gid1" , ..., "gidN" },
  *
  *                          if query by (name, basegid) was successfull.
- * 
- * @param ngroups           Size, instance of (LUA_TUSERDATA(HOOK)). 
+ *
+ * @param ngroups           Size, instance of (LUA_TUSERDATA(HOOK)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3515,8 +3515,32 @@ luab_getmode(lua_State *L)
 
     if ((status = getmode(dp, LUAB_SETMAXLEN)) == 0)
         status = luab_iovec_copyin(L, buf, dp, LUAB_SETMAXLEN);
-    
+
     return (luab_pusherr(L, status));
+}
+
+/***
+ * getosreldate(2) - get the value of __FreeBSD_version
+ *
+ * @function getosreldate
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (date [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage date [, err, msg ] = bsd.unistd.getosreldate()
+ */
+static int
+luab_getosreldate(lua_State *L)
+{
+    int date;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    date = getosreldate();
+
+    return (luab_pusherr(L, date));
 }
 
 /***
@@ -4197,6 +4221,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("getgrouplist", luab_getgrouplist),
     LUABSD_FUNC("getloginclass",    luab_getloginclass),
     LUABSD_FUNC("getmode",  luab_getmode),
+    LUABSD_FUNC("getosreldate", luab_getosreldate),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
