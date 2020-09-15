@@ -3544,6 +3544,46 @@ luab_getosreldate(lua_State *L)
 }
 
 /***
+ * getpeereid(2) - get the effective credentials of a UNIX-domain peer
+ *
+ * @function getpeereid
+ *
+ * @param s                 Open socket(9), unix(4) domain(9).
+ * @param euid              Effective user ID, (LUA_TUSERDATA(HOOK)).
+ * @param egid              Effective group ID, (LUA_TUSERDATA(HOOK)).
+ * 
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.getpeereid(s, euid, egid)
+ */
+static int
+luab_getpeereid(lua_State *L)
+{
+    int s;
+    luab_type_u *h1;
+    luab_type_u *h2;
+    uid_t *euid;
+    gid_t *egid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    h1 = luab_udata(L, 2, hook_type, luab_type_u *);
+    h2 = luab_udata(L, 3, hook_type, luab_type_u *);
+
+    euid = &(h1->un_uint32);
+    egid = &(h2->un_uint32);
+
+    status = getpeereid(s, egid, euid);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
@@ -4222,6 +4262,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("getloginclass",    luab_getloginclass),
     LUABSD_FUNC("getmode",  luab_getmode),
     LUABSD_FUNC("getosreldate", luab_getosreldate),
+    LUABSD_FUNC("getpeereid",   luab_getpeereid),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
