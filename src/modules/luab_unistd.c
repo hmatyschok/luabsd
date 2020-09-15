@@ -3734,13 +3734,47 @@ luab_getusershell(lua_State *L)
 }
 
 /***
+ * initgroups(3) - initialize group access list
+ *
+ * @function initgroups
+ *
+ * @param name              Specifies user name.
+ * @param basegid           Specifies user group ID.
+ * 
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.initgroups(name, gid)
+ */
+static int
+luab_initgroups(lua_State *L)
+{
+    const char *name;
+    gid_t basegid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    name = luab_checklstring(L, 1, MAXLOGNAME);
+    basegid = (gid_t)luab_checkinteger(L, 2, INT_MAX);
+
+    status = initgroups(name, basegid);
+    
+    return (luab_pusherr(L, status));
+}
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
  *
- * @param filedes           Pair of file descriptors as instance of LUA_TTABLE:
+ * @param filedes           Pair of file descriptors:
  *
- *                              { filedes1, filedes2 }.
+ *                              { filedes1, filedes2 },
+ *
+ *                          instance of (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)),
  *
  * @param flags             The values are constructed from
  *
@@ -4491,6 +4525,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("getresgid",    luab_getresgid),
     LUABSD_FUNC("getresuid",    luab_getresuid),
     LUABSD_FUNC("getusershell", luab_getusershell),
+    LUABSD_FUNC("initgroups",   luab_initgroups),
     LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
