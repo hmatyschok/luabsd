@@ -4499,22 +4499,11 @@ luab_re_exec(lua_State *L)
  *
  * @function reboot
  *
- * @param howto             Mask of present by inclusive or combined options:
+ * @param howto             Mask of present options from
  *
- *                              bsd.sys.reboot.RB_{
- *                                      AUTOBOOT,
- *                                      ASKANE,
- *                                      DFLTROOT,
- *                                      DUMP,
- *                                      HALT,
- *                                      POWERCYCLE,
- *                                      POWEROFF,
- *                                      KDB,
- *                                      NOSYNC,
- *                                      REROOT,
- *                                      RDONLY,
- *                                      SINGLE
- *                                  }
+ *                              bsd.sys.reboot.RB_*
+ *
+ *                          are combined by inclusive or.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -4537,6 +4526,123 @@ luab_reboot(lua_State *L)
         /* NOTREACHED */
 
     return (luab_pusherr(L, status));
+}
+
+/***
+ * revoke(2) - revoke file access
+ *
+ * @function revoke
+ *
+ * @param path              File named by path.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.revoke(path)
+ */
+static int
+luab_revoke(lua_State *L)
+{
+    const char *path;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    status = revoke(path);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * rfork(2) - manipulate process resources
+ *
+ * @function rfork
+ *
+ * @param flags             Flags argument.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (pid [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage pid [, err, msg ] = bsd.unistd.rfork(flags)
+ */
+static int
+luab_rfork(lua_State *L)
+{
+    int flags;
+    pid_t pid;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    flags = luab_checkinteger(L, 1, INT_MAX);
+    pid = rfork(flags);
+
+    return (luab_pusherr(L, pid));
+}
+
+/***
+ * rresvport(3) - routines for returning a stream to a remote command
+ *
+ * @function rresvport
+ *
+ * @param port              Port, SAP OSI-L4, (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (s [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage pid [, err, msg ] = bsd.unistd.rresvport(port)
+ */
+static int
+luab_rresvport(lua_State *L)
+{
+    luab_type_u *h0;
+    int *port, s;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    h0 = luab_udata(L, 1, hook_type, luab_type_u *);
+    port = &(h0->un_int);
+    s = rresvport(port);
+
+    return (luab_pusherr(L, s));
+}
+
+/***
+ * rresvport_af(3) - routines for returning a stream to a remote command
+ *
+ * @function rresvport_af
+ *
+ * @param port              Port, SAP OSI-L4, (LUA_TUSERDATA(HOOK)).
+ * @param af                Protocol domain(9), OSI-L3.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (s [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage pid [, err, msg ] = bsd.unistd.rresvport_af(port, af)
+ */
+static int
+luab_rresvport_af(lua_State *L)
+{
+    luab_type_u *h0;
+    int af, *port, s;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    h0 = luab_udata(L, 1, hook_type, luab_type_u *);
+    af = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    port = &(h0->un_int);
+    s = rresvport_af(port, af);
+
+    return (luab_pusherr(L, s));
 }
 
 /***
@@ -5241,6 +5347,10 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("re_comp",  luab_re_comp),
     LUABSD_FUNC("re_exec",  luab_re_exec),
     LUABSD_FUNC("reboot",   luab_reboot),
+    LUABSD_FUNC("revoke",   luab_revoke),
+    LUABSD_FUNC("rfork",    luab_rfork),
+    LUABSD_FUNC("rresvport",    luab_rresvport),
+    LUABSD_FUNC("rresvport_af", luab_rresvport_af),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("setgroups",    luab_setgroups),
     LUABSD_FUNC("sethostname",  luab_sethostname),
