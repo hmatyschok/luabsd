@@ -3863,6 +3863,257 @@ luab_iruserok_sa(lua_State *L)
 }
 
 /***
+ * issetugid(2) - is current process tainted by uid or gid changes
+ *
+ * @function issetugid
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.issetugid()
+ */
+static int
+luab_issetugid(lua_State *L)
+{
+    int status;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    status = issetugid();
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * lpathconf(2) - get configurable pathname variables
+ *
+ * @function lpathconf
+ *
+ * @param path              Name of file or directory.
+ * @param name              Specifies the system variable over
+ *
+ *                              bsd.sys.unistd._PC_*
+ *
+ *                          to be queried.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (value [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage value [, err, msg ] = bsd.unistd.lpathconf(path, name)
+ */
+static int
+luab_lpathconf(lua_State *L)
+{
+    const char *path;
+    int name;
+    long status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    name = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    status = lpathconf(path, name);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * mkdtemp(3) - make tempory file name (unique)
+ *
+ * @function mkdtemp
+ *
+ * @param template          File name template, (LUA_TUSERDATA(IOVEC)).
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (path [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage path [, err, msg ] = bsd.unistd.mkdtemp(template)
+ */
+static int
+luab_mkdtemp(lua_State *L)
+{
+    luab_iovec_t *buf;
+    caddr_t bp;
+    char *dp;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            dp = mkdtemp(bp);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            dp = NULL;
+        }
+    } else {
+        errno = ENXIO;
+        dp = NULL;
+    }
+    return (luab_pushstring(L, dp));
+}
+
+/***
+ * mkstemp(3) - make tempory file name (unique)
+ *
+ * @function mkstemp
+ *
+ * @param template          File name template, (LUA_TUSERDATA(IOVEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.mkstemp(template)
+ */
+static int
+luab_mkstemp(lua_State *L)
+{
+    luab_iovec_t *buf;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            status = mkstemp(bp);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * mkstemps(3) - make tempory file name (unique)
+ *
+ * @function mkstemps
+ *
+ * @param template          File name template, (LUA_TUSERDATA(IOVEC)).
+ * @param suffixlen         Specifies the length of the suffix string.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.mkstemps(template)
+ */
+static int
+luab_mkstemps(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int suffixlen;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    suffixlen = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            status = mkstemps(bp, suffixlen);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * mktemp(3) - make tempory file name (unique)
+ *
+ * @function mktemp
+ *
+ * @param template          File name template, (LUA_TUSERDATA(IOVEC)).
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (path [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage path [, err, msg ] = bsd.unistd.mktemp(template)
+ */
+static int
+luab_mktemp(lua_State *L)
+{
+    luab_iovec_t *buf;
+    caddr_t bp;
+    char *dp;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            dp = mktemp(bp);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            dp = NULL;
+        }
+    } else {
+        errno = ENXIO;
+        dp = NULL;
+    }
+    return (luab_pushstring(L, dp));
+}
+
+/***
  * pipe2(2) - create descriptor pair for interprocess communication
  *
  * @function pipe2
@@ -3901,42 +4152,6 @@ luab_pipe2(lua_State *L)
     status = pipe2(fildes, flags);
 
     free(fildes);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
- * lpathconf(2) - get configurable pathname variables
- *
- * @function lpathconf
- *
- * @param path              Name of file or directory.
- * @param name              Specifies the system variable over
- *
- *                              bsd.sys.unistd._PC_*
- *
- *                          to be queried.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (value [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage value [, err, msg ] = bsd.unistd.lpathconf(path, name)
- */
-static int
-luab_lpathconf(lua_State *L)
-{
-    const char *path;
-    int name;
-    long status;
-
-    (void)luab_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    name = (int)luab_checkinteger(L, 2, INT_MAX);
-
-    status = lpathconf(path, name);
 
     return (luab_pusherr(L, status));
 }
@@ -4629,8 +4844,13 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("initgroups",   luab_initgroups),
     LUABSD_FUNC("iruserok", luab_iruserok),
     LUABSD_FUNC("iruserok_sa",  luab_iruserok_sa),
-    LUABSD_FUNC("pipe2", luab_pipe2),
+    LUABSD_FUNC("issetugid",    luab_issetugid),
     LUABSD_FUNC("lpathconf",    luab_lpathconf),
+    LUABSD_FUNC("mkdtemp",  luab_mkdtemp),
+    LUABSD_FUNC("mkstemp",  luab_mkstemp),
+    LUABSD_FUNC("mkstemps", luab_mkstemps),
+    LUABSD_FUNC("mktemp",   luab_mktemp),
+    LUABSD_FUNC("pipe2", luab_pipe2),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("setgroups",    luab_setgroups),
     LUABSD_FUNC("sethostname",  luab_sethostname),

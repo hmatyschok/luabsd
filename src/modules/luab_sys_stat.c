@@ -48,8 +48,11 @@ extern luab_module_t luab_sys_stat_lib;
 /*
  * Subr.
  *
- * Translate a (LUA_TTABLE) over (LUA_TUSERDATA(TIMESPEC)) into an array of
- * timespec{} items.
+ * Translate an instance of
+ *
+ *  (LUA_TTABLE(LUA_TNUMBER,LUA_TUSERDATA(TIMESPEC)))
+ *
+ * into an array of timespec{} items.
  */
 static struct timespec *
 luab_checkltimesvector(lua_State *L, int narg, size_t len)
