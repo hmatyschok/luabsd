@@ -4157,6 +4157,389 @@ luab_pipe2(lua_State *L)
 }
 
 /***
+ * profil(2) - controll process profiling
+ *
+ * @function profil
+ *
+ * @param smaples           Samples buffer. (LUA_TUSERDATA(IOVEC)).
+ * @param size              Capacity of samples buffer.
+ * @param offset            Lowest address which the kernel takes
+ *                          programm counter samples.
+ * @param scale             Specifies the span of the bins.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.profil(samples, size, offset, scale)
+ */
+static int
+luab_profil(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t size;
+    vm_offset_t offset;
+    int scale;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    buf = luab_isiovec(L, 1);
+    size = (size_t)luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    offset = (vm_offset_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    scale = (int)luab_checkinteger(L, 4, INT_MAX);
+
+    if (buf != NULL) {
+        if (((bp = buf->iov.iov_base) != 0) &&
+            (buf->iov_max_len >= size) &&
+            (buf->iov_flags & IOV_BUFF)) {
+
+            if ((buf->iov_flags & IOV_LOCK) == 0) {
+                buf->iov_flags |= IOV_LOCK;
+
+                if ((status = profil(bp, size, offset, scale)) == 0)
+                    buf->iov.iov_len = size;
+
+                buf->iov_flags &= ~IOV_LOCK;
+            } else {
+                errno = EBUSY;
+                status = -1;
+            }
+        } else {
+            errno = ENXIO;
+            status = -1;
+        }
+    } else
+        status = profil(NULL, size, offset, scale);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * rcmd(3) - routines for returning a stream to a remote command
+ *
+ * @function rcmd
+ *
+ * @param ahost             Name of remote host, (LUA_TUSERDATA(IOVEC)).
+ * @param inport            Service Accees Point (SAP), server host, OSI-L4.
+ * @param locuser           User ID on local host.
+ * @param remuser           User ID on remote host.
+ * @param cmd               Command.
+ * @param fd2p              Auxiliary channel for control process.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (s [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage s [, err, msg ] = bsd.unistd.rcmd(ahost, inport, locuser, remuser, cmd, fd2p)
+ */
+static int
+luab_rcmd(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int inport;
+    const char *locuser;
+    const char *remuser;
+    const char *cmd;
+    luab_type_u *h0;
+    caddr_t bp;
+    int *fd2p;
+    int s;
+
+    (void)luab_checkmaxargs(L, 6);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    inport = luab_checkinteger(L, 2, INT_MAX);
+    locuser = luab_checklstring(L, 3, MAXLOGNAME);
+    remuser = luab_checklstring(L, 4, MAXLOGNAME);
+    cmd = luab_checklstring(L, 5, ARG_MAX);
+    h0 = luab_udataisnil(L, 6, hook_type, luab_type_u *);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (h0 != NULL)
+                fd2p = &(h0->un_int);
+            else
+                fd2p = NULL;
+
+            if ((s = rcmd(&bp, inport, locuser, remuser, cmd, fd2p)) > 0)
+                buf->iov.iov_len = strnlen(bp, MAXHOSTNAMELEN);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            s = -1;
+        }
+    } else {
+        errno = ENXIO;
+        s = -1;
+    }
+    return (luab_pusherr(L, s));
+}
+
+/***
+ * rcmd_af(3) - routines for returning a stream to a remote command
+ *
+ * @function rcmd_af
+ *
+ * @param ahost             Name of remote host, (LUA_TUSERDATA(IOVEC)).
+ * @param inport            Service Accees Point (SAP), server host, OSI-L4.
+ * @param locuser           User ID on local host.
+ * @param remuser           User ID on remote host.
+ * @param cmd               Command.
+ * @param fd2p              Auxiliary channel for control process.
+ * @param af                Address family, AF_XXX.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (s [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage s [, err, msg ] = bsd.unistd.rcmd_af(ahost, inport, locuser, remuser, cmd, fd2p, af)
+ */
+static int
+luab_rcmd_af(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int inport;
+    const char *locuser;
+    const char *remuser;
+    const char *cmd;
+    luab_type_u *h0;
+    int af;
+    caddr_t bp;
+    int *fd2p;
+    int s;
+
+    (void)luab_checkmaxargs(L, 7);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    inport = luab_checkinteger(L, 2, INT_MAX);
+    locuser = luab_checklstring(L, 3, MAXLOGNAME);
+    remuser = luab_checklstring(L, 4, MAXLOGNAME);
+    cmd = luab_checklstring(L, 5, ARG_MAX);
+    h0 = luab_udataisnil(L, 6, hook_type, luab_type_u *);
+    af = (int)luab_checkinteger(L, 7, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (h != NULL)
+                fd2p = &(h0->un_int);
+            else
+                fd2p = NULL;
+
+            if ((s = rcmd_af(&bp, inport, locuser, remuser, cmd, fd2p, af)) > 0)
+                buf->iov.iov_len = strnlen(bp, MAXHOSTNAMELEN);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            s = -1;
+        }
+    } else {
+        errno = ENXIO;
+        s = -1;
+    }
+    return (luab_pusherr(L, s));
+}
+
+/***
+ * rcmdsh(3) - return a stream to a remote command without superuser
+ *
+ * @function rcmdsh
+ *
+ * @param ahost             Name of remote host, (LUA_TUSERDATA(IOVEC)).
+ * @param inport            Service Accees Point (SAP), server host, OSI-L4.
+ * @param locuser           User ID on local host.
+ * @param remuser           User ID on remote host.
+ * @param cmd               Command.
+ * @param rshprog           Shell.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (s [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage s [, err, msg ] = bsd.unistd.rcmdsh(ahost, inport, locuser, remuser, cmd, rshcmd)
+ */
+static int
+luab_rcmdsh(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int inport;
+    const char *locuser;
+    const char *remuser;
+    const char *cmd;
+    const char *rshprog;
+    caddr_t bp;
+    int s;
+
+    (void)luab_checkmaxargs(L, 6);
+
+    buf = luab_udata(L, 1, iovec_type, luab_iovec_t *);
+    inport = luab_checkinteger(L, 2, INT_MAX);
+    locuser = luab_checklstring(L, 3, MAXLOGNAME);
+    remuser = luab_checklstring(L, 4, MAXLOGNAME);
+    cmd = luab_checklstring(L, 5, ARG_MAX);
+    rshprog = luab_islstring(L, 6, ARG_MAX);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((s = rcmdsh(&bp, inport, locuser, remuser, cmd, rshprog)) > 0)
+                buf->iov.iov_len = strnlen(bp, MAXHOSTNAMELEN);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            s = -1;
+        }
+    } else {
+        errno = ENXIO;
+        s = -1;
+    }
+    return (luab_pusherr(L, s));
+}
+
+/***
+ * re_comp(3) - regular expression handler
+ *
+ * @function re_comp
+ *
+ * @param s                 Regular expression.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (ret [, nil, nil]) on success or
+ *          (ret, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.re_comp(s)
+ */
+static int
+luab_re_comp(lua_State *L)
+{
+    const char *s;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    s = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+
+    if ((bp = re_comp(s)) != NULL)
+        status = luab_pushstring(L, bp);
+    else
+        status = luab_pushnil(L);
+
+    return (status);
+}
+
+/***
+ * re_exec(3) - regular expression handler
+ *
+ * @function re_exec
+ *
+ * @param s                 String for evaluation by last compiled pattern.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (1 [, nil, nil]) on success or
+ *          (0, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.re_exec(s)
+ */
+static int
+luab_re_exec(lua_State *L)
+{
+    const char *s;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    s = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    status = re_exec(s);
+
+    return (status);
+}
+
+/***
+ * reboot(2) - reboot system or halt processor
+ *
+ * @function reboot
+ *
+ * @param howto             Mask of present by inclusive or combined options:
+ *
+ *                              bsd.sys.reboot.RB_{
+ *                                      AUTOBOOT,
+ *                                      ASKANE,
+ *                                      DFLTROOT,
+ *                                      DUMP,
+ *                                      HALT,
+ *                                      POWERCYCLE,
+ *                                      POWEROFF,
+ *                                      KDB,
+ *                                      NOSYNC,
+ *                                      REROOT,
+ *                                      RDONLY,
+ *                                      SINGLE
+ *                                  }
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          shall not return on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.reboot(howto)
+ */
+static int
+luab_reboot(lua_State *L)
+{
+    int howto;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    howto = (int)luab_checkinteger(L, 1, INT_MAX);
+    status = reboot(howto);
+
+        /* NOTREACHED */
+
+    return (luab_pusherr(L, status));
+}
+
+/***
  * setdomainname(3) - set NIS domainname of current host
  *
  * @function getdomainname
@@ -4850,7 +5233,14 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("mkstemp",  luab_mkstemp),
     LUABSD_FUNC("mkstemps", luab_mkstemps),
     LUABSD_FUNC("mktemp",   luab_mktemp),
+    LUABSD_FUNC("profil",   luab_profil),
     LUABSD_FUNC("pipe2", luab_pipe2),
+    LUABSD_FUNC("rcmd", luab_rcmd),
+    LUABSD_FUNC("rcmd_af",  luab_rcmd_af),
+    LUABSD_FUNC("rcmdsh",   luab_rcmdsh),
+    LUABSD_FUNC("re_comp",  luab_re_comp),
+    LUABSD_FUNC("re_exec",  luab_re_exec),
+    LUABSD_FUNC("reboot",   luab_reboot),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("setgroups",    luab_setgroups),
     LUABSD_FUNC("sethostname",  luab_sethostname),

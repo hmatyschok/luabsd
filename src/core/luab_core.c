@@ -73,6 +73,7 @@ extern luab_module_t luab_sys_time_lib;
 extern luab_module_t luab_sys_uio_lib;
 extern luab_module_t luab_sys_un_lib;
 extern luab_module_t luab_sys_unistd_lib;
+extern luab_module_t luab_sys_reboot_lib;
 extern luab_module_t luab_sys_socket_lib;
 
 extern luab_module_t luab_core_lib;
@@ -540,6 +541,7 @@ luaopen_bsd(lua_State *L)
     luab_newtable(L, -2, &luab_sys_uio_lib);
     luab_newtable(L, -2, &luab_sys_un_lib);
     luab_newtable(L, -2, &luab_sys_unistd_lib);
+    luab_newtable(L, -2, &luab_sys_reboot_lib);
     luab_newtable(L, -2, &luab_sys_socket_lib);
     lua_setfield(L, -2, "sys");
 

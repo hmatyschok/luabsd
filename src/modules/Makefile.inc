@@ -12,6 +12,7 @@ SRCS+=  luab_sys_time.c
 SRCS+=	luab_sys_uio.c
 SRCS+=	luab_sys_un.c
 SRCS+=  luab_sys_unistd.c
+SRCS+=	luab_sys_reboot.c
 SRCS+=	luab_sys_socket.c
 
 SRCS+=  luab_db.c
