@@ -141,32 +141,6 @@ luab_alarm(lua_State *L)    /* XXX */
     return (luab_pusherr(L, status));
 }
 
-/* Translate a LUA_TTABLE into an array of gid_t items. */
-static gid_t *
-luab_checklgidset(lua_State *L, int narg, size_t len)
-{
-    gid_t *vec, v;
-    int k;
-
-    vec = luab_newlvector(L, narg, len, sizeof(gid_t));
-
-    lua_pushnil(L);
-
-    for (k = 0; lua_next(L, narg) != 0; k++) {
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isnumber(L, -1) != 0)) {
-            v = (gid_t)luab_tointeger(L, -1, INT_MAX);
-            vec[k] = v;
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
-        lua_pop(L, 1);
-    }
-    return (vec);
-}
-
 /*
  * Service primitives.
  */
@@ -4762,7 +4736,7 @@ luab_setgroups(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     ngroups = (int)luab_checkinteger(L, 1, INT_MAX);
-    gidset = luab_checklgidset(L, 2, ngroups);
+    gidset = luab_table_checklgidset(L, 2, ngroups);
 
     status = setgroups(ngroups, gidset);
 
@@ -5158,6 +5132,90 @@ luab_setusershell(lua_State *L)
     setusershell();
 
     return (luab_pusherr(L, 0));
+}
+
+/***
+ * swapon(2) - control devices for interleaved paging/swapping
+ *
+ * @function swapon
+ *
+ * @param special           Block device name.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.swapon(special)
+ */
+static int
+luab_swapon(lua_State *L)
+{
+    const char *special;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    special = luab_checklstring(L, 1, MAXPATHLEN);
+    status = swapon(special);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * swapoff(2) - control devices for interleaved paging/swapping
+ *
+ * @function swapoff
+ *
+ * @param special           Block device name.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.swapoff(special)
+ */
+static int
+luab_swapoff(lua_State *L)
+{
+    const char *special;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    special = luab_checklstring(L, 1, MAXPATHLEN);
+    status = swapoff(special);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * undelete(2) - attempt to recover a deleted file
+ *
+ * @function undelete
+ *
+ * @param path              File about to be recovered.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.undelete(path)
+ */
+static int
+luab_undelete(lua_State *L)
+{
+    const char *path;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    status = undelete(path);
+
+    return (luab_pusherr(L, status));
 }
 #endif /* __BSD_VISIBLE */
 
@@ -5588,6 +5646,9 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("setrgid",  luab_setrgid),
     LUABSD_FUNC("setruid",  luab_setruid),
     LUABSD_FUNC("setusershell", luab_setusershell),
+    LUABSD_FUNC("swapon",   luab_swapon),
+    LUABSD_FUNC("swapoff",   luab_swapoff),
+    LUABSD_FUNC("undelete", luab_undelete),
     LUABSD_FUNC("crypt_data_create",  luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
     LUABSD_FUNC(NULL, NULL)

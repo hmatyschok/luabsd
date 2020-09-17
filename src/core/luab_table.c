@@ -153,9 +153,48 @@ luab_checkargv(lua_State *L, int narg)
 }
 
 /*
+ * Translate an instance of
+ *
+ *      (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER))
+ *
+ * into an array of gid_t items.
+ */
+gid_t *
+luab_table_checklgidset(lua_State *L, int narg, size_t len)
+{
+    gid_t *vec, v;
+    int k;
+
+    vec = luab_newlvector(L, narg, len, sizeof(gid_t));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
+            v = (gid_t)luab_tointeger(L, -1, INT_MAX);
+            vec[k] = v;
+        } else {
+            free(vec);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
+
+/*
  * Accessor, [C -> stack].
  */
 
+/*
+ * Populate an instance of
+ *
+ *      (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER))
+ *
+ * with items from an array of gid_t items.
+ */
 void
 luab_table_pushlgidset(lua_State *L, int narg, gid_t *gidset, int ngroups)
 {

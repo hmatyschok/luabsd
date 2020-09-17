@@ -38,6 +38,8 @@
 
 #include "luabsd.h"
 
+/* XXX the implementation if this "feature" is incomplete, ... */
+
 extern luab_module_t sockaddr_type;
 extern luab_module_t msghdr_type;
 
@@ -68,9 +70,9 @@ extern luab_module_t msghdr_type;
 
 /*
  * By *msg_{name,control} reffered data maps to msg_buf[MH_{NAME,CONTROL}] avoids
- * possible race-cond. with gc.
+ * possible race-cond. with Lua-gc.
  *
- * XXX msg_buf[MH_{NAME,CONTROL}] shall replaced by hooks.
+ * XXX msg_buf[MH_{NAME,CONTROL}] or "this" shall replaced by hooks.
  */
 
 typedef struct luab_msghdr {

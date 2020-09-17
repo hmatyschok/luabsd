@@ -239,15 +239,17 @@ void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 /*
- * Accessor, (LUA_TTABLE), [stack -> C].
+ * Accessor, (LUA_TTABLE(LUA_T{NUMBER,STRING},LUA_TXXX)), [stack -> C].
  */
 
 int luab_checktable(lua_State *, int);
 size_t  luab_checkltable(lua_State *, int, size_t);
 const char **    luab_checkargv(lua_State *, int);
 
+gid_t * luab_table_checklgidset(lua_State *, int, size_t);
+
 /*
- * Accessor, (LUA_TTABLE), [C -> stack].
+ * Accessor, (LUA_TTABLE(LUA_T{NUMBER,STRING},LUA_TXXX)), [C -> stack].
  */
 
 void *  luab_newvector(lua_State *, int, size_t);
