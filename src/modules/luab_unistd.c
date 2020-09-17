@@ -5012,7 +5012,6 @@ luab_setproctitle_fast(lua_State *L)
     return (luab_pusherr(L, 0));
 }
 
-
 /***
  * setresgid(2) - set real, effective and saved group ID
  *
@@ -5067,9 +5066,9 @@ luab_setresgid(lua_State *L)
 static int
 luab_setresuid(lua_State *L)
 {
-    gid_t ruid;
-    gid_t euid;
-    gid_t suid;
+    uid_t ruid;
+    uid_t euid;
+    uid_t suid;
     int status;
 
     (void)luab_checkmaxargs(L, 3);
@@ -5079,6 +5078,62 @@ luab_setresuid(lua_State *L)
     suid = luab_checkinteger(L, 3, INT_MAX);
 
     status = setresuid(ruid, euid, suid);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * setrgid(2) - set real group ID
+ *
+ * @function setrgid
+ *
+ * @param rgid              Real group ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.setrgid(rgid)
+ */
+static int
+luab_setrgid(lua_State *L)
+{
+    gid_t rgid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    rgid = luab_checkinteger(L, 1, INT_MAX);
+    status = setrgid(rgid);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * setruid(2) - set real user ID
+ *
+ * @function setruid
+ *
+ * @param ruid              Real user ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.setruid(ruid)
+ */
+static int
+luab_setruid(lua_State *L)
+{
+    uid_t ruid;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ruid = luab_checkinteger(L, 1, INT_MAX);
+    status = setruid(ruid);
 
     return (luab_pusherr(L, status));
 }
@@ -5530,6 +5585,8 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("setproctitle_fast",    luab_setproctitle_fast),
     LUABSD_FUNC("setresgid",    luab_setresgid),
     LUABSD_FUNC("setresuid",    luab_setresuid),
+    LUABSD_FUNC("setrgid",  luab_setrgid),
+    LUABSD_FUNC("setruid",  luab_setruid),
     LUABSD_FUNC("setusershell", luab_setusershell),
     LUABSD_FUNC("crypt_data_create",  luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
