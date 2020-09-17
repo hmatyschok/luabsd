@@ -4626,7 +4626,7 @@ luab_rresvport(lua_State *L)
  *          (s [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage pid [, err, msg ] = bsd.unistd.rresvport_af(port, af)
+ * @usage s [, err, msg ] = bsd.unistd.rresvport_af(port, af)
  */
 static int
 luab_rresvport_af(lua_State *L)
@@ -4643,6 +4643,44 @@ luab_rresvport_af(lua_State *L)
     s = rresvport_af(port, af);
 
     return (luab_pusherr(L, s));
+}
+
+/***
+ * ruserok(3) - routines for returning a stream to a remote command
+ *
+ * @function ruserok
+ *
+ * @param rhost             Hostname for gethostbyname(3).
+ * @param superuser         Nonzero, if the local user is the superuser.
+ * @param ruser             Specifies the name of the remote user.
+ * @param luser             Specifies the name of the local user
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.ruserok(rhost, superuser, ruser, luser)
+ */
+static int
+luab_ruserok(lua_State *L)
+{
+    const char *rhost;
+    int superuser;
+    const char *ruser;
+    const char *luser;
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    rhost = luab_checklstring(L, 1, MAXHOSTNAMELEN);
+    superuser = (int)luab_checkinteger(L, 2, INT_MAX);
+    ruser = luab_checklstring(L, 3, MAXLOGNAME);
+    luser = luab_checklstring(L, 4, MAXLOGNAME);
+
+    status = ruserok(rhost, superuser, ruser, luser);
+
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -4703,7 +4741,9 @@ luab_setdomainname(lua_State *L)
  * @function setgroups
  *
  * @param ngroups           Number of entries, #gidset.
- * @param gidset            Instance of LUA_TTABLE(gid_t).
+ * @param gidset            Instance of LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER):
+ *
+ *                              { gid0, gid1, gid2, ... , gidN }
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -4812,7 +4852,7 @@ luab_setloginclass(lua_State *L)
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
-        (buf->iov_max_len >= MAXLOGNAME) &&
+        (buf->iov_max_len <= MAXLOGNAME) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -4860,7 +4900,7 @@ luab_setmode(lua_State *L)
     mode = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov.iov_len == LUAB_SETMAXLEN) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len >= LUAB_SETMAXLEN) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -4914,6 +4954,62 @@ luab_setpgrp(lua_State *L)
     status = setpgrp(pid, pgrp);
 
     return (luab_pusherr(L, status));
+}
+
+/***
+ * setproctitle(3) - set process title
+ *
+ * @function setproctitle
+ *
+ * @param title             Process title, by (Lua).string.format()
+ *                          pr-formatted instance of (LUA_TSTRING).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.setproctitle(title)
+ */
+static int
+luab_setproctitle(lua_State *L)
+{
+    const char *title;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    title = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    setproctitle("%s", title);
+
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * setproctitle_fast(3) - set process title
+ *
+ * @function setproctitle_fast
+ *
+ * @param title             Process title, by (Lua).string.format()
+ *                          pr-formatted instance of (LUA_TSTRING).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.setproctitle_fast(title)
+ */
+static int
+luab_setproctitle_fast(lua_State *L)
+{
+    const char *title;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    title = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    setproctitle_fast("%s", title);
+
+    return (luab_pusherr(L, 0));
 }
 
 /***
@@ -5351,6 +5447,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("rfork",    luab_rfork),
     LUABSD_FUNC("rresvport",    luab_rresvport),
     LUABSD_FUNC("rresvport_af", luab_rresvport_af),
+    LUABSD_FUNC("ruserok",  luab_ruserok),
     LUABSD_FUNC("setdomainname",  luab_setdomainname),
     LUABSD_FUNC("setgroups",    luab_setgroups),
     LUABSD_FUNC("sethostname",  luab_sethostname),
@@ -5358,6 +5455,8 @@ static luab_table_t luab_unistd_vec[] = {
     LUABSD_FUNC("setloginclass",    luab_setloginclass),
     LUABSD_FUNC("setmode",  luab_setmode),
     LUABSD_FUNC("setpgrp",    luab_setpgrp),
+    LUABSD_FUNC("setproctitle", luab_setproctitle),
+    LUABSD_FUNC("setproctitle_fast",    luab_setproctitle_fast),
     LUABSD_FUNC("setusershell", luab_setusershell),
 
     LUABSD_FUNC("crypt_data_create",  luab_crypt_data_create),
