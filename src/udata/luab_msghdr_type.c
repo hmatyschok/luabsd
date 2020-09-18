@@ -99,7 +99,7 @@ int luab_msghdr_create(lua_State *);
 static void
 msghdr_free_iov(struct msghdr *msg)
 {
-    struct iovec *iov;
+    struct iovec *iov;      /* XXX workaround, performs deep-copy */
     int i, iovlen;
 
     if (((iov = msg->msg_iov) != NULL) &&
@@ -127,7 +127,7 @@ msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
     struct iovec *dst;
     int status;
 
-    /* XXX well, race-cond. with gc, due to the case of IOV_BUFF resolved. */
+    /* XXX workaround: race-cond. with gc, due to the case of IOV_BUFF resolved. */
 
     if (((buf = luab_isiovec(L, narg)) != NULL) &&
         (buf->iov_flags & (IOV_PROXY|IOV_BUFF))) {
@@ -189,7 +189,52 @@ msghdr_populate_iovec(lua_State *L, int narg, struct msghdr *msg, int new)
 }
 
 /*
- * Accessor on immutable properties.
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(MSGHDR)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              msg_name    = (LUA_TUSERDATA(SOCKADDR)),
+ *              msg_namelen = (LUA_TNUMBER),
+ *              msg_iov     = (LUA_TTABLE(LUA_TNUMBER,LUA_TUSERDATA(IOVEC)),
+ *              msg_iovlen  = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = msghdr:get()
+ */
+static int
+MSGHDR_get(lua_State *L)
+{
+    struct msghdr *msg;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+
+    lua_newtable(L);
+
+    if (msg->msg_name != NULL) {
+        luab_setudata(L, -2, &sockaddr_type, "msg_name", msg->msg_name);
+        luab_setinteger(L, -2, "msg_namelen", msg->msg_namelen);
+    }
+
+    if (msghdr_populate_iovec(L, -2, msg, 1) == 0) {
+        lua_setfield(L, -2, "msg_iov");
+        luab_setinteger(L, -2, "msg_iovlen", msg->msg_iovlen);
+    }
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/*
+ * Accessor for immutable properties.
  */
 
 /***
@@ -508,42 +553,8 @@ MSGHDR_get_msg_iov(lua_State *L)
 }
 
 /*
- * Metamethods.
+ * Meta-methods.
  */
-
-/***
- * Fetch this as instance of LUA_TTABLE.
- *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
- * @usage t = msghdr:get()
- */
-static int
-MSGHDR_get(lua_State *L)
-{
-    struct msghdr *msg;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
-
-    lua_newtable(L);
-
-    if (msg->msg_name != NULL) {
-        luab_setudata(L, -2, &sockaddr_type, "msg_name", msg->msg_name);
-        luab_setinteger(L, -2, "msg_namelen", msg->msg_namelen);
-    }
-
-    if (msghdr_populate_iovec(L, -2, msg, 1) == 0) {
-        lua_setfield(L, -2, "msg_iov");
-        luab_setinteger(L, -2, "msg_iovlen", msg->msg_iovlen);
-    }
-    lua_pushvalue(L, -1);
-
-    return (1);
-}
 
 static int
 MSGHDR_gc(lua_State *L)
@@ -569,6 +580,10 @@ MSGHDR_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &msghdr_type));
 }
+
+/*
+ * Internal interface.
+ */
 
 static luab_table_t msghdr_methods[] = {
     LUABSD_FUNC("msg_iovlen",  MSGHDR_msg_iovlen),
@@ -634,7 +649,7 @@ msghdr_init(void *ud, void *arg)
 }
 
 static void *
-msghdr_udata(lua_State *L, int narg)    /* XXX */
+msghdr_udata(lua_State *L, int narg)
 {
     luab_msghdr_t *self = luab_to_msghdr(L, narg);
 
@@ -650,25 +665,3 @@ luab_module_t msghdr_type = {
     .get = msghdr_udata,
     .sz = sizeof(luab_msghdr_t),
 };
-
-/***
- * Generator function.
- *
- * @function msghdr_create
- *
- * @param data          (LUA_T{NIL,USERDATA(msghdr)}), optional.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (msghdr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage msghdr [, err, msg ] = bsd.sys.socket.msghdr_create([ data ])
- */
-int
-luab_msghdr_create(lua_State *L)
-{
-    (void)luab_checkmaxargs(L, 0);
-
-    return (luab_pushudata(L, &msghdr_type, NULL));
-}

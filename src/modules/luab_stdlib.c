@@ -43,6 +43,7 @@ extern luab_module_t luab_stdlib_lib;
  * Service primitives.
  */
 
+#if __BSD_VISIBLE
 static int
 luab_arc4random(lua_State *L)
 {
@@ -67,6 +68,7 @@ luab_arc4random_uniform(lua_State *L)
 
     return (luab_pusherr(L, n));
 }
+#endif
 
 /*
  * Interface against <stdlib.h>.
@@ -76,8 +78,10 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_INT("EXIT_FAILURE",  EXIT_FAILURE),
     LUABSD_INT("EXIT_SUCCESS",  EXIT_SUCCESS),
     LUABSD_INT("RAND_MAX",  RAND_MAX),
+#if __BSD_VISIBLE    
     LUABSD_FUNC("arc4random", luab_arc4random),
     LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
+#endif
     LUABSD_FUNC(NULL, NULL)
 };
 
