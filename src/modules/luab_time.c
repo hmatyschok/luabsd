@@ -64,15 +64,7 @@ extern luab_module_t luab_time_lib;
 static int
 luab_tm_create(lua_State *L)
 {
-    struct tm *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &tm_type, struct tm *);
-
-    return (luab_pushudata(L, &tm_type, data));
+    return (luab_create(L, 1, &tm_type, &tm_type));
 }
 
 /*

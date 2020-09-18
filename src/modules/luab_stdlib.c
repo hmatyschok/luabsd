@@ -94,15 +94,7 @@ luab_arc4random_uniform(lua_State *L)
 static int
 luab_div_create(lua_State *L)
 {
-    div_t *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &div_type, div_t *);
-
-    return (luab_pushudata(L, &div_type, data));
+    return (luab_create(L, 1, &div_type, &div_type));
 }
 
 /***
@@ -122,15 +114,7 @@ luab_div_create(lua_State *L)
 static int
 luab_ldiv_create(lua_State *L)
 {
-    ldiv_t *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &ldiv_type, ldiv_t *);
-
-    return (luab_pushudata(L, &ldiv_type, data));
+    return (luab_create(L, 1, &ldiv_type, &ldiv_type));
 }
 
 /*

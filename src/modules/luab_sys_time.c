@@ -198,15 +198,7 @@ luab_getitimer(lua_State *L)
 static int
 luab_bintime_create(lua_State *L)
 {
-    struct bintime *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &bintime_type, struct bintime *);
-
-    return (luab_pushudata(L, &bintime_type, data));
+    return (luab_create(L, 1, &bintime_type, &bintime_type));
 }
 #endif
 
@@ -227,15 +219,7 @@ luab_bintime_create(lua_State *L)
 static int
 luab_clockinfo_create(lua_State *L)
 {
-    struct clockinfo *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &clockinfo_type, struct clockinfo *);
-
-    return (luab_pushudata(L, &clockinfo_type, data));
+    return (luab_create(L, 1, &clockinfo_type, &clockinfo_type));
 }
 
 /***
@@ -283,15 +267,7 @@ luab_itimerval_create(lua_State *L)
 static int
 luab_timespec_create(lua_State *L)
 {
-    struct timespec *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &timespec_type, struct timespec *);
-
-    return (luab_pushudata(L, &timespec_type, data));
+    return (luab_create(L, 1, &timespec_type, &timespec_type));
 }
 
 /***
@@ -311,15 +287,7 @@ luab_timespec_create(lua_State *L)
 static int
 luab_timeval_create(lua_State *L)
 {
-    struct timeval *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &timeval_type, struct timeval *);
-
-    return (luab_pushudata(L, &timeval_type, data));
+    return (luab_create(L, 1, &timeval_type, &timeval_type));
 }
 
 /***
@@ -339,15 +307,7 @@ luab_timeval_create(lua_State *L)
 static int
 luab_timezone_create(lua_State *L)
 {
-    struct timezone *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &timezone_type, struct timezone *);
-
-    return (luab_pushudata(L, &timezone_type, data));
+    return (luab_create(L, 1, &timezone_type, &timezone_type));
 }
 
 /*

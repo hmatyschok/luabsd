@@ -1095,15 +1095,7 @@ luab_mknodat(lua_State *L)
 static int
 luab_stat_create(lua_State *L)
 {
-    struct stat *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &stat_type, struct stat *);
-
-    return (luab_pushudata(L, &stat_type, data));
+    return (luab_create(L, 1, &stat_type, &stat_type));
 }
 
 /*

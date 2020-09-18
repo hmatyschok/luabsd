@@ -5179,15 +5179,7 @@ luab_undelete(lua_State *L)
 static int
 luab_crypt_data_create(lua_State *L)
 {
-    struct crypt_data *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &crypt_data_type, struct crypt_data *);
-
-    return (luab_pushudata(L, &crypt_data_type, data));
+    return (luab_create(L, 1, &crypt_data_type, &crypt_data_type));
 }
 
 /*

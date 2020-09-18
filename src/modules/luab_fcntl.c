@@ -311,15 +311,7 @@ luab_posix_fallocate(lua_State *L)
 static int
 luab_flock_create(lua_State *L)
 {
-    struct flock *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &flock_type, struct flock *);
-
-    return (luab_pushudata(L, &flock_type, data));
+    return (luab_create(L, 1, &flock_type, &flock_type));
 }
 
 /*

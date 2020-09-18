@@ -833,15 +833,7 @@ luab_inet_cidr_pton(lua_State *L)
 static int
 luab_in_addr_create(lua_State *L)
 {
-    struct in_addr *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &in_addr_type, struct in_addr *);
-
-    return (luab_pushudata(L, &in_addr_type, data));
+    return (luab_create(L, 1, &in_addr_type, &in_addr_type));
 }
 
 /***
@@ -861,15 +853,7 @@ luab_in_addr_create(lua_State *L)
 static int
 luab_in6_addr_create(lua_State *L)
 {
-    struct in6_addr *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &in6_addr_type, struct in6_addr *);
-
-    return (luab_pushudata(L, &in6_addr_type, data));
+    return (luab_create(L, 1, &in6_addr_type, &in6_addr_type));
 }
 
 /*

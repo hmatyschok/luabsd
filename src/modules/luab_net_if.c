@@ -196,15 +196,7 @@ luab_if_nametoindex(lua_State *L)
 static int
 luab_if_nameindex_create(lua_State *L)
 {
-    struct if_nameindex *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &if_nameindex_type, struct if_nameindex *);
-
-    return (luab_pushudata(L, &if_nameindex_type, data));
+    return (luab_create(L, 1, &if_nameindex_type, &if_nameindex_type));
 }
 
 /*
