@@ -70,7 +70,7 @@ luab_tm_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, tm_type, struct tm *);
+        data = luab_udata(L, narg, &tm_type, struct tm *);
 
     return (luab_pushudata(L, &tm_type, data));
 }

@@ -99,7 +99,7 @@ int luab_msghdr_create(lua_State *);
 static void
 msghdr_free_iov(struct msghdr *msg)
 {
-    struct iovec *iov;      /* XXX workaround, performs deep-copy */
+    struct iovec *iov;
     int i, iovlen;
 
     if (((iov = msg->msg_iov) != NULL) &&
@@ -127,7 +127,9 @@ msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
     struct iovec *dst;
     int status;
 
-    /* XXX workaround: race-cond. with gc, due to the case of IOV_BUFF resolved. */
+    /*
+     * XXX race-cond. with gc, as a workaround.
+     */
 
     if (((buf = luab_isiovec(L, narg)) != NULL) &&
         (buf->iov_flags & (IOV_PROXY|IOV_BUFF))) {
@@ -215,7 +217,7 @@ MSGHDR_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
 
     lua_newtable(L);
 
@@ -257,7 +259,7 @@ MSGHDR_msg_iovlen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_iovlen = msg->msg_iovlen;
 
     return (luab_pusherr(L, msg_iovlen));
@@ -283,7 +285,7 @@ MSGHDR_msg_flags(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_flags = msg->msg_flags;
 
     return (luab_pusherr(L, msg_flags));
@@ -309,7 +311,7 @@ MSGHDR_msg_len(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, msghdr_type, struct mmsghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct mmsghdr *);
     msg_len = msg->msg_len;
 
     return (luab_pusherr(L, msg_len));
@@ -346,7 +348,7 @@ MSGHDR_set_msg_name(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_to_msghdr(L, 1);
-    sa = luab_udataisnil(L, 2, sockaddr_type, struct sockaddr *);
+    sa = luab_udataisnil(L, 2, &sockaddr_type, struct sockaddr *);
 
     msg = &(self->msg_hdr);
     buf = &(self->msg_buf[MH_NAME]);
@@ -386,8 +388,8 @@ MSGHDR_get_msg_name(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
-    dst = luab_udata(L, 2, sockaddr_type, struct sockaddr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
+    dst = luab_udata(L, 2, &sockaddr_type, struct sockaddr *);
 
     if (((src = msg->msg_name) != NULL) &&
         (src->sa_len == msg->msg_namelen)) {
@@ -422,7 +424,7 @@ MSGHDR_set_msg_namelen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_namelen = (socklen_t)luab_checkinteger(L, 2, INT_MAX);
 
     msg->msg_namelen = msg_namelen;
@@ -450,7 +452,7 @@ MSGHDR_get_msg_namelen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_namelen = msg->msg_namelen;
 
     return (luab_pusherr(L, msg_namelen));
@@ -487,7 +489,7 @@ MSGHDR_set_msg_iov(lua_State *L)
      * errno will be set and by msg_iov bound ressources are released or free'd.
      */
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     iov = luab_newvector(L, 2, sizeof(struct iovec));
 
     msghdr_free_iov(msg);
@@ -543,7 +545,7 @@ MSGHDR_get_msg_iov(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    msg = luab_udata(L, 1, msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
 
     (void)luab_checkltable(L, 2, 0);
 

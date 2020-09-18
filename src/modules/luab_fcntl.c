@@ -167,7 +167,7 @@ luab_fcntl(lua_State *L)
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
-            argp = luab_udata(L, narg, flock_type, struct flock *);
+            argp = luab_udata(L, narg, &flock_type, struct flock *);
         else
             arg = luab_checkinteger(L, narg, INT_MAX);
     }
@@ -317,7 +317,7 @@ luab_flock_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, flock_type, struct flock *);
+        data = luab_udata(L, narg, &flock_type, struct flock *);
 
     return (luab_pushudata(L, &flock_type, data));
 }

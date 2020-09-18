@@ -39,9 +39,9 @@
 
 /*
  * Generic service primitives for handling iovec{}s.
- * 
+ *
  *   #1 bp refers iov->iov_base.
- * 
+ *
  *   #2 dp or v refers external data.
  */
 

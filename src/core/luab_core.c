@@ -348,6 +348,19 @@ luab_checkmaxargs(lua_State *L, int nmax)
 }
 
 int
+luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
+{
+    caddr_t arg;
+
+    if ((narg = luab_checkmaxargs(L, narg)) == 0)
+        arg = NULL;
+    else
+        arg = luab_udata(L, narg, m1, caddr_t);
+
+    return (luab_pushudata(L, m0, arg));
+}
+
+int
 luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     caddr_t dp;
@@ -448,7 +461,7 @@ luab_hook_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, hook_type, luab_type_u *);
+        data = luab_udata(L, narg, &hook_type, luab_type_u *);
 
     return (luab_pushudata(L, &hook_type, data));
 }

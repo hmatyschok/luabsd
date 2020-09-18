@@ -84,7 +84,7 @@ TIMESPEC_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, &timespec_type, struct timespec *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
@@ -138,7 +138,7 @@ TIMESPEC_set_tv_sec(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, &timespec_type, struct timespec *);
     data = (time_t)luab_checkinteger(L, 2, INT_MAX);
 
     tv->tv_sec = data;
@@ -166,7 +166,7 @@ TIMESPEC_get_tv_sec(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, &timespec_type, struct timespec *);
     data = tv->tv_sec;
 
     return (luab_pusherr(L, data));
@@ -194,7 +194,7 @@ TIMESPEC_set_tv_nsec(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, &timespec_type, struct timespec *);
     data = (long)luab_checkinteger(L, 2, LONG_MAX);
 
     tv->tv_nsec = data;
@@ -222,7 +222,7 @@ TIMESPEC_get_tv_nsec(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, timespec_type, struct timespec *);
+    tv = luab_udata(L, 1, &timespec_type, struct timespec *);
     data = tv->tv_nsec;
 
     return (luab_pusherr(L, data));

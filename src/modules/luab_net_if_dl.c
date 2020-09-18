@@ -70,7 +70,7 @@ luab_link_addr(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     addr = luab_checklstring(L, 1, LUAB_SDL_MAXDATALEN); /* XXX */
-    sdl = luab_udata(L, 2, sockaddr_type, struct sockaddr_dl *);
+    sdl = luab_udata(L, 2, &sockaddr_type, struct sockaddr_dl *);
 
     link_addr(addr, sdl);
 
@@ -105,8 +105,8 @@ luab_link_ntoa(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sdl = luab_udata(L, 1, sockaddr_type, struct sockaddr_dl *);
-    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    sdl = luab_udata(L, 1, &sockaddr_type, struct sockaddr_dl *);
+    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len >= LUAB_SDL_MAXDATALEN) &&

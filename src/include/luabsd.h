@@ -194,9 +194,9 @@ const char *    luab_checklstring(lua_State *, int, size_t);
 #define luab_toldata(L, narg, m, t, len) \
     ((t)luab_checkludata((L), (narg), (m), (len)))
 #define luab_udata(L, narg, m, t) \
-    ((t)(*(m).get)((L), (narg)))
+    ((t)((*(m)->get)((L), (narg))))
 #define luab_udataisnil(L, narg, m, t) \
-    ((t)(luab_checkudataisnil((L), (narg), &(m))))
+    ((t)(luab_checkudataisnil((L), (narg), (m))))
 
 void *  luab_checkudata(lua_State *, int, luab_module_t *);
 void *  luab_toudata(lua_State *, int, luab_module_t *);
@@ -262,6 +262,7 @@ void    luab_table_pushlgidset(lua_State *, int, gid_t *, int);
  * Generic service primitives, subset of <core>.
  */
 
+int luab_create(lua_State *, int, luab_module_t *, luab_module_t *);
 int luab_dump(lua_State *, int, luab_module_t *, size_t);
 int luab_gc(lua_State *, int, luab_module_t *);
 int luab_tostring(lua_State *, int, luab_module_t *);

@@ -67,7 +67,7 @@ luab_uuid_create(lua_State *L)
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, hook_type, luab_type_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, &hook_type, luab_type_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;
@@ -105,7 +105,7 @@ luab_uuid_create_nil(lua_State *L)
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, hook_type, luab_type_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, &hook_type, luab_type_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;

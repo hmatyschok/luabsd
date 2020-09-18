@@ -84,7 +84,7 @@ BINTIME_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    bt = luab_udata(L, 1, bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "sec", bt->sec);
@@ -138,7 +138,7 @@ BINTIME_set_sec(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    bt = luab_udata(L, 1, bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = (time_t)luab_checkinteger(L, 2, INT_MAX);
 
     bt->sec = data;
@@ -166,7 +166,7 @@ BINTIME_get_sec(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    bt = luab_udata(L, 1, bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = bt->sec;
 
     return (luab_pusherr(L, data));
@@ -194,7 +194,7 @@ BINTIME_set_frac(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    bt = luab_udata(L, 1, bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = (uint64_t)luab_checkinteger(L, 2, LONG_MAX);
 
     bt->frac = data;
@@ -222,7 +222,7 @@ BINTIME_get_frac(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    bt = luab_udata(L, 1, bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = bt->frac;
 
     return (luab_pusherr(L, data));

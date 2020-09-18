@@ -78,7 +78,7 @@ luab_if_indextoname(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     ifindex = (u_int)luab_checkinteger(L, 1, INT_MAX);
-    buf = luab_udata(L, 2, iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len >= IFNAMSIZ) &&
@@ -202,7 +202,7 @@ luab_if_nameindex_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, if_nameindex_type, struct if_nameindex *);
+        data = luab_udata(L, narg, &if_nameindex_type, struct if_nameindex *);
 
     return (luab_pushudata(L, &if_nameindex_type, data));
 }

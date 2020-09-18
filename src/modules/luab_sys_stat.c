@@ -68,7 +68,7 @@ luab_checkltimesvector(lua_State *L, int narg, size_t len)
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {
-            v = luab_udata(L, -1, timespec_type, struct timespec *);
+            v = luab_udata(L, -1, &timespec_type, struct timespec *);
             (void)memmove(&vec[k], v, sizeof(struct timespec));
         } else {
             free(vec);
@@ -95,7 +95,7 @@ luab_pushltimesvector(lua_State *L, int narg, size_t len, void *arg)
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {
-            v = luab_udata(L, -1, timespec_type, struct timespec *);
+            v = luab_udata(L, -1, &timespec_type, struct timespec *);
             (void)memmove(v, &vec[k], sizeof(struct timespec));
         } else {
             free(vec);
@@ -573,7 +573,7 @@ luab_fstat(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    sb = luab_udata(L, 2, stat_type, struct stat *);
+    sb = luab_udata(L, 2, &stat_type, struct stat *);
 
     status = fstat(fd, sb);
 
@@ -700,7 +700,7 @@ luab_lstat(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
-    sb = luab_udata(L, 2, stat_type, struct stat *);
+    sb = luab_udata(L, 2, &stat_type, struct stat *);
 
     status = lstat(path, sb);
 
@@ -838,7 +838,7 @@ luab_stat(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
-    sb = luab_udata(L, 2, stat_type, struct stat *);
+    sb = luab_udata(L, 2, &stat_type, struct stat *);
 
     status = stat(path, sb);
 
@@ -918,7 +918,7 @@ luab_fstatat(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     path = luab_checklstring(L, 2, MAXPATHLEN);
-    sb = luab_udata(L, 3, stat_type, struct stat *);
+    sb = luab_udata(L, 3, &stat_type, struct stat *);
     flag = (int)luab_checkinteger(L, 4, INT_MAX);
 
     status = fstatat(fd, path, sb, flag);
@@ -1101,7 +1101,7 @@ luab_stat_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, stat_type, struct stat *);
+        data = luab_udata(L, narg, &stat_type, struct stat *);
 
     return (luab_pushudata(L, &stat_type, data));
 }

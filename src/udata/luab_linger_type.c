@@ -84,7 +84,7 @@ LINGER_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, linger_type, struct linger *);
+    l = luab_udata(L, 1, &linger_type, struct linger *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "l_onoff", l->l_onoff);
@@ -138,7 +138,7 @@ LINGER_set_l_onoff(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, linger_type, struct linger *);
+    l = luab_udata(L, 1, &linger_type, struct linger *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_onoff = data;
@@ -166,7 +166,7 @@ LINGER_get_l_onoff(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, linger_type, struct linger *);
+    l = luab_udata(L, 1, &linger_type, struct linger *);
     data = l->l_onoff;
 
     return (luab_pusherr(L, data));
@@ -194,7 +194,7 @@ LINGER_set_l_linger(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, linger_type, struct linger *);
+    l = luab_udata(L, 1, &linger_type, struct linger *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_linger = data;
@@ -222,7 +222,7 @@ LINGER_get_l_linger(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, linger_type, struct linger *);
+    l = luab_udata(L, 1, &linger_type, struct linger *);
     data = l->l_linger;
 
     return (luab_pusherr(L, data));

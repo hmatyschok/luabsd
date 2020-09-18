@@ -131,8 +131,8 @@ luab_setitimer(lua_State *L)
     int status;
 
     which = (int)luab_checkinteger(L, 1, INT_MAX);
-    value = luab_udataisnil(L, 2, itimerval_type, struct itimerval *);
-    ovalue = luab_udataisnil(L, 3, itimerval_type, struct itimerval *);
+    value = luab_udataisnil(L, 2, &itimerval_type, struct itimerval *);
+    ovalue = luab_udataisnil(L, 3, &itimerval_type, struct itimerval *);
 
     if (lua_type(L, narg) != LUA_TFUNCTION)
         return luaL_error(L, "Missing callout handler.");
@@ -168,7 +168,7 @@ luab_getitimer(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     which = (int)luab_checkinteger(L, 1, INT_MAX);
-    value = luab_udata(L, 2, itimerval_type, struct itimerval *);
+    value = luab_udata(L, 2, &itimerval_type, struct itimerval *);
 
     status = getitimer(which, value);
 
@@ -204,7 +204,7 @@ luab_bintime_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, bintime_type, struct bintime *);
+        data = luab_udata(L, narg, &bintime_type, struct bintime *);
 
     return (luab_pushudata(L, &bintime_type, data));
 }
@@ -233,7 +233,7 @@ luab_clockinfo_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, clockinfo_type, struct clockinfo *);
+        data = luab_udata(L, narg, &clockinfo_type, struct clockinfo *);
 
     return (luab_pushudata(L, &clockinfo_type, data));
 }
@@ -261,7 +261,7 @@ luab_itimerval_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, itimerval_type, struct itimerval *);
+        data = luab_udata(L, narg, &itimerval_type, struct itimerval *);
 
     return (luab_pushudata(L, &itimerval_type, data));
 }
@@ -289,7 +289,7 @@ luab_timespec_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, timespec_type, struct timespec *);
+        data = luab_udata(L, narg, &timespec_type, struct timespec *);
 
     return (luab_pushudata(L, &timespec_type, data));
 }
@@ -317,7 +317,7 @@ luab_timeval_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, timeval_type, struct timeval *);
+        data = luab_udata(L, narg, &timeval_type, struct timeval *);
 
     return (luab_pushudata(L, &timeval_type, data));
 }
@@ -345,7 +345,7 @@ luab_timezone_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, timezone_type, struct timezone *);
+        data = luab_udata(L, narg, &timezone_type, struct timezone *);
 
     return (luab_pushudata(L, &timezone_type, data));
 }

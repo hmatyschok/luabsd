@@ -149,8 +149,8 @@ DB_del(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, dbt_type, DBT *);
+    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, &dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 3, INT_MAX);
 
         status = (*db->del)(db, k, flags);
@@ -180,7 +180,7 @@ DB_fd(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL)
+    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL)
         fd = (*db->fd)(db);
     else
         fd = -1;
@@ -214,9 +214,9 @@ DB_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, dbt_type, DBT *);
-        v = luab_udata(L, 3, dbt_type, DBT *);
+    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, &dbt_type, DBT *);
+        v = luab_udata(L, 3, &dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (*db->get)(db, k, v, flags);
@@ -257,9 +257,9 @@ DB_put(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, dbt_type, DBT *);
-        v = luab_udata(L, 3, dbt_type, DBT *);
+    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, &dbt_type, DBT *);
+        v = luab_udata(L, 3, &dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (*db->put)(db, k, v, flags);
@@ -299,9 +299,9 @@ DB_seq(lua_State *L)
 
     (void)luab_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, dbt_type, DBT *);
-        v = luab_udata(L, 3, dbt_type, DBT *);
+    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+        k = luab_udata(L, 2, &dbt_type, DBT *);
+        v = luab_udata(L, 3, &dbt_type, DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (*db->seq)(db, k, v, flags);
@@ -338,7 +338,7 @@ DB_sync(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    if ((db = luab_udata(L, 1, db_type, DB *)) != NULL) {
+    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
         flags = (u_int)luab_checkinteger(L, 2, INT_MAX);
 
         status = (*db->sync)(db, flags);

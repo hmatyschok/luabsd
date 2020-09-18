@@ -111,15 +111,7 @@ luab_dbopen(lua_State *L)
 static int
 luab_dbt_create(lua_State *L)
 {
-    luab_iovec_t *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, iovec_type, luab_iovec_t *);
-
-    return (luab_pushudata(L, &dbt_type, data));
+    return (luab_create(L, 1, &dbt_type, &iovec_type));
 }
 #endif /* __BSD_VISIBLE */
 

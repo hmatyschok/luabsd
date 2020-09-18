@@ -100,7 +100,7 @@ luab_div_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, div_type, div_t *);
+        data = luab_udata(L, narg, &div_type, div_t *);
 
     return (luab_pushudata(L, &div_type, data));
 }
@@ -128,7 +128,7 @@ luab_ldiv_create(lua_State *L)
     if ((narg = luab_checkmaxargs(L, 1)) == 0)
         data = NULL;
     else
-        data = luab_udata(L, narg, ldiv_type, ldiv_t *);
+        data = luab_udata(L, narg, &ldiv_type, ldiv_t *);
 
     return (luab_pushudata(L, &ldiv_type, data));
 }

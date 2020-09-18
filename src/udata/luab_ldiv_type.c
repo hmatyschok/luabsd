@@ -83,7 +83,7 @@ LDIV_get(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ldiv = luab_udata(L, 1, ldiv_type, ldiv_t *);
+    ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "quot", ldiv->quot);
@@ -137,7 +137,7 @@ LDIV_set_quot(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    ldiv = luab_udata(L, 1, ldiv_type, ldiv_t *);
+    ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = (long)luab_checkinteger(L, 2, INT_MAX);
 
     ldiv->quot = data;
@@ -165,7 +165,7 @@ LDIV_get_quot(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ldiv = luab_udata(L, 1, ldiv_type, ldiv_t *);
+    ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = ldiv->quot;
 
     return (luab_pusherr(L, data));
@@ -193,7 +193,7 @@ LDIV_set_rem(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    ldiv = luab_udata(L, 1, ldiv_type, ldiv_t *);
+    ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = (long)luab_checkinteger(L, 2, INT_MAX);
 
     ldiv->rem = data;
@@ -221,7 +221,7 @@ LDIV_get_rem(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ldiv = luab_udata(L, 1, ldiv_type, ldiv_t *);
+    ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = ldiv->rem;
 
     return (luab_pusherr(L, data));
