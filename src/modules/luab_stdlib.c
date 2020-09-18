@@ -35,6 +35,7 @@
 #include "luabsd.h"
 
 extern luab_module_t div_type;
+extern luab_module_t ldiv_type;
 
 #define LUABSD_STDLIB_LIB_ID    1593623310
 #define LUABSD_STDLIB_LIB_KEY    "stdlib"
@@ -104,6 +105,34 @@ luab_div_create(lua_State *L)
     return (luab_pushudata(L, &div_type, data));
 }
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(LDIV)).
+ *
+ * @function ldiv_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(LDIV)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (ldiv [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage ldiv [, err, msg ] = bsd.stdlib.ldiv_create([ data ])
+ */
+static int
+luab_ldiv_create(lua_State *L)
+{
+    ldiv_t *data;
+    int narg;
+
+    if ((narg = luab_checkmaxargs(L, 1)) == 0)
+        data = NULL;
+    else
+        data = luab_udata(L, narg, ldiv_type, ldiv_t *);
+
+    return (luab_pushudata(L, &ldiv_type, data));
+}
+
 /*
  * Interface against <stdlib.h>.
  */
@@ -117,6 +146,7 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
 #endif
     LUABSD_FUNC("div_create",   luab_div_create),
+    LUABSD_FUNC("ldiv_create",   luab_ldiv_create),
     LUABSD_FUNC(NULL, NULL)
 };
 
