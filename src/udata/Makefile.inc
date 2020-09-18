@@ -6,6 +6,7 @@ SRCS+=	luab_clockinfo_type.c
 SRCS+=	luab_crypt_data_type.c
 SRCS+=	luab_dbt_type.c
 SRCS+=	luab_db_type.c
+SRCS+=	luab_div_type.c
 SRCS+=	luab_flock_type.c
 SRCS+=	luab_hook_type.c
 SRCS+=	luab_if_nameindex_type.c

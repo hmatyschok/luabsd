@@ -39,6 +39,7 @@
 /* XXX */
 
 extern luab_module_t clockinfo_type;
+extern luab_module_t div_type;
 extern luab_module_t flock_type;
 extern luab_module_t hook_type;
 extern luab_module_t if_nameindex_type;
@@ -556,6 +557,7 @@ luaopen_bsd(lua_State *L)
     lua_pushvalue(L, -1);
 
     luab_newmetatable(L, &clockinfo_type);
+    luab_newmetatable(L, &div_type);
     luab_newmetatable(L, &flock_type);
     luab_newmetatable(L, &hook_type);
     luab_newmetatable(L, &if_nameindex_type);
