@@ -198,7 +198,7 @@ luab_getitimer(lua_State *L)
 static int
 luab_bintime_create(lua_State *L)
 {
-    return (luab_create(L, 1, &bintime_type, &bintime_type));
+    return (luab_create(L, 1, &bintime_type, NULL));
 }
 #endif
 
@@ -219,7 +219,7 @@ luab_bintime_create(lua_State *L)
 static int
 luab_clockinfo_create(lua_State *L)
 {
-    return (luab_create(L, 1, &clockinfo_type, &clockinfo_type));
+    return (luab_create(L, 1, &clockinfo_type, NULL));
 }
 
 /***
@@ -239,15 +239,7 @@ luab_clockinfo_create(lua_State *L)
 static int
 luab_itimerval_create(lua_State *L)
 {
-    struct itimerval *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &itimerval_type, struct itimerval *);
-
-    return (luab_pushudata(L, &itimerval_type, data));
+    return (luab_create(L, 1, &itimerval_type, NULL));
 }
 
 /***
@@ -267,7 +259,7 @@ luab_itimerval_create(lua_State *L)
 static int
 luab_timespec_create(lua_State *L)
 {
-    return (luab_create(L, 1, &timespec_type, &timespec_type));
+    return (luab_create(L, 1, &timespec_type, NULL));
 }
 
 /***
@@ -287,7 +279,7 @@ luab_timespec_create(lua_State *L)
 static int
 luab_timeval_create(lua_State *L)
 {
-    return (luab_create(L, 1, &timeval_type, &timeval_type));
+    return (luab_create(L, 1, &timeval_type, NULL));
 }
 
 /***
@@ -307,7 +299,7 @@ luab_timeval_create(lua_State *L)
 static int
 luab_timezone_create(lua_State *L)
 {
-    return (luab_create(L, 1, &timezone_type, &timezone_type));
+    return (luab_create(L, 1, &timezone_type, NULL));
 }
 
 /*

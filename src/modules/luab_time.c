@@ -64,7 +64,7 @@ extern luab_module_t luab_time_lib;
 static int
 luab_tm_create(lua_State *L)
 {
-    return (luab_create(L, 1, &tm_type, &tm_type));
+    return (luab_create(L, 1, &tm_type, NULL));
 }
 
 /*

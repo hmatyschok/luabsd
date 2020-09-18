@@ -350,12 +350,16 @@ luab_checkmaxargs(lua_State *L, int nmax)
 int
 luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
 {
+    luab_module_t *m;
     caddr_t arg;
 
-    if ((narg = luab_checkmaxargs(L, narg)) == 0)
+    if ((m = (m1 != NULL) ? m1 : m0) != NULL) {
+        if (luab_checkmaxargs(L, narg) == 0)
+            arg = NULL;
+        else
+            arg = luab_udata(L, narg, m, caddr_t);
+    } else
         arg = NULL;
-    else
-        arg = luab_udata(L, narg, m1, caddr_t);
 
     return (luab_pushudata(L, m0, arg));
 }

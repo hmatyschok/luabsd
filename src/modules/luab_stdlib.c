@@ -94,7 +94,7 @@ luab_arc4random_uniform(lua_State *L)
 static int
 luab_div_create(lua_State *L)
 {
-    return (luab_create(L, 1, &div_type, &div_type));
+    return (luab_create(L, 1, &div_type, NULL));
 }
 
 /***
@@ -114,7 +114,7 @@ luab_div_create(lua_State *L)
 static int
 luab_ldiv_create(lua_State *L)
 {
-    return (luab_create(L, 1, &ldiv_type, &ldiv_type));
+    return (luab_create(L, 1, &ldiv_type, NULL));
 }
 
 /*

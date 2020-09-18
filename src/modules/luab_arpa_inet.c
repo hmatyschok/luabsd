@@ -833,7 +833,7 @@ luab_inet_cidr_pton(lua_State *L)
 static int
 luab_in_addr_create(lua_State *L)
 {
-    return (luab_create(L, 1, &in_addr_type, &in_addr_type));
+    return (luab_create(L, 1, &in_addr_type, NULL));
 }
 
 /***
@@ -853,7 +853,7 @@ luab_in_addr_create(lua_State *L)
 static int
 luab_in6_addr_create(lua_State *L)
 {
-    return (luab_create(L, 1, &in6_addr_type, &in6_addr_type));
+    return (luab_create(L, 1, &in6_addr_type, NULL));
 }
 
 /*

@@ -885,15 +885,7 @@ luab_sendmmsg(lua_State *L)
 static int
 luab_linger_create(lua_State *L)
 {
-    struct linger *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &linger_type, struct linger *);
-
-    return (luab_pushudata(L, &linger_type, data));
+    return (luab_create(L, 1, &linger_type, NULL));
 }
 
 /***
@@ -913,15 +905,7 @@ luab_linger_create(lua_State *L)
 static int
 luab_sockaddr_create(lua_State *L)
 {
-    struct sockaddr *data;
-    int narg;
-
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &sockaddr_type, struct sockaddr *);
-
-    return (luab_pushudata(L, &sockaddr_type, data));
+    return (luab_create(L, 1, &sockaddr_type, NULL));
 }
 
 /***
@@ -941,9 +925,7 @@ luab_sockaddr_create(lua_State *L)
 static int
 luab_msghdr_create(lua_State *L)
 {
-    (void)luab_checkmaxargs(L, 0);
-
-    return (luab_pushudata(L, &msghdr_type, NULL));
+    return (luab_create(L, 0, &msghdr_type, NULL));
 }
 
 /*

@@ -1095,7 +1095,7 @@ luab_mknodat(lua_State *L)
 static int
 luab_stat_create(lua_State *L)
 {
-    return (luab_create(L, 1, &stat_type, &stat_type));
+    return (luab_create(L, 1, &stat_type, NULL));
 }
 
 /*

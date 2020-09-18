@@ -5179,7 +5179,7 @@ luab_undelete(lua_State *L)
 static int
 luab_crypt_data_create(lua_State *L)
 {
-    return (luab_create(L, 1, &crypt_data_type, &crypt_data_type));
+    return (luab_create(L, 1, &crypt_data_type, NULL));
 }
 
 /*
