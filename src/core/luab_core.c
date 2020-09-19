@@ -149,7 +149,7 @@ luab_checklstring(lua_State *L, int narg, size_t max_len)
 }
 
 /*
- * Generic operations on stack.
+ * Generic operations on stack, [C -> stack].
  */
 
 int
@@ -160,6 +160,30 @@ luab_pusherr(lua_State *L, lua_Integer res)
     int status;
 
     lua_pushinteger(L, res);
+
+    if (save_errno != 0 && res < 0) {
+        lua_pushinteger(L, save_errno);
+        msg = strerror(save_errno);
+        lua_pushstring(L, msg);
+        status = 3;
+    } else if (save_errno == res) {
+        msg = strerror(save_errno);
+        lua_pushstring(L, msg);
+        status = 2;
+    } else
+        status = 1;
+
+    return (status);
+}
+
+int
+luab_pushnumber(lua_State *L, lua_Number res)
+{
+    int save_errno = errno;
+    caddr_t msg;
+    int status;
+
+    lua_pushnumber(L, res);
 
     if (save_errno != 0 && res < 0) {
         lua_pushinteger(L, save_errno);
@@ -345,23 +369,6 @@ luab_checkmaxargs(lua_State *L, int nmax)
         luaL_error(L, "#%d args, but #%d expected", narg, nmax);
 
     return (narg);
-}
-
-int
-luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
-{
-    luab_module_t *m;
-    caddr_t arg;
-
-    if ((m = (m1 != NULL) ? m1 : m0) != NULL) {
-        if (luab_checkmaxargs(L, narg) == 0)
-            arg = NULL;
-        else
-            arg = luab_udata(L, narg, m, caddr_t);
-    } else
-        arg = NULL;
-
-    return (luab_pushudata(L, m0, arg));
 }
 
 int
