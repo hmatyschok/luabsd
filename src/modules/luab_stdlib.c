@@ -38,6 +38,7 @@
 extern luab_module_t hook_type;
 extern luab_module_t div_type;
 extern luab_module_t ldiv_type;
+extern luab_module_t lldiv_type;
 
 #define LUABSD_STDLIB_LIB_ID    1593623310
 #define LUABSD_STDLIB_LIB_KEY    "stdlib"
@@ -687,8 +688,8 @@ luab_system(lua_State *L)
  *
  * @function wctomb
  *
- * @param mbchar           Single-byte character, (LUA_TUSERDATA(HOOK)).
- * @param wchar            Multy-byte character, (LUA_TUSERDATA(HOOK)).
+ * @param mbchar           Character, (LUA_TUSERDATA(HOOK)).
+ * @param wchar            Wide-character, (LUA_TUSERDATA(HOOK)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -716,32 +717,70 @@ luab_wctomb(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
-#if __BSD_VISIBLE
+/***
+ * wcstombs(3) - convert a wide-character string character to a character string
+ *
+ * @function wcstombs
+ *
+ * @param msbstring         Character string, (LUA_TUSERDATA(IOVEC)).
+ * @param wcstring          Wide-character string, (LUA_TUSERDATA(IOVEC)).
+ * @param nbytes            Number of bytes of character string.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.wcstombs(mbchar, wchar, nbytes)
+ */
 static int
-luab_arc4random(lua_State *L)
+luab_wcstombs(lua_State *L)
 {
-    uint32_t n;
+    luab_iovec_t *buf1, *buf2;
+    size_t nbytes;
+    caddr_t dst;
+    wchar_t *src;
+    ssize_t len;
 
-    (void)luab_checkmaxargs(L, 0);
+    (void)luab_checkmaxargs(L, 3);
 
-    n = arc4random();
-
-    return (luab_pusherr(L, n));
-}
-
-static int
-luab_arc4random_uniform(lua_State *L)
-{
-    uint32_t ub, n;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    ub = luab_checkinteger(L, 1, INT_MAX);
-    n = arc4random_uniform(ub);
-
-    return (luab_pusherr(L, n));
-}
+    buf1 = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
+    buf2 = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    nbytes = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
 #endif
+    );
+    
+    if (((dst = buf1->iov.iov_base) != NULL) &&
+        ((src = (wchar_t *)buf2->iov.iov_base) != NULL) &&
+        (nbytes <= (size_t)buf2->iov_max_len) &&
+        (nbytes <= (size_t)buf1->iov_max_len) &&
+        (buf1->iov_flags & IOV_BUFF) &&
+        (buf2->iov_flags & IOV_BUFF)) {
+
+        if (((buf2->iov_flags & IOV_LOCK) == 0) &&
+            ((buf1->iov_flags & IOV_LOCK) == 0)) {
+            buf1->iov_flags |= IOV_LOCK;
+            buf2->iov_flags |= IOV_LOCK;
+
+            if ((len = wcstombs(dst, src, nbytes)) > 0)
+                buf1->iov.iov_len = len;
+
+            buf2->iov_flags &= ~IOV_LOCK;
+            buf1->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            len = -1;
+        }
+    } else {
+        errno = ENXIO;
+        len = -1;
+    }
+    return (luab_pusherr(L, len));
+}
 
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
 #ifdef __LONG_LONG_SUPPORTED
@@ -774,6 +813,33 @@ luab_atoll(lua_State *L)
 }
 #endif /* __LONG_LONG_SUPPORTED */
 #endif /* __ISO_C_VISIBLE >= 1999 */
+
+#if __BSD_VISIBLE
+static int
+luab_arc4random(lua_State *L)
+{
+    uint32_t n;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    n = arc4random();
+
+    return (luab_pusherr(L, n));
+}
+
+static int
+luab_arc4random_uniform(lua_State *L)
+{
+    uint32_t ub, n;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ub = luab_checkinteger(L, 1, INT_MAX);
+    n = arc4random_uniform(ub);
+
+    return (luab_pusherr(L, n));
+}
+#endif
 
 /*
  * Generator functions.
@@ -819,6 +885,30 @@ luab_ldiv_create(lua_State *L)
     return (luab_create(L, 1, &ldiv_type, NULL));
 }
 
+#if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
+#ifdef __LONG_LONG_SUPPORTED
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(LLDIV)).
+ *
+ * @function lldiv_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(LLDIV)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (lldiv [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage lldiv [, err, msg ] = bsd.stdlib.lldiv_create([ data ])
+ */
+static int
+luab_lldiv_create(lua_State *L)
+{
+    return (luab_create(L, 1, &lldiv_type, NULL));
+}
+#endif /* __LONG_LONG_SUPPORTED */
+#endif /* __ISO_C_VISIBLE >= 1999 */
+
 /*
  * Interface against <stdlib.h>.
  */
@@ -848,17 +938,23 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("strtoul",  luab_strtoul),
     LUABSD_FUNC("system",   luab_system),
     LUABSD_FUNC("wctomb",   luab_wctomb),
-#if __BSD_VISIBLE
-    LUABSD_FUNC("arc4random", luab_arc4random),
-    LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
-#endif
+    LUABSD_FUNC("wcstombs", luab_wcstombs),
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
 #ifdef __LONG_LONG_SUPPORTED
     LUABSD_FUNC("atoll",    luab_atoll),
 #endif /* __LONG_LONG_SUPPORTED */
-#endif /* __ISO_C_VISIBLE >= 1999 */
+#endif /* __ISO_C_VISIBLE >= 1999 */    
+#if __BSD_VISIBLE
+    LUABSD_FUNC("arc4random", luab_arc4random),
+    LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),
+#endif
     LUABSD_FUNC("div_create",   luab_div_create),
     LUABSD_FUNC("ldiv_create",   luab_ldiv_create),
+#if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
+#ifdef __LONG_LONG_SUPPORTED
+    LUABSD_FUNC("lldiv_create", luab_lldiv_create),
+#endif /* __LONG_LONG_SUPPORTED */
+#endif /* __ISO_C_VISIBLE >= 1999 */    
     LUABSD_FUNC(NULL, NULL)
 };
 
