@@ -50,6 +50,7 @@ typedef union luab_type {
     lua_Number  un_numx;
     lua_CFunction   un_fn;
     const char  *un_cp;
+    wchar_t     un_wc;
 } luab_type_u;
 
 typedef void    (*luab_table_fn)(lua_State *, luab_type_u *);
