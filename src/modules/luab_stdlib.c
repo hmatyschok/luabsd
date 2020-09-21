@@ -1240,6 +1240,130 @@ luab_erand48(lua_State *L)
 }
 
 /***
+ * grantpt(3) - pseudo-terminal access functions
+ *
+ * @function grantpt
+ *
+ * @param fildes            Open file descriptor.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.grantpt(fildes)
+ */
+static int
+luab_grantpt(lua_State *L)
+{
+    int fildes;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    fildes = (int)luab_checkinteger(L, 1, INT_MAX);
+    status = grantpt(fildes);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * initstate(3) - better random number generator; routines for changing generators
+ *
+ * @function initstate
+ *
+ * @param seed              Specifies seed.
+ * @param state             State array, (LUA_TUSERDATA(IOVEC)).
+ * @param n                 Specifies the size of the state array.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.initstate(seed, state, n)
+ */
+static int
+luab_initstate(lua_State *L)
+{
+    u_int seed;
+    luab_iovec_t *buf;
+    size_t n;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    seed = (u_int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    n = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len >= n) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (initstate(seed, bp, n) != NULL) {
+                buf->iov.iov_len = n;
+                status = 0;
+            } else {
+                errno = EINVAL;
+                status = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * jrand48(3) - pseudo random number generators and initializiation routines
+ *
+ * @function jrand48
+ *
+ * @param xseed             Array of 3 shorts
+ *
+ *                              { xseed0, xseed1, xseed2 }
+ *
+ *                          by (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.jrand48(xseed)
+ */
+static int
+luab_jrand48(lua_State *L)
+{
+    u_short *xseed;
+    double n;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    xseed = luab_table_checklu_short(L, 1, 3);
+    n = jrand48(xseed);
+    free(xseed);
+
+    return (luab_pushnumber(L, n));
+}
+
+/***
  * l64a(3) - convert between a long integer and a base-64 ASCII string
  *
  * @function l64a
@@ -1318,6 +1442,127 @@ luab_l64a_r(lua_State *L)
         status = -1;
     }
     return (luab_pusherr(L, status));
+}
+
+/***
+ * lcong48(3) - pseudo random number generators and initialization routes
+ *
+ * @function lcong48
+ *
+ * @param p                 Initializiation-vector
+ *
+ *                              {                   -- Initializiation-vector.
+ *                                  (LUA_TNUMBER),      -- p[0]:seed
+ *                                  (LUA_TNUMBER),      -- p[1]:seed
+ *                                  (LUA_TNUMBER),      -- p[2]:seed
+ *                                  (LUA_TNUMBER),      -- p[3]:multiplicand
+ *                                  (LUA_TNUMBER),      -- p[4]:multiplicand
+ *                                  (LUA_TNUMBER),      -- p[5]:multiplicand
+ *                                  (LUA_TNUMBER)       -- p[6]:addend
+ *                              }
+ *
+ *                          by (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.lcong48(p)
+ */
+static int
+luab_lcong48(lua_State *L)
+{
+    u_short *p;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    p = luab_table_checklu_short(L, 1, 7);
+    lcong48(p);
+    free(p);
+
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * lrand48(3) - pseudo random number generators and initialization routes
+ *
+ * @function lrand48
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.lrand48()
+ */
+static int
+luab_lrand48(lua_State *L)
+{
+    long n;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    n = lrand48();
+
+    return (luab_pusherr(L, n));
+}
+
+/***
+ * mrand48(3) - pseudo random number generators and initialization routes
+ *
+ * @function mrand48
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.mrand48()
+ */
+static int
+luab_mrand48(lua_State *L)
+{
+    long n;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    n = mrand48();
+
+    return (luab_pusherr(L, n));
+}
+
+/***
+ * nrand48(3) - pseudo random number generators and initializiation routines
+ *
+ * @function nrand48
+ *
+ * @param xseed             Array of 3 shorts
+ *
+ *                              { xseed0, xseed1, xseed2 }
+ *
+ *                          by (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.nrand48(xseed)
+ */
+static int
+luab_nrand48(lua_State *L)
+{
+    u_short *xseed;
+    double n;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    xseed = luab_table_checklu_short(L, 1, 3);
+    n = nrand48(xseed);
+    free(xseed);
+
+    return (luab_pushnumber(L, n));
 }
 #endif /* __XSI_VISIBLE */
 
@@ -1473,8 +1718,15 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("a64l", luab_a64l),
     LUABSD_FUNC("drand48",  luab_drand48),
     LUABSD_FUNC("erand48",  luab_erand48),
+    LUABSD_FUNC("grantpt",  luab_grantpt),
+    LUABSD_FUNC("initstate",    luab_initstate),
+    LUABSD_FUNC("jrand48",  luab_jrand48),
     LUABSD_FUNC("l64a", luab_l64a),
     LUABSD_FUNC("l64a_r", luab_l64a_r),
+    LUABSD_FUNC("lcong48",  luab_lcong48),
+    LUABSD_FUNC("lrand48",  luab_lrand48),
+    LUABSD_FUNC("mrand48",  luab_mrand48),
+    LUABSD_FUNC("nrand48",  luab_nrand48),
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUABSD_FUNC("arc4random", luab_arc4random),
