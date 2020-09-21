@@ -138,7 +138,7 @@ luab_checkargv(lua_State *L, int narg)
  */
 
 u_short *
-luab_table_checklushort(lua_State *L, int narg, size_t len)
+luab_table_checklu_short(lua_State *L, int narg, size_t len)
 {
     u_short *vec;
     int k, v;

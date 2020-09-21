@@ -1232,7 +1232,7 @@ luab_erand48(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    xseed = luab_table_checklushort(L, 1, 3);
+    xseed = luab_table_checklu_short(L, 1, 3);
     n = erand48(xseed);
     free(xseed);
 
