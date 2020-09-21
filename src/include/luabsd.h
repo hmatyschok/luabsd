@@ -45,6 +45,8 @@ typedef union luab_type {
     uint16_t    un_uint16;
     uint32_t    un_uint32;
     uint64_t    un_uint64;
+    u_int       un_u_int;
+    u_long      un_u_long;
     socklen_t   un_socklen;
     lua_Integer un_intx;
     lua_Number  un_numx;
