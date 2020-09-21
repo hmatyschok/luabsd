@@ -1019,7 +1019,7 @@ luab_pipe(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    fildes = luab_checklintvector(L, 1, 2);
+    fildes = luab_table_checklint(L, 1, 2);
     status = pipe(fildes);
 
     free(fildes);
@@ -3416,7 +3416,7 @@ luab_getgrouplist(lua_State *L)
         if ((gidset = alloca((*ngroups) * sizeof(gid_t))) != NULL) {
 
             if ((status = getgrouplist(name, basegid, gidset, ngroups)) == 0)
-                luab_table_pushlgidset(L, 3, gidset, *ngroups);
+                luab_table_pushlgidset(L, 3, gidset, *ngroups, 0);
         } else
             status = -1;
     } else {
@@ -4120,7 +4120,7 @@ luab_pipe2(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    fildes = luab_checklintvector(L, 1, 2);
+    fildes = luab_table_checklint(L, 1, 2);
     flags = (int)luab_checkinteger(L, 2, INT_MAX);
 
     status = pipe2(fildes, flags);
@@ -4675,7 +4675,7 @@ luab_setgroups(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     ngroups = (int)luab_checkinteger(L, 1, INT_MAX);
-    gidset = luab_table_checklgidset(L, 2, ngroups);
+    gidset = luab_table_checklgid(L, 2, ngroups);
 
     status = setgroups(ngroups, gidset);
 

@@ -1153,6 +1153,174 @@ luab_unsetenv(lua_State *L)
 }
 #endif
 
+#if __XSI_VISIBLE
+/***
+ * a64l(3) - convert between a long initeger and a base-64 ASCII string
+ *
+ * @function a64l
+ *
+ * @param s                 Base-64 string encodes long integer.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.a64l(s)
+ */
+static int
+luab_a64l(lua_State *L)
+{
+    const char *s;
+    long n;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    s = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    n = a64l(s);
+
+    return (luab_pusherr(L, n));
+}
+
+/***
+ * drand48(3) - pseudo random number generators and initializiation routines
+ *
+ * @function drand48
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.drand48()
+ */
+static int
+luab_drand48(lua_State *L)
+{
+    double n;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    n = drand48();
+
+    return (luab_pushnumber(L, n));
+}
+
+/***
+ * erand48(3) - pseudo random number generators and initializiation routines
+ *
+ * @function erand48
+ *
+ * @param xseed             Array of 3 shorts
+ *
+ *                              { xseed0, xseed1, xseed2 }
+ *
+ *                          by (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.erand48(xseed)
+ */
+static int
+luab_erand48(lua_State *L)
+{
+    u_short *xseed;
+    double n;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    xseed = luab_table_checklushort(L, 1, 3);
+    n = erand48(xseed);
+    free(xseed);
+
+    return (luab_pushnumber(L, n));
+}
+
+/***
+ * l64a(3) - convert between a long integer and a base-64 ASCII string
+ *
+ * @function l64a
+ *
+ * @param l                 Long integer.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.l64a(s)
+ */
+static int
+luab_l64a(lua_State *L)
+{
+    long l;
+    char *s;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    l = luab_checkinteger(L, 1, LONG_MAX);
+    s = l64a(l);    /* value points to a static buffer, see l64a(3) */
+
+    return (luab_pushstring(L, s));
+}
+
+/***
+ * l64a_r(3) - convert between a long integer and a base-64 ASCII string
+ *
+ * @function l64a_r
+ *
+ * @param l                 Long integer.
+ * @param buffer            Result argument, (LUA_TUSERDATA(IOVEC)).
+ * @param buflen            Buffer size.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.l64a_r(l, buffer, buflen)
+ */
+static int
+luab_l64a_r(lua_State *L)
+{
+    long l;
+    luab_iovec_t *buf;
+    int buflen;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    l = luab_checkinteger(L, 1, LONG_MAX);
+    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buflen = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len >= (size_t)buflen) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = l64a_r(l, bp, buflen)) == 0)
+                buf->iov.iov_len = buflen;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif /* __XSI_VISIBLE */
+
 #if __BSD_VISIBLE
 static int
 luab_arc4random(lua_State *L)
@@ -1301,6 +1469,13 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("setenv",   luab_setenv),
     LUABSD_FUNC("unsetenv", luab_unsetenv),
 #endif
+#if __XSI_VISIBLE
+    LUABSD_FUNC("a64l", luab_a64l),
+    LUABSD_FUNC("drand48",  luab_drand48),
+    LUABSD_FUNC("erand48",  luab_erand48),
+    LUABSD_FUNC("l64a", luab_l64a),
+    LUABSD_FUNC("l64a_r", luab_l64a_r),
+#endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUABSD_FUNC("arc4random", luab_arc4random),
     LUABSD_FUNC("arc4random_uniform", luab_arc4random_uniform),

@@ -243,24 +243,25 @@ void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 /*
- * Accessor, (LUA_TTABLE(LUA_T{NUMBER,STRING},LUA_TXXX)), [stack -> C].
+ * Accessor, (LUA_TTABLE), [stack -> C].
  */
 
 int luab_checktable(lua_State *, int);
 size_t  luab_checkltable(lua_State *, int, size_t);
-const char **    luab_checkargv(lua_State *, int);
-
-gid_t * luab_table_checklgidset(lua_State *, int, size_t);
-
-/*
- * Accessor, (LUA_TTABLE(LUA_T{NUMBER,STRING},LUA_TXXX)), [C -> stack].
- */
-
 void *  luab_newvector(lua_State *, int, size_t);
 void *  luab_newlvector(lua_State *, int, size_t, size_t);
-int *   luab_checklintvector(lua_State *, int, size_t);
 
-void    luab_table_pushlgidset(lua_State *, int, gid_t *, int);
+const char **    luab_checkargv(lua_State *, int);
+
+u_short *   luab_table_checklushort(lua_State *, int, size_t);
+int *   luab_table_checklint(lua_State *, int, size_t);
+gid_t * luab_table_checklgid(lua_State *, int, size_t);
+
+/*
+ * Accessor, (LUA_TTABLE), [C -> stack].
+ */
+
+void    luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
 
 /*
  * Generic service primitives, subset of <core>.

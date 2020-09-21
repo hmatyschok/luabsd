@@ -94,32 +94,7 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t size)
     return (vec);
 }
 
-/* Translate an instance of LUA_TTABLE into an array of integers. */
-int *
-luab_checklintvector(lua_State *L, int narg, size_t len)
-{
-    int *vec, k, v;
-
-    vec = luab_newlvector(L, narg, len, sizeof(int));
-
-    lua_pushnil(L);
-
-    for (k = 0; lua_next(L, narg) != 0; k++) {
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isnumber(L, -1) != 0)) {
-            v = (int)luab_tointeger(L, -1, UINT_MAX);
-            vec[k] = v;
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
-        lua_pop(L, 1);
-    }
-    return (vec);
-}
-
-/* Translate an instance of LUA_TTABLE into an argv. */
+/* Translate an instance of (LUA_TTABLE) into an argv. */
 const char **
 luab_checkargv(lua_State *L, int narg)
 {
@@ -153,14 +128,66 @@ luab_checkargv(lua_State *L, int narg)
 }
 
 /*
- * Translate an instance of
- *
- *      (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER))
- *
- * into an array of gid_t items.
+ * Accessor, [stack -> C].
  */
+
+/*
+ * Translate an array by (LUA_TTABLE) into an array of numbers.
+ *
+ * XXX DRY will be replaced by so called boiler-plate code.
+ */
+
+u_short *
+luab_table_checklushort(lua_State *L, int narg, size_t len)
+{
+    u_short *vec;
+    int k, v;
+
+    vec = luab_newlvector(L, narg, len, sizeof(u_short));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
+            v = (u_short)luab_tointeger(L, -1, USHRT_MAX);
+            vec[k] = v;
+        } else {
+            free(vec);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
+
+int *
+luab_table_checklint(lua_State *L, int narg, size_t len)
+{
+    int *vec, k, v;
+
+    vec = luab_newlvector(L, narg, len, sizeof(int));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
+            v = (int)luab_tointeger(L, -1, UINT_MAX);
+            vec[k] = v;
+        } else {
+            free(vec);
+            luaL_argerror(L, narg, "Invalid argument");
+        }
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
+
 gid_t *
-luab_table_checklgidset(lua_State *L, int narg, size_t len)
+luab_table_checklgid(lua_State *L, int narg, size_t len)
 {
     gid_t *vec, v;
     int k;
@@ -189,22 +216,22 @@ luab_table_checklgidset(lua_State *L, int narg, size_t len)
  */
 
 /*
- * Populate an instance of
- *
- *      (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER))
- *
- * with items from an array of gid_t items.
+ * Populate an array by (LUA_TTABLE) with items from an array of gid_t items.
  */
 void
-luab_table_pushlgidset(lua_State *L, int narg, gid_t *gidset, int ngroups)
+luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new)
 {
     int i, j;
 
-    if (gidset != NULL) {
-        lua_pushnil(L); /* populate Table, if any */
+    if (gids!= NULL) {
+
+        if (new != 0)   /* populate Table, if any */
+            lua_newtable(L);
+        else
+            lua_pushnil(L);
 
         for (i = 0, j = 1; i < ngroups; i++, j++)
-            luab_rawsetinteger(L, narg, j, gidset[i]);
+            luab_rawsetinteger(L, narg, j, gids[i]);
 
         lua_pop(L, 0);
     }
