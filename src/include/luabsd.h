@@ -101,7 +101,7 @@ typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
 
 typedef struct luab_module {
-    u_int32_t  cookie;        /*  date -u +'%s' */
+    uint32_t    cookie;        /*  date -u +'%s' */
     size_t  sz;
     const char  *name;
     luab_table_t    *vec;
@@ -109,6 +109,11 @@ typedef struct luab_module {
     luab_init_fn    init;
     luab_get_fn    get;
 } luab_module_t;
+
+typedef struct luab_typevec {
+    luab_module_t   *tv_mod;
+    uint32_t        tv_idx;
+} luab_typevec_t;
 
 /*
  * Interface Control Information (ICI) for (LUA_TUSERDATA(XXX)).
@@ -345,5 +350,4 @@ luab_sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
     sa->sa_family = af;
 }
 __END_DECLS
-
 #endif /* _LUABSD_H_ */

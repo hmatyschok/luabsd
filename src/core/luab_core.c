@@ -35,58 +35,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-/* XXX */
-
-extern luab_module_t clockinfo_type;
-extern luab_module_t div_type;
-extern luab_module_t flock_type;
-extern luab_module_t hook_type;
-extern luab_module_t if_nameindex_type;
-extern luab_module_t in_addr_type;
-extern luab_module_t in6_addr_type;
-extern luab_module_t itimerval_type;
-extern luab_module_t ldiv_type;
-extern luab_module_t lldiv_type;
-extern luab_module_t linger_type;
-extern luab_module_t msghdr_type;
-extern luab_module_t sockaddr_type;
-extern luab_module_t stat_type;
-extern luab_module_t timespec_type;
-extern luab_module_t timeval_type;
-extern luab_module_t timezone_type;
-extern luab_module_t tm_type;
-extern luab_module_t uuid_type;
-
-#if __BSD_VISIBLE
-extern luab_module_t dbt_type;
-extern luab_module_t db_type;
-extern luab_module_t bintime_type;
-extern luab_module_t crypt_data_type;
-#endif
-
-extern luab_module_t luab_arpa_inet_lib;
-
-extern luab_module_t luab_net_if_lib;
-extern luab_module_t luab_net_if_dl_lib;
-
-extern luab_module_t luab_sys_file_lib;
-extern luab_module_t luab_sys_stat_lib;
-extern luab_module_t luab_sys_time_lib;
-extern luab_module_t luab_sys_uio_lib;
-extern luab_module_t luab_sys_un_lib;
-extern luab_module_t luab_sys_unistd_lib;
-extern luab_module_t luab_sys_reboot_lib;
-extern luab_module_t luab_sys_socket_lib;
-
-extern luab_module_t luab_core_lib;
-
-extern luab_module_t luab_db_lib;
-extern luab_module_t luab_fcntl_lib;
-extern luab_module_t luab_stdlib_lib;
-extern luab_module_t luab_time_lib;
-extern luab_module_t luab_unistd_lib;
-extern luab_module_t luab_uuid_lib;
+#include "luab_modules.h"
 
 #define LUABSD_CORE_LIB_ID    1595987973
 #define LUABSD_CORE_LIB_KEY   "core"
@@ -529,13 +478,13 @@ luab_newtable(lua_State *L, int narg, luab_module_t *m)
 }
 
 static void
-luab_newmetatable(lua_State *L, luab_module_t *m)
+luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
 {
     luaL_newmetatable(L, m->name);  /* XXX */
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
 
-    luab_populate(L, -2, m);
+    luab_populate(L, narg, m);
 
     lua_pop(L, 1);
 }
@@ -582,30 +531,31 @@ luaopen_bsd(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    luab_newmetatable(L, &clockinfo_type);
-    luab_newmetatable(L, &div_type);
-    luab_newmetatable(L, &flock_type);
-    luab_newmetatable(L, &hook_type);
-    luab_newmetatable(L, &if_nameindex_type);
-    luab_newmetatable(L, &in_addr_type);
-    luab_newmetatable(L, &in6_addr_type);
-    luab_newmetatable(L, &iovec_type);
-    luab_newmetatable(L, &itimerval_type);
-    luab_newmetatable(L, &ldiv_type);
-    luab_newmetatable(L, &lldiv_type);
-    luab_newmetatable(L, &linger_type);
-    luab_newmetatable(L, &msghdr_type);
-    luab_newmetatable(L, &sockaddr_type);
-    luab_newmetatable(L, &stat_type);
-    luab_newmetatable(L, &timezone_type);
-    luab_newmetatable(L, &timespec_type);
-    luab_newmetatable(L, &timeval_type);
-    luab_newmetatable(L, &uuid_type);
+    luab_newmetatable(L, -2, &clockinfo_type);
+    luab_newmetatable(L, -2, &div_type);
+    luab_newmetatable(L, -2, &flock_type);
+    luab_newmetatable(L, -2, &hook_type);
+    luab_newmetatable(L, -2, &if_nameindex_type);
+    luab_newmetatable(L, -2, &in_addr_type);
+    luab_newmetatable(L, -2, &in6_addr_type);
+    luab_newmetatable(L, -2, &iovec_type);
+    luab_newmetatable(L, -2, &itimerval_type);
+    luab_newmetatable(L, -2, &ldiv_type);
+    luab_newmetatable(L, -2, &lldiv_type);
+    luab_newmetatable(L, -2, &linger_type);
+    luab_newmetatable(L, -2, &msghdr_type);
+    luab_newmetatable(L, -2, &sockaddr_type);
+    luab_newmetatable(L, -2, &stat_type);
+    luab_newmetatable(L, -2, &timezone_type);
+    luab_newmetatable(L, -2, &timespec_type);
+    luab_newmetatable(L, -2, &timeval_type);
+    luab_newmetatable(L, -2, &uuid_type);
 #if __BSD_VISIBLE
-    luab_newmetatable(L, &bintime_type);
-    luab_newmetatable(L, &crypt_data_type);
-    luab_newmetatable(L, &dbt_type);
-    luab_newmetatable(L, &db_type);
+    luab_newmetatable(L, -2, &bintime_type);
+    luab_newmetatable(L, -2, &crypt_data_type);
+    luab_newmetatable(L, -2, &dbt_type);
+    luab_newmetatable(L, -2, &db_type);
 #endif
+
     return (1);
 }
