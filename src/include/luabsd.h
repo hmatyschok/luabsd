@@ -110,10 +110,13 @@ typedef struct luab_module {
     luab_get_fn    get;
 } luab_module_t;
 
-typedef struct luab_typevec {
-    luab_module_t   *tv_mod;
-    uint32_t        tv_idx;
-} luab_typevec_t;
+typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
+
+typedef struct luab_modulevec {
+    luab_module_t   *mv_mod;
+    luab_module_fn  mv_init;
+    uint32_t        mv_idx;
+} luab_modulevec_t;
 
 /*
  * Interface Control Information (ICI) for (LUA_TUSERDATA(XXX)).

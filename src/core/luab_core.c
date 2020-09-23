@@ -36,6 +36,7 @@
 
 #include "luabsd.h"
 #include "luab_modules.h"
+#include "luab_types.h"
 
 #define LUABSD_CORE_LIB_ID    1595987973
 #define LUABSD_CORE_LIB_KEY   "core"
@@ -457,6 +458,114 @@ static const char *copyright =
     "   28 Jul 2018 12:47:52\n\n"
     "\n";
 
+luab_modulevec_t luab_types[] = {
+    {
+        .mv_mod = &clockinfo_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_CLOCKINFO_IDX,
+    },{
+        .mv_mod = &div_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_DIV_IDX,
+    },{
+		.mv_mod = &flock_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_FLOCK_IDX,
+    },{
+		.mv_mod = &hook_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_HOOK_IDX,
+    },{
+		.mv_mod = &if_nameindex_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_IF_NAMEINDEX_IDX,
+    },{
+		.mv_mod = &in_addr_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_IN_ADDR_IDX,
+    },{
+		.mv_mod = &in6_addr_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_IN6_ADDR_IDX,
+    },{
+		.mv_mod = &itimerval_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_ITIMERVAL_IDX,
+    },{
+		.mv_mod = &ldiv_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_LDIV_IDX,
+    },{
+		.mv_mod = &lldiv_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_LLDIV_IDX,
+    },{
+		.mv_mod = &linger_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_LINGER_IDX,
+    },{
+		.mv_mod = &msghdr_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_MSGHDR_IDX,
+    },{
+		.mv_mod = &sockaddr_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_SOCKADDR_IDX,
+    },{
+		.mv_mod = &stat_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_STAT_IDX,
+    },{
+		.mv_mod = &timespec_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_TIMESPEC_IDX,
+    },{
+		.mv_mod = &timeval_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_TIMEVAL_IDX,
+    },{
+		.mv_mod = &timezone_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_TIMEZONE_IDX,
+    },{
+		.mv_mod = &tm_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_TM_IDX,
+    },{
+		.mv_mod = &uuid_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_UUID_IDX,
+    },{
+		.mv_mod = &iovec_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_IOVEC_IDX,
+    },
+#if __BSD_VISIBLE
+    {
+		.mv_mod = &dbt_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_DBT_IDX,
+    },{
+		.mv_mod = &db_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_DB_IDX,
+    },{
+		.mv_mod = &bintime_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_BINTIME_IDX,
+    },{
+		.mv_mod = &crypt_data_type,
+		.mv_init = luab_newmetatable,
+		.mv_idx = LUAB_CRYPT_DATA_IDX,
+    },
+#endif
+    {
+        .mv_mod = NULL,
+        .mv_init = NULL,
+        .mv_idx = 0,
+    }
+};
+
 static void
 luab_populate(lua_State *L, int narg, luab_module_t *m)
 {
@@ -497,9 +606,11 @@ luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
+    luab_modulevec_t *mv;
+
     (void)printf("%s", copyright);
 
-    lua_newtable(L);
+    lua_newtable(L);                /* XXX */
 
     lua_newtable(L);
     luab_newtable(L, -2, &luab_arpa_inet_lib);
@@ -531,6 +642,11 @@ luaopen_bsd(lua_State *L)
 
     lua_pushvalue(L, -1);
 
+    for (mv = luab_types; mv->mv_mod != NULL; mv++)
+        mv->mv_init(L, -2, mv->mv_mod);
+
+
+/*
     luab_newmetatable(L, -2, &clockinfo_type);
     luab_newmetatable(L, -2, &div_type);
     luab_newmetatable(L, -2, &flock_type);
@@ -556,6 +672,7 @@ luaopen_bsd(lua_State *L)
     luab_newmetatable(L, -2, &dbt_type);
     luab_newmetatable(L, -2, &db_type);
 #endif
+*/
 
     return (1);
 }
