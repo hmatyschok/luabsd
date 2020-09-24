@@ -168,9 +168,9 @@ luab_sockaddr_dl_create(lua_State *L)
  */
 
 static luab_table_t luab_net_if_dl_vec[] = {
-    LUABSD_FUNC("link_addr",    luab_link_addr),
-    LUABSD_FUNC("link_ntoa",    luab_link_ntoa),
-    LUABSD_FUNC("sockaddr_dl_create", luab_sockaddr_dl_create),
+    LUABSD_FUNC("link_addr",            luab_link_addr),
+    LUABSD_FUNC("link_ntoa",            luab_link_ntoa),
+    LUABSD_FUNC("sockaddr_dl_create",   luab_sockaddr_dl_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

@@ -947,35 +947,35 @@ luab_sockaddr_in6_create(lua_State *L)
  */
 
 static luab_table_t luab_arpa_inet_vec[] = {
-    LUABSD_INT("INET_ADDRSTRLEN",   INET_ADDRSTRLEN),
-    LUABSD_INT("INET6_ADDRSTRLEN",  INET6_ADDRSTRLEN),
-    LUABSD_FUNC("inet_addr",    luab_inet_addr),
-    LUABSD_FUNC("inet_ntoa",    luab_inet_ntoa),
-    LUABSD_FUNC("inet_ntop",    luab_inet_ntop),
-    LUABSD_FUNC("inet_pton",    luab_inet_pton),
+    LUABSD_INT("INET_ADDRSTRLEN",       INET_ADDRSTRLEN),
+    LUABSD_INT("INET6_ADDRSTRLEN",      INET6_ADDRSTRLEN),
+    LUABSD_FUNC("inet_addr",            luab_inet_addr),
+    LUABSD_FUNC("inet_ntoa",            luab_inet_ntoa),
+    LUABSD_FUNC("inet_ntop",            luab_inet_ntop),
+    LUABSD_FUNC("inet_pton",            luab_inet_pton),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("inet_aton",    luab_inet_aton),
-    LUABSD_FUNC("inet_lnaof",   luab_inet_lnaof),
-    LUABSD_FUNC("inet_makeaddr",    luab_inet_makeaddr),
-    LUABSD_FUNC("inet_neta",    luab_inet_neta),
-    LUABSD_FUNC("inet_netof",   luab_inet_netof),
-    LUABSD_FUNC("inet_network", luab_inet_network),
-    LUABSD_FUNC("inet_net_ntop",    luab_inet_net_ntop),
-    LUABSD_FUNC("inet_net_pton",    luab_inet_net_pton),
-    LUABSD_FUNC("inet_ntoa_r",  luab_inet_ntoa_r),
-    LUABSD_FUNC("inet_cidr_ntop",   luab_inet_cidr_ntop),
-    LUABSD_FUNC("inet_cidr_pton",   luab_inet_cidr_pton),
+    LUABSD_FUNC("inet_aton",            luab_inet_aton),
+    LUABSD_FUNC("inet_lnaof",           luab_inet_lnaof),
+    LUABSD_FUNC("inet_makeaddr",        luab_inet_makeaddr),
+    LUABSD_FUNC("inet_neta",            luab_inet_neta),
+    LUABSD_FUNC("inet_netof",           luab_inet_netof),
+    LUABSD_FUNC("inet_network",         luab_inet_network),
+    LUABSD_FUNC("inet_net_ntop",        luab_inet_net_ntop),
+    LUABSD_FUNC("inet_net_pton",        luab_inet_net_pton),
+    LUABSD_FUNC("inet_ntoa_r",          luab_inet_ntoa_r),
+    LUABSD_FUNC("inet_cidr_ntop",       luab_inet_cidr_ntop),
+    LUABSD_FUNC("inet_cidr_pton",       luab_inet_cidr_pton),
 #if 0
-    LUABSD_FUNC("inet_nsap_addr",   luab_inet_nsap_addr),
-    LUABSD_FUNC("inet_nsap_ntoa",   luab_inet_nsap_ntoa),
+    LUABSD_FUNC("inet_nsap_addr",       luab_inet_nsap_addr),
+    LUABSD_FUNC("inet_nsap_ntoa",       luab_inet_nsap_ntoa),
 #endif
 #endif /* __BSD_VISIBLE */
-    LUABSD_FUNC("in_addr_create", luab_in_addr_create),
-    LUABSD_FUNC("in6_addr_create", luab_in6_addr_create),
+    LUABSD_FUNC("in_addr_create",       luab_in_addr_create),
+    LUABSD_FUNC("in6_addr_create",      luab_in6_addr_create),
 
     /* XXX wrong, because maps to <netinet/in.h> */
-    LUABSD_FUNC("sockaddr_in_create", luab_sockaddr_in_create),
-    LUABSD_FUNC("sockaddr_in6_create", luab_sockaddr_in6_create),
+    LUABSD_FUNC("sockaddr_in_create",   luab_sockaddr_in_create),
+    LUABSD_FUNC("sockaddr_in6_create",  luab_sockaddr_in6_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

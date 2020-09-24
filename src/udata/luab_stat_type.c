@@ -136,39 +136,39 @@ STAT_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "st_dev", st->st_dev);
-    luab_setinteger(L, -2, "st_ino", st->st_ino);
-    luab_setinteger(L, -2, "st_nlink", st->st_nlink);
-    luab_setinteger(L, -2, "st_mode", st->st_mode);
-    luab_setinteger(L, -2, "st_uid", st->st_uid);
-    luab_setinteger(L, -2, "st_gid", st->st_gid);
-    luab_setinteger(L, -2, "st_rdev", st->st_rdev);
+    luab_setinteger(L, -2, "st_dev",                        st->st_dev);
+    luab_setinteger(L, -2, "st_ino",                        st->st_ino);
+    luab_setinteger(L, -2, "st_nlink",                      st->st_nlink);
+    luab_setinteger(L, -2, "st_mode",                       st->st_mode);
+    luab_setinteger(L, -2, "st_uid",                        st->st_uid);
+    luab_setinteger(L, -2, "st_gid",                        st->st_gid);
+    luab_setinteger(L, -2, "st_rdev",                       st->st_rdev);
 
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_atim_ext", st->st_atim_ext);
+    luab_setinteger(L, -2, "st_atim_ext",                   st->st_atim_ext);
 #endif
-    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_atim", &st->st_atim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_atim",      &st->st_atim);
 
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_mtim_ext", st->st_mtim_ext);
+    luab_setinteger(L, -2, "st_mtim_ext",                   st->st_mtim_ext);
 #endif
-    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_mtim", &st->st_mtim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_mtim",      &st->st_mtim);
 
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_ctim_ext", st->st_ctim_ext);
+    luab_setinteger(L, -2, "st_ctim_ext",                   st->st_ctim_ext);
 #endif
-    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_ctim", &st->st_ctim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_ctim",      &st->st_ctim);
 
 #ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_btim_ext", st->st_btim_ext);
+    luab_setinteger(L, -2, "st_btim_ext",                   st->st_btim_ext);
 #endif
-    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_birthtim", &st->st_birthtim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_birthtim",  &st->st_birthtim);
 
-    luab_setinteger(L, -2, "st_size", st->st_size);
-    luab_setinteger(L, -2, "st_blocks", st->st_blocks);
-    luab_setinteger(L, -2, "st_blksize", st->st_blksize);
-    luab_setinteger(L, -2, "st_flags", st->st_flags);
-    luab_setinteger(L, -2, "st_gen", st->st_gen);
+    luab_setinteger(L, -2, "st_size",                       st->st_size);
+    luab_setinteger(L, -2, "st_blocks",                     st->st_blocks);
+    luab_setinteger(L, -2, "st_blksize",                    st->st_blksize);
+    luab_setinteger(L, -2, "st_flags",                      st->st_flags);
+    luab_setinteger(L, -2, "st_gen",                        st->st_gen);
 
     lua_pushvalue(L, -1);
 

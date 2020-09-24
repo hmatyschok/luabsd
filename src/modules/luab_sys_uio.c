@@ -76,15 +76,15 @@ luab_iovec_create(lua_State *L)
  * Interface against <sys/uio.h>.
  */
 
-static luab_table_t luab_sys_uio_vec[] = {   /* sys/uio.h */
+static luab_table_t luab_sys_uio_vec[] = {
 #if __BSD_VISIBLE
-    LUABSD_INT("UIO_READ",  UIO_READ),
-    LUABSD_INT("UIO_WRITE", UIO_WRITE),
+    LUABSD_INT("UIO_READ",      UIO_READ),
+    LUABSD_INT("UIO_WRITE",     UIO_WRITE),
     LUABSD_INT("UIO_USERSPACE", UIO_USERSPACE),
     LUABSD_INT("UIO_SYSSPACE",  UIO_SYSSPACE),
     LUABSD_INT("UIO_NOCOPY",    UIO_NOCOPY),
 #endif /* __BSD_VISIBLE */
-    LUABSD_FUNC("iovec_create",  luab_iovec_create),
+    LUABSD_FUNC("iovec_create", luab_iovec_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

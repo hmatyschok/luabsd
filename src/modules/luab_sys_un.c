@@ -84,12 +84,12 @@ luab_sockaddr_un_create(lua_State *L)
 
 static luab_table_t luab_sys_un_vec[] = {
 #if __BSD_VISIBLE
-    LUABSD_INT("LOCAL_PEERCRED",    LOCAL_PEERCRED),
-    LUABSD_INT("LOCAL_CREDS",   LOCAL_CREDS),
-    LUABSD_INT("LOCAL_CONNWAIT",    LOCAL_CONNWAIT),
-    LUABSD_INT("LOCAL_VENDOR",  LOCAL_VENDOR),
+    LUABSD_INT("LOCAL_PEERCRED",        LOCAL_PEERCRED),
+    LUABSD_INT("LOCAL_CREDS",           LOCAL_CREDS),
+    LUABSD_INT("LOCAL_CONNWAIT",        LOCAL_CONNWAIT),
+    LUABSD_INT("LOCAL_VENDOR",          LOCAL_VENDOR),
 #endif
-    LUABSD_FUNC("sockaddr_un_create", luab_sockaddr_un_create),
+    LUABSD_FUNC("sockaddr_un_create",   luab_sockaddr_un_create),
     LUABSD_FUNC(NULL, NULL)
 };
 

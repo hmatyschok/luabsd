@@ -123,12 +123,12 @@ luab_uuid_create_nil(lua_State *L)
  */
 
 static luab_table_t luab_uuid_vec[] = {
-    LUABSD_INT("uuid_s_ok", uuid_s_ok),
-    LUABSD_INT("uuid_s_bad_version",    uuid_s_bad_version),
+    LUABSD_INT("uuid_s_ok",                     uuid_s_ok),
+    LUABSD_INT("uuid_s_bad_version",            uuid_s_bad_version),
     LUABSD_INT("uuid_s_invalid_string_uuid",    uuid_s_invalid_string_uuid),
-    LUABSD_INT("uuid_s_no_memory",  uuid_s_no_memory),
-    LUABSD_FUNC("uuid_create",  luab_uuid_create),
-    LUABSD_FUNC("uuid_create_nil",  luab_uuid_create_nil),
+    LUABSD_INT("uuid_s_no_memory",              uuid_s_no_memory),
+    LUABSD_FUNC("uuid_create",                  luab_uuid_create),
+    LUABSD_FUNC("uuid_create_nil",              luab_uuid_create_nil),
     LUABSD_FUNC(NULL, NULL)
 };
 

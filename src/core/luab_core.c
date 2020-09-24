@@ -429,8 +429,8 @@ luab_hook_create(lua_State *L)
 }
 
 static luab_table_t luab_core_util_vec[] = {
-    LUABSD_FUNC("uuid",    luab_uuid),
-    LUABSD_FUNC("hook_create",   luab_hook_create),
+    LUABSD_FUNC("uuid",         luab_uuid),
+    LUABSD_FUNC("hook_create",  luab_hook_create),
     LUABSD_FUNC(NULL, NULL)
 };
 
@@ -726,7 +726,7 @@ luaopen_bsd(lua_State *L)
     (void)printf("%s", copyright);
 
     lua_newtable(L);
-
+    
     luab_registerlib(L, -2, luab_arpa_vec, "arpa");
     luab_registerlib(L, -2, luab_net_vec, "net");
     luab_registerlib(L, -2, luab_sys_vec, "sys");
