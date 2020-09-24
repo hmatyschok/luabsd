@@ -490,7 +490,8 @@ luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
     lua_pop(L, 1);
 }
 
-luab_modulevec_t luab_types[] = {
+/* Vector-table over (LUA_TUSERDATA(XXX)) */
+luab_modulevec_t luab_typevec[] = {
     {
         .mv_mod = &clockinfo_type,
 		.mv_init = luab_newmetatable,
@@ -598,6 +599,18 @@ luab_modulevec_t luab_types[] = {
     }
 };
 
+static void
+luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec, const char *name)
+{
+    luab_modulevec_t *mv;
+
+    for (mv = vec; mv->mv_mod != NULL; mv++)
+        (*mv->mv_init)(L, narg, mv->mv_mod);
+
+    if (name != NULL)
+        lua_setfield(L, narg, name);
+}
+
 /*
  * Reflects and maps interface against API over /include.
  *
@@ -606,8 +619,6 @@ luab_modulevec_t luab_types[] = {
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
-    luab_modulevec_t *mv;
-
     (void)printf("%s", copyright);
 
     lua_newtable(L);                /* XXX */
@@ -642,37 +653,8 @@ luaopen_bsd(lua_State *L)
 
     lua_pushvalue(L, -1);
 
-    for (mv = luab_types; mv->mv_mod != NULL; mv++)
-        mv->mv_init(L, -2, mv->mv_mod);
-
-
-/*
-    luab_newmetatable(L, -2, &clockinfo_type);
-    luab_newmetatable(L, -2, &div_type);
-    luab_newmetatable(L, -2, &flock_type);
-    luab_newmetatable(L, -2, &hook_type);
-    luab_newmetatable(L, -2, &if_nameindex_type);
-    luab_newmetatable(L, -2, &in_addr_type);
-    luab_newmetatable(L, -2, &in6_addr_type);
-    luab_newmetatable(L, -2, &iovec_type);
-    luab_newmetatable(L, -2, &itimerval_type);
-    luab_newmetatable(L, -2, &ldiv_type);
-    luab_newmetatable(L, -2, &lldiv_type);
-    luab_newmetatable(L, -2, &linger_type);
-    luab_newmetatable(L, -2, &msghdr_type);
-    luab_newmetatable(L, -2, &sockaddr_type);
-    luab_newmetatable(L, -2, &stat_type);
-    luab_newmetatable(L, -2, &timezone_type);
-    luab_newmetatable(L, -2, &timespec_type);
-    luab_newmetatable(L, -2, &timeval_type);
-    luab_newmetatable(L, -2, &uuid_type);
-#if __BSD_VISIBLE
-    luab_newmetatable(L, -2, &bintime_type);
-    luab_newmetatable(L, -2, &crypt_data_type);
-    luab_newmetatable(L, -2, &dbt_type);
-    luab_newmetatable(L, -2, &db_type);
-#endif
-*/
+    /* register complex data-types. */
+    luab_initmodule(L, -2, luab_typevec, NULL);
 
     return (1);
 }
