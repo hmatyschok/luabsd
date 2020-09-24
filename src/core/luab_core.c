@@ -600,14 +600,18 @@ luab_modulevec_t luab_typevec[] = {
 };
 
 static void
-luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec, const char *name)
+luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec,
+    const char *name, int new)
 {
     luab_modulevec_t *mv;
+
+    if (new != 0)
+        lua_newtable(L);
 
     for (mv = vec; mv->mv_mod != NULL; mv++)
         (*mv->mv_init)(L, narg, mv->mv_mod);
 
-    if (name != NULL)
+    if (name != NULL && new != 0)
         lua_setfield(L, narg, name);
 }
 
@@ -654,7 +658,7 @@ luaopen_bsd(lua_State *L)
     lua_pushvalue(L, -1);
 
     /* register complex data-types. */
-    luab_initmodule(L, -2, luab_typevec, NULL);
+    luab_initmodule(L, -2, luab_typevec, NULL, 0);
 
     return (1);
 }
