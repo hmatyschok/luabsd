@@ -38,9 +38,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t if_nameindex_type;
-extern luab_module_t sockaddr_type;
+#include "luab_types.h"
 
 #define LUABSD_NET_IF_LIB_ID    1596485465
 #define LUABSD_NET_IF_LIB_KEY    "net"
@@ -78,7 +76,7 @@ luab_if_indextoname(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     ifindex = (u_int)luab_checkinteger(L, 1, INT_MAX);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len >= IFNAMSIZ) &&
@@ -135,7 +133,7 @@ luab_if_nameindex(lua_State *L)
         lua_pushnil(L);
 
         for (ifni = vec; ifni->if_name != NULL; ifni++)
-            luab_rawsetudata(L, 1, &if_nameindex_type, ifni->if_index, ifni);
+            luab_rawsetudata(L, 1, luab_mx(IF_NAMEINDEX), ifni->if_index, ifni);
 
         lua_pop(L, 0);
 
@@ -196,7 +194,7 @@ luab_if_nametoindex(lua_State *L)
 static int
 luab_if_nameindex_create(lua_State *L)
 {
-    return (luab_create(L, 1, &if_nameindex_type, NULL));
+    return (luab_create(L, 1, luab_mx(IF_NAMEINDEX), NULL));
 }
 
 /*

@@ -37,10 +37,10 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
 /* XXX the implementation if this "feature" is incomplete, ... */
 
-extern luab_module_t sockaddr_type;
 extern luab_module_t msghdr_type;
 
 /*
@@ -222,7 +222,7 @@ MSGHDR_get(lua_State *L)
     lua_newtable(L);
 
     if (msg->msg_name != NULL) {
-        luab_setudata(L, -2, &sockaddr_type, "msg_name", msg->msg_name);
+        luab_setudata(L, -2, luab_mx(SOCKADDR), "msg_name", msg->msg_name);
         luab_setinteger(L, -2, "msg_namelen", msg->msg_namelen);
     }
 
@@ -348,7 +348,7 @@ MSGHDR_set_msg_name(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     self = luab_to_msghdr(L, 1);
-    sa = luab_udataisnil(L, 2, &sockaddr_type, struct sockaddr *);
+    sa = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
 
     msg = &(self->msg_hdr);
     buf = &(self->msg_buf[MH_NAME]);
@@ -389,7 +389,7 @@ MSGHDR_get_msg_name(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
-    dst = luab_udata(L, 2, &sockaddr_type, struct sockaddr *);
+    dst = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
 
     if (((src = msg->msg_name) != NULL) &&
         (src->sa_len == msg->msg_namelen)) {

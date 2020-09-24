@@ -199,7 +199,7 @@ const char *    luab_checklstring(lua_State *, int, size_t);
 
 /* (LUA_TUSERDATA(XXX)) */
 #define luab_isdata(L, narg, m, t) \
-    ((t)luaL_testudata((L), (narg), (m)))
+    ((t)luaL_testudata((L), (narg), ((m)->name)))
 #define luab_todata(L, narg, m, t) \
     ((t)luab_checkudata((L), (narg), (m)))
 #define luab_toldata(L, narg, m, t, len) \
@@ -217,7 +217,7 @@ void *  luab_addudata(lua_State *, int, luab_module_t *, int, luab_module_t *);
 
 /* (LUA_TUSERDATA(IOVEC)) */
 #define luab_isiovec(L, narg) \
-    (luab_isdata((L), (narg), iovec_type.name, luab_iovec_t *))
+    (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
 
 const char *    luab_iovec_islxarg(lua_State *, int, size_t);
 const char *    luab_iovec_checklxarg(lua_State *, int, size_t);

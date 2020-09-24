@@ -36,8 +36,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t flock_type;
+#include "luab_types.h"
 
 #define LUABSD_FCNTL_LIB_ID    1593623310
 #define LUABSD_FCNTL_LIB_KEY    "fcntl"
@@ -167,7 +166,7 @@ luab_fcntl(lua_State *L)
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
-            argp = luab_udata(L, narg, &flock_type, struct flock *);
+            argp = luab_udata(L, narg, luab_mx(FLOCK), struct flock *);
         else
             arg = luab_checkinteger(L, narg, INT_MAX);
     }
@@ -311,7 +310,7 @@ luab_posix_fallocate(lua_State *L)
 static int
 luab_flock_create(lua_State *L)
 {
-    return (luab_create(L, 1, &flock_type, NULL));
+    return (luab_create(L, 1, luab_mx(FLOCK), NULL));
 }
 
 /*

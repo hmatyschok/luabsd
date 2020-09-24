@@ -38,8 +38,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t sockaddr_type;
+#include "luab_types.h"
 
 #define LUABSD_NET_IF_DL_LIB_ID    1596382827
 #define LUABSD_NET_IF_DL_LIB_KEY    "if_dl"
@@ -70,7 +69,7 @@ luab_link_addr(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     addr = luab_checklstring(L, 1, LUAB_SDL_MAXDATALEN); /* XXX */
-    sdl = luab_udata(L, 2, &sockaddr_type, struct sockaddr_dl *);
+    sdl = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr_dl *);
 
     link_addr(addr, sdl);
 
@@ -105,8 +104,8 @@ luab_link_ntoa(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    sdl = luab_udata(L, 1, &sockaddr_type, struct sockaddr_dl *);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    sdl = luab_udata(L, 1, luab_mx(SOCKADDR), struct sockaddr_dl *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len >= LUAB_SDL_MAXDATALEN) &&
@@ -161,7 +160,7 @@ luab_sockaddr_dl_create(lua_State *L)
     data = (struct sockaddr *)&sdl;
     luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));
 
-    return (luab_pushudata(L, &sockaddr_type, data));
+    return (luab_pushudata(L, luab_mx(SOCKADDR), data));
 }
 
 /*

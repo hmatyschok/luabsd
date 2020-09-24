@@ -34,9 +34,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t hook_type;
-extern luab_module_t uuid_type;
+#include "luab_types.h"
 
 #define LUABSD_UUID_LIB_ID    1593623310
 #define LUABSD_UUID_LIB_KEY "uuid"
@@ -67,7 +65,7 @@ luab_uuid_create(lua_State *L)
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, &hook_type, luab_type_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_type_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;
@@ -79,7 +77,7 @@ luab_uuid_create(lua_State *L)
     }
     uuid_create(&uuid, status);
     
-    return (luab_pushudata(L, &uuid_type, &uuid));
+    return (luab_pushudata(L, luab_mx(UUID), &uuid));
 }
 
 /***
@@ -105,7 +103,7 @@ luab_uuid_create_nil(lua_State *L)
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, &hook_type, luab_type_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_type_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;
@@ -117,7 +115,7 @@ luab_uuid_create_nil(lua_State *L)
     }
     uuid_create_nil(&uuid, status);
     
-    return (luab_pushudata(L, &uuid_type, &uuid));
+    return (luab_pushudata(L, luab_mx(UUID), &uuid));
 }
 
 /*

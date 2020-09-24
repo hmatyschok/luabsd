@@ -35,6 +35,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
 /*
  * Internal API for (LUA_TUSERDATA(IOVEC)).
@@ -85,7 +86,7 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
             iop.iop_data.iov_len = len;
             iop.iop_data.iov_base = v;
         }
-        status = luab_pushudata(L, &iovec_type, &iop);
+        status = luab_pushudata(L, luab_mx(IOVEC), &iop);
     } else {
         errno = EINVAL;
         status = luab_pushnil(L);
@@ -109,7 +110,7 @@ luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
         iop.iop_data.iov_len = len;
         iop.iop_data.iov_base = v;
 
-        luab_rawsetudata(L, narg, &iovec_type, k, &iop);
+        luab_rawsetudata(L, narg, luab_mx(IOVEC), k, &iop);
     }
 }
 
@@ -125,7 +126,7 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
         iop.iop_data.iov_len = len;
         iop.iop_data.iov_base = v;
 
-        luab_setudata(L, narg, &iovec_type, k, &iop);
+        luab_setudata(L, narg, luab_mx(IOVEC), k, &iop);
     }
 }
 

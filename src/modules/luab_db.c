@@ -39,8 +39,7 @@
 #include "luabsd.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t dbt_type;
-extern luab_module_t db_type;
+#include "luab_types.h"
 #endif
 
 #define LUABSD_DB_LIB_ID    1593623310
@@ -87,7 +86,7 @@ luab_dbopen(lua_State *L)
 
     db = dbopen(file, flags, mode, type, NULL);
 
-    return (luab_pushudata(L, &db_type, db));
+    return (luab_pushudata(L, luab_mx(DB), db));
 }
 
 /*
@@ -111,7 +110,7 @@ luab_dbopen(lua_State *L)
 static int
 luab_dbt_create(lua_State *L)
 {
-    return (luab_create(L, 1, &dbt_type, &iovec_type));
+    return (luab_create(L, 1, luab_mx(DBT), luab_mx(IOVEC)));
 }
 #endif /* __BSD_VISIBLE */
 

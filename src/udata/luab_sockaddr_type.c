@@ -40,9 +40,8 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
-extern luab_module_t in_addr_type;
-extern luab_module_t in6_addr_type;
 extern luab_module_t sockaddr_type;
 
 /*
@@ -169,7 +168,7 @@ sockaddr_in_to_table(lua_State *L, void *arg)
 
     (void)memmove(&sin_addr, &sin->sin_addr, sizeof(sin_addr));
     sin_addr.s_addr = ntohl(sin_addr.s_addr);
-    luab_setudata(L, -2, &in_addr_type, "sin_addr", &sin_addr);
+    luab_setudata(L, -2, luab_mx(IN_ADDR), "sin_addr", &sin_addr);
 
     lua_pushvalue(L, -1);
 }
@@ -190,7 +189,7 @@ sockaddr_in6_to_table(lua_State *L, void *arg)
     luab_setinteger(L, -2, "sin6_flowinfo", ntohl(sin6->sin6_flowinfo));
 
     (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
-    luab_setudata(L, -2, &in6_addr_type, "sin6_addr", &sin6_addr);
+    luab_setudata(L, -2, luab_mx(IN6_ADDR), "sin6_addr", &sin6_addr);
 
     luab_setinteger(L, -2, "sin6_scope_id", ntohl(sin6->sin6_scope_id));
 
@@ -803,7 +802,7 @@ SOCKADDR_set_sin_addr(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     sin = luab_udata(L, 1, &sockaddr_type, struct sockaddr_in *);
-    sin_addr = luab_udata(L, 2, &in_addr_type, struct in_addr *);
+    sin_addr = luab_udata(L, 2, luab_mx(IN_ADDR), struct in_addr *);
 
     if (sin->sin_family == AF_INET) {
         (void)memmove(&sin->sin_addr, sin_addr, sizeof(*sin_addr));
@@ -843,7 +842,7 @@ SOCKADDR_get_sin_addr(lua_State *L)
         (void)memmove(&sin_addr, &sin->sin_addr, sizeof(sin_addr));
         sin_addr.s_addr = ntohl(sin_addr.s_addr);
 
-        if ((*in_addr_type.create)(L, &sin_addr) == NULL)
+        if ((*(luab_mx(IN_ADDR))->create)(L, &sin_addr) == NULL)
             status = luab_pushnil(L);
         else
             status = 1;
@@ -1028,7 +1027,7 @@ SOCKADDR_set_sin6_addr(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     sin6 = luab_udata(L, 1, &sockaddr_type, struct sockaddr_in6 *);
-    sin6_addr = luab_udata(L, 2, &in6_addr_type, struct in6_addr *);
+    sin6_addr = luab_udata(L, 2, luab_mx(IN6_ADDR), struct in6_addr *);
 
     if (sin6->sin6_family == AF_INET6) {
         (void)memmove(&sin6->sin6_addr, sin6_addr, sizeof(*sin6_addr));
@@ -1066,7 +1065,7 @@ SOCKADDR_get_sin6_addr(lua_State *L)
     if (sin6->sin6_family == AF_INET6) {
         (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
 
-        if ((*in6_addr_type.create)(L, &sin6_addr) == NULL)
+        if ((*(luab_mx(IN6_ADDR))->create)(L, &sin6_addr) == NULL)
             status = luab_pushnil(L);
         else
             status = 1;

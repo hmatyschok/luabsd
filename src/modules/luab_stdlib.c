@@ -35,11 +35,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t hook_type;
-extern luab_module_t div_type;
-extern luab_module_t ldiv_type;
-extern luab_module_t lldiv_type;
+#include "luab_types.h"
 
 #define LUABSD_STDLIB_LIB_ID    1593623310
 #define LUABSD_STDLIB_LIB_KEY    "stdlib"
@@ -211,7 +207,7 @@ luab_div(lua_State *L)
 
     data = div(num, denom);
 
-    return (luab_pushudata(L, &div_type, &data));
+    return (luab_pushudata(L, luab_mx(DIV), &data));
 }
 
 /***
@@ -328,7 +324,7 @@ luab_ldiv(lua_State *L)
 
     data = ldiv(num, denom);
 
-    return (luab_pushudata(L, &ldiv_type, &data));
+    return (luab_pushudata(L, luab_mx(LDIV), &data));
 }
 
 /***
@@ -356,7 +352,7 @@ luab_mblen(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
     nbytes = (size_t)luab_checkinteger(L, 2,
 #ifdef  __LP64__
     LONG_MAX
@@ -413,7 +409,7 @@ luab_mbstowcs(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
     mbstring = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
@@ -472,8 +468,8 @@ luab_mbtowc(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    h0 = luab_udata(L, 1, &hook_type, luab_type_u *);
-    h1 = luab_udata(L, 2, &hook_type, luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
+    h1 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -709,7 +705,7 @@ luab_wctomb(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    h0 = luab_udata(L, 1, &hook_type, luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
     wchar = (wchar_t)luab_checkinteger(L, 2, LONG_MAX);
 
     mbchar = &(h0->un_char);
@@ -745,8 +741,8 @@ luab_wcstombs(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    buf1 = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
-    buf2 = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf1 = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    buf2 = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -868,7 +864,7 @@ luab_lldiv(lua_State *L)
 
     data = lldiv(num, denom);
 
-    return (luab_pushudata(L, &lldiv_type, &data));
+    return (luab_pushudata(L, luab_mx(LLDIV), &data));
 }
 
 /***
@@ -1027,7 +1023,7 @@ luab_realpath(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     pathname = luab_checklstring(L, 1, MAXPATHLEN);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len >= MAXPATHLEN) &&
@@ -1079,7 +1075,7 @@ luab_rand_r(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    h0 = luab_udata(L, 1, &hook_type, luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
     ctx = &(h0->un_u_int);
 
     n = rand_r(ctx);
@@ -1295,7 +1291,7 @@ luab_initstate(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     seed = (u_int)luab_checkinteger(L, 1, INT_MAX);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     n = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -1419,7 +1415,7 @@ luab_l64a_r(lua_State *L)
     (void)luab_checkmaxargs(L, 1);
 
     l = luab_checkinteger(L, 1, LONG_MAX);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     buflen = (int)luab_checkinteger(L, 3, INT_MAX);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -1648,7 +1644,7 @@ luab_putenv(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
@@ -1758,7 +1754,7 @@ luab_setstate(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
@@ -1917,7 +1913,7 @@ luab_arc4random_uniform(lua_State *L)
 static int
 luab_div_create(lua_State *L)
 {
-    return (luab_create(L, 1, &div_type, NULL));
+    return (luab_create(L, 1, luab_mx(DIV), NULL));
 }
 
 /***
@@ -1937,7 +1933,7 @@ luab_div_create(lua_State *L)
 static int
 luab_ldiv_create(lua_State *L)
 {
-    return (luab_create(L, 1, &ldiv_type, NULL));
+    return (luab_create(L, 1, luab_mx(LDIV), NULL));
 }
 
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
@@ -1959,7 +1955,7 @@ luab_ldiv_create(lua_State *L)
 static int
 luab_lldiv_create(lua_State *L)
 {
-    return (luab_create(L, 1, &lldiv_type, NULL));
+    return (luab_create(L, 1, luab_mx(LLDIV), NULL));
 }
 #endif /* __LONG_LONG_SUPPORTED */
 #endif /* __ISO_C_VISIBLE >= 1999 */

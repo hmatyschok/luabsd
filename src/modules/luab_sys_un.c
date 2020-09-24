@@ -33,8 +33,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t sockaddr_type;
+#include "luab_types.h"
 
 #define LUABSD_SYS_UN_LIB_ID    1597545462
 #define LUABSD_SYS_UN_LIB_KEY    "un"
@@ -76,7 +75,7 @@ luab_sockaddr_un_create(lua_State *L)
     default:
         break;
     }
-    return (luab_pushudata(L, &sockaddr_type, data));
+    return (luab_pushudata(L, luab_mx(SOCKADDR), data));
 }
 
 /*

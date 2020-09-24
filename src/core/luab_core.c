@@ -458,6 +458,38 @@ static const char *copyright =
     "   28 Jul 2018 12:47:52\n\n"
     "\n";
 
+static void
+luab_populate(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_table_t *tok;
+
+    for (tok = m->vec; tok->key != NULL; tok++) {
+        (void)(*tok->init)(L, &tok->val);
+        lua_setfield(L, narg, tok->key);
+    }
+    lua_pop(L, 0);
+}
+
+static void
+luab_newtable(lua_State *L, int narg, luab_module_t *m)
+{
+    lua_newtable(L);
+    luab_populate(L, narg, m);
+    lua_setfield(L, narg, m->name);
+}
+
+static void
+luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
+{
+    luaL_newmetatable(L, m->name);  /* XXX */
+    lua_pushvalue(L, -1);
+    lua_setfield(L, -2, "__index");
+
+    luab_populate(L, narg, m);
+
+    lua_pop(L, 1);
+}
+
 luab_modulevec_t luab_types[] = {
     {
         .mv_mod = &clockinfo_type,
@@ -565,38 +597,6 @@ luab_modulevec_t luab_types[] = {
         .mv_idx = 0,
     }
 };
-
-static void
-luab_populate(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_table_t *tok;
-
-    for (tok = m->vec; tok->key != NULL; tok++) {
-        (void)(*tok->init)(L, &tok->val);
-        lua_setfield(L, narg, tok->key);
-    }
-    lua_pop(L, 0);
-}
-
-static void
-luab_newtable(lua_State *L, int narg, luab_module_t *m)
-{
-    lua_newtable(L);
-    luab_populate(L, narg, m);
-    lua_setfield(L, narg, m->name);
-}
-
-static void
-luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
-{
-    luaL_newmetatable(L, m->name);  /* XXX */
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
-
-    luab_populate(L, narg, m);
-
-    lua_pop(L, 1);
-}
 
 /*
  * Reflects and maps interface against API over /include.

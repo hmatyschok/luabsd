@@ -37,12 +37,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t hook_type;
-extern luab_module_t iovec_type;
-extern luab_module_t in_addr_type;
-extern luab_module_t in6_addr_type;
-extern luab_module_t sockaddr_type;
+#include "luab_types.h"
 
 #define LUABSD_ARPA_INET_LIB_ID    1595780686
 #define LUABSD_ARPA_INET_LIB_KEY   "inet"
@@ -61,11 +56,11 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
 
     switch (af) {
     case AF_INET:
-        type = &in_addr_type;
+        type = luab_mx(IN_ADDR);
         *len = INET_ADDRSTRLEN;
         break;
     case AF_INET6:
-        type = &in6_addr_type;
+        type = luab_mx(IN6_ADDR);
         *len = INET6_ADDRSTRLEN;
         break;
     default:
@@ -104,7 +99,7 @@ luab_inet_addr(lua_State *L)
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
     ia.s_addr = inet_addr(cp);
 
-    return (luab_pushudata(L, &in_addr_type, &ia));
+    return (luab_pushudata(L, luab_mx(IN_ADDR), &ia));
 }
 
 /***
@@ -129,7 +124,7 @@ luab_inet_ntoa(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
+    ia = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
     cp = inet_ntoa(*ia);
 
     return (luab_pushstring(L, cp));
@@ -170,7 +165,7 @@ luab_inet_ntop(lua_State *L)
 
     af = (int)luab_checkinteger(L, 1, INT_MAX);
     src = luab_checkxaddr(L, 2, af, &size);
-    buf = luab_udata(L, 3, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checkinteger(L, 4,
 #ifdef  __LP64__
     LONG_MAX
@@ -236,7 +231,7 @@ luab_inet_pton(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     af = (int)luab_checkinteger(L, 1, INT_MAX);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
 
     if (((src = buf->iov.iov_base) != NULL) &&
@@ -287,7 +282,7 @@ luab_inet_aton(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
-    pin = luab_udata(L, 2, &in_addr_type, struct in_addr *);
+    pin = luab_udata(L, 2, luab_mx(IN_ADDR), struct in_addr *);
 
     status = inet_aton(cp, pin);
 
@@ -317,10 +312,10 @@ luab_inet_lnaof(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
+    ia = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
     lna.s_addr = inet_lnaof(*ia);
 
-    return (luab_pushudata(L, &in_addr_type, &lna));
+    return (luab_pushudata(L, luab_mx(IN_ADDR), &lna));
 }
 
 /***
@@ -349,12 +344,12 @@ luab_inet_makeaddr(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    net = luab_udata(L, 1, &in_addr_type, struct in_addr *);
-    lna = luab_udata(L, 2, &in_addr_type, struct in_addr *);
+    net = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
+    lna = luab_udata(L, 2, luab_mx(IN_ADDR), struct in_addr *);
 
     ia = inet_makeaddr(net->s_addr, lna->s_addr);
 
-    return (luab_pushudata(L, &in_addr_type, &ia));
+    return (luab_pushudata(L, luab_mx(IN_ADDR), &ia));
 }
 
 /***
@@ -385,8 +380,8 @@ luab_inet_neta(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    src = luab_udata(L, 1, &in_addr_type, struct in_addr *);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    src = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -442,10 +437,10 @@ luab_inet_netof(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
+    ia = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
     net.s_addr = inet_netof(*ia);
 
-    return (luab_pushudata(L, &in_addr_type, &net));
+    return (luab_pushudata(L, luab_mx(IN_ADDR), &net));
 }
 
 /***
@@ -473,7 +468,7 @@ luab_inet_network(lua_State *L)
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
     ia.s_addr = inet_network(cp);
 
-    return (luab_pushudata(L, &in_addr_type, &ia));
+    return (luab_pushudata(L, luab_mx(IN_ADDR), &ia));
 }
 
 /***
@@ -514,7 +509,7 @@ luab_inet_net_ntop(lua_State *L)
     af = (int)luab_checkinteger(L, 1, INT_MAX);
     src = luab_checkxaddr(L, 2, af, &size);
     bits = (int)luab_checkinteger(L, 3, UINT_MAX);
-    buf = luab_udata(L, 4, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 4, luab_mx(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checkinteger(L, 5,
 #ifdef  __LP64__
     LONG_MAX
@@ -581,7 +576,7 @@ luab_inet_net_pton(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     af = (int)luab_checkinteger(L, 1, INT_MAX);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
     size = (size_t)luab_checkinteger(L, 4,
 #ifdef  __LP64__
@@ -641,8 +636,8 @@ luab_inet_ntoa_r(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    in = luab_udata(L, 1, &in_addr_type, struct in_addr *);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    in = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -714,7 +709,7 @@ luab_inet_cidr_ntop(lua_State *L)
     af = (int)luab_checkinteger(L, 1, INT_MAX);
     src = luab_checkxaddr(L, 2, af, &size);
     bits = (int)luab_checkinteger(L, 3, UINT_MAX);
-    buf = luab_udata(L, 4, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 4, luab_mx(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checkinteger(L, 5,
 #ifdef  __LP64__
     LONG_MAX
@@ -784,9 +779,9 @@ luab_inet_cidr_pton(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     af = (int)luab_checkinteger(L, 1, INT_MAX);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
-    un = luab_udata(L, 4, &hook_type, luab_type_u *);
+    un = luab_udata(L, 4, luab_mx(HOOK), luab_type_u *);
     bits = &(un->un_int);
 
     if (((src = buf->iov.iov_base) != NULL) &&
@@ -833,7 +828,7 @@ luab_inet_cidr_pton(lua_State *L)
 static int
 luab_in_addr_create(lua_State *L)
 {
-    return (luab_create(L, 1, &in_addr_type, NULL));
+    return (luab_create(L, 1, luab_mx(IN_ADDR), NULL));
 }
 
 /***
@@ -853,7 +848,7 @@ luab_in_addr_create(lua_State *L)
 static int
 luab_in6_addr_create(lua_State *L)
 {
-    return (luab_create(L, 1, &in6_addr_type, NULL));
+    return (luab_create(L, 1, luab_mx(IN6_ADDR), NULL));
 }
 
 /*
@@ -888,7 +883,7 @@ luab_sockaddr_in_create(lua_State *L)
 
     switch (luab_checkmaxargs(L, 2)) {     /* FALLTHROUGH */
     case 2:
-        addr = luab_udata(L, 2, &in_addr_type, struct in_addr *);
+        addr = luab_udata(L, 2, luab_mx(IN_ADDR), struct in_addr *);
         (void)memmove(&sin.sin_addr, addr, sizeof(sin.sin_addr));
     case 1:
         sin.sin_port = (in_port_t)luab_checkinteger(L, 1, SHRT_MAX);
@@ -897,7 +892,7 @@ luab_sockaddr_in_create(lua_State *L)
         sin.sin_port = htons(sin.sin_port);
         break;
     }
-    return (luab_pushudata(L, &sockaddr_type, data));
+    return (luab_pushudata(L, luab_mx(SOCKADDR), data));
 }
 
 /***
@@ -932,7 +927,7 @@ luab_sockaddr_in6_create(lua_State *L)
     case 4:
         sin6.sin6_scope_id = (uint32_t)luab_checkinteger(L, 4, INT_MAX);
     case 3:
-        addr = luab_udata(L, 3, &in6_addr_type, struct in6_addr *);
+        addr = luab_udata(L, 3, luab_mx(IN6_ADDR), struct in6_addr *);
         (void)memmove(&sin6.sin6_addr, addr, sizeof(sin6.sin6_addr));
     case 2:
         sin6.sin6_flowinfo = (uint32_t)luab_checkinteger(L, 2, INT_MAX);
@@ -944,7 +939,7 @@ luab_sockaddr_in6_create(lua_State *L)
         sin6.sin6_port = htons(sin6.sin6_port);
         break;
     }
-    return (luab_pushudata(L, &sockaddr_type, data));
+    return (luab_pushudata(L, luab_mx(SOCKADDR), data));
 }
 
 /*
