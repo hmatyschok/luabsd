@@ -31,11 +31,11 @@
 #include <sys/socket.h>
 #include <sys/queue.h>
 
-__BEGIN_DECLS
 /*
  * Definitiions for API method table.
  */
 
+__BEGIN_DECLS
 typedef union luab_type {
     char        un_char;
     short       un_short;
@@ -255,6 +255,7 @@ void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
  */
 
 int luab_checktable(lua_State *, int);
+int luab_checktableisnil(lua_State *, int);
 size_t  luab_checkltable(lua_State *, int, size_t);
 void *  luab_newvector(lua_State *, int, size_t);
 void *  luab_newlvector(lua_State *, int, size_t, size_t);

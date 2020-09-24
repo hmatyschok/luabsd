@@ -46,6 +46,15 @@ luab_checktable(lua_State *L, int narg)
     return (lua_rawlen(L, narg));
 }
 
+int
+luab_checktableisnil(lua_State *L, int narg)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (0);
+
+    return (luab_checktable(L, narg));
+}
+
 size_t
 luab_checkltable(lua_State *L, int narg, size_t len)
 {
