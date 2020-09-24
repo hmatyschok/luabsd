@@ -490,6 +490,18 @@ luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
     lua_pop(L, 1);
 }
 
+/* Vector-table for interface against <arpa/xxx.h>. */
+static luab_modulevec_t luab_arpa_vec[] = {
+    {
+        .mv_mod = &luab_arpa_inet_lib,
+		.mv_init = luab_newtable,
+    },{
+        .mv_mod = NULL,
+		.mv_init = NULL,
+		.mv_idx = 0,
+    }
+};
+
 /* Vector-table over (LUA_TUSERDATA(XXX)) */
 luab_modulevec_t luab_typevec[] = {
     {
@@ -615,6 +627,18 @@ luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec,
         lua_setfield(L, narg, name);
 }
 
+static void
+luab_registerlib(lua_State *L, int narg, luab_modulevec_t *vec, const char *name)
+{
+    luab_initmodule(L, narg, vec, name, 1);
+}
+
+static void
+luab_registertype(lua_State *L, int narg, luab_modulevec_t *vec)
+{
+    luab_initmodule(L, narg, vec, NULL, 0);
+}
+
 /*
  * Reflects and maps interface against API over /include.
  *
@@ -626,10 +650,12 @@ luaopen_bsd(lua_State *L)
     (void)printf("%s", copyright);
 
     lua_newtable(L);                /* XXX */
-
+/*
     lua_newtable(L);
     luab_newtable(L, -2, &luab_arpa_inet_lib);
     lua_setfield(L, -2, "arpa");
+ */
+    luab_registerlib(L, -2, luab_arpa_vec, "arpa");
 
     lua_newtable(L);
     luab_newtable(L, -2, &luab_net_if_dl_lib);
@@ -658,7 +684,7 @@ luaopen_bsd(lua_State *L)
     lua_pushvalue(L, -1);
 
     /* register complex data-types. */
-    luab_initmodule(L, -2, luab_typevec, NULL, 0);
+    luab_registertype(L, -2, luab_typevec);
 
     return (1);
 }
