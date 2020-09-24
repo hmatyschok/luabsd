@@ -197,7 +197,7 @@ const char *    luab_islstring(lua_State *, int, size_t);
 const char *    luab_tolstring(lua_State *, int, size_t);
 const char *    luab_checklstring(lua_State *, int, size_t);
 
-/* (LUA_TUSERDATA(XXX)) */
+/* (LUA_TUSERDATA(XXX)). */
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), ((m)->name)))
 #define luab_todata(L, narg, m, t) \
@@ -209,10 +209,47 @@ const char *    luab_checklstring(lua_State *, int, size_t);
 #define luab_udataisnil(L, narg, m, t) \
     ((t)(luab_checkudataisnil((L), (narg), (m))))
 
-void *  luab_checkudata(lua_State *, int, luab_module_t *);
-void *  luab_toudata(lua_State *, int, luab_module_t *);
+static __inline void *
+luab_checkudata(lua_State *L, int narg, luab_module_t *m)
+{
+    if (m == NULL)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    return (luaL_checkudata(L, narg, m->name));
+}
+
+static __inline void *
+luab_isudata(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *ud = luab_isdata(L, narg, m, luab_udata_t *);
+
+    if (ud == NULL)
+        return (NULL);
+
+    return (ud + 1);
+}
+
+static __inline void *
+luab_toudata(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
+
+    return (ud + 1);
+}
+
+static __inline void *
+luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (NULL);
+
+    if (m != NULL && m->get != NULL)
+        return ((*m->get)(L, narg));
+
+    return (NULL);
+}
+
 void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
-void *  luab_checkudataisnil(lua_State *, int, luab_module_t *);
 void *  luab_addudata(lua_State *, int, luab_module_t *, int, luab_module_t *);
 
 /* (LUA_TUSERDATA(IOVEC)) */

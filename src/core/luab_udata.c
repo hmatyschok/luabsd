@@ -88,23 +88,6 @@ luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
  */
 
 void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
-{
-    if (m == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    return (luaL_checkudata(L, narg, m->name));
-}
-
-void *
-luab_toudata(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
-
-    return (ud + 1);
-}
-
-void *
 luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     luab_iovec_t *iov;
@@ -124,19 +107,7 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
     return (buf);
 }
 
-void *
-luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (NULL);
-
-    if (m != NULL && m->get != NULL)
-        return ((*m->get)(L, narg));
-
-    return (NULL);
-}
-
-/* XXX experimental feature for developement of bindings. */
+/* XXX experimental "feature" for developement of bindings. */
 void *
 luab_addudata(lua_State *L, int narg, luab_module_t *m, int xarg,
     luab_module_t *x)
