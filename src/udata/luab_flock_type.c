@@ -95,12 +95,12 @@ FLOCK_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "l_start", l->l_start);
-    luab_setinteger(L, -2, "l_len", l->l_len);
-    luab_setinteger(L, -2, "l_pid", l->l_pid);
-    luab_setinteger(L, -2, "l_type", l->l_type);
-    luab_setinteger(L, -2, "l_whence", l->l_whence);
-    luab_setinteger(L, -2, "l_sysid", l->l_sysid);
+    luab_setinteger(L, -2, "l_start",   l->l_start);
+    luab_setinteger(L, -2, "l_len",     l->l_len);
+    luab_setinteger(L, -2, "l_pid",     l->l_pid);
+    luab_setinteger(L, -2, "l_type",    l->l_type);
+    luab_setinteger(L, -2, "l_whence",  l->l_whence);
+    luab_setinteger(L, -2, "l_sysid",   l->l_sysid);
 
     lua_pushvalue(L, -1);
 
@@ -342,15 +342,15 @@ static luab_table_t flock_methods[] = {
     LUABSD_FUNC("set_l_type",   FLOCK_set_l_type),
     LUABSD_FUNC("set_l_whence", FLOCK_set_l_whence),
     LUABSD_FUNC("set_l_sysid",  FLOCK_set_l_sysid),
-    LUABSD_FUNC("get",  FLOCK_get),
+    LUABSD_FUNC("get",          FLOCK_get),
     LUABSD_FUNC("get_l_start",  FLOCK_get_l_start),
     LUABSD_FUNC("get_l_len",    FLOCK_get_l_len),
     LUABSD_FUNC("get_l_pid",    FLOCK_get_l_pid),
     LUABSD_FUNC("get_l_type",   FLOCK_get_l_type),
     LUABSD_FUNC("get_l_whence", FLOCK_get_l_whence),
     LUABSD_FUNC("get_l_sysid",  FLOCK_get_l_sysid),
-    LUABSD_FUNC("dump", FLOCK_dump),
-    LUABSD_FUNC("__gc", FLOCK_gc),
+    LUABSD_FUNC("dump",         FLOCK_dump),
+    LUABSD_FUNC("__gc",         FLOCK_gc),
     LUABSD_FUNC("__tostring",   FLOCK_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

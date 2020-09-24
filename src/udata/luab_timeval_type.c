@@ -87,8 +87,8 @@ TIMEVAL_get(lua_State *L)
     tv = luab_udata(L, 1, &timeval_type, struct timeval *);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
-    luab_setinteger(L, -2, "tv_usec", tv->tv_usec);
+    luab_setinteger(L, -2, "tv_sec",    tv->tv_sec);
+    luab_setinteger(L, -2, "tv_usec",   tv->tv_usec);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -251,11 +251,11 @@ TIMEVAL_tostring(lua_State *L)
 static luab_table_t timeval_methods[] = {
     LUABSD_FUNC("set_tv_sec",   TIMEVAL_set_tv_sec),
     LUABSD_FUNC("set_tv_usec",  TIMEVAL_set_tv_usec),
-    LUABSD_FUNC("get",  TIMEVAL_get),
+    LUABSD_FUNC("get",          TIMEVAL_get),
     LUABSD_FUNC("get_tv_sec",   TIMEVAL_get_tv_sec),
     LUABSD_FUNC("get_tv_usec",  TIMEVAL_get_tv_usec),
-    LUABSD_FUNC("dump", TIMEVAL_dump),
-    LUABSD_FUNC("__gc", TIMEVAL_gc),
+    LUABSD_FUNC("dump",         TIMEVAL_dump),
+    LUABSD_FUNC("__gc",         TIMEVAL_gc),
     LUABSD_FUNC("__tostring",   TIMEVAL_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

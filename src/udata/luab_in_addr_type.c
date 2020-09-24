@@ -190,11 +190,11 @@ IN_ADDR_tostring(lua_State *L)
  */
 
 static luab_table_t in_addr_methods[] = {
-    LUABSD_FUNC("set_s_addr",  IN_ADDR_set_s_addr),
-    LUABSD_FUNC("get",  IN_ADDR_get),
-    LUABSD_FUNC("get_s_addr",  IN_ADDR_get_s_addr),
-    LUABSD_FUNC("dump", IN_ADDR_dump),
-    LUABSD_FUNC("__gc", IN_ADDR_gc),
+    LUABSD_FUNC("set_s_addr",   IN_ADDR_set_s_addr),
+    LUABSD_FUNC("get",          IN_ADDR_get),
+    LUABSD_FUNC("get_s_addr",   IN_ADDR_get_s_addr),
+    LUABSD_FUNC("dump",         IN_ADDR_dump),
+    LUABSD_FUNC("__gc",         IN_ADDR_gc),
     LUABSD_FUNC("__tostring",   IN_ADDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

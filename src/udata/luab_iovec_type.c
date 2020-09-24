@@ -35,9 +35,9 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
+/*
 extern luab_module_t iovec_type;
-
+*/
 /*
  * Interface against
  *
@@ -170,10 +170,10 @@ IOVEC_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setldata(L, -2, "iov_base", self->iov.iov_base, self->iov.iov_len);
-    luab_setinteger(L, -2, "iov_len", self->iov.iov_len);
-    luab_setinteger(L, -2, "iov_max_len", self->iov_max_len);
-    luab_setinteger(L, -2, "iov_flags", self->iov_flags);
+    luab_setldata(L, -2, "iov_base",    self->iov.iov_base, self->iov.iov_len);
+    luab_setinteger(L, -2, "iov_len",       self->iov.iov_len);
+    luab_setinteger(L, -2, "iov_max_len",   self->iov_max_len);
+    luab_setinteger(L, -2, "iov_flags",     self->iov_flags);
 
     lua_pushvalue(L, -1);
 
@@ -564,19 +564,19 @@ IOVEC_tostring(lua_State *L)
  */
 
 static luab_table_t iovec_methods[] = {
-    LUABSD_FUNC("get",  IOVEC_get),
-    LUABSD_FUNC("len",  IOVEC_len),
-    LUABSD_FUNC("max_len",  IOVEC_max_len),
-    LUABSD_FUNC("clear",    IOVEC_clear),
-    LUABSD_FUNC("clone",    IOVEC_clone),
-    LUABSD_FUNC("copy_in",  IOVEC_copy_in),
-    LUABSD_FUNC("copy_out",  IOVEC_copy_out),
-    LUABSD_FUNC("resize",   IOVEC_resize),
-    LUABSD_FUNC("read", IOVEC_read),
-    LUABSD_FUNC("write",    IOVEC_write),
-    LUABSD_FUNC("recv", IOVEC_recv),
-    LUABSD_FUNC("send", IOVEC_send),
-    LUABSD_FUNC("__gc", IOVEC_gc),
+    LUABSD_FUNC("get",          IOVEC_get),
+    LUABSD_FUNC("len",          IOVEC_len),
+    LUABSD_FUNC("max_len",      IOVEC_max_len),
+    LUABSD_FUNC("clear",        IOVEC_clear),
+    LUABSD_FUNC("clone",        IOVEC_clone),
+    LUABSD_FUNC("copy_in",      IOVEC_copy_in),
+    LUABSD_FUNC("copy_out",     IOVEC_copy_out),
+    LUABSD_FUNC("resize",       IOVEC_resize),
+    LUABSD_FUNC("read",         IOVEC_read),
+    LUABSD_FUNC("write",        IOVEC_write),
+    LUABSD_FUNC("recv",         IOVEC_recv),
+    LUABSD_FUNC("send",         IOVEC_send),
+    LUABSD_FUNC("__gc",         IOVEC_gc),
     LUABSD_FUNC("__tostring",   IOVEC_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

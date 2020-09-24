@@ -257,14 +257,14 @@ CRYPT_DATA_tostring(lua_State *L)
  */
 
 static luab_table_t crypt_data_methods[] = {
-    LUABSD_FUNC("set_initialized",   CRYPT_DATA_set_initialized),
-    LUABSD_FUNC("set_buf",   CRYPT_DATA_set_buf),
-    LUABSD_FUNC("get",  CRYPT_DATA_get),
-    LUABSD_FUNC("get_initialized",   CRYPT_DATA_get_initialized),
-    LUABSD_FUNC("get_buf",   CRYPT_DATA_get_buf),
-    LUABSD_FUNC("dump", CRYPT_DATA_dump),
-    LUABSD_FUNC("__gc", CRYPT_DATA_gc),
-    LUABSD_FUNC("__tostring",   CRYPT_DATA_tostring),
+    LUABSD_FUNC("set_initialized",  CRYPT_DATA_set_initialized),
+    LUABSD_FUNC("set_buf",          CRYPT_DATA_set_buf),
+    LUABSD_FUNC("get",              CRYPT_DATA_get),
+    LUABSD_FUNC("get_initialized",  CRYPT_DATA_get_initialized),
+    LUABSD_FUNC("get_buf",          CRYPT_DATA_get_buf),
+    LUABSD_FUNC("dump",             CRYPT_DATA_dump),
+    LUABSD_FUNC("__gc",             CRYPT_DATA_gc),
+    LUABSD_FUNC("__tostring",       CRYPT_DATA_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

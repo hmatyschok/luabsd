@@ -87,8 +87,8 @@ TIMEZONE_get(lua_State *L)
     tz = luab_udata(L, 1, &timezone_type, struct timezone *);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "tz_minuteswest", tz->tz_minuteswest);
-    luab_setinteger(L, -2, "tz_dsttime", tz->tz_dsttime);
+    luab_setinteger(L, -2, "tz_minuteswest",    tz->tz_minuteswest);
+    luab_setinteger(L, -2, "tz_dsttime",        tz->tz_dsttime);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -250,13 +250,13 @@ TIMEZONE_tostring(lua_State *L)
 
 static luab_table_t timezone_methods[] = {
     LUABSD_FUNC("set_tz_minuteswest",   TIMEZONE_set_tz_minuteswest),
-    LUABSD_FUNC("set_tz_dsttime",   TIMEZONE_set_tz_dsttime),
-    LUABSD_FUNC("get",  TIMEZONE_get),
+    LUABSD_FUNC("set_tz_dsttime",       TIMEZONE_set_tz_dsttime),
+    LUABSD_FUNC("get",                  TIMEZONE_get),
     LUABSD_FUNC("get_tz_minuteswest",   TIMEZONE_get_tz_minuteswest),
-    LUABSD_FUNC("get_tz_dsttime",   TIMEZONE_get_tz_dsttime),
-    LUABSD_FUNC("dump", TIMEZONE_dump),
-    LUABSD_FUNC("__gc", TIMEZONE_gc),
-    LUABSD_FUNC("__tostring",   TIMEZONE_tostring),
+    LUABSD_FUNC("get_tz_dsttime",       TIMEZONE_get_tz_dsttime),
+    LUABSD_FUNC("dump",                 TIMEZONE_dump),
+    LUABSD_FUNC("__gc",                 TIMEZONE_gc),
+    LUABSD_FUNC("__tostring",           TIMEZONE_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

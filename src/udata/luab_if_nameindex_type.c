@@ -88,8 +88,8 @@ IF_NAMEINDEX_get(lua_State *L)
     ifni = luab_udata(L, 1, &if_nameindex_type, struct if_nameindex *);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "if_index", ifni->if_index);
-    luab_setstring(L, -2, "if_name", ifni->if_name);
+    luab_setinteger(L, -2, "if_index",  ifni->if_index);
+    luab_setstring(L, -2, "if_name",    ifni->if_name);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -172,10 +172,10 @@ IF_NAMEINDEX_tostring(lua_State *L)
  */
 
 static luab_table_t if_nameindex_methods[] = {
-    LUABSD_FUNC("if_index",   IF_NAMEINDEX_if_index),
-    LUABSD_FUNC("if_name",  IF_NAMEINDEX_if_name),
-    LUABSD_FUNC("get",  IF_NAMEINDEX_get),
-    LUABSD_FUNC("__gc", IF_NAMEINDEX_gc),
+    LUABSD_FUNC("if_index",     IF_NAMEINDEX_if_index),
+    LUABSD_FUNC("if_name",      IF_NAMEINDEX_if_name),
+    LUABSD_FUNC("get",          IF_NAMEINDEX_get),
+    LUABSD_FUNC("__gc",         IF_NAMEINDEX_gc),
     LUABSD_FUNC("__tostring",   IF_NAMEINDEX_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

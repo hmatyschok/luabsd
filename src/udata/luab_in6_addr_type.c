@@ -214,10 +214,10 @@ IN6_ADDR_tostring(lua_State *L)
 
 static luab_table_t in6_addr_methods[] = {
     LUABSD_FUNC("set_s6_addr",  IN6_ADDR_set_s6_addr),
-    LUABSD_FUNC("get",  IN6_ADDR_get),
+    LUABSD_FUNC("get",          IN6_ADDR_get),
     LUABSD_FUNC("get_s6_addr",  IN6_ADDR_get_s6_addr),
-    LUABSD_FUNC("dump", IN6_ADDR_dump),
-    LUABSD_FUNC("__gc", IN6_ADDR_gc),
+    LUABSD_FUNC("dump",         IN6_ADDR_dump),
+    LUABSD_FUNC("__gc",         IN6_ADDR_gc),
     LUABSD_FUNC("__tostring",   IN6_ADDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

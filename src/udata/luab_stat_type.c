@@ -33,8 +33,8 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
-extern luab_module_t timespec_type;
 extern luab_module_t stat_type;
 
 /*
@@ -147,22 +147,22 @@ STAT_get(lua_State *L)
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_atim_ext", st->st_atim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_atim", &st->st_atim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_atim", &st->st_atim);
 
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_mtim_ext", st->st_mtim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_mtim", &st->st_mtim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_mtim", &st->st_mtim);
 
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_ctim_ext", st->st_ctim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_ctim", &st->st_ctim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_ctim", &st->st_ctim);
 
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_btim_ext", st->st_btim_ext);
 #endif
-    luab_setudata(L, -2, &timespec_type, "st_birthtim", &st->st_birthtim);
+    luab_setudata(L, -2, luab_mx(TIMESPEC), "st_birthtim", &st->st_birthtim);
 
     luab_setinteger(L, -2, "st_size", st->st_size);
     luab_setinteger(L, -2, "st_blocks", st->st_blocks);
@@ -456,7 +456,7 @@ STAT_set_st_atim(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
-    tv = luab_udata(L, 2, &timespec_type, struct timespec *);
+    tv = luab_udata(L, 2, luab_mx(TIMESPEC), struct timespec *);
 
     (void)memmove(&st->st_atim, tv, sizeof(*tv));
 
@@ -473,7 +473,7 @@ STAT_get_st_atim(lua_State *L)
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
 
-    if ((*timespec_type.create)(L, &st->st_atim) == NULL)
+    if ((*(luab_mx(TIMESPEC))->create)(L, &st->st_atim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -523,7 +523,7 @@ STAT_set_st_mtim(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
-    tv = luab_udata(L, 2, &timespec_type, struct timespec *);
+    tv = luab_udata(L, 2, luab_mx(TIMESPEC), struct timespec *);
 
     (void)memmove(&st->st_mtim, tv, sizeof(*tv));
 
@@ -540,7 +540,7 @@ STAT_get_st_mtim(lua_State *L)
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
 
-    if ((*timespec_type.create)(L, &st->st_mtim) == NULL)
+    if ((*(luab_mx(TIMESPEC))->create)(L, &st->st_mtim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -590,7 +590,7 @@ STAT_set_st_ctim(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
-    tv = luab_udata(L, 2, &timespec_type, struct timespec *);
+    tv = luab_udata(L, 2, luab_mx(TIMESPEC), struct timespec *);
 
     (void)memmove(&st->st_ctim, tv, sizeof(*tv));
 
@@ -607,7 +607,7 @@ STAT_get_st_ctim(lua_State *L)
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
 
-    if ((*timespec_type.create)(L, &st->st_ctim) == NULL)
+    if ((*(luab_mx(TIMESPEC))->create)(L, &st->st_ctim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;
@@ -657,7 +657,7 @@ STAT_set_st_birthtim(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
-    tv = luab_udata(L, 2, &timespec_type, struct timespec *);
+    tv = luab_udata(L, 2, luab_mx(TIMESPEC), struct timespec *);
 
     (void)memmove(&st->st_birthtim, tv, sizeof(*tv));
 
@@ -674,7 +674,7 @@ STAT_get_st_birthtim(lua_State *L)
 
     st = luab_udata(L, 1, &stat_type, struct stat *);
 
-    if ((*timespec_type.create)(L, &st->st_birthtim) == NULL)
+    if ((*(luab_mx(TIMESPEC))->create)(L, &st->st_birthtim) == NULL)
         status = luab_pushnil(L);
     else
         status = 1;

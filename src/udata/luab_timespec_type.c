@@ -87,8 +87,8 @@ TIMESPEC_get(lua_State *L)
     tv = luab_udata(L, 1, &timespec_type, struct timespec *);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "tv_sec", tv->tv_sec);
-    luab_setinteger(L, -2, "tv_nsec", tv->tv_nsec);
+    luab_setinteger(L, -2, "tv_sec",    tv->tv_sec);
+    luab_setinteger(L, -2, "tv_nsec",   tv->tv_nsec);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -251,11 +251,11 @@ TIMESPEC_tostring(lua_State *L)
 static luab_table_t timespec_methods[] = {
     LUABSD_FUNC("set_tv_sec",   TIMESPEC_set_tv_sec),
     LUABSD_FUNC("set_tv_nsec",  TIMESPEC_set_tv_nsec),
-    LUABSD_FUNC("get",  TIMESPEC_get),
+    LUABSD_FUNC("get",          TIMESPEC_get),
     LUABSD_FUNC("get_tv_sec",   TIMESPEC_get_tv_sec),
     LUABSD_FUNC("get_tv_nsec",  TIMESPEC_get_tv_nsec),
-    LUABSD_FUNC("dump", TIMESPEC_dump),
-    LUABSD_FUNC("__gc", TIMESPEC_gc),
+    LUABSD_FUNC("dump",         TIMESPEC_dump),
+    LUABSD_FUNC("__gc",         TIMESPEC_gc),
     LUABSD_FUNC("__tostring",   TIMESPEC_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

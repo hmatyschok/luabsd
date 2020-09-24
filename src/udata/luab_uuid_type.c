@@ -97,7 +97,7 @@ UUID_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "time_low", uuid->time_low);
+    luab_setinteger(L, -2, "time_low",  uuid->time_low);
     luab_setinteger(L, -2, "time_mid", uuid->time_mid);
     luab_setinteger(L, -2, "time_hi_and_version",
         uuid->time_hi_and_version);

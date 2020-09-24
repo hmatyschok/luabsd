@@ -87,8 +87,8 @@ LINGER_get(lua_State *L)
     l = luab_udata(L, 1, &linger_type, struct linger *);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "l_onoff", l->l_onoff);
-    luab_setinteger(L, -2, "l_linger", l->l_linger);
+    luab_setinteger(L, -2, "l_onoff",   l->l_onoff);
+    luab_setinteger(L, -2, "l_linger",  l->l_linger);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -251,11 +251,11 @@ LINGER_tostring(lua_State *L)
 static luab_table_t linger_methods[] = {
     LUABSD_FUNC("set_l_onoff",  LINGER_set_l_onoff),
     LUABSD_FUNC("set_l_linger", LINGER_set_l_linger),
-    LUABSD_FUNC("get",  LINGER_get),
+    LUABSD_FUNC("get",          LINGER_get),
     LUABSD_FUNC("get_l_onoff",  LINGER_get_l_onoff),
     LUABSD_FUNC("get_l_linger", LINGER_get_l_linger),
-    LUABSD_FUNC("dump", LINGER_dump),
-    LUABSD_FUNC("__gc", LINGER_gc),
+    LUABSD_FUNC("dump",         LINGER_dump),
+    LUABSD_FUNC("__gc",         LINGER_gc),
     LUABSD_FUNC("__tostring",   LINGER_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

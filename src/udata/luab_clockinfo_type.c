@@ -94,10 +94,10 @@ CLOCKINIFO_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "hz", ci->hz);
-    luab_setinteger(L, -2, "tick", ci->tick);
-    luab_setinteger(L, -2, "stathz", ci->stathz);
-    luab_setinteger(L, -2, "profhz", ci->stathz);
+    luab_setinteger(L, -2, "hz",        ci->hz);
+    luab_setinteger(L, -2, "tick",      ci->tick);
+    luab_setinteger(L, -2, "stathz",    ci->stathz);
+    luab_setinteger(L, -2, "profhz",    ci->stathz);
 
     lua_pushvalue(L, -1);
 
@@ -371,17 +371,17 @@ CLOCKINIFO_tostring(lua_State *L)
  */
 
 static luab_table_t clockinfo_methods[] = {
-    LUABSD_FUNC("set_hz",   CLOCKINIFO_set_hz),
+    LUABSD_FUNC("set_hz",       CLOCKINIFO_set_hz),
     LUABSD_FUNC("set_tickc",    CLOCKINIFO_set_tick),
     LUABSD_FUNC("set_stathz",   CLOCKINIFO_set_stathz),
     LUABSD_FUNC("set_profhz",   CLOCKINIFO_set_profhz),
-    LUABSD_FUNC("get",  CLOCKINIFO_get),
-    LUABSD_FUNC("get_hz",  CLOCKINIFO_get_hz),
-    LUABSD_FUNC("get_tick", CLOCKINIFO_get_tick),
+    LUABSD_FUNC("get",          CLOCKINIFO_get),
+    LUABSD_FUNC("get_hz",       CLOCKINIFO_get_hz),
+    LUABSD_FUNC("get_tick",     CLOCKINIFO_get_tick),
     LUABSD_FUNC("get_stathz",   CLOCKINIFO_get_stathz),
     LUABSD_FUNC("get_profhz",   CLOCKINIFO_get_profhz),
-    LUABSD_FUNC("dump", CLOCKINIFO_dump),
-    LUABSD_FUNC("__gc", CLOCKINIFO_gc),
+    LUABSD_FUNC("dump",         CLOCKINIFO_dump),
+    LUABSD_FUNC("__gc",         CLOCKINIFO_gc),
     LUABSD_FUNC("__tostring",   CLOCKINIFO_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

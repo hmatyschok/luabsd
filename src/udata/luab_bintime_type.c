@@ -87,8 +87,8 @@ BINTIME_get(lua_State *L)
     bt = luab_udata(L, 1, &bintime_type, struct bintime *);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "sec", bt->sec);
-    luab_setinteger(L, -2, "frac", bt->frac);
+    luab_setinteger(L, -2, "sec",   bt->sec);
+    luab_setinteger(L, -2, "frac",  bt->frac);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -249,13 +249,13 @@ BINTIME_tostring(lua_State *L)
  */
 
 static luab_table_t bintime_methods[] = {
-    LUABSD_FUNC("set_sec",  BINTIME_set_sec),
-    LUABSD_FUNC("set_frac", BINTIME_set_frac),
-    LUABSD_FUNC("get",  BINTIME_get),
-    LUABSD_FUNC("get_sec",  BINTIME_get_sec),
-    LUABSD_FUNC("get_frac", BINTIME_get_frac),
-    LUABSD_FUNC("dump", BINTIME_dump),
-    LUABSD_FUNC("__gc", BINTIME_gc),
+    LUABSD_FUNC("set_sec",      BINTIME_set_sec),
+    LUABSD_FUNC("set_frac",     BINTIME_set_frac),
+    LUABSD_FUNC("get",          BINTIME_get),
+    LUABSD_FUNC("get_sec",      BINTIME_get_sec),
+    LUABSD_FUNC("get_frac",     BINTIME_get_frac),
+    LUABSD_FUNC("dump",         BINTIME_dump),
+    LUABSD_FUNC("__gc",         BINTIME_gc),
     LUABSD_FUNC("__tostring",   BINTIME_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

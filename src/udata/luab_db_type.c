@@ -37,8 +37,8 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
-extern luab_module_t dbt_type;
 extern luab_module_t db_type;
 
 /*
@@ -150,7 +150,7 @@ DB_del(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, &dbt_type, DBT *);
+        k = luab_udata(L, 2, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 3, INT_MAX);
 
         status = (*db->del)(db, k, flags);
@@ -215,8 +215,8 @@ DB_get(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, &dbt_type, DBT *);
-        v = luab_udata(L, 3, &dbt_type, DBT *);
+        k = luab_udata(L, 2, luab_mx(DBT), DBT *);
+        v = luab_udata(L, 3, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (*db->get)(db, k, v, flags);
@@ -258,8 +258,8 @@ DB_put(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, &dbt_type, DBT *);
-        v = luab_udata(L, 3, &dbt_type, DBT *);
+        k = luab_udata(L, 2, luab_mx(DBT), DBT *);
+        v = luab_udata(L, 3, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (*db->put)(db, k, v, flags);
@@ -300,8 +300,8 @@ DB_seq(lua_State *L)
     (void)luab_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, &dbt_type, DBT *);
-        v = luab_udata(L, 3, &dbt_type, DBT *);
+        k = luab_udata(L, 2, luab_mx(DBT), DBT *);
+        v = luab_udata(L, 3, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
 
         status = (*db->seq)(db, k, v, flags);
@@ -389,15 +389,15 @@ DB_tostring(lua_State *L)
  */
 
 static luab_table_t db_methods[] = {
-    LUABSD_FUNC("close",  DB_close),
-    LUABSD_FUNC("del",    DB_del),
-    LUABSD_FUNC("get",    DB_get),
-    LUABSD_FUNC("fd", DB_fd),
-    LUABSD_FUNC("put",    DB_put),
-    LUABSD_FUNC("seq",    DB_seq),
-    LUABSD_FUNC("sync",   DB_sync),
-    LUABSD_FUNC("__gc",   DB_gc),
-    LUABSD_FUNC("__tostring", DB_tostring),
+    LUABSD_FUNC("close",        DB_close),
+    LUABSD_FUNC("del",          DB_del),
+    LUABSD_FUNC("get",          DB_get),
+    LUABSD_FUNC("fd",           DB_fd),
+    LUABSD_FUNC("put",          DB_put),
+    LUABSD_FUNC("seq",          DB_seq),
+    LUABSD_FUNC("sync",         DB_sync),
+    LUABSD_FUNC("__gc",         DB_gc),
+    LUABSD_FUNC("__tostring",   DB_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

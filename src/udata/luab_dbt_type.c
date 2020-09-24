@@ -34,8 +34,8 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
-extern luab_module_t iovec_type;
 extern luab_module_t dbt_type;
 
 /*
@@ -153,8 +153,8 @@ DBT_get(lua_State *L)
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
 
     lua_newtable(L);
-    luab_setiovec(L, -2, "data", dbt->data, dbt->size);
-    luab_setinteger(L, -2, "size", dbt->size);
+    luab_setiovec(L, -2, "data",    dbt->data, dbt->size);
+    luab_setinteger(L, -2, "size",  dbt->size);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -191,11 +191,11 @@ DBT_tostring(lua_State *L)
  */
 
 static luab_table_t dbt_methods[] = {
-    LUABSD_FUNC("set_data",  DBT_set_data),
-    LUABSD_FUNC("get",  DBT_get),
-    LUABSD_FUNC("get_data",  DBT_get_data),
-    LUABSD_FUNC("get_size",  DBT_get_size),
-    LUABSD_FUNC("__gc", DBT_gc),
+    LUABSD_FUNC("set_data",     DBT_set_data),
+    LUABSD_FUNC("get",          DBT_get),
+    LUABSD_FUNC("get_data",     DBT_get_data),
+    LUABSD_FUNC("get_size",     DBT_get_size),
+    LUABSD_FUNC("__gc",         DBT_gc),
     LUABSD_FUNC("__tostring",   DBT_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

@@ -86,8 +86,8 @@ DIV_get(lua_State *L)
     div = luab_udata(L, 1, &div_type, div_t *);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "quot", div->quot);
-    luab_setinteger(L, -2, "rem", div->rem);
+    luab_setinteger(L, -2, "quot",  div->quot);
+    luab_setinteger(L, -2, "rem",   div->rem);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -248,13 +248,13 @@ DIV_tostring(lua_State *L)
  */
 
 static luab_table_t div_methods[] = {
-    LUABSD_FUNC("set_quot",   DIV_set_quot),
-    LUABSD_FUNC("set_rem",    DIV_set_rem),
-    LUABSD_FUNC("get",  DIV_get),
-    LUABSD_FUNC("get_quot",  DIV_get_quot),
-    LUABSD_FUNC("get_rem", DIV_get_rem),
-    LUABSD_FUNC("dump", DIV_dump),
-    LUABSD_FUNC("__gc", DIV_gc),
+    LUABSD_FUNC("set_quot",     DIV_set_quot),
+    LUABSD_FUNC("set_rem",      DIV_set_rem),
+    LUABSD_FUNC("get",          DIV_get),
+    LUABSD_FUNC("get_quot",     DIV_get_quot),
+    LUABSD_FUNC("get_rem",      DIV_get_rem),
+    LUABSD_FUNC("dump",         DIV_dump),
+    LUABSD_FUNC("__gc",         DIV_gc),
     LUABSD_FUNC("__tostring",   DIV_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
