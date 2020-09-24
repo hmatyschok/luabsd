@@ -118,11 +118,11 @@ sockaddr_to_table(lua_State *L, void *arg)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "sa_len", sa->sa_len);
+    luab_setinteger(L, -2, "sa_len",    sa->sa_len);
     luab_setinteger(L, -2, "sa_family", sa->sa_family);
 
     len = sa->sa_len - sizeof(u_char) - sizeof(sa_family_t);
-    luab_setldata(L, -2, "sa_data", sa->sa_data, len);
+    luab_setldata(L, -2, "sa_data",     sa->sa_data, len);
 
     lua_pushvalue(L, -1);
 }
@@ -137,14 +137,14 @@ sockaddr_dl_to_table(lua_State *L, void *arg)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "sdl_len", sdl->sdl_len);
-    luab_setinteger(L, -2, "sdl_family", sdl->sdl_family);
+    luab_setinteger(L, -2, "sdl_len",       sdl->sdl_len);
+    luab_setinteger(L, -2, "sdl_family",    sdl->sdl_family);
 
-    luab_setinteger(L, -2, "sdl_index", sdl->sdl_index);
-    luab_setinteger(L, -2, "sdl_type", sdl->sdl_type);
-    luab_setinteger(L, -2, "sdl_nlen", sdl->sdl_nlen);
-    luab_setinteger(L, -2, "sdl_alen", sdl->sdl_alen);
-    luab_setinteger(L, -2, "sdl_slen", sdl->sdl_slen);
+    luab_setinteger(L, -2, "sdl_index",     sdl->sdl_index);
+    luab_setinteger(L, -2, "sdl_type",      sdl->sdl_type);
+    luab_setinteger(L, -2, "sdl_nlen",      sdl->sdl_nlen);
+    luab_setinteger(L, -2, "sdl_alen",      sdl->sdl_alen);
+    luab_setinteger(L, -2, "sdl_slen",      sdl->sdl_slen);
 
     len = sdl->sdl_nlen + sdl->sdl_alen + sdl->sdl_slen;
     luab_setldata(L, -2, "sdl_data", sdl->sdl_data, len);
@@ -162,9 +162,9 @@ sockaddr_in_to_table(lua_State *L, void *arg)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "sin_len", sin->sin_len);
-    luab_setinteger(L, -2, "sin_family", sin->sin_family);
-    luab_setinteger(L, -2, "sin_port", ntohs(sin->sin_port));
+    luab_setinteger(L, -2, "sin_len",       sin->sin_len);
+    luab_setinteger(L, -2, "sin_family",    sin->sin_family);
+    luab_setinteger(L, -2, "sin_port",      ntohs(sin->sin_port));
 
     (void)memmove(&sin_addr, &sin->sin_addr, sizeof(sin_addr));
     sin_addr.s_addr = ntohl(sin_addr.s_addr);
@@ -183,9 +183,9 @@ sockaddr_in6_to_table(lua_State *L, void *arg)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "sin6_len", sin6->sin6_len);
-    luab_setinteger(L, -2, "sin6_family", sin6->sin6_family);
-    luab_setinteger(L, -2, "sin6_port", ntohs(sin6->sin6_port));
+    luab_setinteger(L, -2, "sin6_len",      sin6->sin6_len);
+    luab_setinteger(L, -2, "sin6_family",   sin6->sin6_family);
+    luab_setinteger(L, -2, "sin6_port",     ntohs(sin6->sin6_port));
     luab_setinteger(L, -2, "sin6_flowinfo", ntohl(sin6->sin6_flowinfo));
 
     (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
@@ -205,9 +205,9 @@ sockaddr_un_to_table(lua_State *L, void *arg)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "sun_len", sun->sun_len);
-    luab_setinteger(L, -2, "sun_family", sun->sun_family);
-    luab_setstring(L, -2, "sun_path", sun->sun_path);
+    luab_setinteger(L, -2, "sun_len",       sun->sun_len);
+    luab_setinteger(L, -2, "sun_family",    sun->sun_family);
+    luab_setstring(L, -2, "sun_path",       sun->sun_path);
 
     lua_pushvalue(L, -1);
 }
@@ -841,11 +841,7 @@ SOCKADDR_get_sin_addr(lua_State *L)
     if (sin->sin_family == AF_INET) {
         (void)memmove(&sin_addr, &sin->sin_addr, sizeof(sin_addr));
         sin_addr.s_addr = ntohl(sin_addr.s_addr);
-
-        if ((*(luab_mx(IN_ADDR))->create)(L, &sin_addr) == NULL)
-            status = luab_pushnil(L);
-        else
-            status = 1;
+        status = luab_pushudata(L, luab_mx(IN_ADDR), &sin_addr);
     } else {
         errno = EPERM;
         status = luab_pushnil(L);
@@ -1064,11 +1060,7 @@ SOCKADDR_get_sin6_addr(lua_State *L)
 
     if (sin6->sin6_family == AF_INET6) {
         (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
-
-        if ((*(luab_mx(IN6_ADDR))->create)(L, &sin6_addr) == NULL)
-            status = luab_pushnil(L);
-        else
-            status = 1;
+        status = luab_pushudata(L, luab_mx(IN6_ADDR), &sin6_addr);
     } else {
         errno = EPERM;
         status = luab_pushnil(L);
@@ -1243,35 +1235,35 @@ SOCKADDR_tostring(lua_State *L)
  */
 
 static luab_table_t sockaddr_methods[] = {
-    LUABSD_FUNC("sa_len",   SOCKADDR_sa_len),
-    LUABSD_FUNC("sa_family",  SOCKADDR_sa_family),
-    LUABSD_FUNC("sdl_slen", SOCKADDR_sdl_slen),
-    LUABSD_FUNC("set_sdl_index",    SOCKADDR_set_sdl_index),
-    LUABSD_FUNC("set_sdl_type",    SOCKADDR_set_sdl_type),
-    LUABSD_FUNC("set_sdl_nlen",    SOCKADDR_set_sdl_nlen),
-    LUABSD_FUNC("set_sdl_alen",    SOCKADDR_set_sdl_alen),
-    LUABSD_FUNC("set_sin_port", SOCKADDR_set_sin_port),
-    LUABSD_FUNC("set_sin_addr", SOCKADDR_set_sin_addr),
-    LUABSD_FUNC("set_sin6_port",    SOCKADDR_set_sin6_port),
+    LUABSD_FUNC("sa_len",               SOCKADDR_sa_len),
+    LUABSD_FUNC("sa_family",            SOCKADDR_sa_family),
+    LUABSD_FUNC("sdl_slen",             SOCKADDR_sdl_slen),
+    LUABSD_FUNC("set_sdl_index",        SOCKADDR_set_sdl_index),
+    LUABSD_FUNC("set_sdl_type",         SOCKADDR_set_sdl_type),
+    LUABSD_FUNC("set_sdl_nlen",         SOCKADDR_set_sdl_nlen),
+    LUABSD_FUNC("set_sdl_alen",         SOCKADDR_set_sdl_alen),
+    LUABSD_FUNC("set_sin_port",         SOCKADDR_set_sin_port),
+    LUABSD_FUNC("set_sin_addr",         SOCKADDR_set_sin_addr),
+    LUABSD_FUNC("set_sin6_port",        SOCKADDR_set_sin6_port),
     LUABSD_FUNC("set_sin6_flowinfo",    SOCKADDR_set_sin6_flowinfo),
-    LUABSD_FUNC("set_sin6_addr",    SOCKADDR_set_sin6_addr),
+    LUABSD_FUNC("set_sin6_addr",        SOCKADDR_set_sin6_addr),
     LUABSD_FUNC("set_sin6_scope_id",    SOCKADDR_set_sin6_scope_id),
-    LUABSD_FUNC("set_sun_path", SOCKADDR_set_sun_path),
-    LUABSD_FUNC("get",  SOCKADDR_get),
-    LUABSD_FUNC("get_sdl_index",    SOCKADDR_get_sdl_index),
-    LUABSD_FUNC("get_sdl_type",    SOCKADDR_get_sdl_type),
-    LUABSD_FUNC("get_sdl_nlen",    SOCKADDR_get_sdl_nlen),
-    LUABSD_FUNC("get_sdl_alen",    SOCKADDR_get_sdl_alen),
-    LUABSD_FUNC("get_sin_port", SOCKADDR_get_sin_port),
-    LUABSD_FUNC("get_sin_addr", SOCKADDR_get_sin_addr),
-    LUABSD_FUNC("get_sin6_port",    SOCKADDR_get_sin6_port),
+    LUABSD_FUNC("set_sun_path",         SOCKADDR_set_sun_path),
+    LUABSD_FUNC("get",                  SOCKADDR_get),
+    LUABSD_FUNC("get_sdl_index",        SOCKADDR_get_sdl_index),
+    LUABSD_FUNC("get_sdl_type",         SOCKADDR_get_sdl_type),
+    LUABSD_FUNC("get_sdl_nlen",         SOCKADDR_get_sdl_nlen),
+    LUABSD_FUNC("get_sdl_alen",         SOCKADDR_get_sdl_alen),
+    LUABSD_FUNC("get_sin_port",         SOCKADDR_get_sin_port),
+    LUABSD_FUNC("get_sin_addr",         SOCKADDR_get_sin_addr),
+    LUABSD_FUNC("get_sin6_port",        SOCKADDR_get_sin6_port),
     LUABSD_FUNC("get_sin6_flowinfo",    SOCKADDR_get_sin6_flowinfo),
-    LUABSD_FUNC("get_sin6_addr",    SOCKADDR_get_sin6_addr),
+    LUABSD_FUNC("get_sin6_addr",        SOCKADDR_get_sin6_addr),
     LUABSD_FUNC("get_sin6_scope_id",    SOCKADDR_get_sin6_scope_id),
-    LUABSD_FUNC("get_sun_path", SOCKADDR_get_sun_path),
-    LUABSD_FUNC("dump", SOCKADDR_dump),
-    LUABSD_FUNC("__gc", SOCKADDR_gc),
-    LUABSD_FUNC("__tostring",   SOCKADDR_tostring),
+    LUABSD_FUNC("get_sun_path",         SOCKADDR_get_sun_path),
+    LUABSD_FUNC("dump",                 SOCKADDR_dump),
+    LUABSD_FUNC("__gc",                 SOCKADDR_gc),
+    LUABSD_FUNC("__tostring",           SOCKADDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 
