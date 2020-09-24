@@ -37,12 +37,6 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-extern luab_module_t hook_type;
-extern luab_module_t linger_type;
-extern luab_module_t msghdr_type;
-extern luab_module_t sockaddr_type;
-extern luab_module_t timespec_type;
-
 #define LUABSD_SYS_SOCKET_LIB_ID    1594740107
 #define LUABSD_SYS_SOCKET_LIB_KEY   "socket"
 
@@ -69,7 +63,7 @@ luab_checkmsgvec(lua_State *L, int narg)
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isnumber(L, -1) != 0)) {
-            msg = luab_udata(L, -1, &msghdr_type, struct msghdr *);
+            msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
             (void)memmove(&(vec[k].msg_hdr), msg, sizeof(struct msghdr));
         } else {
             free(vec);
@@ -600,7 +594,7 @@ luab_recvmsg(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
-    msg = luab_udata(L, 2, &msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 2, luab_mx(MSGHDR), struct msghdr *);
     flags = (int)luab_checkinteger(L, 3, INT_MAX);
 
     if ((msg->msg_iov != NULL) &&
@@ -659,7 +653,7 @@ luab_recvmmsg(lua_State *L)
 #endif
     );
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
-    timeout = luab_udataisnil(L, 5, &timespec_type, struct timespec *);
+    timeout = luab_udataisnil(L, 5, luab_mx(TIMESPEC), struct timespec *);
 
     count = recvmmsg(s, msgvec, vlen, flags, timeout);
 
@@ -799,7 +793,7 @@ luab_sendmsg(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
-    msg = luab_udata(L, 2, &msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 2, luab_mx(MSGHDR), struct msghdr *);
     flags = (int)luab_checkinteger(L, 3, INT_MAX);
 
     if ((msg->msg_iov != NULL) &&
@@ -886,7 +880,7 @@ luab_sendmmsg(lua_State *L)
 static int
 luab_linger_create(lua_State *L)
 {
-    return (luab_create(L, 1, &linger_type, NULL));
+    return (luab_create(L, 1, luab_mx(LINGER), NULL));
 }
 
 /***
@@ -926,7 +920,7 @@ luab_sockaddr_create(lua_State *L)
 static int
 luab_msghdr_create(lua_State *L)
 {
-    return (luab_create(L, 0, &msghdr_type, NULL));
+    return (luab_create(L, 0, luab_mx(MSGHDR), NULL));
 }
 
 /*

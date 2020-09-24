@@ -35,8 +35,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
-extern luab_module_t tm_type;
+#include "luab_types.h"
 
 #define LUABSD_TIME_LIB_ID    1594167179
 #define LUABSD_TIME_LIB_KEY    "time"
@@ -64,7 +63,7 @@ extern luab_module_t luab_time_lib;
 static int
 luab_tm_create(lua_State *L)
 {
-    return (luab_create(L, 1, &tm_type, NULL));
+    return (luab_create(L, 1, luab_mx(TM), NULL));
 }
 
 /*
