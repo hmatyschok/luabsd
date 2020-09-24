@@ -503,7 +503,7 @@ static luab_modulevec_t luab_arpa_vec[] = {
 };
 
 /* Vector-table for interface against <if/xxx.h>. */
-static luab_modulevec_t luab_if_vec[] = {
+static luab_modulevec_t luab_net_vec[] = {
     {
         .mv_mod = &luab_net_if_dl_lib,
         .mv_init = luab_newtable,
@@ -728,7 +728,7 @@ luaopen_bsd(lua_State *L)
     lua_newtable(L);
 
     luab_registerlib(L, -2, luab_arpa_vec, "arpa");
-    luab_registerlib(L, -2, luab_if_vec, "net");
+    luab_registerlib(L, -2, luab_net_vec, "net");
     luab_registerlib(L, -2, luab_sys_vec, "sys");
     luab_registerlib(L, -2, luab_core_vec, NULL);
 
