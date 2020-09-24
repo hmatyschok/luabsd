@@ -42,6 +42,8 @@
 
 extern luab_module_t luab_stdlib_lib;
 
+#define LUAB_ABORT2_MAXBUFLEN    128
+
 /*
  * Service primitives.
  */
@@ -1864,8 +1866,11 @@ luab_unlockpt(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __XSI_VISIBLE */
-
 #if __BSD_VISIBLE
+
+
+
+
 static int
 luab_arc4random(lua_State *L)
 {
@@ -2037,6 +2042,7 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("unlockpt",             luab_unlockpt),
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
+    
     LUABSD_FUNC("arc4random",           luab_arc4random),
     LUABSD_FUNC("arc4random_uniform",   luab_arc4random_uniform),
 #endif

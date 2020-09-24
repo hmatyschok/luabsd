@@ -254,9 +254,12 @@ void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
  * Accessor, (LUA_TTABLE), [stack -> C].
  */
 
-int luab_checktable(lua_State *, int);
-int luab_checktableisnil(lua_State *, int);
+size_t  luab_checktable(lua_State *, int);
+size_t  luab_checktableisnil(lua_State *, int);
+
 size_t  luab_checkltable(lua_State *, int, size_t);
+size_t  luab_checkltableisnil(lua_State *, int, size_t);
+
 void *  luab_newvector(lua_State *, int, size_t);
 void *  luab_newlvector(lua_State *, int, size_t, size_t);
 

@@ -25,7 +25,7 @@
  */
 
 /*
- * Set of xxx_type(3).
+ * xxx_type(3) set.
  */
 
 extern luab_module_t clockinfo_type;
@@ -55,7 +55,7 @@ extern luab_module_t crypt_data_type;
 #endif
 
 /*
- * Set of xxx_lib(3).
+ * xxx_lib(3) set.
  */
 
 extern luab_module_t luab_arpa_inet_lib;

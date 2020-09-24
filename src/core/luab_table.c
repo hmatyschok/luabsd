@@ -37,7 +37,7 @@
  * Generic vector operations, [stack -> C].
  */
 
-int
+size_t
 luab_checktable(lua_State *L, int narg)
 {
     if (lua_istable(L, narg) == 0)
@@ -46,7 +46,7 @@ luab_checktable(lua_State *L, int narg)
     return (lua_rawlen(L, narg));
 }
 
-int
+size_t
 luab_checktableisnil(lua_State *L, int narg)
 {
     if (lua_isnil(L, narg) != 0)
@@ -64,6 +64,15 @@ luab_checkltable(lua_State *L, int narg, size_t len)
         luaL_argerror(L, narg, "Size mismatch");
 
     return (n);
+}
+
+size_t
+luab_checkltableisnil(lua_State *L, int narg, size_t len)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (0);
+
+    return (luab_checkltable(L, narg, len));
 }
 
 /* Allocate an array by cardinality of given table. */
@@ -107,12 +116,10 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t size)
 const char **
 luab_checkargv(lua_State *L, int narg)
 {
-    const char **argv;
     size_t n;
+    const char **argv;
 
-    luab_checktable(L, narg);
-
-    if ((n = lua_rawlen(L, narg)) == 0) /* XXX */
+    if ((n = luab_checktable(L, narg)) == 0)
         luaL_argerror(L, narg, "Empty table");
 
     if ((argv = calloc((n + 1), sizeof(*argv))) == NULL)
@@ -141,7 +148,7 @@ luab_checkargv(lua_State *L, int narg)
  */
 
 /*
- * Translate an array by (LUA_TTABLE) into an array of numbers.
+ * Translate an array by (LUA_TTABLE) into an array of specific data types.
  *
  * XXX DRY will be replaced by so called boiler-plate code.
  */
