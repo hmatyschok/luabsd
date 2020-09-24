@@ -428,7 +428,7 @@ luab_hook_create(lua_State *L)
     return (luab_pushudata(L, &hook_type, data));
 }
 
-static luab_table_t luab_core_vec[] = {
+static luab_table_t luab_core_util_vec[] = {
     LUABSD_FUNC("uuid",    luab_uuid),
     LUABSD_FUNC("hook_create",   luab_hook_create),
     LUABSD_FUNC(NULL, NULL)
@@ -437,7 +437,7 @@ static luab_table_t luab_core_vec[] = {
 luab_module_t luab_core_lib = {
     .cookie = LUABSD_CORE_LIB_ID,
     .name = LUABSD_CORE_LIB_KEY,
-    .vec = luab_core_vec,
+    .vec = luab_core_util_vec,
 };
 
 /*
@@ -494,11 +494,89 @@ luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
 static luab_modulevec_t luab_arpa_vec[] = {
     {
         .mv_mod = &luab_arpa_inet_lib,
-		.mv_init = luab_newtable,
+        .mv_init = luab_newtable,
     },{
         .mv_mod = NULL,
-		.mv_init = NULL,
-		.mv_idx = 0,
+        .mv_init = NULL,
+        .mv_idx = 0,
+    }
+};
+
+/* Vector-table for interface against <if/xxx.h>. */
+static luab_modulevec_t luab_if_vec[] = {
+    {
+        .mv_mod = &luab_net_if_dl_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_net_if_lib,
+        .mv_init = luab_populate,
+    },{
+        .mv_mod = NULL,
+        .mv_init = NULL,
+        .mv_idx = 0,
+    }
+};
+
+/* Vector-table for interface against <sys/xxx.h>. */
+static luab_modulevec_t luab_sys_vec[] = {
+    {
+        .mv_mod = &luab_sys_file_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_sys_stat_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_sys_time_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_sys_uio_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_sys_un_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_sys_unistd_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_sys_reboot_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_sys_socket_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = NULL,
+        .mv_init = NULL,
+        .mv_idx = 0,
+    }
+};
+
+/* Vector-table for interface against <xxx.h> or <core>. */
+static luab_modulevec_t luab_core_vec[] = {
+    {
+        .mv_mod = &luab_core_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_db_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_fcntl_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_stdlib_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_time_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_unistd_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_uuid_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = NULL,
+        .mv_init = NULL,
+        .mv_idx = 0,
     }
 };
 
@@ -506,102 +584,102 @@ static luab_modulevec_t luab_arpa_vec[] = {
 luab_modulevec_t luab_typevec[] = {
     {
         .mv_mod = &clockinfo_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_CLOCKINFO_IDX,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_CLOCKINFO_IDX,
     },{
         .mv_mod = &div_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_DIV_IDX,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_DIV_IDX,
     },{
-		.mv_mod = &flock_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_FLOCK_IDX,
+        .mv_mod = &flock_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_FLOCK_IDX,
     },{
-		.mv_mod = &hook_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_HOOK_IDX,
+        .mv_mod = &hook_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_HOOK_IDX,
     },{
-		.mv_mod = &if_nameindex_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_IF_NAMEINDEX_IDX,
+        .mv_mod = &if_nameindex_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_IF_NAMEINDEX_IDX,
     },{
-		.mv_mod = &in_addr_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_IN_ADDR_IDX,
+        .mv_mod = &in_addr_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_IN_ADDR_IDX,
     },{
-		.mv_mod = &in6_addr_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_IN6_ADDR_IDX,
+        .mv_mod = &in6_addr_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_IN6_ADDR_IDX,
     },{
-		.mv_mod = &itimerval_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_ITIMERVAL_IDX,
+        .mv_mod = &itimerval_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_ITIMERVAL_IDX,
     },{
-		.mv_mod = &ldiv_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_LDIV_IDX,
+        .mv_mod = &ldiv_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_LDIV_IDX,
     },{
-		.mv_mod = &lldiv_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_LLDIV_IDX,
+        .mv_mod = &lldiv_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_LLDIV_IDX,
     },{
-		.mv_mod = &linger_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_LINGER_IDX,
+        .mv_mod = &linger_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_LINGER_IDX,
     },{
-		.mv_mod = &msghdr_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_MSGHDR_IDX,
+        .mv_mod = &msghdr_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_MSGHDR_IDX,
     },{
-		.mv_mod = &sockaddr_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_SOCKADDR_IDX,
+        .mv_mod = &sockaddr_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_SOCKADDR_IDX,
     },{
-		.mv_mod = &stat_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_STAT_IDX,
+        .mv_mod = &stat_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_STAT_IDX,
     },{
-		.mv_mod = &timespec_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_TIMESPEC_IDX,
+        .mv_mod = &timespec_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_TIMESPEC_IDX,
     },{
-		.mv_mod = &timeval_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_TIMEVAL_IDX,
+        .mv_mod = &timeval_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_TIMEVAL_IDX,
     },{
-		.mv_mod = &timezone_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_TIMEZONE_IDX,
+        .mv_mod = &timezone_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_TIMEZONE_IDX,
     },{
-		.mv_mod = &tm_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_TM_IDX,
+        .mv_mod = &tm_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_TM_IDX,
     },{
-		.mv_mod = &uuid_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_UUID_IDX,
+        .mv_mod = &uuid_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_UUID_IDX,
     },{
-		.mv_mod = &iovec_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_IOVEC_IDX,
+        .mv_mod = &iovec_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_IOVEC_IDX,
     },
 #if __BSD_VISIBLE
     {
-		.mv_mod = &dbt_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_DBT_IDX,
+        .mv_mod = &dbt_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_DBT_IDX,
     },{
-		.mv_mod = &db_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_DB_IDX,
+        .mv_mod = &db_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_DB_IDX,
     },{
-		.mv_mod = &bintime_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_BINTIME_IDX,
+        .mv_mod = &bintime_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_BINTIME_IDX,
     },{
-		.mv_mod = &crypt_data_type,
-		.mv_init = luab_newmetatable,
-		.mv_idx = LUAB_CRYPT_DATA_IDX,
+        .mv_mod = &crypt_data_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_CRYPT_DATA_IDX,
     },
 #endif
     {
@@ -617,7 +695,7 @@ luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec,
 {
     luab_modulevec_t *mv;
 
-    if (new != 0)
+    if (name != NULL && new != 0)
         lua_newtable(L);
 
     for (mv = vec; mv->mv_mod != NULL; mv++)
@@ -640,46 +718,19 @@ luab_registertype(lua_State *L, int narg, luab_modulevec_t *vec)
 }
 
 /*
- * Reflects and maps interface against API over /include.
- *
- * XXX Well, this will be refactored (partially), soon.
+ * Reflects and maps interface against API over </include/>.
  */
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
     (void)printf("%s", copyright);
 
-    lua_newtable(L);                /* XXX */
-/*
     lua_newtable(L);
-    luab_newtable(L, -2, &luab_arpa_inet_lib);
-    lua_setfield(L, -2, "arpa");
- */
+
     luab_registerlib(L, -2, luab_arpa_vec, "arpa");
-
-    lua_newtable(L);
-    luab_newtable(L, -2, &luab_net_if_dl_lib);
-    luab_populate(L, -2, &luab_net_if_lib);
-    lua_setfield(L, -2, "net");
-
-    lua_newtable(L);
-    luab_newtable(L, -2, &luab_sys_file_lib);
-    luab_newtable(L, -2, &luab_sys_stat_lib);
-    luab_newtable(L, -2, &luab_sys_time_lib);
-    luab_newtable(L, -2, &luab_sys_uio_lib);
-    luab_newtable(L, -2, &luab_sys_un_lib);
-    luab_newtable(L, -2, &luab_sys_unistd_lib);
-    luab_newtable(L, -2, &luab_sys_reboot_lib);
-    luab_newtable(L, -2, &luab_sys_socket_lib);
-    lua_setfield(L, -2, "sys");
-
-    luab_newtable(L, -2, &luab_core_lib);
-    luab_newtable(L, -2, &luab_db_lib);
-    luab_newtable(L, -2, &luab_fcntl_lib);
-    luab_newtable(L, -2, &luab_stdlib_lib);
-    luab_newtable(L, -2, &luab_time_lib);
-    luab_newtable(L, -2, &luab_unistd_lib);
-    luab_newtable(L, -2, &luab_uuid_lib);
+    luab_registerlib(L, -2, luab_if_vec, "net");
+    luab_registerlib(L, -2, luab_sys_vec, "sys");
+    luab_registerlib(L, -2, luab_core_vec, NULL);
 
     lua_pushvalue(L, -1);
 
