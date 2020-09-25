@@ -51,9 +51,14 @@
 #define LUAB_CRYPT_DATA_IDX     23
 #endif
 
+/*
+ * Accessor, [name -> luab_module]
+ */
+
 #define luab_idx(name) \
     (LUAB_##name##_IDX)
 #define luab_mx(name) \
     (luab_typevec[luab_idx(name)].mv_mod)
 
 extern luab_modulevec_t luab_typevec[];
+

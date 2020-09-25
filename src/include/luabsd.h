@@ -302,6 +302,8 @@ void *  luab_newlvector(lua_State *, int, size_t, size_t);
 
 const char **    luab_checkargv(lua_State *, int);
 
+const void ** luab_table_tolxargp(lua_State *, int, size_t);
+
 u_short *   luab_table_checklu_short(lua_State *, int, size_t);
 int *   luab_table_checklint(lua_State *, int, size_t);
 gid_t * luab_table_checklgid(lua_State *, int, size_t);

@@ -1867,9 +1867,39 @@ luab_unlockpt(lua_State *L)
 }
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
+/***
+ * abort2(2) - abort process with diagnostics
+ *
+ * @function abort2
+ *
+ * @param why               Descriptive string idicates reason.
+ * @param nargs             Cardinality of args.
+ * @param args              Instance of (LUA_TTABLE).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.abort2(fildes)
+ */
+static int
+luab_abort2(lua_State *L)
+{
+    const char *why;
+    int nargs;
+    const void **args;
 
+    (void)luab_checkmaxargs(L, 3);
 
+    why = luab_checklstring(L, 1, LUAB_ABORT2_MAXBUFLEN);
+    nargs = luab_checkinteger(L, 2, INT_MAX);
+    args = luab_table_tolxargp(L, 3, nargs);
 
+    abort2(why, nargs, (void **)(intptr_t *)args);
+        /* NOTREACHED */
+    return (luab_pusherr(L, 0));
+}
 
 static int
 luab_arc4random(lua_State *L)
@@ -2042,7 +2072,7 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("unlockpt",             luab_unlockpt),
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
-    
+    LUABSD_FUNC("abort2",               luab_abort2),
     LUABSD_FUNC("arc4random",           luab_arc4random),
     LUABSD_FUNC("arc4random_uniform",   luab_arc4random_uniform),
 #endif

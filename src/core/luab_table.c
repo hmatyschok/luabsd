@@ -137,6 +137,7 @@ luab_checkargv(lua_State *L, int narg)
         } else {
             free(argv);
             luaL_argerror(L, narg, "Invalid argument");
+                /* NOTREACHED */
         }
         lua_pop(L, 1);
     }
@@ -146,6 +147,38 @@ luab_checkargv(lua_State *L, int narg)
 /*
  * Accessor, [stack -> C].
  */
+
+const void **
+luab_table_tolxargp(lua_State *L, int narg, size_t len)
+{
+    size_t n;
+    const void **argv;
+
+    if ((n = luab_checkltableisnil(L, narg, len)) != 0) {
+        if ((argv = calloc(n, sizeof(void *))) == NULL)
+            luaL_argerror(L, narg, "Cannot allocate memory");
+
+        lua_pushnil(L);
+
+        for (n = 0; lua_next(L, narg) != 0; n++) {
+            /*
+             * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TXXX)
+             */
+            if ((lua_isnumber(L, -2) != 0) &&
+                (lua_type(L, -1) != -1)) {
+                argv[n] = lua_topointer(L, -1);
+            } else {
+                free(argv);
+                luaL_argerror(L, narg, "Invalid argument");
+                /* NOTREACHED */
+            }
+            lua_pop(L, 1);
+        }
+    } else
+        argv = NULL;
+
+    return (argv);
+}
 
 /*
  * Translate an array by (LUA_TTABLE) into an array of specific data types.
@@ -172,6 +205,7 @@ luab_table_checklu_short(lua_State *L, int narg, size_t len)
         } else {
             free(vec);
             luaL_argerror(L, narg, "Invalid argument");
+                /* NOTREACHED */
         }
         lua_pop(L, 1);
     }
@@ -196,6 +230,7 @@ luab_table_checklint(lua_State *L, int narg, size_t len)
         } else {
             free(vec);
             luaL_argerror(L, narg, "Invalid argument");
+                /* NOTREACHED */
         }
         lua_pop(L, 1);
     }
@@ -221,6 +256,7 @@ luab_table_checklgid(lua_State *L, int narg, size_t len)
         } else {
             free(vec);
             luaL_argerror(L, narg, "Invalid argument");
+                /* NOTREACHED */
         }
         lua_pop(L, 1);
     }
@@ -232,7 +268,7 @@ luab_table_checklgid(lua_State *L, int narg, size_t len)
  */
 
 /*
- * Populate an array by (LUA_TTABLE) with items from an array of gid_t items.
+ * Populate an array by (LUA_TTABLE) with elemts from an array of gid_t.
  */
 void
 luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new)
@@ -252,4 +288,3 @@ luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new
         lua_pop(L, 0);
     }
 }
-

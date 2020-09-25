@@ -44,7 +44,7 @@ may be created by utilizing
     buf_key:copy_in(key)
     buf_value:copy_in(value)
 
-buffer maps to a set of data base thang
+buffer maps to a set of (so called) data base thang
 
     local dbt_key = bsd.db.dbt_create(buf_key)
     local dbt_value = bsd.db.dbt_create(buf_value)
@@ -156,7 +156,7 @@ by
         print("")
     end
 
-utilizing instaces of LUA_TTABLES:
+utilizing instances of LUA_TTABLES:
 
     local sb = bsd.sys.stat.stat_create()
     fd, err, msg = db:fd()
