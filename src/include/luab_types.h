@@ -52,7 +52,7 @@
 #endif
 
 /*
- * Accessor, [name -> luab_module]
+ * Accessor, [idx(name) -> luab_module]
  */
 
 #define luab_idx(name) \

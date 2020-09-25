@@ -291,11 +291,43 @@ void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
  * Accessor, (LUA_TTABLE), [stack -> C].
  */
 
-size_t  luab_checktable(lua_State *, int);
-size_t  luab_checktableisnil(lua_State *, int);
+static __inline size_t
+luab_checktable(lua_State *L, int narg)
+{
+    if (lua_istable(L, narg) == 0)
+        luaL_argerror(L, narg, "Table expected");
 
-size_t  luab_checkltable(lua_State *, int, size_t);
-size_t  luab_checkltableisnil(lua_State *, int, size_t);
+    return (lua_rawlen(L, narg));
+}
+
+static __inline size_t
+luab_checktableisnil(lua_State *L, int narg)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (0);
+
+    return (luab_checktable(L, narg));
+}
+
+static __inline size_t
+luab_checkltable(lua_State *L, int narg, size_t len)
+{
+    size_t n;
+
+    if ((n = luab_checktable(L, narg)) != len)
+        luaL_argerror(L, narg, "Size mismatch");
+
+    return (len);
+}
+
+static __inline size_t
+luab_checkltableisnil(lua_State *L, int narg, size_t len)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (0);
+
+    return (luab_checkltable(L, narg, len));
+}
 
 void *  luab_newvector(lua_State *, int, size_t);
 void *  luab_newlvector(lua_State *, int, size_t, size_t);

@@ -44,7 +44,7 @@
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
- * Generic operations on atomic (or primitive) data types.
+ * Generic operations on atomic (or primitive) data types, [stack -> C].
  */
 
 lua_Integer
@@ -231,83 +231,6 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 }
 
 /*
- * Operations on LUA_TTABLE.
- */
-
-void
-luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-void
-luab_rawsetstring(lua_State *L, int narg, lua_Integer k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-void
-luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
-{
-    luaL_Buffer b;
-    caddr_t dp;
-
-    if (v != NULL && len > 1) {  /* XXX redundant code-section */
-        luaL_buffinit(L, &b);
-        dp = luaL_prepbuffsize(&b, len);
-
-        (void)memmove(dp, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_rawseti(L, narg, k);
-    }
-}
-
-void
-luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
-{
-    lua_pushcfunction(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setstring(lua_State *L, int narg, const char *k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
-{
-    luaL_Buffer b;
-    caddr_t dp;
-
-    if (v != NULL && len > 1) { /* XXX redundant code-section */
-        luaL_buffinit(L, &b);
-        dp = luaL_prepbuffsize(&b, len);
-
-        (void)memmove(dp, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_setfield(L, narg, k);
-    }
-}
-
-/*
  * Generic service primitives, subset of <core>.
  */
 
@@ -362,6 +285,10 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
 
     return (1);
 }
+
+/*
+ * Common service primitives, subset of <core>.
+ */
 
 /***
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
@@ -440,11 +367,6 @@ luab_module_t luab_core_lib = {
     .vec = luab_core_util_vec,
 };
 
-/*
- * Common subr. for initializiation, those are
- * called during runtime of package.loadlib().
- */
-
 static const char *copyright =
     " Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>\n"
     " All rights reserved.\n"
@@ -457,6 +379,11 @@ static const char *copyright =
     "   Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>\n"
     "   28 Jul 2018 12:47:52\n\n"
     "\n";
+
+/*
+ * Common subr. for initializiation, those are
+ * called during runtime of package.loadlib().
+ */
 
 static void
 luab_populate(lua_State *L, int narg, luab_module_t *m)
@@ -490,7 +417,11 @@ luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
     lua_pop(L, 1);
 }
 
-/* Vector-table for interface against <arpa/xxx.h>. */
+/*
+ * Vector-table set, provides meta-information for Lua bindings.
+ */
+
+/* Interface against <arpa/xxx.h>. */
 static luab_modulevec_t luab_arpa_vec[] = {
     {
         .mv_mod = &luab_arpa_inet_lib,
@@ -502,7 +433,7 @@ static luab_modulevec_t luab_arpa_vec[] = {
     }
 };
 
-/* Vector-table for interface against <if/xxx.h>. */
+/* Interface against <if/xxx.h>. */
 static luab_modulevec_t luab_net_vec[] = {
     {
         .mv_mod = &luab_net_if_dl_lib,
@@ -517,7 +448,7 @@ static luab_modulevec_t luab_net_vec[] = {
     }
 };
 
-/* Vector-table for interface against <sys/xxx.h>. */
+/* Interface against <sys/xxx.h>. */
 static luab_modulevec_t luab_sys_vec[] = {
     {
         .mv_mod = &luab_sys_file_lib,
@@ -550,7 +481,7 @@ static luab_modulevec_t luab_sys_vec[] = {
     }
 };
 
-/* Vector-table for interface against <xxx.h> or <core>. */
+/* Interface against <xxx.h> or <core>. */
 static luab_modulevec_t luab_core_vec[] = {
     {
         .mv_mod = &luab_core_lib,
@@ -580,7 +511,7 @@ static luab_modulevec_t luab_core_vec[] = {
     }
 };
 
-/* Vector-table over (LUA_TUSERDATA(XXX)) */
+/* Bindings against complex data types. */
 luab_modulevec_t luab_typevec[] = {
     {
         .mv_mod = &clockinfo_type,
@@ -689,6 +620,10 @@ luab_modulevec_t luab_typevec[] = {
     }
 };
 
+/*
+ * Reflects and maps interface against API over </include/>.
+ */
+
 static void
 luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec,
     const char *name, int new)
@@ -717,9 +652,6 @@ luab_registertype(lua_State *L, int narg, luab_modulevec_t *vec)
     luab_initmodule(L, narg, vec, NULL, 0);
 }
 
-/*
- * Reflects and maps interface against API over </include/>.
- */
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
