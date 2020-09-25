@@ -1901,6 +1901,18 @@ luab_abort2(lua_State *L)
     return (luab_pusherr(L, 0));
 }
 
+/***
+ * arc4random(3) - random number generator
+ *
+ * @function arc4random
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.arc4random()
+ */
 static int
 luab_arc4random(lua_State *L)
 {
@@ -1913,6 +1925,76 @@ luab_arc4random(lua_State *L)
     return (luab_pusherr(L, n));
 }
 
+/***
+ * arc4random_buf(3) - random number generator
+ *
+ * @function arc4random_buf
+ *
+ * @param buf               Storage for random data, (LUA_TUSERDATA(IOVEC)).
+ * @param nbytes            Length in bytes of by random data filled region. 
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.arc4random_buf(buf, nbytes)
+ */
+static int
+luab_arc4random_buf(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t nbytes;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    nbytes = (size_t)luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len >= nbytes) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            arc4random_buf(bp, nbytes);
+            status = 0;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * arc4random_uniform(3) - random number generator
+ *
+ * @function arc4random_uniform
+ *
+ * @param upper_bound       Specifies constraint for random integer.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (n [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage n [, err, msg ] = bsd.stdlib.arc4random_uniform(upper_bound)
+ */
 static int
 luab_arc4random_uniform(lua_State *L)
 {
@@ -2074,6 +2156,7 @@ static luab_table_t luab_stdlib_vec[] = {
 #if __BSD_VISIBLE
     LUABSD_FUNC("abort2",               luab_abort2),
     LUABSD_FUNC("arc4random",           luab_arc4random),
+    LUABSD_FUNC("arc4random_buf",       luab_arc4random_buf),
     LUABSD_FUNC("arc4random_uniform",   luab_arc4random_uniform),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
