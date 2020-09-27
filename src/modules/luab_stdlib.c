@@ -2149,7 +2149,7 @@ luab_cgetent(lua_State *L)
 
     if ((bp = buf->iov_base) == NULL) {
         if ((status = cgetent(&bp, db_array, name)) == 0)
-            buf->iov_len = strlen(bp);
+            buf->iov_len = strnlen(bp, LUAL_BUFFERSIZE);
     } else {
         errno = EBUSY;
         status = -1;
@@ -2192,10 +2192,8 @@ luab_cgetfirst(lua_State *L)
     db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
 
     if ((bp = buf->iov_base) != NULL) {
-
         if ((status = cgetfirst(&bp, db_array)) == 0)
-            buf->iov_len = strlen(bp);
-
+            buf->iov_len = strnlen(bp, LUAL_BUFFERSIZE);
     } else {
         errno = ENXIO;
         status = -1;
