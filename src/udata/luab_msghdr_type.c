@@ -39,7 +39,10 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-/* XXX the implementation if this "feature" is incomplete, ... */
+/*
+ * XXX well, the implementation if this "feature" is
+ *  incomplete and _under_construction_ [sic!], etc.
+ */
 
 extern luab_module_t msghdr_type;
 
@@ -89,8 +92,6 @@ typedef struct luab_msghdr {
 
 #define LUABSD_MSGHDR_TYPE_ID    1597320239
 #define LUABSD_MSGHDR_TYPE    "MSGHDR*"
-
-int luab_msghdr_create(lua_State *);
 
 /*
  * Subr.
@@ -490,14 +491,14 @@ MSGHDR_set_msg_iov(lua_State *L)
      */
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
-    iov = luab_newvector(L, 2, sizeof(struct iovec));
+    iov = luab_newvector(L, 2, NULL, sizeof(struct iovec));
 
     msghdr_free_iov(msg);
     msg->msg_iov = iov;
 
     lua_pushnil(L);
 
-    while (lua_next(L, 2) != 0) {
+    while (lua_next(L, 2) != 0) {   /* XXX DRY. */
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {

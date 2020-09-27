@@ -31,6 +31,8 @@
 #include <sys/socket.h>
 #include <sys/queue.h>
 
+#include <stdlib.h>
+
 /*
  * Definitiions for API method table.
  */
@@ -276,6 +278,24 @@ int luab_pushudata(lua_State *, luab_module_t *, void *);
 int luab_pushiovec(lua_State *, void *, size_t, size_t);
 
 /*
+ * Generator functions, (LUA_TTABLE).
+ */
+
+static __inline void *
+luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
+{
+    void *vec;
+
+    if (n == 0 && sz == 0)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    if ((vec = calloc(n, sz)) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    return (vec);
+}
+
+/*
  * Accessor, (LUA_TTABLE), [stack -> C].
  */
 
@@ -317,13 +337,32 @@ luab_checkltableisnil(lua_State *L, int narg, size_t len)
     return (luab_checkltable(L, narg, len));
 }
 
-void *  luab_newvector(lua_State *, int, size_t);
-void *  luab_newlvector(lua_State *, int, size_t, size_t);
+/* Allocate an generic C-pointer array by its cardinality from given table. */
+static __inline void *
+luab_newvector(lua_State *L, int narg, size_t *len, size_t sz)
+{
+    size_t n;
+
+    if ((n = luab_checktable(L, narg)) == 0)
+        luaL_argerror(L, narg, "Empty table");
+
+    if (len != NULL)
+        *len = n;
+
+    return (luab_alloctable(L, narg, n, sz));
+}
+
+/* Same as above, but the cardinality is constrained by value argument len. */
+static __inline void *
+luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
+{
+    size_t n = luab_checkltable(L, narg, len);
+    return (luab_alloctable(L, narg, n, sz));
+}
 
 const char **    luab_checkargv(lua_State *, int);
-
+double *    luab_table_checkdouble(lua_State *, int, size_t *);
 const void ** luab_table_tolxargp(lua_State *, int, size_t);
-
 u_short *   luab_table_checklu_short(lua_State *, int, size_t);
 int *   luab_table_checklint(lua_State *, int, size_t);
 gid_t * luab_table_checklgid(lua_State *, int, size_t);
@@ -333,6 +372,7 @@ gid_t * luab_table_checklgid(lua_State *, int, size_t);
  */
 
 void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
+void    luab_rawsetnumber(lua_State *, int, lua_Integer, lua_Number);
 void    luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
 void    luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 
@@ -348,6 +388,7 @@ void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 void    luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
+void    luab_table_pushldouble(lua_State *, int, double *, size_t, int);
 
 /*
  * Generic service primitives, subset of <core>.

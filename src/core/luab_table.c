@@ -38,29 +38,15 @@
  * Subr.
  */
 
-static void *
-luab_table_alloc(lua_State *L, int narg, size_t n, size_t sz)
-{
-    void *vec;
-
-    if (n == 0 && sz == 0)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    if ((vec = calloc(n, sz)) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
-
-    return (vec);
-}
-
 static void
-luab_table_argerror(lua_State *L, int narg, void *ptr, size_t n, size_t sz)
+luab_table_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
 {
     size_t len;
 
-    if (ptr != NULL) {
+    if (v != NULL) {
         len = n * sz;
-        (void)memset_s(ptr, len, 0, len);
-        free(ptr);
+        (void)memset_s(v, len, 0, len);
+        free(v);
     }
     luaL_argerror(L, narg, "Invalid argument");
 }
@@ -69,37 +55,17 @@ luab_table_argerror(lua_State *L, int narg, void *ptr, size_t n, size_t sz)
  * Accessor, [stack -> C].
  */
 
-/* Allocate an array by cardinality of given table. */
-void *
-luab_newvector(lua_State *L, int narg, size_t sz)
-{
-    size_t n;
-
-    if ((n = luab_checktable(L, narg)) == 0)
-        luaL_argerror(L, narg, "Empty table");
-
-    return (luab_table_alloc(L, narg, n, sz));
-}
-
-/* Allocate an array by constraint less equal from cardinality of given table. */
-void *
-luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
-{
-    size_t n = luab_checkltable(L, narg, len);
-    return (luab_table_alloc(L, narg, n, sz));
-}
-
 /* Translate an instance of (LUA_TTABLE) into an argv. */
 const char **
 luab_checkargv(lua_State *L, int narg)
 {
-    size_t n, k;
     const char **argv;
+    size_t n, k;
 
     if ((n = luab_checktable(L, narg)) == 0)    /* XXX DRY */
         luaL_argerror(L, narg, "Empty table");
 
-    argv = luab_table_alloc(L, narg, n + 1, sizeof(*argv));
+    argv = luab_alloctable(L, narg, n + 1, sizeof(*argv));
 
     lua_pushnil(L);
 
@@ -125,11 +91,11 @@ luab_checkargv(lua_State *L, int narg)
 const void **
 luab_table_tolxargp(lua_State *L, int narg, size_t len)
 {
-    size_t n, k;
     const void **argv;
+    size_t n, k;
 
     if ((n = luab_checkltableisnil(L, narg, len)) != 0) {
-        argv = luab_table_alloc(L, narg, n, sizeof(void *));
+        argv = luab_alloctable(L, narg, n, sizeof(void *));
 
         lua_pushnil(L);
 
@@ -154,8 +120,36 @@ luab_table_tolxargp(lua_State *L, int narg, size_t len)
 /*
  * Translate an array by (LUA_TTABLE) into an array of specific data types.
  *
- * XXX DRY will be replaced by so called boiler-plate code.
+ * XXX DRY, components will be replaced by so called boiler-plate code.
  */
+
+double *
+luab_table_checkdouble(lua_State *L, int narg, size_t *len)
+{
+    double *vec;
+    size_t n;
+    int k, v;
+
+    vec = luab_newvector(L, narg, &n, sizeof(double));
+
+    if (len != NULL)
+        *len = n;
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {
+            v = (int)luab_tointeger(L, -1, UINT_MAX);
+            vec[k] = v;
+        } else
+            luab_table_argerror(L, narg, vec, n, sizeof(double));
+
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
 
 u_short *
 luab_table_checklu_short(lua_State *L, int narg, size_t len)
@@ -240,6 +234,13 @@ luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
 }
 
 void
+luab_rawsetnumber(lua_State *L, int narg, lua_Integer k, lua_Number v)
+{
+    lua_pushnumber(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+void
 luab_rawsetstring(lua_State *L, int narg, lua_Integer k, const char *v)
 {
     lua_pushstring(L, v);
@@ -306,14 +307,22 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 }
 
 /*
- * Populate an array by (LUA_TTABLE) with elemts from an array of gid_t.
+ * Accessor, (LUA_TTABLE) as result argument at n-th index, [C -> stack].
  */
+
+/*
+ * Populate an array by (LUA_TTABLE) with elemts from an array of gid_t.
+ *
+ * XXX well, should refactored and components redefined as boiler-plate
+ *  code by use of specified macros.
+ */
+
 void
 luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new)
 {
     int i, j;
 
-    if (gids!= NULL) {
+    if (gids != NULL) {
 
         if (new != 0)   /* populate Table, if any */
             lua_newtable(L);
@@ -322,6 +331,25 @@ luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new
 
         for (i = 0, j = 1; i < ngroups; i++, j++)
             luab_rawsetinteger(L, narg, j, gids[i]);
+
+        lua_pop(L, 0);
+    }
+}
+
+void
+luab_table_pushldouble(lua_State *L, int narg, double *vec, size_t n, int new)
+{
+    size_t i, j;
+
+    if (vec!= NULL) {
+
+        if (new != 0)   /* populate Table, if any */
+            lua_newtable(L);
+        else
+            lua_pushnil(L);
+
+        for (i = 0, j = 1; i < n; i++, j++)
+            luab_rawsetnumber(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
     }

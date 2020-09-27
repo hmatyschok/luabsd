@@ -2522,16 +2522,16 @@ luab_devname(lua_State *L)
 {
     dev_t dev;
     mode_t type;
-    caddr_t name;
+    caddr_t dp;
 
     (void)luab_checkmaxargs(L, 2);
 
     dev = (dev_t)luab_checkinteger(L, 1, LONG_MAX);
     type = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
 
-    name = devname(dev, type);
+    dp = devname(dev, type);
 
-    return (luab_pushstring(L, name));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -2591,6 +2591,128 @@ luab_devname_r(lua_State *L)
         dp = NULL;
     }
     return (luab_pushstring(L, dp));
+}
+
+/***
+ * fdevname(3) - get device name
+ *
+ * @function fdevname
+ *
+ * @param fd                Open fildescriptor, character device, (LUA_TNUMBER).
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (name [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage name [, err, msg ] = bsd.stdlib.fdevname(fd)
+ */
+static int
+luab_fdevname(lua_State *L)
+{
+    int fd;
+    caddr_t dp;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    dp = fdevname(fd);
+
+    return (luab_pushstring(L, dp));
+}
+
+/***
+ * fdevname_r(3) - get device name
+ *
+ * @function fdevname_r
+ *
+ * @param fd                Open fildescriptor, character device, (LUA_TNUMBER).
+ * @param buf               Result argument holds a copy of requested
+ *                          device node name, (LUA_TUSERDATA(IOVEC)).
+ * @param len               Specifies length of requested node name.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (name [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage name [, err, msg ] = bsd.stdlib.fdevname_r(fd, buf, len)
+ */
+static int
+luab_fdevname_r(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *buf;
+    int len;
+    caddr_t bp;
+    caddr_t dp;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    len = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (MAXPATHLEN <= buf->iov_max_len) &&
+        ((size_t)len <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+
+            if ((dp = fdevname_r(fd, bp, len)) != NULL)
+                buf->iov.iov_len = strnlen(bp, len);
+
+        } else {
+            errno = EBUSY;
+            dp = NULL;
+        }
+    } else {
+        errno = ENXIO;
+        dp = NULL;
+    }
+    return (luab_pushstring(L, dp));
+}
+
+/***
+ * getloadavg(3) - get system load averages
+ *
+ * @function getloadavg
+ *
+ * @param loadavg           Set of samples, (LUA_TSTRING).
+ *
+ *                              { loadavg0, loadavg1, ... , loadavgN }
+ *
+ * @param nelem             Specifies number of requested samples.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.getloadavg(loadavg, nelem)
+ */
+static int
+luab_getloadavg(lua_State *L)
+{
+    double *loadavg;
+    int nelem;
+    size_t len;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    loadavg = luab_table_checkdouble(L, 1, &len);
+    nelem = (double)luaL_checknumber(L, 2);
+
+    if ((size_t)nelem == len) {
+        if ((status = getloadavg(loadavg, nelem)) >= 1)
+            luab_table_pushldouble(L, 1, loadavg, len, 0);
+    } else {
+        errno = ERANGE;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -2758,6 +2880,9 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("daemonfd",             luab_daemonfd),
     LUABSD_FUNC("devname",              luab_devname),
     LUABSD_FUNC("devname_r",            luab_devname_r),
+    LUABSD_FUNC("fdevname",             luab_fdevname),
+    LUABSD_FUNC("fdevname_r",           luab_fdevname_r),
+    LUABSD_FUNC("getloadavg",           luab_getloadavg),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
     LUABSD_FUNC("ldiv_create",          luab_ldiv_create),

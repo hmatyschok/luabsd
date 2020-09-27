@@ -55,11 +55,11 @@ luab_checkmsgvec(lua_State *L, int narg)
     struct msghdr *msg;
     int k;
 
-    vec = luab_newvector(L, narg, sizeof(struct mmsghdr));
+    vec = luab_newvector(L, narg, NULL, sizeof(struct mmsghdr));
 
     lua_pushnil(L);
 
-    for (k = 0; lua_next(L, narg) != 0; k++) {
+    for (k = 0; lua_next(L, narg) != 0; k++) {  /* XXX DRY */
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isnumber(L, -1) != 0)) {
