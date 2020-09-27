@@ -2147,11 +2147,13 @@ luab_cgetent(lua_State *L)
     db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
     name = luab_checklstring(L, 3, LUAL_BUFFERSIZE);
 
-    bp = buf->iov_base;
-
-    if ((status = cgetent(&bp, db_array, name)) == 0)
-        buf->iov_len = strlen(bp);
-
+    if ((bp = buf->iov_base) == NULL) {
+        if ((status = cgetent(&bp, db_array, name)) == 0)
+            buf->iov_len = strlen(bp);
+    } else {
+        errno = EBUSY;
+        status = -1;
+    }
     return (luab_pusherr(L, status));
 }
 
