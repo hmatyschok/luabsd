@@ -2322,6 +2322,75 @@ luab_cgetnum(lua_State *L)
     }
     return (luab_pusherr(L, status));
 }
+
+/***
+ * cgetset(3) - capability database access routines
+ *
+ * @function cgetset
+ *
+ * @param ent               Capability record entry, (LUA_TSTRING).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetset(ent)
+ */
+static int
+luab_cgetset(lua_State *L)
+{
+    const char *ent;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    ent = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    status = cgetset(ent);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * cgetstr(3) - capability database access routines
+ *
+ * @function cgetstr
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param cap               Capability string, (LUA_TSTRING).
+ * @param str               Result argument, (LUA_TUSERDATA(IOVEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetstr(buf, cap, str)
+ */
+static int
+luab_cgetstr(lua_State *L)
+{
+    struct iovec *buf;
+    const char *cap;
+    luab_iovec_t *res;
+    caddr_t bp, dp;
+    ssize_t len;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    cap = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    res = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+
+    if ((bp = buf->iov_base) != NULL) {
+        if ((len = cgetstr(bp, cap, &dp)) < 0)
+            dp = NULL;
+    } else {
+        dp = NULL;
+        len = -1;
+    }
+    return (luab_iovec_copyin(L, res, dp, len));
+}
 #endif
 
 /*
@@ -2481,6 +2550,8 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("cgetmatch",            luab_cgetmatch),
     LUABSD_FUNC("cgetnext",             luab_cgetnext),
     LUABSD_FUNC("cgetnum",              luab_cgetnum),
+    LUABSD_FUNC("cgetset",              luab_cgetset),
+    LUABSD_FUNC("cgetstr",              luab_cgetstr),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
     LUABSD_FUNC("ldiv_create",          luab_ldiv_create),

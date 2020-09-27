@@ -662,7 +662,7 @@ luaopen_bsd(lua_State *L)
     (void)printf("%s", copyright);
 
     lua_newtable(L);
-    
+
     luab_registerlib(L, -2, luab_arpa_vec, "arpa");
     luab_registerlib(L, -2, luab_net_vec, "net");
     luab_registerlib(L, -2, luab_sys_vec, "sys");

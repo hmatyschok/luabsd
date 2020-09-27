@@ -169,8 +169,8 @@ int luab_iov_free(struct iovec *);
 int luab_iov_alloc(struct iovec *, size_t);
 int luab_iov_realloc(struct iovec *, size_t);
 
-int luab_iov_copyin(struct iovec *, const void *, size_t);
-int luab_iov_copyout(struct iovec *, void *, size_t);
+int luab_iov_copyin(struct iovec *, const void *, ssize_t);
+int luab_iov_copyout(struct iovec *, void *, ssize_t);
 
 /*
  * Generator functions, [Lua -> stack].

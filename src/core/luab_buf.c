@@ -112,15 +112,15 @@ luab_iov_realloc(struct iovec *iov, size_t len)
 }
 
 int
-luab_iov_copyin(struct iovec *iov, const void *v, size_t len)
+luab_iov_copyin(struct iovec *iov, const void *v, ssize_t len)
 {
     caddr_t bp;
     int status;
 
-    if (iov != NULL && v != NULL) {
+    if (iov != NULL && v != NULL && len > 0) {
 
         if (((bp = iov->iov_base) != NULL) &&
-            (len <= iov->iov_len)) {
+            (len == (ssize_t)iov->iov_len)) {
             (void)memmove(bp, v, len);
 
             status = 0;
@@ -136,15 +136,15 @@ luab_iov_copyin(struct iovec *iov, const void *v, size_t len)
 }
 
 int
-luab_iov_copyout(struct iovec *iov, void *v, size_t len)
+luab_iov_copyout(struct iovec *iov, void *v, ssize_t len)
 {
     caddr_t bp;
     int status;
 
-    if (iov != NULL && v != NULL) {
+    if (iov != NULL && v != NULL && len > 0) {
 
         if (((bp = iov->iov_base) != NULL) &&
-            (len <= iov->iov_len)) {
+            (len == (ssize_t)iov->iov_len)) {
             (void)memmove(v, bp, len);
 
             status = 0;
