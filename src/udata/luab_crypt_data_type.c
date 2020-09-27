@@ -58,7 +58,7 @@ typedef struct luab_crypt_data {
         struct crypt_data *, sizeof(struct crypt_data)))
 
 #define LUABSD_CRYPT_DATA_TYPE_ID    1595491033
-#define LUABSD_CRYPT_DATA_TYPE    "CRYPTDATA*"
+#define LUABSD_CRYPT_DATA_TYPE    "CRYPT_DATA*"
 
 /*
  * Generator functions.

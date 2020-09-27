@@ -46,7 +46,7 @@
  */
 
 int
-luab_buf_clear(struct iovec *iov)
+luab_iov_clear(struct iovec *iov)
 {
     caddr_t bp;
     size_t len;
@@ -69,7 +69,7 @@ luab_buf_clear(struct iovec *iov)
 }
 
 int
-luab_buf_alloc(struct iovec *iov, size_t len)
+luab_iov_alloc(struct iovec *iov, size_t len)
 {
     int status;
 
@@ -91,7 +91,7 @@ luab_buf_alloc(struct iovec *iov, size_t len)
 }
 
 int
-luab_buf_realloc(struct iovec *iov, size_t len)
+luab_iov_realloc(struct iovec *iov, size_t len)
 {
     caddr_t bp;
     int status;
@@ -112,7 +112,7 @@ luab_buf_realloc(struct iovec *iov, size_t len)
 }
 
 int
-luab_buf_copyin(struct iovec *iov, const void *v, size_t len)
+luab_iov_copyin(struct iovec *iov, const void *v, size_t len)
 {
     caddr_t bp;
     int status;
@@ -136,7 +136,7 @@ luab_buf_copyin(struct iovec *iov, const void *v, size_t len)
 }
 
 int
-luab_buf_copyout(struct iovec *iov, void *v, size_t len)
+luab_iov_copyout(struct iovec *iov, void *v, size_t len)
 {
     caddr_t bp;
     int status;
@@ -160,7 +160,7 @@ luab_buf_copyout(struct iovec *iov, void *v, size_t len)
 }
 
 int
-luab_buf_free(struct iovec *iov)
+luab_iov_free(struct iovec *iov)
 {
     int status;
 
@@ -176,4 +176,39 @@ luab_buf_free(struct iovec *iov)
         status = -1;
     }
     return (status);
+}
+
+/*
+ * Accessor, [C -> stack].
+ */
+
+int
+luab_iov_pushlen(lua_State *L, struct iovec *iov)
+{
+    ssize_t len;
+
+    if (iov != NULL)
+        len = iov->iov_len;
+    else {
+        errno = EINVAL;
+        len = -1;
+    }
+    return (luab_pusherr(L, len));
+}
+
+int
+luab_iov_pushdata(lua_State *L, struct iovec *iov)
+{
+    caddr_t bp;
+    size_t len;
+
+    if ((iov == NULL) ||
+        ((bp = iov->iov_base) == NULL)) {
+        errno = EINVAL;
+        bp = NULL;
+        len = 0;
+    } else
+        len = iov->iov_len;
+
+    return (luab_pushldata(L, bp, len));
 }

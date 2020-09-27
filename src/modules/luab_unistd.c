@@ -4254,7 +4254,7 @@ luab_rcmd(lua_State *L)
                 fd2p = NULL;
 
             if ((s = rcmd(&bp, inport, locuser, remuser, cmd, fd2p)) > 0)
-                buf->iov.iov_len = strnlen(bp, MAXHOSTNAMELEN);
+                buf->iov.iov_len = strnlen(bp, buf->iov_max_len);
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
@@ -4326,7 +4326,7 @@ luab_rcmd_af(lua_State *L)
                 fd2p = NULL;
 
             if ((s = rcmd_af(&bp, inport, locuser, remuser, cmd, fd2p, af)) > 0)
-                buf->iov.iov_len = strnlen(bp, MAXHOSTNAMELEN);
+                buf->iov.iov_len = strnlen(bp, buf->iov_max_len);
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
@@ -4389,7 +4389,7 @@ luab_rcmdsh(lua_State *L)
             buf->iov_flags |= IOV_LOCK;
 
             if ((s = rcmdsh(&bp, inport, locuser, remuser, cmd, rshprog)) > 0)
-                buf->iov.iov_len = strnlen(bp, MAXHOSTNAMELEN);
+                buf->iov.iov_len = strnlen(bp, buf->iov_max_len);
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {

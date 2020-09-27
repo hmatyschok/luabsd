@@ -52,6 +52,7 @@ extern luab_module_t dbt_type;
 extern luab_module_t db_type;
 extern luab_module_t bintime_type;
 extern luab_module_t crypt_data_type;
+extern luab_module_t cap_rbuf_type;
 #endif
 
 /*

@@ -61,6 +61,41 @@ typedef struct luab_dbt {
 #define LUABSD_DBT_TYPE   "DBT*"
 
 /*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(DBT)) into (LUA_TTABLE).
+ *
+ * @function get
+ *
+ * @return (LUA_TTABLE)
+ *
+ *          t = {
+ *              sec     = (LUA_TNUMBER),
+ *              frac    = (LUA_TNUMBER),
+ *          }
+ *
+ * @usage t = dbt:get()
+ */
+static int
+DBT_get(lua_State *L)
+{
+    DBT *dbt;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    dbt = luab_udata(L, 1, &dbt_type, DBT *);
+
+    lua_newtable(L);
+    luab_setiovec(L, -2, "data",    dbt->data, dbt->size);
+    luab_setinteger(L, -2, "size",  dbt->size);
+    lua_pushvalue(L, -1);
+
+    return (1);
+}
+
+/*
  * Accessor for immutable properties.
  */
 
@@ -141,23 +176,6 @@ DBT_get_data(lua_State *L)
     buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
 
     return (luab_iovec_copyin(L, buf, dbt->data, dbt->size));
-}
-
-static int
-DBT_get(lua_State *L)
-{
-    DBT *dbt;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    dbt = luab_udata(L, 1, &dbt_type, DBT *);
-
-    lua_newtable(L);
-    luab_setiovec(L, -2, "data",    dbt->data, dbt->size);
-    luab_setinteger(L, -2, "size",  dbt->size);
-    lua_pushvalue(L, -1);
-
-    return (1);
 }
 
 /*

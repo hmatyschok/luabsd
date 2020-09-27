@@ -49,6 +49,7 @@
 #define LUAB_DB_IDX             21
 #define LUAB_BINTIME_IDX        22
 #define LUAB_CRYPT_DATA_IDX     23
+#define LUAB_CAP_RBUF_IDX       24
 #endif
 
 /*

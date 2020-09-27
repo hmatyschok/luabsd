@@ -354,10 +354,10 @@ MSGHDR_set_msg_name(lua_State *L)
     buf = &(self->msg_buf[MH_NAME]);
 
     if ((name = (caddr_t)sa) != NULL) {
-        if ((status = luab_buf_copyin(buf, name, sa->sa_len)) == 0)
+        if ((status = luab_iov_copyin(buf, name, sa->sa_len)) == 0)
             msg->msg_name = buf->iov_base;
     } else {
-        if ((status = luab_buf_clear(buf)) == 0)
+        if ((status = luab_iov_clear(buf)) == 0)
             msg->msg_name = NULL;
     }
     return (luab_pusherr(L, status));
@@ -570,7 +570,7 @@ MSGHDR_gc(lua_State *L)
     buf = self->msg_buf;
 
     while (buf->iov_base != NULL)
-        luab_buf_free(buf++);
+        luab_iov_free(buf++);
 
     (void)memset_s(self, msghdr_type.sz, 0, msghdr_type.sz);
 
@@ -618,7 +618,7 @@ msghdr_create(lua_State *L, void *arg __unused)
     (void)memset_s(buf, sizeof(buf), 0, sizeof(buf));
 
     for (i = 0; i < MH_MAX_BUF; i++) {
-        if (luab_buf_alloc(&buf[i], MHLEN) != 0)
+        if (luab_iov_alloc(&buf[i], MHLEN) != 0)
             break;
     }
 

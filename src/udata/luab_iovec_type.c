@@ -35,9 +35,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-/*
-extern luab_module_t iovec_type;
-*/
+
 /*
  * Interface against
  *
@@ -49,6 +47,7 @@ extern luab_module_t iovec_type;
  * maps to
  *
  *  typedef struct luab_iovec {
+ *      luab_udata_t    ud_softc;
  *      struct iovec    iov;
  *      size_t  iov_max_len;
  *      u_int   iov_flags;
@@ -62,80 +61,6 @@ extern luab_module_t iovec_type;
 
 #define LUABSD_IOVEC_TYPE_ID    1594559731
 #define LUABSD_IOVEC_TYPE   "IOVEC*"
-
-/*
- * Accessor for immutable properties.
- */
-
-/***
- * Get length of stored data.
- *
- * @function len
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage nbytes [, err, msg ] = iovec:len()
- */
-static int
-IOVEC_len(lua_State *L)
-{
-    luab_iovec_t *self;
-    size_t nbytes;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_iovec(L, 1);
-
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        nbytes = self->iov.iov_len;
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        nbytes = -1;
-    }
-    return (luab_pusherr(L, nbytes));
-}
-
-/***
- * Get capacity.
- *
- * @function max_len
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage nbytes [, err, msg ] = iovec:max_len()
- */
-static int
-IOVEC_max_len(lua_State *L)
-{
-    luab_iovec_t *self;
-    size_t nbytes;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_iovec(L, 1);
-
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        nbytes = self->iov_max_len;
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        nbytes = -1;
-    }
-    return (luab_pusherr(L, nbytes));
-}
 
 /*
  * Generator functions.
@@ -215,6 +140,82 @@ IOVEC_clone(lua_State *L)
 }
 
 /*
+ * Accessor, immutable properties.
+ */
+
+/***
+ * Get length of stored data.
+ *
+ * @function len
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (nbytes [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage nbytes [, err, msg ] = iovec:len()
+ */
+static int
+IOVEC_len(lua_State *L)
+{
+    luab_iovec_t *self;
+    struct iovec *iov;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+    iov = &(self->iov);
+
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        status = luab_iov_pushlen(L, iov);
+
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        status = luab_pusherr(L, -1);
+    }
+    return (status);
+}
+
+/***
+ * Get capacity.
+ *
+ * @function max_len
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (nbytes [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage nbytes [, err, msg ] = iovec:max_len()
+ */
+static int
+IOVEC_max_len(lua_State *L)
+{
+    luab_iovec_t *self;
+    ssize_t nbytes;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        nbytes = self->iov_max_len;
+
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        nbytes = -1;
+    }
+    return (luab_pusherr(L, nbytes));
+}
+
+/*
  * Storage-methods.
  */
 
@@ -246,7 +247,7 @@ IOVEC_clear(lua_State *L)
         self->iov_flags |= IOV_LOCK;
 
         if (self->iov_flags & IOV_BUFF)
-            status = luab_buf_clear(iov);
+            status = luab_iov_clear(iov);
         else {
             errno = ENXIO;
             status = -1;
@@ -317,7 +318,7 @@ IOVEC_copy_out(lua_State *L)
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
 
-        status = luab_pushldata(L, iov->iov_base, iov->iov_len);
+        status = luab_iov_pushdata(L, iov);
 
         self->iov_flags &= ~IOV_LOCK;
     } else {
@@ -367,7 +368,7 @@ IOVEC_resize(lua_State *L)
 
         if (self->iov_flags & IOV_BUFF) {
 
-            if ((status = luab_buf_realloc(iov, len)) == 0) {
+            if ((status = luab_iov_realloc(iov, len)) == 0) {
 
                 if (len < self->iov_max_len)
                     self->iov_max_len = len;
@@ -589,7 +590,7 @@ iovec_create(lua_State *L, void *arg)
     if ((iop = (luab_iovec_param_t *)arg) != NULL) {
         if ((max_len = iop->iop_iov.iov_len) > 1) {
 
-            if (luab_buf_alloc(&iop->iop_iov, max_len) != 0)
+            if (luab_iov_alloc(&iop->iop_iov, max_len) != 0)
                 iop->iop_flags = IOV_PROXY;
             else
                 iop->iop_flags = IOV_BUFF;

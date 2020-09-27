@@ -611,6 +611,10 @@ luab_modulevec_t luab_typevec[] = {
         .mv_mod = &crypt_data_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_CRYPT_DATA_IDX,
+    },{
+        .mv_mod = &cap_rbuf_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_CAP_RBUF_IDX,
     },
 #endif
     {

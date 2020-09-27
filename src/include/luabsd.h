@@ -163,14 +163,14 @@ extern luab_module_t iovec_type;
  * Internal API for manipulating iovec{}s.
  */
 
-int luab_buf_clear(struct iovec *);
-int luab_buf_free(struct iovec *);
+int luab_iov_clear(struct iovec *);
+int luab_iov_free(struct iovec *);
 
-int luab_buf_alloc(struct iovec *, size_t);
-int luab_buf_realloc(struct iovec *, size_t);
+int luab_iov_alloc(struct iovec *, size_t);
+int luab_iov_realloc(struct iovec *, size_t);
 
-int luab_buf_copyin(struct iovec *, const void *, size_t);
-int luab_buf_copyout(struct iovec *, void *, size_t);
+int luab_iov_copyin(struct iovec *, const void *, size_t);
+int luab_iov_copyout(struct iovec *, void *, size_t);
 
 /*
  * Generator functions, [Lua -> stack].
@@ -269,23 +269,11 @@ int luab_pushnil(lua_State *);
 int luab_pushstring(lua_State *, const char *);
 int luab_pushldata(lua_State *, void *, size_t);
 
+int luab_iov_pushlen(lua_State *, struct iovec *);
+int luab_iov_pushdata(lua_State *, struct iovec *);
+
 int luab_pushudata(lua_State *, luab_module_t *, void *);
 int luab_pushiovec(lua_State *, void *, size_t, size_t);
-
-void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
-void    luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
-void    luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
-
-void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
-void    luab_rawsetiovec(lua_State *, int, lua_Integer, void *, size_t);
-
-void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
-void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
-void    luab_setstring(lua_State *, int, const char *, const char *);
-void    luab_setldata(lua_State *, int, const char *, void *, size_t);
-
-void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
-void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 /*
  * Accessor, (LUA_TTABLE), [stack -> C].
@@ -343,6 +331,21 @@ gid_t * luab_table_checklgid(lua_State *, int, size_t);
 /*
  * Accessor, (LUA_TTABLE), [C -> stack].
  */
+
+void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
+void    luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
+void    luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
+
+void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
+void    luab_rawsetiovec(lua_State *, int, lua_Integer, void *, size_t);
+
+void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
+void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
+void    luab_setstring(lua_State *, int, const char *, const char *);
+void    luab_setldata(lua_State *, int, const char *, void *, size_t);
+
+void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
+void    luab_setiovec(lua_State *, int, const char *, void *, size_t);
 
 void    luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
 

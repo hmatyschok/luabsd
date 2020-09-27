@@ -153,7 +153,7 @@ luab_iovec_copyin(lua_State *L, luab_iovec_t *buf, const void *dp, size_t len)
             olen = iov->iov_len;
             iov->iov_len = len;
 
-            if ((status = luab_buf_copyin(iov, dp, len)) > 0)
+            if ((status = luab_iov_copyin(iov, dp, len)) > 0)
                 iov->iov_len = olen;
 
             buf->iov_flags &= ~IOV_LOCK;
@@ -183,7 +183,7 @@ luab_iovec_copyout(lua_State *L, luab_iovec_t *buf, void *dp, size_t len)
             buf->iov_flags |= IOV_LOCK;
 
             iov = &(buf->iov);
-            status = luab_buf_copyout(iov, dp, len);
+            status = luab_iov_copyout(iov, dp, len);
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {

@@ -1896,7 +1896,7 @@ luab_abort2(lua_State *L)
     nargs = luab_checkinteger(L, 2, INT_MAX);
     args = luab_table_tolxargp(L, 3, nargs);
 
-    abort2(why, nargs, (void **)(intptr_t *)args);
+    abort2(why, nargs, (void *)(intptr_t *)args);
         /* NOTREACHED */
     return (luab_pusherr(L, 0));
 }
@@ -1931,7 +1931,7 @@ luab_arc4random(lua_State *L)
  * @function arc4random_buf
  *
  * @param buf               Storage for random data, (LUA_TUSERDATA(IOVEC)).
- * @param nbytes            Length in bytes of by random data filled region. 
+ * @param nbytes            Length in bytes of by random data filled region.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2006,6 +2006,321 @@ luab_arc4random_uniform(lua_State *L)
     n = arc4random_uniform(ub);
 
     return (luab_pusherr(L, n));
+}
+
+/***
+ * getbsize(3) - get preffered block size
+ *
+ * @function getbsize
+ *
+ * @param headerlenp        Specifies length of bytes by (LUA_TUSERDATA(HOOK))
+ *                          filled in region referred by result argument.
+ * @param blocksizep        Result argument, (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (str [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage str [, err, msg ] = bsd.stdlib.getbsize(headerlenp, blocksizep)
+ */
+static int
+luab_getbsize(lua_State *L)
+{
+    luab_type_u *h1, *h2;
+    int *headerlenp;
+    long *blocksizep;
+    const char *str;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
+    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
+
+    headerlenp = &(h1->un_int);
+    blocksizep = &(h2->un_long);
+
+    str = getbsize(headerlenp, blocksizep);
+
+    return (luab_pushstring(L, str));
+}
+
+/***
+ * getcap(3) - capability database access routines
+ *
+ * @function getcap
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param cap               Capability string, (LUA_TSTRING).
+ * @param type              Specifies capability type by a single character.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (str [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage str [, err, msg ] = bsd.stdlib.getcap(buf, cap, type)
+ */
+static int
+luab_cgetcap(lua_State *L)
+{
+    struct iovec *buf;
+    const char *cap;
+    int type;
+    caddr_t bp;
+    char *str;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    cap = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
+    type = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if ((bp = buf->iov_base) != NULL)
+        str = cgetcap(bp, cap, type);
+    else {
+        errno = ENXIO;
+        str = NULL;
+    }
+    return (luab_pushstring(L, str));
+}
+
+/***
+ * cgetclose(3) - capability database access routines
+ *
+ * @function cgetclose
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetclose()
+ */
+static int
+luab_cgetclose(lua_State *L)
+{
+    int status;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    status = cgetclose();
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * cgetent(3) - capability database access routines
+ *
+ * @function cgetent
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param db_array          File array,
+ *
+ *                              { file0, "/path/to/file", ... , fileN },
+ *
+ *                          as instance of
+ *
+ *                              (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
+ *
+ * @param name              Capability string, (LUA_TSTRING).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetent(buf, db_array, name)
+ */
+static int
+luab_cgetent(lua_State *L)
+{
+    struct iovec *buf;
+    char **db_array;
+    const char *name;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
+    name = luab_checklstring(L, 3, LUAL_BUFFERSIZE);
+
+    bp = buf->iov_base;
+
+    if ((status = cgetent(&bp, db_array, name)) == 0)
+        buf->iov_len = strlen(bp);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * cgetfirst(3) - capability database access routines
+ *
+ * @function cgetfirst
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param db_array          File array,
+ *
+ *                              { file0, "/path/to/file", ... , fileN },
+ *
+ *                          as instance of
+ *
+ *                              (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetfirst(buf, db_array)
+ */
+static int
+luab_cgetfirst(lua_State *L)
+{
+    struct iovec *buf;
+    char **db_array;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
+
+    if ((bp = buf->iov_base) != NULL) {
+
+        if ((status = cgetfirst(&bp, db_array)) == 0)
+            buf->iov_len = strlen(bp);
+
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * cgetmatch(3) - capability database access routines
+ *
+ * @function cgetmatch
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param name              Capability string, (LUA_TSTRING).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetmatch(buf, name)
+ */
+static int
+luab_cgetmatch(lua_State *L)
+{
+    struct iovec *buf;
+    const char *name;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    name = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
+
+    if ((bp = buf->iov_base) != NULL)
+        status = cgetmatch(bp, name);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * cgetnext(3) - capability database access routines
+ *
+ * @function cgetnext
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param db_array          File array,
+ *
+ *                              { file0, "/path/to/file", ... , fileN },
+ *
+ *                          as instance of
+ *
+ *                              (LUA_TTABLE(LUA_TNUMBER,LUA_TSTRING)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetnext(buf, db_array)
+ */
+static int
+luab_cgetnext(lua_State *L)
+{
+    struct iovec *buf;
+    char **db_array;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
+
+    if ((bp = buf->iov_base) != NULL)
+        status = cgetnext(&bp, db_array);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * cgetnum(3) - capability database access routines
+ *
+ * @function cgetnum
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param cap               Capability string, (LUA_TSTRING).
+ * @param num               Numeric capability, (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetnum(buf, db_array)
+ */
+static int
+luab_cgetnum(lua_State *L)
+{
+    struct iovec *buf;
+    const char *cap;
+    luab_type_u *h0;
+    long *num;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    cap = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    num = &(h0->un_long);
+
+    if ((bp = buf->iov_base) != NULL)
+        status = cgetnum(bp, cap, num);
+    else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
 }
 #endif
 
@@ -2158,6 +2473,14 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("arc4random",           luab_arc4random),
     LUABSD_FUNC("arc4random_buf",       luab_arc4random_buf),
     LUABSD_FUNC("arc4random_uniform",   luab_arc4random_uniform),
+    LUABSD_FUNC("getbsize",             luab_getbsize),
+    LUABSD_FUNC("cgetcap",              luab_cgetcap),
+    LUABSD_FUNC("cgetclose",            luab_cgetclose),
+    LUABSD_FUNC("cgetent",              luab_cgetent),
+    LUABSD_FUNC("cgetfirst",            luab_cgetfirst),
+    LUABSD_FUNC("cgetmatch",            luab_cgetmatch),
+    LUABSD_FUNC("cgetnext",             luab_cgetnext),
+    LUABSD_FUNC("cgetnum",              luab_cgetnum),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
     LUABSD_FUNC("ldiv_create",          luab_ldiv_create),
