@@ -433,7 +433,7 @@ static luab_modulevec_t luab_arpa_vec[] = {
     }
 };
 
-/* Interface against <if/xxx.h>. */
+/* Interface against <net/xxx.h>. */
 static luab_modulevec_t luab_net_vec[] = {
     {
         .mv_mod = &luab_net_if_dl_lib,
