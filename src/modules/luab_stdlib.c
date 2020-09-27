@@ -1028,7 +1028,7 @@ luab_realpath(lua_State *L)
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= MAXPATHLEN) &&
+        (MAXPATHLEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -1303,7 +1303,7 @@ luab_initstate(lua_State *L)
     );
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= n) &&
+        (n <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -1421,7 +1421,7 @@ luab_l64a_r(lua_State *L)
     buflen = (int)luab_checkinteger(L, 3, INT_MAX);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= (size_t)buflen) &&
+        ((size_t)buflen <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -1960,7 +1960,7 @@ luab_arc4random_buf(lua_State *L)
     );
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= nbytes) &&
+        (nbytes <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -2391,6 +2391,207 @@ luab_cgetstr(lua_State *L)
     }
     return (luab_iovec_copyin(L, res, dp, len));
 }
+
+/***
+ * cgetustr(3) - capability database access routines
+ *
+ * @function cgetustr
+ *
+ * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
+ * @param cap               Capability string, (LUA_TSTRING).
+ * @param str               Result argument, (LUA_TUSERDATA(IOVEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.cgetustr(buf, cap, str)
+ */
+static int
+luab_cgetustr(lua_State *L)
+{
+    struct iovec *buf;
+    const char *cap;
+    luab_iovec_t *res;
+    caddr_t bp, dp;
+    ssize_t len;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    cap = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    res = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+
+    if ((bp = buf->iov_base) != NULL) {
+        if ((len = cgetustr(bp, cap, &dp)) < 0)
+            dp = NULL;
+    } else {
+        dp = NULL;
+        len = -1;
+    }
+    return (luab_iovec_copyin(L, res, dp, len));
+}
+
+/***
+ * daemon(3) - run in the background
+ *
+ * @function daemon
+ *
+ * @param nochdir           Directory may changed to "/", if value is non-zero.
+ * @param noclose           Dataflow of channels std{in,out,err} is redirected
+ *                          to "/dev/null" and those are not closed, if value
+ *                          is non-zero.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.daemon(nochdir, noclose)
+ */
+static int
+luab_daemon(lua_State *L)
+{
+    int nochdir;
+    int noclose;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    nochdir = (int)luab_checkinteger(L, 1, INT_MAX);
+    noclose = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    status = daemon(nochdir, noclose);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * daemonfd(3) - run in the background
+ *
+ * @function daemonfd
+ *
+ * @param chdirfd           If value set to -1, current directory is not changed.
+ * @param nullfd            If value set to -1, redirection of std{in,out,err}
+ *                          to "/dev/zero".
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.daemonfd(chdirfd, nullfd)
+ */
+static int
+luab_daemonfd(lua_State *L)
+{
+    int chdirfd;
+    int nullfd;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    chdirfd = (int)luab_checkinteger(L, 1, INT_MAX);
+    nullfd = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    status = daemon(chdirfd, nullfd);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * devname(3) - get device name
+ *
+ * @function devname
+ *
+ * @param dev               Specifies device number over set of "/dev".
+ * @param type              Specifies file type by unique values from:
+ *
+ *                              bsd.sys.stat.S_{IFBLK,S_IFCHR}.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (name [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage name [, err, msg ] = bsd.stdlib.devname(dev, type)
+ */
+static int
+luab_devname(lua_State *L)
+{
+    dev_t dev;
+    mode_t type;
+    caddr_t name;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    dev = (dev_t)luab_checkinteger(L, 1, LONG_MAX);
+    type = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
+
+    name = devname(dev, type);
+
+    return (luab_pushstring(L, name));
+}
+
+/***
+ * devname_r(3) - get device name
+ *
+ * @function devname_r
+ *
+ * @param dev               Specifies device number over set of "/dev".
+ * @param type              Specifies file type by unique values from:
+ *
+ *                              bsd.sys.stat.S_{IFBLK,S_IFCHR}.
+ *
+ * @param buf               Result argument holds a copy of requested
+ *                          device node name, (LUA_TUSERDATA(IOVEC)).
+ * @param len               Specifies length of requested node name.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (name [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage name [, err, msg ] = bsd.stdlib.devname_r(dev, type, buf, len)
+ */
+static int
+luab_devname_r(lua_State *L)
+{
+    dev_t dev;
+    mode_t type;
+    luab_iovec_t *buf;
+    int len;
+    caddr_t bp;
+    caddr_t dp;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    dev = (dev_t)luab_checkinteger(L, 1, LONG_MAX);
+    type = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
+    buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+    len = (int)luab_checkinteger(L, 4, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (MAXPATHLEN <= buf->iov_max_len) &&
+        ((size_t)len <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+
+            if ((dp = devname_r(dev, type, bp, len)) != NULL)
+                buf->iov.iov_len = strnlen(bp, len);
+
+        } else {
+            errno = EBUSY;
+            dp = NULL;
+        }
+    } else {
+        errno = ENXIO;
+        dp = NULL;
+    }
+    return (luab_pushstring(L, dp));
+}
 #endif
 
 /*
@@ -2552,6 +2753,11 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("cgetnum",              luab_cgetnum),
     LUABSD_FUNC("cgetset",              luab_cgetset),
     LUABSD_FUNC("cgetstr",              luab_cgetstr),
+    LUABSD_FUNC("cgetustr",             luab_cgetustr),
+    LUABSD_FUNC("daemon",               luab_daemon),
+    LUABSD_FUNC("daemonfd",             luab_daemonfd),
+    LUABSD_FUNC("devname",              luab_devname),
+    LUABSD_FUNC("devname_r",            luab_devname_r),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
     LUABSD_FUNC("ldiv_create",          luab_ldiv_create),

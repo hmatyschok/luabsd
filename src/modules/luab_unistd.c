@@ -2789,7 +2789,7 @@ luab_getwd(lua_State *L)
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= MAXPATHLEN) &&
+        (MAXPATHLEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -3339,7 +3339,7 @@ luab_getentropy(lua_State *L)
     );
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= MAX_INPUT) &&
+        (MAX_INPUT <= buf->iov_max_len) &&
         (buflen <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -3508,7 +3508,7 @@ luab_getmode(lua_State *L)
     mode = (mode_t)luab_checkinteger(L, 2, SHRT_MAX);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= LUAB_SETMAXLEN) &&
+        (LUAB_SETMAXLEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -4175,7 +4175,7 @@ luab_profil(lua_State *L)
 
     if (buf != NULL) {
         if (((bp = buf->iov.iov_base) != 0) &&
-            (buf->iov_max_len >= size) &&
+            (size <= buf->iov_max_len) &&
             (buf->iov_flags & IOV_BUFF)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -4810,7 +4810,7 @@ luab_setmode(lua_State *L)
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
-        (buf->iov_max_len >= LUAB_SETMAXLEN) &&
+        (LUAB_SETMAXLEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {

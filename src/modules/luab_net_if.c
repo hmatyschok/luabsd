@@ -79,7 +79,7 @@ luab_if_indextoname(lua_State *L)
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len >= IFNAMSIZ) &&
+        (IFNAMSIZ <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
