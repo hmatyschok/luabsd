@@ -2706,13 +2706,64 @@ luab_getloadavg(lua_State *L)
     nelem = (double)luaL_checknumber(L, 2);
 
     if ((size_t)nelem == len) {
-        if ((status = getloadavg(loadavg, nelem)) >= 1)
+        if ((status = getloadavg(loadavg, nelem)) > 0)
             luab_table_pushldouble(L, 1, loadavg, len, 0);
     } else {
         errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
+}
+
+/***
+ * getprogname(3) - get or set the program name
+ *
+ * @function getprogname
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (name [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage name [, err, msg ] = bsd.stdlib.getprogname()
+ */
+static int
+luab_getprogname(lua_State *L)
+{
+    const char *progname;
+
+    (void)luab_checkmaxargs(L, 0);
+
+    progname = getprogname();
+
+    return (luab_pushstring(L, progname));
+}
+
+/***
+ * setprogname(3) - get or set the program name
+ *
+ * @function setprogname
+ *
+ * @param progname          Specifies name of current process.
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.setprogname(progname)
+ */
+static int
+luab_setprogname(lua_State *L)
+{
+    const char *progname;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    progname = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    setprogname(progname);
+
+    return (luab_pusherr(L, 0));
 }
 #endif
 
@@ -2883,6 +2934,8 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("fdevname",             luab_fdevname),
     LUABSD_FUNC("fdevname_r",           luab_fdevname_r),
     LUABSD_FUNC("getloadavg",           luab_getloadavg),
+    LUABSD_FUNC("getprogname",          luab_getprogname),
+    LUABSD_FUNC("setprogname",          luab_setprogname),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
     LUABSD_FUNC("ldiv_create",          luab_ldiv_create),
