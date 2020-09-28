@@ -2758,7 +2758,7 @@ luab_l64a_r(lua_State *L)
  *                                  EXLOCK,
  *                                  SYNC,
  *                                  CLOEXEC
- *                              }. 
+ *                              }.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2943,8 +2943,8 @@ luab_srandomdev(lua_State *L)
  * @param nptr              Specifies string value, (LUA_TSTRING).
  * @param minval            Specifies lower bound, (LUA_TNUMBER).
  * @param maxval            Specifies upper bound, (LUA_TNUMBER).
- * @param errstr            Result argument, reason, (LUA_TUSERDATA(IOVEC)). 
- * 
+ * @param errstr            Result argument, reason, (LUA_TUSERDATA(IOVEC)).
+ *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
@@ -2961,7 +2961,7 @@ luab_strtonum(lua_State *L)
     luab_iovec_t *buf;
     const char *dp;
     long long n;
-    
+
     (void)luab_checkmaxargs(L, 4);
 
     nptr = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
