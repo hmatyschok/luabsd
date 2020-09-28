@@ -2740,6 +2740,127 @@ luab_l64a_r(lua_State *L)
 }
 
 /***
+ * mkostemp(3) - make tempory file name (unique)
+ *
+ * @function mkostemp
+ *
+ * @param template          File name template, (LUA_TUSERDATA(IOVEC)).
+ * @param oflags            Permitted open(2) flags:
+ *
+ *                              bsd.fcntl.O_{
+ *                                  APPEND,
+ *                                  DIRECT,
+ *                                  SHLOCK,
+ *                                  EXLOCK,
+ *                                  SYNC,
+ *                                  CLOEXEC
+ *                              }. 
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.unistd.mkostemp(template, oflags)
+ */
+static int
+luab_mkostemp(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int oflags;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    oflags = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            status = mkostemp(bp, oflags);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * mkostemps(3) - make tempory file name (unique)
+ *
+ * @function mkostemps
+ *
+ * @param template          File name template, (LUA_TUSERDATA(IOVEC)).
+ * @param suffixlen         Specifies the length of the suffix string.
+ * @param oflags            Permitted open(2) flags:
+ *
+ *                              bsd.fcntl.O_{
+ *                                  APPEND,
+ *                                  DIRECT,
+ *                                  SHLOCK,
+ *                                  EXLOCK,
+ *                                  SYNC,
+ *                                  CLOEXEC
+ *                              }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.mkostemps(template, suffixlen, oflags)
+ */
+static int
+luab_mkostemps(lua_State *L)
+{
+    luab_iovec_t *buf;
+    int suffixlen;
+    int oflags;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    suffixlen = (int)luab_checkinteger(L, 2, INT_MAX);
+    oflags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != 0) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (buf->iov_max_len <= MAXPATHLEN) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            status = mkostemps(bp, suffixlen, oflags);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
  * setprogname(3) - get or set the program name
  *
  * @function setprogname
@@ -2935,6 +3056,8 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("getloadavg",           luab_getloadavg),
     LUABSD_FUNC("getprogname",          luab_getprogname),
     LUABSD_FUNC("l64a_r",               luab_l64a_r),
+    LUABSD_FUNC("mkostemp",             luab_mkostemp),
+    LUABSD_FUNC("mkostemps",            luab_mkostemps),
     LUABSD_FUNC("setprogname",          luab_setprogname),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),

@@ -3999,7 +3999,7 @@ luab_mkstemp(lua_State *L)
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage ret [, err, msg ] = bsd.unistd.mkstemps(template)
+ * @usage ret [, err, msg ] = bsd.unistd.mkstemps(template, suffixlen)
  */
 static int
 luab_mkstemps(lua_State *L)
