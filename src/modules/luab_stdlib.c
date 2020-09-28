@@ -1390,59 +1390,6 @@ luab_l64a(lua_State *L)
 }
 
 /***
- * l64a_r(3) - convert between a long integer and a base-64 ASCII string
- *
- * @function l64a_r
- *
- * @param l                 Long integer.
- * @param buffer            Result argument, (LUA_TUSERDATA(IOVEC)).
- * @param buflen            Buffer size.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage ret [, err, msg ] = bsd.stdlib.l64a_r(l, buffer, buflen)
- */
-static int
-luab_l64a_r(lua_State *L)
-{
-    long l;
-    luab_iovec_t *buf;
-    int buflen;
-    caddr_t bp;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    l = luab_checkinteger(L, 1, LONG_MAX);
-    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    buflen = (int)luab_checkinteger(L, 3, INT_MAX);
-
-    if (((bp = buf->iov.iov_base) != NULL) &&
-        ((size_t)buflen <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
-
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
-
-            if ((status = l64a_r(l, bp, buflen)) == 0)
-                buf->iov.iov_len = buflen;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = -1;
-        }
-    } else {
-        errno = ENXIO;
-        status = -1;
-    }
-    return (luab_pusherr(L, status));
-}
-
-/***
  * lcong48(3) - pseudo random number generators and initialization routes
  *
  * @function lcong48
@@ -2740,6 +2687,59 @@ luab_getprogname(lua_State *L)
 }
 
 /***
+ * l64a_r(3) - convert between a long integer and a base-64 ASCII string
+ *
+ * @function l64a_r
+ *
+ * @param l                 Long integer.
+ * @param buffer            Result argument, (LUA_TUSERDATA(IOVEC)).
+ * @param buflen            Buffer size.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.l64a_r(l, buffer, buflen)
+ */
+static int
+luab_l64a_r(lua_State *L)
+{
+    long l;
+    luab_iovec_t *buf;
+    int buflen;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    l = luab_checkinteger(L, 1, LONG_MAX);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    buflen = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        ((size_t)buflen <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = l64a_r(l, bp, buflen)) == 0)
+                buf->iov.iov_len = buflen;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
  * setprogname(3) - get or set the program name
  *
  * @function setprogname
@@ -2896,7 +2896,6 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("initstate",            luab_initstate),
     LUABSD_FUNC("jrand48",              luab_jrand48),
     LUABSD_FUNC("l64a",                 luab_l64a),
-    LUABSD_FUNC("l64a_r",               luab_l64a_r),
     LUABSD_FUNC("lcong48",              luab_lcong48),
     LUABSD_FUNC("lrand48",              luab_lrand48),
     LUABSD_FUNC("mrand48",              luab_mrand48),
@@ -2935,6 +2934,7 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("fdevname_r",           luab_fdevname_r),
     LUABSD_FUNC("getloadavg",           luab_getloadavg),
     LUABSD_FUNC("getprogname",          luab_getprogname),
+    LUABSD_FUNC("l64a_r",               luab_l64a_r),
     LUABSD_FUNC("setprogname",          luab_setprogname),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
