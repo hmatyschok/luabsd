@@ -2322,6 +2322,7 @@ luab_cgetstr(lua_State *L)
     luab_iovec_t *res;
     caddr_t bp, dp;
     ssize_t len;
+    int status;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -2336,7 +2337,8 @@ luab_cgetstr(lua_State *L)
         dp = NULL;
         len = -1;
     }
-    return (luab_iovec_copyin(L, res, dp, len));
+    status = luab_iovec_copyin(res, dp, len);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2363,6 +2365,7 @@ luab_cgetustr(lua_State *L)
     luab_iovec_t *res;
     caddr_t bp, dp;
     ssize_t len;
+    int status;
 
     (void)luab_checkmaxargs(L, 3);
 
@@ -2377,7 +2380,8 @@ luab_cgetustr(lua_State *L)
         dp = NULL;
         len = -1;
     }
-    return (luab_iovec_copyin(L, res, dp, len));
+    status = luab_iovec_copyin(res, dp, len);
+    return (luab_pusherr(L, status));
 }
 
 /***
@@ -2867,7 +2871,7 @@ luab_mkostemps(lua_State *L)
  *
  * @param progname          Specifies name of current process.
  *
- * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (0 [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
@@ -2885,6 +2889,90 @@ luab_setprogname(lua_State *L)
     setprogname(progname);
 
     return (luab_pusherr(L, 0));
+}
+
+/***
+ * sranddev(3) - bad random number generator
+ *
+ * @function sranddev
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.sranddev()
+ */
+static int
+luab_sranddev(lua_State *L)
+{
+    (void)luab_checkmaxargs(L, 0);
+
+    sranddev();
+
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * srandomdev(3) - better random number generator; routines for changing generators
+ *
+ * @function srandomdev
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.srandomdev()
+ */
+static int
+luab_srandomdev(lua_State *L)
+{
+    (void)luab_checkmaxargs(L, 0);
+
+    srandomdev();
+
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * strtonum(3) - reliably convert string value to an integer
+ *
+ * @function strtonum
+ *
+ * @param nptr              Specifies string value, (LUA_TSTRING).
+ * @param minval            Specifies lower bound, (LUA_TNUMBER).
+ * @param maxval            Specifies upper bound, (LUA_TNUMBER).
+ * @param errstr            Result argument, reason, (LUA_TUSERDATA(IOVEC)). 
+ * 
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.stdlib.strtonum(nptr, minval, maxval, errstr)
+ */
+static int
+luab_strtonum(lua_State *L)
+{
+    const char *nptr;
+    long long minval;
+    long long maxval;
+    luab_iovec_t *buf;
+    const char *dp;
+    long long n;
+    
+    (void)luab_checkmaxargs(L, 4);
+
+    nptr = luab_checklstring(L, 1, LUAL_BUFFERSIZE);
+    minval = (long long)luab_checkinteger(L, 2, LLONG_MAX);
+    maxval = (long long)luab_checkinteger(L, 3, LLONG_MAX);
+    buf = luab_udata(L, 4, luab_mx(IOVEC), luab_iovec_t *);
+
+    if ((n = strtonum(nptr, minval, maxval, &dp)) == 0)
+        (void)luab_iovec_copyin(buf, dp, strlen(dp));
+
+    return (luab_pusherr(L, n));
 }
 #endif
 
@@ -3059,6 +3147,9 @@ static luab_table_t luab_stdlib_vec[] = {
     LUABSD_FUNC("mkostemp",             luab_mkostemp),
     LUABSD_FUNC("mkostemps",            luab_mkostemps),
     LUABSD_FUNC("setprogname",          luab_setprogname),
+    LUABSD_FUNC("sranddev",             luab_sranddev),
+    LUABSD_FUNC("srandomdev",           luab_srandomdev),
+    LUABSD_FUNC("strtonum",             luab_strtonum),
 #endif
     LUABSD_FUNC("div_create",           luab_div_create),
     LUABSD_FUNC("ldiv_create",          luab_ldiv_create),

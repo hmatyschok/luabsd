@@ -120,6 +120,25 @@ As mentioned before, C Structures are accessible
 
     function print_udata(i, j, pfx)
 
+        local function _print_table(_t, _pfx)
+
+            table.sort(_t)
+
+            for k, v in pairs(_t) do
+                if type(v) == "userdata" then
+                    print_udata(k, v, _pfx)
+                else
+                    print(_pfx, k, v)
+
+                    if type(v) == "table" then
+                        for p, q in pairs(v) do
+                            print_udata(_pfx .. p, q, _pfx)
+                        end
+                    end
+                end
+            end
+            print("")
+        end
         local k = nil
 
         if j.get ~= nil then
@@ -130,30 +149,8 @@ As mentioned before, C Structures are accessible
         pfx = pfx .. "\t"
 
         if type(k) == "table" then
-            print_table(k, pfx)
+            _print_table(k, pfx)
         end
-    end
-
-by
-
-    function print_table(t, pfx)
-
-        table.sort(t)
-
-        for k, v in pairs(t) do
-            if type(v) == "userdata" then
-                print_udata(k, v, pfx)
-            else
-                print(pfx, k, v)
-
-                if type(v) == "table" then
-                    for p, q in pairs(v) do
-                        print_udata(pfx .. p, q, pfx)
-                    end
-                end
-            end
-        end
-        print("")
     end
 
 utilizing instances of LUA_TTABLES:

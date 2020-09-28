@@ -433,8 +433,8 @@ luab_udata_clear(luab_udata_t *self)
 }
 
 /* (LUA_TUSERDATA(IOVEC)) */
-int luab_iovec_copyin(lua_State *, luab_iovec_t *, const void *, size_t);
-int luab_iovec_copyout(lua_State *, luab_iovec_t *, void *, size_t);
+int luab_iovec_copyin(luab_iovec_t *, const void *, size_t);
+int luab_iovec_copyout(luab_iovec_t *, void *, size_t);
 
 int luab_iovec_read(lua_State *, int, luab_iovec_t *, size_t *);
 int luab_iovec_write(lua_State *, int, luab_iovec_t *, size_t *);

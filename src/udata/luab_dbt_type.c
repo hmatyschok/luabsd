@@ -169,13 +169,14 @@ DBT_get_data(lua_State *L)
 {
     DBT *dbt;
     luab_iovec_t *buf;
+    int status;
 
     (void)luab_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
     buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
-
-    return (luab_iovec_copyin(L, buf, dbt->data, dbt->size));
+    status = luab_iovec_copyin(buf, dbt->data, dbt->size); 
+    return (luab_pusherr(L, status));
 }
 
 /*

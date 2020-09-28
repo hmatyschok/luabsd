@@ -280,6 +280,7 @@ IOVEC_copy_in(lua_State *L)
     luab_iovec_t *self;
     const char *dp;
     size_t len;
+    int status;
 
     (void)luab_checkmaxargs(L, 2);
 
@@ -287,8 +288,8 @@ IOVEC_copy_in(lua_State *L)
     len = self->iov_max_len;
 
     dp = luab_iovec_checklxarg(L, 2, len);
-
-    return (luab_iovec_copyin(L, self, dp, len));
+    status = luab_iovec_copyin(self, dp, len); 
+    return (luab_pusherr(L, status));
 }
 
 /***

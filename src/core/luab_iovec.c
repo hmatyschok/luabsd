@@ -136,7 +136,7 @@ luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
 
 /* dp -> buf */
 int
-luab_iovec_copyin(lua_State *L, luab_iovec_t *buf, const void *dp, size_t len)
+luab_iovec_copyin(luab_iovec_t *buf, const void *dp, size_t len)
 {
     struct iovec *iov;
     size_t olen;
@@ -165,12 +165,12 @@ luab_iovec_copyin(lua_State *L, luab_iovec_t *buf, const void *dp, size_t len)
         errno = EINVAL;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (status);
 }
 
 /* buf -> dp */
 int
-luab_iovec_copyout(lua_State *L, luab_iovec_t *buf, void *dp, size_t len)
+luab_iovec_copyout(luab_iovec_t *buf, void *dp, size_t len)
 {
     struct iovec *iov;
     int status;
@@ -194,7 +194,7 @@ luab_iovec_copyout(lua_State *L, luab_iovec_t *buf, void *dp, size_t len)
         errno = EINVAL;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (status);
 }
 
 /*
