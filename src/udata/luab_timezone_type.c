@@ -47,7 +47,7 @@ extern luab_module_t timezone_type;
 
 typedef struct luab_timezone {
     luab_udata_t        ud_softc;
-    struct timezone    timezone;
+    struct timezone     ud_tz;
 } luab_timezone_t;
 
 #define luab_new_timezone(L, arg) \
@@ -272,7 +272,7 @@ timezone_init(void *ud, void *arg)
     luab_timezone_t *self;
 
     if (((self = (luab_timezone_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->timezone, arg, sizeof(self->timezone));
+        (void)memmove(&self->ud_tz, arg, sizeof(self->ud_tz));
 }
 
 static void *

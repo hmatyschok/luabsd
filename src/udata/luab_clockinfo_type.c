@@ -50,7 +50,7 @@ extern luab_module_t clockinfo_type;
 
 typedef struct luab_clockinfo {
     luab_udata_t        ud_softc;
-    struct clockinfo    ud_clockinfo;
+    struct clockinfo    ud_info;
 } luab_clockinfo_t;
 
 #define luab_new_clockinfo(L, arg) \
@@ -398,7 +398,7 @@ clockinfo_init(void *ud, void *arg)
     luab_clockinfo_t *self;
 
     if (((self = (luab_clockinfo_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_clockinfo, arg, sizeof(self->ud_clockinfo));
+        (void)memmove(&self->ud_info, arg, sizeof(self->ud_info));
 }
 
 static void *

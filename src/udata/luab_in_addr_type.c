@@ -46,7 +46,7 @@ extern luab_module_t in_addr_type;
 
 typedef struct luab_in_addr {
     luab_udata_t    ud_softc;
-    struct in_addr  ud_in_addr;
+    struct in_addr  ud_ia;
 } luab_in_addr_t;
 
 #define luab_new_in_addr(L, arg) \
@@ -211,7 +211,7 @@ in_addr_init(void *ud, void *arg)
     luab_in_addr_t *self;
 
     if (((self = (luab_in_addr_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_in_addr, arg, sizeof(self->ud_in_addr));
+        (void)memmove(&self->ud_ia, arg, sizeof(self->ud_ia));
 }
 
 static void *

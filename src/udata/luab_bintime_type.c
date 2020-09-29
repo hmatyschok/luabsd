@@ -47,7 +47,7 @@ extern luab_module_t bintime_type;
 
 typedef struct luab_bintime {
     luab_udata_t    ud_softc;
-    struct bintime  ud_bintime;
+    struct bintime  ud_bt;
 } luab_bintime_t;
 
 #define luab_new_bintime(L, arg) \
@@ -272,7 +272,7 @@ bintime_init(void *ud, void *arg)
     luab_bintime_t *self;
 
     if (((self = (luab_bintime_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_bintime, arg, sizeof(self->ud_bintime));
+        (void)memmove(&self->ud_bt, arg, sizeof(self->ud_bt));
 }
 
 static void *

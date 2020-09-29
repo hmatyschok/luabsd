@@ -49,7 +49,7 @@ extern luab_module_t itimerval_type;
 
 typedef struct luab_itimerval {
     luab_udata_t        ud_softc;
-    struct itimerval    ud_itimerval;
+    struct itimerval    ud_it;
 } luab_itimerval_t;
 
 #define luab_new_itimerval(L, arg) \
@@ -269,7 +269,7 @@ itimerval_init(void *ud, void *arg)
     luab_itimerval_t *self;
 
     if (((self = (luab_itimerval_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_itimerval, arg, sizeof(self->ud_itimerval));
+        (void)memmove(&self->ud_it, arg, sizeof(self->ud_it));
 }
 
 static void *

@@ -47,7 +47,7 @@ extern luab_module_t linger_type;
 
 typedef struct luab_linger {
     luab_udata_t    ud_softc;
-    struct linger   ud_linger;
+    struct linger   ud_l;
 } luab_linger_t;
 
 #define luab_new_linger(L, arg) \
@@ -272,7 +272,7 @@ linger_init(void *ud, void *arg)
     luab_linger_t *self;
 
     if (((self = (luab_linger_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_linger, arg, sizeof(self->ud_linger));
+        (void)memmove(&self->ud_l, arg, sizeof(self->ud_l));
 }
 
 static void *
