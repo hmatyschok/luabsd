@@ -53,7 +53,7 @@ typedef struct luab_dbt {
 } luab_dbt_t;
 
 #define luab_new_dbt(L, arg) \
-    ((luab_dbt_t *)luab_newuserdata(L, &dbt_type, (arg)))
+    ((luab_dbt_t *)luab_newudata(L, &dbt_type, (arg)))
 #define luab_to_dbt(L, narg) \
     (luab_toudata((L), (narg), &dbt_type))
 

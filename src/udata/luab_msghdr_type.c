@@ -86,7 +86,7 @@ typedef struct luab_msghdr {
 } luab_msghdr_t;
 
 #define luab_new_msghdr(L, arg) \
-    ((luab_msghdr_t *)luab_newuserdata(L, &msghdr_type, (arg)))
+    ((luab_msghdr_t *)luab_newudata(L, &msghdr_type, (arg)))
 #define luab_to_msghdr(L, narg) \
     (luab_todata((L), (narg), &msghdr_type, luab_msghdr_t *))
 

@@ -72,7 +72,7 @@ typedef struct luab_sockaddr {
 } luab_sockaddr_t;
 
 #define luab_new_sockaddr(L, arg) \
-    ((luab_sockaddr_t *)luab_newuserdata(L, &sockaddr_type, (arg)))
+    ((luab_sockaddr_t *)luab_newudata(L, &sockaddr_type, (arg)))
 #define luab_to_sockaddr(L, narg) \
     ((struct sockaddr *)luab_checksockaddr((L), (narg)))
 

@@ -52,7 +52,7 @@ typedef struct luab_crypt_data {
 #define LUAB_CRYPT_DATAMAXLEN  256
 
 #define luab_new_crypt_data(L, arg) \
-    ((luab_crypt_data_t *)luab_newuserdata(L, &crypt_data_type, (arg)))
+    ((luab_crypt_data_t *)luab_newudata(L, &crypt_data_type, (arg)))
 #define luab_to_crypt_data(L, narg) \
     (luab_toldata((L), (narg), &crypt_data_type, \
         struct crypt_data *, sizeof(struct crypt_data)))

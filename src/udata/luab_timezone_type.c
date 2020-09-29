@@ -51,7 +51,7 @@ typedef struct luab_timezone {
 } luab_timezone_t;
 
 #define luab_new_timezone(L, arg) \
-    ((luab_timezone_t *)luab_newuserdata(L, &timezone_type, (arg)))
+    ((luab_timezone_t *)luab_newudata(L, &timezone_type, (arg)))
 #define luab_to_timezone(L, narg) \
     (luab_toldata((L), (narg), &timezone_type, \
         struct timezone *, sizeof(struct timezone)))

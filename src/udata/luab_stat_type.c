@@ -81,7 +81,7 @@ typedef struct luab_stat {
 } luab_stat_t;
 
 #define luab_new_stat(L, arg) \
-    ((luab_stat_t *)luab_newuserdata(L, &stat_type, (arg)))
+    ((luab_stat_t *)luab_newudata(L, &stat_type, (arg)))
 #define luab_to_stat(L, narg) \
     (luab_toldata((L), (narg), &stat_type, \
         struct stat *, sizeof(struct stat)))

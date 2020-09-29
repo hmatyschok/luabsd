@@ -50,7 +50,7 @@ typedef struct luab_div {
 } luab_div_t;
 
 #define luab_new_div(L, arg) \
-    ((luab_div_t *)luab_newuserdata(L, &div_type, (arg)))
+    ((luab_div_t *)luab_newudata(L, &div_type, (arg)))
 #define luab_to_div(L, narg) \
     (luab_toldata((L), (narg), &div_type, \
         div_t *, sizeof(div_t)))

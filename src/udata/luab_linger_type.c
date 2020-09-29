@@ -51,7 +51,7 @@ typedef struct luab_linger {
 } luab_linger_t;
 
 #define luab_new_linger(L, arg) \
-    ((luab_linger_t *)luab_newuserdata(L, &linger_type, (arg)))
+    ((luab_linger_t *)luab_newudata(L, &linger_type, (arg)))
 #define luab_to_linger(L, narg) \
     (luab_toldata((L), (narg), &linger_type, \
         struct linger *, sizeof(struct linger)))

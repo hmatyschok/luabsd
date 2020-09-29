@@ -51,7 +51,7 @@ typedef struct luab_bintime {
 } luab_bintime_t;
 
 #define luab_new_bintime(L, arg) \
-    ((luab_bintime_t *)luab_newuserdata(L, &bintime_type, (arg)))
+    ((luab_bintime_t *)luab_newudata(L, &bintime_type, (arg)))
 #define luab_to_bintime(L, narg) \
     (luab_toldata((L), (narg), &bintime_type, \
         struct bintime *, sizeof(struct bintime)))

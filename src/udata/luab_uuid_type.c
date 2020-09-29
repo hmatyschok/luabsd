@@ -56,7 +56,7 @@ typedef struct luab_uuid {
 } luab_uuid_t;
 
 #define luab_new_uuid(L, arg) \
-    ((luab_uuid_t *)luab_newuserdata(L, &uuid_type, (arg)))
+    ((luab_uuid_t *)luab_newudata(L, &uuid_type, (arg)))
 #define luab_to_uuid(L, narg) \
     (luab_toldata((L), (narg), &uuid_type, \
         struct uuid *, sizeof(struct uuid)))

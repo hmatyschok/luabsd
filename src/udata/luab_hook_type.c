@@ -67,7 +67,7 @@ typedef struct luab_hook {
 } luab_hook_t;
 
 #define luab_new_hook(L, arg) \
-    ((luab_hook_t *)luab_newuserdata(L, &hook_type, (arg)))
+    ((luab_hook_t *)luab_newudata(L, &hook_type, (arg)))
 #define luab_to_hook(L, narg) \
     (luab_toudata((L), (narg), &hook_type))
 

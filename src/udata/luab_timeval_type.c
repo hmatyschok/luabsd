@@ -51,7 +51,7 @@ typedef struct luab_timeval {
 } luab_timeval_t;
 
 #define luab_new_timeval(L, arg) \
-    ((luab_timeval_t *)luab_newuserdata(L, &timeval_type, (arg)))
+    ((luab_timeval_t *)luab_newudata(L, &timeval_type, (arg)))
 #define luab_to_timeval(L, narg) \
     (luab_toldata((L), (narg), &timeval_type, \
         struct timeval *, sizeof(struct timeval)))

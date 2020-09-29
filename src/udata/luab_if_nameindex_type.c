@@ -53,7 +53,7 @@ typedef struct luab_if_nameindex {
 } luab_if_nameindex_t;
 
 #define luab_new_if_nameindex(L, arg) \
-    ((luab_if_nameindex_t *)luab_newuserdata(L, &if_nameindex_type, (arg)))
+    ((luab_if_nameindex_t *)luab_newudata(L, &if_nameindex_type, (arg)))
 #define luab_to_if_nameindex(L, narg) \
     (luab_toudata((L), (narg), &if_nameindex_type))
 

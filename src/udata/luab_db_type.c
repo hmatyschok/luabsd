@@ -66,7 +66,7 @@ typedef struct luab_db {
 } luab_db_t;
 
 #define luab_new_db(L, arg) \
-    ((luab_db_t *)luab_newuserdata(L, &db_type, (arg)))
+    ((luab_db_t *)luab_newudata(L, &db_type, (arg)))
 #define luab_to_db(L, narg) \
     (luab_todata((L), (narg), &db_type, luab_db_t *))
 

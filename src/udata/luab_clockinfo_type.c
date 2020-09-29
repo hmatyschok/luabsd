@@ -54,7 +54,7 @@ typedef struct luab_clockinfo {
 } luab_clockinfo_t;
 
 #define luab_new_clockinfo(L, arg) \
-    ((luab_clockinfo_t *)luab_newuserdata(L, &clockinfo_type, (arg)))
+    ((luab_clockinfo_t *)luab_newudata(L, &clockinfo_type, (arg)))
 #define luab_to_clockinfo(L, narg) \
     (luab_toldata((L), (narg), &clockinfo_type, \
         struct clockinfo *, sizeof(struct clockinfo)))

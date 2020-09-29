@@ -54,7 +54,7 @@ typedef struct luab_flock {
 } luab_flock_t;
 
 #define luab_new_flock(L, arg) \
-    ((luab_flock_t *)luab_newuserdata(L, &flock_type, (arg)))
+    ((luab_flock_t *)luab_newudata(L, &flock_type, (arg)))
 #define luab_to_flock(L, narg) \
     (luab_toldata((L), (narg), &flock_type, \
         struct flock *, sizeof(struct flock)))

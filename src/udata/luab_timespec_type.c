@@ -51,7 +51,7 @@ typedef struct luab_timespec {
 } luab_timespec_t;
 
 #define luab_new_timespec(L, arg) \
-    ((luab_timespec_t *)luab_newuserdata(L, &timespec_type, (arg)))
+    ((luab_timespec_t *)luab_newudata(L, &timespec_type, (arg)))
 #define luab_to_timespec(L, narg) \
     (luab_toldata((L), (narg), &timespec_type, \
         struct timespec *, sizeof(struct timespec)))

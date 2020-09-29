@@ -50,7 +50,7 @@ typedef struct luab_in_addr {
 } luab_in_addr_t;
 
 #define luab_new_in_addr(L, arg) \
-    ((luab_in_addr_t *)luab_newuserdata(L, &in_addr_type, (arg)))
+    ((luab_in_addr_t *)luab_newudata(L, &in_addr_type, (arg)))
 #define luab_to_in_addr(L, narg) \
     (luab_toldata((L), (narg), &in_addr_type, \
         struct in_addr *, sizeof(struct in_addr)))

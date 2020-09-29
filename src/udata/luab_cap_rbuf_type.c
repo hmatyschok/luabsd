@@ -57,7 +57,7 @@ typedef struct luab_cap_rbuf {
 } luab_cap_rbuf_t;
 
 #define luab_new_cap(L, arg) \
-    ((luab_cap_rbuf_t *)luab_newuserdata(L, &cap_rbuf_type, (arg)))
+    ((luab_cap_rbuf_t *)luab_newudata(L, &cap_rbuf_type, (arg)))
 #define luab_to_cap(L, narg) \
     (luab_todata((L), (narg), &cap_rbuf_type, luab_cap_rbuf_t *))
 

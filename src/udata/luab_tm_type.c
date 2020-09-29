@@ -59,7 +59,7 @@ typedef struct luab_tm {
 } luab_tm_t;
 
 #define luab_new_tm(L, arg) \
-    ((luab_tm_t *)luab_newuserdata(L, &tm_type, (arg)))
+    ((luab_tm_t *)luab_newudata(L, &tm_type, (arg)))
 #define luab_to_tm(L, narg) \
     (luab_toldata((L), (narg), &tm_type, \
         struct tm *, sizeof(struct tm)))
