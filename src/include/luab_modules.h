@@ -25,7 +25,7 @@
  */
 
 /*
- * xxx_type(3) set.
+ * Set of complex data types.
  */
 
 extern luab_module_t clockinfo_type;
@@ -53,10 +53,11 @@ extern luab_module_t db_type;
 extern luab_module_t bintime_type;
 extern luab_module_t crypt_data_type;
 extern luab_module_t cap_rbuf_type;
+extern luab_module_t accept_filter_arg_type;
 #endif
 
 /*
- * xxx_lib(3) set.
+ * Set of interfaces.
  */
 
 extern luab_module_t luab_arpa_inet_lib;

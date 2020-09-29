@@ -24,32 +24,33 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#define LUAB_CLOCKINFO_IDX      0
-#define LUAB_DIV_IDX            1
-#define LUAB_FLOCK_IDX          2
-#define LUAB_HOOK_IDX           3
-#define LUAB_IF_NAMEINDEX_IDX   4
-#define LUAB_IN_ADDR_IDX        5
-#define LUAB_IN6_ADDR_IDX       6
-#define LUAB_ITIMERVAL_IDX      7
-#define LUAB_LDIV_IDX           8
-#define LUAB_LLDIV_IDX          9
-#define LUAB_LINGER_IDX         10
-#define LUAB_MSGHDR_IDX         11
-#define LUAB_SOCKADDR_IDX       12
-#define LUAB_STAT_IDX           13
-#define LUAB_TIMESPEC_IDX       14
-#define LUAB_TIMEVAL_IDX        15
-#define LUAB_TIMEZONE_IDX       16
-#define LUAB_TM_IDX             17
-#define LUAB_UUID_IDX           18
-#define LUAB_IOVEC_IDX          19
+#define LUAB_CLOCKINFO_IDX          0
+#define LUAB_DIV_IDX                1
+#define LUAB_FLOCK_IDX              2
+#define LUAB_HOOK_IDX               3
+#define LUAB_IF_NAMEINDEX_IDX       4
+#define LUAB_IN_ADDR_IDX            5
+#define LUAB_IN6_ADDR_IDX           6
+#define LUAB_ITIMERVAL_IDX          7
+#define LUAB_LDIV_IDX               8
+#define LUAB_LLDIV_IDX              9
+#define LUAB_LINGER_IDX             10
+#define LUAB_MSGHDR_IDX             11
+#define LUAB_SOCKADDR_IDX           12
+#define LUAB_STAT_IDX               13
+#define LUAB_TIMESPEC_IDX           14
+#define LUAB_TIMEVAL_IDX            15
+#define LUAB_TIMEZONE_IDX           16
+#define LUAB_TM_IDX                 17
+#define LUAB_UUID_IDX               18
+#define LUAB_IOVEC_IDX              19
 #if __BSD_VISIBLE
-#define LUAB_DBT_IDX            20
-#define LUAB_DB_IDX             21
-#define LUAB_BINTIME_IDX        22
-#define LUAB_CRYPT_DATA_IDX     23
-#define LUAB_CAP_RBUF_IDX       24
+#define LUAB_DBT_IDX                20
+#define LUAB_DB_IDX                 21
+#define LUAB_BINTIME_IDX            22
+#define LUAB_CRYPT_DATA_IDX         23
+#define LUAB_CAP_RBUF_IDX           24
+#define LUAB_ACCEPT_FILTER_ARG_IDX  25
 #endif
 
 /*
