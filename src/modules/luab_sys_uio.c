@@ -69,7 +69,7 @@ luab_iovec_create(lua_State *L)
     INT_MAX
 #endif
     );
-    return (luab_iovec_pushdata(L, NULL, 0, max_len));
+    return (luab_iovec_pushudata(L, NULL, 0, max_len));
 }
 
 /*

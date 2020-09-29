@@ -293,7 +293,7 @@ int luab_iov_pushlen(lua_State *, struct iovec *);
 int luab_iov_pushdata(lua_State *, struct iovec *);
 
 int luab_pushudata(lua_State *, luab_module_t *, void *);
-int luab_iovec_pushdata(lua_State *, void *, size_t, size_t);
+int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
 
 /*
  * Generator functions, (LUA_TTABLE).

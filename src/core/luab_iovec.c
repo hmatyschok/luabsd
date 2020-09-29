@@ -72,7 +72,7 @@ luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
  */
 
 int
-luab_iovec_pushdata(lua_State *L, void *v, size_t len, size_t max_len)
+luab_iovec_pushudata(lua_State *L, void *v, size_t len, size_t max_len)
 {
     luab_iovec_param_t iop;
     int status;
