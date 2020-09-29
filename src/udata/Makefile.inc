@@ -2,7 +2,7 @@
 .PATH: ${LUAB_SRCTOP}/udata
 
 SRCS+=	luab_bintime_type.c
-SRCS+=	luab_cap_rbuf.c
+SRCS+=	luab_cap_rbuf_type.c
 SRCS+=	luab_clockinfo_type.c
 SRCS+=	luab_crypt_data_type.c
 SRCS+=	luab_dbt_type.c

@@ -47,7 +47,7 @@ extern luab_module_t timeval_type;
 
 typedef struct luab_timeval {
     luab_udata_t        ud_softc;
-    struct timeval    timeval;
+    struct timeval      ud_timeval;
 } luab_timeval_t;
 
 #define luab_new_timeval(L, arg) \
@@ -272,7 +272,7 @@ timeval_init(void *ud, void *arg)
     luab_timeval_t *self;
 
     if (((self = (luab_timeval_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->timeval, arg, sizeof(self->timeval));
+        (void)memmove(&self->ud_timeval, arg, sizeof(self->ud_timeval));
 }
 
 static void *

@@ -67,8 +67,8 @@ extern luab_module_t sockaddr_type;
  */
 
 typedef struct luab_sockaddr {
-    luab_udata_t        ud_softc;
-    struct sockaddr_storage sockaddr;
+    luab_udata_t            ud_softc;
+    struct sockaddr_storage ud_sockaddr;
 } luab_sockaddr_t;
 
 #define luab_new_sockaddr(L, arg) \
@@ -1281,7 +1281,7 @@ sockaddr_init(void *ud, void *arg)
 
     if (((self = (luab_sockaddr_t *)ud) != NULL) &&
         ((sa = (struct sockaddr *)arg) != NULL))
-        (void)memmove(&self->sockaddr, sa, sa->sa_len);
+        (void)memmove(&self->ud_sockaddr, sa, sa->sa_len);
 }
 
 static void *

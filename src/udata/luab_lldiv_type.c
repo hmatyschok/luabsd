@@ -45,8 +45,8 @@ extern luab_module_t lldiv_type;
  */
 
 typedef struct luab_lldiv {
-    luab_udata_t        ud_softc;
-    lldiv_t    lldiv;
+    luab_udata_t    ud_softc;
+    lldiv_t         ud_lldiv;
 } luab_lldiv_t;
 
 #define luab_new_lldiv(L, arg) \
@@ -271,7 +271,7 @@ lldiv_init(void *ud, void *arg)
     luab_lldiv_t *self;
 
     if (((self = (luab_lldiv_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->lldiv, arg, sizeof(self->lldiv));
+        (void)memmove(&self->ud_lldiv, arg, sizeof(self->ud_lldiv));
 }
 
 static void *

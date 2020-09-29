@@ -50,7 +50,7 @@ extern luab_module_t flock_type;
 
 typedef struct luab_flock {
     luab_udata_t    ud_softc;
-    struct flock    flock;
+    struct flock    ud_flock;
 } luab_flock_t;
 
 #define luab_new_flock(L, arg) \
@@ -367,7 +367,7 @@ flock_init(void *ud, void *arg)
     luab_flock_t *self;
 
     if (((self = (luab_flock_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->flock, arg, sizeof(self->flock));
+        (void)memmove(&self->ud_flock, arg, sizeof(self->ud_flock));
 }
 
 static void *

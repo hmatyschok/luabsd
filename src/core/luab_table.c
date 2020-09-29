@@ -35,23 +35,6 @@
 #include "luabsd.h"
 
 /*
- * Subr.
- */
-
-static void
-luab_table_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
-{
-    size_t len;
-
-    if (v != NULL) {
-        len = n * sz;
-        (void)memset_s(v, len, 0, len);
-        free(v);
-    }
-    luaL_argerror(L, narg, "Invalid argument");
-}
-
-/*
  * Accessor, [stack -> C].
  */
 
@@ -77,7 +60,7 @@ luab_checkargv(lua_State *L, int narg)
             (lua_isstring(L, -1) != 0)) {
             argv[k] = lua_tostring(L, -1);
         } else
-            luab_table_argerror(L, narg, argv, n + 1, sizeof(*argv));
+            luab_argerror(L, narg, argv, n + 1, sizeof(*argv));
 
         lua_pop(L, 1);
     }
@@ -107,7 +90,7 @@ luab_table_tolxargp(lua_State *L, int narg, size_t len)
                 (lua_type(L, -1) != -1)) {
                 argv[k] = lua_topointer(L, -1);
             } else
-                luab_table_argerror(L, narg, argv, n, sizeof(void *));
+                luab_argerror(L, narg, argv, n, sizeof(void *));
 
             lua_pop(L, 1);
         }
@@ -144,7 +127,7 @@ luab_table_checkdouble(lua_State *L, int narg, size_t *len)
             v = (int)luab_tointeger(L, -1, UINT_MAX);
             vec[k] = v;
         } else
-            luab_table_argerror(L, narg, vec, n, sizeof(double));
+            luab_argerror(L, narg, vec, n, sizeof(double));
 
         lua_pop(L, 1);
     }
@@ -168,7 +151,7 @@ luab_table_checklu_short(lua_State *L, int narg, size_t len)
             v = (u_short)luab_tointeger(L, -1, USHRT_MAX);
             vec[k] = v;
         } else
-            luab_table_argerror(L, narg, vec, len, sizeof(u_short));
+            luab_argerror(L, narg, vec, len, sizeof(u_short));
 
         lua_pop(L, 1);
     }
@@ -191,7 +174,7 @@ luab_table_checklint(lua_State *L, int narg, size_t len)
             v = (int)luab_tointeger(L, -1, UINT_MAX);
             vec[k] = v;
         } else
-            luab_table_argerror(L, narg, vec, len, sizeof(int));
+            luab_argerror(L, narg, vec, len, sizeof(int));
 
         lua_pop(L, 1);
     }
@@ -215,7 +198,7 @@ luab_table_checklgid(lua_State *L, int narg, size_t len)
             v = (gid_t)luab_tointeger(L, -1, INT_MAX);
             vec[k] = v;
         } else
-            luab_table_argerror(L, narg, vec, len, sizeof(gid_t));
+            luab_argerror(L, narg, vec, len, sizeof(gid_t));
 
         lua_pop(L, 1);
     }

@@ -53,7 +53,7 @@ extern luab_module_t in6_addr_type;
 
 typedef struct luab_in6_addr {
     luab_udata_t    ud_softc;
-    struct in6_addr    in6_addr;
+    struct in6_addr ud_in6_addr;
 } luab_in6_addr_t;
 #define s6_addr32   __u6_addr.__u6_addr32
 
@@ -234,7 +234,7 @@ in6_addr_init(void *ud, void *arg)
     luab_in6_addr_t *self;
 
     if (((self = (luab_in6_addr_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->in6_addr, arg, sizeof(self->in6_addr));
+        (void)memmove(&self->ud_in6_addr, arg, sizeof(self->ud_in6_addr));
 }
 
 static void *

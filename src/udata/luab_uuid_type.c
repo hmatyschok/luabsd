@@ -52,7 +52,7 @@ extern luab_module_t uuid_type;
 
 typedef struct luab_uuid {
     luab_udata_t    ud_softc;
-    struct uuid    uuid;
+    struct uuid     ud_uuid;
 } luab_uuid_t;
 
 #define luab_new_uuid(L, arg) \
@@ -531,7 +531,7 @@ uuid_init(void *ud, void *arg)
     luab_uuid_t *self;
 
     if (((self = (luab_uuid_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->uuid, arg, sizeof(self->uuid));
+        (void)memmove(&self->ud_uuid, arg, sizeof(self->ud_uuid));
 }
 
 static void *

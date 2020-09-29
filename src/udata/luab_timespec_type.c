@@ -47,7 +47,7 @@ extern luab_module_t timespec_type;
 
 typedef struct luab_timespec {
     luab_udata_t        ud_softc;
-    struct timespec    timespec;
+    struct timespec     ud_timespec;
 } luab_timespec_t;
 
 #define luab_new_timespec(L, arg) \
@@ -272,7 +272,7 @@ timespec_init(void *ud, void *arg)
     luab_timespec_t *self;
 
     if (((self = (luab_timespec_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->timespec, arg, sizeof(self->timespec));
+        (void)memmove(&self->ud_timespec, arg, sizeof(self->ud_timespec));
 }
 
 static void *

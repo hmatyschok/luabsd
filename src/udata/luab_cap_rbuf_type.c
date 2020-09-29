@@ -53,7 +53,7 @@ extern luab_module_t cap_rbuf_type;
 
 typedef struct luab_cap_rbuf {
     luab_udata_t    ud_softc;
-    struct iovec    iov;
+    struct iovec    ud_iov;
 } luab_cap_rbuf_t;
 
 #define luab_new_cap(L, arg) \
@@ -199,7 +199,7 @@ cap_rbuf_init(void *ud, void *arg)
 {
     luab_cap_rbuf_t *self = (luab_cap_rbuf_t *)ud;
 
-    (void)memmove(&self->iov, arg, sizeof(self->iov));
+    (void)memmove(&self->ud_iov, arg, sizeof(self->ud_iov));
 }
 
 static void *

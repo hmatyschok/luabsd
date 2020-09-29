@@ -63,7 +63,7 @@ extern luab_module_t hook_type;
 
 typedef struct luab_hook {
     luab_udata_t    ud_softc;
-    luab_type_u     hook;
+    luab_type_u     ud_hook;
 } luab_hook_t;
 
 #define luab_new_hook(L, arg) \
@@ -282,7 +282,7 @@ hook_init(void *ud, void *arg)
     luab_hook_t *self;
 
     if (((self = (luab_hook_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->hook, arg, sizeof(self->hook));
+        (void)memmove(&self->ud_hook, arg, sizeof(self->ud_hook));
 }
 
 static void *

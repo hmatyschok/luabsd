@@ -55,7 +55,7 @@ extern luab_module_t tm_type;
 
 typedef struct luab_tm {
     luab_udata_t    ud_softc;
-    struct tm    tm;
+    struct tm       ud_tm;
 } luab_tm_t;
 
 #define luab_new_tm(L, arg) \
@@ -789,7 +789,7 @@ tm_init(void *ud, void *arg)
     luab_tm_t *self;
 
     if (((self = (luab_tm_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->tm, arg, sizeof(self->tm));
+        (void)memmove(&self->ud_tm, arg, sizeof(self->ud_tm));
 }
 
 static void *

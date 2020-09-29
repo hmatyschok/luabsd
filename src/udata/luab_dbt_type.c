@@ -49,7 +49,7 @@ extern luab_module_t dbt_type;
 
 typedef struct luab_dbt {
     luab_udata_t    ud_softc;
-    DBT dbt;
+    DBT             ud_dbt;
 } luab_dbt_t;
 
 #define luab_new_dbt(L, arg) \
@@ -240,8 +240,8 @@ dbt_init(void *ud, void *arg)
             (buf->iov.iov_len > 0)) {
             buf->iov_flags |= IOV_LOCK;
 
-            self->dbt.data = buf->iov.iov_base;
-            self->dbt.size = buf->iov.iov_len;
+            self->ud_dbt.data = buf->iov.iov_base;
+            self->ud_dbt.size = buf->iov.iov_len;
 
             buf->iov_flags &= ~IOV_LOCK;
         }

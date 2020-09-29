@@ -77,7 +77,7 @@ extern luab_module_t stat_type;
 
 typedef struct luab_stat {
     luab_udata_t    ud_softc;
-    struct stat    stat;
+    struct stat     ud_stat;
 } luab_stat_t;
 
 #define luab_new_stat(L, arg) \
@@ -917,7 +917,7 @@ stat_init(void *ud, void *arg)
     luab_stat_t *self;
 
     if (((self = (luab_stat_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->stat, arg, sizeof(self->stat));
+        (void)memmove(&self->ud_stat, arg, sizeof(self->ud_stat));
 }
 
 static void *

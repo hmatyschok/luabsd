@@ -46,7 +46,7 @@ extern luab_module_t crypt_data_type;
 
 typedef struct luab_crypt_data {
     luab_udata_t        ud_softc;
-    struct crypt_data    crypt_data;
+    struct crypt_data   ud_crypt_data;
 } luab_crypt_data_t;
 
 #define LUAB_CRYPT_DATAMAXLEN  256
@@ -279,7 +279,7 @@ crypt_data_init(void *ud, void *arg)
 {
     luab_crypt_data_t *self = (luab_crypt_data_t *)ud;
 
-    (void)memmove(&self->crypt_data, arg, sizeof(self->crypt_data));
+    (void)memmove(&self->ud_crypt_data, arg, sizeof(self->ud_crypt_data));
 }
 
 static void *

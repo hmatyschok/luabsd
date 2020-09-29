@@ -62,7 +62,7 @@ extern luab_module_t db_type;
 
 typedef struct luab_db {
     luab_udata_t    ud_softc;
-    DB  *db;
+    DB              *ud_db;
 } luab_db_t;
 
 #define luab_new_db(L, arg) \
@@ -114,8 +114,8 @@ DB_close(lua_State *L)
 
     self = luab_to_db(L, 1);
 
-    if ((status = db_close(self->db)) == 0)
-        self->db = NULL;
+    if ((status = db_close(self->ud_db)) == 0)
+        self->ud_db = NULL;
 
     return (luab_pusherr(L, status));
 }
@@ -361,8 +361,8 @@ DB_gc(lua_State *L)
 
     self = luab_to_db(L, 1);
 
-    if (db_close(self->db) == 0)
-        self->db = NULL;
+    if (db_close(self->ud_db) == 0)
+        self->ud_db = NULL;
 
     return (0);
 }
@@ -376,8 +376,8 @@ DB_tostring(lua_State *L)
 
     self = luab_to_db(L, 1);
 
-    if (self->db != NULL)
-        lua_pushfstring(L, "db (%p)", self->db);
+    if (self->ud_db != NULL)
+        lua_pushfstring(L, "db (%p)", self->ud_db);
     else
         lua_pushliteral(L, "db (closed)");
 
@@ -423,7 +423,7 @@ db_init(void *ud, void *arg)
     luab_db_t *self;
 
     if ((self = (luab_db_t *)ud) != NULL)
-        self->db = (DB *)arg;
+        self->ud_db = (DB *)arg;
 }
 
 static void *
@@ -431,10 +431,10 @@ db_udata(lua_State *L, int narg)
 {
     luab_db_t *self = luab_to_db(L, narg);
 
-    if (self->db == NULL)
+    if (self->ud_db == NULL)
         errno = EBADF;
 
-    return (self->db);
+    return (self->ud_db);
 }
 
 luab_module_t db_type = {

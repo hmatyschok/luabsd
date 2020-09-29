@@ -32,6 +32,7 @@
 #include <sys/queue.h>
 
 #include <stdlib.h>
+#include <string.h>
 
 /*
  * Definitiions for API method table.
@@ -173,6 +174,23 @@ int luab_iov_realloc(struct iovec *, size_t);
 
 int luab_iov_copyin(struct iovec *, const void *, ssize_t);
 int luab_iov_copyout(struct iovec *, void *, ssize_t);
+
+/*
+ * Generic error handler.
+ */
+
+static __inline void
+luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
+{
+    size_t len;
+
+    if ((v != NULL) &&
+        ((len = n * sz) != 0)) {
+        (void)memset_s(v, len, 0, len);
+        free(v);
+    }
+    luaL_argerror(L, narg, "Invalid argument");
+}
 
 /*
  * Generator functions, [Lua -> stack].

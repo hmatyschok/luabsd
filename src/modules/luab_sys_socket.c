@@ -53,9 +53,9 @@ luab_checkmsgvec(lua_State *L, int narg)
 {
     struct mmsghdr *vec;
     struct msghdr *msg;
-    int k;
+    size_t k, n;
 
-    vec = luab_newvector(L, narg, NULL, sizeof(struct mmsghdr));
+    vec = luab_newvector(L, narg, &n, sizeof(struct mmsghdr));
 
     lua_pushnil(L);
 
@@ -65,10 +65,9 @@ luab_checkmsgvec(lua_State *L, int narg)
             (lua_isnumber(L, -1) != 0)) {
             msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
             (void)memmove(&(vec[k].msg_hdr), msg, sizeof(struct msghdr));
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
+        } else
+            luab_argerror(L, narg, vec, n, sizeof(struct msghdr));
+            
         lua_pop(L, 1);
     }
     return (vec);
@@ -101,7 +100,7 @@ luab_accept(lua_State *L)
 {
     int s;
     struct sockaddr *addr;
-    luab_type_u *hook;
+    luab_type_u *h0;
     socklen_t *addrlen;
     int as;
 
@@ -109,10 +108,10 @@ luab_accept(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    hook = luab_udataisnil(L, 3, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udataisnil(L, 3, luab_mx(HOOK), luab_type_u *);
 
-    if (hook != NULL)
-        addrlen = &(hook->un_socklen);
+    if (h0 != NULL)
+        addrlen = &(h0->un_socklen);
     else
         addrlen = NULL;
 
@@ -253,7 +252,7 @@ luab_accept4(lua_State *L)
 {
     int s;
     struct sockaddr *addr;
-    luab_type_u *hook;
+    luab_type_u *h0;
     socklen_t *addrlen;
     int flags, as;
 
@@ -261,11 +260,11 @@ luab_accept4(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    hook = luab_udataisnil(L, 3, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udataisnil(L, 3, luab_mx(HOOK), luab_type_u *);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
-    if (hook != NULL)
-        addrlen = &(hook->un_socklen);
+    if (h0 != NULL)
+        addrlen = &(h0->un_socklen);
     else
         addrlen = NULL;
 
@@ -378,7 +377,7 @@ luab_getpeername(lua_State *L)
 {
     int s;
     struct sockaddr *name;
-    luab_type_u *hook;
+    luab_type_u *h0;
     socklen_t *namelen;
     int status;
 
@@ -386,8 +385,8 @@ luab_getpeername(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     name = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    hook = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
-    namelen = &(hook->un_socklen);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    namelen = &(h0->un_socklen);
 
     status = getpeername(s, name, namelen);
 
@@ -415,7 +414,7 @@ luab_getsockname(lua_State *L)
 {
     int s;
     struct sockaddr *name;
-    luab_type_u *hook;
+    luab_type_u *h0;
     socklen_t *namelen;
     int status;
 
@@ -423,8 +422,8 @@ luab_getsockname(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     name = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    hook = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
-    namelen = &(hook->un_socklen);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    namelen = &(h0->un_socklen);
 
     status = getsockname(s, name, namelen);
 
@@ -540,7 +539,7 @@ luab_recvfrom(lua_State *L)
     size_t len;
     int flags;
     struct sockaddr *from;
-    luab_type_u *hook;
+    luab_type_u *h0;
     socklen_t *fromlen;
 
     (void)luab_checkmaxargs(L, 6);
@@ -556,8 +555,8 @@ luab_recvfrom(lua_State *L)
     );
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
     from = luab_udataisnil(L, 5, luab_mx(SOCKADDR), struct sockaddr *);
-    hook = luab_udata(L, 6, luab_mx(HOOK), luab_type_u *);
-    fromlen = &(hook->un_socklen);
+    h0 = luab_udata(L, 6, luab_mx(HOOK), luab_type_u *);
+    fromlen = &(h0->un_socklen);
 
     return (luab_iovec_recvfrom(L, s, buf, &len, flags, from, fromlen));
 }
