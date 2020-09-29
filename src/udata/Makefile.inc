@@ -1,7 +1,6 @@
 
 .PATH: ${LUAB_SRCTOP}/udata
 
-SRCS+=	luab_accept_filter_arg_type.c
 SRCS+=	luab_bintime_type.c
 SRCS+=	luab_cap_rbuf_type.c
 SRCS+=	luab_clockinfo_type.c
@@ -27,3 +26,5 @@ SRCS+=	luab_timeval_type.c
 SRCS+=	luab_timezone_type.c
 SRCS+=	luab_tm_type.c
 SRCS+=	luab_uuid_type.c
+SRCS+=	luab_accept_filter_arg_type.c
+SRCS+=	luab_sockproto_type.c

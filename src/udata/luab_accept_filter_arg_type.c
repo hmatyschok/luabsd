@@ -97,7 +97,7 @@ ACCEPT_FILTER_ARG_get(lua_State *L)
 }
 
 /***
- * Generator function - translate crypt_data{} into (LUA_TUSERDATA(IOVEC)).
+ * Generator function - translate accept_filter_arg{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
@@ -106,7 +106,7 @@ ACCEPT_FILTER_ARG_get(lua_State *L)
  *          (iovec [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage iovec [, err, msg ] = crypt_data:dump()
+ * @usage iovec [, err, msg ] = accept_filter_arg:dump()
  */
 static int
 ACCEPT_FILTER_ARG_dump(lua_State *L)
@@ -125,12 +125,12 @@ ACCEPT_FILTER_ARG_dump(lua_State *L)
  *
  * @param data              Specifies protocol domain(9) by name, (LUA_TSTRING).
  *
- * @return (LUA_T{NIL,NUMBER} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (str [, nil, nil]) on success or
+ *          (data [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage str [, err, msg ] = accept_filter_arg:set_af_name(data)
+ * @usage data [, err, msg ] = accept_filter_arg:set_af_name(data)
  */
 static int
 ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
@@ -155,10 +155,10 @@ ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (str [, nil, nil]) on success or
+ *          (data [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage str [, err, msg ] = accept_filter_arg:get_af_name()
+ * @usage data [, err, msg ] = accept_filter_arg:get_af_name()
  */
 static int
 ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
@@ -185,10 +185,10 @@ ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
  *
  * @return (LUA_T{NIL,NUMBER} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (str [, nil, nil]) on success or
+ *          (data [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage str [, err, msg ] = accept_filter_arg:set_af_name(data)
+ * @usage data [, err, msg ] = accept_filter_arg:set_af_name(data)
  */
 static int
 ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
@@ -213,10 +213,10 @@ ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (str [, nil, nil]) on success or
+ *          (data [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage str [, err, msg ] = accept_filter_arg:get_af_name()
+ * @usage data [, err, msg ] = accept_filter_arg:get_af_name()
  */
 static int
 ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)

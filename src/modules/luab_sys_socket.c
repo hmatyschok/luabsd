@@ -942,6 +942,28 @@ luab_sockaddr_create(lua_State *L)
     return (luab_create(L, 1, luab_mx(SOCKADDR), NULL));
 }
 
+#if __BSD_VISIBLE
+/***
+ * Generator function.
+ *
+ * @function sockproto_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(SOCKPROTO)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (sockproto [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage sockproto [, err, msg ] = bsd.sys.socket.sockproto_create([ data ])
+ */
+static int
+luab_sockproto_create(lua_State *L)
+{
+    return (luab_create(L, 1, luab_mx(SOCKPROTO), NULL));
+}
+#endif
+
 /*
  * Interface against <sys/socket.h>.
  */
@@ -1067,48 +1089,48 @@ static luab_table_t luab_sys_socket_vec[] = {
     LUABSD_INT("AF_VENDOR03",               AF_VENDOR03),
     LUABSD_INT("AF_VENDOR04",               AF_VENDOR04),
     LUABSD_INT("AF_VENDOR05",               AF_VENDOR05),
-    LUABSD_INT("AF_VENDOR06",           	AF_VENDOR06),
-    LUABSD_INT("AF_VENDOR07",           	AF_VENDOR07),
-    LUABSD_INT("AF_VENDOR08",           	AF_VENDOR08),
-    LUABSD_INT("AF_VENDOR09",           	AF_VENDOR09),
-    LUABSD_INT("AF_VENDOR10",           	AF_VENDOR10),
-    LUABSD_INT("AF_VENDOR11",           	AF_VENDOR11),
-    LUABSD_INT("AF_VENDOR12",           	AF_VENDOR12),
-    LUABSD_INT("AF_VENDOR13",           	AF_VENDOR13),
-    LUABSD_INT("AF_VENDOR14",           	AF_VENDOR14),
-    LUABSD_INT("AF_VENDOR15",           	AF_VENDOR15),
-    LUABSD_INT("AF_VENDOR16",           	AF_VENDOR16),
-    LUABSD_INT("AF_VENDOR17",           	AF_VENDOR17),
-    LUABSD_INT("AF_VENDOR18",           	AF_VENDOR18),
-    LUABSD_INT("AF_VENDOR19",           	AF_VENDOR19),
-    LUABSD_INT("AF_VENDOR20",           	AF_VENDOR20),
-    LUABSD_INT("AF_VENDOR21",           	AF_VENDOR21),
-    LUABSD_INT("AF_VENDOR22",           	AF_VENDOR22),
-    LUABSD_INT("AF_VENDOR23",           	AF_VENDOR23),
-    LUABSD_INT("AF_VENDOR24",           	AF_VENDOR24),
-    LUABSD_INT("AF_VENDOR25",           	AF_VENDOR25),
-    LUABSD_INT("AF_VENDOR26",           	AF_VENDOR26),
-    LUABSD_INT("AF_VENDOR27",           	AF_VENDOR27),
-    LUABSD_INT("AF_VENDOR28",           	AF_VENDOR28),
-    LUABSD_INT("AF_VENDOR29",           	AF_VENDOR29),
-    LUABSD_INT("AF_VENDOR30",           	AF_VENDOR30),
-    LUABSD_INT("AF_VENDOR31",           	AF_VENDOR31),
-    LUABSD_INT("AF_VENDOR32",           	AF_VENDOR32),
-    LUABSD_INT("AF_VENDOR33",           	AF_VENDOR33),
-    LUABSD_INT("AF_VENDOR34",           	AF_VENDOR34),
-    LUABSD_INT("AF_VENDOR35",           	AF_VENDOR35),
-    LUABSD_INT("AF_VENDOR36",           	AF_VENDOR36),
-    LUABSD_INT("AF_VENDOR37",           	AF_VENDOR37),
-    LUABSD_INT("AF_VENDOR38",           	AF_VENDOR38),
-    LUABSD_INT("AF_VENDOR39",           	AF_VENDOR39),
-    LUABSD_INT("AF_VENDOR40",           	AF_VENDOR40),
-    LUABSD_INT("AF_VENDOR41",           	AF_VENDOR41),
-    LUABSD_INT("AF_VENDOR42",           	AF_VENDOR42),
-    LUABSD_INT("AF_VENDOR43",           	AF_VENDOR43),
-    LUABSD_INT("AF_VENDOR44",           	AF_VENDOR44),
-    LUABSD_INT("AF_VENDOR45",           	AF_VENDOR45),
-    LUABSD_INT("AF_VENDOR46",           	AF_VENDOR46),
-    LUABSD_INT("AF_VENDOR47",           	AF_VENDOR47),
+    LUABSD_INT("AF_VENDOR06",               AF_VENDOR06),
+    LUABSD_INT("AF_VENDOR07",               AF_VENDOR07),
+    LUABSD_INT("AF_VENDOR08",               AF_VENDOR08),
+    LUABSD_INT("AF_VENDOR09",               AF_VENDOR09),
+    LUABSD_INT("AF_VENDOR10",               AF_VENDOR10),
+    LUABSD_INT("AF_VENDOR11",               AF_VENDOR11),
+    LUABSD_INT("AF_VENDOR12",               AF_VENDOR12),
+    LUABSD_INT("AF_VENDOR13",               AF_VENDOR13),
+    LUABSD_INT("AF_VENDOR14",               AF_VENDOR14),
+    LUABSD_INT("AF_VENDOR15",               AF_VENDOR15),
+    LUABSD_INT("AF_VENDOR16",               AF_VENDOR16),
+    LUABSD_INT("AF_VENDOR17",               AF_VENDOR17),
+    LUABSD_INT("AF_VENDOR18",               AF_VENDOR18),
+    LUABSD_INT("AF_VENDOR19",               AF_VENDOR19),
+    LUABSD_INT("AF_VENDOR20",               AF_VENDOR20),
+    LUABSD_INT("AF_VENDOR21",               AF_VENDOR21),
+    LUABSD_INT("AF_VENDOR22",               AF_VENDOR22),
+    LUABSD_INT("AF_VENDOR23",               AF_VENDOR23),
+    LUABSD_INT("AF_VENDOR24",               AF_VENDOR24),
+    LUABSD_INT("AF_VENDOR25",               AF_VENDOR25),
+    LUABSD_INT("AF_VENDOR26",               AF_VENDOR26),
+    LUABSD_INT("AF_VENDOR27",               AF_VENDOR27),
+    LUABSD_INT("AF_VENDOR28",               AF_VENDOR28),
+    LUABSD_INT("AF_VENDOR29",               AF_VENDOR29),
+    LUABSD_INT("AF_VENDOR30",               AF_VENDOR30),
+    LUABSD_INT("AF_VENDOR31",               AF_VENDOR31),
+    LUABSD_INT("AF_VENDOR32",               AF_VENDOR32),
+    LUABSD_INT("AF_VENDOR33",               AF_VENDOR33),
+    LUABSD_INT("AF_VENDOR34",               AF_VENDOR34),
+    LUABSD_INT("AF_VENDOR35",               AF_VENDOR35),
+    LUABSD_INT("AF_VENDOR36",               AF_VENDOR36),
+    LUABSD_INT("AF_VENDOR37",               AF_VENDOR37),
+    LUABSD_INT("AF_VENDOR38",               AF_VENDOR38),
+    LUABSD_INT("AF_VENDOR39",               AF_VENDOR39),
+    LUABSD_INT("AF_VENDOR40",               AF_VENDOR40),
+    LUABSD_INT("AF_VENDOR41",               AF_VENDOR41),
+    LUABSD_INT("AF_VENDOR42",               AF_VENDOR42),
+    LUABSD_INT("AF_VENDOR43",               AF_VENDOR43),
+    LUABSD_INT("AF_VENDOR44",               AF_VENDOR44),
+    LUABSD_INT("AF_VENDOR45",               AF_VENDOR45),
+    LUABSD_INT("AF_VENDOR46",               AF_VENDOR46),
+    LUABSD_INT("AF_VENDOR47",               AF_VENDOR47),
     LUABSD_INT("SOCK_MAXADDRLEN",           SOCK_MAXADDRLEN),
     LUABSD_INT("PF_UNSPEC",                 PF_UNSPEC),
     LUABSD_INT("PF_LOCAL",                  PF_LOCAL),
@@ -1238,6 +1260,9 @@ static luab_table_t luab_sys_socket_vec[] = {
     LUABSD_FUNC("msghdr_create",            luab_msghdr_create),
 #endif
     LUABSD_FUNC("sockaddr_create",          luab_sockaddr_create),
+#if __BSD_VISIBLE
+    LUABSD_FUNC("sockproto_proto",          luab_sockproto_create),
+#endif
     LUABSD_INT(NULL, 0)
 };
 

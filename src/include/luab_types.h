@@ -51,6 +51,7 @@
 #define LUAB_CRYPT_DATA_IDX         23
 #define LUAB_CAP_RBUF_IDX           24
 #define LUAB_ACCEPT_FILTER_ARG_IDX  25
+#define LUAB_SOCKPROTO_IDX          26
 #endif
 
 /*

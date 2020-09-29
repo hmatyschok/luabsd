@@ -162,7 +162,7 @@ luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *
     if (m != NULL && m->create != NULL) {
         /*
          * Best effort, this means try to push things on
-         * stack at least as it's possible, regardless
+         * stack at least as it is possible, regardless
          * if allocation of memory is possible or not.
          */
         if ((*m->create)(L, v) != NULL)
@@ -176,7 +176,7 @@ luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
     if (m != NULL && m->create != NULL) {
         /*
          * Best effort, this means try to push things on
-         * stack at least as it's possible, regardless
+         * stack at least as it is possible, regardless
          * if allocation of memory is possible or not.
          */
         if ((*m->create)(L, v) != NULL)

@@ -101,7 +101,7 @@ luab_table_tolxargp(lua_State *L, int narg, size_t len)
 }
 
 /*
- * Translate an array by (LUA_TTABLE) into an array of specific data types.
+ * Translate an instance of (LUA_TTABLE) into an array of specific data types.
  *
  * XXX DRY, components will be replaced by so called boiler-plate code.
  */
