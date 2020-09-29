@@ -72,7 +72,7 @@ luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
  */
 
 int
-luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
+luab_iovec_pushdata(lua_State *L, void *v, size_t len, size_t max_len)
 {
     luab_iovec_param_t iop;
     int status;
@@ -99,7 +99,7 @@ luab_pushiovec(lua_State *L, void *v, size_t len, size_t max_len)
  */
 
 void
-luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
+luab_iovec_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
 
@@ -115,7 +115,7 @@ luab_rawsetiovec(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 }
 
 void
-luab_setiovec(lua_State *L, int narg, const char *k, void *v, size_t len)
+luab_iovec_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 {
     luab_iovec_param_t iop;
 

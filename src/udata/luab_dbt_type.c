@@ -88,7 +88,7 @@ DBT_get(lua_State *L)
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
 
     lua_newtable(L);
-    luab_setiovec(L, -2, "data",    dbt->data, dbt->size);
+    luab_iovec_setldata(L, -2, "data",    dbt->data, dbt->size);
     luab_setinteger(L, -2, "size",  dbt->size);
     lua_pushvalue(L, -1);
 

@@ -75,7 +75,7 @@ Therefore, a callout may be implemented e. g.
         expired = true;
     end
 
-by utilizing setitimer(2) or interval timer [2]:
+by utilizing setitimer(2) or interval timer API [2]:
 
     local tv = bsd.sys.time.timeval_create()
     tv:set_tv_sec(3)
@@ -116,7 +116,7 @@ Those are accessible through get/set routines:
 
     print(" -> ", it_probe, tv, string.format("tv_sec: %s\n", tv:get_tv_sec()))
 
-As mentioned before, C Structures are accessible
+As mentioned before, C Structures are e. g. accessible
 
     function print_udata(i, j, pfx)
 
@@ -153,7 +153,7 @@ As mentioned before, C Structures are accessible
         end
     end
 
-utilizing instances of LUA_TTABLES:
+by utilizing instances of LUA_TTABLES:
 
     local sb = bsd.sys.stat.stat_create()
     fd, err, msg = db:fd()

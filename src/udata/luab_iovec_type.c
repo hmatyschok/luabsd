@@ -128,7 +128,7 @@ IOVEC_clone(lua_State *L)
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
 
-        status = luab_pushiovec(L, self->iov.iov_base,
+        status = luab_iovec_pushdata(L, self->iov.iov_base,
             self->iov.iov_len, self->iov_max_len);
 
         self->iov_flags &= ~IOV_LOCK;
