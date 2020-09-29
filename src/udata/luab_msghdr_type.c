@@ -39,6 +39,7 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
+#if __BSD_VISIBLE
 /*
  * XXX well, the implementation if this "feature" is
  *  incomplete and _under_construction_ [sic!], etc.
@@ -668,3 +669,4 @@ luab_module_t msghdr_type = {
     .get = msghdr_udata,
     .sz = sizeof(luab_msghdr_t),
 };
+#endif /* __BSD_VISIBLE */

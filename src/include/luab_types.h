@@ -64,4 +64,3 @@
     (luab_typevec[luab_idx(name)].mv_mod)
 
 extern luab_modulevec_t luab_typevec[];
-

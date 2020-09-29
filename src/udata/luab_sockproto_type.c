@@ -33,6 +33,7 @@
 
 #include "luabsd.h"
 
+#if __BSD_VISIBLE
 extern luab_module_t sockproto_type;
 
 /*
@@ -286,3 +287,4 @@ luab_module_t sockproto_type = {
     .get = sockproto_udata,
     .sz = sizeof(luab_sockproto_t),
 };
+#endif /* __BSD_VISBLE */

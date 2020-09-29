@@ -33,6 +33,7 @@
 
 #include "luabsd.h"
 
+#if __BSD_VISIBLE
 extern luab_module_t crypt_data_type;
 
 /*
@@ -297,3 +298,4 @@ luab_module_t crypt_data_type = {
     .get = crypt_data_udata,
     .sz = sizeof(luab_crypt_data_t),
 };
+#endif /* __BSD_VISIBLE */

@@ -33,6 +33,7 @@
 
 #include "luabsd.h"
 
+#ifdef __BSD_VISIBLE
 extern luab_module_t accept_filter_arg_type;
 
 /*
@@ -295,3 +296,4 @@ luab_module_t accept_filter_arg_type = {
     .get = accept_filter_arg_udata,
     .sz = sizeof(luab_accept_filter_arg_t),
 };
+#endif /* __BSD_VISIBLE */

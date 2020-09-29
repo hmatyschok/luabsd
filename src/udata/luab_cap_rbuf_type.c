@@ -33,6 +33,7 @@
 
 #include "luabsd.h"
 
+#if __BSD_VISIBLE
 extern luab_module_t cap_rbuf_type;
 
 /*
@@ -217,3 +218,4 @@ luab_module_t cap_rbuf_type = {
     .get = cap_rbuf_udata,
     .sz = sizeof(luab_cap_rbuf_t),
 };
+#endif /* __BSD_VISIBLE */

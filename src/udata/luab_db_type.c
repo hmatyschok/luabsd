@@ -39,6 +39,7 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
+#if __BSD_VISIBLE
 extern luab_module_t db_type;
 
 /*
@@ -446,3 +447,4 @@ luab_module_t db_type = {
     .get = db_udata,
     .sz = sizeof(luab_db_t),
 };
+#endif /* __BSD_VISIBLE */

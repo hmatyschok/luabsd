@@ -34,6 +34,7 @@
 
 #include "luabsd.h"
 
+#ifdef __BSD_VISIBLE
 extern luab_module_t bintime_type;
 
 /*
@@ -290,3 +291,4 @@ luab_module_t bintime_type = {
     .get = bintime_udata,
     .sz = sizeof(luab_bintime_t),
 };
+#endif /* __BSD_VISIBLE */
