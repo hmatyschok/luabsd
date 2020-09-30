@@ -144,43 +144,6 @@ IOVEC_clone(lua_State *L)
  */
 
 /***
- * Get length of stored data.
- *
- * @function len
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage nbytes [, err, msg ] = iovec:len()
- */
-static int
-IOVEC_len(lua_State *L)
-{
-    luab_iovec_t *self;
-    struct iovec *iov;
-    int status;
-
-    (void)luab_checkmaxargs(L, 1);
-
-    self = luab_to_iovec(L, 1);
-    iov = &(self->iov);
-
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        status = luab_iov_pushlen(L, iov);
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = luab_pusherr(L, -1);
-    }
-    return (status);
-}
-
-/***
  * Get capacity.
  *
  * @function max_len
@@ -213,6 +176,101 @@ IOVEC_max_len(lua_State *L)
         nbytes = -1;
     }
     return (luab_pusherr(L, nbytes));
+}
+
+/*
+ * Accessor.
+ */
+
+/***
+ * Set length of data about to be rx'd, see read(2) for further details.
+ *
+ * @function set_len
+ *
+ * @param nbytes            Amount of rx'd data in bytes.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (nbytes [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage nbytes [, err, msg ] = iovec:set_len(nbytes)
+ */
+static int
+IOVEC_set_len(lua_State *L)
+{
+    luab_iovec_t *self;
+    size_t nbytes;
+    struct iovec *iov;
+    ssize_t len;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    self = luab_to_iovec(L, 1);
+    nbytes = (size_t)luab_checkinteger(L, 2,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    iov = &(self->iov);
+
+    if ((nbytes <= self->iov_max_len) &&
+        (nbytes > 1)) {
+
+        if ((self->iov_flags & IOV_LOCK) == 0) {
+            self->iov_flags |= IOV_LOCK;
+
+            iov->iov_len = nbytes;
+
+            self->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            len = -1;
+        }
+    } else {
+        errno = ERANGE;
+        len = -1;
+    }
+    return (luab_pusherr(L, len));
+}
+
+/***
+ * Get length of stored data.
+ *
+ * @function get_len
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (nbytes [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage nbytes [, err, msg ] = iovec:get_len()
+ */
+static int
+IOVEC_get_len(lua_State *L)
+{
+    luab_iovec_t *self;
+    struct iovec *iov;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    self = luab_to_iovec(L, 1);
+    iov = &(self->iov);
+
+    if ((self->iov_flags & IOV_LOCK) == 0) {
+        self->iov_flags |= IOV_LOCK;
+
+        status = luab_iov_pushlen(L, iov);
+
+        self->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = EBUSY;
+        status = luab_pusherr(L, -1);
+    }
+    return (status);
 }
 
 /*
@@ -565,7 +623,8 @@ IOVEC_tostring(lua_State *L)
 
 static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("get",          IOVEC_get),
-    LUABSD_FUNC("len",          IOVEC_len),
+    LUABSD_FUNC("set_len",      IOVEC_set_len),
+    LUABSD_FUNC("get_len",      IOVEC_get_len),
     LUABSD_FUNC("max_len",      IOVEC_max_len),
     LUABSD_FUNC("clear",        IOVEC_clear),
     LUABSD_FUNC("clone",        IOVEC_clone),
