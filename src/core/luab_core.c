@@ -263,12 +263,12 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 int
 luab_gc(lua_State *L, int narg, luab_module_t *m)
 {
-    luab_udata_t *self;
+    luab_udata_t *ud;
 
     (void)luab_checkmaxargs(L, narg);
 
-    if ((self = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
-        (void)memset_s(self, m->sz, 0, m->sz);
+    if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
+        (void)memset_s(ud, m->sz, 0, m->sz);
 
     return (0);
 }
@@ -276,12 +276,12 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 int
 luab_tostring(lua_State *L, int narg, luab_module_t *m)
 {
-    luab_udata_t *self;
+    luab_udata_t *ud;
 
     (void)luab_checkmaxargs(L, narg);
 
-    if ((self = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
-        lua_pushfstring(L, "%s (%p)", m->name, self);
+    if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
+        lua_pushfstring(L, "%s (%p,%d)", m->name, ud, ud->ud_ts);
 
     return (1);
 }
