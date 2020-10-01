@@ -911,12 +911,30 @@ luab_accept_filter_arg_create(lua_State *L)
  *          (msghdr [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage msghdr [, err, msg ] = bsd.time.msghdr_create()
+ * @usage msghdr [, err, msg ] = bsd.sys.socket.msghdr_create()
  */
 static int
 luab_msghdr_create(lua_State *L)
 {
     return (luab_create(L, 0, luab_mx(MSGHDR), NULL));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(CMSGCRED)).
+ *
+ * @function cmsgcred_create
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (cmsgcred [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage msghdr [, err, msg ] = bsd.sys.socket.cmsgcred_create()
+ */
+static int
+luab_cmsgcred_create(lua_State *L)
+{
+    return (luab_create(L, 0, luab_mx(CMSGCRED), NULL));
 }
 #endif
 
@@ -960,7 +978,6 @@ luab_sockproto_create(lua_State *L)
 {
     return (luab_create(L, 1, luab_mx(SOCKPROTO), NULL));
 }
-
 #endif
 
 /*
@@ -1257,6 +1274,7 @@ static luab_table_t luab_sys_socket_vec[] = {
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept_filter_arg_create", luab_accept_filter_arg_create),
     LUABSD_FUNC("msghdr_create",            luab_msghdr_create),
+    LUABSD_FUNC("cmsgcred_create",          luab_cmsgcred_create),
 #endif
     LUABSD_FUNC("sockaddr_create",          luab_sockaddr_create),
 #if __BSD_VISIBLE
