@@ -304,6 +304,33 @@ luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
     return (luab_pusherr(L, count));
 }
 
+int
+luab_iovec_writev(lua_State *L, int fd, luab_iovec_t *buf, size_t n)
+{
+    struct iovec *iov;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            iov = &(buf->iov);
+            count = luab_iov_writev(iov, fd, n);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
 /* 1003.1-2001 */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
 int
@@ -484,7 +511,34 @@ luab_iovec_preadv(lua_State *L, int fd, luab_iovec_t *buf, size_t n, off_t off)
 
             iov = &(buf->iov);
             count = luab_iov_preadv(iov, fd, n, off);
-            
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+int
+luab_iovec_pwritev(lua_State *L, int fd, luab_iovec_t *buf, size_t n, off_t off)
+{
+    struct iovec *iov;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            iov = &(buf->iov);
+            count = luab_iov_pwritev(iov, fd, n, off);
+
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;

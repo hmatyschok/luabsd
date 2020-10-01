@@ -52,15 +52,15 @@ extern luab_module_t luab_sys_uio_lib;
  * @function readv
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param iovcnt            Assumed number of bytes to be read.
+ * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param iovcnt            Number of rx'd bytes.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (count [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage count [, err, msg ] = bsd.sys.uio.readv(fd, buf, iovcnt)
+ * @usage count [, err, msg ] = bsd.sys.uio.readv(fd, iov, iovcnt)
  */
 static int
 luab_readv(lua_State *L)
@@ -83,6 +83,43 @@ luab_readv(lua_State *L)
     return (luab_iovec_readv(L, fd, buf, iovcnt));
 }
 
+/***
+ * writev(2) - write output
+ *
+ * @function writev
+ *
+ * @param fd                Open file descriptor.
+ * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param iovcnt            Specifies number of tx'd bytes.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.uio.writev(fd, iov, iovcnt)
+ */
+static int
+luab_writev(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *buf;
+    size_t iovcnt;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    iovcnt = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    return (luab_iovec_writev(L, fd, buf, iovcnt));
+}
+
 #if __BSD_VISIBLE
 /***
  * preadv(2) - read input
@@ -90,8 +127,8 @@ luab_readv(lua_State *L)
  * @function preadv
  *
  * @param fd                Open file descriptor.
- * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param iovcnt            Assumed number of bytes to be read.
+ * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param iovcnt            Specifies number of rx'd bytes.
  * @param offset            Specifies start position for input.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -99,10 +136,51 @@ luab_readv(lua_State *L)
  *          (count [, nil, nil]) on success or
  *          (-1, (errno, strerror(errno)))
  *
- * @usage count [, err, msg ] = bsd.sys.uio.preadv(fd, buf, iovcnt, offset)
+ * @usage count [, err, msg ] = bsd.sys.uio.preadv(fd, iov, iovcnt, offset)
  */
 static int
 luab_preadv(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *buf;
+    size_t iovcnt;
+    off_t offset;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    iovcnt = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    offset = (off_t)luab_checkinteger(L, 4, LONG_MAX);
+
+    return (luab_iovec_preadv(L, fd, buf, iovcnt, offset));
+}
+
+/***
+ * pwritev(2) - write output
+ *
+ * @function pwritev
+ *
+ * @param fd                Open file descriptor.
+ * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param iovcnt            Specifies number of rx'd bytes.
+ * @param offset            Specifies start position for input.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.uio.pwritev(fd, iov, iovcnt, offset)
+ */
+static int
+luab_pwritev(lua_State *L)
 {
     int fd;
     luab_iovec_t *buf;
@@ -174,8 +252,10 @@ static luab_table_t luab_sys_uio_vec[] = {
     LUABSD_INT("UIO_NOCOPY",    UIO_NOCOPY),
 #endif /* __BSD_VISIBLE */
     LUABSD_FUNC("readv",        luab_readv),
+    LUABSD_FUNC("writev",       luab_writev),
 #if __BSD_VISIBLE
     LUABSD_FUNC("preadv",       luab_preadv),
+    LUABSD_FUNC("pwritev",      luab_pwritev),
 #endif
     LUABSD_FUNC("iovec_create", luab_iovec_create),
     LUABSD_FUNC(NULL, NULL)
