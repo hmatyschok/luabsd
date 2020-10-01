@@ -55,6 +55,7 @@ extern luab_module_t crypt_data_type;
 extern luab_module_t cap_rbuf_type;
 extern luab_module_t accept_filter_arg_type;
 extern luab_module_t sockproto_type;
+extern luab_module_t cmsgcred_type;
 #endif
 
 /*

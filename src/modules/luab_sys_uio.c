@@ -51,9 +51,9 @@ extern luab_module_t luab_sys_uio_lib;
  *
  * @function readv
  *
- * @param fd                Open file descriptor.
+ * @param fd                Open file descriptor, (LUA_TNUMBER).
  * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param iovcnt            Number of rx'd bytes.
+ * @param iovcnt            Number of rx'd bytes, (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -88,9 +88,9 @@ luab_readv(lua_State *L)
  *
  * @function writev
  *
- * @param fd                Open file descriptor.
+ * @param fd                Open file descriptor, (LUA_TNUMBER).
  * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param iovcnt            Specifies number of tx'd bytes.
+ * @param iovcnt            Specifies number of tx'd bytes, (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -126,10 +126,10 @@ luab_writev(lua_State *L)
  *
  * @function preadv
  *
- * @param fd                Open file descriptor.
+ * @param fd                Open file descriptor, (LUA_TNUMBER).
  * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param iovcnt            Specifies number of rx'd bytes.
- * @param offset            Specifies start position for input.
+ * @param iovcnt            Specifies number of rx'd bytes, (LUA_TNUMBER).
+ * @param offset            Specifies start position for input, (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -167,10 +167,10 @@ luab_preadv(lua_State *L)
  *
  * @function pwritev
  *
- * @param fd                Open file descriptor.
+ * @param fd                Open file descriptor, (LUA_TNUMBER).
  * @param iov               Instance of (LUA_TUSERDATA(IOVEC)).
- * @param iovcnt            Specifies number of rx'd bytes.
- * @param offset            Specifies start position for input.
+ * @param iovcnt            Specifies number of rx'd bytes, (LUA_TNUMBER).
+ * @param offset            Specifies start position for input, (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -213,7 +213,7 @@ luab_pwritev(lua_State *L)
  *
  * @function iovec_create
  *
- * @param max_len           Capacity in bytes.
+ * @param max_len           Capacity in bytes, (LUA_TNUMBER).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

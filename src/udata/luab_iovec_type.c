@@ -183,7 +183,7 @@ IOVEC_max_len(lua_State *L)
  */
 
 /***
- * Set length of data about to be rx'd, see read(2) for further details.
+ * Set length of data region, see {p}readv(2) for further details.
  *
  * @function set_len
  *

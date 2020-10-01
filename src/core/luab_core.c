@@ -408,7 +408,7 @@ luab_newtable(lua_State *L, int narg, luab_module_t *m)
 static void
 luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
 {
-    luaL_newmetatable(L, m->name);  /* XXX */
+    luaL_newmetatable(L, m->name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
 
@@ -619,6 +619,14 @@ luab_modulevec_t luab_typevec[] = {
         .mv_mod = &accept_filter_arg_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_ACCEPT_FILTER_ARG_IDX,
+    },{
+        .mv_mod = &sockproto_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_SOCKPROTO_IDX,
+    },{
+        .mv_mod = &cmsgcred_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_CMSGCRED_IDX,
     },
 #endif
     {

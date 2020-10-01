@@ -849,9 +849,7 @@ luab_sendmmsg(lua_State *L)
 #endif
     );
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
-
     count = sendmmsg(s, msgvec, vlen, flags);
-
     free(msgvec);
 
     return (luab_pusherr(L, count));
@@ -962,6 +960,7 @@ luab_sockproto_create(lua_State *L)
 {
     return (luab_create(L, 1, luab_mx(SOCKPROTO), NULL));
 }
+
 #endif
 
 /*
