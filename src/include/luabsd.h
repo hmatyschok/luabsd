@@ -175,6 +175,11 @@ int luab_iov_realloc(struct iovec *, size_t);
 int luab_iov_copyin(struct iovec *, const void *, ssize_t);
 int luab_iov_copyout(struct iovec *, void *, ssize_t);
 
+ssize_t luab_iov_readv(struct iovec *, int, size_t);
+#if __BSD_VISIBLE
+ssize_t luab_iov_preadv(struct iovec *, int, size_t, off_t);
+#endif
+
 /*
  * Generic error handler.
  */
@@ -455,6 +460,7 @@ int luab_iovec_copyin(luab_iovec_t *, const void *, size_t);
 int luab_iovec_copyout(luab_iovec_t *, void *, size_t);
 
 int luab_iovec_read(lua_State *, int, luab_iovec_t *, size_t *);
+int luab_iovec_readv(lua_State *, int, luab_iovec_t *, size_t);
 int luab_iovec_write(lua_State *, int, luab_iovec_t *, size_t *);
 /* 1003.1-2001 */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
@@ -475,6 +481,9 @@ int luab_iovec_recvfrom(lua_State *, int , luab_iovec_t *,
 int luab_iovec_send(lua_State *, int, luab_iovec_t *, size_t *, int);
 int luab_iovec_sendto(lua_State *, int, luab_iovec_t *, size_t *,
         int, struct sockaddr *, socklen_t);
+#if __BSD_VISIBLE
+int luab_iovec_preadv(lua_State *, int, luab_iovec_t *, size_t, off_t);
+#endif
 
 /* (LUA_TUSERDATA(SOCKADDR)) */
 #define LUAB_SOCK_MAXADDRLEN    SOCK_MAXADDRLEN

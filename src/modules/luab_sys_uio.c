@@ -35,11 +35,100 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
 #define LUABSD_SYS_UIO_LIB_ID    1594559271
 #define LUABSD_SYS_UIO_LIB_KEY   "uio"
 
 extern luab_module_t luab_sys_uio_lib;
+
+/*
+ * Service primitives.
+ */
+
+/***
+ * readv(2) - read input
+ *
+ * @function readv
+ *
+ * @param fd                Open file descriptor.
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param iovcnt            Assumed number of bytes to be read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.uio.readv(fd, buf, iovcnt)
+ */
+static int
+luab_readv(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *buf;
+    size_t iovcnt;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    iovcnt = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    return (luab_iovec_readv(L, fd, buf, iovcnt));
+}
+
+#if __BSD_VISIBLE
+/***
+ * preadv(2) - read input
+ *
+ * @function preadv
+ *
+ * @param fd                Open file descriptor.
+ * @param buf               Instance of (LUA_TUSERDATA(IOVEC)).
+ * @param iovcnt            Assumed number of bytes to be read.
+ * @param offset            Specifies start position for input.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (count [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage count [, err, msg ] = bsd.sys.uio.preadv(fd, buf, iovcnt, offset)
+ */
+static int
+luab_preadv(lua_State *L)
+{
+    int fd;
+    luab_iovec_t *buf;
+    size_t iovcnt;
+    off_t offset;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    iovcnt = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    offset = (off_t)luab_checkinteger(L, 4, LONG_MAX);
+
+    return (luab_iovec_preadv(L, fd, buf, iovcnt, offset));
+}
+#endif /* __BSD_VISIBLE */
+
+/*
+ * Generator functions.
+ */
 
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(IOVEC)).
@@ -84,6 +173,10 @@ static luab_table_t luab_sys_uio_vec[] = {
     LUABSD_INT("UIO_SYSSPACE",  UIO_SYSSPACE),
     LUABSD_INT("UIO_NOCOPY",    UIO_NOCOPY),
 #endif /* __BSD_VISIBLE */
+    LUABSD_FUNC("readv",        luab_readv),
+#if __BSD_VISIBLE
+    LUABSD_FUNC("preadv",       luab_preadv),
+#endif
     LUABSD_FUNC("iovec_create", luab_iovec_create),
     LUABSD_FUNC(NULL, NULL)
 };

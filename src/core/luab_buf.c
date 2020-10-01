@@ -179,6 +179,52 @@ luab_iov_free(struct iovec *iov)
 }
 
 /*
+ * I/O.
+ */
+
+ssize_t
+luab_iov_readv(struct iovec *iov, int fd, size_t n)
+{
+    ssize_t count;
+
+    if (iov != NULL && iov->iov_base != NULL) {
+
+        if (n <= iov->iov_len)
+            count = readv(fd, iov, n);
+        else {
+            errno = ERANGE;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (count);
+}
+
+#if __BSD_VISIBLE
+ssize_t
+luab_iov_preadv(struct iovec *iov, int fd, size_t n, off_t off)
+{
+    ssize_t count;
+
+    if (iov != NULL && iov->iov_base != NULL) {
+
+        if (n <= iov->iov_len && (size_t)off < n)
+            count = preadv(fd, iov, n, off);
+        else {
+            errno = ERANGE;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (count);
+}
+#endif
+
+/*
  * Accessor, [C -> stack].
  */
 

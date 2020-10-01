@@ -223,7 +223,8 @@ IOVEC_set_len(lua_State *L)
             self->iov_flags |= IOV_LOCK;
 
             iov->iov_len = nbytes;
-
+            len = nbytes;
+            
             self->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;

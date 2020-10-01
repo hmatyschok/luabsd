@@ -241,6 +241,33 @@ luab_iovec_read(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
 }
 
 int
+luab_iovec_readv(lua_State *L, int fd, luab_iovec_t *buf, size_t n)
+{
+    struct iovec *iov;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            iov = &(buf->iov);
+            count = luab_iov_readv(iov, fd, n);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+int
 luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
 {
     caddr_t bp;
@@ -441,6 +468,35 @@ luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
     return (luab_pusherr(L, count));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
+
+#if __BSD_VISIBLE
+int
+luab_iovec_preadv(lua_State *L, int fd, luab_iovec_t *buf, size_t n, off_t off)
+{
+    struct iovec *iov;
+    ssize_t count;
+
+    if ((buf != NULL) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            iov = &(buf->iov);
+            count = luab_iov_preadv(iov, fd, n, off);
+            
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = EINVAL;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+#endif /* __BSD_VISIBLE */
 
 /*
  * Socket I/O.

@@ -183,7 +183,7 @@ by utilizing instances of LUA_TTABLES:
     local tv_buf = tv:dump()
     print_udata("struct", tv_buf, "")
 
-    local off = tv_buf:len()
+    local off = tv_buf:get_len()
     ret, err, msg = bsd.unistd.write(fd, tv_buf, off)
     print(string.format(" write(%d,%d)", fd, off), ret, err, msg, "\n")
 
