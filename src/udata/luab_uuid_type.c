@@ -41,12 +41,12 @@ extern luab_module_t uuid_type;
  * Interface against
  *
  *  struct uuid {
- *      uint32_t	time_low;
- *      uint16_t	time_mid;
- *      uint16_t	time_hi_and_version;
- *      uint8_t		clock_seq_hi_and_reserved;
- *      uint8_t		clock_seq_low;
- *      uint8_t		node[_UUID_NODE_LEN];
+ *      uint32_t    time_low;
+ *      uint16_t    time_mid;
+ *      uint16_t    time_hi_and_version;
+ *      uint8_t     clock_seq_hi_and_reserved;
+ *      uint8_t     clock_seq_low;
+ *      uint8_t     node[_UUID_NODE_LEN];
  * };
  */
 
@@ -474,13 +474,19 @@ UUID_get_node(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 UUID_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &uuid_type));
+}
+
+static int
+UUID_len(lua_State *L)
+{
+    return (luab_len(L, 2, &uuid_type));
 }
 
 static int
@@ -502,8 +508,8 @@ static luab_table_t uuid_methods[] = {
         UUID_set_clock_seq_hi_and_reserved),
     LUABSD_FUNC("set_clock_seq_low",
         UUID_set_clock_seq_low),
-    LUABSD_FUNC("set_node", UUID_set_node),
-    LUABSD_FUNC("get",  UUID_get),
+    LUABSD_FUNC("set_node",     UUID_set_node),
+    LUABSD_FUNC("get",          UUID_get),
     LUABSD_FUNC("get_time_low", UUID_get_time_low),
     LUABSD_FUNC("get_time_mid", UUID_get_time_mid),
     LUABSD_FUNC("get_time_hi_and_version",
@@ -512,9 +518,10 @@ static luab_table_t uuid_methods[] = {
         UUID_get_clock_seq_hi_and_reserved),
     LUABSD_FUNC("get_clock_seq_low",
         UUID_get_clock_seq_low),
-    LUABSD_FUNC("get_node", UUID_get_node),
-    LUABSD_FUNC("dump", UUID_dump),
-    LUABSD_FUNC("__gc", UUID_gc),
+    LUABSD_FUNC("get_node",     UUID_get_node),
+    LUABSD_FUNC("dump",         UUID_dump),
+    LUABSD_FUNC("__gc",         UUID_gc),
+    LUABSD_FUNC("__len",        UUID_len),
     LUABSD_FUNC("__tostring",   UUID_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

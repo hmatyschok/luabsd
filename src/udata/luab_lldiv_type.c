@@ -39,8 +39,8 @@ extern luab_module_t lldiv_type;
  * Interface against
  *
  *  typedef struct {
- *      long long	quot;
- *      long long	rem;
+ *      long long   quot;
+ *      long long   rem;
  *  } lldiv_t;
  */
 
@@ -228,13 +228,19 @@ LLDIV_get_rem(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 LLDIV_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &lldiv_type));
+}
+
+static int
+LLDIV_len(lua_State *L)
+{
+    return (luab_len(L, 2, &lldiv_type));
 }
 
 static int
@@ -255,6 +261,7 @@ static luab_table_t lldiv_methods[] = {
     LUABSD_FUNC("get_rem",      LLDIV_get_rem),
     LUABSD_FUNC("dump",         LLDIV_dump),
     LUABSD_FUNC("__gc",         LLDIV_gc),
+    LUABSD_FUNC("__len",        LLDIV_len),
     LUABSD_FUNC("__tostring",   LLDIV_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

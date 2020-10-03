@@ -229,13 +229,19 @@ TIMEZONE_get_tz_dsttime(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 TIMEZONE_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &timezone_type));
+}
+
+static int
+TIMEZONE_len(lua_State *L)
+{
+    return (luab_len(L, 2, &timezone_type));
 }
 
 static int
@@ -256,6 +262,7 @@ static luab_table_t timezone_methods[] = {
     LUABSD_FUNC("get_tz_dsttime",       TIMEZONE_get_tz_dsttime),
     LUABSD_FUNC("dump",                 TIMEZONE_dump),
     LUABSD_FUNC("__gc",                 TIMEZONE_gc),
+    LUABSD_FUNC("__len",                TIMEZONE_len),
     LUABSD_FUNC("__tostring",           TIMEZONE_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

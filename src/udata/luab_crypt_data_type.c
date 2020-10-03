@@ -238,13 +238,19 @@ CRYPT_DATA_get_buf(lua_State *L)
 }
 
 /*
- * Meta-methods
+ * Metamethods
  */
 
 static int
 CRYPT_DATA_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &crypt_data_type));
+}
+
+static int
+CRYPT_DATA_len(lua_State *L)
+{
+    return (luab_len(L, 2, &crypt_data_type));
 }
 
 static int
@@ -265,6 +271,7 @@ static luab_table_t crypt_data_methods[] = {
     LUABSD_FUNC("get_buf",          CRYPT_DATA_get_buf),
     LUABSD_FUNC("dump",             CRYPT_DATA_dump),
     LUABSD_FUNC("__gc",             CRYPT_DATA_gc),
+    LUABSD_FUNC("__len",            CRYPT_DATA_len),
     LUABSD_FUNC("__tostring",       CRYPT_DATA_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

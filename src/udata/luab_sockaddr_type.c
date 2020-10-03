@@ -348,9 +348,9 @@ SOCKADDR_sa_len(lua_State *L)
     struct sockaddr *sa;
     uint8_t sa_len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_checkmaxargs(L, 2);
 
-    sa = luab_udata(L, 1, &sockaddr_type, struct sockaddr *);
+    sa = luab_udata(L, 2, &sockaddr_type, struct sockaddr *);
     sa_len = sa->sa_len;
 
     return (luab_pusherr(L, sa_len));
@@ -1215,13 +1215,25 @@ SOCKADDR_get_sun_path(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 SOCKADDR_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &sockaddr_type));
+}
+
+static int
+SOCKADDR_len(lua_State *L)
+{
+    struct sockaddr *sa;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    sa = luab_udata(L, 1, &sockaddr_type, struct sockaddr *);
+
+    return (luab_pusherr(L, sa->sa_len));
 }
 
 static int
@@ -1263,6 +1275,7 @@ static luab_table_t sockaddr_methods[] = {
     LUABSD_FUNC("get_sun_path",         SOCKADDR_get_sun_path),
     LUABSD_FUNC("dump",                 SOCKADDR_dump),
     LUABSD_FUNC("__gc",                 SOCKADDR_gc),
+    LUABSD_FUNC("__len",                SOCKADDR_len),
     LUABSD_FUNC("__tostring",           SOCKADDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

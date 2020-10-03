@@ -224,7 +224,7 @@ IOVEC_set_len(lua_State *L)
 
             iov->iov_len = nbytes;
             len = nbytes;
-            
+
             self->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
@@ -347,7 +347,7 @@ IOVEC_copy_in(lua_State *L)
     len = self->iov_max_len;
 
     dp = luab_iovec_checklxarg(L, 2, len);
-    status = luab_iovec_copyin(self, dp, len); 
+    status = luab_iovec_copyin(self, dp, len);
     return (luab_pusherr(L, status));
 }
 
@@ -580,7 +580,7 @@ IOVEC_send(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
@@ -613,6 +613,12 @@ IOVEC_gc(lua_State *L)
 }
 
 static int
+IOVEC_len(lua_State *L)
+{
+    return (luab_len(L, 2, &iovec_type));
+}
+
+static int
 IOVEC_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &iovec_type));
@@ -637,6 +643,7 @@ static luab_table_t iovec_methods[] = {
     LUABSD_FUNC("recv",         IOVEC_recv),
     LUABSD_FUNC("send",         IOVEC_send),
     LUABSD_FUNC("__gc",         IOVEC_gc),
+    LUABSD_FUNC("__len",        IOVEC_len),
     LUABSD_FUNC("__tostring",   IOVEC_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

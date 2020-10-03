@@ -39,8 +39,8 @@ extern luab_module_t div_type;
  * Interface against
  *
  *  typedef struct {
- *      int	quot;
- *      int	rem;
+ *      int quot;
+ *      int rem;
  *  } div_t;
  */
 
@@ -228,13 +228,19 @@ DIV_get_rem(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 DIV_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &div_type));
+}
+
+static int
+DIV_len(lua_State *L)
+{
+    return (luab_len(L, 2, &div_type));
 }
 
 static int
@@ -255,6 +261,7 @@ static luab_table_t div_methods[] = {
     LUABSD_FUNC("get_rem",      DIV_get_rem),
     LUABSD_FUNC("dump",         DIV_dump),
     LUABSD_FUNC("__gc",         DIV_gc),
+    LUABSD_FUNC("__len",        DIV_len),
     LUABSD_FUNC("__tostring",   DIV_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

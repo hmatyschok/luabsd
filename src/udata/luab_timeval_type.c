@@ -229,13 +229,19 @@ TIMEVAL_get_tv_usec(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 TIMEVAL_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &timeval_type));
+}
+
+static int
+TIMEVAL_len(lua_State *L)
+{
+    return (luab_len(L, 2, &timeval_type));
 }
 
 static int
@@ -256,6 +262,7 @@ static luab_table_t timeval_methods[] = {
     LUABSD_FUNC("get_tv_usec",  TIMEVAL_get_tv_usec),
     LUABSD_FUNC("dump",         TIMEVAL_dump),
     LUABSD_FUNC("__gc",         TIMEVAL_gc),
+    LUABSD_FUNC("__len",        TIMEVAL_len),
     LUABSD_FUNC("__tostring",   TIMEVAL_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

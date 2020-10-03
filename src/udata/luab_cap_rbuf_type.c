@@ -171,6 +171,12 @@ CAP_RBUF_gc(lua_State *L)
 }
 
 static int
+CAP_RBUF_len(lua_State *L)
+{
+    return (luab_len(L, 2, &cap_rbuf_type));
+}
+
+static int
 CAP_RBUF_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &cap_rbuf_type));
@@ -185,6 +191,7 @@ static luab_table_t cap_rbuf_methods[] = {
     LUABSD_FUNC("iov_len",      CAP_RBUF_iov_len),
     LUABSD_FUNC("get",          CAP_RBUF_get),
     LUABSD_FUNC("__gc",         CAP_RBUF_gc),
+    LUABSD_FUNC("__len",        CAP_RBUF_len),
     LUABSD_FUNC("__tostring",   CAP_RBUF_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

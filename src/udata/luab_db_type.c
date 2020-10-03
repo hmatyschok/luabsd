@@ -350,7 +350,7 @@ DB_sync(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
@@ -366,6 +366,12 @@ DB_gc(lua_State *L)
         self->ud_db = NULL;
 
     return (0);
+}
+
+static int
+DB_len(lua_State *L)
+{
+    return (luab_len(L, 2, &db_type));
 }
 
 static int
@@ -398,6 +404,7 @@ static luab_table_t db_methods[] = {
     LUABSD_FUNC("seq",          DB_seq),
     LUABSD_FUNC("sync",         DB_sync),
     LUABSD_FUNC("__gc",         DB_gc),
+    LUABSD_FUNC("__len",        DB_len),
     LUABSD_FUNC("__tostring",   DB_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

@@ -84,7 +84,7 @@ typedef struct luab_clockinfo {
  * @usage t = clockinfo:get()
  */
 static int
-CLOCKINIFO_get(lua_State *L)
+CLOCKINFO_get(lua_State *L)
 {
     struct clockinfo *ci;
 
@@ -117,7 +117,7 @@ CLOCKINIFO_get(lua_State *L)
  * @usage iovec [, err, msg ] = clockinfo:dump()
  */
 static int
-CLOCKINIFO_dump(lua_State *L)
+CLOCKINFO_dump(lua_State *L)
 {
     return (luab_dump(L, 1, &clockinfo_type, sizeof(struct clockinfo)));
 }
@@ -141,7 +141,7 @@ CLOCKINIFO_dump(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:set_hz(data)
  */
 static int
-CLOCKINIFO_set_hz(lua_State *L)
+CLOCKINFO_set_hz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -169,7 +169,7 @@ CLOCKINIFO_set_hz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_hz()
  */
 static int
-CLOCKINIFO_get_hz(lua_State *L)
+CLOCKINFO_get_hz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -197,7 +197,7 @@ CLOCKINIFO_get_hz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:set_tick(data)
  */
 static int
-CLOCKINIFO_set_tick(lua_State *L)
+CLOCKINFO_set_tick(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -225,7 +225,7 @@ CLOCKINIFO_set_tick(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_tick()
  */
 static int
-CLOCKINIFO_get_tick(lua_State *L)
+CLOCKINFO_get_tick(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -253,7 +253,7 @@ CLOCKINIFO_get_tick(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:set_stathz(data)
  */
 static int
-CLOCKINIFO_set_stathz(lua_State *L)
+CLOCKINFO_set_stathz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -281,7 +281,7 @@ CLOCKINIFO_set_stathz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_stathz()
  */
 static int
-CLOCKINIFO_get_stathz(lua_State *L)
+CLOCKINFO_get_stathz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -309,7 +309,7 @@ CLOCKINIFO_get_stathz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:set_profhz(data)
  */
 static int
-CLOCKINIFO_set_profhz(lua_State *L)
+CLOCKINFO_set_profhz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -337,7 +337,7 @@ CLOCKINIFO_set_profhz(lua_State *L)
  * @usage data [, err, msg ] = clockinfo:get_profhz()
  */
 static int
-CLOCKINIFO_get_profhz(lua_State *L)
+CLOCKINFO_get_profhz(lua_State *L)
 {
     struct clockinfo *ci;
     int data;
@@ -351,17 +351,23 @@ CLOCKINIFO_get_profhz(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
-CLOCKINIFO_gc(lua_State *L)
+CLOCKINFO_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &clockinfo_type));
 }
 
 static int
-CLOCKINIFO_tostring(lua_State *L)
+CLOCKINFO_len(lua_State *L)
+{
+    return (luab_len(L, 2, &clockinfo_type));
+}
+
+static int
+CLOCKINFO_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &clockinfo_type));
 }
@@ -371,18 +377,19 @@ CLOCKINIFO_tostring(lua_State *L)
  */
 
 static luab_table_t clockinfo_methods[] = {
-    LUABSD_FUNC("set_hz",       CLOCKINIFO_set_hz),
-    LUABSD_FUNC("set_tickc",    CLOCKINIFO_set_tick),
-    LUABSD_FUNC("set_stathz",   CLOCKINIFO_set_stathz),
-    LUABSD_FUNC("set_profhz",   CLOCKINIFO_set_profhz),
-    LUABSD_FUNC("get",          CLOCKINIFO_get),
-    LUABSD_FUNC("get_hz",       CLOCKINIFO_get_hz),
-    LUABSD_FUNC("get_tick",     CLOCKINIFO_get_tick),
-    LUABSD_FUNC("get_stathz",   CLOCKINIFO_get_stathz),
-    LUABSD_FUNC("get_profhz",   CLOCKINIFO_get_profhz),
-    LUABSD_FUNC("dump",         CLOCKINIFO_dump),
-    LUABSD_FUNC("__gc",         CLOCKINIFO_gc),
-    LUABSD_FUNC("__tostring",   CLOCKINIFO_tostring),
+    LUABSD_FUNC("set_hz",       CLOCKINFO_set_hz),
+    LUABSD_FUNC("set_tickc",    CLOCKINFO_set_tick),
+    LUABSD_FUNC("set_stathz",   CLOCKINFO_set_stathz),
+    LUABSD_FUNC("set_profhz",   CLOCKINFO_set_profhz),
+    LUABSD_FUNC("get",          CLOCKINFO_get),
+    LUABSD_FUNC("get_hz",       CLOCKINFO_get_hz),
+    LUABSD_FUNC("get_tick",     CLOCKINFO_get_tick),
+    LUABSD_FUNC("get_stathz",   CLOCKINFO_get_stathz),
+    LUABSD_FUNC("get_profhz",   CLOCKINFO_get_profhz),
+    LUABSD_FUNC("dump",         CLOCKINFO_dump),
+    LUABSD_FUNC("__gc",         CLOCKINFO_gc),
+    LUABSD_FUNC("__len",        CLOCKINFO_len),
+    LUABSD_FUNC("__tostring",   CLOCKINFO_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
 

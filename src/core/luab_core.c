@@ -274,6 +274,22 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 }
 
 int
+luab_len(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *ud;
+    ssize_t len;
+
+    (void)luab_checkmaxargs(L, narg);
+
+    if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
+        len = luab_xlen(m);
+    else
+        len = -1;
+
+    return (luab_pusherr(L, len));
+}
+
+int
 luab_tostring(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *ud;
@@ -429,7 +445,7 @@ static luab_modulevec_t luab_arpa_vec[] = {
     },{
         .mv_mod = NULL,
         .mv_init = NULL,
-        .mv_idx = 0,
+        .mv_idx = -1,
     }
 };
 
@@ -444,7 +460,7 @@ static luab_modulevec_t luab_net_vec[] = {
     },{
         .mv_mod = NULL,
         .mv_init = NULL,
-        .mv_idx = 0,
+        .mv_idx = -1,
     }
 };
 
@@ -477,7 +493,7 @@ static luab_modulevec_t luab_sys_vec[] = {
     },{
         .mv_mod = NULL,
         .mv_init = NULL,
-        .mv_idx = 0,
+        .mv_idx = -1,
     }
 };
 
@@ -507,7 +523,7 @@ static luab_modulevec_t luab_core_vec[] = {
     },{
         .mv_mod = NULL,
         .mv_init = NULL,
-        .mv_idx = 0,
+        .mv_idx = -1,
     }
 };
 
@@ -628,11 +644,11 @@ luab_modulevec_t luab_typevec[] = {
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_CMSGCRED_IDX,
     },
-#endif
+#endif  /* __BSD_VISIBLE */
     {
         .mv_mod = NULL,
         .mv_init = NULL,
-        .mv_idx = 0,
+        .mv_idx = -1,
     }
 };
 

@@ -40,8 +40,8 @@ extern luab_module_t if_nameindex_type;
  * Interface against
  *
  *  struct if_nameindex {
- *      unsigned int	if_index;
- *      char		*if_name;
+ *      unsigned int    if_index;
+ *      char        *if_name;
  *  };
  *
  * Attributes are immutable.
@@ -162,6 +162,12 @@ IF_NAMEINDEX_gc(lua_State *L)
 }
 
 static int
+IF_NAMEINDEX_len(lua_State *L)
+{
+    return (luab_len(L, 2, &if_nameindex_type));
+}
+
+static int
 IF_NAMEINDEX_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &if_nameindex_type));
@@ -176,6 +182,7 @@ static luab_table_t if_nameindex_methods[] = {
     LUABSD_FUNC("if_name",      IF_NAMEINDEX_if_name),
     LUABSD_FUNC("get",          IF_NAMEINDEX_get),
     LUABSD_FUNC("__gc",         IF_NAMEINDEX_gc),
+    LUABSD_FUNC("__len",        IF_NAMEINDEX_len),
     LUABSD_FUNC("__tostring",   IF_NAMEINDEX_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

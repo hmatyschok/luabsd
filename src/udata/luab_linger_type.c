@@ -40,8 +40,8 @@ extern luab_module_t linger_type;
  * Interface against
  *
  *  struct linger {
- *      int	l_onoff;
- *      int	l_linger;
+ *      int l_onoff;
+ *      int l_linger;
  *  };
  */
 
@@ -229,13 +229,19 @@ LINGER_get_l_linger(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 LINGER_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &linger_type));
+}
+
+static int
+LINGER_len(lua_State *L)
+{
+    return (luab_len(L, 2, &linger_type));
 }
 
 static int
@@ -256,6 +262,7 @@ static luab_table_t linger_methods[] = {
     LUABSD_FUNC("get_l_linger", LINGER_get_l_linger),
     LUABSD_FUNC("dump",         LINGER_dump),
     LUABSD_FUNC("__gc",         LINGER_gc),
+    LUABSD_FUNC("__len",        LINGER_len),
     LUABSD_FUNC("__tostring",   LINGER_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

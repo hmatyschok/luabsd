@@ -226,13 +226,19 @@ ITIMERVAL_get_it_value(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 ITIMERVAL_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &itimerval_type));
+}
+
+static int
+ITIMERVAL_len(lua_State *L)
+{
+    return (luab_len(L, 2, &itimerval_type));
 }
 
 static int
@@ -253,6 +259,7 @@ static luab_table_t itimerval_methods[] = {
     LUABSD_FUNC("get_it_value",     ITIMERVAL_get_it_value),
     LUABSD_FUNC("dump",             ITIMERVAL_dump),
     LUABSD_FUNC("__gc",             ITIMERVAL_gc),
+    LUABSD_FUNC("__len",            ITIMERVAL_len),
     LUABSD_FUNC("__tostring",       ITIMERVAL_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

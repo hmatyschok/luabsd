@@ -229,13 +229,19 @@ TIMESPEC_get_tv_nsec(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 TIMESPEC_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &timespec_type));
+}
+
+static int
+TIMESPEC_len(lua_State *L)
+{
+    return (luab_len(L, 2, &timespec_type));
 }
 
 static int
@@ -256,6 +262,7 @@ static luab_table_t timespec_methods[] = {
     LUABSD_FUNC("get_tv_nsec",  TIMESPEC_get_tv_nsec),
     LUABSD_FUNC("dump",         TIMESPEC_dump),
     LUABSD_FUNC("__gc",         TIMESPEC_gc),
+    LUABSD_FUNC("__len",        TIMESPEC_len),
     LUABSD_FUNC("__tostring",   TIMESPEC_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <errno.h>
+
 #define LUAB_CLOCKINFO_IDX          0
 #define LUAB_DIV_IDX                1
 #define LUAB_FLOCK_IDX              2
@@ -53,15 +55,59 @@
 #define LUAB_ACCEPT_FILTER_ARG_IDX  25
 #define LUAB_SOCKPROTO_IDX          26
 #define LUAB_CMSGCRED_IDX           27
-#endif
+#endif /* __BSD_VISIBLE */
 
 /*
- * Accessor, [idx(name) -> luab_module]
+ * Selector.
  */
 
 #define luab_idx(name) \
     (LUAB_##name##_IDX)
+#define luab_vx(idx) \
+    (luab_typevec[(idx)])
 #define luab_mx(name) \
-    (luab_typevec[luab_idx(name)].mv_mod)
+    ((luab_vx(luab_idx(name))).mv_mod)
 
 extern luab_modulevec_t luab_typevec[];
+
+/*
+ * Accessor, (LUA_TUSERDATA(XXX)), [stack -> C].
+ */
+
+typedef struct luab_xarg {
+    int         xarg_idx;
+    size_t      xarg_len;
+} luab_xarg_t;
+
+static __inline size_t
+luab_xlen(luab_module_t *m)
+{
+    return ((m->sz - sizeof(luab_udata_t)));
+}
+
+static __inline void *
+luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
+{
+    luab_modulevec_t *vec;
+    void *arg;
+
+    if (pci != NULL) {
+
+        for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
+            if ((arg = luab_isudata(L, narg, vec->mv_mod)) != NULL)
+                break;
+        }
+
+        if (arg != NULL) {
+            pci->xarg_idx = vec->mv_idx;
+            pci->xarg_len = luab_xlen(vec->mv_mod);
+        } else {
+            pci->xarg_idx = -1;
+            pci->xarg_len = 0;
+        }
+    } else {
+        errno = EINVAL;
+        arg = NULL;
+    }
+    return (arg);
+}

@@ -40,8 +40,8 @@ extern luab_module_t accept_filter_arg_type;
  * Interface against
  *
  *  struct accept_filter_arg {
- *      char	af_name[16];
- *      char	af_arg[256-16];
+ *      char    af_name[16];
+ *      char    af_arg[256-16];
  *  };
  */
 
@@ -236,13 +236,19 @@ ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
 }
 
 /*
- * Meta-methods
+ * Metamethods
  */
 
 static int
 ACCEPT_FILTER_ARG_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &accept_filter_arg_type));
+}
+
+static int
+ACCEPT_FILTER_ARG_len(lua_State *L)
+{
+    return (luab_len(L, 2, &accept_filter_arg_type));
 }
 
 static int
@@ -263,6 +269,7 @@ static luab_table_t accept_filter_arg_methods[] = {
     LUABSD_FUNC("get_af_arg",   ACCEPT_FILTER_ARG_get_af_arg),
     LUABSD_FUNC("dump",         ACCEPT_FILTER_ARG_dump),
     LUABSD_FUNC("__gc",         ACCEPT_FILTER_ARG_gc),
+    LUABSD_FUNC("__len",        ACCEPT_FILTER_ARG_len),
     LUABSD_FUNC("__tostring",   ACCEPT_FILTER_ARG_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

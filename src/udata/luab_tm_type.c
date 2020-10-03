@@ -733,13 +733,19 @@ TM_tm_zone(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 TM_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &tm_type));
+}
+
+static int
+TM_len(lua_State *L)
+{
+    return (luab_len(L, 2, &tm_type));
 }
 
 static int
@@ -773,6 +779,7 @@ static luab_table_t tm_methods[] = {
     LUABSD_FUNC("get_tm_gmtoff",    TM_get_tm_gmtoff),
     LUABSD_FUNC("dump",             TM_dump),
     LUABSD_FUNC("__gc",             TM_gc),
+    LUABSD_FUNC("__len",            TM_len),
     LUABSD_FUNC("__tostring",       TM_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

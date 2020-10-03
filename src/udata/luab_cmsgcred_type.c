@@ -289,13 +289,19 @@ CMSGCRED_cmcred_groups(lua_State *L)
 }
 
 /*
- * Meta-methods
+ * Metamethods
  */
 
 static int
 CMSGCRED_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &cmsgcred_type));
+}
+
+static int
+CMSGCRED_len(lua_State *L)
+{
+    return (luab_len(L, 2, &cmsgcred_type));
 }
 
 static int
@@ -318,6 +324,7 @@ static luab_table_t cmsgcred_methods[] = {
     LUABSD_FUNC("get_cmcred_groups",    CMSGCRED_cmcred_groups),
     LUABSD_FUNC("dump",                 CMSGCRED_dump),
     LUABSD_FUNC("__gc",                 CMSGCRED_gc),
+    LUABSD_FUNC("__len",                CMSGCRED_len),
     LUABSD_FUNC("__tostring",           CMSGCRED_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

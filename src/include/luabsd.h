@@ -39,7 +39,7 @@
  */
 
 __BEGIN_DECLS
-typedef union luab_type {
+typedef union luab_type {   /* XXX namespace */
     char        un_char;
     short       un_short;
     int         un_int;
@@ -118,7 +118,7 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
 typedef struct luab_modulevec {
     luab_module_t   *mv_mod;
     luab_module_fn  mv_init;
-    uint32_t        mv_idx;
+    int             mv_idx;
 } luab_modulevec_t;
 
 /*
@@ -422,6 +422,7 @@ void    luab_table_pushldouble(lua_State *, int, double *, size_t, int);
 int luab_create(lua_State *, int, luab_module_t *, luab_module_t *);
 int luab_dump(lua_State *, int, luab_module_t *, size_t);
 int luab_gc(lua_State *, int, luab_module_t *);
+int luab_len(lua_State *, int, luab_module_t *);
 int luab_tostring(lua_State *, int, luab_module_t *);
 
 /*

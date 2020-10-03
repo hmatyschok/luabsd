@@ -176,12 +176,12 @@ DBT_get_data(lua_State *L)
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
     buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
-    status = luab_iovec_copyin(buf, dbt->data, dbt->size); 
+    status = luab_iovec_copyin(buf, dbt->data, dbt->size);
     return (luab_pusherr(L, status));
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
@@ -201,6 +201,12 @@ DBT_gc(lua_State *L)
 }
 
 static int
+DBT_len(lua_State *L)
+{
+    return (luab_len(L, 2, &dbt_type));
+}
+
+static int
 DBT_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &dbt_type));
@@ -216,6 +222,7 @@ static luab_table_t dbt_methods[] = {
     LUABSD_FUNC("get_data",     DBT_get_data),
     LUABSD_FUNC("get_size",     DBT_get_size),
     LUABSD_FUNC("__gc",         DBT_gc),
+    LUABSD_FUNC("__len",        DBT_len),
     LUABSD_FUNC("__tostring",   DBT_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

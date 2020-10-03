@@ -43,8 +43,57 @@
 extern luab_module_t luab_sys_socket_lib;
 
 /*
- * Subr.
- *
+ * Tuple (name,level,optval,optlen,x) for {g,s}etsockopt(2).
+ */
+
+typedef struct luab_sockopt {
+    luab_xarg_t sopt_pci;
+    int         sopt_sock;
+    int         sopt_level;
+    int         sopt_name;
+    void        *sopt_val;
+    socklen_t   sopt_len;
+    void        *sopt_x;
+} luab_sockopt_t;
+
+static void
+luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
+{
+    luab_xarg_t *pci;
+    luab_type_u *h0;
+
+    (void)luab_checkmaxargs(L, 5);
+#if 0
+    if (sopt == NULL)
+        (void)luaL_error(L, "%s: sopt == NULL", __func__);
+
+    (void)memset_s(sizeof(*sopt), 0, sizeof(*sopt));
+#endif
+    pci = &(sopt->sopt_pci);
+
+    sopt->sopt_sock = (int)luab_checkinteger(L, 1, INT_MAX);
+    sopt->sopt_level = (int)luab_checkinteger(L, 2, INT_MAX);
+    sopt->sopt_name = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if ((sopt->sopt_val = luab_toxdata(L, 4, pci)) != NULL) {
+
+        if (pci->xarg_idx == LUAB_HOOK_IDX) {   /* XXX macro ??? */
+            sopt->sopt_val = &(((luab_type_u *)sopt->sopt_val)->un_int);
+            pci->xarg_len = sizeof(*(int *)sopt->sopt_val);
+        }
+    }
+
+    if ((h0 = (luab_type_u *)luab_isudata(L, 5, luab_mx(HOOK))) != NULL)
+        sopt->sopt_x = &(h0->un_socklen);
+    else {
+        sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, INT_MAX);
+
+        if (sopt->sopt_len != pci->xarg_len)
+            (void)luaL_error(L, "%s: sopt->sopt_len != xarg->xarg_len", __func__);
+    }
+}
+
+/*
  * Evaluates if set contains instances of (LUA_TTABLE(LUA_TUSERDATA(MSGHDR)))
  * and translate its elements or items this into an array of mmsghdr{} items.
  */
@@ -431,6 +480,42 @@ luab_getsockname(lua_State *L)
 }
 
 /***
+ * getsockopt(2) - get and set options on a socket
+ *
+ * @function getsockopt
+ *
+ * @param s                 File descriptor for open socket(9).
+ * @param level             Specifies manipulation of options either on socket(9)
+ *                          level by setting its value to SOL_SOCKET or otherwise
+ *                          by constant for specific protocol domain(9).
+ * @param optname           Specifies uninterpreted options from for
+ *                          interpretation of those on the level for
+ *                          the specific protocol module.
+ * @param optval            Result argument, buffer.
+ * @param optlen            Result argument, size of buffer in bytes.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.getsockopt(s, level, optname, optval, optlen)
+ */
+static int
+luab_getsockopt(lua_State *L)
+{
+    luab_sockopt_t sopt;
+    int status;
+
+    luab_checkxsockopt(L, &sopt);
+
+    status = getsockopt(sopt.sopt_sock, sopt.sopt_level,
+        sopt.sopt_name, sopt.sopt_val, sopt.sopt_x);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
  * listen(2) - listen for connections on a socket(9)
  *
  * @function listen
@@ -811,7 +896,7 @@ luab_sendmsg(lua_State *L)
  *
  * @function sendmmsg
  *
- * @param s                 File drscriptor denotes by socket(2) opened socket(9).
+ * @param s                 File descriptor for open socket(9).
  * @param msgvec            Instance of LUA_TTABLE(LUA_TUSERDATA(MSGHDR)).
  * @param vlen              Constraint for transmission of #n messages.
  * @param flags             Flags argument over
@@ -854,7 +939,71 @@ luab_sendmmsg(lua_State *L)
 
     return (luab_pusherr(L, count));
 }
+
+/***
+ * setfib(2) - set the default FIB (routing table) for the calling process
+ *
+ * @function setfib
+ *
+ * @param fib               Specifies associated forward information base.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.setfib(fib)
+ */
+static int
+luab_setfib(lua_State *L)
+{
+    int fib;
+    int status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    fib = (int)luab_checkinteger(L, 1, INT_MAX);
+    status = setfib(fib);
+
+    return (luab_pusherr(L, status));
+}
 #endif
+
+/***
+ * setsockopt(2) - get and set options on a socket
+ *
+ * @function setsockopt
+ *
+ * @param s                 File descriptor for open socket(9).
+ * @param level             Specifies manipulation of options either on socket(9)
+ *                          level by setting its value to SOL_SOCKET or otherwise
+ *                          by constant for specific protocol domain(9).
+ * @param optname           Specifies uninterpreted options from for
+ *                          interpretation of those on the level for
+ *                          the specific protocol module.
+ * @param optval            Specifies supplied data for interpretation.
+ * @param optlen            Specifies length of supplied data in bytes.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.setsockopt(s, level, optname, optval, optlen)
+ */
+static int
+luab_setsockopt(lua_State *L)
+{
+    luab_sockopt_t sopt;
+    int status;
+
+    luab_checkxsockopt(L, &sopt);
+
+    status = setsockopt(sopt.sopt_sock, sopt.sopt_level,
+        sopt.sopt_name, sopt.sopt_val, sopt.sopt_len);
+
+    return (luab_pusherr(L, status));
+}
 
 /*
  * Generator functions.
@@ -929,7 +1078,7 @@ luab_msghdr_create(lua_State *L)
  *          (cmsgcred [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage msghdr [, err, msg ] = bsd.sys.socket.cmsgcred_create()
+ * @usage cmsgcred [, err, msg ] = bsd.sys.socket.cmsgcred_create()
  */
 static int
 luab_cmsgcred_create(lua_State *L)
@@ -1254,9 +1403,7 @@ static luab_table_t luab_sys_socket_vec[] = {
 #endif
     LUABSD_FUNC("getpeername",              luab_getpeername),
     LUABSD_FUNC("getsockname",              luab_getsockname),
-#if 0
     LUABSD_FUNC("getsockopt",               luab_getsockopt),
-#endif
     LUABSD_FUNC("listen",                   luab_listen),
     LUABSD_FUNC("recv",                     luab_recv),
     LUABSD_FUNC("recvfrom",                 luab_recvfrom),
@@ -1269,6 +1416,8 @@ static luab_table_t luab_sys_socket_vec[] = {
     LUABSD_FUNC("sendmsg",                  luab_sendmsg),
 #if __BSD_VISIBLE
     LUABSD_FUNC("sendmmesg",                luab_sendmmsg),
+    LUABSD_FUNC("setfib",                   luab_setfib),
+    LUABSD_FUNC("setsockopt",               luab_setsockopt),
 #endif
     LUABSD_FUNC("linger_create",            luab_linger_create),
 #if __BSD_VISIBLE

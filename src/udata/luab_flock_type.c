@@ -316,13 +316,19 @@ FLOCK_get_l_sysid(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 FLOCK_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &flock_type));
+}
+
+static int
+FLOCK_len(lua_State *L)
+{
+    return (luab_len(L, 2, &flock_type));
 }
 
 static int
@@ -334,7 +340,7 @@ FLOCK_tostring(lua_State *L)
 /*
  * Internal interface.
  */
- 
+
 static luab_table_t flock_methods[] = {
     LUABSD_FUNC("set_l_start",  FLOCK_set_l_start),
     LUABSD_FUNC("set_l_len",    FLOCK_set_l_len),
@@ -351,6 +357,7 @@ static luab_table_t flock_methods[] = {
     LUABSD_FUNC("get_l_sysid",  FLOCK_get_l_sysid),
     LUABSD_FUNC("dump",         FLOCK_dump),
     LUABSD_FUNC("__gc",         FLOCK_gc),
+    LUABSD_FUNC("__len",        FLOCK_len),
     LUABSD_FUNC("__tostring",   FLOCK_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

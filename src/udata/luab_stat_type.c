@@ -822,13 +822,19 @@ STAT_get_st_gen(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 STAT_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &stat_type));
+}
+
+static int
+STAT_len(lua_State *L)
+{
+    return (luab_len(L, 2, &stat_type));
 }
 
 static int
@@ -901,6 +907,7 @@ static luab_table_t stat_methods[] = {
     LUABSD_FUNC("get_st_gen",       STAT_get_st_gen),
     LUABSD_FUNC("dump",             STAT_dump),
     LUABSD_FUNC("__gc",             STAT_gc),
+    LUABSD_FUNC("__len",            STAT_len),
     LUABSD_FUNC("__tostring",       STAT_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

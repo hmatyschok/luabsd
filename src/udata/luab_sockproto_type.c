@@ -227,13 +227,19 @@ SOCKPROTO_get_sp_protocol(lua_State *L)
 }
 
 /*
- * Meta-methods
+ * Metamethods
  */
 
 static int
 SOCKPROTO_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &sockproto_type));
+}
+
+static int
+SOCKPROTO_len(lua_State *L)
+{
+    return (luab_len(L, 2, &sockproto_type));
 }
 
 static int
@@ -254,6 +260,7 @@ static luab_table_t sockproto_methods[] = {
     LUABSD_FUNC("get_sp_protocol",  SOCKPROTO_get_sp_protocol),
     LUABSD_FUNC("dump",             SOCKPROTO_dump),
     LUABSD_FUNC("__gc",             SOCKPROTO_gc),
+    LUABSD_FUNC("__len",            SOCKPROTO_len),
     LUABSD_FUNC("__tostring",       SOCKPROTO_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

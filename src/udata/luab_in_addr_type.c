@@ -170,13 +170,19 @@ IN_ADDR_get_s_addr(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 IN_ADDR_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &in_addr_type));
+}
+
+static int
+IN_ADDR_len(lua_State *L)
+{
+    return (luab_len(L, 2, &in_addr_type));
 }
 
 static int
@@ -195,6 +201,7 @@ static luab_table_t in_addr_methods[] = {
     LUABSD_FUNC("get_s_addr",   IN_ADDR_get_s_addr),
     LUABSD_FUNC("dump",         IN_ADDR_dump),
     LUABSD_FUNC("__gc",         IN_ADDR_gc),
+    LUABSD_FUNC("__len",        IN_ADDR_len),
     LUABSD_FUNC("__tostring",   IN_ADDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

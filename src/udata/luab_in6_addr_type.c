@@ -120,7 +120,7 @@ IN6_ADDR_dump(lua_State *L)
 /*
  * Accessor.
  */
- 
+
 /***
  * Copyin IPv6 address.
  *
@@ -193,13 +193,19 @@ IN6_ADDR_get_s6_addr(lua_State *L)
 }
 
 /*
- * Meta-methods
+ * Metamethods
  */
 
 static int
 IN6_ADDR_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &in6_addr_type));
+}
+
+static int
+IN6_ADDR_len(lua_State *L)
+{
+    return (luab_len(L, 2, &in6_addr_type));
 }
 
 static int
@@ -218,6 +224,7 @@ static luab_table_t in6_addr_methods[] = {
     LUABSD_FUNC("get_s6_addr",  IN6_ADDR_get_s6_addr),
     LUABSD_FUNC("dump",         IN6_ADDR_dump),
     LUABSD_FUNC("__gc",         IN6_ADDR_gc),
+    LUABSD_FUNC("__len",        IN6_ADDR_len),
     LUABSD_FUNC("__tostring",   IN6_ADDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

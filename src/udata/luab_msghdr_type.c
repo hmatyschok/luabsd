@@ -557,7 +557,7 @@ MSGHDR_get_msg_iov(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
@@ -577,6 +577,12 @@ MSGHDR_gc(lua_State *L)
     (void)memset_s(self, msghdr_type.sz, 0, msghdr_type.sz);
 
     return (0);
+}
+
+static int
+MSGHDR_len(lua_State *L)
+{
+    return (luab_len(L, 2, &msghdr_type));
 }
 
 static int
@@ -606,6 +612,7 @@ static luab_table_t msghdr_methods[] = {
 /*  LUABSD_FUNC("get_msg_control",  MSGHDR_get_msg_control), */
     LUABSD_FUNC("get_msg_flags",    MSGHDR_get_msg_iov),
     LUABSD_FUNC("__gc",             MSGHDR_gc),
+    LUABSD_FUNC("__len",            MSGHDR_len),
     LUABSD_FUNC("__tostring",       MSGHDR_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

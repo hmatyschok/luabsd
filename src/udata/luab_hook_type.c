@@ -235,13 +235,19 @@ HOOK_get_socklen(lua_State *L)
 }
 
 /*
- * Meta-methods.
+ * Metamethods.
  */
 
 static int
 HOOK_gc(lua_State *L)
 {
     return (luab_gc(L, 1, &hook_type));
+}
+
+static int
+HOOK_len(lua_State *L)
+{
+    return (luab_len(L, 2, &hook_type));
 }
 
 static int
@@ -266,6 +272,7 @@ static luab_table_t hook_methods[] = {
     LUABSD_FUNC("get_short",    HOOK_get_short),
     LUABSD_FUNC("get_socklen",  HOOK_get_socklen),
     LUABSD_FUNC("__gc",         HOOK_gc),
+    LUABSD_FUNC("__len",        HOOK_len),
     LUABSD_FUNC("__tostring",   HOOK_tostring),
     LUABSD_FUNC(NULL, NULL)
 };

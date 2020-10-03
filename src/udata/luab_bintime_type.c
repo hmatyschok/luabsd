@@ -240,6 +240,12 @@ BINTIME_gc(lua_State *L)
 }
 
 static int
+BINTIME_len(lua_State *L)
+{
+    return (luab_len(L, 2, &bintime_type));
+}
+
+static int
 BINTIME_tostring(lua_State *L)
 {
     return (luab_tostring(L, 1, &bintime_type));
@@ -257,6 +263,7 @@ static luab_table_t bintime_methods[] = {
     LUABSD_FUNC("get_frac",     BINTIME_get_frac),
     LUABSD_FUNC("dump",         BINTIME_dump),
     LUABSD_FUNC("__gc",         BINTIME_gc),
+    LUABSD_FUNC("__len",        BINTIME_len),
     LUABSD_FUNC("__tostring",   BINTIME_tostring),
     LUABSD_FUNC(NULL, NULL)
 };
