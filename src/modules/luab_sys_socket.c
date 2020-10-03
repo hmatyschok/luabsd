@@ -239,43 +239,6 @@ luab_connect(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
-/***
- * socket(2) - create an endpoint for communication
- *
- * @function socket
- *
- * @param domain            Specifies communication domain(9), where Inter
- *                          Process Communication (IPC) takes place.
- * @param type              Specifies semantics of communication for IPC.
- * @param protocol          Specifies used for IPC by socket(9) utilized
- *                          particular Protocol.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (s [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
- * @usage s [, err, msg ] = bsd.sys.socket.socket(domain, type, protocol)
- */
-static int
-luab_socket(lua_State *L)
-{
-    int domain;
-    int type;
-    int protocol;
-    int s;
-
-    (void)luab_checkmaxargs(L, 3);
-
-    domain = (int)luab_checkinteger(L, 1, INT_MAX);
-    type = (int)luab_checkinteger(L, 2, INT_MAX);
-    protocol = (int)luab_checkinteger(L, 3, INT_MAX);
-
-    s = socket(domain, type, protocol);
-
-    return (luab_pusherr(L, s));
-}
-
 #if __BSD_VISIBLE
 /***
  * accept4(2) - accept a connection on a socket(9)
@@ -1005,6 +968,144 @@ luab_setsockopt(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * shutdown(2) - disables sends and/or receives on a socket
+ *
+ * @function shutdown
+ *
+ * @param s                 Open socket(9).
+ * @param how               Specifies type of shutdown by values from:
+ *
+ *                              bsd.sys.socket.SHUT_{RD,WR,RDWR}
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.shutdown(s, how)
+ */
+static int
+luab_shutdown(lua_State *L)
+{
+    int s, how;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    how = (int)luab_checkinteger(L, 2, INT_MAX);
+    status = shutdown(s, how);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * sockatmark(2) - determine whether the read pointer is at OOB mark
+ *
+ * @function sockatmark
+ *
+ * @param s                 Open socket(9).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.shutdown(s, how)
+ */
+static int
+luab_sockatmark(lua_State *L)
+{
+    int s, status;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    s = (int)luab_checkinteger(L, 1, INT_MAX);
+    status = sockatmark(s);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * socket(2) - create an endpoint for communication
+ *
+ * @function socket
+ *
+ * @param domain            Specifies communication domain(9), where Inter
+ *                          Process Communication (IPC) takes place.
+ * @param type              Specifies semantics of communication for IPC.
+ * @param protocol          Specifies used for IPC by socket(9) utilized
+ *                          particular Protocol.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (s [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage s [, err, msg ] = bsd.sys.socket.socket(domain, type, protocol)
+ */
+static int
+luab_socket(lua_State *L)
+{
+    int domain;
+    int type;
+    int protocol;
+    int s;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    domain = (int)luab_checkinteger(L, 1, INT_MAX);
+    type = (int)luab_checkinteger(L, 2, INT_MAX);
+    protocol = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    s = socket(domain, type, protocol);
+
+    return (luab_pusherr(L, s));
+}
+
+/***
+ * socketpair(2) - create a pair of connected sockets
+ *
+ * @function socketpair
+ *
+ * @param domain            Specifies communication domain(9), where Inter
+ *                          Process Communication (IPC) takes place.
+ * @param type              Specifies semantics of communication for IPC.
+ * @param protocol          Specifies used for IPC by socket(9) utilized
+ *                          particular Protocol.
+ * @param sv                Result argument, empty (LUA_TTABLE).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (s [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage s [, err, msg ] = bsd.sys.socket.socketpair(domain, type, protocol)
+ */
+static int
+luab_socketpair(lua_State *L)
+{
+    int domain;
+    int type;
+    int protocol;
+    int socks[2];
+    int status;
+
+    (void)luab_checkmaxargs(L, 4);
+
+    domain = (int)luab_checkinteger(L, 1, INT_MAX);
+    type = (int)luab_checkinteger(L, 2, INT_MAX);
+    protocol = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    (void)luab_checkltable(L, 4, 0);
+
+    if ((status = socketpair(domain, type, protocol, socks)) == 0)
+        luab_table_pushint(L, 4, socks, 0);
+
+    return (luab_pusherr(L, status));
+}
+
 /*
  * Generator functions.
  */
@@ -1395,7 +1496,7 @@ static luab_table_t luab_sys_socket_vec[] = {
     LUABSD_FUNC("accept",                   luab_accept),
     LUABSD_FUNC("bind",                     luab_bind),
     LUABSD_FUNC("connect",                  luab_connect),
-    LUABSD_FUNC("socket",                   luab_socket),
+
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept4",                  luab_accept4),
     LUABSD_FUNC("bindat",                   luab_bindat),
@@ -1415,10 +1516,18 @@ static luab_table_t luab_sys_socket_vec[] = {
     LUABSD_FUNC("sendto",                   luab_sendto),
     LUABSD_FUNC("sendmsg",                  luab_sendmsg),
 #if __BSD_VISIBLE
+#if 0
+    LUABSD_FUNC("sendfile",                 luab_sendfile),
+#endif
     LUABSD_FUNC("sendmmesg",                luab_sendmmsg),
     LUABSD_FUNC("setfib",                   luab_setfib),
-    LUABSD_FUNC("setsockopt",               luab_setsockopt),
 #endif
+    LUABSD_FUNC("setsockopt",               luab_setsockopt),
+    LUABSD_FUNC("shutdown",                 luab_shutdown),
+    LUABSD_FUNC("sockatmark",               luab_sockatmark),
+    LUABSD_FUNC("socket",                   luab_socket),
+    LUABSD_FUNC("socketpair",               luab_socketpair),
+    /* generator functions */
     LUABSD_FUNC("linger_create",            luab_linger_create),
 #if __BSD_VISIBLE
     LUABSD_FUNC("accept_filter_arg_create", luab_accept_filter_arg_create),
@@ -1427,7 +1536,7 @@ static luab_table_t luab_sys_socket_vec[] = {
 #endif
     LUABSD_FUNC("sockaddr_create",          luab_sockaddr_create),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("sockproto_proto",          luab_sockproto_create),
+    LUABSD_FUNC("sockproto_create",          luab_sockproto_create),
 #endif
     LUABSD_INT(NULL, 0)
 };

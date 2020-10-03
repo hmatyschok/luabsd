@@ -301,6 +301,64 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
  */
 
 void
+luab_table_pushdouble(lua_State *L, int narg, double *vec, int new)
+{
+    size_t i, j, n;
+
+    if (vec != NULL) {
+        n = luab_table_xlen(vec, double);
+
+        if (new != 0)   /* populate Table, if any */
+            lua_newtable(L);
+        else
+            lua_pushnil(L);
+
+        for (i = 0, j = 1; i < n; i++, j++)
+            luab_rawsetnumber(L, narg, j, vec[i]);
+
+        lua_pop(L, 0);
+    }
+}
+
+void
+luab_table_pushint(lua_State *L, int narg, int *vec, int new)
+{
+    size_t i, j, n;
+
+    if (vec != NULL) {
+        n = luab_table_xlen(vec, int);
+
+        if (new != 0)   /* populate Table, if any */
+            lua_newtable(L);
+        else
+            lua_pushnil(L);
+
+        for (i = 0, j = 1; i < n; i++, j++)
+            luab_rawsetinteger(L, narg, j, vec[i]);
+
+        lua_pop(L, 0);
+    }
+}
+
+void
+luab_table_pushldouble(lua_State *L, int narg, double *vec, size_t n, int new)
+{
+    size_t i, j;
+
+    if (vec != NULL) {
+        if (new != 0)   /* populate Table, if any */
+            lua_newtable(L);
+        else
+            lua_pushnil(L);
+
+        for (i = 0, j = 1; i < n; i++, j++)
+            luab_rawsetnumber(L, narg, j, vec[i]);
+
+        lua_pop(L, 0);
+    }
+}
+
+void
 luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new)
 {
     int i, j;
@@ -314,25 +372,6 @@ luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new
 
         for (i = 0, j = 1; i < ngroups; i++, j++)
             luab_rawsetinteger(L, narg, j, gids[i]);
-
-        lua_pop(L, 0);
-    }
-}
-
-void
-luab_table_pushldouble(lua_State *L, int narg, double *vec, size_t n, int new)
-{
-    size_t i, j;
-
-    if (vec!= NULL) {
-
-        if (new != 0)   /* populate Table, if any */
-            lua_newtable(L);
-        else
-            lua_pushnil(L);
-
-        for (i = 0, j = 1; i < n; i++, j++)
-            luab_rawsetnumber(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
     }

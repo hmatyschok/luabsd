@@ -412,8 +412,10 @@ void    luab_setldata(lua_State *, int, const char *, void *, size_t);
 void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
 
-void    luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
+void    luab_table_pushdouble(lua_State *, int, double *, int);
+void    luab_table_pushint(lua_State *, int, int *, int);
 void    luab_table_pushldouble(lua_State *, int, double *, size_t, int);
+void    luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
 
 /*
  * Generic service primitives, subset of <core>.
@@ -504,5 +506,10 @@ luab_sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
     sa->sa_len = len;
     sa->sa_family = af;
 }
+
+/* (LUA_TTABLE) */
+#define luab_table_xlen(vec, type) \
+    ((sizeof(vec)) / (sizeof(type)))
+
 __END_DECLS
 #endif /* _LUABSD_H_ */

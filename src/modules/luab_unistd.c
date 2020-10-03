@@ -3402,7 +3402,7 @@ luab_getgrouplist(lua_State *L)
     name = luab_checklstring(L, 1, NAME_MAX);
     basegid = (gid_t)luab_checkinteger(L, 2, INT_MAX);
 
-    luab_checkltable(L, 3, 0);  /* only empty table are accepted */
+    (void)luab_checkltable(L, 3, 0);  /* only empty table are accepted */
 
     hook = luab_udata(L, 4, luab_mx(HOOK), luab_type_u *);
     ngroups = &(hook->un_int);
