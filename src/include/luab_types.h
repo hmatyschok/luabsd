@@ -86,19 +86,19 @@ luab_xlen(luab_module_t *m)
 }
 
 static __inline void *
-luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
+luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
 {
     luab_modulevec_t *vec;
-    void *arg;
+    luab_udata_t *ud;
 
     if (pci != NULL) {
 
         for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
-            if ((arg = luab_isudata(L, narg, vec->mv_mod)) != NULL)
+            if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL)
                 break;
         }
 
-        if (arg != NULL) {
+        if (ud != NULL) {
             pci->xarg_idx = vec->mv_idx;
             pci->xarg_len = luab_xlen(vec->mv_mod);
         } else {
@@ -107,7 +107,18 @@ luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
         }
     } else {
         errno = EINVAL;
-        arg = NULL;
+        ud = NULL;
     }
-    return (arg);
+    return (ud);
+}
+
+static __inline void *
+luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
+{
+    luab_udata_t *ud;
+
+    if ((ud = luab_toxudata(L, narg, pci)) != NULL)
+        return (ud + 1);
+
+    return (NULL);
 }
