@@ -47,7 +47,7 @@ extern luab_module_t uuid_type;
  *      uint8_t     clock_seq_hi_and_reserved;
  *      uint8_t     clock_seq_low;
  *      uint8_t     node[_UUID_NODE_LEN];
- * };
+ *  };
  */
 
 typedef struct luab_uuid {
@@ -97,14 +97,14 @@ UUID_get(lua_State *L)
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "time_low",  uuid->time_low);
-    luab_setinteger(L, -2, "time_mid", uuid->time_mid);
+    luab_setinteger(L, -2, "time_low",      uuid->time_low);
+    luab_setinteger(L, -2, "time_mid",      uuid->time_mid);
     luab_setinteger(L, -2, "time_hi_and_version",
         uuid->time_hi_and_version);
     luab_setinteger(L, -2, "clock_seq_hi_and_reserved",
         uuid->clock_seq_hi_and_reserved);
     luab_setinteger(L, -2, "clock_seq_low", uuid->clock_seq_low);
-    luab_setldata(L, -2, "node", uuid->node, _UUID_NODE_LEN);
+    luab_setldata(L, -2, "node",            uuid->node, _UUID_NODE_LEN);
 
     lua_pushvalue(L, -1);
 

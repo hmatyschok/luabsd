@@ -41,6 +41,384 @@
 
 extern luab_module_t luab_uuid_lib;
 
+/*
+ * Service primitives.
+ *
+ * XXX wrote this,
+ *
+ *      (-1 [, errno, strerror(errno)]), if (uuid1,uuid2)
+ *      (0 [, nil, nil]), if (uuid1,uuid2) and (uuid2,uuid1)
+ *      (1, [, errno, strerror(errno)]), if (uuid2,uuid1)
+ *
+ */
+
+#define LUAB_UUID_STR_LEN   36
+
+/***
+ * uuid_compare(3) - compare UUIDs for equality.
+ *
+ * @function uuid_compare
+ *
+ * @param uuid1             UUID, instance of (LUA_USERDATA(UUID)).
+ * @param uuid2             UUID, instance of (LUA_USERDATA(UUID)).
+ * @param status            Result argument, values from
+ *
+ *                              bsd.uuid.uuid_s_{
+ *                                  ok,
+ *                                  bad_version,
+ *                                  invalid_string_uuid,
+ *                                  no_memory
+ *                              }
+ *
+ *                          by (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.uuid.uuid_compare(uuid1, uuid2, status)
+ */
+static int
+luab_uuid_compare(lua_State *L)
+{
+    uuid_t *uuid1, *uuid2;
+    luab_type_u *h0;
+    uint32_t *status;
+    int32_t ret;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
+    uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    status = &(h0->un_uint32);
+
+    ret = uuid_compare(uuid1, uuid2, status);
+
+    return (luab_pusherr(L, ret));
+}
+
+/***
+ * uuid_equal(3) - compare UUIDs for equality.
+ *
+ * @function uuid_equal
+ *
+ * @param uuid1             UUID, instance of (LUA_USERDATA(UUID)).
+ * @param uuid2             UUID, instance of (LUA_USERDATA(UUID)).
+ * @param status            Result argument, values from
+ *
+ *                              bsd.uuid.uuid_s_{
+ *                                  ok,
+ *                                  bad_version,
+ *                                  invalid_string_uuid,
+ *                                  no_memory
+ *                              }
+ *
+ *                          by (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.uuid.uuid_compare(uuid1, uuid2, status)
+ */
+static int
+luab_uuid_equal(lua_State *L)
+{
+    uuid_t *uuid1, *uuid2;
+    luab_type_u *h0;
+    uint32_t *status;
+    int32_t ret;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
+    uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    status = &(h0->un_uint32);
+
+    ret = uuid_equal(uuid1, uuid2, status);
+
+    return (luab_pusherr(L, ret));
+}
+
+/***
+ * uuid_from_string(3) - compare UUIDs for equality.
+ *
+ * @function uuid_from_string
+ *
+ * @param str               UUID encoded by (LUA_TSTRING).
+ * @param uuid              UUID, instance of (LUA_USERDATA(UUID)).
+ * @param status            Result argument, values from
+ *
+ *                              bsd.uuid.uuid_s_{
+ *                                  ok,
+ *                                  bad_version,
+ *                                  invalid_string_uuid,
+ *                                  no_memory
+ *                              }
+ *
+ *                          by (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.uuid.uuid_from_string([ status ])
+ */
+static int
+luab_uuid_from_string(lua_State *L)
+{
+    const char *str;
+    uuid_t *uuid;
+    luab_type_u *h0;
+    uint32_t *status;
+
+    (void)luab_checkmaxargs(L, 3);
+
+    str = luab_checklstring(L, 1, LUAB_UUID_STR_LEN);
+    uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    status = &(h0->un_uint32);
+
+    uuid_from_string(str, uuid, status);
+
+    return (luab_pusherr(L, *status));
+}
+
+/***
+ * uuid_hash(3) - generates a hash value for the specific uuid.
+ *
+ * @function uuid_hash
+ *
+ * @param uuid              UUID, instance of (LUA_USERDATA(UUID)).
+ * @param status            Result argument, values from
+ *
+ *                              bsd.uuid.uuid_s_{
+ *                                  ok,
+ *                                  bad_version,
+ *                                  invalid_string_uuid,
+ *                                  no_memory
+ *                              }
+ *
+ *                          by (LUA_TUSERDATA(HOOK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage hash [, err, msg ] = bsd.uuid.uuid_hash(uuid, status)
+ */
+static int
+luab_uuid_hash(lua_State *L)
+{
+    uuid_t *uuid;
+    luab_type_u *h0;
+    uint32_t *status;
+    uint16_t hash;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    uuid = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
+    h0 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
+    status = &(h0->un_uint32);
+
+    hash = uuid_hash(uuid, status);
+
+    return (luab_pusherr(L, hash));
+}
+
+/***
+ * uuid_enc_le(3) - encodes binary representation into an octet stream
+ *
+ * @function uuid_enc_le
+ *
+ * @param buf               Storage for an octet stream, (LUA_USERDATA(IOVEC)).
+ * @param uuid              UUID, instance of (LUA_USERDATA(UUID)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.uuid.uuid_enc_le(buf, uuid)
+ */
+static int
+luab_uuid_enc_le(lua_State *L)
+{
+    luab_iovec_t *buf;
+    uuid_t *uuid;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
+
+    if ((buf != NULL) &&
+        ((bp = buf->iov.iov_base) != NULL) &&
+        (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            uuid_enc_le(bp, uuid);
+            buf->iov.iov_len = LUAB_UUID_STR_LEN;
+            status = 0;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * uuid_dec_le(3) - decodes an octet stream into its binary representation
+ *
+ * @function uuid_dec_le
+ *
+ * @param buf               Storage for an octet stream, (LUA_USERDATA(IOVEC)).
+ * @param uuid              UUID, instance of (LUA_USERDATA(UUID)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.uuid.uuid_dec_le(buf, uuid)
+ */
+static int
+luab_uuid_dec_le(lua_State *L)
+{
+    luab_iovec_t *buf;
+    uuid_t *uuid;
+    caddr_t bp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
+
+    if ((buf != NULL) &&
+        ((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            uuid_dec_le(bp, uuid);
+            status = 0;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * uuid_enc_be(3) - encodes binary representation into an octet stream
+ *
+ * @function uuid_enc_be
+ *
+ * @param buf               Storage for an octet stream, (LUA_USERDATA(IOVEC)).
+ * @param uuid              UUID, instance of (LUA_USERDATA(UUID)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.uuid.uuid_enc_be(buf, uuid)
+ */
+static int
+luab_uuid_enc_be(lua_State *L)
+{
+    luab_iovec_t *buf;
+    uuid_t *uuid;
+    caddr_t bp;
+    int status;
+                                        /* XXX DRY */
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
+
+    if ((buf != NULL) &&
+        ((bp = buf->iov.iov_base) != NULL) &&
+        (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            uuid_enc_be(bp, uuid);
+            buf->iov.iov_len = LUAB_UUID_STR_LEN;
+            status = 0;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * uuid_dec_be(3) - decodes an octet stream into its binary representation
+ *
+ * @function uuid_dec_be
+ *
+ * @param buf               Storage for an octet stream, (LUA_USERDATA(IOVEC)).
+ * @param uuid              UUID, instance of (LUA_USERDATA(UUID)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.uuid.uuid_dec_be(buf, uuid)
+ */
+static int
+luab_uuid_dec_be(lua_State *L)
+{
+    luab_iovec_t *buf;
+    uuid_t *uuid;
+    caddr_t bp;
+    int status;
+                                        /* XXX DRY */
+    (void)luab_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
+
+    if ((buf != NULL) &&
+        ((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            uuid_dec_be(bp, uuid);
+            status = 0;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/*
+ * Generator functions.
+ */
 
 /***
  * uuid(3) - generator function.
@@ -51,10 +429,7 @@ extern luab_module_t luab_uuid_lib;
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (uuid [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage uuid = bsd.uuid.uuid_create([ status or nil ])
+ * @usage uuid = bsd.uuid.uuid_create([ status ])
  */
 static int
 luab_uuid_create(lua_State *L)
@@ -76,7 +451,7 @@ luab_uuid_create(lua_State *L)
         break;
     }
     uuid_create(&uuid, status);
-    
+
     return (luab_pushudata(L, luab_mx(UUID), &uuid));
 }
 
@@ -89,10 +464,7 @@ luab_uuid_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (uuid [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage uuid = bsd.uuid.uuid_create_nil([ status or nil ])
+ * @usage uuid = bsd.uuid.uuid_create_nil([ status ])
  */
 static int
 luab_uuid_create_nil(lua_State *L)
@@ -114,7 +486,7 @@ luab_uuid_create_nil(lua_State *L)
         break;
     }
     uuid_create_nil(&uuid, status);
-    
+
     return (luab_pushudata(L, luab_mx(UUID), &uuid));
 }
 
@@ -127,8 +499,16 @@ static luab_table_t luab_uuid_vec[] = {
     LUABSD_INT("uuid_s_bad_version",            uuid_s_bad_version),
     LUABSD_INT("uuid_s_invalid_string_uuid",    uuid_s_invalid_string_uuid),
     LUABSD_INT("uuid_s_no_memory",              uuid_s_no_memory),
+    LUABSD_FUNC("uuid_compare",                 luab_uuid_compare),
     LUABSD_FUNC("uuid_create",                  luab_uuid_create),
     LUABSD_FUNC("uuid_create_nil",              luab_uuid_create_nil),
+    LUABSD_FUNC("uuid_equal",                   luab_uuid_equal),
+    LUABSD_FUNC("uuid_from_string",             luab_uuid_from_string),
+    LUABSD_FUNC("uuid_hash",                    luab_uuid_hash),
+    LUABSD_FUNC("uuid_enc_le",                  luab_uuid_enc_le),
+    LUABSD_FUNC("uuid_dec_le",                  luab_uuid_dec_le),
+    LUABSD_FUNC("uuid_enc_be",                  luab_uuid_enc_be),
+    LUABSD_FUNC("uuid_dec_be",                  luab_uuid_dec_be),
     LUABSD_FUNC(NULL, NULL)
 };
 
