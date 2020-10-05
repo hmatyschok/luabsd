@@ -24,12 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/param.h>
 #include <sys/stat.h>
-
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

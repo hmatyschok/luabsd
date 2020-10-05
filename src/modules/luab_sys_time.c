@@ -37,10 +37,8 @@
 #include <sys/limits.h>
 #include <sys/time.h>
 
-#include <errno.h>
 #include <pthread.h>
 #include <signal.h>
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

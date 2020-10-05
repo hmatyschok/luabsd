@@ -24,10 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/socket.h>
 #include <netinet/in.h>
-
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

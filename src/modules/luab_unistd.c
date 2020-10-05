@@ -33,15 +33,11 @@
  * This code is hereby placed in the public domain and also under the MIT license
  */
 
-#include <sys/param.h>
 #include <arpa/inet.h>
 
-#include <errno.h>
 #include <pwd.h>
 #include <unistd.h>
 #include <signal.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

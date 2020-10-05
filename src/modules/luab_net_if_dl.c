@@ -24,14 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/types.h>
-#include <sys/socket.h>
-
 #include <net/if.h>
 #include <net/if_dl.h>
-
-#include <errno.h>
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

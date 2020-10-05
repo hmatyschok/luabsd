@@ -25,7 +25,6 @@
  */
 
 #include <fcntl.h>
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

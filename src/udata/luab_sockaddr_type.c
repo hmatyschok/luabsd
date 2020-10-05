@@ -23,17 +23,12 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
-#include <sys/socket.h>
+ 
 #include <sys/un.h>
-
-#include <netinet/in.h>
 
 #include <net/if.h>
 #include <net/if_dl.h>
-
-#include <errno.h>
-#include <string.h>
+#include <netinet/in.h>
 
 #include <lua.h>
 #include <lauxlib.h>

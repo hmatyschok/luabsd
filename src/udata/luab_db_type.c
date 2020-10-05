@@ -25,12 +25,8 @@
  */
 
 #include <sys/file.h>
-#include <sys/param.h>
 
 #include <db.h>
-#include <errno.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

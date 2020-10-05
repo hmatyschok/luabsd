@@ -26,8 +26,6 @@
 
 #include <sys/stat.h>
 
-#include <string.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
