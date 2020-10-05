@@ -265,9 +265,8 @@ int luab_pushudata(lua_State *, luab_module_t *, void *);
 int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
 
 
-
 /*
- * Accessor, [C -> stack]
+ * Accessor, [stack -> C].
  */
 
 void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
@@ -289,12 +288,6 @@ gid_t * luab_table_checklgid(lua_State *, int, size_t);
 
 void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
 void    luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
-
-void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
-void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
-void    luab_setstring(lua_State *, int, const char *, const char *);
-void    luab_setfstring(lua_State *, int, const char *, const char *, ...);
-void    luab_setldata(lua_State *, int, const char *, void *, size_t);
 
 void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void    luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
@@ -337,7 +330,10 @@ luab_udata_clear(luab_udata_t *self)
     LIST_INIT(&self->ud_list);
 }
 
-/* (LUA_TUSERDATA(IOVEC)) */
+/*
+ * Service primitives.
+ */
+
 int luab_iov_clear(struct iovec *);
 int luab_iov_free(struct iovec *);
 
