@@ -145,13 +145,13 @@ int
 luab_pushfstring(lua_State *L, const char *fmt, ...)
 {
     va_list ap;
-    char *buf[LUAL_BUFFERSIZE];
+    char buf[LUAL_BUFFERSIZE];
 
-    va_start(ap)
-    (void)vsnprintf(buf, LUAL_BUFFERSIZE, ap, fmt);
+    va_start(ap, fmt);
+    (void)vsnprintf(buf, LUAL_BUFFERSIZE, fmt, ap);
     va_end(ap);
 
-    return (luab_pushstring(L, ));
+    return (luab_pushstring(L, buf));
 }
 
 int
