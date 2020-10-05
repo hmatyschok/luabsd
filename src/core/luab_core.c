@@ -44,7 +44,7 @@
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
- * Generic operations on stack, [C -> stack].
+ * Accessor, [C -> stack].
  */
 
 int
