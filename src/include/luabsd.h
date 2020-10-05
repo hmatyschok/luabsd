@@ -124,7 +124,7 @@ typedef struct luab_modulevec {
 } luab_modulevec_t;
 
 /*
- * Generic error handler.
+ * Generic service primitives, subset of <core>.
  */
 
 static __inline void
@@ -140,6 +140,17 @@ luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
     luaL_argerror(L, narg, "Invalid argument");
 }
 
+static __inline int
+luab_checkmaxargs(lua_State *L, int nmax)
+{
+    int narg;
+
+    if ((narg = lua_gettop(L)) > nmax)
+        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
+
+    return (narg);
+}
+
 /*
  * Accessor, n-th arg over argv, [stack -> C].
  *
@@ -148,8 +159,6 @@ luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
  * thing without throwing an error, but return NULL, if n-th arg does
  * not exist.
  */
-
-int  luab_checkmaxargs(lua_State *, int);
 
 /* Atomic data types. */
 static __inline lua_Integer

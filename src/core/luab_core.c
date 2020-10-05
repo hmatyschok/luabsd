@@ -192,17 +192,6 @@ luab_pushldata(lua_State *L, void *v, size_t len)
  */
 
 int
-luab_checkmaxargs(lua_State *L, int nmax)
-{
-    int narg;
-
-    if ((narg = lua_gettop(L)) > nmax)
-        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
-
-    return (narg);
-}
-
-int
 luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     caddr_t dp;
