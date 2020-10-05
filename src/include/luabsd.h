@@ -149,7 +149,7 @@ luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
  * not exist.
  */
 
-int luab_checkmaxargs(lua_State *, int);
+int  luab_checkmaxargs(lua_State *, int);
 
 /* Atomic data types. */
 static __inline lua_Integer
@@ -320,24 +320,24 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
  * Accessor, [C -> stack].
  */
 
-int luab_pusherr(lua_State *, lua_Integer);
-int luab_pushnumber(lua_State *, lua_Number);
-int luab_pushnil(lua_State *);
-int luab_pushstring(lua_State *, const char *);
-int luab_pushfstring(lua_State *, const char *, ...);
-int luab_pushldata(lua_State *, void *, size_t);
+int  luab_pusherr(lua_State *, lua_Integer);
+int  luab_pushnumber(lua_State *, lua_Number);
+int  luab_pushnil(lua_State *);
+int  luab_pushstring(lua_State *, const char *);
+int  luab_pushfstring(lua_State *, const char *, ...);
+int  luab_pushldata(lua_State *, void *, size_t);
 
-int luab_iov_pushlen(lua_State *, struct iovec *);
-int luab_iov_pushdata(lua_State *, struct iovec *);
+int  luab_iov_pushlen(lua_State *, struct iovec *);
+int  luab_iov_pushdata(lua_State *, struct iovec *);
 
 /*
  * Generic service primitives, subset of <core>.
  */
 
-int luab_create(lua_State *, int, luab_module_t *, luab_module_t *);
-int luab_dump(lua_State *, int, luab_module_t *, size_t);
-int luab_gc(lua_State *, int, luab_module_t *);
-int luab_len(lua_State *, int, luab_module_t *);
-int luab_tostring(lua_State *, int, luab_module_t *);
+int  luab_create(lua_State *, int, luab_module_t *, luab_module_t *);
+int  luab_dump(lua_State *, int, luab_module_t *, size_t);
+int  luab_gc(lua_State *, int, luab_module_t *);
+int  luab_len(lua_State *, int, luab_module_t *);
+int  luab_tostring(lua_State *, int, luab_module_t *);
 __END_DECLS
 #endif /* _LUABSD_H_ */
