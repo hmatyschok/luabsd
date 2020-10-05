@@ -33,6 +33,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
 #ifdef __BSD_VISIBLE
 extern luab_module_t bintime_type;

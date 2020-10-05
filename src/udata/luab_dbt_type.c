@@ -142,7 +142,7 @@ DBT_set_data(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
@@ -175,7 +175,7 @@ DBT_get_data(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
-    buf = luab_udata(L, 2, &iovec_type, luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     status = luab_iovec_copyin(buf, dbt->data, dbt->size);
     return (luab_pusherr(L, status));
 }

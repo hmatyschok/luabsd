@@ -34,6 +34,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
 extern luab_module_t uuid_type;
 

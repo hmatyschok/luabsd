@@ -59,13 +59,11 @@ typedef union luab_type {   /* XXX namespace */
 } luab_type_u;
 
 typedef void    (*luab_table_fn)(lua_State *, luab_type_u *);
-typedef void    (*luab_link_fn)(lua_State *, void *, void *);
 
 typedef struct luab_table {
     luab_table_fn   init;
     const char    *key;
     luab_type_u   val;
-    luab_link_fn    link;
 } luab_table_t;
 
 #define LUABSD_REG(fn, k, v) \
@@ -102,6 +100,7 @@ luab_initstring(lua_State *L, luab_type_u *un)
 typedef void *  (*luab_ctor_fn)(lua_State *, void *);
 typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
+typedef void    (*luab_link_fn)(lua_State *, void *, void *);
 
 typedef struct luab_module {
     uint32_t    cookie;        /*  date -u +'%s' */
@@ -111,6 +110,7 @@ typedef struct luab_module {
     luab_ctor_fn    create;
     luab_init_fn    init;
     luab_get_fn    get;
+    luab_link_fn    link;
 } luab_module_t;
 
 typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
@@ -160,28 +160,6 @@ typedef struct luab_iovec {
 #define IOV_DUMP    0x0008
 #endif
 
-extern luab_module_t iovec_type;
-
-/*
- * Internal API for manipulating iovec{}s.
- */
-
-int luab_iov_clear(struct iovec *);
-int luab_iov_free(struct iovec *);
-
-int luab_iov_alloc(struct iovec *, size_t);
-int luab_iov_realloc(struct iovec *, size_t);
-
-int luab_iov_copyin(struct iovec *, const void *, ssize_t);
-int luab_iov_copyout(struct iovec *, void *, ssize_t);
-
-ssize_t luab_iov_readv(struct iovec *, int, size_t);
-ssize_t luab_iov_writev(struct iovec *, int, size_t);
-#if __BSD_VISIBLE
-ssize_t luab_iov_preadv(struct iovec *, int, size_t, off_t);
-ssize_t luab_iov_pwritev(struct iovec *, int, size_t, off_t);
-#endif
-
 /*
  * Generic error handler.
  */
@@ -203,7 +181,7 @@ luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
  * Generator functions, [Lua -> stack].
  */
 
-void *  luab_newudata(lua_State *, luab_module_t *, void *);
+void *  luab_newudata(lua_State *, luab_module_t *, void *);    /* XXX */
 
 /*
  * Accessor, n-th arg over argv, [stack -> C].
@@ -530,43 +508,6 @@ int luab_pushldata(lua_State *, void *, size_t);
 int luab_iov_pushlen(lua_State *, struct iovec *);
 int luab_iov_pushdata(lua_State *, struct iovec *);
 
-int luab_pushudata(lua_State *, luab_module_t *, void *);
-int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
-
-void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
-void *  luab_addudata(lua_State *, int, luab_module_t *, int);
-
-/* (LUA_TUSERDATA(IOVEC)) */
-#define luab_isiovec(L, narg) \
-    (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
-
-const char *    luab_iovec_islxarg(lua_State *, int, size_t);
-const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
-
-const char **    luab_checkargv(lua_State *, int);
-double *    luab_table_checkdouble(lua_State *, int, size_t *);
-const void ** luab_table_tolxargp(lua_State *, int, size_t);
-u_short *   luab_table_checklu_short(lua_State *, int, size_t);
-int *   luab_table_checklint(lua_State *, int, size_t);
-gid_t * luab_table_checklgid(lua_State *, int, size_t);
-
-void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
-void    luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
-
-void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
-void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
-void    luab_setstring(lua_State *, int, const char *, const char *);
-void    luab_setfstring(lua_State *, int, const char *, const char *, ...);
-void    luab_setldata(lua_State *, int, const char *, void *, size_t);
-
-void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
-void    luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
-
-void    luab_table_pushdouble(lua_State *, int, double *, int);
-void    luab_table_pushint(lua_State *, int, int *, int);
-void    luab_table_pushldouble(lua_State *, int, double *, size_t, int);
-void    luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
-
 /*
  * Generic service primitives, subset of <core>.
  */
@@ -611,6 +552,22 @@ luab_udata_clear(luab_udata_t *self)
 }
 
 /* (LUA_TUSERDATA(IOVEC)) */
+int luab_iov_clear(struct iovec *);
+int luab_iov_free(struct iovec *);
+
+int luab_iov_alloc(struct iovec *, size_t);
+int luab_iov_realloc(struct iovec *, size_t);
+
+int luab_iov_copyin(struct iovec *, const void *, ssize_t);
+int luab_iov_copyout(struct iovec *, void *, ssize_t);
+
+ssize_t luab_iov_readv(struct iovec *, int, size_t);
+ssize_t luab_iov_writev(struct iovec *, int, size_t);
+#if __BSD_VISIBLE
+ssize_t luab_iov_preadv(struct iovec *, int, size_t, off_t);
+ssize_t luab_iov_pwritev(struct iovec *, int, size_t, off_t);
+#endif
+
 int luab_iovec_copyin(luab_iovec_t *, const void *, size_t);
 int luab_iovec_copyout(luab_iovec_t *, void *, size_t);
 

@@ -64,8 +64,6 @@
 #endif
 #endif /* __BSD_VISIBLE */
 
-
-
 /*
  * Selector.
  */
@@ -125,3 +123,44 @@ luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
 
     return (NULL);
 }
+
+int luab_pushudata(lua_State *, luab_module_t *, void *);
+int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
+
+/*
+ * Accessor, [C -> stack]
+ */
+
+void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
+void *  luab_addudata(lua_State *, int, luab_module_t *, int, luab_xarg_t *);
+
+/* (LUA_TUSERDATA(IOVEC)) */
+#define luab_isiovec(L, narg) \
+    (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
+
+const char *    luab_iovec_islxarg(lua_State *, int, size_t);
+const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
+
+const char **    luab_checkargv(lua_State *, int);
+double *    luab_table_checkdouble(lua_State *, int, size_t *);
+const void ** luab_table_tolxargp(lua_State *, int, size_t);
+u_short *   luab_table_checklu_short(lua_State *, int, size_t);
+int *   luab_table_checklint(lua_State *, int, size_t);
+gid_t * luab_table_checklgid(lua_State *, int, size_t);
+
+void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
+void    luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
+
+void    luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
+void    luab_setinteger(lua_State *, int, const char *, lua_Integer);
+void    luab_setstring(lua_State *, int, const char *, const char *);
+void    luab_setfstring(lua_State *, int, const char *, const char *, ...);
+void    luab_setldata(lua_State *, int, const char *, void *, size_t);
+
+void    luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
+void    luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
+
+void    luab_table_pushdouble(lua_State *, int, double *, int);
+void    luab_table_pushint(lua_State *, int, int *, int);
+void    luab_table_pushldouble(lua_State *, int, double *, size_t, int);
+void    luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
