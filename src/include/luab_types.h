@@ -55,7 +55,16 @@
 #define LUAB_ACCEPT_FILTER_ARG_IDX  25
 #define LUAB_SOCKPROTO_IDX          26
 #define LUAB_CMSGCRED_IDX           27
+#if LUAB_DEBUG
+#define LUAB_DUMMY_IDX              28
+#endif
+#else
+#if LUAB_DEBUG
+#define LUAB_DUMMY_IDX              20
+#endif
 #endif /* __BSD_VISIBLE */
+
+
 
 /*
  * Selector.
@@ -91,23 +100,17 @@ luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
     luab_modulevec_t *vec;
     luab_udata_t *ud;
 
-    if (pci != NULL) {
+    for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
+        if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL)
+            break;
+    }
 
-        for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
-            if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL)
-                break;
-        }
-
-        if (ud != NULL) {
-            pci->xarg_idx = vec->mv_idx;
-            pci->xarg_len = luab_xlen(vec->mv_mod);
-        } else {
-            pci->xarg_idx = -1;
-            pci->xarg_len = 0;
-        }
+    if (pci != NULL && ud != NULL) {
+        pci->xarg_idx = vec->mv_idx;
+        pci->xarg_len = luab_xlen(vec->mv_mod);
     } else {
-        errno = EINVAL;
-        ud = NULL;
+        pci->xarg_idx = -1;
+        pci->xarg_len = 0;
     }
     return (ud);
 }

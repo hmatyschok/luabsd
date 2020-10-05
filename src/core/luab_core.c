@@ -44,62 +44,6 @@
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
- * Generic operations on atomic (or primitive) data types, [stack -> C].
- */
-
-lua_Integer
-luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((luaL_checkinteger(L, narg)) & (b_msk));
-}
-
-lua_Integer
-luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((lua_tointeger(L, narg)) & (b_msk));
-}
-
-const char *
-luab_islstring(lua_State *L, int narg, size_t len)
-{
-    const char *dp;
-    size_t n;
-
-    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n <= len)
-            return (dp);
-    }
-    return (NULL);
-}
-
-const char *
-luab_tolstring(lua_State *L, int narg, size_t len)
-{
-    const char *dp;
-    size_t n;
-
-    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n == len)
-            return (dp);
-    }
-    return (NULL);
-}
-
-const char *
-luab_checklstring(lua_State *L, int narg, size_t max_len)
-{
-    const char *dp;
-    size_t len;
-
-    dp = luaL_checklstring(L, narg, &len);
-
-    if (len > max_len)    /* XXX err_msg */
-        luaL_argerror(L, narg, "Value too large to be stored in data type");
-
-    return (dp);
-}
-
-/*
  * Generic operations on stack, [C -> stack].
  */
 
@@ -195,6 +139,19 @@ luab_pushstring(lua_State *L, const char *dp)
         status = luab_pushnil(L);
     }
     return (status);
+}
+
+int
+luab_pushfstring(lua_State *L, const char *fmt, ...)
+{
+    va_list ap;
+    char *buf[LUAL_BUFFERSIZE];
+
+    va_start(ap)
+    (void)vsnprintf(buf, LUAL_BUFFERSIZE, ap, fmt);
+    va_end(ap);
+
+    return (luab_pushstring(L, ));
 }
 
 int

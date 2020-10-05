@@ -57,6 +57,9 @@ extern luab_module_t accept_filter_arg_type;
 extern luab_module_t sockproto_type;
 extern luab_module_t cmsgcred_type;
 #endif
+#if LUAB_DEBUG
+extern luab_module_t dummy_type;
+#endif
 
 /*
  * Set of interfaces.

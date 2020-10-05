@@ -109,11 +109,10 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 
 /* XXX experimental "feature" for developement of bindings. */
 void *
-luab_addudata(lua_State *L, int narg, luab_module_t *m, int xarg,
-    luab_module_t *x)
+luab_addudata(lua_State *L, int narg, luab_module_t *m, int xarg)
 {
     luab_udata_t *ud0 = luab_todata(L, narg, m, luab_udata_t *);
-    luab_udata_t *ud1 = luab_todata(L, xarg, x, luab_udata_t *);
+    luab_udata_t *ud1 = luab_toxudata(L, xarg, NULL);
 
     return (luab_udata_insert(ud0, ud1));
 }

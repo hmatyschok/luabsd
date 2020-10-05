@@ -35,7 +35,7 @@
 #include <string.h>
 
 /*
- * Definitiions for API method table.
+ * Definitions for API method table.
  */
 
 __BEGIN_DECLS
@@ -217,12 +217,57 @@ void *  luab_newudata(lua_State *, luab_module_t *, void *);
 int luab_checkmaxargs(lua_State *, int);
 
 /* Atomic data types. */
-lua_Integer luab_tointeger(lua_State *, int, lua_Integer);
-lua_Integer luab_checkinteger(lua_State *, int, lua_Integer);
+static __inline lua_Integer
+luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((luaL_checkinteger(L, narg)) & (b_msk));
+}
 
-const char *    luab_islstring(lua_State *, int, size_t);
-const char *    luab_tolstring(lua_State *, int, size_t);
-const char *    luab_checklstring(lua_State *, int, size_t);
+static __inline lua_Integer
+luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((lua_tointeger(L, narg)) & (b_msk));
+}
+
+static __inline const char *
+luab_islstring(lua_State *L, int narg, size_t len)
+{
+    const char *dp;
+    size_t n;
+
+    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
+        if (n <= len)
+            return (dp);
+    }
+    return (NULL);
+}
+
+static __inline const char *
+luab_tolstring(lua_State *L, int narg, size_t len)
+{
+    const char *dp;
+    size_t n;
+
+    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
+        if (n == len)
+            return (dp);
+    }
+    return (NULL);
+}
+
+static __inline const char *
+luab_checklstring(lua_State *L, int narg, size_t max_len)
+{
+    const char *dp;
+    size_t len;
+
+    dp = luaL_checklstring(L, narg, &len);
+
+    if (len > max_len)    /* XXX err_msg */
+        luaL_argerror(L, narg, "Value too large to be stored in data type");
+
+    return (dp);
+}
 
 /* (LUA_TUSERDATA(XXX)). */
 #define luab_isdata(L, narg, m, t) \
@@ -275,32 +320,6 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
 
     return (NULL);
 }
-
-void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
-void *  luab_addudata(lua_State *, int, luab_module_t *, int, luab_module_t *);
-
-/* (LUA_TUSERDATA(IOVEC)) */
-#define luab_isiovec(L, narg) \
-    (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
-
-const char *    luab_iovec_islxarg(lua_State *, int, size_t);
-const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
-
-/*
- * Accessor, [C -> stack].
- */
-
-int luab_pusherr(lua_State *, lua_Integer);
-int luab_pushnumber(lua_State *, lua_Number);
-int luab_pushnil(lua_State *);
-int luab_pushstring(lua_State *, const char *);
-int luab_pushldata(lua_State *, void *, size_t);
-
-int luab_iov_pushlen(lua_State *, struct iovec *);
-int luab_iov_pushdata(lua_State *, struct iovec *);
-
-int luab_pushudata(lua_State *, luab_module_t *, void *);
-int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
 
 /*
  * Generator functions, (LUA_TTABLE).
@@ -385,21 +404,123 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
     return (luab_alloctable(L, narg, n, sz));
 }
 
+/*
+ * Accessor, [C -> stack].
+ */
+
+static __inline void
+luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+static __inline void
+luab_rawsetnumber(lua_State *L, int narg, lua_Integer k, lua_Number v)
+{
+    lua_pushnumber(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+static __inline void
+luab_rawsetstring(lua_State *L, int narg, lua_Integer k, const char *v)
+{
+    lua_pushstring(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+static __inline void
+luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t dp;
+
+    if (v != NULL && len > 1) {
+        luaL_buffinit(L, &b);
+        dp = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(dp, v, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        lua_rawseti(L, narg, k);
+    }
+}
+
+static __inline void
+luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
+{
+    lua_pushcfunction(L, v);
+    lua_setfield(L, narg, k);
+}
+
+static __inline void
+luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_setfield(L, narg, k);
+}
+
+static __inline void
+luab_setstring(lua_State *L, int narg, const char *k, const char *v)
+{
+    lua_pushstring(L, v);
+    lua_setfield(L, narg, k);
+}
+
+static __inline void
+luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t dp;
+
+    if (v != NULL && len > 1) {
+        luaL_buffinit(L, &b);
+        dp = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(dp, v, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        lua_setfield(L, narg, k);
+    }
+}
+
+/*
+ * Accessor, [C -> stack].
+ */
+
+int luab_pusherr(lua_State *, lua_Integer);
+int luab_pushnumber(lua_State *, lua_Number);
+int luab_pushnil(lua_State *);
+int luab_pushstring(lua_State *, const char *);
+int luab_pushfstring(lua_State *, const char *, ...);
+int luab_pushldata(lua_State *, void *, size_t);
+
+int luab_iov_pushlen(lua_State *, struct iovec *);
+int luab_iov_pushdata(lua_State *, struct iovec *);
+
+int luab_pushudata(lua_State *, luab_module_t *, void *);
+int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
+
+void *  luab_checkludata(lua_State *, int, luab_module_t *, size_t);
+void *  luab_addudata(lua_State *, int, luab_module_t *, int);
+
+/* (LUA_TUSERDATA(IOVEC)) */
+#define luab_isiovec(L, narg) \
+    (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
+
+const char *    luab_iovec_islxarg(lua_State *, int, size_t);
+const char *    luab_iovec_checklxarg(lua_State *, int, size_t);
+
 const char **    luab_checkargv(lua_State *, int);
 double *    luab_table_checkdouble(lua_State *, int, size_t *);
 const void ** luab_table_tolxargp(lua_State *, int, size_t);
 u_short *   luab_table_checklu_short(lua_State *, int, size_t);
 int *   luab_table_checklint(lua_State *, int, size_t);
 gid_t * luab_table_checklgid(lua_State *, int, size_t);
-
-/*
- * Accessor, (LUA_TTABLE), [C -> stack].
- */
-
-void    luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer );
-void    luab_rawsetnumber(lua_State *, int, lua_Integer, lua_Number);
-void    luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
-void    luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 
 void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
 void    luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
