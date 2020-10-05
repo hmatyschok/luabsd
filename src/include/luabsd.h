@@ -31,6 +31,7 @@
 #include <sys/socket.h>
 #include <sys/queue.h>
 
+#include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -120,45 +121,6 @@ typedef struct luab_modulevec {
     luab_module_fn  mv_init;
     int             mv_idx;
 } luab_modulevec_t;
-
-/*
- * Interface Control Information (ICI) for (LUA_TUSERDATA(XXX)).
- */
-
-typedef struct luab_udata {
-    LIST_ENTRY(luab_udata)     ud_next;
-    LIST_HEAD(, luab_udata)    ud_list;
-    luab_module_t   *ud_m;
-    time_t          ud_ts;
-} luab_udata_t;
-
-/*
- * Dfinitions for (LUA_TUSERDATA(IOVEC)).
- */
-
-typedef struct luab_iovec_param {
-    struct iovec    iop_iov;    /* maps-to allocated memory region, iov_base */
-    struct iovec    iop_data;   /* maps-to supplied data */
-    u_int   iop_flags;
-} luab_iovec_param_t;
-
-typedef struct luab_iovec {
-    luab_udata_t    ud_softc;
-    struct iovec    iov;
-    size_t  iov_max_len;
-    u_int   iov_flags;
-} luab_iovec_t;
-#if UINT_MAX > 65535
-#define IOV_LOCK    0x00000001
-#define IOV_PROXY   0x00000002
-#define IOV_BUFF    0x00000004
-#define IOV_DUMP    0x00000008
-#else
-#define IOV_LOCK    0x0001
-#define IOV_PROXY   0x0002
-#define IOV_BUFF    0x0004
-#define IOV_DUMP    0x0008
-#endif
 
 /*
  * Generic error handler.
