@@ -95,7 +95,7 @@ luab_initstring(lua_State *L, luab_type_u *un)
 }
 
 /*
- * Definitions for module/udata descriptor.
+ * Definitions for luab_module{} descriptor.
  */
 
 typedef void *  (*luab_ctor_fn)(lua_State *, void *);

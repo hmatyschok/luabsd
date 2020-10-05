@@ -27,6 +27,43 @@
 #ifndef _LUAB_TYPES_H_
 #define _LUAB_TYPES_H_
 
+/*
+ * Interface Control Information (ICI).
+ */
+
+typedef struct luab_udata {
+    LIST_ENTRY(luab_udata)     ud_next;
+    LIST_HEAD(, luab_udata)    ud_list;
+    luab_module_t   *ud_m;
+    time_t          ud_ts;
+} luab_udata_t;
+
+static __inline size_t
+luab_xlen(luab_module_t *m)
+{
+    return ((m->sz - sizeof(luab_udata_t)));
+}
+
+/*
+ * Protocol Control Information (PCI).
+ */
+
+typedef struct luab_xarg {
+    int         xarg_idx;
+    size_t      xarg_len;
+} luab_xarg_t;
+
+/*
+ * Selector.
+ */
+
+#define luab_idx(name) \
+    (LUAB_##name##_IDX)
+#define luab_vx(idx) \
+    (luab_typevec[(idx)])
+#define luab_mx(name) \
+    ((luab_vx(luab_idx(name))).mv_mod)
+
 #define LUAB_CLOCKINFO_IDX          0
 #define LUAB_DIV_IDX                1
 #define LUAB_FLOCK_IDX              2
@@ -65,19 +102,10 @@
 #endif
 #endif /* __BSD_VISIBLE */
 
-/*
- * Interface Control Information (ICI) for (LUA_TUSERDATA(XXX)).
- */
-
-typedef struct luab_udata {
-    LIST_ENTRY(luab_udata)     ud_next;
-    LIST_HEAD(, luab_udata)    ud_list;
-    luab_module_t   *ud_m;
-    time_t          ud_ts;
-} luab_udata_t;
+extern luab_modulevec_t luab_typevec[];
 
 /*
- * Dfinitions for (LUA_TUSERDATA(IOVEC)).
+ * Definitions for (LUA_TUSERDATA(IOVEC)).
  */
 
 typedef struct luab_iovec_param {
@@ -105,33 +133,9 @@ typedef struct luab_iovec {
 #endif
 
 /*
- * Selector.
- */
-
-typedef struct luab_xarg {
-    int         xarg_idx;
-    size_t      xarg_len;
-} luab_xarg_t;
-
-static __inline size_t
-luab_xlen(luab_module_t *m)
-{
-    return ((m->sz - sizeof(luab_udata_t)));
-}
-
-#define luab_idx(name) \
-    (LUAB_##name##_IDX)
-#define luab_vx(idx) \
-    (luab_typevec[(idx)])
-#define luab_mx(name) \
-    ((luab_vx(luab_idx(name))).mv_mod)
-
-extern luab_modulevec_t luab_typevec[];
-
-/*
  * Accessor, [stack -> C].
  */
- 
+
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), ((m)->name)))
 #define luab_todata(L, narg, m, t) \
