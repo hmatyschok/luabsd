@@ -141,12 +141,6 @@ luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
 }
 
 /*
- * Generator functions, [Lua -> stack].
- */
-
-void *  luab_newudata(lua_State *, luab_module_t *, void *);    /* XXX */
-
-/*
  * Accessor, n-th arg over argv, [stack -> C].
  *
  * luab_check{l}xxx(3) accessor evaluates, if n-th arg exists, otherwise

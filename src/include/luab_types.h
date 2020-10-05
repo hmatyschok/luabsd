@@ -45,6 +45,13 @@ luab_xlen(luab_module_t *m)
 }
 
 /*
+ * Generator functions, [Lua -> stack].
+ */
+
+void *  luab_newudata(lua_State *, luab_module_t *, void *);    /* XXX */
+
+
+/*
  * Protocol Control Information (PCI).
  */
 
@@ -302,10 +309,6 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
     return (luab_alloctable(L, narg, n, sz));
 }
 
-int luab_pushudata(lua_State *, luab_module_t *, void *);
-int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
-
-
 /*
  * Accessor, [stack -> C].
  */
@@ -326,6 +329,13 @@ const void ** luab_table_tolxargp(lua_State *, int, size_t);
 u_short *   luab_table_checklu_short(lua_State *, int, size_t);
 int *   luab_table_checklint(lua_State *, int, size_t);
 gid_t * luab_table_checklgid(lua_State *, int, size_t);
+
+/*
+ * Accessor, [stack -> C].
+ */
+
+int luab_pushudata(lua_State *, luab_module_t *, void *);
+int luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
 
 void    luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
 void    luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
