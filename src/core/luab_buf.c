@@ -36,6 +36,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_types.h"
 
 /*
  * Generic service primitives for handling iovec{}s.

@@ -24,6 +24,9 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef _LUAB_MODULES_H_
+#define _LUAB_MODULES_H_
+
 /*
  * Set of complex data types.
  */
@@ -88,3 +91,4 @@ extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_time_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
+#endif /* _LUAB_MODULES_H_ */
