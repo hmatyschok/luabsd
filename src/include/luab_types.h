@@ -36,6 +36,8 @@ typedef struct luab_udata {
     LIST_HEAD(, luab_udata)    ud_list;
     luab_module_t   *ud_m;
     time_t          ud_ts;
+    caddr_t         *ud_x;
+    void            *ud_xhd;
 } luab_udata_t;
 
 static __inline size_t
@@ -60,17 +62,6 @@ typedef struct luab_xarg {
     size_t      xarg_len;
 } luab_xarg_t;
 
-/*
- * Selector.
- */
-
-#define luab_idx(name) \
-    (LUAB_##name##_IDX)
-#define luab_vx(idx) \
-    (luab_typevec[(idx)])
-#define luab_mx(name) \
-    ((luab_vx(luab_idx(name))).mv_mod)
-
 #define LUAB_CLOCKINFO_IDX          0
 #define LUAB_DIV_IDX                1
 #define LUAB_FLOCK_IDX              2
@@ -91,23 +82,28 @@ typedef struct luab_xarg {
 #define LUAB_TM_IDX                 17
 #define LUAB_UUID_IDX               18
 #define LUAB_IOVEC_IDX              19
+#define LUAB_LINK_IDX               20
 #if __BSD_VISIBLE
-#define LUAB_DBT_IDX                20
-#define LUAB_DB_IDX                 21
-#define LUAB_BINTIME_IDX            22
-#define LUAB_CRYPT_DATA_IDX         23
-#define LUAB_CAP_RBUF_IDX           24
-#define LUAB_ACCEPT_FILTER_ARG_IDX  25
-#define LUAB_SOCKPROTO_IDX          26
-#define LUAB_CMSGCRED_IDX           27
-#if LUAB_DEBUG
-#define LUAB_DUMMY_IDX              28
-#endif
-#else
-#if LUAB_DEBUG
-#define LUAB_DUMMY_IDX              20
-#endif
+#define LUAB_DBT_IDX                21
+#define LUAB_DB_IDX                 22
+#define LUAB_BINTIME_IDX            23
+#define LUAB_CRYPT_DATA_IDX         24
+#define LUAB_CAP_RBUF_IDX           25
+#define LUAB_ACCEPT_FILTER_ARG_IDX  26
+#define LUAB_SOCKPROTO_IDX          27
+#define LUAB_CMSGCRED_IDX           28
 #endif /* __BSD_VISIBLE */
+
+/*
+ * Selector.
+ */
+
+#define luab_idx(name) \
+    (LUAB_##name##_IDX)
+#define luab_vx(idx) \
+    (luab_typevec[(idx)])
+#define luab_mx(name) \
+    ((luab_vx(luab_idx(name))).mv_mod)
 
 extern luab_modulevec_t luab_typevec[];
 
@@ -205,12 +201,15 @@ luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
             break;
     }
 
-    if (pci != NULL && ud != NULL) {
-        pci->xarg_idx = vec->mv_idx;
-        pci->xarg_len = luab_xlen(vec->mv_mod);
-    } else {
-        pci->xarg_idx = -1;
-        pci->xarg_len = 0;
+    if (pci != NULL) {
+
+        if (ud != NULL) {
+            pci->xarg_idx = vec->mv_idx;
+            pci->xarg_len = luab_xlen(vec->mv_mod);
+        } else {
+            pci->xarg_idx = -1;
+            pci->xarg_len = 0;
+        }
     }
     return (ud);
 }
@@ -286,7 +285,7 @@ luab_checkltableisnil(lua_State *L, int narg, size_t len)
     return (luab_checkltable(L, narg, len));
 }
 
-/* Allocate an generic C-pointer array by its cardinality from given table. */
+/* Allocate an generic C-pointer array by cardinality of (LUA_TTABLE). */
 static __inline void *
 luab_newvector(lua_State *L, int narg, size_t *len, size_t sz)
 {
@@ -314,9 +313,7 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
  */
 
 void     *luab_checkludata(lua_State *, int, luab_module_t *, size_t);
-void     *luab_addudata(lua_State *, int, luab_module_t *, int, luab_xarg_t *);
 
-/* (LUA_TUSERDATA(IOVEC)) */
 #define luab_isiovec(L, narg) \
     (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
 
@@ -353,32 +350,23 @@ void     luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
  */
 
 static __inline void *
-luab_udata_insert(luab_udata_t *self, luab_udata_t *ud)
+luab_udata_add(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
 {
-    LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
+    luab_udata_t *self, *ud;
 
-    return (ud + 1);
-}
+    self = luab_todata(L, narg, m, luab_udata_t *);
+    ud = luab_toxudata(L, xarg, NULL);
 
-static __inline void
-luab_udata_remove(luab_udata_t *self)
-{
-    LIST_REMOVE(self, ud_next);
-}
+    if (ud != NULL && x != NULL) {
+        LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
 
-static __inline void
-luab_udata_clear(luab_udata_t *self)
-{
-    luab_udata_t *ud, *ud_temp;
-
-    ud = LIST_FIRST(&self->ud_list);
-
-    while (ud != NULL) {
-        ud_temp = LIST_NEXT(ud, ud_next);
-        LIST_REMOVE(ud, ud_next);
-        ud = ud_temp;
+        *(void **)x = (void *)(ud + 1);
+        ud->ud_x = (caddr_t *)x;
+        ud->ud_xhd = &self->ud_list;
+        
+        return (*ud->ud_x);
     }
-    LIST_INIT(&self->ud_list);
+    return (NULL);
 }
 
 /*
@@ -443,8 +431,10 @@ int  luab_iovec_pwritev(lua_State *, int, luab_iovec_t *, size_t, off_t);
 static __inline void
 luab_sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
 {
-    sa->sa_len = len;
-    sa->sa_family = af;
+    if (sa != NULL) {
+        sa->sa_len = len;
+        sa->sa_family = af;
+    }
 }
 
 /* (LUA_TTABLE) */

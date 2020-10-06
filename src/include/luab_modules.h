@@ -51,6 +51,7 @@ extern luab_module_t timezone_type;
 extern luab_module_t tm_type;
 extern luab_module_t uuid_type;
 extern luab_module_t iovec_type;
+extern luab_module_t link_type;
 #if __BSD_VISIBLE
 extern luab_module_t dbt_type;
 extern luab_module_t db_type;
@@ -60,9 +61,6 @@ extern luab_module_t cap_rbuf_type;
 extern luab_module_t accept_filter_arg_type;
 extern luab_module_t sockproto_type;
 extern luab_module_t cmsgcred_type;
-#endif
-#if LUAB_DEBUG
-extern luab_module_t dummy_type;
 #endif
 
 /*

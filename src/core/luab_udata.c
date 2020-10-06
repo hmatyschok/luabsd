@@ -50,8 +50,6 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
         if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
             (void)memset_s(ud, m->sz, 0, m->sz);
 
-            LIST_INIT(&ud->ud_list);
-    
             if (m->init != NULL && arg != NULL)
                 (*m->init)(ud, arg);
 
@@ -59,6 +57,7 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
 
             ud->ud_m = m;
             ud->ud_ts = time(NULL);
+            LIST_INIT(&ud->ud_list);
         }
     } else
         errno = EINVAL;
@@ -105,17 +104,6 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
         buf = luab_toudata(L, narg, m);
 
     return (buf);
-}
-
-/* XXX experimental "feature" for developement of bindings. */
-void *
-luab_addudata(lua_State *L, int narg, luab_module_t *m,
-    int xarg, luab_xarg_t *pci)
-{
-    luab_udata_t *ud0 = luab_todata(L, narg, m, luab_udata_t *);
-    luab_udata_t *ud1 = luab_toxudata(L, xarg, pci);
-
-    return (luab_udata_insert(ud0, ud1));
 }
 
 /*

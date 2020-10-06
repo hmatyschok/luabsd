@@ -601,14 +601,8 @@ IOVEC_gc(lua_State *L)
         (void)memset_s(dp, len, 0, len);
 
         free(dp);
-
-        self->iov.iov_base = NULL;
     }
-    self->iov.iov_len = 0;
-    self->iov_max_len = 0;
-    self->iov_flags = 0;
-
-    return (0);
+    return (luab_gc(L, 1, &iovec_type));
 }
 
 static int

@@ -209,12 +209,28 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 int
 luab_gc(lua_State *L, int narg, luab_module_t *m)
 {
-    luab_udata_t *ud;
+    luab_udata_t *self, *ud, *ud_tmp;
 
     (void)luab_checkmaxargs(L, narg);
 
-    if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
-        (void)memset_s(ud, m->sz, 0, m->sz);
+    self = luab_todata(L, narg, m, luab_udata_t *);
+
+    LIST_FOREACH_SAFE(ud, &self->ud_list, ud_next, ud_tmp) {
+
+        if (ud->ud_x != NULL) {
+            *ud->ud_x = NULL;
+            ud->ud_xhd = NULL;
+        }
+        LIST_REMOVE(ud, ud_next);
+    }
+
+    if ((self->ud_xhd != NULL) &&
+        (ud->ud_x != NULL)) {
+        *ud->ud_x = NULL;
+
+        LIST_REMOVE(self, ud_next);
+    }
+    (void)memset_s(self, m->sz, 0, m->sz);
 
     return (0);
 }
@@ -306,20 +322,31 @@ luab_uuid(lua_State *L)
 static int
 luab_hook_create(lua_State *L)
 {
-    luab_type_u *data;
-    int narg;
+    return (luab_create(L, 1, luab_mx(HOOK), NULL));
+}
 
-    if ((narg = luab_checkmaxargs(L, 1)) == 0)
-        data = NULL;
-    else
-        data = luab_udata(L, narg, &hook_type, luab_type_u *);
-
-    return (luab_pushudata(L, &hook_type, data));
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(LINK)).
+ *
+ * @function link_create
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (link [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage link [, err, msg ] = bsd.core.link_create()
+ */
+static int
+luab_link_create(lua_State *L)
+{
+    return (luab_create(L, 0, luab_mx(LINK), NULL));
 }
 
 static luab_table_t luab_core_util_vec[] = {
     LUABSD_FUNC("uuid",         luab_uuid),
     LUABSD_FUNC("hook_create",  luab_hook_create),
+    LUABSD_FUNC("link_create",  luab_link_create),
     LUABSD_FUNC(NULL, NULL)
 };
 
@@ -555,6 +582,10 @@ luab_modulevec_t luab_typevec[] = {
         .mv_mod = &iovec_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_IOVEC_IDX,
+    },{
+        .mv_mod = &link_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_LINK_IDX,
     },
 #if __BSD_VISIBLE
     {

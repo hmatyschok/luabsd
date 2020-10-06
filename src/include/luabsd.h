@@ -40,7 +40,6 @@
  * Definitions for API method table.
  */
 
-__BEGIN_DECLS
 typedef union luab_type {   /* XXX namespace */
     char        un_char;
     short       un_short;
@@ -102,7 +101,6 @@ luab_initstring(lua_State *L, luab_type_u *un)
 typedef void *  (*luab_ctor_fn)(lua_State *, void *);
 typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
-typedef void    (*luab_link_fn)(lua_State *, void *, void *);
 
 typedef struct luab_module {
     uint32_t    cookie;        /*  date -u +'%s' */
@@ -112,7 +110,6 @@ typedef struct luab_module {
     luab_ctor_fn    create;
     luab_init_fn    init;
     luab_get_fn    get;
-    luab_link_fn    link;
 } luab_module_t;
 
 typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
@@ -348,5 +345,4 @@ int  luab_dump(lua_State *, int, luab_module_t *, size_t);
 int  luab_gc(lua_State *, int, luab_module_t *);
 int  luab_len(lua_State *, int, luab_module_t *);
 int  luab_tostring(lua_State *, int, luab_module_t *);
-__END_DECLS
 #endif /* _LUABSD_H_ */
