@@ -60,8 +60,8 @@ typedef struct luab_uuid {
     (luab_toldata((L), (narg), &uuid_type, \
         struct uuid *, sizeof(struct uuid)))
 
-#define LUABSD_UUID_TYPE_ID    1599304529
-#define LUABSD_UUID_TYPE    "UUID*"
+#define LUAB_UUID_TYPE_ID    1599304529
+#define LUAB_UUID_TYPE    "UUID*"
 
 /*
  * Generator functions.
@@ -499,30 +499,30 @@ UUID_tostring(lua_State *L)
  */
 
 static luab_table_t uuid_methods[] = {
-    LUABSD_FUNC("set_time_low", UUID_set_time_low),
-    LUABSD_FUNC("set_time_mid", UUID_set_time_mid),
-    LUABSD_FUNC("set_time_hi_and_version",
+    LUAB_FUNC("set_time_low", UUID_set_time_low),
+    LUAB_FUNC("set_time_mid", UUID_set_time_mid),
+    LUAB_FUNC("set_time_hi_and_version",
         UUID_set_time_hi_and_version),
-    LUABSD_FUNC("set_clock_seq_hi_and_reserved",
+    LUAB_FUNC("set_clock_seq_hi_and_reserved",
         UUID_set_clock_seq_hi_and_reserved),
-    LUABSD_FUNC("set_clock_seq_low",
+    LUAB_FUNC("set_clock_seq_low",
         UUID_set_clock_seq_low),
-    LUABSD_FUNC("set_node",     UUID_set_node),
-    LUABSD_FUNC("get",          UUID_get),
-    LUABSD_FUNC("get_time_low", UUID_get_time_low),
-    LUABSD_FUNC("get_time_mid", UUID_get_time_mid),
-    LUABSD_FUNC("get_time_hi_and_version",
+    LUAB_FUNC("set_node",     UUID_set_node),
+    LUAB_FUNC("get",          UUID_get),
+    LUAB_FUNC("get_time_low", UUID_get_time_low),
+    LUAB_FUNC("get_time_mid", UUID_get_time_mid),
+    LUAB_FUNC("get_time_hi_and_version",
         UUID_get_time_hi_and_version),
-    LUABSD_FUNC("get_clock_seq_hi_and_reserved",
+    LUAB_FUNC("get_clock_seq_hi_and_reserved",
         UUID_get_clock_seq_hi_and_reserved),
-    LUABSD_FUNC("get_clock_seq_low",
+    LUAB_FUNC("get_clock_seq_low",
         UUID_get_clock_seq_low),
-    LUABSD_FUNC("get_node",     UUID_get_node),
-    LUABSD_FUNC("dump",         UUID_dump),
-    LUABSD_FUNC("__gc",         UUID_gc),
-    LUABSD_FUNC("__len",        UUID_len),
-    LUABSD_FUNC("__tostring",   UUID_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("get_node",     UUID_get_node),
+    LUAB_FUNC("dump",         UUID_dump),
+    LUAB_FUNC("__gc",         UUID_gc),
+    LUAB_FUNC("__len",        UUID_len),
+    LUAB_FUNC("__tostring",   UUID_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -547,8 +547,8 @@ uuid_udata(lua_State *L, int narg)
 }
 
 luab_module_t uuid_type = {
-    .cookie = LUABSD_UUID_TYPE_ID,
-    .name = LUABSD_UUID_TYPE,
+    .cookie = LUAB_UUID_TYPE_ID,
+    .name = LUAB_UUID_TYPE,
     .vec = uuid_methods,
     .create = _uuid_create,
     .init = uuid_init,

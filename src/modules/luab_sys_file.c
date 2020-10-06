@@ -32,8 +32,8 @@
 
 #include "luabsd.h"
 
-#define LUABSD_SYS_FILE_LIB_ID    1593623310
-#define LUABSD_SYS_FILE_LIB_KEY    "file"
+#define LUAB_SYS_FILE_LIB_ID    1593623310
+#define LUAB_SYS_FILE_LIB_KEY    "file"
 
 extern luab_module_t luab_sys_file_lib;
 
@@ -46,26 +46,26 @@ extern luab_module_t luab_sys_file_lib;
  */
 
 static luab_table_t luab_sys_file_vec[] = {
-    LUABSD_INT("DTYPE_NONE",        DTYPE_NONE),
-    LUABSD_INT("DTYPE_VNODE",       DTYPE_VNODE),
-    LUABSD_INT("DTYPE_SOCKET",      DTYPE_SOCKET),
-    LUABSD_INT("DTYPE_PIPE",        DTYPE_PIPE),
-    LUABSD_INT("DTYPE_FIFO",        DTYPE_FIFO),
-    LUABSD_INT("DTYPE_KQUEUE",      DTYPE_KQUEUE),
-    LUABSD_INT("DTYPE_CRYPTO",      DTYPE_CRYPTO),
-    LUABSD_INT("DTYPE_MQUEUE",      DTYPE_MQUEUE),
-    LUABSD_INT("DTYPE_SHM",         DTYPE_SHM),
-    LUABSD_INT("DTYPE_SEM",         DTYPE_SEM),
-    LUABSD_INT("DTYPE_PTS",         DTYPE_PTS),
-    LUABSD_INT("DTYPE_DEV",         DTYPE_DEV),
-    LUABSD_INT("DTYPE_PROCDESC",    DTYPE_PROCDESC),
-    LUABSD_INT("DTYPE_LINUXEFD",    DTYPE_LINUXEFD),
-    LUABSD_INT("DTYPE_LINUXTFD",    DTYPE_LINUXTFD),
-    LUABSD_INT(NULL, 0)
+    LUAB_INT("DTYPE_NONE",        DTYPE_NONE),
+    LUAB_INT("DTYPE_VNODE",       DTYPE_VNODE),
+    LUAB_INT("DTYPE_SOCKET",      DTYPE_SOCKET),
+    LUAB_INT("DTYPE_PIPE",        DTYPE_PIPE),
+    LUAB_INT("DTYPE_FIFO",        DTYPE_FIFO),
+    LUAB_INT("DTYPE_KQUEUE",      DTYPE_KQUEUE),
+    LUAB_INT("DTYPE_CRYPTO",      DTYPE_CRYPTO),
+    LUAB_INT("DTYPE_MQUEUE",      DTYPE_MQUEUE),
+    LUAB_INT("DTYPE_SHM",         DTYPE_SHM),
+    LUAB_INT("DTYPE_SEM",         DTYPE_SEM),
+    LUAB_INT("DTYPE_PTS",         DTYPE_PTS),
+    LUAB_INT("DTYPE_DEV",         DTYPE_DEV),
+    LUAB_INT("DTYPE_PROCDESC",    DTYPE_PROCDESC),
+    LUAB_INT("DTYPE_LINUXEFD",    DTYPE_LINUXEFD),
+    LUAB_INT("DTYPE_LINUXTFD",    DTYPE_LINUXTFD),
+    LUAB_INT(NULL, 0)
 };
 
 luab_module_t luab_sys_file_lib = {
-    .cookie = LUABSD_SYS_FILE_LIB_ID,
-    .name = LUABSD_SYS_FILE_LIB_KEY,
+    .cookie = LUAB_SYS_FILE_LIB_ID,
+    .name = LUAB_SYS_FILE_LIB_KEY,
     .vec = luab_sys_file_vec,
 };

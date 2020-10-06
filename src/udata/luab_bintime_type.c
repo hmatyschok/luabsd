@@ -56,8 +56,8 @@ typedef struct luab_bintime {
     (luab_toldata((L), (narg), &bintime_type, \
         struct bintime *, sizeof(struct bintime)))
 
-#define LUABSD_BINTIME_TYPE_ID    1594161740
-#define LUABSD_BINTIME_TYPE    "BINTIME*"
+#define LUAB_BINTIME_TYPE_ID    1594161740
+#define LUAB_BINTIME_TYPE    "BINTIME*"
 
 /*
  * Generator functions.
@@ -255,16 +255,16 @@ BINTIME_tostring(lua_State *L)
  */
 
 static luab_table_t bintime_methods[] = {
-    LUABSD_FUNC("set_sec",      BINTIME_set_sec),
-    LUABSD_FUNC("set_frac",     BINTIME_set_frac),
-    LUABSD_FUNC("get",          BINTIME_get),
-    LUABSD_FUNC("get_sec",      BINTIME_get_sec),
-    LUABSD_FUNC("get_frac",     BINTIME_get_frac),
-    LUABSD_FUNC("dump",         BINTIME_dump),
-    LUABSD_FUNC("__gc",         BINTIME_gc),
-    LUABSD_FUNC("__len",        BINTIME_len),
-    LUABSD_FUNC("__tostring",   BINTIME_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_sec",      BINTIME_set_sec),
+    LUAB_FUNC("set_frac",     BINTIME_set_frac),
+    LUAB_FUNC("get",          BINTIME_get),
+    LUAB_FUNC("get_sec",      BINTIME_get_sec),
+    LUAB_FUNC("get_frac",     BINTIME_get_frac),
+    LUAB_FUNC("dump",         BINTIME_dump),
+    LUAB_FUNC("__gc",         BINTIME_gc),
+    LUAB_FUNC("__len",        BINTIME_len),
+    LUAB_FUNC("__tostring",   BINTIME_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -289,8 +289,8 @@ bintime_udata(lua_State *L, int narg)
 }
 
 luab_module_t bintime_type = {
-    .cookie = LUABSD_BINTIME_TYPE_ID,
-    .name = LUABSD_BINTIME_TYPE,
+    .cookie = LUAB_BINTIME_TYPE_ID,
+    .name = LUAB_BINTIME_TYPE,
     .vec = bintime_methods,
     .create = bintime_create,
     .init = bintime_init,

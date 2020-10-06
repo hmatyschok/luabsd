@@ -31,8 +31,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_STDLIB_LIB_ID    1593623310
-#define LUABSD_STDLIB_LIB_KEY    "stdlib"
+#define LUAB_STDLIB_LIB_ID    1593623310
+#define LUAB_STDLIB_LIB_KEY    "stdlib"
 
 extern luab_module_t luab_stdlib_lib;
 
@@ -456,7 +456,7 @@ luab_mbstowcs(lua_State *L)
 static int
 luab_mbtowc(lua_State *L)
 {
-    luab_type_u *h0, *h1;
+    luab_primitive_u *h0, *h1;
     size_t nbytes;
     wchar_t *wcharp;
     const char *mbchar;
@@ -464,8 +464,8 @@ luab_mbtowc(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
-    h1 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
+    h1 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -694,14 +694,14 @@ luab_system(lua_State *L)
 static int
 luab_wctomb(lua_State *L)
 {
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     wchar_t wchar;
     char *mbchar;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
     wchar = (wchar_t)luab_checkinteger(L, 2, LONG_MAX);
 
     mbchar = &(h0->un_char);
@@ -1065,13 +1065,13 @@ luab_realpath(lua_State *L)
 static int
 luab_rand_r(lua_State *L)
 {
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     u_int *ctx;
     int n;
 
     (void)luab_checkmaxargs(L, 1);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
     ctx = &(h0->un_u_int);
 
     n = rand_r(ctx);
@@ -1968,15 +1968,15 @@ luab_arc4random_uniform(lua_State *L)
 static int
 luab_getbsize(lua_State *L)
 {
-    luab_type_u *h1, *h2;
+    luab_primitive_u *h1, *h2;
     int *headerlenp;
     long *blocksizep;
     const char *str;
 
     (void)luab_checkmaxargs(L, 2);
 
-    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
-    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
+    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
+    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
 
     headerlenp = &(h1->un_int);
     blocksizep = &(h2->un_long);
@@ -2243,7 +2243,7 @@ luab_cgetnum(lua_State *L)
 {
     struct iovec *buf;
     const char *cap;
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     long *num;
     caddr_t bp;
     int status;
@@ -2252,7 +2252,7 @@ luab_cgetnum(lua_State *L)
 
     buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
     cap = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
     num = &(h0->un_long);
 
     if ((bp = buf->iov_base) != NULL)
@@ -3043,120 +3043,120 @@ luab_lldiv_create(lua_State *L)
  */
 
 static luab_table_t luab_stdlib_vec[] = {
-    LUABSD_INT("EXIT_FAILURE",          EXIT_FAILURE),
-    LUABSD_INT("EXIT_SUCCESS",          EXIT_SUCCESS),
-    LUABSD_INT("RAND_MAX",              RAND_MAX),
-    LUABSD_FUNC("abort",                luab_abort),
-    LUABSD_FUNC("abs",                  luab_abs),
-    LUABSD_FUNC("atof",                 luab_atof),
-    LUABSD_FUNC("atoi",                 luab_atoi),
-    LUABSD_FUNC("atol",                 luab_atol),
-    LUABSD_FUNC("div",                  luab_div),
-    LUABSD_FUNC("exit",                 luab_exit),
-    LUABSD_FUNC("getenv",               luab_getenv),
-    LUABSD_FUNC("labs",                 luab_labs),
-    LUABSD_FUNC("ldiv",                 luab_ldiv),
-    LUABSD_FUNC("mblen",                luab_mblen),
-    LUABSD_FUNC("mbstowcs",             luab_mbstowcs),
-    LUABSD_FUNC("mbtowc",               luab_mbtowc),
-    LUABSD_FUNC("rand",                 luab_rand),
-    LUABSD_FUNC("srand",                luab_srand),
-    LUABSD_FUNC("strtod",               luab_strtod),
-    LUABSD_FUNC("strtof",               luab_strtof),
-    LUABSD_FUNC("strtold",              luab_strtold),
-    LUABSD_FUNC("strtoul",              luab_strtoul),
-    LUABSD_FUNC("system",               luab_system),
-    LUABSD_FUNC("wctomb",               luab_wctomb),
-    LUABSD_FUNC("wcstombs",             luab_wcstombs),
+    LUAB_INT("EXIT_FAILURE",          EXIT_FAILURE),
+    LUAB_INT("EXIT_SUCCESS",          EXIT_SUCCESS),
+    LUAB_INT("RAND_MAX",              RAND_MAX),
+    LUAB_FUNC("abort",                luab_abort),
+    LUAB_FUNC("abs",                  luab_abs),
+    LUAB_FUNC("atof",                 luab_atof),
+    LUAB_FUNC("atoi",                 luab_atoi),
+    LUAB_FUNC("atol",                 luab_atol),
+    LUAB_FUNC("div",                  luab_div),
+    LUAB_FUNC("exit",                 luab_exit),
+    LUAB_FUNC("getenv",               luab_getenv),
+    LUAB_FUNC("labs",                 luab_labs),
+    LUAB_FUNC("ldiv",                 luab_ldiv),
+    LUAB_FUNC("mblen",                luab_mblen),
+    LUAB_FUNC("mbstowcs",             luab_mbstowcs),
+    LUAB_FUNC("mbtowc",               luab_mbtowc),
+    LUAB_FUNC("rand",                 luab_rand),
+    LUAB_FUNC("srand",                luab_srand),
+    LUAB_FUNC("strtod",               luab_strtod),
+    LUAB_FUNC("strtof",               luab_strtof),
+    LUAB_FUNC("strtold",              luab_strtold),
+    LUAB_FUNC("strtoul",              luab_strtoul),
+    LUAB_FUNC("system",               luab_system),
+    LUAB_FUNC("wctomb",               luab_wctomb),
+    LUAB_FUNC("wcstombs",             luab_wcstombs),
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
 #ifdef __LONG_LONG_SUPPORTED
-    LUABSD_FUNC("atoll",                luab_atoll),
-    LUABSD_FUNC("llabs",                luab_llabs),
-    LUABSD_FUNC("lldiv",                luab_lldiv),
-    LUABSD_FUNC("strtoll",              luab_strtoll),
-    LUABSD_FUNC("strtoull",             luab_strtoull),
+    LUAB_FUNC("atoll",                luab_atoll),
+    LUAB_FUNC("llabs",                luab_llabs),
+    LUAB_FUNC("lldiv",                luab_lldiv),
+    LUAB_FUNC("strtoll",              luab_strtoll),
+    LUAB_FUNC("strtoull",             luab_strtoull),
 #endif /* __LONG_LONG_SUPPORTED */
-    LUABSD_FUNC("_Exit",                luab_Exit),
+    LUAB_FUNC("_Exit",                luab_Exit),
 #endif /* __ISO_C_VISIBLE >= 1999 */
 #if __ISO_C_VISIBLE >= 2011 || __cplusplus >= 201103L
-    LUABSD_FUNC("quick_exit",           luab_quick_exit),
+    LUAB_FUNC("quick_exit",           luab_quick_exit),
 #endif /* __ISO_C_VISIBLE >= 2011 */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
-    LUABSD_FUNC("realpath",             luab_realpath),
+    LUAB_FUNC("realpath",             luab_realpath),
 #endif
 #if __POSIX_VISIBLE >= 199506
-    LUABSD_FUNC("rand_r",               luab_rand_r),
+    LUAB_FUNC("rand_r",               luab_rand_r),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_FUNC("setenv",               luab_setenv),
-    LUABSD_FUNC("unsetenv",             luab_unsetenv),
+    LUAB_FUNC("setenv",               luab_setenv),
+    LUAB_FUNC("unsetenv",             luab_unsetenv),
 #endif
 #if __XSI_VISIBLE
-    LUABSD_FUNC("a64l",                 luab_a64l),
-    LUABSD_FUNC("drand48",              luab_drand48),
-    LUABSD_FUNC("erand48",              luab_erand48),
-    LUABSD_FUNC("grantpt",              luab_grantpt),
-    LUABSD_FUNC("initstate",            luab_initstate),
-    LUABSD_FUNC("jrand48",              luab_jrand48),
-    LUABSD_FUNC("l64a",                 luab_l64a),
-    LUABSD_FUNC("lcong48",              luab_lcong48),
-    LUABSD_FUNC("lrand48",              luab_lrand48),
-    LUABSD_FUNC("mrand48",              luab_mrand48),
-    LUABSD_FUNC("nrand48",              luab_nrand48),
-    LUABSD_FUNC("posix_openpt",         luab_posix_openpt),
-    LUABSD_FUNC("ptsname",              luab_ptsname),
-    LUABSD_FUNC("putenv",               luab_putenv),
-    LUABSD_FUNC("random",               luab_random),
-    LUABSD_FUNC("seed48",               luab_seed48),
-    LUABSD_FUNC("setstate",             luab_setstate),
-    LUABSD_FUNC("srand48",              luab_srand48),
-    LUABSD_FUNC("srandom",              luab_srandom),
-    LUABSD_FUNC("unlockpt",             luab_unlockpt),
+    LUAB_FUNC("a64l",                 luab_a64l),
+    LUAB_FUNC("drand48",              luab_drand48),
+    LUAB_FUNC("erand48",              luab_erand48),
+    LUAB_FUNC("grantpt",              luab_grantpt),
+    LUAB_FUNC("initstate",            luab_initstate),
+    LUAB_FUNC("jrand48",              luab_jrand48),
+    LUAB_FUNC("l64a",                 luab_l64a),
+    LUAB_FUNC("lcong48",              luab_lcong48),
+    LUAB_FUNC("lrand48",              luab_lrand48),
+    LUAB_FUNC("mrand48",              luab_mrand48),
+    LUAB_FUNC("nrand48",              luab_nrand48),
+    LUAB_FUNC("posix_openpt",         luab_posix_openpt),
+    LUAB_FUNC("ptsname",              luab_ptsname),
+    LUAB_FUNC("putenv",               luab_putenv),
+    LUAB_FUNC("random",               luab_random),
+    LUAB_FUNC("seed48",               luab_seed48),
+    LUAB_FUNC("setstate",             luab_setstate),
+    LUAB_FUNC("srand48",              luab_srand48),
+    LUAB_FUNC("srandom",              luab_srandom),
+    LUAB_FUNC("unlockpt",             luab_unlockpt),
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
-    LUABSD_FUNC("abort2",               luab_abort2),
-    LUABSD_FUNC("arc4random",           luab_arc4random),
-    LUABSD_FUNC("arc4random_buf",       luab_arc4random_buf),
-    LUABSD_FUNC("arc4random_uniform",   luab_arc4random_uniform),
-    LUABSD_FUNC("getbsize",             luab_getbsize),
-    LUABSD_FUNC("cgetcap",              luab_cgetcap),
-    LUABSD_FUNC("cgetclose",            luab_cgetclose),
-    LUABSD_FUNC("cgetent",              luab_cgetent),
-    LUABSD_FUNC("cgetfirst",            luab_cgetfirst),
-    LUABSD_FUNC("cgetmatch",            luab_cgetmatch),
-    LUABSD_FUNC("cgetnext",             luab_cgetnext),
-    LUABSD_FUNC("cgetnum",              luab_cgetnum),
-    LUABSD_FUNC("cgetset",              luab_cgetset),
-    LUABSD_FUNC("cgetstr",              luab_cgetstr),
-    LUABSD_FUNC("cgetustr",             luab_cgetustr),
-    LUABSD_FUNC("daemon",               luab_daemon),
-    LUABSD_FUNC("daemonfd",             luab_daemonfd),
-    LUABSD_FUNC("devname",              luab_devname),
-    LUABSD_FUNC("devname_r",            luab_devname_r),
-    LUABSD_FUNC("fdevname",             luab_fdevname),
-    LUABSD_FUNC("fdevname_r",           luab_fdevname_r),
-    LUABSD_FUNC("getloadavg",           luab_getloadavg),
-    LUABSD_FUNC("getprogname",          luab_getprogname),
-    LUABSD_FUNC("l64a_r",               luab_l64a_r),
-    LUABSD_FUNC("mkostemp",             luab_mkostemp),
-    LUABSD_FUNC("mkostemps",            luab_mkostemps),
-    LUABSD_FUNC("setprogname",          luab_setprogname),
-    LUABSD_FUNC("sranddev",             luab_sranddev),
-    LUABSD_FUNC("srandomdev",           luab_srandomdev),
-    LUABSD_FUNC("strtonum",             luab_strtonum),
+    LUAB_FUNC("abort2",               luab_abort2),
+    LUAB_FUNC("arc4random",           luab_arc4random),
+    LUAB_FUNC("arc4random_buf",       luab_arc4random_buf),
+    LUAB_FUNC("arc4random_uniform",   luab_arc4random_uniform),
+    LUAB_FUNC("getbsize",             luab_getbsize),
+    LUAB_FUNC("cgetcap",              luab_cgetcap),
+    LUAB_FUNC("cgetclose",            luab_cgetclose),
+    LUAB_FUNC("cgetent",              luab_cgetent),
+    LUAB_FUNC("cgetfirst",            luab_cgetfirst),
+    LUAB_FUNC("cgetmatch",            luab_cgetmatch),
+    LUAB_FUNC("cgetnext",             luab_cgetnext),
+    LUAB_FUNC("cgetnum",              luab_cgetnum),
+    LUAB_FUNC("cgetset",              luab_cgetset),
+    LUAB_FUNC("cgetstr",              luab_cgetstr),
+    LUAB_FUNC("cgetustr",             luab_cgetustr),
+    LUAB_FUNC("daemon",               luab_daemon),
+    LUAB_FUNC("daemonfd",             luab_daemonfd),
+    LUAB_FUNC("devname",              luab_devname),
+    LUAB_FUNC("devname_r",            luab_devname_r),
+    LUAB_FUNC("fdevname",             luab_fdevname),
+    LUAB_FUNC("fdevname_r",           luab_fdevname_r),
+    LUAB_FUNC("getloadavg",           luab_getloadavg),
+    LUAB_FUNC("getprogname",          luab_getprogname),
+    LUAB_FUNC("l64a_r",               luab_l64a_r),
+    LUAB_FUNC("mkostemp",             luab_mkostemp),
+    LUAB_FUNC("mkostemps",            luab_mkostemps),
+    LUAB_FUNC("setprogname",          luab_setprogname),
+    LUAB_FUNC("sranddev",             luab_sranddev),
+    LUAB_FUNC("srandomdev",           luab_srandomdev),
+    LUAB_FUNC("strtonum",             luab_strtonum),
 #endif
-    LUABSD_FUNC("div_create",           luab_div_create),
-    LUABSD_FUNC("ldiv_create",          luab_ldiv_create),
+    LUAB_FUNC("div_create",           luab_div_create),
+    LUAB_FUNC("ldiv_create",          luab_ldiv_create),
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
 #ifdef __LONG_LONG_SUPPORTED
-    LUABSD_FUNC("lldiv_create",         luab_lldiv_create),
+    LUAB_FUNC("lldiv_create",         luab_lldiv_create),
 #endif /* __LONG_LONG_SUPPORTED */
 #endif /* __ISO_C_VISIBLE >= 1999 */
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_stdlib_lib = {
-    .cookie = LUABSD_STDLIB_LIB_ID,
-    .name = LUABSD_STDLIB_LIB_KEY,
+    .cookie = LUAB_STDLIB_LIB_ID,
+    .name = LUAB_STDLIB_LIB_KEY,
     .vec = luab_stdlib_vec,
 };

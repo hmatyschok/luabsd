@@ -53,8 +53,8 @@ typedef struct luab_lldiv {
     (luab_toldata((L), (narg), &lldiv_type, \
         lldiv_t *, sizeof(lldiv_t)))
 
-#define LUABSD_LLDIV_TYPE_ID    1600628549
-#define LUABSD_LLDIV_TYPE    "LLDIV*"
+#define LUAB_LLDIV_TYPE_ID    1600628549
+#define LUAB_LLDIV_TYPE    "LLDIV*"
 
 /*
  * Generator functions.
@@ -252,16 +252,16 @@ LLDIV_tostring(lua_State *L)
  */
 
 static luab_table_t lldiv_methods[] = {
-    LUABSD_FUNC("set_quot",     LLDIV_set_quot),
-    LUABSD_FUNC("set_rem",      LLDIV_set_rem),
-    LUABSD_FUNC("get",          LLDIV_get),
-    LUABSD_FUNC("get_quot",     LLDIV_get_quot),
-    LUABSD_FUNC("get_rem",      LLDIV_get_rem),
-    LUABSD_FUNC("dump",         LLDIV_dump),
-    LUABSD_FUNC("__gc",         LLDIV_gc),
-    LUABSD_FUNC("__len",        LLDIV_len),
-    LUABSD_FUNC("__tostring",   LLDIV_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_quot",     LLDIV_set_quot),
+    LUAB_FUNC("set_rem",      LLDIV_set_rem),
+    LUAB_FUNC("get",          LLDIV_get),
+    LUAB_FUNC("get_quot",     LLDIV_get_quot),
+    LUAB_FUNC("get_rem",      LLDIV_get_rem),
+    LUAB_FUNC("dump",         LLDIV_dump),
+    LUAB_FUNC("__gc",         LLDIV_gc),
+    LUAB_FUNC("__len",        LLDIV_len),
+    LUAB_FUNC("__tostring",   LLDIV_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -286,8 +286,8 @@ lldiv_udata(lua_State *L, int narg)
 }
 
 luab_module_t lldiv_type = {
-    .cookie = LUABSD_LLDIV_TYPE_ID,
-    .name = LUABSD_LLDIV_TYPE,
+    .cookie = LUAB_LLDIV_TYPE_ID,
+    .name = LUAB_LLDIV_TYPE,
     .vec = lldiv_methods,
     .create = lldiv_create,
     .init = lldiv_init,

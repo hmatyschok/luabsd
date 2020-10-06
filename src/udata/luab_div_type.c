@@ -53,8 +53,8 @@ typedef struct luab_div {
     (luab_toldata((L), (narg), &div_type, \
         div_t *, sizeof(div_t)))
 
-#define LUABSD_DIV_TYPE_ID    1600388163
-#define LUABSD_DIV_TYPE    "DIV*"
+#define LUAB_DIV_TYPE_ID    1600388163
+#define LUAB_DIV_TYPE    "DIV*"
 
 /*
  * Generator functions.
@@ -252,16 +252,16 @@ DIV_tostring(lua_State *L)
  */
 
 static luab_table_t div_methods[] = {
-    LUABSD_FUNC("set_quot",     DIV_set_quot),
-    LUABSD_FUNC("set_rem",      DIV_set_rem),
-    LUABSD_FUNC("get",          DIV_get),
-    LUABSD_FUNC("get_quot",     DIV_get_quot),
-    LUABSD_FUNC("get_rem",      DIV_get_rem),
-    LUABSD_FUNC("dump",         DIV_dump),
-    LUABSD_FUNC("__gc",         DIV_gc),
-    LUABSD_FUNC("__len",        DIV_len),
-    LUABSD_FUNC("__tostring",   DIV_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_quot",     DIV_set_quot),
+    LUAB_FUNC("set_rem",      DIV_set_rem),
+    LUAB_FUNC("get",          DIV_get),
+    LUAB_FUNC("get_quot",     DIV_get_quot),
+    LUAB_FUNC("get_rem",      DIV_get_rem),
+    LUAB_FUNC("dump",         DIV_dump),
+    LUAB_FUNC("__gc",         DIV_gc),
+    LUAB_FUNC("__len",        DIV_len),
+    LUAB_FUNC("__tostring",   DIV_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -286,8 +286,8 @@ div_udata(lua_State *L, int narg)
 }
 
 luab_module_t div_type = {
-    .cookie = LUABSD_DIV_TYPE_ID,
-    .name = LUABSD_DIV_TYPE,
+    .cookie = LUAB_DIV_TYPE_ID,
+    .name = LUAB_DIV_TYPE,
     .vec = div_methods,
     .create = div_create,
     .init = div_init,

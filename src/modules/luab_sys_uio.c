@@ -33,8 +33,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_SYS_UIO_LIB_ID    1594559271
-#define LUABSD_SYS_UIO_LIB_KEY   "uio"
+#define LUAB_SYS_UIO_LIB_ID    1594559271
+#define LUAB_SYS_UIO_LIB_KEY   "uio"
 
 extern luab_module_t luab_sys_uio_lib;
 
@@ -241,24 +241,24 @@ luab_iovec_create(lua_State *L)
 
 static luab_table_t luab_sys_uio_vec[] = {
 #if __BSD_VISIBLE
-    LUABSD_INT("UIO_READ",      UIO_READ),
-    LUABSD_INT("UIO_WRITE",     UIO_WRITE),
-    LUABSD_INT("UIO_USERSPACE", UIO_USERSPACE),
-    LUABSD_INT("UIO_SYSSPACE",  UIO_SYSSPACE),
-    LUABSD_INT("UIO_NOCOPY",    UIO_NOCOPY),
+    LUAB_INT("UIO_READ",      UIO_READ),
+    LUAB_INT("UIO_WRITE",     UIO_WRITE),
+    LUAB_INT("UIO_USERSPACE", UIO_USERSPACE),
+    LUAB_INT("UIO_SYSSPACE",  UIO_SYSSPACE),
+    LUAB_INT("UIO_NOCOPY",    UIO_NOCOPY),
 #endif /* __BSD_VISIBLE */
-    LUABSD_FUNC("readv",        luab_readv),
-    LUABSD_FUNC("writev",       luab_writev),
+    LUAB_FUNC("readv",        luab_readv),
+    LUAB_FUNC("writev",       luab_writev),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("preadv",       luab_preadv),
-    LUABSD_FUNC("pwritev",      luab_pwritev),
+    LUAB_FUNC("preadv",       luab_preadv),
+    LUAB_FUNC("pwritev",      luab_pwritev),
 #endif
-    LUABSD_FUNC("iovec_create", luab_iovec_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("iovec_create", luab_iovec_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_sys_uio_lib = {
-    .cookie = LUABSD_SYS_UIO_LIB_ID,
-    .name = LUABSD_SYS_UIO_LIB_KEY,
+    .cookie = LUAB_SYS_UIO_LIB_ID,
+    .name = LUAB_SYS_UIO_LIB_KEY,
     .vec = luab_sys_uio_vec,
 };

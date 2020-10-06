@@ -84,8 +84,8 @@ typedef struct luab_stat {
     (luab_toldata((L), (narg), &stat_type, \
         struct stat *, sizeof(struct stat)))
 
-#define LUABSD_STAT_TYPE_ID    1594028586
-#define LUABSD_STAT_TYPE    "STAT*"
+#define LUAB_STAT_TYPE_ID    1594028586
+#define LUAB_STAT_TYPE    "STAT*"
 
 /*
  * Generator functions.
@@ -846,68 +846,68 @@ STAT_tostring(lua_State *L)
  */
 
 static luab_table_t stat_methods[] = {
-    LUABSD_FUNC("set_st_dev",       STAT_set_st_dev),
-    LUABSD_FUNC("set_st_ino",       STAT_set_st_ino),
-    LUABSD_FUNC("set_st_nlink",     STAT_set_st_nlink),
-    LUABSD_FUNC("set_st_mode",      STAT_set_st_mode),
-    LUABSD_FUNC("set_st_uid",       STAT_set_st_uid),
-    LUABSD_FUNC("set_st_gid",       STAT_set_st_gid),
-    LUABSD_FUNC("set_st_rdev",      STAT_set_st_rdev),
+    LUAB_FUNC("set_st_dev",       STAT_set_st_dev),
+    LUAB_FUNC("set_st_ino",       STAT_set_st_ino),
+    LUAB_FUNC("set_st_nlink",     STAT_set_st_nlink),
+    LUAB_FUNC("set_st_mode",      STAT_set_st_mode),
+    LUAB_FUNC("set_st_uid",       STAT_set_st_uid),
+    LUAB_FUNC("set_st_gid",       STAT_set_st_gid),
+    LUAB_FUNC("set_st_rdev",      STAT_set_st_rdev),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("set_st_atim_ext",  STAT_set_st_atim_ext),
+    LUAB_FUNC("set_st_atim_ext",  STAT_set_st_atim_ext),
 #endif
-    LUABSD_FUNC("set_st_atim",      STAT_set_st_atim),
+    LUAB_FUNC("set_st_atim",      STAT_set_st_atim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("set_st_mtim_ext",  STAT_set_st_mtim_ext),
+    LUAB_FUNC("set_st_mtim_ext",  STAT_set_st_mtim_ext),
 #endif
-    LUABSD_FUNC("set_st_mtim",      STAT_set_st_mtim),
+    LUAB_FUNC("set_st_mtim",      STAT_set_st_mtim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("set_st_ctim_ext",  STAT_set_st_ctim_ext),
+    LUAB_FUNC("set_st_ctim_ext",  STAT_set_st_ctim_ext),
 #endif
-    LUABSD_FUNC("set_st_ctim",      STAT_set_st_ctim),
+    LUAB_FUNC("set_st_ctim",      STAT_set_st_ctim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("set_st_btim_ext",  STAT_set_st_btim_ext),
+    LUAB_FUNC("set_st_btim_ext",  STAT_set_st_btim_ext),
 #endif
-    LUABSD_FUNC("set_st_birthtim",  STAT_set_st_birthtim),
-    LUABSD_FUNC("set_st_size",      STAT_set_st_size),
-    LUABSD_FUNC("set_st_blocks",    STAT_set_st_blocks),
-    LUABSD_FUNC("set_st_blocks",    STAT_set_st_blksize),
-    LUABSD_FUNC("set_st_flags",     STAT_set_st_flags),
-    LUABSD_FUNC("set_st_gen",       STAT_set_st_gen),
-    LUABSD_FUNC("get",              STAT_get),
-    LUABSD_FUNC("get_st_dev",       STAT_get_st_dev),
-    LUABSD_FUNC("get_st_ino",       STAT_get_st_ino),
-    LUABSD_FUNC("get_st_nlink",     STAT_get_st_nlink),
-    LUABSD_FUNC("get_st_mode",      STAT_get_st_mode),
-    LUABSD_FUNC("get_st_uid",       STAT_get_st_uid),
-    LUABSD_FUNC("get_st_gid",       STAT_get_st_gid),
-    LUABSD_FUNC("get_st_rdev",      STAT_get_st_rdev),
+    LUAB_FUNC("set_st_birthtim",  STAT_set_st_birthtim),
+    LUAB_FUNC("set_st_size",      STAT_set_st_size),
+    LUAB_FUNC("set_st_blocks",    STAT_set_st_blocks),
+    LUAB_FUNC("set_st_blocks",    STAT_set_st_blksize),
+    LUAB_FUNC("set_st_flags",     STAT_set_st_flags),
+    LUAB_FUNC("set_st_gen",       STAT_set_st_gen),
+    LUAB_FUNC("get",              STAT_get),
+    LUAB_FUNC("get_st_dev",       STAT_get_st_dev),
+    LUAB_FUNC("get_st_ino",       STAT_get_st_ino),
+    LUAB_FUNC("get_st_nlink",     STAT_get_st_nlink),
+    LUAB_FUNC("get_st_mode",      STAT_get_st_mode),
+    LUAB_FUNC("get_st_uid",       STAT_get_st_uid),
+    LUAB_FUNC("get_st_gid",       STAT_get_st_gid),
+    LUAB_FUNC("get_st_rdev",      STAT_get_st_rdev),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("get_st_atim_ext",  STAT_get_st_atim_ext),
+    LUAB_FUNC("get_st_atim_ext",  STAT_get_st_atim_ext),
 #endif
-    LUABSD_FUNC("get_st_atim",      STAT_get_st_atim),
+    LUAB_FUNC("get_st_atim",      STAT_get_st_atim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("get_st_mtim_ext",  STAT_get_st_mtim_ext),
+    LUAB_FUNC("get_st_mtim_ext",  STAT_get_st_mtim_ext),
 #endif
-    LUABSD_FUNC("get_st_mtim",      STAT_get_st_mtim),
+    LUAB_FUNC("get_st_mtim",      STAT_get_st_mtim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("get_st_ctim_ext",  STAT_get_st_ctim_ext),
+    LUAB_FUNC("get_st_ctim_ext",  STAT_get_st_ctim_ext),
 #endif
-    LUABSD_FUNC("get_st_ctim",      STAT_get_st_ctim),
+    LUAB_FUNC("get_st_ctim",      STAT_get_st_ctim),
 #ifdef  __STAT_TIME_T_EXT
-    LUABSD_FUNC("get_st_btim_ext",  STAT_get_st_btim_ext),
+    LUAB_FUNC("get_st_btim_ext",  STAT_get_st_btim_ext),
 #endif
-    LUABSD_FUNC("get_st_birthtim",  STAT_get_st_birthtim),
-    LUABSD_FUNC("get_st_size",      STAT_get_st_size),
-    LUABSD_FUNC("get_st_blocks",    STAT_get_st_blocks),
-    LUABSD_FUNC("get_st_blocks",    STAT_get_st_blksize),
-    LUABSD_FUNC("get_st_flags",     STAT_get_st_flags),
-    LUABSD_FUNC("get_st_gen",       STAT_get_st_gen),
-    LUABSD_FUNC("dump",             STAT_dump),
-    LUABSD_FUNC("__gc",             STAT_gc),
-    LUABSD_FUNC("__len",            STAT_len),
-    LUABSD_FUNC("__tostring",       STAT_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("get_st_birthtim",  STAT_get_st_birthtim),
+    LUAB_FUNC("get_st_size",      STAT_get_st_size),
+    LUAB_FUNC("get_st_blocks",    STAT_get_st_blocks),
+    LUAB_FUNC("get_st_blocks",    STAT_get_st_blksize),
+    LUAB_FUNC("get_st_flags",     STAT_get_st_flags),
+    LUAB_FUNC("get_st_gen",       STAT_get_st_gen),
+    LUAB_FUNC("dump",             STAT_dump),
+    LUAB_FUNC("__gc",             STAT_gc),
+    LUAB_FUNC("__len",            STAT_len),
+    LUAB_FUNC("__tostring",       STAT_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -932,8 +932,8 @@ stat_udata(lua_State *L, int narg)
 }
 
 luab_module_t stat_type = {
-    .cookie = LUABSD_STAT_TYPE_ID,
-    .name = LUABSD_STAT_TYPE,
+    .cookie = LUAB_STAT_TYPE_ID,
+    .name = LUAB_STAT_TYPE,
     .vec = stat_methods,
     .create = stat_create,
     .init = stat_init,

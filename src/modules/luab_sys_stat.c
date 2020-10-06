@@ -33,8 +33,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_SYS_STAT_LIB_ID    1593623310
-#define LUABSD_SYS_STAT_LIB_KEY    "stat"
+#define LUAB_SYS_STAT_LIB_ID    1593623310
+#define LUAB_SYS_STAT_LIB_KEY    "stat"
 
 extern luab_module_t luab_sys_stat_lib;
 
@@ -1096,109 +1096,109 @@ luab_stat_create(lua_State *L)
  */
 
 static luab_table_t luab_sys_stat_vec[] = {
-    LUABSD_INT("S_ISUID",       S_ISUID),
-    LUABSD_INT("S_ISGID",       S_ISGID),
+    LUAB_INT("S_ISUID",       S_ISUID),
+    LUAB_INT("S_ISGID",       S_ISGID),
 #if __BSD_VISIBLE
-    LUABSD_INT("S_ISTXT",       S_ISTXT),
+    LUAB_INT("S_ISTXT",       S_ISTXT),
 #endif
-    LUABSD_INT("S_IRWXU",       S_IRWXU),
-    LUABSD_INT("S_IRUSR",       S_IRUSR),
-    LUABSD_INT("S_IWUSR",       S_IWUSR),
-    LUABSD_INT("S_IXUSR",       S_IXUSR),
+    LUAB_INT("S_IRWXU",       S_IRWXU),
+    LUAB_INT("S_IRUSR",       S_IRUSR),
+    LUAB_INT("S_IWUSR",       S_IWUSR),
+    LUAB_INT("S_IXUSR",       S_IXUSR),
 #if __BSD_VISIBLE
-    LUABSD_INT("S_IREAD",       S_IREAD),
-    LUABSD_INT("S_IWRITE",      S_IWRITE),
-    LUABSD_INT("S_IEXEC",       S_IEXEC),
+    LUAB_INT("S_IREAD",       S_IREAD),
+    LUAB_INT("S_IWRITE",      S_IWRITE),
+    LUAB_INT("S_IEXEC",       S_IEXEC),
 #endif
-    LUABSD_INT("S_IRWXG",       S_IRWXG),
-    LUABSD_INT("S_IRGRP",       S_IRGRP),
-    LUABSD_INT("S_IWGRP",       S_IWGRP),
-    LUABSD_INT("S_IXGRP",       S_IXGRP),
-    LUABSD_INT("S_IRWXO",       S_IRWXO),
-    LUABSD_INT("S_IROTH",       S_IROTH),
-    LUABSD_INT("S_IWOTH",       S_IWOTH),
-    LUABSD_INT("S_IXOTH",       S_IXOTH),
+    LUAB_INT("S_IRWXG",       S_IRWXG),
+    LUAB_INT("S_IRGRP",       S_IRGRP),
+    LUAB_INT("S_IWGRP",       S_IWGRP),
+    LUAB_INT("S_IXGRP",       S_IXGRP),
+    LUAB_INT("S_IRWXO",       S_IRWXO),
+    LUAB_INT("S_IROTH",       S_IROTH),
+    LUAB_INT("S_IWOTH",       S_IWOTH),
+    LUAB_INT("S_IXOTH",       S_IXOTH),
 #if __XSI_VISIBLE
-    LUABSD_INT("S_IFMT",        S_IFMT),
-    LUABSD_INT("S_IFIFO",       S_IFIFO),
-    LUABSD_INT("S_IFCHR",       S_IFCHR),
-    LUABSD_INT("S_IFDIR",       S_IFDIR),
-    LUABSD_INT("S_IFBLK",       S_IFBLK),
-    LUABSD_INT("S_IFREG",       S_IFREG),
-    LUABSD_INT("S_IFLNK",       S_IFLNK),
-    LUABSD_INT("S_IFSOCK",      S_IFSOCK),
-    LUABSD_INT("S_ISVTX",       S_ISVTX),
+    LUAB_INT("S_IFMT",        S_IFMT),
+    LUAB_INT("S_IFIFO",       S_IFIFO),
+    LUAB_INT("S_IFCHR",       S_IFCHR),
+    LUAB_INT("S_IFDIR",       S_IFDIR),
+    LUAB_INT("S_IFBLK",       S_IFBLK),
+    LUAB_INT("S_IFREG",       S_IFREG),
+    LUAB_INT("S_IFLNK",       S_IFLNK),
+    LUAB_INT("S_IFSOCK",      S_IFSOCK),
+    LUAB_INT("S_ISVTX",       S_ISVTX),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_INT("S_IFWHT",       S_IFWHT),
-    LUABSD_INT("ACCESSPERMS",   ACCESSPERMS),
-    LUABSD_INT("ALLPERMS",      ALLPERMS),
-    LUABSD_INT("DEFFILEMODE",   DEFFILEMODE),
-    LUABSD_INT("UF_SETTABLE",   UF_SETTABLE),
-    LUABSD_INT("UF_NODUMP",     UF_NODUMP),
-    LUABSD_INT("UF_IMMUTABLE",  UF_IMMUTABLE),
-    LUABSD_INT("UF_APPEND",     UF_APPEND),
-    LUABSD_INT("UF_OPAQUE",     UF_OPAQUE),
-    LUABSD_INT("UF_NOUNLINK",   UF_NOUNLINK),
+    LUAB_INT("S_IFWHT",       S_IFWHT),
+    LUAB_INT("ACCESSPERMS",   ACCESSPERMS),
+    LUAB_INT("ALLPERMS",      ALLPERMS),
+    LUAB_INT("DEFFILEMODE",   DEFFILEMODE),
+    LUAB_INT("UF_SETTABLE",   UF_SETTABLE),
+    LUAB_INT("UF_NODUMP",     UF_NODUMP),
+    LUAB_INT("UF_IMMUTABLE",  UF_IMMUTABLE),
+    LUAB_INT("UF_APPEND",     UF_APPEND),
+    LUAB_INT("UF_OPAQUE",     UF_OPAQUE),
+    LUAB_INT("UF_NOUNLINK",   UF_NOUNLINK),
 #if 0
-    LUABSD_INT("UF_COMPRESSED", UF_COMPRESSED),
-    LUABSD_INT("UF_TRACKED",    UF_TRACKED),
+    LUAB_INT("UF_COMPRESSED", UF_COMPRESSED),
+    LUAB_INT("UF_TRACKED",    UF_TRACKED),
 #endif
-    LUABSD_INT("SF_SETTABLE",   SF_SETTABLE),
-    LUABSD_INT("SF_ARCHIVED",   SF_ARCHIVED),
-    LUABSD_INT("SF_IMMUTABLE",  SF_IMMUTABLE),
-    LUABSD_INT("SF_APPEND",     SF_APPEND),
-    LUABSD_INT("SF_NOUNLINK",   SF_NOUNLINK),
-    LUABSD_INT("SF_SNAPSHOT",   SF_SNAPSHOT),
+    LUAB_INT("SF_SETTABLE",   SF_SETTABLE),
+    LUAB_INT("SF_ARCHIVED",   SF_ARCHIVED),
+    LUAB_INT("SF_IMMUTABLE",  SF_IMMUTABLE),
+    LUAB_INT("SF_APPEND",     SF_APPEND),
+    LUAB_INT("SF_NOUNLINK",   SF_NOUNLINK),
+    LUAB_INT("SF_SNAPSHOT",   SF_SNAPSHOT),
 #endif /* __BSD_VISIBLE */
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_INT("UTIME_NOW",     UTIME_NOW),
-    LUABSD_INT("UTIME_OMIT",    UTIME_OMIT),
+    LUAB_INT("UTIME_NOW",     UTIME_NOW),
+    LUAB_INT("UTIME_OMIT",    UTIME_OMIT),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_FUNC("chflags",      luab_chflags),
-    LUABSD_FUNC("chflagsat",    luab_chflagsat),
+    LUAB_FUNC("chflags",      luab_chflags),
+    LUAB_FUNC("chflagsat",    luab_chflagsat),
 #endif
-    LUABSD_FUNC("chmod",        luab_chmod),
+    LUAB_FUNC("chmod",        luab_chmod),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("fchflags",     luab_fchflags),
+    LUAB_FUNC("fchflags",     luab_fchflags),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_FUNC("fchmod",       luab_fchmod),
+    LUAB_FUNC("fchmod",       luab_fchmod),
 #endif
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_FUNC("fstatat",      luab_fstatat),
-    LUABSD_FUNC("fchmodat",     luab_fchmodat),
-    LUABSD_FUNC("futimens",     luab_futimens),
-    LUABSD_FUNC("utimensat",    luab_utimensat),
+    LUAB_FUNC("fstatat",      luab_fstatat),
+    LUAB_FUNC("fchmodat",     luab_fchmodat),
+    LUAB_FUNC("futimens",     luab_futimens),
+    LUAB_FUNC("utimensat",    luab_utimensat),
 #endif
-    LUABSD_FUNC("fstat",        luab_fstat),
+    LUAB_FUNC("fstat",        luab_fstat),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("lchflags",     luab_lchflags),
-    LUABSD_FUNC("lchmod",       luab_lchmod),
+    LUAB_FUNC("lchflags",     luab_lchflags),
+    LUAB_FUNC("lchmod",       luab_lchmod),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_FUNC("lstat",        luab_lstat),
+    LUAB_FUNC("lstat",        luab_lstat),
 #endif
-    LUABSD_FUNC("mkdir",        luab_mkdir),
-    LUABSD_FUNC("mkdirat",      luab_mkdirat),
-    LUABSD_FUNC("mkfifo",       luab_mkfifo),
-    LUABSD_FUNC("mkfifoat",     luab_mkfifoat),
+    LUAB_FUNC("mkdir",        luab_mkdir),
+    LUAB_FUNC("mkdirat",      luab_mkdirat),
+    LUAB_FUNC("mkfifo",       luab_mkfifo),
+    LUAB_FUNC("mkfifoat",     luab_mkfifoat),
 #if !defined(_MKNOD_DECLARED) && __XSI_VISIBLE
-    LUABSD_FUNC("mknod",        luab_mknod),
+    LUAB_FUNC("mknod",        luab_mknod),
 #define _MKNOD_DECLARED
 #endif
-    LUABSD_FUNC("stat",         luab_stat),
-    LUABSD_FUNC("umask",        luab_umask),
+    LUAB_FUNC("stat",         luab_stat),
+    LUAB_FUNC("umask",        luab_umask),
 #if __XSI_VISIBLE >= 700
-    LUABSD_FUNC("mknodat",      luab_mknodat),
+    LUAB_FUNC("mknodat",      luab_mknodat),
 #endif
-    LUABSD_FUNC("stat_create",  luab_stat_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("stat_create",  luab_stat_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_sys_stat_lib = {
-    .cookie = LUABSD_SYS_STAT_LIB_ID,
-    .name = LUABSD_SYS_STAT_LIB_KEY,
+    .cookie = LUAB_SYS_STAT_LIB_ID,
+    .name = LUAB_SYS_STAT_LIB_KEY,
     .vec = luab_sys_stat_vec,
 };

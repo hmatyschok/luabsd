@@ -24,8 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LUABSD_H_
-#define _LUABSD_H_
+#ifndef _LUAB_H_
+#define _LUAB_H_
 
 #include <sys/param.h>
 #include <sys/mbuf.h>   /* XXX */
@@ -40,7 +40,7 @@
  * Definitions for API method table.
  */
 
-typedef union luab_type {   /* XXX namespace */
+typedef union luab_primitive {   /* XXX namespace */
     char        un_char;
     short       un_short;
     int         un_int;
@@ -57,39 +57,39 @@ typedef union luab_type {   /* XXX namespace */
     lua_CFunction   un_fn;
     const char  *un_cp;
     wchar_t     un_wc;
-} luab_type_u;
+} luab_primitive_u;
 
-typedef void    (*luab_table_fn)(lua_State *, luab_type_u *);
+typedef void    (*luab_table_fn)(lua_State *, luab_primitive_u *);
 
 typedef struct luab_table {
     luab_table_fn   init;
     const char    *key;
-    luab_type_u   val;
+    luab_primitive_u   val;
 } luab_table_t;
 
-#define LUABSD_REG(fn, k, v) \
+#define LUAB_TYPE(fn, k, v) \
     { .init = fn, .key = k, v }
-#define LUABSD_INT(k, v) \
-    LUABSD_REG(luab_initinteger, k, .val.un_int = v)
-#define LUABSD_FUNC(k, v) \
-    LUABSD_REG(luab_initcfunction, k, .val.un_fn = v)
-#define LUABSD_STR(k, v) \
-    LUABSD_REG(luab_initstring, k, .val.un_cp = v)
+#define LUAB_INT(k, v) \
+    LUAB_TYPE(luab_initinteger, k, .val.un_int = v)
+#define LUAB_FUNC(k, v) \
+    LUAB_TYPE(luab_initcfunction, k, .val.un_fn = v)
+#define LUAB_STR(k, v) \
+    LUAB_TYPE(luab_initstring, k, .val.un_cp = v)
 
 static __inline void
-luab_initinteger(lua_State *L, luab_type_u *un)
+luab_initinteger(lua_State *L, luab_primitive_u *un)
 {
     lua_pushinteger(L, un->un_int);
 }
 
 static __inline void
-luab_initcfunction(lua_State *L, luab_type_u *un)
+luab_initcfunction(lua_State *L, luab_primitive_u *un)
 {
     lua_pushcfunction(L, un->un_fn);
 }
 
 static __inline void
-luab_initstring(lua_State *L, luab_type_u *un)
+luab_initstring(lua_State *L, luab_primitive_u *un)
 {
     lua_pushstring(L, un->un_cp);
 }
@@ -345,4 +345,4 @@ int  luab_dump(lua_State *, int, luab_module_t *, size_t);
 int  luab_gc(lua_State *, int, luab_module_t *);
 int  luab_len(lua_State *, int, luab_module_t *);
 int  luab_tostring(lua_State *, int, luab_module_t *);
-#endif /* _LUABSD_H_ */
+#endif /* _LUAB_H_ */

@@ -58,8 +58,8 @@ typedef struct luab_clockinfo {
     (luab_toldata((L), (narg), &clockinfo_type, \
         struct clockinfo *, sizeof(struct clockinfo)))
 
-#define LUABSD_CLOCKINFO_TYPE_ID    1594164272
-#define LUABSD_CLOCKINFO_TYPE    "CLOCKINFO*"
+#define LUAB_CLOCKINFO_TYPE_ID    1594164272
+#define LUAB_CLOCKINFO_TYPE    "CLOCKINFO*"
 
 /*
  * Generator functions.
@@ -376,20 +376,20 @@ CLOCKINFO_tostring(lua_State *L)
  */
 
 static luab_table_t clockinfo_methods[] = {
-    LUABSD_FUNC("set_hz",       CLOCKINFO_set_hz),
-    LUABSD_FUNC("set_tickc",    CLOCKINFO_set_tick),
-    LUABSD_FUNC("set_stathz",   CLOCKINFO_set_stathz),
-    LUABSD_FUNC("set_profhz",   CLOCKINFO_set_profhz),
-    LUABSD_FUNC("get",          CLOCKINFO_get),
-    LUABSD_FUNC("get_hz",       CLOCKINFO_get_hz),
-    LUABSD_FUNC("get_tick",     CLOCKINFO_get_tick),
-    LUABSD_FUNC("get_stathz",   CLOCKINFO_get_stathz),
-    LUABSD_FUNC("get_profhz",   CLOCKINFO_get_profhz),
-    LUABSD_FUNC("dump",         CLOCKINFO_dump),
-    LUABSD_FUNC("__gc",         CLOCKINFO_gc),
-    LUABSD_FUNC("__len",        CLOCKINFO_len),
-    LUABSD_FUNC("__tostring",   CLOCKINFO_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_hz",       CLOCKINFO_set_hz),
+    LUAB_FUNC("set_tickc",    CLOCKINFO_set_tick),
+    LUAB_FUNC("set_stathz",   CLOCKINFO_set_stathz),
+    LUAB_FUNC("set_profhz",   CLOCKINFO_set_profhz),
+    LUAB_FUNC("get",          CLOCKINFO_get),
+    LUAB_FUNC("get_hz",       CLOCKINFO_get_hz),
+    LUAB_FUNC("get_tick",     CLOCKINFO_get_tick),
+    LUAB_FUNC("get_stathz",   CLOCKINFO_get_stathz),
+    LUAB_FUNC("get_profhz",   CLOCKINFO_get_profhz),
+    LUAB_FUNC("dump",         CLOCKINFO_dump),
+    LUAB_FUNC("__gc",         CLOCKINFO_gc),
+    LUAB_FUNC("__len",        CLOCKINFO_len),
+    LUAB_FUNC("__tostring",   CLOCKINFO_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -414,8 +414,8 @@ clockinfo_udata(lua_State *L, int narg)
 }
 
 luab_module_t clockinfo_type = {
-    .cookie = LUABSD_CLOCKINFO_TYPE_ID,
-    .name = LUABSD_CLOCKINFO_TYPE,
+    .cookie = LUAB_CLOCKINFO_TYPE_ID,
+    .name = LUAB_CLOCKINFO_TYPE,
     .vec = clockinfo_methods,
     .create = clockinfo_create,
     .init = clockinfo_init,

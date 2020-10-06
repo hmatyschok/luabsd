@@ -61,8 +61,8 @@ typedef struct luab_in6_addr {
     (luab_toldata((L), (narg), &in6_addr_type, \
         struct in6_addr *, sizeof(struct in6_addr)))
 
-#define LUABSD_IN6_ADDR_TYPE_ID    1595890830
-#define LUABSD_IN6_ADDR_TYPE    "IN6_ADDR*"
+#define LUAB_IN6_ADDR_TYPE_ID    1595890830
+#define LUAB_IN6_ADDR_TYPE    "IN6_ADDR*"
 
 /*
  * Generator functions.
@@ -217,14 +217,14 @@ IN6_ADDR_tostring(lua_State *L)
  */
 
 static luab_table_t in6_addr_methods[] = {
-    LUABSD_FUNC("set_s6_addr",  IN6_ADDR_set_s6_addr),
-    LUABSD_FUNC("get",          IN6_ADDR_get),
-    LUABSD_FUNC("get_s6_addr",  IN6_ADDR_get_s6_addr),
-    LUABSD_FUNC("dump",         IN6_ADDR_dump),
-    LUABSD_FUNC("__gc",         IN6_ADDR_gc),
-    LUABSD_FUNC("__len",        IN6_ADDR_len),
-    LUABSD_FUNC("__tostring",   IN6_ADDR_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_s6_addr",  IN6_ADDR_set_s6_addr),
+    LUAB_FUNC("get",          IN6_ADDR_get),
+    LUAB_FUNC("get_s6_addr",  IN6_ADDR_get_s6_addr),
+    LUAB_FUNC("dump",         IN6_ADDR_dump),
+    LUAB_FUNC("__gc",         IN6_ADDR_gc),
+    LUAB_FUNC("__len",        IN6_ADDR_len),
+    LUAB_FUNC("__tostring",   IN6_ADDR_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -249,8 +249,8 @@ in6_addr_udata(lua_State *L, int narg)
 }
 
 luab_module_t in6_addr_type = {
-    .cookie = LUABSD_IN6_ADDR_TYPE_ID,
-    .name = LUABSD_IN6_ADDR_TYPE,
+    .cookie = LUAB_IN6_ADDR_TYPE_ID,
+    .name = LUAB_IN6_ADDR_TYPE,
     .vec = in6_addr_methods,
     .create = in6_addr_create,
     .init = in6_addr_init,

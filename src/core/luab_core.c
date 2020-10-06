@@ -38,8 +38,8 @@
 #include "luab_modules.h"
 #include "luab_types.h"
 
-#define LUABSD_CORE_LIB_ID    1595987973
-#define LUABSD_CORE_LIB_KEY   "core"
+#define LUAB_CORE_LIB_ID    1595987973
+#define LUAB_CORE_LIB_KEY   "core"
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
@@ -344,15 +344,15 @@ luab_link_create(lua_State *L)
 }
 
 static luab_table_t luab_core_util_vec[] = {
-    LUABSD_FUNC("uuid",         luab_uuid),
-    LUABSD_FUNC("hook_create",  luab_hook_create),
-    LUABSD_FUNC("link_create",  luab_link_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("uuid",         luab_uuid),
+    LUAB_FUNC("hook_create",  luab_hook_create),
+    LUAB_FUNC("link_create",  luab_link_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_core_lib = {
-    .cookie = LUABSD_CORE_LIB_ID,
-    .name = LUABSD_CORE_LIB_KEY,
+    .cookie = LUAB_CORE_LIB_ID,
+    .name = LUAB_CORE_LIB_KEY,
     .vec = luab_core_util_vec,
 };
 

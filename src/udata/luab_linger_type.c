@@ -55,8 +55,8 @@ typedef struct luab_linger {
     (luab_toldata((L), (narg), &linger_type, \
         struct linger *, sizeof(struct linger)))
 
-#define LUABSD_LINGER_TYPE_ID    1597012436
-#define LUABSD_LINGER_TYPE    "LINGER*"
+#define LUAB_LINGER_TYPE_ID    1597012436
+#define LUAB_LINGER_TYPE    "LINGER*"
 
 /*
  * Generator functions.
@@ -254,16 +254,16 @@ LINGER_tostring(lua_State *L)
  */
 
 static luab_table_t linger_methods[] = {
-    LUABSD_FUNC("set_l_onoff",  LINGER_set_l_onoff),
-    LUABSD_FUNC("set_l_linger", LINGER_set_l_linger),
-    LUABSD_FUNC("get",          LINGER_get),
-    LUABSD_FUNC("get_l_onoff",  LINGER_get_l_onoff),
-    LUABSD_FUNC("get_l_linger", LINGER_get_l_linger),
-    LUABSD_FUNC("dump",         LINGER_dump),
-    LUABSD_FUNC("__gc",         LINGER_gc),
-    LUABSD_FUNC("__len",        LINGER_len),
-    LUABSD_FUNC("__tostring",   LINGER_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_l_onoff",  LINGER_set_l_onoff),
+    LUAB_FUNC("set_l_linger", LINGER_set_l_linger),
+    LUAB_FUNC("get",          LINGER_get),
+    LUAB_FUNC("get_l_onoff",  LINGER_get_l_onoff),
+    LUAB_FUNC("get_l_linger", LINGER_get_l_linger),
+    LUAB_FUNC("dump",         LINGER_dump),
+    LUAB_FUNC("__gc",         LINGER_gc),
+    LUAB_FUNC("__len",        LINGER_len),
+    LUAB_FUNC("__tostring",   LINGER_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -288,8 +288,8 @@ linger_udata(lua_State *L, int narg)
 }
 
 luab_module_t linger_type = {
-    .cookie = LUABSD_LINGER_TYPE_ID,
-    .name = LUABSD_LINGER_TYPE,
+    .cookie = LUAB_LINGER_TYPE_ID,
+    .name = LUAB_LINGER_TYPE,
     .vec = linger_methods,
     .create = linger_create,
     .init = linger_init,

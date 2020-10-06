@@ -55,8 +55,8 @@ typedef struct luab_timeval {
     (luab_toldata((L), (narg), &timeval_type, \
         struct timeval *, sizeof(struct timeval)))
 
-#define LUABSD_TIMEVAL_TYPE_ID    1599788349
-#define LUABSD_TIMEVAL_TYPE    "TIMEVAL*"
+#define LUAB_TIMEVAL_TYPE_ID    1599788349
+#define LUAB_TIMEVAL_TYPE    "TIMEVAL*"
 
 /*
  * Generator functions.
@@ -254,16 +254,16 @@ TIMEVAL_tostring(lua_State *L)
  */
 
 static luab_table_t timeval_methods[] = {
-    LUABSD_FUNC("set_tv_sec",   TIMEVAL_set_tv_sec),
-    LUABSD_FUNC("set_tv_usec",  TIMEVAL_set_tv_usec),
-    LUABSD_FUNC("get",          TIMEVAL_get),
-    LUABSD_FUNC("get_tv_sec",   TIMEVAL_get_tv_sec),
-    LUABSD_FUNC("get_tv_usec",  TIMEVAL_get_tv_usec),
-    LUABSD_FUNC("dump",         TIMEVAL_dump),
-    LUABSD_FUNC("__gc",         TIMEVAL_gc),
-    LUABSD_FUNC("__len",        TIMEVAL_len),
-    LUABSD_FUNC("__tostring",   TIMEVAL_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_tv_sec",   TIMEVAL_set_tv_sec),
+    LUAB_FUNC("set_tv_usec",  TIMEVAL_set_tv_usec),
+    LUAB_FUNC("get",          TIMEVAL_get),
+    LUAB_FUNC("get_tv_sec",   TIMEVAL_get_tv_sec),
+    LUAB_FUNC("get_tv_usec",  TIMEVAL_get_tv_usec),
+    LUAB_FUNC("dump",         TIMEVAL_dump),
+    LUAB_FUNC("__gc",         TIMEVAL_gc),
+    LUAB_FUNC("__len",        TIMEVAL_len),
+    LUAB_FUNC("__tostring",   TIMEVAL_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -288,8 +288,8 @@ timeval_udata(lua_State *L, int narg)
 }
 
 luab_module_t timeval_type = {
-    .cookie = LUABSD_TIMEVAL_TYPE_ID,
-    .name = LUABSD_TIMEVAL_TYPE,
+    .cookie = LUAB_TIMEVAL_TYPE_ID,
+    .name = LUAB_TIMEVAL_TYPE,
     .vec = timeval_methods,
     .create = timeval_create,
     .init = timeval_init,

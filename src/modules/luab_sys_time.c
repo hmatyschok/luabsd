@@ -47,8 +47,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_SYS_TIME_LIB_ID    1593623310
-#define LUABSD_SYS_TIME_LIB_KEY    "time"
+#define LUAB_SYS_TIME_LIB_ID    1593623310
+#define LUAB_SYS_TIME_LIB_KEY    "time"
 
 extern luab_module_t luab_sys_time_lib;
 
@@ -296,57 +296,57 @@ luab_timezone_create(lua_State *L)
  */
 
 static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
-    LUABSD_INT("DST_NONE",                  DST_NONE),
-    LUABSD_INT("DST_USA",                   DST_USA),
-    LUABSD_INT("DST_AUST",                  DST_AUST),
-    LUABSD_INT("DST_WET",                   DST_WET),
-    LUABSD_INT("DST_MET",                   DST_MET),
-    LUABSD_INT("DST_EET",                   DST_EET),
-    LUABSD_INT("DST_CAN",                   DST_CAN),
+    LUAB_INT("DST_NONE",                  DST_NONE),
+    LUAB_INT("DST_USA",                   DST_USA),
+    LUAB_INT("DST_AUST",                  DST_AUST),
+    LUAB_INT("DST_WET",                   DST_WET),
+    LUAB_INT("DST_MET",                   DST_MET),
+    LUAB_INT("DST_EET",                   DST_EET),
+    LUAB_INT("DST_CAN",                   DST_CAN),
 #ifndef CLOCK_REALTIME
-    LUABSD_INT("CLOCK_REALTIME",            CLOCK_REALTIME),
-    LUABSD_INT("CLOCK_VIRTUAL",             CLOCK_VIRTUAL),
-    LUABSD_INT("CLOCK_PROF",                CLOCK_PROF),
-    LUABSD_INT("CLOCK_MONOTONIC",           CLOCK_MONOTONIC),
-    LUABSD_INT("CLOCK_UPTIME",              CLOCK_UPTIME),
-    LUABSD_INT("CLOCK_UPTIME_PRECISE",      CLOCK_UPTIME_PRECISE),
-    LUABSD_INT("CLOCK_UPTIME_FAST",         CLOCK_UPTIME_FAST),
-    LUABSD_INT("CLOCK_REALTIME_PRECISE",    CLOCK_REALTIME_PRECISE),
-    LUABSD_INT("CLOCK_REALTIME_FAST",       CLOCK_REALTIME_FAST),
-    LUABSD_INT("CLOCK_MONOTONIC_PRECISE",   CLOCK_MONOTONIC_PRECISE),
-    LUABSD_INT("CLOCK_MONOTONIC_FAST",      CLOCK_MONOTONIC_FAST),
-    LUABSD_INT("CLOCK_SECOND",              CLOCK_SECOND),
-    LUABSD_INT("CLOCK_THREAD_CPUTIME_ID",   CLOCK_THREAD_CPUTIME_ID),
-    LUABSD_INT("CLOCK_PROCESS_CPUTIME_ID",  CLOCK_PROCESS_CPUTIME_ID),
+    LUAB_INT("CLOCK_REALTIME",            CLOCK_REALTIME),
+    LUAB_INT("CLOCK_VIRTUAL",             CLOCK_VIRTUAL),
+    LUAB_INT("CLOCK_PROF",                CLOCK_PROF),
+    LUAB_INT("CLOCK_MONOTONIC",           CLOCK_MONOTONIC),
+    LUAB_INT("CLOCK_UPTIME",              CLOCK_UPTIME),
+    LUAB_INT("CLOCK_UPTIME_PRECISE",      CLOCK_UPTIME_PRECISE),
+    LUAB_INT("CLOCK_UPTIME_FAST",         CLOCK_UPTIME_FAST),
+    LUAB_INT("CLOCK_REALTIME_PRECISE",    CLOCK_REALTIME_PRECISE),
+    LUAB_INT("CLOCK_REALTIME_FAST",       CLOCK_REALTIME_FAST),
+    LUAB_INT("CLOCK_MONOTONIC_PRECISE",   CLOCK_MONOTONIC_PRECISE),
+    LUAB_INT("CLOCK_MONOTONIC_FAST",      CLOCK_MONOTONIC_FAST),
+    LUAB_INT("CLOCK_SECOND",              CLOCK_SECOND),
+    LUAB_INT("CLOCK_THREAD_CPUTIME_ID",   CLOCK_THREAD_CPUTIME_ID),
+    LUAB_INT("CLOCK_PROCESS_CPUTIME_ID",  CLOCK_PROCESS_CPUTIME_ID),
 #endif
 #ifndef TIMER_ABSTIME
-    LUABSD_INT("TIMER_RELTIME",             TIMER_RELTIME),
-    LUABSD_INT("TIMER_ABSTIME",             TIMER_ABSTIME),
+    LUAB_INT("TIMER_RELTIME",             TIMER_RELTIME),
+    LUAB_INT("TIMER_ABSTIME",             TIMER_ABSTIME),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_INT("CPUCLOCK_WHICH_PID",        CPUCLOCK_WHICH_PID),
-    LUABSD_INT("CPUCLOCK_WHICH_TID",        CPUCLOCK_WHICH_TID),
+    LUAB_INT("CPUCLOCK_WHICH_PID",        CPUCLOCK_WHICH_PID),
+    LUAB_INT("CPUCLOCK_WHICH_TID",        CPUCLOCK_WHICH_TID),
 #endif
-    LUABSD_INT("ITIMER_REAL",               ITIMER_REAL),
-    LUABSD_INT("ITIMER_VIRTUAL",            ITIMER_VIRTUAL),
-    LUABSD_INT("ITIMER_PROF",               ITIMER_PROF),
-    LUABSD_FUNC("setitimer",                luab_setitimer),
+    LUAB_INT("ITIMER_REAL",               ITIMER_REAL),
+    LUAB_INT("ITIMER_VIRTUAL",            ITIMER_VIRTUAL),
+    LUAB_INT("ITIMER_PROF",               ITIMER_PROF),
+    LUAB_FUNC("setitimer",                luab_setitimer),
 #if __XSI_VISIBLE
-    LUABSD_FUNC("getitimer",                luab_getitimer),
+    LUAB_FUNC("getitimer",                luab_getitimer),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_FUNC("bintime_create",           luab_bintime_create),
+    LUAB_FUNC("bintime_create",           luab_bintime_create),
 #endif
-    LUABSD_FUNC("clockinfo_create",         luab_clockinfo_create),
-    LUABSD_FUNC("itimerval_create",         luab_itimerval_create),
-    LUABSD_FUNC("timespec_create",          luab_timespec_create),
-    LUABSD_FUNC("timeval_create",           luab_timeval_create),
-    LUABSD_FUNC("timezone_create",          luab_timezone_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("clockinfo_create",         luab_clockinfo_create),
+    LUAB_FUNC("itimerval_create",         luab_itimerval_create),
+    LUAB_FUNC("timespec_create",          luab_timespec_create),
+    LUAB_FUNC("timeval_create",           luab_timeval_create),
+    LUAB_FUNC("timezone_create",          luab_timezone_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_sys_time_lib = {
-    .cookie = LUABSD_SYS_TIME_LIB_ID,
-    .name = LUABSD_SYS_TIME_LIB_KEY,
+    .cookie = LUAB_SYS_TIME_LIB_ID,
+    .name = LUAB_SYS_TIME_LIB_KEY,
     .vec = luab_sys_time_vec,
 };

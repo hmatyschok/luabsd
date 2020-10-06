@@ -34,8 +34,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_NET_IF_DL_LIB_ID    1596382827
-#define LUABSD_NET_IF_DL_LIB_KEY    "if_dl"
+#define LUAB_NET_IF_DL_LIB_ID    1596382827
+#define LUAB_NET_IF_DL_LIB_KEY    "if_dl"
 
 extern luab_module_t luab_net_if_dl_lib;
 
@@ -162,14 +162,14 @@ luab_sockaddr_dl_create(lua_State *L)
  */
 
 static luab_table_t luab_net_if_dl_vec[] = {
-    LUABSD_FUNC("link_addr",            luab_link_addr),
-    LUABSD_FUNC("link_ntoa",            luab_link_ntoa),
-    LUABSD_FUNC("sockaddr_dl_create",   luab_sockaddr_dl_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("link_addr",            luab_link_addr),
+    LUAB_FUNC("link_ntoa",            luab_link_ntoa),
+    LUAB_FUNC("sockaddr_dl_create",   luab_sockaddr_dl_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_net_if_dl_lib = {
-    .cookie = LUABSD_NET_IF_DL_LIB_ID,
-    .name = LUABSD_NET_IF_DL_LIB_KEY,
+    .cookie = LUAB_NET_IF_DL_LIB_ID,
+    .name = LUAB_NET_IF_DL_LIB_KEY,
     .vec = luab_net_if_dl_vec,
 };

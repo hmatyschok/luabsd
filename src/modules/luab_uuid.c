@@ -33,8 +33,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_UUID_LIB_ID    1593623310
-#define LUABSD_UUID_LIB_KEY "uuid"
+#define LUAB_UUID_LIB_ID    1593623310
+#define LUAB_UUID_LIB_KEY "uuid"
 
 extern luab_module_t luab_uuid_lib;
 
@@ -77,7 +77,7 @@ static int
 luab_uuid_compare(lua_State *L)
 {
     uuid_t *uuid1, *uuid2;
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     uint32_t *status;
     int32_t ret;
 
@@ -85,7 +85,7 @@ luab_uuid_compare(lua_State *L)
 
     uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
     uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
     status = &(h0->un_uint32);
 
     ret = uuid_compare(uuid1, uuid2, status);
@@ -119,7 +119,7 @@ static int
 luab_uuid_equal(lua_State *L)
 {
     uuid_t *uuid1, *uuid2;
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     uint32_t *status;
     int32_t ret;
 
@@ -127,7 +127,7 @@ luab_uuid_equal(lua_State *L)
 
     uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
     uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
     status = &(h0->un_uint32);
 
     ret = uuid_equal(uuid1, uuid2, status);
@@ -162,14 +162,14 @@ luab_uuid_from_string(lua_State *L)
 {
     const char *str;
     uuid_t *uuid;
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     uint32_t *status;
 
     (void)luab_checkmaxargs(L, 3);
 
     str = luab_checklstring(L, 1, LUAB_UUID_STR_LEN);
     uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
     status = &(h0->un_uint32);
 
     uuid_from_string(str, uuid, status);
@@ -202,14 +202,14 @@ static int
 luab_uuid_hash(lua_State *L)
 {
     uuid_t *uuid;
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     uint32_t *status;
     uint16_t hash;
 
     (void)luab_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
     status = &(h0->un_uint32);
 
     hash = uuid_hash(uuid, status);
@@ -431,13 +431,13 @@ luab_uuid_dec_be(lua_State *L)
 static int
 luab_uuid_create(lua_State *L)
 {
-    luab_type_u *un;
+    luab_primitive_u *un;
     uint32_t *status;
     uuid_t uuid;
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_type_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_primitive_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;
@@ -466,13 +466,13 @@ luab_uuid_create(lua_State *L)
 static int
 luab_uuid_create_nil(lua_State *L)
 {
-    luab_type_u *un;
+    luab_primitive_u *un;
     uint32_t *status;
     uuid_t uuid;
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_type_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_primitive_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;
@@ -492,25 +492,25 @@ luab_uuid_create_nil(lua_State *L)
  */
 
 static luab_table_t luab_uuid_vec[] = {
-    LUABSD_INT("uuid_s_ok",                     uuid_s_ok),
-    LUABSD_INT("uuid_s_bad_version",            uuid_s_bad_version),
-    LUABSD_INT("uuid_s_invalid_string_uuid",    uuid_s_invalid_string_uuid),
-    LUABSD_INT("uuid_s_no_memory",              uuid_s_no_memory),
-    LUABSD_FUNC("uuid_compare",                 luab_uuid_compare),
-    LUABSD_FUNC("uuid_create",                  luab_uuid_create),
-    LUABSD_FUNC("uuid_create_nil",              luab_uuid_create_nil),
-    LUABSD_FUNC("uuid_equal",                   luab_uuid_equal),
-    LUABSD_FUNC("uuid_from_string",             luab_uuid_from_string),
-    LUABSD_FUNC("uuid_hash",                    luab_uuid_hash),
-    LUABSD_FUNC("uuid_enc_le",                  luab_uuid_enc_le),
-    LUABSD_FUNC("uuid_dec_le",                  luab_uuid_dec_le),
-    LUABSD_FUNC("uuid_enc_be",                  luab_uuid_enc_be),
-    LUABSD_FUNC("uuid_dec_be",                  luab_uuid_dec_be),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_INT("uuid_s_ok",                     uuid_s_ok),
+    LUAB_INT("uuid_s_bad_version",            uuid_s_bad_version),
+    LUAB_INT("uuid_s_invalid_string_uuid",    uuid_s_invalid_string_uuid),
+    LUAB_INT("uuid_s_no_memory",              uuid_s_no_memory),
+    LUAB_FUNC("uuid_compare",                 luab_uuid_compare),
+    LUAB_FUNC("uuid_create",                  luab_uuid_create),
+    LUAB_FUNC("uuid_create_nil",              luab_uuid_create_nil),
+    LUAB_FUNC("uuid_equal",                   luab_uuid_equal),
+    LUAB_FUNC("uuid_from_string",             luab_uuid_from_string),
+    LUAB_FUNC("uuid_hash",                    luab_uuid_hash),
+    LUAB_FUNC("uuid_enc_le",                  luab_uuid_enc_le),
+    LUAB_FUNC("uuid_dec_le",                  luab_uuid_dec_le),
+    LUAB_FUNC("uuid_enc_be",                  luab_uuid_enc_be),
+    LUAB_FUNC("uuid_dec_be",                  luab_uuid_dec_be),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_uuid_lib = {
-    .cookie = LUABSD_UUID_LIB_ID,
-    .name = LUABSD_UUID_LIB_KEY,
+    .cookie = LUAB_UUID_LIB_ID,
+    .name = LUAB_UUID_LIB_KEY,
     .vec = luab_uuid_vec,
 };

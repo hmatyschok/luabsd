@@ -57,8 +57,8 @@ typedef struct luab_link {
 #define luab_to_link(L, narg) \
     (luab_todata((L), (narg), &link_type, link_t *))
 
-#define LUABSD_LINK_TYPE_ID    1601843279
-#define LUABSD_LINK_TYPE    "LINK*"
+#define LUAB_LINK_TYPE_ID    1601843279
+#define LUAB_LINK_TYPE    "LINK*"
 
 /*
  * Generator functions.
@@ -183,13 +183,13 @@ LINK_tostring(lua_State *L)
  */
 
 static luab_table_t link_methods[] = {
-    LUABSD_FUNC("set_ptr",      LINK_set_ptr),
-    LUABSD_FUNC("get",          LINK_get),
-    LUABSD_FUNC("get_ptr",      LINK_get_ptr),
-    LUABSD_FUNC("__gc",         LINK_gc),
-    LUABSD_FUNC("__len",        LINK_len),
-    LUABSD_FUNC("__tostring",   LINK_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_ptr",      LINK_set_ptr),
+    LUAB_FUNC("get",          LINK_get),
+    LUAB_FUNC("get_ptr",      LINK_get_ptr),
+    LUAB_FUNC("__gc",         LINK_gc),
+    LUAB_FUNC("__len",        LINK_len),
+    LUAB_FUNC("__tostring",   LINK_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -214,8 +214,8 @@ link_udata(lua_State *L, int narg)
 }
 
 luab_module_t link_type = {
-    .cookie = LUABSD_LINK_TYPE_ID,
-    .name = LUABSD_LINK_TYPE,
+    .cookie = LUAB_LINK_TYPE_ID,
+    .name = LUAB_LINK_TYPE,
     .vec = link_methods,
     .create = link_create,
     .init = link_init,

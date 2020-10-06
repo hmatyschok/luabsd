@@ -55,8 +55,8 @@ typedef struct luab_dbt {
 #define luab_to_dbt(L, narg) \
     (luab_toudata((L), (narg), &dbt_type))
 
-#define LUABSD_DBT_TYPE_ID    1596025036
-#define LUABSD_DBT_TYPE   "DBT*"
+#define LUAB_DBT_TYPE_ID    1596025036
+#define LUAB_DBT_TYPE   "DBT*"
 
 /*
  * Generator functions.
@@ -214,14 +214,14 @@ DBT_tostring(lua_State *L)
  */
 
 static luab_table_t dbt_methods[] = {
-    LUABSD_FUNC("set_data",     DBT_set_data),
-    LUABSD_FUNC("get",          DBT_get),
-    LUABSD_FUNC("get_data",     DBT_get_data),
-    LUABSD_FUNC("get_size",     DBT_get_size),
-    LUABSD_FUNC("__gc",         DBT_gc),
-    LUABSD_FUNC("__len",        DBT_len),
-    LUABSD_FUNC("__tostring",   DBT_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_data",     DBT_set_data),
+    LUAB_FUNC("get",          DBT_get),
+    LUAB_FUNC("get_data",     DBT_get_data),
+    LUAB_FUNC("get_size",     DBT_get_size),
+    LUAB_FUNC("__gc",         DBT_gc),
+    LUAB_FUNC("__len",        DBT_len),
+    LUAB_FUNC("__tostring",   DBT_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -260,8 +260,8 @@ dbt_udata(lua_State *L, int narg)
 }
 
 luab_module_t dbt_type = {
-    .cookie = LUABSD_DBT_TYPE_ID,
-    .name = LUABSD_DBT_TYPE,
+    .cookie = LUAB_DBT_TYPE_ID,
+    .name = LUAB_DBT_TYPE,
     .vec = dbt_methods,
     .create = dbt_create,
     .init = dbt_init,

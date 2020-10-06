@@ -56,8 +56,8 @@ typedef struct luab_itimerval {
     (luab_toldata((L), (narg), &itimerval_type, \
         struct itimerval *, sizeof(struct itimerval)))
 
-#define LUABSD_ITIMERVAL_TYPE_ID    1594110231
-#define LUABSD_ITIMERVAL_TYPE    "ITIMERVAL*"
+#define LUAB_ITIMERVAL_TYPE_ID    1594110231
+#define LUAB_ITIMERVAL_TYPE    "ITIMERVAL*"
 
 /*
  * Generator functions.
@@ -250,16 +250,16 @@ ITIMERVAL_tostring(lua_State *L)
  */
 
 static luab_table_t itimerval_methods[] = {
-    LUABSD_FUNC("set_it_interval",  ITIMERVAL_set_it_interval),
-    LUABSD_FUNC("set_it_value",     ITIMERVAL_set_it_value),
-    LUABSD_FUNC("get",              ITIMERVAL_get),
-    LUABSD_FUNC("get_it_interval",  ITIMERVAL_get_it_interval),
-    LUABSD_FUNC("get_it_value",     ITIMERVAL_get_it_value),
-    LUABSD_FUNC("dump",             ITIMERVAL_dump),
-    LUABSD_FUNC("__gc",             ITIMERVAL_gc),
-    LUABSD_FUNC("__len",            ITIMERVAL_len),
-    LUABSD_FUNC("__tostring",       ITIMERVAL_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_it_interval",  ITIMERVAL_set_it_interval),
+    LUAB_FUNC("set_it_value",     ITIMERVAL_set_it_value),
+    LUAB_FUNC("get",              ITIMERVAL_get),
+    LUAB_FUNC("get_it_interval",  ITIMERVAL_get_it_interval),
+    LUAB_FUNC("get_it_value",     ITIMERVAL_get_it_value),
+    LUAB_FUNC("dump",             ITIMERVAL_dump),
+    LUAB_FUNC("__gc",             ITIMERVAL_gc),
+    LUAB_FUNC("__len",            ITIMERVAL_len),
+    LUAB_FUNC("__tostring",       ITIMERVAL_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -284,8 +284,8 @@ itimerval_udata(lua_State *L, int narg)
 }
 
 luab_module_t itimerval_type = {
-    .cookie = LUABSD_ITIMERVAL_TYPE_ID,
-    .name = LUABSD_ITIMERVAL_TYPE,
+    .cookie = LUAB_ITIMERVAL_TYPE_ID,
+    .name = LUAB_ITIMERVAL_TYPE,
     .vec = itimerval_methods,
     .create = itimerval_create,
     .init = itimerval_init,

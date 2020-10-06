@@ -33,8 +33,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_SYS_UN_LIB_ID    1597545462
-#define LUABSD_SYS_UN_LIB_KEY    "un"
+#define LUAB_SYS_UN_LIB_ID    1597545462
+#define LUAB_SYS_UN_LIB_KEY    "un"
 
 extern luab_module_t luab_sys_un_lib;
 
@@ -82,17 +82,17 @@ luab_sockaddr_un_create(lua_State *L)
 
 static luab_table_t luab_sys_un_vec[] = {
 #if __BSD_VISIBLE
-    LUABSD_INT("LOCAL_PEERCRED",        LOCAL_PEERCRED),
-    LUABSD_INT("LOCAL_CREDS",           LOCAL_CREDS),
-    LUABSD_INT("LOCAL_CONNWAIT",        LOCAL_CONNWAIT),
-    LUABSD_INT("LOCAL_VENDOR",          LOCAL_VENDOR),
+    LUAB_INT("LOCAL_PEERCRED",        LOCAL_PEERCRED),
+    LUAB_INT("LOCAL_CREDS",           LOCAL_CREDS),
+    LUAB_INT("LOCAL_CONNWAIT",        LOCAL_CONNWAIT),
+    LUAB_INT("LOCAL_VENDOR",          LOCAL_VENDOR),
 #endif
-    LUABSD_FUNC("sockaddr_un_create",   luab_sockaddr_un_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("sockaddr_un_create",   luab_sockaddr_un_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_sys_un_lib = {
-    .cookie = LUABSD_SYS_UN_LIB_ID,
-    .name = LUABSD_SYS_UN_LIB_KEY,
+    .cookie = LUAB_SYS_UN_LIB_ID,
+    .name = LUAB_SYS_UN_LIB_KEY,
     .vec = luab_sys_un_vec,
 };

@@ -46,8 +46,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_UNISTD_LIB_ID    1593623310
-#define LUABSD_UNISTD_LIB_KEY   "unistd"
+#define LUAB_UNISTD_LIB_ID    1593623310
+#define LUAB_UNISTD_LIB_KEY   "unistd"
 
 extern luab_module_t luab_unistd_lib;
 
@@ -3389,7 +3389,7 @@ luab_getgrouplist(lua_State *L)
     const char *name;
     gid_t basegid;
     gid_t *gidset;
-    luab_type_u *hook;
+    luab_primitive_u *hook;
     int *ngroups;
     int status;
 
@@ -3400,7 +3400,7 @@ luab_getgrouplist(lua_State *L)
 
     (void)luab_checkltable(L, 3, 0);  /* only empty table are accepted */
 
-    hook = luab_udata(L, 4, luab_mx(HOOK), luab_type_u *);
+    hook = luab_udata(L, 4, luab_mx(HOOK), luab_primitive_u *);
     ngroups = &(hook->un_int);
 
     if (*ngroups != 0) {
@@ -3569,8 +3569,8 @@ static int
 luab_getpeereid(lua_State *L)
 {
     int s;
-    luab_type_u *h1;
-    luab_type_u *h2;
+    luab_primitive_u *h1;
+    luab_primitive_u *h2;
     uid_t *euid;
     gid_t *egid;
     int status;
@@ -3578,8 +3578,8 @@ luab_getpeereid(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
-    h1 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
-    h2 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    h1 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
+    h2 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
 
     euid = &(h1->un_uint32);
     egid = &(h2->un_uint32);
@@ -3608,9 +3608,9 @@ luab_getpeereid(lua_State *L)
 static int
 luab_getresgid(lua_State *L)
 {
-    luab_type_u *h1;
-    luab_type_u *h2;
-    luab_type_u *h3;
+    luab_primitive_u *h1;
+    luab_primitive_u *h2;
+    luab_primitive_u *h3;
     gid_t *rgid;
     gid_t *egid;
     gid_t *sgid;
@@ -3618,9 +3618,9 @@ luab_getresgid(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
-    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
-    h3 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
+    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
+    h3 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
 
     rgid = &(h1->un_uint32);
     egid = &(h2->un_uint32);
@@ -3650,9 +3650,9 @@ luab_getresgid(lua_State *L)
 static int
 luab_getresuid(lua_State *L)
 {
-    luab_type_u *h1;
-    luab_type_u *h2;
-    luab_type_u *h3;
+    luab_primitive_u *h1;
+    luab_primitive_u *h2;
+    luab_primitive_u *h3;
     uid_t *ruid;
     uid_t *euid;
     uid_t *suid;
@@ -3660,9 +3660,9 @@ luab_getresuid(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
-    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_type_u *);
-    h3 = luab_udata(L, 3, luab_mx(HOOK), luab_type_u *);
+    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
+    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
+    h3 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
 
     ruid = &(h1->un_uint32);
     euid = &(h2->un_uint32);
@@ -4222,7 +4222,7 @@ luab_rcmd(lua_State *L)
     const char *locuser;
     const char *remuser;
     const char *cmd;
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     caddr_t bp;
     int *fd2p;
     int s;
@@ -4234,7 +4234,7 @@ luab_rcmd(lua_State *L)
     locuser = luab_checklstring(L, 3, MAXLOGNAME);
     remuser = luab_checklstring(L, 4, MAXLOGNAME);
     cmd = luab_checklstring(L, 5, ARG_MAX);
-    h0 = luab_udataisnil(L, 6, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udataisnil(L, 6, luab_mx(HOOK), luab_primitive_u *);
 
     if (((bp = buf->iov.iov_base) != 0) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
@@ -4292,7 +4292,7 @@ luab_rcmd_af(lua_State *L)
     const char *locuser;
     const char *remuser;
     const char *cmd;
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     int af;
     caddr_t bp;
     int *fd2p;
@@ -4305,7 +4305,7 @@ luab_rcmd_af(lua_State *L)
     locuser = luab_checklstring(L, 3, MAXLOGNAME);
     remuser = luab_checklstring(L, 4, MAXLOGNAME);
     cmd = luab_checklstring(L, 5, ARG_MAX);
-    h0 = luab_udataisnil(L, 6, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udataisnil(L, 6, luab_mx(HOOK), luab_primitive_u *);
     af = (int)luab_checkinteger(L, 7, INT_MAX);
 
     if (((bp = buf->iov.iov_base) != 0) &&
@@ -4506,12 +4506,12 @@ luab_rfork(lua_State *L)
 static int
 luab_rresvport(lua_State *L)
 {
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     int *port, s;
 
     (void)luab_checkmaxargs(L, 1);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
     port = &(h0->un_int);
     s = rresvport(port);
 
@@ -4536,12 +4536,12 @@ luab_rresvport(lua_State *L)
 static int
 luab_rresvport_af(lua_State *L)
 {
-    luab_type_u *h0;
+    luab_primitive_u *h0;
     int af, *port, s;
 
     (void)luab_checkmaxargs(L, 2);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_type_u *);
+    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
     af = (int)luab_checkinteger(L, 2, INT_MAX);
 
     port = &(h0->un_int);
@@ -5179,404 +5179,404 @@ luab_crypt_data_create(lua_State *L)
  */
 
 static luab_table_t luab_unistd_vec[] = {
-    LUABSD_INT("STDIN_FILENO",                      STDIN_FILENO),
-    LUABSD_INT("STDOUT_FILENO",                     STDOUT_FILENO),
-    LUABSD_INT("STDERR_FILENO",                     STDERR_FILENO),
+    LUAB_INT("STDIN_FILENO",                      STDIN_FILENO),
+    LUAB_INT("STDOUT_FILENO",                     STDOUT_FILENO),
+    LUAB_INT("STDERR_FILENO",                     STDERR_FILENO),
 #if __XSI_VISIBLE || __POSIX_VISIBLE >= 200112
-    LUABSD_INT("F_ULOCK",                           F_ULOCK),
-    LUABSD_INT("F_LOCK",                            F_LOCK),
-    LUABSD_INT("F_TLOCK",                           F_TLOCK),
-    LUABSD_INT("F_TEST",                            F_TEST),
+    LUAB_INT("F_ULOCK",                           F_ULOCK),
+    LUAB_INT("F_LOCK",                            F_LOCK),
+    LUAB_INT("F_TLOCK",                           F_TLOCK),
+    LUAB_INT("F_TEST",                            F_TEST),
 #endif
-    LUABSD_INT("_POSIX_BARRIERS",                   _POSIX_BARRIERS),
-    LUABSD_INT("_POSIX_CPUTIME",                    _POSIX_CPUTIME),
-    LUABSD_INT("_POSIX_READER_WRITER_LOCKS",        _POSIX_READER_WRITER_LOCKS),
-    LUABSD_INT("_POSIX_REGEXP",                     _POSIX_REGEXP),
-    LUABSD_INT("_POSIX_SHELL",                      _POSIX_SHELL),
-    LUABSD_INT("_POSIX_SPAWN",                      _POSIX_SPAWN),
-    LUABSD_INT("_POSIX_SPIN_LOCKS",                 _POSIX_SPIN_LOCKS),
-    LUABSD_INT("_POSIX_THREAD_ATTR_STACKADDR",      _POSIX_THREAD_ATTR_STACKADDR),
-    LUABSD_INT("_POSIX_THREAD_ATTR_STACKSIZE",      _POSIX_THREAD_ATTR_STACKSIZE),
-    LUABSD_INT("_POSIX_THREAD_CPUTIME",             _POSIX_THREAD_CPUTIME),
-    LUABSD_INT("_POSIX_THREAD_PRIO_INHERIT",        _POSIX_THREAD_PRIO_INHERIT),
-    LUABSD_INT("_POSIX_THREAD_PRIO_PROTECT",        _POSIX_THREAD_PRIO_PROTECT),
-    LUABSD_INT("_POSIX_THREAD_PRIORITY_SCHEDULING", _POSIX_THREAD_PRIORITY_SCHEDULING),
-    LUABSD_INT("_POSIX_THREAD_PROCESS_SHARED",      _POSIX_THREAD_PROCESS_SHARED),
-    LUABSD_INT("_POSIX_THREAD_SAFE_FUNCTIONS",      _POSIX_THREAD_SAFE_FUNCTIONS),
-    LUABSD_INT("_POSIX_THREAD_SPORADIC_SERVER",     _POSIX_THREAD_SPORADIC_SERVER),
-    LUABSD_INT("_POSIX_THREADS",                    _POSIX_THREADS),
-    LUABSD_INT("_POSIX_TRACE",                      _POSIX_TRACE),
-    LUABSD_INT("_POSIX_TRACE_EVENT_FILTER",         _POSIX_TRACE_EVENT_FILTER),
-    LUABSD_INT("_POSIX_TRACE_INHERIT",              _POSIX_TRACE_INHERIT),
-    LUABSD_INT("_POSIX_TRACE_LOG",                  _POSIX_TRACE_LOG),
-    LUABSD_INT("_POSIX2_C_BIND",                    _POSIX2_C_BIND),
-    LUABSD_INT("_POSIX2_C_DEV",                     _POSIX2_C_DEV),
-    LUABSD_INT("_POSIX2_CHAR_TERM",                 _POSIX2_CHAR_TERM),
-    LUABSD_INT("_POSIX2_FORT_DEV",                  _POSIX2_FORT_DEV),
-    LUABSD_INT("_POSIX2_FORT_RUN",                  _POSIX2_FORT_RUN),
-    LUABSD_INT("_POSIX2_LOCALEDEF",                 _POSIX2_LOCALEDEF),
-    LUABSD_INT("_POSIX2_PBS",                       _POSIX2_PBS),
-    LUABSD_INT("_POSIX2_PBS_ACCOUNTING",            _POSIX2_PBS_ACCOUNTING),
-    LUABSD_INT("_POSIX2_PBS_CHECKPOINT",            _POSIX2_PBS_CHECKPOINT),
-    LUABSD_INT("_POSIX2_PBS_LOCATE",                _POSIX2_PBS_LOCATE),
-    LUABSD_INT("_POSIX2_PBS_MESSAGE",               _POSIX2_PBS_MESSAGE),
-    LUABSD_INT("_POSIX2_PBS_TRACK",                 _POSIX2_PBS_TRACK),
-    LUABSD_INT("_POSIX2_SW_DEV",                    _POSIX2_SW_DEV),
-    LUABSD_INT("_POSIX2_UPE",                       _POSIX2_UPE),
-    LUABSD_INT("_V6_ILP32_OFF32",                   _V6_ILP32_OFF32),
-    LUABSD_INT("_V6_ILP32_OFFBIG",                  _V6_ILP32_OFFBIG),
-    LUABSD_INT("_V6_LP64_OFF64",                    _V6_LP64_OFF64),
-    LUABSD_INT("_V6_LPBIG_OFFBIG",                  _V6_LPBIG_OFFBIG),
+    LUAB_INT("_POSIX_BARRIERS",                   _POSIX_BARRIERS),
+    LUAB_INT("_POSIX_CPUTIME",                    _POSIX_CPUTIME),
+    LUAB_INT("_POSIX_READER_WRITER_LOCKS",        _POSIX_READER_WRITER_LOCKS),
+    LUAB_INT("_POSIX_REGEXP",                     _POSIX_REGEXP),
+    LUAB_INT("_POSIX_SHELL",                      _POSIX_SHELL),
+    LUAB_INT("_POSIX_SPAWN",                      _POSIX_SPAWN),
+    LUAB_INT("_POSIX_SPIN_LOCKS",                 _POSIX_SPIN_LOCKS),
+    LUAB_INT("_POSIX_THREAD_ATTR_STACKADDR",      _POSIX_THREAD_ATTR_STACKADDR),
+    LUAB_INT("_POSIX_THREAD_ATTR_STACKSIZE",      _POSIX_THREAD_ATTR_STACKSIZE),
+    LUAB_INT("_POSIX_THREAD_CPUTIME",             _POSIX_THREAD_CPUTIME),
+    LUAB_INT("_POSIX_THREAD_PRIO_INHERIT",        _POSIX_THREAD_PRIO_INHERIT),
+    LUAB_INT("_POSIX_THREAD_PRIO_PROTECT",        _POSIX_THREAD_PRIO_PROTECT),
+    LUAB_INT("_POSIX_THREAD_PRIORITY_SCHEDULING", _POSIX_THREAD_PRIORITY_SCHEDULING),
+    LUAB_INT("_POSIX_THREAD_PROCESS_SHARED",      _POSIX_THREAD_PROCESS_SHARED),
+    LUAB_INT("_POSIX_THREAD_SAFE_FUNCTIONS",      _POSIX_THREAD_SAFE_FUNCTIONS),
+    LUAB_INT("_POSIX_THREAD_SPORADIC_SERVER",     _POSIX_THREAD_SPORADIC_SERVER),
+    LUAB_INT("_POSIX_THREADS",                    _POSIX_THREADS),
+    LUAB_INT("_POSIX_TRACE",                      _POSIX_TRACE),
+    LUAB_INT("_POSIX_TRACE_EVENT_FILTER",         _POSIX_TRACE_EVENT_FILTER),
+    LUAB_INT("_POSIX_TRACE_INHERIT",              _POSIX_TRACE_INHERIT),
+    LUAB_INT("_POSIX_TRACE_LOG",                  _POSIX_TRACE_LOG),
+    LUAB_INT("_POSIX2_C_BIND",                    _POSIX2_C_BIND),
+    LUAB_INT("_POSIX2_C_DEV",                     _POSIX2_C_DEV),
+    LUAB_INT("_POSIX2_CHAR_TERM",                 _POSIX2_CHAR_TERM),
+    LUAB_INT("_POSIX2_FORT_DEV",                  _POSIX2_FORT_DEV),
+    LUAB_INT("_POSIX2_FORT_RUN",                  _POSIX2_FORT_RUN),
+    LUAB_INT("_POSIX2_LOCALEDEF",                 _POSIX2_LOCALEDEF),
+    LUAB_INT("_POSIX2_PBS",                       _POSIX2_PBS),
+    LUAB_INT("_POSIX2_PBS_ACCOUNTING",            _POSIX2_PBS_ACCOUNTING),
+    LUAB_INT("_POSIX2_PBS_CHECKPOINT",            _POSIX2_PBS_CHECKPOINT),
+    LUAB_INT("_POSIX2_PBS_LOCATE",                _POSIX2_PBS_LOCATE),
+    LUAB_INT("_POSIX2_PBS_MESSAGE",               _POSIX2_PBS_MESSAGE),
+    LUAB_INT("_POSIX2_PBS_TRACK",                 _POSIX2_PBS_TRACK),
+    LUAB_INT("_POSIX2_SW_DEV",                    _POSIX2_SW_DEV),
+    LUAB_INT("_POSIX2_UPE",                       _POSIX2_UPE),
+    LUAB_INT("_V6_ILP32_OFF32",                   _V6_ILP32_OFF32),
+    LUAB_INT("_V6_ILP32_OFFBIG",                  _V6_ILP32_OFFBIG),
+    LUAB_INT("_V6_LP64_OFF64",                    _V6_LP64_OFF64),
+    LUAB_INT("_V6_LPBIG_OFFBIG",                  _V6_LPBIG_OFFBIG),
 #if __XSI_VISIBLE
-    LUABSD_INT("_XOPEN_CRYPT",                      _XOPEN_CRYPT),
-    LUABSD_INT("_XOPEN_ENH_I18N",                   _XOPEN_ENH_I18N),
-    LUABSD_INT("_XOPEN_LEGACY",                     _XOPEN_LEGACY),
-    LUABSD_INT("_XOPEN_REALTIME",                   _XOPEN_REALTIME),
-    LUABSD_INT("_XOPEN_REALTIME_THREADS",           _XOPEN_REALTIME_THREADS),
-    LUABSD_INT("_XOPEN_UNIX",                       _XOPEN_UNIX),
+    LUAB_INT("_XOPEN_CRYPT",                      _XOPEN_CRYPT),
+    LUAB_INT("_XOPEN_ENH_I18N",                   _XOPEN_ENH_I18N),
+    LUAB_INT("_XOPEN_LEGACY",                     _XOPEN_LEGACY),
+    LUAB_INT("_XOPEN_REALTIME",                   _XOPEN_REALTIME),
+    LUAB_INT("_XOPEN_REALTIME_THREADS",           _XOPEN_REALTIME_THREADS),
+    LUAB_INT("_XOPEN_UNIX",                       _XOPEN_UNIX),
 #endif
-    LUABSD_INT("_POSIX2_VERSION",                   _POSIX2_VERSION),
-    LUABSD_INT("_SC_ARG_MAX",                       _SC_ARG_MAX),
-    LUABSD_INT("_SC_CHILD_MAX",                     _SC_CHILD_MAX),
-    LUABSD_INT("_SC_CLK_TCK",                       _SC_CLK_TCK),
-    LUABSD_INT("_SC_NGROUPS_MAX",                   _SC_NGROUPS_MAX),
-    LUABSD_INT("_SC_OPEN_MAX",                      _SC_OPEN_MAX),
-    LUABSD_INT("_SC_JOB_CONTROL",                   _SC_JOB_CONTROL),
-    LUABSD_INT("_SC_SAVED_IDS",                     _SC_SAVED_IDS),
-    LUABSD_INT("_SC_VERSION",                       _SC_VERSION),
-    LUABSD_INT("_SC_BC_BASE_MAX",                   _SC_BC_BASE_MAX),
-    LUABSD_INT("_SC_BC_DIM_MAX",                    _SC_BC_DIM_MAX),
-    LUABSD_INT("_SC_BC_SCALE_MAX",                  _SC_BC_SCALE_MAX),
-    LUABSD_INT("_SC_BC_STRING_MAX",                 _SC_BC_STRING_MAX),
-    LUABSD_INT("_SC_COLL_WEIGHTS_MAX",              _SC_COLL_WEIGHTS_MAX),
-    LUABSD_INT("_SC_EXPR_NEST_MAX",                 _SC_EXPR_NEST_MAX),
-    LUABSD_INT("_SC_LINE_MAX",                      _SC_LINE_MAX),
-    LUABSD_INT("_SC_RE_DUP_MAX",                    _SC_RE_DUP_MAX),
-    LUABSD_INT("_SC_2_VERSION",                     _SC_2_VERSION),
-    LUABSD_INT("_SC_2_C_BIND",                      _SC_2_C_BIND),
-    LUABSD_INT("_SC_2_C_DEV",                       _SC_2_C_DEV),
-    LUABSD_INT("_SC_2_CHAR_TERM",                   _SC_2_CHAR_TERM),
-    LUABSD_INT("_SC_2_FORT_DEV",                    _SC_2_FORT_DEV),
-    LUABSD_INT("_SC_2_FORT_RUN",                    _SC_2_FORT_RUN),
-    LUABSD_INT("_SC_2_LOCALEDEF",                   _SC_2_LOCALEDEF),
-    LUABSD_INT("_SC_2_SW_DEV",                      _SC_2_SW_DEV),
-    LUABSD_INT("_SC_2_UPE",                         _SC_2_UPE),
-    LUABSD_INT("_SC_STREAM_MAX",                    _SC_STREAM_MAX),
-    LUABSD_INT("_SC_TZNAME_MAX",                    _SC_TZNAME_MAX),
+    LUAB_INT("_POSIX2_VERSION",                   _POSIX2_VERSION),
+    LUAB_INT("_SC_ARG_MAX",                       _SC_ARG_MAX),
+    LUAB_INT("_SC_CHILD_MAX",                     _SC_CHILD_MAX),
+    LUAB_INT("_SC_CLK_TCK",                       _SC_CLK_TCK),
+    LUAB_INT("_SC_NGROUPS_MAX",                   _SC_NGROUPS_MAX),
+    LUAB_INT("_SC_OPEN_MAX",                      _SC_OPEN_MAX),
+    LUAB_INT("_SC_JOB_CONTROL",                   _SC_JOB_CONTROL),
+    LUAB_INT("_SC_SAVED_IDS",                     _SC_SAVED_IDS),
+    LUAB_INT("_SC_VERSION",                       _SC_VERSION),
+    LUAB_INT("_SC_BC_BASE_MAX",                   _SC_BC_BASE_MAX),
+    LUAB_INT("_SC_BC_DIM_MAX",                    _SC_BC_DIM_MAX),
+    LUAB_INT("_SC_BC_SCALE_MAX",                  _SC_BC_SCALE_MAX),
+    LUAB_INT("_SC_BC_STRING_MAX",                 _SC_BC_STRING_MAX),
+    LUAB_INT("_SC_COLL_WEIGHTS_MAX",              _SC_COLL_WEIGHTS_MAX),
+    LUAB_INT("_SC_EXPR_NEST_MAX",                 _SC_EXPR_NEST_MAX),
+    LUAB_INT("_SC_LINE_MAX",                      _SC_LINE_MAX),
+    LUAB_INT("_SC_RE_DUP_MAX",                    _SC_RE_DUP_MAX),
+    LUAB_INT("_SC_2_VERSION",                     _SC_2_VERSION),
+    LUAB_INT("_SC_2_C_BIND",                      _SC_2_C_BIND),
+    LUAB_INT("_SC_2_C_DEV",                       _SC_2_C_DEV),
+    LUAB_INT("_SC_2_CHAR_TERM",                   _SC_2_CHAR_TERM),
+    LUAB_INT("_SC_2_FORT_DEV",                    _SC_2_FORT_DEV),
+    LUAB_INT("_SC_2_FORT_RUN",                    _SC_2_FORT_RUN),
+    LUAB_INT("_SC_2_LOCALEDEF",                   _SC_2_LOCALEDEF),
+    LUAB_INT("_SC_2_SW_DEV",                      _SC_2_SW_DEV),
+    LUAB_INT("_SC_2_UPE",                         _SC_2_UPE),
+    LUAB_INT("_SC_STREAM_MAX",                    _SC_STREAM_MAX),
+    LUAB_INT("_SC_TZNAME_MAX",                    _SC_TZNAME_MAX),
 #if __POSIX_VISIBLE >= 199309
-    LUABSD_INT("_SC_ASYNCHRONOUS_IO",               _SC_ASYNCHRONOUS_IO),
-    LUABSD_INT("_SC_MAPPED_FILES",                  _SC_MAPPED_FILES),
-    LUABSD_INT("_SC_MEMLOCK",                       _SC_MEMLOCK),
-    LUABSD_INT("_SC_MEMLOCK_RANGE",                 _SC_MEMLOCK_RANGE),
-    LUABSD_INT("_SC_MEMORY_PROTECTION",             _SC_MEMORY_PROTECTION),
-    LUABSD_INT("_SC_MESSAGE_PASSING",               _SC_MESSAGE_PASSING),
-    LUABSD_INT("_SC_PRIORITIZED_IO",                _SC_PRIORITIZED_IO),
-    LUABSD_INT("_SC_PRIORITY_SCHEDULING",           _SC_PRIORITY_SCHEDULING),
-    LUABSD_INT("_SC_REALTIME_SIGNALS",              _SC_REALTIME_SIGNALS),
-    LUABSD_INT("_SC_SEMAPHORES",                    _SC_SEMAPHORES),
-    LUABSD_INT("_SC_FSYNC",                         _SC_FSYNC),
-    LUABSD_INT("_SC_SHARED_MEMORY_OBJECTS",         _SC_SHARED_MEMORY_OBJECTS),
-    LUABSD_INT("_SC_SYNCHRONIZED_IO",               _SC_SYNCHRONIZED_IO),
-    LUABSD_INT("_SC_TIMERS",                        _SC_TIMERS),
-    LUABSD_INT("_SC_AIO_LISTIO_MAX",                _SC_AIO_LISTIO_MAX),
-    LUABSD_INT("_SC_AIO_MAX",                       _SC_AIO_MAX),
-    LUABSD_INT("_SC_AIO_PRIO_DELTA_MAX",            _SC_AIO_PRIO_DELTA_MAX),
-    LUABSD_INT("_SC_DELAYTIMER_MAX",                _SC_DELAYTIMER_MAX),
-    LUABSD_INT("_SC_MQ_OPEN_MAX",                   _SC_MQ_OPEN_MAX),
-    LUABSD_INT("_SC_PAGESIZE",                      _SC_PAGESIZE),
-    LUABSD_INT("_SC_RTSIG_MAX",                     _SC_RTSIG_MAX),
-    LUABSD_INT("_SC_SEM_NSEMS_MAX",                 _SC_SEM_NSEMS_MAX),
-    LUABSD_INT("_SC_SEM_VALUE_MAX",                 _SC_SEM_VALUE_MAX),
-    LUABSD_INT("_SC_SIGQUEUE_MAX",                  _SC_SIGQUEUE_MAX),
-    LUABSD_INT("_SC_TIMER_MAX",                     _SC_TIMER_MAX),
+    LUAB_INT("_SC_ASYNCHRONOUS_IO",               _SC_ASYNCHRONOUS_IO),
+    LUAB_INT("_SC_MAPPED_FILES",                  _SC_MAPPED_FILES),
+    LUAB_INT("_SC_MEMLOCK",                       _SC_MEMLOCK),
+    LUAB_INT("_SC_MEMLOCK_RANGE",                 _SC_MEMLOCK_RANGE),
+    LUAB_INT("_SC_MEMORY_PROTECTION",             _SC_MEMORY_PROTECTION),
+    LUAB_INT("_SC_MESSAGE_PASSING",               _SC_MESSAGE_PASSING),
+    LUAB_INT("_SC_PRIORITIZED_IO",                _SC_PRIORITIZED_IO),
+    LUAB_INT("_SC_PRIORITY_SCHEDULING",           _SC_PRIORITY_SCHEDULING),
+    LUAB_INT("_SC_REALTIME_SIGNALS",              _SC_REALTIME_SIGNALS),
+    LUAB_INT("_SC_SEMAPHORES",                    _SC_SEMAPHORES),
+    LUAB_INT("_SC_FSYNC",                         _SC_FSYNC),
+    LUAB_INT("_SC_SHARED_MEMORY_OBJECTS",         _SC_SHARED_MEMORY_OBJECTS),
+    LUAB_INT("_SC_SYNCHRONIZED_IO",               _SC_SYNCHRONIZED_IO),
+    LUAB_INT("_SC_TIMERS",                        _SC_TIMERS),
+    LUAB_INT("_SC_AIO_LISTIO_MAX",                _SC_AIO_LISTIO_MAX),
+    LUAB_INT("_SC_AIO_MAX",                       _SC_AIO_MAX),
+    LUAB_INT("_SC_AIO_PRIO_DELTA_MAX",            _SC_AIO_PRIO_DELTA_MAX),
+    LUAB_INT("_SC_DELAYTIMER_MAX",                _SC_DELAYTIMER_MAX),
+    LUAB_INT("_SC_MQ_OPEN_MAX",                   _SC_MQ_OPEN_MAX),
+    LUAB_INT("_SC_PAGESIZE",                      _SC_PAGESIZE),
+    LUAB_INT("_SC_RTSIG_MAX",                     _SC_RTSIG_MAX),
+    LUAB_INT("_SC_SEM_NSEMS_MAX",                 _SC_SEM_NSEMS_MAX),
+    LUAB_INT("_SC_SEM_VALUE_MAX",                 _SC_SEM_VALUE_MAX),
+    LUAB_INT("_SC_SIGQUEUE_MAX",                  _SC_SIGQUEUE_MAX),
+    LUAB_INT("_SC_TIMER_MAX",                     _SC_TIMER_MAX),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_INT("_SC_2_PBS",                         _SC_2_PBS),
-    LUABSD_INT("_SC_2_PBS_ACCOUNTING",              _SC_2_PBS_ACCOUNTING),
-    LUABSD_INT("_SC_2_PBS_CHECKPOINT",              _SC_2_PBS_CHECKPOINT),
-    LUABSD_INT("_SC_2_PBS_LOCATE",                  _SC_2_PBS_LOCATE),
-    LUABSD_INT("_SC_2_PBS_MESSAGE",                 _SC_2_PBS_MESSAGE),
-    LUABSD_INT("_SC_2_PBS_TRACK",                   _SC_2_PBS_TRACK),
-    LUABSD_INT("_SC_ADVISORY_INFO",                 _SC_ADVISORY_INFO),
-    LUABSD_INT("_SC_BARRIERS",                      _SC_BARRIERS),
-    LUABSD_INT("_SC_CLOCK_SELECTION",               _SC_CLOCK_SELECTION),
-    LUABSD_INT("_SC_CPUTIME",                       _SC_CPUTIME),
-    LUABSD_INT("_SC_FILE_LOCKING",                  _SC_FILE_LOCKING),
-    LUABSD_INT("_SC_GETGR_R_SIZE_MAX",              _SC_GETGR_R_SIZE_MAX),
-    LUABSD_INT("_SC_GETPW_R_SIZE_MAX",              _SC_GETPW_R_SIZE_MAX),
-    LUABSD_INT("_SC_HOST_NAME_MAX",                 _SC_HOST_NAME_MAX),
-    LUABSD_INT("_SC_LOGIN_NAME_MAX",                _SC_LOGIN_NAME_MAX),
-    LUABSD_INT("_SC_MONOTONIC_CLOCK",               _SC_MONOTONIC_CLOCK),
-    LUABSD_INT("_SC_MQ_PRIO_MAX",                   _SC_MQ_PRIO_MAX),
-    LUABSD_INT("_SC_READER_WRITER_LOCKS",           _SC_READER_WRITER_LOCKS),
-    LUABSD_INT("_SC_REGEXP",                        _SC_REGEXP),
-    LUABSD_INT("_SC_SHELL",                         _SC_SHELL),
-    LUABSD_INT("_SC_SPAWN",                         _SC_SPAWN),
-    LUABSD_INT("_SC_SPIN_LOCKS",                    _SC_SPIN_LOCKS),
-    LUABSD_INT("_SC_SPORADIC_SERVER",               _SC_SPORADIC_SERVER),
-    LUABSD_INT("_SC_THREAD_ATTR_STACKADDR",         _SC_THREAD_ATTR_STACKADDR),
-    LUABSD_INT("_SC_THREAD_ATTR_STACKSIZE",         _SC_THREAD_ATTR_STACKSIZE),
-    LUABSD_INT("_SC_THREAD_CPUTIME",                _SC_THREAD_CPUTIME),
-    LUABSD_INT("_SC_THREAD_DESTRUCTOR_ITERATIONS",  _SC_THREAD_DESTRUCTOR_ITERATIONS),
-    LUABSD_INT("_SC_THREAD_KEYS_MAX",               _SC_THREAD_KEYS_MAX),
-    LUABSD_INT("_SC_THREAD_PRIO_INHERIT",           _SC_THREAD_PRIO_INHERIT),
-    LUABSD_INT("_SC_THREAD_PRIO_PROTECT",           _SC_THREAD_PRIO_PROTECT),
-    LUABSD_INT("_SC_THREAD_PRIORITY_SCHEDULING",    _SC_THREAD_PRIORITY_SCHEDULING),
-    LUABSD_INT("_SC_THREAD_PROCESS_SHARED",         _SC_THREAD_PROCESS_SHARED),
-    LUABSD_INT("_SC_THREAD_SAFE_FUNCTIONS",         _SC_THREAD_SAFE_FUNCTIONS),
-    LUABSD_INT("_SC_THREAD_SPORADIC_SERVER",        _SC_THREAD_SPORADIC_SERVER),
-    LUABSD_INT("_SC_THREAD_STACK_MIN",              _SC_THREAD_STACK_MIN),
-    LUABSD_INT("_SC_THREAD_THREADS_MAX",            _SC_THREAD_THREADS_MAX),
-    LUABSD_INT("_SC_TIMEOUTS",                      _SC_TIMEOUTS),
-    LUABSD_INT("_SC_THREADS",                       _SC_THREADS),
-    LUABSD_INT("_SC_TRACE",                         _SC_TRACE),
-    LUABSD_INT("_SC_TRACE_EVENT_FILTER",            _SC_TRACE_EVENT_FILTER),
-    LUABSD_INT("_SC_TRACE_INHERIT",                 _SC_TRACE_INHERIT),
-    LUABSD_INT("_SC_TRACE_LOG",                     _SC_TRACE_LOG),
-    LUABSD_INT("_SC_TTY_NAME_MAX",                  _SC_TTY_NAME_MAX),
-    LUABSD_INT("_SC_TYPED_MEMORY_OBJECTS",          _SC_TYPED_MEMORY_OBJECTS),
-    LUABSD_INT("_SC_V6_ILP32_OFF32",                _SC_V6_ILP32_OFF32),
-    LUABSD_INT("_SC_V6_ILP32_OFFBIG",               _SC_V6_ILP32_OFFBIG),
-    LUABSD_INT("_SC_V6_LP64_OFF64",                 _SC_V6_LP64_OFF64),
-    LUABSD_INT("_SC_V6_LPBIG_OFFBIG",               _SC_V6_LPBIG_OFFBIG),
-    LUABSD_INT("_SC_IPV6",                          _SC_IPV6),
-    LUABSD_INT("_SC_RAW_SOCKETS",                   _SC_RAW_SOCKETS),
-    LUABSD_INT("_SC_SYMLOOP_MAX",                   _SC_SYMLOOP_MAX),
+    LUAB_INT("_SC_2_PBS",                         _SC_2_PBS),
+    LUAB_INT("_SC_2_PBS_ACCOUNTING",              _SC_2_PBS_ACCOUNTING),
+    LUAB_INT("_SC_2_PBS_CHECKPOINT",              _SC_2_PBS_CHECKPOINT),
+    LUAB_INT("_SC_2_PBS_LOCATE",                  _SC_2_PBS_LOCATE),
+    LUAB_INT("_SC_2_PBS_MESSAGE",                 _SC_2_PBS_MESSAGE),
+    LUAB_INT("_SC_2_PBS_TRACK",                   _SC_2_PBS_TRACK),
+    LUAB_INT("_SC_ADVISORY_INFO",                 _SC_ADVISORY_INFO),
+    LUAB_INT("_SC_BARRIERS",                      _SC_BARRIERS),
+    LUAB_INT("_SC_CLOCK_SELECTION",               _SC_CLOCK_SELECTION),
+    LUAB_INT("_SC_CPUTIME",                       _SC_CPUTIME),
+    LUAB_INT("_SC_FILE_LOCKING",                  _SC_FILE_LOCKING),
+    LUAB_INT("_SC_GETGR_R_SIZE_MAX",              _SC_GETGR_R_SIZE_MAX),
+    LUAB_INT("_SC_GETPW_R_SIZE_MAX",              _SC_GETPW_R_SIZE_MAX),
+    LUAB_INT("_SC_HOST_NAME_MAX",                 _SC_HOST_NAME_MAX),
+    LUAB_INT("_SC_LOGIN_NAME_MAX",                _SC_LOGIN_NAME_MAX),
+    LUAB_INT("_SC_MONOTONIC_CLOCK",               _SC_MONOTONIC_CLOCK),
+    LUAB_INT("_SC_MQ_PRIO_MAX",                   _SC_MQ_PRIO_MAX),
+    LUAB_INT("_SC_READER_WRITER_LOCKS",           _SC_READER_WRITER_LOCKS),
+    LUAB_INT("_SC_REGEXP",                        _SC_REGEXP),
+    LUAB_INT("_SC_SHELL",                         _SC_SHELL),
+    LUAB_INT("_SC_SPAWN",                         _SC_SPAWN),
+    LUAB_INT("_SC_SPIN_LOCKS",                    _SC_SPIN_LOCKS),
+    LUAB_INT("_SC_SPORADIC_SERVER",               _SC_SPORADIC_SERVER),
+    LUAB_INT("_SC_THREAD_ATTR_STACKADDR",         _SC_THREAD_ATTR_STACKADDR),
+    LUAB_INT("_SC_THREAD_ATTR_STACKSIZE",         _SC_THREAD_ATTR_STACKSIZE),
+    LUAB_INT("_SC_THREAD_CPUTIME",                _SC_THREAD_CPUTIME),
+    LUAB_INT("_SC_THREAD_DESTRUCTOR_ITERATIONS",  _SC_THREAD_DESTRUCTOR_ITERATIONS),
+    LUAB_INT("_SC_THREAD_KEYS_MAX",               _SC_THREAD_KEYS_MAX),
+    LUAB_INT("_SC_THREAD_PRIO_INHERIT",           _SC_THREAD_PRIO_INHERIT),
+    LUAB_INT("_SC_THREAD_PRIO_PROTECT",           _SC_THREAD_PRIO_PROTECT),
+    LUAB_INT("_SC_THREAD_PRIORITY_SCHEDULING",    _SC_THREAD_PRIORITY_SCHEDULING),
+    LUAB_INT("_SC_THREAD_PROCESS_SHARED",         _SC_THREAD_PROCESS_SHARED),
+    LUAB_INT("_SC_THREAD_SAFE_FUNCTIONS",         _SC_THREAD_SAFE_FUNCTIONS),
+    LUAB_INT("_SC_THREAD_SPORADIC_SERVER",        _SC_THREAD_SPORADIC_SERVER),
+    LUAB_INT("_SC_THREAD_STACK_MIN",              _SC_THREAD_STACK_MIN),
+    LUAB_INT("_SC_THREAD_THREADS_MAX",            _SC_THREAD_THREADS_MAX),
+    LUAB_INT("_SC_TIMEOUTS",                      _SC_TIMEOUTS),
+    LUAB_INT("_SC_THREADS",                       _SC_THREADS),
+    LUAB_INT("_SC_TRACE",                         _SC_TRACE),
+    LUAB_INT("_SC_TRACE_EVENT_FILTER",            _SC_TRACE_EVENT_FILTER),
+    LUAB_INT("_SC_TRACE_INHERIT",                 _SC_TRACE_INHERIT),
+    LUAB_INT("_SC_TRACE_LOG",                     _SC_TRACE_LOG),
+    LUAB_INT("_SC_TTY_NAME_MAX",                  _SC_TTY_NAME_MAX),
+    LUAB_INT("_SC_TYPED_MEMORY_OBJECTS",          _SC_TYPED_MEMORY_OBJECTS),
+    LUAB_INT("_SC_V6_ILP32_OFF32",                _SC_V6_ILP32_OFF32),
+    LUAB_INT("_SC_V6_ILP32_OFFBIG",               _SC_V6_ILP32_OFFBIG),
+    LUAB_INT("_SC_V6_LP64_OFF64",                 _SC_V6_LP64_OFF64),
+    LUAB_INT("_SC_V6_LPBIG_OFFBIG",               _SC_V6_LPBIG_OFFBIG),
+    LUAB_INT("_SC_IPV6",                          _SC_IPV6),
+    LUAB_INT("_SC_RAW_SOCKETS",                   _SC_RAW_SOCKETS),
+    LUAB_INT("_SC_SYMLOOP_MAX",                   _SC_SYMLOOP_MAX),
 #endif
 #if __XSI_VISIBLE
-    LUABSD_INT("_SC_ATEXIT_MAX",                    _SC_ATEXIT_MAX),
-    LUABSD_INT("_SC_IOV_MAX",                       _SC_IOV_MAX),
-    LUABSD_INT("_SC_PAGE_SIZE",                     _SC_PAGE_SIZE),
-    LUABSD_INT("_SC_XOPEN_CRYPT",                   _SC_XOPEN_CRYPT),
-    LUABSD_INT("_SC_XOPEN_ENH_I18N",                _SC_XOPEN_ENH_I18N),
-    LUABSD_INT("_SC_XOPEN_LEGACY",                  _SC_XOPEN_LEGACY),
-    LUABSD_INT("_SC_XOPEN_REALTIME",                _SC_XOPEN_REALTIME),
-    LUABSD_INT("_SC_XOPEN_REALTIME_THREADS",        _SC_XOPEN_REALTIME_THREADS),
-    LUABSD_INT("_SC_XOPEN_SHM",                     _SC_XOPEN_SHM),
-    LUABSD_INT("_SC_XOPEN_STREAMS",                 _SC_XOPEN_STREAMS),
-    LUABSD_INT("_SC_XOPEN_UNIX",                    _SC_XOPEN_UNIX),
-    LUABSD_INT("_SC_XOPEN_VERSION",                 _SC_XOPEN_VERSION),
-    LUABSD_INT("_SC_XOPEN_XCU_VERSION",             _SC_XOPEN_XCU_VERSION),
+    LUAB_INT("_SC_ATEXIT_MAX",                    _SC_ATEXIT_MAX),
+    LUAB_INT("_SC_IOV_MAX",                       _SC_IOV_MAX),
+    LUAB_INT("_SC_PAGE_SIZE",                     _SC_PAGE_SIZE),
+    LUAB_INT("_SC_XOPEN_CRYPT",                   _SC_XOPEN_CRYPT),
+    LUAB_INT("_SC_XOPEN_ENH_I18N",                _SC_XOPEN_ENH_I18N),
+    LUAB_INT("_SC_XOPEN_LEGACY",                  _SC_XOPEN_LEGACY),
+    LUAB_INT("_SC_XOPEN_REALTIME",                _SC_XOPEN_REALTIME),
+    LUAB_INT("_SC_XOPEN_REALTIME_THREADS",        _SC_XOPEN_REALTIME_THREADS),
+    LUAB_INT("_SC_XOPEN_SHM",                     _SC_XOPEN_SHM),
+    LUAB_INT("_SC_XOPEN_STREAMS",                 _SC_XOPEN_STREAMS),
+    LUAB_INT("_SC_XOPEN_UNIX",                    _SC_XOPEN_UNIX),
+    LUAB_INT("_SC_XOPEN_VERSION",                 _SC_XOPEN_VERSION),
+    LUAB_INT("_SC_XOPEN_XCU_VERSION",             _SC_XOPEN_XCU_VERSION),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_INT("_SC_NPROCESSORS_CONF",              _SC_NPROCESSORS_CONF),
-    LUABSD_INT("_SC_NPROCESSORS_ONLN",              _SC_NPROCESSORS_ONLN),
-    LUABSD_INT("_SC_CPUSET_SIZE",                   _SC_CPUSET_SIZE),
+    LUAB_INT("_SC_NPROCESSORS_CONF",              _SC_NPROCESSORS_CONF),
+    LUAB_INT("_SC_NPROCESSORS_ONLN",              _SC_NPROCESSORS_ONLN),
+    LUAB_INT("_SC_CPUSET_SIZE",                   _SC_CPUSET_SIZE),
 #endif
-    LUABSD_INT("_SC_PHYS_PAGES",                    _SC_PHYS_PAGES),
+    LUAB_INT("_SC_PHYS_PAGES",                    _SC_PHYS_PAGES),
 #if __POSIX_VISIBLE >= 199209
-    LUABSD_INT("_CS_PATH",                          _CS_PATH),
+    LUAB_INT("_CS_PATH",                          _CS_PATH),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_INT("_CS_POSIX_V6_ILP32_OFF32_CFLAGS",       _CS_POSIX_V6_ILP32_OFF32_CFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_ILP32_OFF32_LDFLAGS",      _CS_POSIX_V6_ILP32_OFF32_LDFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_ILP32_OFF32_LIBS",         _CS_POSIX_V6_ILP32_OFF32_LIBS),
-    LUABSD_INT("_CS_POSIX_V6_ILP32_OFFBIG_CFLAGS",      _CS_POSIX_V6_ILP32_OFFBIG_CFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS",     _CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_ILP32_OFFBIG_LIBS",        _CS_POSIX_V6_ILP32_OFFBIG_LIBS),
-    LUABSD_INT("_CS_POSIX_V6_LP64_OFF64_CFLAGS",        _CS_POSIX_V6_LP64_OFF64_CFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_LP64_OFF64_LDFLAGS",       _CS_POSIX_V6_LP64_OFF64_LDFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_LP64_OFF64_LIBS",          _CS_POSIX_V6_LP64_OFF64_LIBS),
-    LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS",      _CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS",     _CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS),
-    LUABSD_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LIBS",        _CS_POSIX_V6_LPBIG_OFFBIG_LIBS),
-    LUABSD_INT("_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS",    _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS),
+    LUAB_INT("_CS_POSIX_V6_ILP32_OFF32_CFLAGS",       _CS_POSIX_V6_ILP32_OFF32_CFLAGS),
+    LUAB_INT("_CS_POSIX_V6_ILP32_OFF32_LDFLAGS",      _CS_POSIX_V6_ILP32_OFF32_LDFLAGS),
+    LUAB_INT("_CS_POSIX_V6_ILP32_OFF32_LIBS",         _CS_POSIX_V6_ILP32_OFF32_LIBS),
+    LUAB_INT("_CS_POSIX_V6_ILP32_OFFBIG_CFLAGS",      _CS_POSIX_V6_ILP32_OFFBIG_CFLAGS),
+    LUAB_INT("_CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS",     _CS_POSIX_V6_ILP32_OFFBIG_LDFLAGS),
+    LUAB_INT("_CS_POSIX_V6_ILP32_OFFBIG_LIBS",        _CS_POSIX_V6_ILP32_OFFBIG_LIBS),
+    LUAB_INT("_CS_POSIX_V6_LP64_OFF64_CFLAGS",        _CS_POSIX_V6_LP64_OFF64_CFLAGS),
+    LUAB_INT("_CS_POSIX_V6_LP64_OFF64_LDFLAGS",       _CS_POSIX_V6_LP64_OFF64_LDFLAGS),
+    LUAB_INT("_CS_POSIX_V6_LP64_OFF64_LIBS",          _CS_POSIX_V6_LP64_OFF64_LIBS),
+    LUAB_INT("_CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS",      _CS_POSIX_V6_LPBIG_OFFBIG_CFLAGS),
+    LUAB_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS",     _CS_POSIX_V6_LPBIG_OFFBIG_LDFLAGS),
+    LUAB_INT("_CS_POSIX_V6_LPBIG_OFFBIG_LIBS",        _CS_POSIX_V6_LPBIG_OFFBIG_LIBS),
+    LUAB_INT("_CS_POSIX_V6_WIDTH_RESTRICTED_ENVS",    _CS_POSIX_V6_WIDTH_RESTRICTED_ENVS),
 #endif
 /*
  * 1003.1-1990
  */
-    LUABSD_FUNC("access",               luab_access),
-    LUABSD_FUNC("alarm",                luab_alarm),
-    LUABSD_FUNC("chdir",                luab_chdir),
-    LUABSD_FUNC("chown",                luab_chown),
-    LUABSD_FUNC("close",                luab_close),
-    LUABSD_FUNC("closefrom",            luab_closefrom),
-    LUABSD_FUNC("dup",                  luab_dup),
-    LUABSD_FUNC("dup2",                 luab_dup2),
-    LUABSD_FUNC("execv",                luab_execv),
-    LUABSD_FUNC("execve",               luab_execve),
-    LUABSD_FUNC("execvp",               luab_execvp),
-    LUABSD_FUNC("fork",                 luab_fork),
-    LUABSD_FUNC("fpathconf",            luab_fpathconf),
-    LUABSD_FUNC("getcwd",               luab_getcwd),
-    LUABSD_FUNC("getegid",              luab_getegid),
-    LUABSD_FUNC("geteuid",              luab_geteuid),
-    LUABSD_FUNC("getgid",               luab_getgid),
-    LUABSD_FUNC("getgroups",            luab_getgroups),
-    LUABSD_FUNC("getlogin",             luab_getlogin),
-    LUABSD_FUNC("getpgrp",              luab_getpgrp),
-    LUABSD_FUNC("getpid",               luab_getpid),
-    LUABSD_FUNC("getppid",              luab_getppid),
-    LUABSD_FUNC("getuid",               luab_getuid),
-    LUABSD_FUNC("isatty",               luab_isatty),
-    LUABSD_FUNC("link",                 luab_link),
-    LUABSD_FUNC("lseek",                luab_lseek),
-    LUABSD_FUNC("pathconf",             luab_pathconf),
+    LUAB_FUNC("access",               luab_access),
+    LUAB_FUNC("alarm",                luab_alarm),
+    LUAB_FUNC("chdir",                luab_chdir),
+    LUAB_FUNC("chown",                luab_chown),
+    LUAB_FUNC("close",                luab_close),
+    LUAB_FUNC("closefrom",            luab_closefrom),
+    LUAB_FUNC("dup",                  luab_dup),
+    LUAB_FUNC("dup2",                 luab_dup2),
+    LUAB_FUNC("execv",                luab_execv),
+    LUAB_FUNC("execve",               luab_execve),
+    LUAB_FUNC("execvp",               luab_execvp),
+    LUAB_FUNC("fork",                 luab_fork),
+    LUAB_FUNC("fpathconf",            luab_fpathconf),
+    LUAB_FUNC("getcwd",               luab_getcwd),
+    LUAB_FUNC("getegid",              luab_getegid),
+    LUAB_FUNC("geteuid",              luab_geteuid),
+    LUAB_FUNC("getgid",               luab_getgid),
+    LUAB_FUNC("getgroups",            luab_getgroups),
+    LUAB_FUNC("getlogin",             luab_getlogin),
+    LUAB_FUNC("getpgrp",              luab_getpgrp),
+    LUAB_FUNC("getpid",               luab_getpid),
+    LUAB_FUNC("getppid",              luab_getppid),
+    LUAB_FUNC("getuid",               luab_getuid),
+    LUAB_FUNC("isatty",               luab_isatty),
+    LUAB_FUNC("link",                 luab_link),
+    LUAB_FUNC("lseek",                luab_lseek),
+    LUAB_FUNC("pathconf",             luab_pathconf),
 #ifdef notyet
-    LUABSD_FUNC("pause",                luab_pause),
+    LUAB_FUNC("pause",                luab_pause),
 #endif
-    LUABSD_FUNC("pipe",                 luab_pipe),
-    LUABSD_FUNC("read",                 luab_read),
-    LUABSD_FUNC("rmdir",                luab_rmdir),
-    LUABSD_FUNC("setgid",               luab_setgid),
-    LUABSD_FUNC("setpgid",              luab_setpgid),
-    LUABSD_FUNC("setsid",               luab_setsid),
-    LUABSD_FUNC("setuid",               luab_setuid),
-    LUABSD_FUNC("sysconf",              luab_sysconf),
-    LUABSD_FUNC("tcgetpgrp",            luab_tcgetpgrp),
-    LUABSD_FUNC("tcsetpgrp",            luab_tcsetpgrp),
-    LUABSD_FUNC("ttyname",              luab_ttyname),
-    LUABSD_FUNC("ttyname_r",            luab_ttyname_r),
-    LUABSD_FUNC("unlink",               luab_unlink),
-    LUABSD_FUNC("write",                luab_write),
+    LUAB_FUNC("pipe",                 luab_pipe),
+    LUAB_FUNC("read",                 luab_read),
+    LUAB_FUNC("rmdir",                luab_rmdir),
+    LUAB_FUNC("setgid",               luab_setgid),
+    LUAB_FUNC("setpgid",              luab_setpgid),
+    LUAB_FUNC("setsid",               luab_setsid),
+    LUAB_FUNC("setuid",               luab_setuid),
+    LUAB_FUNC("sysconf",              luab_sysconf),
+    LUAB_FUNC("tcgetpgrp",            luab_tcgetpgrp),
+    LUAB_FUNC("tcsetpgrp",            luab_tcsetpgrp),
+    LUAB_FUNC("ttyname",              luab_ttyname),
+    LUAB_FUNC("ttyname_r",            luab_ttyname_r),
+    LUAB_FUNC("unlink",               luab_unlink),
+    LUAB_FUNC("write",                luab_write),
 /*
  * 1003.2-1992
  */
 #if __POSIX_VISIBLE >= 199209 || __XSI_VISIBLE
 /*
-    LUABSD_FUNC("confstr",  luab_confstr),
+    LUAB_FUNC("confstr",  luab_confstr),
  */
 #endif
 /*
  * ISO/IEC 9945-1: 1996
  */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE
-    LUABSD_FUNC("fsync",                luab_fsync),
-    LUABSD_FUNC("fdatasync",            luab_fdatasync),
-    LUABSD_FUNC("ftruncate",            luab_ftruncate),
+    LUAB_FUNC("fsync",                luab_fsync),
+    LUAB_FUNC("fdatasync",            luab_fdatasync),
+    LUAB_FUNC("ftruncate",            luab_ftruncate),
 #endif
 #if __POSIX_VISIBLE >= 199506
-    LUABSD_FUNC("getlogin_r",           luab_getlogin_r),
+    LUAB_FUNC("getlogin_r",           luab_getlogin_r),
 #endif
 /*
  * 1003.1-2001
  */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
-    LUABSD_FUNC("fchown",               luab_fchown),
-    LUABSD_FUNC("readlink",             luab_readlink),
+    LUAB_FUNC("fchown",               luab_fchown),
+    LUAB_FUNC("readlink",             luab_readlink),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_FUNC("gethostname",          luab_gethostname),
-    LUABSD_FUNC("setegid",              luab_setegid),
-    LUABSD_FUNC("seteuid",              luab_seteuid),
+    LUAB_FUNC("gethostname",          luab_gethostname),
+    LUAB_FUNC("setegid",              luab_setegid),
+    LUAB_FUNC("seteuid",              luab_seteuid),
 #endif
 /*
  * 1003.1-2008
  */
 #if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE
-    LUABSD_FUNC("getsid",               luab_getsid),
-    LUABSD_FUNC("fchdir",               luab_fchdir),
-    LUABSD_FUNC("getpgid",              luab_getpgid),
-    LUABSD_FUNC("lchown",               luab_lchown),
-    LUABSD_FUNC("pread",                luab_pread),
-    LUABSD_FUNC("pwrite",               luab_pwrite),
-    LUABSD_FUNC("truncate",             luab_truncate),
+    LUAB_FUNC("getsid",               luab_getsid),
+    LUAB_FUNC("fchdir",               luab_fchdir),
+    LUAB_FUNC("getpgid",              luab_getpgid),
+    LUAB_FUNC("lchown",               luab_lchown),
+    LUAB_FUNC("pread",                luab_pread),
+    LUAB_FUNC("pwrite",               luab_pwrite),
+    LUAB_FUNC("truncate",             luab_truncate),
 #endif
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_FUNC("faccessat",            luab_faccessat),
-    LUABSD_FUNC("fchownat",             luab_fchownat),
-    LUABSD_FUNC("fexecve",              luab_fexecve),
-    LUABSD_FUNC("linkat",               luab_linkat),
-    LUABSD_FUNC("readlinkat",           luab_readlinkat),
-    LUABSD_FUNC("symlinkat",            luab_symlinkat),
-    LUABSD_FUNC("unlinkat",             luab_unlinkat),
+    LUAB_FUNC("faccessat",            luab_faccessat),
+    LUAB_FUNC("fchownat",             luab_fchownat),
+    LUAB_FUNC("fexecve",              luab_fexecve),
+    LUAB_FUNC("linkat",               luab_linkat),
+    LUAB_FUNC("readlinkat",           luab_readlinkat),
+    LUAB_FUNC("symlinkat",            luab_symlinkat),
+    LUAB_FUNC("unlinkat",             luab_unlinkat),
 #endif
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 402
-    LUABSD_FUNC("symlink",              luab_symlink),
+    LUAB_FUNC("symlink",              luab_symlink),
 #endif
 /*
  * X/Open System Interfaces
  */
 #if __XSI_VISIBLE
-    LUABSD_FUNC("crypt",                luab_crypt),
-    LUABSD_FUNC("gethostid",            luab_gethostid),
-    LUABSD_FUNC("lockf",                luab_lockf),
-    LUABSD_FUNC("nice",                 luab_nice),
-    LUABSD_FUNC("setregid",             luab_setregid),
-    LUABSD_FUNC("setreuid",             luab_setreuid),
-    LUABSD_FUNC("swab",                 luab_swab),
-    LUABSD_FUNC("sync",                 luab_sync),
+    LUAB_FUNC("crypt",                luab_crypt),
+    LUAB_FUNC("gethostid",            luab_gethostid),
+    LUAB_FUNC("lockf",                luab_lockf),
+    LUAB_FUNC("nice",                 luab_nice),
+    LUAB_FUNC("setregid",             luab_setregid),
+    LUAB_FUNC("setreuid",             luab_setreuid),
+    LUAB_FUNC("swab",                 luab_swab),
+    LUAB_FUNC("sync",                 luab_sync),
 #endif
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 500) || __BSD_VISIBLE
-    LUABSD_FUNC("chroot",               luab_chroot),
-    LUABSD_FUNC("getdtablesize",        luab_getdtablesize),
-    LUABSD_FUNC("getpagesize",          luab_getpagesize),
-    LUABSD_FUNC("getpass",              luab_getpass),
+    LUAB_FUNC("chroot",               luab_chroot),
+    LUAB_FUNC("getdtablesize",        luab_getdtablesize),
+    LUAB_FUNC("getpagesize",          luab_getpagesize),
+    LUAB_FUNC("getpass",              luab_getpass),
 #endif
 
 #if (__XSI_VISIBLE && __XSI_VISIBLE <= 600) || __BSD_VISIBLE
-    LUABSD_FUNC("getwd",                luab_getwd),
-    LUABSD_FUNC("usleep",               luab_usleep),
-    LUABSD_FUNC("vfork",                luab_vfork),
+    LUAB_FUNC("getwd",                luab_getwd),
+    LUAB_FUNC("usleep",               luab_usleep),
+    LUAB_FUNC("vfork",                luab_vfork),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_FUNC("acct",                 luab_acct),
-    LUABSD_FUNC("check_utility_compat", luab_check_utility_compat),
-    LUABSD_FUNC("crypt_get_format",     luab_crypt_get_format),
-    LUABSD_FUNC("crypt_r",              luab_crypt_r),
-    LUABSD_FUNC("crypt_set_format",     luab_crypt_set_format),
-    LUABSD_FUNC("crypt_dup3",           luab_dup3),
-    LUABSD_FUNC("eaccess",              luab_eaccess),
-    LUABSD_FUNC("endusershell",         luab_endusershell),
-    LUABSD_FUNC("exect",                luab_exect),
-    LUABSD_FUNC("execvP",               luab_execvP),
-    LUABSD_FUNC("feature_present",      luab_feature_present),
-    LUABSD_FUNC("fflagstostr",          luab_fflagstostr),
-    LUABSD_FUNC("getdomainname",        luab_getdomainname),
-    LUABSD_FUNC("getentropy",           luab_getentropy),
-    LUABSD_FUNC("getgrouplist",         luab_getgrouplist),
-    LUABSD_FUNC("getloginclass",        luab_getloginclass),
-    LUABSD_FUNC("getmode",              luab_getmode),
-    LUABSD_FUNC("getosreldate",         luab_getosreldate),
-    LUABSD_FUNC("getpeereid",           luab_getpeereid),
-    LUABSD_FUNC("getresgid",            luab_getresgid),
-    LUABSD_FUNC("getresuid",            luab_getresuid),
-    LUABSD_FUNC("getusershell",         luab_getusershell),
-    LUABSD_FUNC("initgroups",           luab_initgroups),
-    LUABSD_FUNC("iruserok",             luab_iruserok),
-    LUABSD_FUNC("iruserok_sa",          luab_iruserok_sa),
-    LUABSD_FUNC("issetugid",            luab_issetugid),
-    LUABSD_FUNC("lpathconf",            luab_lpathconf),
-    LUABSD_FUNC("mkdtemp",              luab_mkdtemp),
-    LUABSD_FUNC("mkstemp",              luab_mkstemp),
-    LUABSD_FUNC("mkstemps",             luab_mkstemps),
-    LUABSD_FUNC("mktemp",               luab_mktemp),
-    LUABSD_FUNC("profil",               luab_profil),
-    LUABSD_FUNC("pipe2",                luab_pipe2),
-    LUABSD_FUNC("rcmd",                 luab_rcmd),
-    LUABSD_FUNC("rcmd_af",              luab_rcmd_af),
-    LUABSD_FUNC("rcmdsh",               luab_rcmdsh),
-    LUABSD_FUNC("reboot",               luab_reboot),
-    LUABSD_FUNC("revoke",               luab_revoke),
-    LUABSD_FUNC("rfork",                luab_rfork),
-    LUABSD_FUNC("rresvport",            luab_rresvport),
-    LUABSD_FUNC("rresvport_af",         luab_rresvport_af),
-    LUABSD_FUNC("ruserok",              luab_ruserok),
-    LUABSD_FUNC("setdomainname",        luab_setdomainname),
-    LUABSD_FUNC("setgroups",            luab_setgroups),
-    LUABSD_FUNC("sethostname",          luab_sethostname),
-    LUABSD_FUNC("setlogin",             luab_setlogin),
-    LUABSD_FUNC("setloginclass",        luab_setloginclass),
-    LUABSD_FUNC("setmode",              luab_setmode),
-    LUABSD_FUNC("setpgrp",              luab_setpgrp),
-    LUABSD_FUNC("setproctitle",         luab_setproctitle),
-    LUABSD_FUNC("setproctitle_fast",    luab_setproctitle_fast),
-    LUABSD_FUNC("setresgid",            luab_setresgid),
-    LUABSD_FUNC("setresuid",            luab_setresuid),
-    LUABSD_FUNC("setrgid",              luab_setrgid),
-    LUABSD_FUNC("setruid",              luab_setruid),
-    LUABSD_FUNC("setusershell",         luab_setusershell),
-    LUABSD_FUNC("swapon",               luab_swapon),
-    LUABSD_FUNC("swapoff",              luab_swapoff),
-    LUABSD_FUNC("undelete",             luab_undelete),
-    LUABSD_FUNC("crypt_data_create",    luab_crypt_data_create),
+    LUAB_FUNC("acct",                 luab_acct),
+    LUAB_FUNC("check_utility_compat", luab_check_utility_compat),
+    LUAB_FUNC("crypt_get_format",     luab_crypt_get_format),
+    LUAB_FUNC("crypt_r",              luab_crypt_r),
+    LUAB_FUNC("crypt_set_format",     luab_crypt_set_format),
+    LUAB_FUNC("crypt_dup3",           luab_dup3),
+    LUAB_FUNC("eaccess",              luab_eaccess),
+    LUAB_FUNC("endusershell",         luab_endusershell),
+    LUAB_FUNC("exect",                luab_exect),
+    LUAB_FUNC("execvP",               luab_execvP),
+    LUAB_FUNC("feature_present",      luab_feature_present),
+    LUAB_FUNC("fflagstostr",          luab_fflagstostr),
+    LUAB_FUNC("getdomainname",        luab_getdomainname),
+    LUAB_FUNC("getentropy",           luab_getentropy),
+    LUAB_FUNC("getgrouplist",         luab_getgrouplist),
+    LUAB_FUNC("getloginclass",        luab_getloginclass),
+    LUAB_FUNC("getmode",              luab_getmode),
+    LUAB_FUNC("getosreldate",         luab_getosreldate),
+    LUAB_FUNC("getpeereid",           luab_getpeereid),
+    LUAB_FUNC("getresgid",            luab_getresgid),
+    LUAB_FUNC("getresuid",            luab_getresuid),
+    LUAB_FUNC("getusershell",         luab_getusershell),
+    LUAB_FUNC("initgroups",           luab_initgroups),
+    LUAB_FUNC("iruserok",             luab_iruserok),
+    LUAB_FUNC("iruserok_sa",          luab_iruserok_sa),
+    LUAB_FUNC("issetugid",            luab_issetugid),
+    LUAB_FUNC("lpathconf",            luab_lpathconf),
+    LUAB_FUNC("mkdtemp",              luab_mkdtemp),
+    LUAB_FUNC("mkstemp",              luab_mkstemp),
+    LUAB_FUNC("mkstemps",             luab_mkstemps),
+    LUAB_FUNC("mktemp",               luab_mktemp),
+    LUAB_FUNC("profil",               luab_profil),
+    LUAB_FUNC("pipe2",                luab_pipe2),
+    LUAB_FUNC("rcmd",                 luab_rcmd),
+    LUAB_FUNC("rcmd_af",              luab_rcmd_af),
+    LUAB_FUNC("rcmdsh",               luab_rcmdsh),
+    LUAB_FUNC("reboot",               luab_reboot),
+    LUAB_FUNC("revoke",               luab_revoke),
+    LUAB_FUNC("rfork",                luab_rfork),
+    LUAB_FUNC("rresvport",            luab_rresvport),
+    LUAB_FUNC("rresvport_af",         luab_rresvport_af),
+    LUAB_FUNC("ruserok",              luab_ruserok),
+    LUAB_FUNC("setdomainname",        luab_setdomainname),
+    LUAB_FUNC("setgroups",            luab_setgroups),
+    LUAB_FUNC("sethostname",          luab_sethostname),
+    LUAB_FUNC("setlogin",             luab_setlogin),
+    LUAB_FUNC("setloginclass",        luab_setloginclass),
+    LUAB_FUNC("setmode",              luab_setmode),
+    LUAB_FUNC("setpgrp",              luab_setpgrp),
+    LUAB_FUNC("setproctitle",         luab_setproctitle),
+    LUAB_FUNC("setproctitle_fast",    luab_setproctitle_fast),
+    LUAB_FUNC("setresgid",            luab_setresgid),
+    LUAB_FUNC("setresuid",            luab_setresuid),
+    LUAB_FUNC("setrgid",              luab_setrgid),
+    LUAB_FUNC("setruid",              luab_setruid),
+    LUAB_FUNC("setusershell",         luab_setusershell),
+    LUAB_FUNC("swapon",               luab_swapon),
+    LUAB_FUNC("swapoff",              luab_swapoff),
+    LUAB_FUNC("undelete",             luab_undelete),
+    LUAB_FUNC("crypt_data_create",    luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_unistd_lib = {
-    .cookie = LUABSD_UNISTD_LIB_ID,
-    .name = LUABSD_UNISTD_LIB_KEY,
+    .cookie = LUAB_UNISTD_LIB_ID,
+    .name = LUAB_UNISTD_LIB_KEY,
     .vec = luab_unistd_vec,
 };

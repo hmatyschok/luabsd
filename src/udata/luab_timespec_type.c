@@ -55,8 +55,8 @@ typedef struct luab_timespec {
     (luab_toldata((L), (narg), &timespec_type, \
         struct timespec *, sizeof(struct timespec)))
 
-#define LUABSD_TIMESPEC_TYPE_ID    1594034844
-#define LUABSD_TIMESPEC_TYPE    "TIMESPEC*"
+#define LUAB_TIMESPEC_TYPE_ID    1594034844
+#define LUAB_TIMESPEC_TYPE    "TIMESPEC*"
 
 /*
  * Generator functions.
@@ -254,16 +254,16 @@ TIMESPEC_tostring(lua_State *L)
  */
 
 static luab_table_t timespec_methods[] = {
-    LUABSD_FUNC("set_tv_sec",   TIMESPEC_set_tv_sec),
-    LUABSD_FUNC("set_tv_nsec",  TIMESPEC_set_tv_nsec),
-    LUABSD_FUNC("get",          TIMESPEC_get),
-    LUABSD_FUNC("get_tv_sec",   TIMESPEC_get_tv_sec),
-    LUABSD_FUNC("get_tv_nsec",  TIMESPEC_get_tv_nsec),
-    LUABSD_FUNC("dump",         TIMESPEC_dump),
-    LUABSD_FUNC("__gc",         TIMESPEC_gc),
-    LUABSD_FUNC("__len",        TIMESPEC_len),
-    LUABSD_FUNC("__tostring",   TIMESPEC_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_tv_sec",   TIMESPEC_set_tv_sec),
+    LUAB_FUNC("set_tv_nsec",  TIMESPEC_set_tv_nsec),
+    LUAB_FUNC("get",          TIMESPEC_get),
+    LUAB_FUNC("get_tv_sec",   TIMESPEC_get_tv_sec),
+    LUAB_FUNC("get_tv_nsec",  TIMESPEC_get_tv_nsec),
+    LUAB_FUNC("dump",         TIMESPEC_dump),
+    LUAB_FUNC("__gc",         TIMESPEC_gc),
+    LUAB_FUNC("__len",        TIMESPEC_len),
+    LUAB_FUNC("__tostring",   TIMESPEC_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -288,8 +288,8 @@ timespec_udata(lua_State *L, int narg)
 }
 
 luab_module_t timespec_type = {
-    .cookie = LUABSD_TIMESPEC_TYPE_ID,
-    .name = LUABSD_TIMESPEC_TYPE,
+    .cookie = LUAB_TIMESPEC_TYPE_ID,
+    .name = LUAB_TIMESPEC_TYPE,
     .vec = timespec_methods,
     .create = timespec_create,
     .init = timespec_init,

@@ -60,8 +60,8 @@ typedef struct luab_cmsgcred {
     (luab_toldata((L), (narg), &cmsgcred_type, \
         struct cmsgcred *, sizeof(struct cmsgcred)))
 
-#define LUABSD_CMSGCRED_TYPE_ID    1601557495
-#define LUABSD_CMSGCRED_TYPE    "CMSGCRED*"
+#define LUAB_CMSGCRED_TYPE_ID    1601557495
+#define LUAB_CMSGCRED_TYPE    "CMSGCRED*"
 
 /*
  * Generator functions.
@@ -315,18 +315,18 @@ CMSGCRED_tostring(lua_State *L)
  */
 
 static luab_table_t cmsgcred_methods[] = {
-    LUABSD_FUNC("get",                  CMSGCRED_get),
-    LUABSD_FUNC("get_cmcred_pid",       CMSGCRED_cmcred_pid),
-    LUABSD_FUNC("get_cmcred_uid",       CMSGCRED_cmcred_uid),
-    LUABSD_FUNC("get_cmcred_euid",      CMSGCRED_cmcred_euid),
-    LUABSD_FUNC("get_cmcred_gid",       CMSGCRED_cmcred_gid),
-    LUABSD_FUNC("get_cmcred_ngroups",   CMSGCRED_cmcred_ngroups),
-    LUABSD_FUNC("get_cmcred_groups",    CMSGCRED_cmcred_groups),
-    LUABSD_FUNC("dump",                 CMSGCRED_dump),
-    LUABSD_FUNC("__gc",                 CMSGCRED_gc),
-    LUABSD_FUNC("__len",                CMSGCRED_len),
-    LUABSD_FUNC("__tostring",           CMSGCRED_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("get",                  CMSGCRED_get),
+    LUAB_FUNC("get_cmcred_pid",       CMSGCRED_cmcred_pid),
+    LUAB_FUNC("get_cmcred_uid",       CMSGCRED_cmcred_uid),
+    LUAB_FUNC("get_cmcred_euid",      CMSGCRED_cmcred_euid),
+    LUAB_FUNC("get_cmcred_gid",       CMSGCRED_cmcred_gid),
+    LUAB_FUNC("get_cmcred_ngroups",   CMSGCRED_cmcred_ngroups),
+    LUAB_FUNC("get_cmcred_groups",    CMSGCRED_cmcred_groups),
+    LUAB_FUNC("dump",                 CMSGCRED_dump),
+    LUAB_FUNC("__gc",                 CMSGCRED_gc),
+    LUAB_FUNC("__len",                CMSGCRED_len),
+    LUAB_FUNC("__tostring",           CMSGCRED_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -350,8 +350,8 @@ cmsgcred_udata(lua_State *L, int narg)
 }
 
 luab_module_t cmsgcred_type = {
-    .cookie = LUABSD_CMSGCRED_TYPE_ID,
-    .name = LUABSD_CMSGCRED_TYPE,
+    .cookie = LUAB_CMSGCRED_TYPE_ID,
+    .name = LUAB_CMSGCRED_TYPE,
     .vec = cmsgcred_methods,
     .create = cmsgcred_create,
     .init = cmsgcred_init,

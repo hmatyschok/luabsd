@@ -59,8 +59,8 @@ typedef struct luab_flock {
     (luab_toldata((L), (narg), &flock_type, \
         struct flock *, sizeof(struct flock)))
 
-#define LUABSD_FLOCK_TYPE_ID    1593623399
-#define LUABSD_FLOCK_TYPE    "FLOCK*"
+#define LUAB_FLOCK_TYPE_ID    1593623399
+#define LUAB_FLOCK_TYPE    "FLOCK*"
 
 /*
  * Generator functions.
@@ -342,24 +342,24 @@ FLOCK_tostring(lua_State *L)
  */
 
 static luab_table_t flock_methods[] = {
-    LUABSD_FUNC("set_l_start",  FLOCK_set_l_start),
-    LUABSD_FUNC("set_l_len",    FLOCK_set_l_len),
-    LUABSD_FUNC("set_l_pid",    FLOCK_set_l_pid),
-    LUABSD_FUNC("set_l_type",   FLOCK_set_l_type),
-    LUABSD_FUNC("set_l_whence", FLOCK_set_l_whence),
-    LUABSD_FUNC("set_l_sysid",  FLOCK_set_l_sysid),
-    LUABSD_FUNC("get",          FLOCK_get),
-    LUABSD_FUNC("get_l_start",  FLOCK_get_l_start),
-    LUABSD_FUNC("get_l_len",    FLOCK_get_l_len),
-    LUABSD_FUNC("get_l_pid",    FLOCK_get_l_pid),
-    LUABSD_FUNC("get_l_type",   FLOCK_get_l_type),
-    LUABSD_FUNC("get_l_whence", FLOCK_get_l_whence),
-    LUABSD_FUNC("get_l_sysid",  FLOCK_get_l_sysid),
-    LUABSD_FUNC("dump",         FLOCK_dump),
-    LUABSD_FUNC("__gc",         FLOCK_gc),
-    LUABSD_FUNC("__len",        FLOCK_len),
-    LUABSD_FUNC("__tostring",   FLOCK_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_l_start",  FLOCK_set_l_start),
+    LUAB_FUNC("set_l_len",    FLOCK_set_l_len),
+    LUAB_FUNC("set_l_pid",    FLOCK_set_l_pid),
+    LUAB_FUNC("set_l_type",   FLOCK_set_l_type),
+    LUAB_FUNC("set_l_whence", FLOCK_set_l_whence),
+    LUAB_FUNC("set_l_sysid",  FLOCK_set_l_sysid),
+    LUAB_FUNC("get",          FLOCK_get),
+    LUAB_FUNC("get_l_start",  FLOCK_get_l_start),
+    LUAB_FUNC("get_l_len",    FLOCK_get_l_len),
+    LUAB_FUNC("get_l_pid",    FLOCK_get_l_pid),
+    LUAB_FUNC("get_l_type",   FLOCK_get_l_type),
+    LUAB_FUNC("get_l_whence", FLOCK_get_l_whence),
+    LUAB_FUNC("get_l_sysid",  FLOCK_get_l_sysid),
+    LUAB_FUNC("dump",         FLOCK_dump),
+    LUAB_FUNC("__gc",         FLOCK_gc),
+    LUAB_FUNC("__len",        FLOCK_len),
+    LUAB_FUNC("__tostring",   FLOCK_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -384,8 +384,8 @@ flock_udata(lua_State *L, int narg)
 }
 
 luab_module_t flock_type = {
-    .cookie = LUABSD_FLOCK_TYPE_ID,
-    .name = LUABSD_FLOCK_TYPE,
+    .cookie = LUAB_FLOCK_TYPE_ID,
+    .name = LUAB_FLOCK_TYPE,
     .vec = flock_methods,
     .create = flock_create,
     .init = flock_init,

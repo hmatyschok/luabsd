@@ -34,8 +34,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_ARPA_INET_LIB_ID    1595780686
-#define LUABSD_ARPA_INET_LIB_KEY   "inet"
+#define LUAB_ARPA_INET_LIB_ID    1595780686
+#define LUAB_ARPA_INET_LIB_KEY   "inet"
 
 extern luab_module_t luab_arpa_inet_lib;
 
@@ -765,7 +765,7 @@ luab_inet_cidr_pton(lua_State *L)
     int af;
     luab_iovec_t *buf;
     void *dst;
-    luab_type_u *un;
+    luab_primitive_u *un;
     int *bits;
     caddr_t src;
     size_t size;
@@ -776,7 +776,7 @@ luab_inet_cidr_pton(lua_State *L)
     af = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
-    un = luab_udata(L, 4, luab_mx(HOOK), luab_type_u *);
+    un = luab_udata(L, 4, luab_mx(HOOK), luab_primitive_u *);
     bits = &(un->un_int);
 
     if (((src = buf->iov.iov_base) != NULL) &&
@@ -942,40 +942,40 @@ luab_sockaddr_in6_create(lua_State *L)
  */
 
 static luab_table_t luab_arpa_inet_vec[] = {
-    LUABSD_INT("INET_ADDRSTRLEN",       INET_ADDRSTRLEN),
-    LUABSD_INT("INET6_ADDRSTRLEN",      INET6_ADDRSTRLEN),
-    LUABSD_FUNC("inet_addr",            luab_inet_addr),
-    LUABSD_FUNC("inet_ntoa",            luab_inet_ntoa),
-    LUABSD_FUNC("inet_ntop",            luab_inet_ntop),
-    LUABSD_FUNC("inet_pton",            luab_inet_pton),
+    LUAB_INT("INET_ADDRSTRLEN",       INET_ADDRSTRLEN),
+    LUAB_INT("INET6_ADDRSTRLEN",      INET6_ADDRSTRLEN),
+    LUAB_FUNC("inet_addr",            luab_inet_addr),
+    LUAB_FUNC("inet_ntoa",            luab_inet_ntoa),
+    LUAB_FUNC("inet_ntop",            luab_inet_ntop),
+    LUAB_FUNC("inet_pton",            luab_inet_pton),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("inet_aton",            luab_inet_aton),
-    LUABSD_FUNC("inet_lnaof",           luab_inet_lnaof),
-    LUABSD_FUNC("inet_makeaddr",        luab_inet_makeaddr),
-    LUABSD_FUNC("inet_neta",            luab_inet_neta),
-    LUABSD_FUNC("inet_netof",           luab_inet_netof),
-    LUABSD_FUNC("inet_network",         luab_inet_network),
-    LUABSD_FUNC("inet_net_ntop",        luab_inet_net_ntop),
-    LUABSD_FUNC("inet_net_pton",        luab_inet_net_pton),
-    LUABSD_FUNC("inet_ntoa_r",          luab_inet_ntoa_r),
-    LUABSD_FUNC("inet_cidr_ntop",       luab_inet_cidr_ntop),
-    LUABSD_FUNC("inet_cidr_pton",       luab_inet_cidr_pton),
+    LUAB_FUNC("inet_aton",            luab_inet_aton),
+    LUAB_FUNC("inet_lnaof",           luab_inet_lnaof),
+    LUAB_FUNC("inet_makeaddr",        luab_inet_makeaddr),
+    LUAB_FUNC("inet_neta",            luab_inet_neta),
+    LUAB_FUNC("inet_netof",           luab_inet_netof),
+    LUAB_FUNC("inet_network",         luab_inet_network),
+    LUAB_FUNC("inet_net_ntop",        luab_inet_net_ntop),
+    LUAB_FUNC("inet_net_pton",        luab_inet_net_pton),
+    LUAB_FUNC("inet_ntoa_r",          luab_inet_ntoa_r),
+    LUAB_FUNC("inet_cidr_ntop",       luab_inet_cidr_ntop),
+    LUAB_FUNC("inet_cidr_pton",       luab_inet_cidr_pton),
 #if 0
-    LUABSD_FUNC("inet_nsap_addr",       luab_inet_nsap_addr),
-    LUABSD_FUNC("inet_nsap_ntoa",       luab_inet_nsap_ntoa),
+    LUAB_FUNC("inet_nsap_addr",       luab_inet_nsap_addr),
+    LUAB_FUNC("inet_nsap_ntoa",       luab_inet_nsap_ntoa),
 #endif
 #endif /* __BSD_VISIBLE */
-    LUABSD_FUNC("in_addr_create",       luab_in_addr_create),
-    LUABSD_FUNC("in6_addr_create",      luab_in6_addr_create),
+    LUAB_FUNC("in_addr_create",       luab_in_addr_create),
+    LUAB_FUNC("in6_addr_create",      luab_in6_addr_create),
 
     /* XXX wrong, because maps to <netinet/in.h> */
-    LUABSD_FUNC("sockaddr_in_create",   luab_sockaddr_in_create),
-    LUABSD_FUNC("sockaddr_in6_create",  luab_sockaddr_in6_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("sockaddr_in_create",   luab_sockaddr_in_create),
+    LUAB_FUNC("sockaddr_in6_create",  luab_sockaddr_in6_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_arpa_inet_lib = {
-    .cookie = LUABSD_ARPA_INET_LIB_ID,
-    .name = LUABSD_ARPA_INET_LIB_KEY,
+    .cookie = LUAB_ARPA_INET_LIB_ID,
+    .name = LUAB_ARPA_INET_LIB_KEY,
     .vec = luab_arpa_inet_vec,
 };

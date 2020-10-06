@@ -54,8 +54,8 @@ extern luab_module_t db_type;
  *  } DB;
  */
 
-#define LUABSD_DB_TYPE_ID    1596201370
-#define LUABSD_DB_TYPE   "DB*"
+#define LUAB_DB_TYPE_ID    1596201370
+#define LUAB_DB_TYPE   "DB*"
 
 typedef struct luab_db {
     luab_udata_t    ud_softc;
@@ -392,17 +392,17 @@ DB_tostring(lua_State *L)
  */
 
 static luab_table_t db_methods[] = {
-    LUABSD_FUNC("close",        DB_close),
-    LUABSD_FUNC("del",          DB_del),
-    LUABSD_FUNC("get",          DB_get),
-    LUABSD_FUNC("fd",           DB_fd),
-    LUABSD_FUNC("put",          DB_put),
-    LUABSD_FUNC("seq",          DB_seq),
-    LUABSD_FUNC("sync",         DB_sync),
-    LUABSD_FUNC("__gc",         DB_gc),
-    LUABSD_FUNC("__len",        DB_len),
-    LUABSD_FUNC("__tostring",   DB_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("close",        DB_close),
+    LUAB_FUNC("del",          DB_del),
+    LUAB_FUNC("get",          DB_get),
+    LUAB_FUNC("fd",           DB_fd),
+    LUAB_FUNC("put",          DB_put),
+    LUAB_FUNC("seq",          DB_seq),
+    LUAB_FUNC("sync",         DB_sync),
+    LUAB_FUNC("__gc",         DB_gc),
+    LUAB_FUNC("__len",        DB_len),
+    LUAB_FUNC("__tostring",   DB_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -442,8 +442,8 @@ db_udata(lua_State *L, int narg)
 }
 
 luab_module_t db_type = {
-    .cookie = LUABSD_DB_TYPE_ID,
-    .name = LUABSD_DB_TYPE,
+    .cookie = LUAB_DB_TYPE_ID,
+    .name = LUAB_DB_TYPE,
     .vec = db_methods,
     .create = db_create,
     .init = db_init,

@@ -35,8 +35,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#define LUABSD_FCNTL_LIB_ID    1593623310
-#define LUABSD_FCNTL_LIB_KEY    "fcntl"
+#define LUAB_FCNTL_LIB_ID    1593623310
+#define LUAB_FCNTL_LIB_KEY    "fcntl"
 
 extern luab_module_t luab_fcntl_lib;
 
@@ -315,126 +315,126 @@ luab_flock_create(lua_State *L)
  */
 
 static luab_table_t luab_fcntl_vec[] = {
-    LUABSD_INT("O_RDONLY",              O_RDONLY),
-    LUABSD_INT("O_WRONLY",              O_WRONLY),
-    LUABSD_INT("O_RDWR",                O_RDWR),
-    LUABSD_INT("O_ACCMODE",             O_ACCMODE),
+    LUAB_INT("O_RDONLY",              O_RDONLY),
+    LUAB_INT("O_WRONLY",              O_WRONLY),
+    LUAB_INT("O_RDWR",                O_RDWR),
+    LUAB_INT("O_ACCMODE",             O_ACCMODE),
 #if __BSD_VISIBLE
-    LUABSD_INT("FREAD",                 FREAD),
-    LUABSD_INT("FWRITE",                FWRITE),
+    LUAB_INT("FREAD",                 FREAD),
+    LUAB_INT("FWRITE",                FWRITE),
 #endif
-    LUABSD_INT("O_NONBLOCK",            O_NONBLOCK),
-    LUABSD_INT("O_APPEND",              O_APPEND),
+    LUAB_INT("O_NONBLOCK",            O_NONBLOCK),
+    LUAB_INT("O_APPEND",              O_APPEND),
 #if __BSD_VISIBLE
-    LUABSD_INT("O_SHLOCK",              O_SHLOCK),
-    LUABSD_INT("O_EXLOCK",              O_EXLOCK),
-    LUABSD_INT("O_ASYNC",               O_ASYNC),
-    LUABSD_INT("O_FSYNC",               O_FSYNC),
+    LUAB_INT("O_SHLOCK",              O_SHLOCK),
+    LUAB_INT("O_EXLOCK",              O_EXLOCK),
+    LUAB_INT("O_ASYNC",               O_ASYNC),
+    LUAB_INT("O_FSYNC",               O_FSYNC),
 #endif
-    LUABSD_INT("O_SYNC",                O_SYNC),
+    LUAB_INT("O_SYNC",                O_SYNC),
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_INT("O_NOFOLLOW",            O_NOFOLLOW),
+    LUAB_INT("O_NOFOLLOW",            O_NOFOLLOW),
 #endif
-    LUABSD_INT("O_CREAT",               O_CREAT),
-    LUABSD_INT("O_TRUNC",               O_TRUNC),
-    LUABSD_INT("O_EXCL",                O_EXCL),
-    LUABSD_INT("O_NOCTTY",              O_NOCTTY),
+    LUAB_INT("O_CREAT",               O_CREAT),
+    LUAB_INT("O_TRUNC",               O_TRUNC),
+    LUAB_INT("O_EXCL",                O_EXCL),
+    LUAB_INT("O_NOCTTY",              O_NOCTTY),
 #if __BSD_VISIBLE
-    LUABSD_INT("O_DIRECT",              O_DIRECT),
-#endif
-#if __POSIX_VISIBLE >= 200809
-    LUABSD_INT("O_DIRECTORY",           O_DIRECTORY),
-    LUABSD_INT("O_EXEC",                O_EXEC),
+    LUAB_INT("O_DIRECT",              O_DIRECT),
 #endif
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_INT("O_TTY_INIT",            O_TTY_INIT),
-    LUABSD_INT("O_CLOEXEC",             O_CLOEXEC),
-#endif
-#if __BSD_VISIBLE
-    LUABSD_INT("O_VERIFY",              O_VERIFY),
-    LUABSD_INT("FAPPEND",               FAPPEND),
-    LUABSD_INT("FASYNC",                FASYNC),
-    LUABSD_INT("FFSYNC",                FFSYNC),
-    LUABSD_INT("FNONBLOCK",             FNONBLOCK),
-    LUABSD_INT("FNDELAY",               FNDELAY),
-    LUABSD_INT("O_NDELAY",              O_NDELAY),
-    LUABSD_INT("FRDAHEAD",              FRDAHEAD),
+    LUAB_INT("O_DIRECTORY",           O_DIRECTORY),
+    LUAB_INT("O_EXEC",                O_EXEC),
 #endif
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_INT("AT_FDCWD",              AT_FDCWD),
-    LUABSD_INT("AT_EACCESS",            AT_EACCESS),
-    LUABSD_INT("AT_SYMLINK_NOFOLLOW",   AT_SYMLINK_NOFOLLOW),
-    LUABSD_INT("AT_SYMLINK_FOLLOW",     AT_SYMLINK_FOLLOW),
-    LUABSD_INT("AT_REMOVEDIR",          AT_REMOVEDIR),
+    LUAB_INT("O_TTY_INIT",            O_TTY_INIT),
+    LUAB_INT("O_CLOEXEC",             O_CLOEXEC),
 #endif
-    LUABSD_INT("F_DUPFD",               F_DUPFD),
-    LUABSD_INT("F_GETFD",               F_GETFD),
-    LUABSD_INT("F_SETFD",               F_SETFD),
-    LUABSD_INT("F_GETFL",               F_GETFL),
-    LUABSD_INT("F_SETFL",               F_SETFL),
+#if __BSD_VISIBLE
+    LUAB_INT("O_VERIFY",              O_VERIFY),
+    LUAB_INT("FAPPEND",               FAPPEND),
+    LUAB_INT("FASYNC",                FASYNC),
+    LUAB_INT("FFSYNC",                FFSYNC),
+    LUAB_INT("FNONBLOCK",             FNONBLOCK),
+    LUAB_INT("FNDELAY",               FNDELAY),
+    LUAB_INT("O_NDELAY",              O_NDELAY),
+    LUAB_INT("FRDAHEAD",              FRDAHEAD),
+#endif
+#if __POSIX_VISIBLE >= 200809
+    LUAB_INT("AT_FDCWD",              AT_FDCWD),
+    LUAB_INT("AT_EACCESS",            AT_EACCESS),
+    LUAB_INT("AT_SYMLINK_NOFOLLOW",   AT_SYMLINK_NOFOLLOW),
+    LUAB_INT("AT_SYMLINK_FOLLOW",     AT_SYMLINK_FOLLOW),
+    LUAB_INT("AT_REMOVEDIR",          AT_REMOVEDIR),
+#endif
+    LUAB_INT("F_DUPFD",               F_DUPFD),
+    LUAB_INT("F_GETFD",               F_GETFD),
+    LUAB_INT("F_SETFD",               F_SETFD),
+    LUAB_INT("F_GETFL",               F_GETFL),
+    LUAB_INT("F_SETFL",               F_SETFL),
 #if __XSI_VISIBLE || __POSIX_VISIBLE >= 200112
-    LUABSD_INT("F_GETOWN",              F_GETOWN),
-    LUABSD_INT("F_SETOWN",              F_SETOWN),
+    LUAB_INT("F_GETOWN",              F_GETOWN),
+    LUAB_INT("F_SETOWN",              F_SETOWN),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_INT("F_OGETLK",              F_OGETLK),
-    LUABSD_INT("F_OSETLK",              F_OSETLK),
-    LUABSD_INT("F_OSETLKW",             F_OSETLKW),
-    LUABSD_INT("F_DUP2FD",              F_DUP2FD),
+    LUAB_INT("F_OGETLK",              F_OGETLK),
+    LUAB_INT("F_OSETLK",              F_OSETLK),
+    LUAB_INT("F_OSETLKW",             F_OSETLKW),
+    LUAB_INT("F_DUP2FD",              F_DUP2FD),
 #endif
-    LUABSD_INT("F_GETLK",               F_GETLK),
-    LUABSD_INT("F_SETLK",               F_SETLK),
-    LUABSD_INT("F_SETLKW",              F_SETLKW),
+    LUAB_INT("F_GETLK",               F_GETLK),
+    LUAB_INT("F_SETLK",               F_SETLK),
+    LUAB_INT("F_SETLKW",              F_SETLKW),
 #if __BSD_VISIBLE
-    LUABSD_INT("F_SETLK_REMOTE",        F_SETLK_REMOTE),
-    LUABSD_INT("F_READAHEAD",           F_READAHEAD),
-    LUABSD_INT("F_RDAHEAD",             F_RDAHEAD),
+    LUAB_INT("F_SETLK_REMOTE",        F_SETLK_REMOTE),
+    LUAB_INT("F_READAHEAD",           F_READAHEAD),
+    LUAB_INT("F_RDAHEAD",             F_RDAHEAD),
 #endif
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_INT("F_DUPFD_CLOEXEC",       F_DUPFD_CLOEXEC),
+    LUAB_INT("F_DUPFD_CLOEXEC",       F_DUPFD_CLOEXEC),
 #endif
 #if __BSD_VISIBLE
-    LUABSD_INT("F_DUP2FD_CLOEXEC",      F_DUP2FD_CLOEXEC),
+    LUAB_INT("F_DUP2FD_CLOEXEC",      F_DUP2FD_CLOEXEC),
 #endif
-    LUABSD_INT("FD_CLOEXEC",            FD_CLOEXEC),
-    LUABSD_INT("F_RDLCK",               F_RDLCK),
-    LUABSD_INT("F_UNLCK",               F_UNLCK),
-    LUABSD_INT("F_WRLCK",               F_WRLCK),
+    LUAB_INT("FD_CLOEXEC",            FD_CLOEXEC),
+    LUAB_INT("F_RDLCK",               F_RDLCK),
+    LUAB_INT("F_UNLCK",               F_UNLCK),
+    LUAB_INT("F_WRLCK",               F_WRLCK),
 #if __BSD_VISIBLE
-    LUABSD_INT("F_UNLCKSYS",            F_UNLCKSYS),
-    LUABSD_INT("F_CANCEL",              F_CANCEL),
-    LUABSD_INT("LOCK_SH",               LOCK_SH),
-    LUABSD_INT("LOCK_EX",               LOCK_EX),
-    LUABSD_INT("LOCK_NB",               LOCK_NB),
-    LUABSD_INT("LOCK_UN",               LOCK_UN),
+    LUAB_INT("F_UNLCKSYS",            F_UNLCKSYS),
+    LUAB_INT("F_CANCEL",              F_CANCEL),
+    LUAB_INT("LOCK_SH",               LOCK_SH),
+    LUAB_INT("LOCK_EX",               LOCK_EX),
+    LUAB_INT("LOCK_NB",               LOCK_NB),
+    LUAB_INT("LOCK_UN",               LOCK_UN),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_INT("POSIX_FADV_NORMAL",     POSIX_FADV_NORMAL),
-    LUABSD_INT("POSIX_FADV_RANDOM",     POSIX_FADV_RANDOM),
-    LUABSD_INT("POSIX_FADV_SEQUENTIAL", POSIX_FADV_SEQUENTIAL),
-    LUABSD_INT("POSIX_FADV_WILLNEED",   POSIX_FADV_WILLNEED),
-    LUABSD_INT("POSIX_FADV_DONTNEED",   POSIX_FADV_DONTNEED),
-    LUABSD_INT("POSIX_FADV_NOREUSE",    POSIX_FADV_NOREUSE),
+    LUAB_INT("POSIX_FADV_NORMAL",     POSIX_FADV_NORMAL),
+    LUAB_INT("POSIX_FADV_RANDOM",     POSIX_FADV_RANDOM),
+    LUAB_INT("POSIX_FADV_SEQUENTIAL", POSIX_FADV_SEQUENTIAL),
+    LUAB_INT("POSIX_FADV_WILLNEED",   POSIX_FADV_WILLNEED),
+    LUAB_INT("POSIX_FADV_DONTNEED",   POSIX_FADV_DONTNEED),
+    LUAB_INT("POSIX_FADV_NOREUSE",    POSIX_FADV_NOREUSE),
 #endif
-    LUABSD_FUNC("open",                 luab_open),
-    LUABSD_FUNC("creat",                luab_creat),
-    LUABSD_FUNC("fcntl",                luab_fcntl),
+    LUAB_FUNC("open",                 luab_open),
+    LUAB_FUNC("creat",                luab_creat),
+    LUAB_FUNC("fcntl",                luab_fcntl),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("flock",                luab_flock),
+    LUAB_FUNC("flock",                luab_flock),
 #endif
 #if __POSIX_VISIBLE >= 200809
-    LUABSD_FUNC("openat",               luab_openat),
+    LUAB_FUNC("openat",               luab_openat),
 #endif
 #if __POSIX_VISIBLE >= 200112
-    LUABSD_FUNC("posix_fadvise",        luab_posix_fadvise),
-    LUABSD_FUNC("posix_fallocate",      luab_posix_fallocate),
+    LUAB_FUNC("posix_fadvise",        luab_posix_fadvise),
+    LUAB_FUNC("posix_fallocate",      luab_posix_fallocate),
 #endif
-    LUABSD_FUNC("flock_create",         luab_flock_create),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("flock_create",         luab_flock_create),
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_fcntl_lib = {
-    .cookie = LUABSD_FCNTL_LIB_ID,
-    .name = LUABSD_FCNTL_LIB_KEY,
+    .cookie = LUAB_FCNTL_LIB_ID,
+    .name = LUAB_FCNTL_LIB_KEY,
     .vec = luab_fcntl_vec,
 };

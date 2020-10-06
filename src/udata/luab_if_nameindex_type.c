@@ -56,8 +56,8 @@ typedef struct luab_if_nameindex {
 #define luab_to_if_nameindex(L, narg) \
     (luab_toudata((L), (narg), &if_nameindex_type))
 
-#define LUABSD_IF_NAMEINDEX_TYPE_ID    1596840702
-#define LUABSD_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
+#define LUAB_IF_NAMEINDEX_TYPE_ID    1596840702
+#define LUAB_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
 
 /*
  * Generator functions.
@@ -177,13 +177,13 @@ IF_NAMEINDEX_tostring(lua_State *L)
  */
 
 static luab_table_t if_nameindex_methods[] = {
-    LUABSD_FUNC("if_index",     IF_NAMEINDEX_if_index),
-    LUABSD_FUNC("if_name",      IF_NAMEINDEX_if_name),
-    LUABSD_FUNC("get",          IF_NAMEINDEX_get),
-    LUABSD_FUNC("__gc",         IF_NAMEINDEX_gc),
-    LUABSD_FUNC("__len",        IF_NAMEINDEX_len),
-    LUABSD_FUNC("__tostring",   IF_NAMEINDEX_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("if_index",     IF_NAMEINDEX_if_index),
+    LUAB_FUNC("if_name",      IF_NAMEINDEX_if_name),
+    LUAB_FUNC("get",          IF_NAMEINDEX_get),
+    LUAB_FUNC("__gc",         IF_NAMEINDEX_gc),
+    LUAB_FUNC("__len",        IF_NAMEINDEX_len),
+    LUAB_FUNC("__tostring",   IF_NAMEINDEX_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -214,8 +214,8 @@ if_nameindex_udata(lua_State *L, int narg)
 }
 
 luab_module_t if_nameindex_type = {
-    .cookie = LUABSD_IF_NAMEINDEX_TYPE_ID,
-    .name = LUABSD_IF_NAMEINDEX_TYPE,
+    .cookie = LUAB_IF_NAMEINDEX_TYPE_ID,
+    .name = LUAB_IF_NAMEINDEX_TYPE,
     .vec = if_nameindex_methods,
     .create = if_nameindex_create,
     .init = if_nameindex_init,

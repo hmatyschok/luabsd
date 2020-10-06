@@ -58,8 +58,8 @@ extern luab_module_t iovec_type;
 #define luab_to_iovec(L, narg) \
     (luab_todata((L), (narg), &iovec_type, luab_iovec_t *))
 
-#define LUABSD_IOVEC_TYPE_ID    1594559731
-#define LUABSD_IOVEC_TYPE   "IOVEC*"
+#define LUAB_IOVEC_TYPE_ID    1594559731
+#define LUAB_IOVEC_TYPE   "IOVEC*"
 
 /*
  * Generator functions.
@@ -622,23 +622,23 @@ IOVEC_tostring(lua_State *L)
  */
 
 static luab_table_t iovec_methods[] = {
-    LUABSD_FUNC("get",          IOVEC_get),
-    LUABSD_FUNC("set_len",      IOVEC_set_len),
-    LUABSD_FUNC("get_len",      IOVEC_get_len),
-    LUABSD_FUNC("max_len",      IOVEC_max_len),
-    LUABSD_FUNC("clear",        IOVEC_clear),
-    LUABSD_FUNC("clone",        IOVEC_clone),
-    LUABSD_FUNC("copy_in",      IOVEC_copy_in),
-    LUABSD_FUNC("copy_out",     IOVEC_copy_out),
-    LUABSD_FUNC("resize",       IOVEC_resize),
-    LUABSD_FUNC("read",         IOVEC_read),
-    LUABSD_FUNC("write",        IOVEC_write),
-    LUABSD_FUNC("recv",         IOVEC_recv),
-    LUABSD_FUNC("send",         IOVEC_send),
-    LUABSD_FUNC("__gc",         IOVEC_gc),
-    LUABSD_FUNC("__len",        IOVEC_len),
-    LUABSD_FUNC("__tostring",   IOVEC_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("get",          IOVEC_get),
+    LUAB_FUNC("set_len",      IOVEC_set_len),
+    LUAB_FUNC("get_len",      IOVEC_get_len),
+    LUAB_FUNC("max_len",      IOVEC_max_len),
+    LUAB_FUNC("clear",        IOVEC_clear),
+    LUAB_FUNC("clone",        IOVEC_clone),
+    LUAB_FUNC("copy_in",      IOVEC_copy_in),
+    LUAB_FUNC("copy_out",     IOVEC_copy_out),
+    LUAB_FUNC("resize",       IOVEC_resize),
+    LUAB_FUNC("read",         IOVEC_read),
+    LUAB_FUNC("write",        IOVEC_write),
+    LUAB_FUNC("recv",         IOVEC_recv),
+    LUAB_FUNC("send",         IOVEC_send),
+    LUAB_FUNC("__gc",         IOVEC_gc),
+    LUAB_FUNC("__len",        IOVEC_len),
+    LUAB_FUNC("__tostring",   IOVEC_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -704,8 +704,8 @@ iovec_udata(lua_State *L, int narg)
 }
 
 luab_module_t iovec_type = {
-    .cookie = LUABSD_IOVEC_TYPE_ID,
-    .name = LUABSD_IOVEC_TYPE,
+    .cookie = LUAB_IOVEC_TYPE_ID,
+    .name = LUAB_IOVEC_TYPE,
     .vec = iovec_methods,
     .create = iovec_create,
     .init = iovec_init,

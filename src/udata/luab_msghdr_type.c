@@ -83,8 +83,8 @@ typedef struct luab_msghdr {
 #define luab_to_msghdr(L, narg) \
     (luab_todata((L), (narg), &msghdr_type, luab_msghdr_t *))
 
-#define LUABSD_MSGHDR_TYPE_ID    1597320239
-#define LUABSD_MSGHDR_TYPE    "MSGHDR*"
+#define LUAB_MSGHDR_TYPE_ID    1597320239
+#define LUAB_MSGHDR_TYPE    "MSGHDR*"
 
 /*
  * Subr.
@@ -588,25 +588,25 @@ MSGHDR_tostring(lua_State *L)
  */
 
 static luab_table_t msghdr_methods[] = {
-    LUABSD_FUNC("msg_iovlen",       MSGHDR_msg_iovlen),
-    LUABSD_FUNC("msg_flags",        MSGHDR_msg_flags),
-    LUABSD_FUNC("msg_len",          MSGHDR_msg_len),
-/*  LUABSD_FUNC("msg_controllen",   MSGHDR_msg_controllen), */
-    LUABSD_FUNC("set_msg_name",     MSGHDR_set_msg_name),
-    LUABSD_FUNC("set_msg_namelen",  MSGHDR_set_msg_namelen),
-    LUABSD_FUNC("set_msg_iov",      MSGHDR_set_msg_iov),
-/*  LUABSD_FUNC("set_msg_control",  MSGHDR_set_msg_control), */
-    LUABSD_FUNC("set_msg_flags",    MSGHDR_set_msg_iov),
-    LUABSD_FUNC("get",              MSGHDR_get),
-    LUABSD_FUNC("get_msg_name",     MSGHDR_get_msg_name),
-    LUABSD_FUNC("get_msg_namelen",  MSGHDR_get_msg_namelen),
-    LUABSD_FUNC("get_msg_iov",      MSGHDR_get_msg_iov),
-/*  LUABSD_FUNC("get_msg_control",  MSGHDR_get_msg_control), */
-    LUABSD_FUNC("get_msg_flags",    MSGHDR_get_msg_iov),
-    LUABSD_FUNC("__gc",             MSGHDR_gc),
-    LUABSD_FUNC("__len",            MSGHDR_len),
-    LUABSD_FUNC("__tostring",       MSGHDR_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("msg_iovlen",       MSGHDR_msg_iovlen),
+    LUAB_FUNC("msg_flags",        MSGHDR_msg_flags),
+    LUAB_FUNC("msg_len",          MSGHDR_msg_len),
+/*  LUAB_FUNC("msg_controllen",   MSGHDR_msg_controllen), */
+    LUAB_FUNC("set_msg_name",     MSGHDR_set_msg_name),
+    LUAB_FUNC("set_msg_namelen",  MSGHDR_set_msg_namelen),
+    LUAB_FUNC("set_msg_iov",      MSGHDR_set_msg_iov),
+/*  LUAB_FUNC("set_msg_control",  MSGHDR_set_msg_control), */
+    LUAB_FUNC("set_msg_flags",    MSGHDR_set_msg_iov),
+    LUAB_FUNC("get",              MSGHDR_get),
+    LUAB_FUNC("get_msg_name",     MSGHDR_get_msg_name),
+    LUAB_FUNC("get_msg_namelen",  MSGHDR_get_msg_namelen),
+    LUAB_FUNC("get_msg_iov",      MSGHDR_get_msg_iov),
+/*  LUAB_FUNC("get_msg_control",  MSGHDR_get_msg_control), */
+    LUAB_FUNC("get_msg_flags",    MSGHDR_get_msg_iov),
+    LUAB_FUNC("__gc",             MSGHDR_gc),
+    LUAB_FUNC("__len",            MSGHDR_len),
+    LUAB_FUNC("__tostring",       MSGHDR_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -660,8 +660,8 @@ msghdr_udata(lua_State *L, int narg)
 }
 
 luab_module_t msghdr_type = {
-    .cookie = LUABSD_MSGHDR_TYPE_ID,
-    .name = LUABSD_MSGHDR_TYPE,
+    .cookie = LUAB_MSGHDR_TYPE_ID,
+    .name = LUAB_MSGHDR_TYPE,
     .vec = msghdr_methods,
     .create = msghdr_create,
     .init = msghdr_init,

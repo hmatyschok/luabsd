@@ -56,8 +56,8 @@ typedef struct luab_sockproto {
     (luab_toldata((L), (narg), &sockproto_type, \
         struct sockproto *, sizeof(struct sockproto)))
 
-#define LUABSD_SOCKPROTO_TYPE_ID    1601383780
-#define LUABSD_SOCKPROTO_TYPE    "SOCKPROTO*"
+#define LUAB_SOCKPROTO_TYPE_ID    1601383780
+#define LUAB_SOCKPROTO_TYPE    "SOCKPROTO*"
 
 /*
  * Generator functions.
@@ -253,16 +253,16 @@ SOCKPROTO_tostring(lua_State *L)
  */
 
 static luab_table_t sockproto_methods[] = {
-    LUABSD_FUNC("set_sp_family",    SOCKPROTO_set_sp_family),
-    LUABSD_FUNC("set_sp_protocol",  SOCKPROTO_set_sp_protocol),
-    LUABSD_FUNC("get",              SOCKPROTO_get),
-    LUABSD_FUNC("get_sp_family",    SOCKPROTO_get_sp_family),
-    LUABSD_FUNC("get_sp_protocol",  SOCKPROTO_get_sp_protocol),
-    LUABSD_FUNC("dump",             SOCKPROTO_dump),
-    LUABSD_FUNC("__gc",             SOCKPROTO_gc),
-    LUABSD_FUNC("__len",            SOCKPROTO_len),
-    LUABSD_FUNC("__tostring",       SOCKPROTO_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_sp_family",    SOCKPROTO_set_sp_family),
+    LUAB_FUNC("set_sp_protocol",  SOCKPROTO_set_sp_protocol),
+    LUAB_FUNC("get",              SOCKPROTO_get),
+    LUAB_FUNC("get_sp_family",    SOCKPROTO_get_sp_family),
+    LUAB_FUNC("get_sp_protocol",  SOCKPROTO_get_sp_protocol),
+    LUAB_FUNC("dump",             SOCKPROTO_dump),
+    LUAB_FUNC("__gc",             SOCKPROTO_gc),
+    LUAB_FUNC("__len",            SOCKPROTO_len),
+    LUAB_FUNC("__tostring",       SOCKPROTO_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -286,8 +286,8 @@ sockproto_udata(lua_State *L, int narg)
 }
 
 luab_module_t sockproto_type = {
-    .cookie = LUABSD_SOCKPROTO_TYPE_ID,
-    .name = LUABSD_SOCKPROTO_TYPE,
+    .cookie = LUAB_SOCKPROTO_TYPE_ID,
+    .name = LUAB_SOCKPROTO_TYPE,
     .vec = sockproto_methods,
     .create = sockproto_create,
     .init = sockproto_init,

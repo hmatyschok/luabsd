@@ -32,12 +32,12 @@
  */
 
 typedef struct luab_udata {
-    LIST_ENTRY(luab_udata)     ud_next;
-    LIST_HEAD(, luab_udata)    ud_list;
-    luab_module_t   *ud_m;
-    time_t          ud_ts;
-    caddr_t         *ud_x;
-    void            *ud_xhd;
+    LIST_ENTRY(luab_udata)  ud_next;
+    LIST_HEAD(, luab_udata) ud_list;
+    luab_module_t           *ud_m;
+    time_t                  ud_ts;
+    caddr_t                 *ud_x;
+    void                    *ud_xhd;
 } luab_udata_t;
 
 static __inline size_t

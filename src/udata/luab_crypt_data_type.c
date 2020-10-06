@@ -58,8 +58,8 @@ typedef struct luab_crypt_data {
     (luab_toldata((L), (narg), &crypt_data_type, \
         struct crypt_data *, sizeof(struct crypt_data)))
 
-#define LUABSD_CRYPT_DATA_TYPE_ID    1595491033
-#define LUABSD_CRYPT_DATA_TYPE    "CRYPT_DATA*"
+#define LUAB_CRYPT_DATA_TYPE_ID    1595491033
+#define LUAB_CRYPT_DATA_TYPE    "CRYPT_DATA*"
 
 /*
  * Generator functions.
@@ -264,16 +264,16 @@ CRYPT_DATA_tostring(lua_State *L)
  */
 
 static luab_table_t crypt_data_methods[] = {
-    LUABSD_FUNC("set_initialized",  CRYPT_DATA_set_initialized),
-    LUABSD_FUNC("set_buf",          CRYPT_DATA_set_buf),
-    LUABSD_FUNC("get",              CRYPT_DATA_get),
-    LUABSD_FUNC("get_initialized",  CRYPT_DATA_get_initialized),
-    LUABSD_FUNC("get_buf",          CRYPT_DATA_get_buf),
-    LUABSD_FUNC("dump",             CRYPT_DATA_dump),
-    LUABSD_FUNC("__gc",             CRYPT_DATA_gc),
-    LUABSD_FUNC("__len",            CRYPT_DATA_len),
-    LUABSD_FUNC("__tostring",       CRYPT_DATA_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_initialized",  CRYPT_DATA_set_initialized),
+    LUAB_FUNC("set_buf",          CRYPT_DATA_set_buf),
+    LUAB_FUNC("get",              CRYPT_DATA_get),
+    LUAB_FUNC("get_initialized",  CRYPT_DATA_get_initialized),
+    LUAB_FUNC("get_buf",          CRYPT_DATA_get_buf),
+    LUAB_FUNC("dump",             CRYPT_DATA_dump),
+    LUAB_FUNC("__gc",             CRYPT_DATA_gc),
+    LUAB_FUNC("__len",            CRYPT_DATA_len),
+    LUAB_FUNC("__tostring",       CRYPT_DATA_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -297,8 +297,8 @@ crypt_data_udata(lua_State *L, int narg)
 }
 
 luab_module_t crypt_data_type = {
-    .cookie = LUABSD_CRYPT_DATA_TYPE_ID,
-    .name = LUABSD_CRYPT_DATA_TYPE,
+    .cookie = LUAB_CRYPT_DATA_TYPE_ID,
+    .name = LUAB_CRYPT_DATA_TYPE,
     .vec = crypt_data_methods,
     .create = crypt_data_create,
     .init = crypt_data_init,

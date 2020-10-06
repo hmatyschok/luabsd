@@ -62,8 +62,8 @@ typedef struct luab_cap_rbuf {
 #define luab_to_cap(L, narg) \
     (luab_todata((L), (narg), &cap_rbuf_type, luab_cap_rbuf_t *))
 
-#define LUABSD_CAP_RBUF_TYPE_ID    1601143331
-#define LUABSD_CAP_RBUF_TYPE    "CAP_RBUF*"
+#define LUAB_CAP_RBUF_TYPE_ID    1601143331
+#define LUAB_CAP_RBUF_TYPE    "CAP_RBUF*"
 
 /*
  * Generator functions.
@@ -187,13 +187,13 @@ CAP_RBUF_tostring(lua_State *L)
  */
 
 static luab_table_t cap_rbuf_methods[] = {
-    LUABSD_FUNC("iov_base",     CAP_RBUF_iov_base),
-    LUABSD_FUNC("iov_len",      CAP_RBUF_iov_len),
-    LUABSD_FUNC("get",          CAP_RBUF_get),
-    LUABSD_FUNC("__gc",         CAP_RBUF_gc),
-    LUABSD_FUNC("__len",        CAP_RBUF_len),
-    LUABSD_FUNC("__tostring",   CAP_RBUF_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("iov_base",     CAP_RBUF_iov_base),
+    LUAB_FUNC("iov_len",      CAP_RBUF_iov_len),
+    LUAB_FUNC("get",          CAP_RBUF_get),
+    LUAB_FUNC("__gc",         CAP_RBUF_gc),
+    LUAB_FUNC("__len",        CAP_RBUF_len),
+    LUAB_FUNC("__tostring",   CAP_RBUF_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -217,8 +217,8 @@ cap_rbuf_udata(lua_State *L, int narg)
 }
 
 luab_module_t cap_rbuf_type = {
-    .cookie = LUABSD_CAP_RBUF_TYPE_ID,
-    .name = LUABSD_CAP_RBUF_TYPE,
+    .cookie = LUAB_CAP_RBUF_TYPE_ID,
+    .name = LUAB_CAP_RBUF_TYPE,
     .vec = cap_rbuf_methods,
     .create = cap_rbuf_create,
     .init = cap_rbuf_init,

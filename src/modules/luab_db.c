@@ -38,8 +38,8 @@
 #include "luab_types.h"
 #endif
 
-#define LUABSD_DB_LIB_ID    1593623310
-#define LUABSD_DB_LIB_KEY    "db"
+#define LUAB_DB_LIB_ID    1593623310
+#define LUAB_DB_LIB_KEY    "db"
 
 extern luab_module_t luab_db_lib;
 
@@ -115,35 +115,35 @@ luab_dbt_create(lua_State *L)
  */
 
 static luab_table_t luab_db_vec[] = {
-    LUABSD_INT("RET_ERROR",     RET_ERROR),
-    LUABSD_INT("RET_SUCCESS",   RET_SUCCESS),
-    LUABSD_INT("RET_SPECIAL",   RET_SPECIAL),
-    LUABSD_INT("DB_LOCK",       DB_LOCK),
-    LUABSD_INT("DB_SHMEM",      DB_SHMEM),
-    LUABSD_INT("DB_TXN",        DB_TXN),
-    LUABSD_INT("R_CURSOR",      R_CURSOR),
-    LUABSD_INT("__R_UNUSED",    __R_UNUSED),
-    LUABSD_INT("R_FIRST",       R_FIRST),
-    LUABSD_INT("R_IAFTER",      R_IAFTER),
-    LUABSD_INT("R_IBEFORE",     R_IBEFORE),
-    LUABSD_INT("R_LAST",        R_LAST),
-    LUABSD_INT("R_NEXT",        R_NEXT),
-    LUABSD_INT("R_NOOVERWRITE", R_NOOVERWRITE),
-    LUABSD_INT("R_PREV",        R_PREV),
-    LUABSD_INT("R_SETCURSOR",   R_SETCURSOR),
-    LUABSD_INT("R_RECNOSYNC",   R_RECNOSYNC),
-    LUABSD_INT("DB_BTREE",      DB_BTREE),
-    LUABSD_INT("DB_HASH",       DB_HASH),
-    LUABSD_INT("DB_RECNO",      DB_RECNO),
+    LUAB_INT("RET_ERROR",     RET_ERROR),
+    LUAB_INT("RET_SUCCESS",   RET_SUCCESS),
+    LUAB_INT("RET_SPECIAL",   RET_SPECIAL),
+    LUAB_INT("DB_LOCK",       DB_LOCK),
+    LUAB_INT("DB_SHMEM",      DB_SHMEM),
+    LUAB_INT("DB_TXN",        DB_TXN),
+    LUAB_INT("R_CURSOR",      R_CURSOR),
+    LUAB_INT("__R_UNUSED",    __R_UNUSED),
+    LUAB_INT("R_FIRST",       R_FIRST),
+    LUAB_INT("R_IAFTER",      R_IAFTER),
+    LUAB_INT("R_IBEFORE",     R_IBEFORE),
+    LUAB_INT("R_LAST",        R_LAST),
+    LUAB_INT("R_NEXT",        R_NEXT),
+    LUAB_INT("R_NOOVERWRITE", R_NOOVERWRITE),
+    LUAB_INT("R_PREV",        R_PREV),
+    LUAB_INT("R_SETCURSOR",   R_SETCURSOR),
+    LUAB_INT("R_RECNOSYNC",   R_RECNOSYNC),
+    LUAB_INT("DB_BTREE",      DB_BTREE),
+    LUAB_INT("DB_HASH",       DB_HASH),
+    LUAB_INT("DB_RECNO",      DB_RECNO),
 #if __BSD_VISIBLE
-    LUABSD_FUNC("dbopen",       luab_dbopen),
-    LUABSD_FUNC("dbt_create",   luab_dbt_create),
+    LUAB_FUNC("dbopen",       luab_dbopen),
+    LUAB_FUNC("dbt_create",   luab_dbt_create),
 #endif
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC(NULL, NULL)
 };
 
 luab_module_t luab_db_lib = {
-    .cookie = LUABSD_DB_LIB_ID,
-    .name = LUABSD_DB_LIB_KEY,
+    .cookie = LUAB_DB_LIB_ID,
+    .name = LUAB_DB_LIB_KEY,
     .vec = luab_db_vec,
 };

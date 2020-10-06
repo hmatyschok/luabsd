@@ -59,8 +59,8 @@ typedef struct luab_accept_filter_arg {
     (luab_toldata((L), (narg), &accept_filter_arg_type, \
         struct accept_filter_arg *, sizeof(struct accept_filter_arg)))
 
-#define LUABSD_ACCEPT_FILTER_ARG_TYPE_ID    1601330449
-#define LUABSD_ACCEPT_FILTER_ARG_TYPE    "ACCEPT_FILTER_ARG*"
+#define LUAB_ACCEPT_FILTER_ARG_TYPE_ID    1601330449
+#define LUAB_ACCEPT_FILTER_ARG_TYPE    "ACCEPT_FILTER_ARG*"
 
 /*
  * Generator functions.
@@ -262,16 +262,16 @@ ACCEPT_FILTER_ARG_tostring(lua_State *L)
  */
 
 static luab_table_t accept_filter_arg_methods[] = {
-    LUABSD_FUNC("set_af_name",  ACCEPT_FILTER_ARG_set_af_name),
-    LUABSD_FUNC("set_af_arg",   ACCEPT_FILTER_ARG_set_af_arg),
-    LUABSD_FUNC("get",          ACCEPT_FILTER_ARG_get),
-    LUABSD_FUNC("get_af_name",  ACCEPT_FILTER_ARG_get_af_name),
-    LUABSD_FUNC("get_af_arg",   ACCEPT_FILTER_ARG_get_af_arg),
-    LUABSD_FUNC("dump",         ACCEPT_FILTER_ARG_dump),
-    LUABSD_FUNC("__gc",         ACCEPT_FILTER_ARG_gc),
-    LUABSD_FUNC("__len",        ACCEPT_FILTER_ARG_len),
-    LUABSD_FUNC("__tostring",   ACCEPT_FILTER_ARG_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_af_name",  ACCEPT_FILTER_ARG_set_af_name),
+    LUAB_FUNC("set_af_arg",   ACCEPT_FILTER_ARG_set_af_arg),
+    LUAB_FUNC("get",          ACCEPT_FILTER_ARG_get),
+    LUAB_FUNC("get_af_name",  ACCEPT_FILTER_ARG_get_af_name),
+    LUAB_FUNC("get_af_arg",   ACCEPT_FILTER_ARG_get_af_arg),
+    LUAB_FUNC("dump",         ACCEPT_FILTER_ARG_dump),
+    LUAB_FUNC("__gc",         ACCEPT_FILTER_ARG_gc),
+    LUAB_FUNC("__len",        ACCEPT_FILTER_ARG_len),
+    LUAB_FUNC("__tostring",   ACCEPT_FILTER_ARG_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -295,8 +295,8 @@ accept_filter_arg_udata(lua_State *L, int narg)
 }
 
 luab_module_t accept_filter_arg_type = {
-    .cookie = LUABSD_ACCEPT_FILTER_ARG_TYPE_ID,
-    .name = LUABSD_ACCEPT_FILTER_ARG_TYPE,
+    .cookie = LUAB_ACCEPT_FILTER_ARG_TYPE_ID,
+    .name = LUAB_ACCEPT_FILTER_ARG_TYPE,
     .vec = accept_filter_arg_methods,
     .create = accept_filter_arg_create,
     .init = accept_filter_arg_init,

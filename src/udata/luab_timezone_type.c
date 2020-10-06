@@ -55,8 +55,8 @@ typedef struct luab_timezone {
     (luab_toldata((L), (narg), &timezone_type, \
         struct timezone *, sizeof(struct timezone)))
 
-#define LUABSD_TIMEZONE_TYPE_ID    1594159943
-#define LUABSD_TIMEZONE_TYPE    "TIMEZONE*"
+#define LUAB_TIMEZONE_TYPE_ID    1594159943
+#define LUAB_TIMEZONE_TYPE    "TIMEZONE*"
 
 /*
  * Generator functions.
@@ -254,16 +254,16 @@ TIMEZONE_tostring(lua_State *L)
  */
 
 static luab_table_t timezone_methods[] = {
-    LUABSD_FUNC("set_tz_minuteswest",   TIMEZONE_set_tz_minuteswest),
-    LUABSD_FUNC("set_tz_dsttime",       TIMEZONE_set_tz_dsttime),
-    LUABSD_FUNC("get",                  TIMEZONE_get),
-    LUABSD_FUNC("get_tz_minuteswest",   TIMEZONE_get_tz_minuteswest),
-    LUABSD_FUNC("get_tz_dsttime",       TIMEZONE_get_tz_dsttime),
-    LUABSD_FUNC("dump",                 TIMEZONE_dump),
-    LUABSD_FUNC("__gc",                 TIMEZONE_gc),
-    LUABSD_FUNC("__len",                TIMEZONE_len),
-    LUABSD_FUNC("__tostring",           TIMEZONE_tostring),
-    LUABSD_FUNC(NULL, NULL)
+    LUAB_FUNC("set_tz_minuteswest",   TIMEZONE_set_tz_minuteswest),
+    LUAB_FUNC("set_tz_dsttime",       TIMEZONE_set_tz_dsttime),
+    LUAB_FUNC("get",                  TIMEZONE_get),
+    LUAB_FUNC("get_tz_minuteswest",   TIMEZONE_get_tz_minuteswest),
+    LUAB_FUNC("get_tz_dsttime",       TIMEZONE_get_tz_dsttime),
+    LUAB_FUNC("dump",                 TIMEZONE_dump),
+    LUAB_FUNC("__gc",                 TIMEZONE_gc),
+    LUAB_FUNC("__len",                TIMEZONE_len),
+    LUAB_FUNC("__tostring",           TIMEZONE_tostring),
+    LUAB_FUNC(NULL, NULL)
 };
 
 static void *
@@ -288,8 +288,8 @@ timezone_udata(lua_State *L, int narg)
 }
 
 luab_module_t timezone_type = {
-    .cookie = LUABSD_TIMEZONE_TYPE_ID,
-    .name = LUABSD_TIMEZONE_TYPE,
+    .cookie = LUAB_TIMEZONE_TYPE_ID,
+    .name = LUAB_TIMEZONE_TYPE,
     .vec = timezone_methods,
     .create = timezone_create,
     .init = timezone_init,
