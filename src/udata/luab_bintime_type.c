@@ -254,7 +254,7 @@ BINTIME_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t bintime_methods[] = {
+static luab_module_table_t bintime_methods[] = {
     LUAB_FUNC("set_sec",      BINTIME_set_sec),
     LUAB_FUNC("set_frac",     BINTIME_set_frac),
     LUAB_FUNC("get",          BINTIME_get),
@@ -264,7 +264,7 @@ static luab_table_t bintime_methods[] = {
     LUAB_FUNC("__gc",         BINTIME_gc),
     LUAB_FUNC("__len",        BINTIME_len),
     LUAB_FUNC("__tostring",   BINTIME_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

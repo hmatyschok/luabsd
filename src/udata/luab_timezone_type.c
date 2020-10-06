@@ -253,7 +253,7 @@ TIMEZONE_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t timezone_methods[] = {
+static luab_module_table_t timezone_methods[] = {
     LUAB_FUNC("set_tz_minuteswest",   TIMEZONE_set_tz_minuteswest),
     LUAB_FUNC("set_tz_dsttime",       TIMEZONE_set_tz_dsttime),
     LUAB_FUNC("get",                  TIMEZONE_get),
@@ -263,7 +263,7 @@ static luab_table_t timezone_methods[] = {
     LUAB_FUNC("__gc",                 TIMEZONE_gc),
     LUAB_FUNC("__len",                TIMEZONE_len),
     LUAB_FUNC("__tostring",           TIMEZONE_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

@@ -194,7 +194,7 @@ IN_ADDR_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t in_addr_methods[] = {
+static luab_module_table_t in_addr_methods[] = {
     LUAB_FUNC("set_s_addr",   IN_ADDR_set_s_addr),
     LUAB_FUNC("get",          IN_ADDR_get),
     LUAB_FUNC("get_s_addr",   IN_ADDR_get_s_addr),
@@ -202,7 +202,7 @@ static luab_table_t in_addr_methods[] = {
     LUAB_FUNC("__gc",         IN_ADDR_gc),
     LUAB_FUNC("__len",        IN_ADDR_len),
     LUAB_FUNC("__tostring",   IN_ADDR_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

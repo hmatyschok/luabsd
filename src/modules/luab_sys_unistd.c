@@ -41,7 +41,7 @@ extern luab_module_t luab_sys_unistd_lib;
  * Interface against <sys/unistd.h>
  */
 
-static luab_table_t luab_sys_unistd_vec[] = {
+static luab_module_table_t luab_sys_unistd_vec[] = {
     LUAB_INT("_POSIX_ADVISORY_INFO",          _POSIX_ADVISORY_INFO),
     LUAB_INT("_POSIX_ASYNCHRONOUS_IO",        _POSIX_ASYNCHRONOUS_IO),
     LUAB_INT("_POSIX_CHOWN_RESTRICTED",       _POSIX_CHOWN_RESTRICTED),
@@ -71,7 +71,7 @@ static luab_table_t luab_sys_unistd_vec[] = {
     LUAB_INT("_POSIX_VDISABLE",               _POSIX_VDISABLE),
     LUAB_INT("_XOPEN_SHM",                    _XOPEN_SHM),
     LUAB_INT("_XOPEN_STREAMS",                _XOPEN_STREAMS),
-#ifdef	_NOT_AVAILABLE
+#ifdef  _NOT_AVAILABLE
     LUAB_INT("_POSIX_SAVED_IDS",              _POSIX_SAVED_IDS),
 #endif
     LUAB_INT("_POSIX_VERSION",                _POSIX_VERSION),
@@ -135,7 +135,7 @@ static luab_table_t luab_sys_unistd_vec[] = {
     LUAB_INT("RFPPWAIT",                      RFPPWAIT),
     LUAB_INT("RFFLAGS",                       RFFLAGS),
     LUAB_INT("RFKERNELONLY",                  RFKERNELONLY),
-    LUAB_INT(NULL, 0)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_sys_unistd_lib = {

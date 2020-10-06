@@ -239,7 +239,7 @@ luab_iovec_create(lua_State *L)
  * Interface against <sys/uio.h>.
  */
 
-static luab_table_t luab_sys_uio_vec[] = {
+static luab_module_table_t luab_sys_uio_vec[] = {
 #if __BSD_VISIBLE
     LUAB_INT("UIO_READ",      UIO_READ),
     LUAB_INT("UIO_WRITE",     UIO_WRITE),
@@ -254,7 +254,7 @@ static luab_table_t luab_sys_uio_vec[] = {
     LUAB_FUNC("pwritev",      luab_pwritev),
 #endif
     LUAB_FUNC("iovec_create", luab_iovec_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_sys_uio_lib = {

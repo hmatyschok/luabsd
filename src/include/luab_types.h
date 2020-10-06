@@ -52,7 +52,6 @@ luab_xlen(luab_module_t *m)
 
 void     *luab_newudata(lua_State *, luab_module_t *, void *);    /* XXX */
 
-
 /*
  * Protocol Control Information (PCI).
  */
@@ -105,7 +104,7 @@ typedef struct luab_xarg {
 #define luab_mx(name) \
     ((luab_vx(luab_idx(name))).mv_mod)
 
-extern luab_modulevec_t luab_typevec[];
+extern luab_module_vec_t luab_typevec[];
 
 /*
  * Definitions for (LUA_TUSERDATA(IOVEC)).
@@ -193,7 +192,7 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
 static __inline void *
 luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
 {
-    luab_modulevec_t *vec;
+    luab_module_vec_t *vec;
     luab_udata_t *ud;
 
     for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
@@ -321,11 +320,11 @@ const char   *luab_iovec_islxarg(lua_State *, int, size_t);
 const char   *luab_iovec_checklxarg(lua_State *, int, size_t);
 
 const char   **luab_checkargv(lua_State *, int);
-double   *luab_table_checkdouble(lua_State *, int, size_t *);
-const void   **luab_table_tolxargp(lua_State *, int, size_t);
-u_short  *luab_table_checklu_short(lua_State *, int, size_t);
-int  *luab_table_checklint(lua_State *, int, size_t);
-gid_t    *luab_table_checklgid(lua_State *, int, size_t);
+double   *luab_module_table_checkdouble(lua_State *, int, size_t *);
+const void   **luab_module_table_tolxargp(lua_State *, int, size_t);
+u_short  *luab_module_table_checklu_short(lua_State *, int, size_t);
+int  *luab_module_table_checklint(lua_State *, int, size_t);
+gid_t    *luab_module_table_checklgid(lua_State *, int, size_t);
 
 /*
  * Accessor, [stack -> C].
@@ -340,10 +339,10 @@ void     luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 void     luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void     luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
 
-void     luab_table_pushdouble(lua_State *, int, double *, int);
-void     luab_table_pushint(lua_State *, int, int *, int);
-void     luab_table_pushldouble(lua_State *, int, double *, size_t, int);
-void     luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
+void     luab_module_table_pushdouble(lua_State *, int, double *, int);
+void     luab_module_table_pushint(lua_State *, int, int *, int);
+void     luab_module_table_pushldouble(lua_State *, int, double *, size_t, int);
+void     luab_module_table_pushlgidset(lua_State *, int, gid_t *, int, int);
 
 /*
  * Generic service primitves, complex data types.
@@ -438,7 +437,7 @@ luab_sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
 }
 
 /* (LUA_TTABLE) */
-#define luab_table_xlen(vec, type) \
+#define luab_module_table_xlen(vec, type) \
     ((sizeof(vec)) / (sizeof(type)))
 
 #endif /* _LUAB_TYPES_H_ */

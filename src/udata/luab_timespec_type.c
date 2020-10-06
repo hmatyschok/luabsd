@@ -253,7 +253,7 @@ TIMESPEC_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t timespec_methods[] = {
+static luab_module_table_t timespec_methods[] = {
     LUAB_FUNC("set_tv_sec",   TIMESPEC_set_tv_sec),
     LUAB_FUNC("set_tv_nsec",  TIMESPEC_set_tv_nsec),
     LUAB_FUNC("get",          TIMESPEC_get),
@@ -263,7 +263,7 @@ static luab_table_t timespec_methods[] = {
     LUAB_FUNC("__gc",         TIMESPEC_gc),
     LUAB_FUNC("__len",        TIMESPEC_len),
     LUAB_FUNC("__tostring",   TIMESPEC_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

@@ -80,7 +80,7 @@ luab_sockaddr_un_create(lua_State *L)
  * Interface against <sys/un.h>.
  */
 
-static luab_table_t luab_sys_un_vec[] = {
+static luab_module_table_t luab_sys_un_vec[] = {
 #if __BSD_VISIBLE
     LUAB_INT("LOCAL_PEERCRED",        LOCAL_PEERCRED),
     LUAB_INT("LOCAL_CREDS",           LOCAL_CREDS),
@@ -88,7 +88,7 @@ static luab_table_t luab_sys_un_vec[] = {
     LUAB_INT("LOCAL_VENDOR",          LOCAL_VENDOR),
 #endif
     LUAB_FUNC("sockaddr_un_create",   luab_sockaddr_un_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_sys_un_lib = {

@@ -213,7 +213,7 @@ DBT_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t dbt_methods[] = {
+static luab_module_table_t dbt_methods[] = {
     LUAB_FUNC("set_data",     DBT_set_data),
     LUAB_FUNC("get",          DBT_get),
     LUAB_FUNC("get_data",     DBT_get_data),
@@ -221,7 +221,7 @@ static luab_table_t dbt_methods[] = {
     LUAB_FUNC("__gc",         DBT_gc),
     LUAB_FUNC("__len",        DBT_len),
     LUAB_FUNC("__tostring",   DBT_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

@@ -176,14 +176,14 @@ IF_NAMEINDEX_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t if_nameindex_methods[] = {
+static luab_module_table_t if_nameindex_methods[] = {
     LUAB_FUNC("if_index",     IF_NAMEINDEX_if_index),
     LUAB_FUNC("if_name",      IF_NAMEINDEX_if_name),
     LUAB_FUNC("get",          IF_NAMEINDEX_get),
     LUAB_FUNC("__gc",         IF_NAMEINDEX_gc),
     LUAB_FUNC("__len",        IF_NAMEINDEX_len),
     LUAB_FUNC("__tostring",   IF_NAMEINDEX_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

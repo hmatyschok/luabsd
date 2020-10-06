@@ -754,7 +754,7 @@ TM_tostring(lua_State *L)
     return (luab_tostring(L, 1, &tm_type));
 }
 
-static luab_table_t tm_methods[] = {
+static luab_module_table_t tm_methods[] = {
     LUAB_FUNC("tm_zone",          TM_tm_zone),
     LUAB_FUNC("set_tm_sec",       TM_set_tm_sec),
     LUAB_FUNC("set_tm_min",       TM_set_tm_min),
@@ -781,7 +781,7 @@ static luab_table_t tm_methods[] = {
     LUAB_FUNC("__gc",             TM_gc),
     LUAB_FUNC("__len",            TM_len),
     LUAB_FUNC("__tostring",       TM_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

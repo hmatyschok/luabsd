@@ -1012,7 +1012,7 @@ luab_pipe(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    fildes = luab_table_checklint(L, 1, 2);
+    fildes = luab_module_table_checklint(L, 1, 2);
     status = pipe(fildes);
 
     free(fildes);
@@ -2311,7 +2311,7 @@ luab_symlinkat(lua_State *L)
  *                          from object pointed by name1 or associated with the
  *                          object pointed by name1.
  * @param path              Link identified by path.
- * @param flag              Values are constructed over
+ * @param flag              Values are constructed from
  *
  *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW
  *
@@ -3408,7 +3408,7 @@ luab_getgrouplist(lua_State *L)
         if ((gidset = alloca((*ngroups) * sizeof(gid_t))) != NULL) {
 
             if ((status = getgrouplist(name, basegid, gidset, ngroups)) == 0)
-                luab_table_pushlgidset(L, 3, gidset, *ngroups, 0);
+                luab_module_table_pushlgidset(L, 3, gidset, *ngroups, 0);
         } else
             status = -1;
     } else {
@@ -4112,7 +4112,7 @@ luab_pipe2(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    fildes = luab_table_checklint(L, 1, 2);
+    fildes = luab_module_table_checklint(L, 1, 2);
     flags = (int)luab_checkinteger(L, 2, INT_MAX);
 
     status = pipe2(fildes, flags);
@@ -4667,7 +4667,7 @@ luab_setgroups(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     ngroups = (int)luab_checkinteger(L, 1, INT_MAX);
-    gidset = luab_table_checklgid(L, 2, ngroups);
+    gidset = luab_module_table_checklgid(L, 2, ngroups);
 
     status = setgroups(ngroups, gidset);
 
@@ -5178,7 +5178,7 @@ luab_crypt_data_create(lua_State *L)
  * Interface against <unistd.h>.
  */
 
-static luab_table_t luab_unistd_vec[] = {
+static luab_module_table_t luab_unistd_vec[] = {
     LUAB_INT("STDIN_FILENO",                      STDIN_FILENO),
     LUAB_INT("STDOUT_FILENO",                     STDOUT_FILENO),
     LUAB_INT("STDERR_FILENO",                     STDERR_FILENO),
@@ -5572,7 +5572,7 @@ static luab_table_t luab_unistd_vec[] = {
     LUAB_FUNC("undelete",             luab_undelete),
     LUAB_FUNC("crypt_data_create",    luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_unistd_lib = {

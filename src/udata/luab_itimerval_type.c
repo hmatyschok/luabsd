@@ -249,7 +249,7 @@ ITIMERVAL_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t itimerval_methods[] = {
+static luab_module_table_t itimerval_methods[] = {
     LUAB_FUNC("set_it_interval",  ITIMERVAL_set_it_interval),
     LUAB_FUNC("set_it_value",     ITIMERVAL_set_it_value),
     LUAB_FUNC("get",              ITIMERVAL_get),
@@ -259,7 +259,7 @@ static luab_table_t itimerval_methods[] = {
     LUAB_FUNC("__gc",             ITIMERVAL_gc),
     LUAB_FUNC("__len",            ITIMERVAL_len),
     LUAB_FUNC("__tostring",       ITIMERVAL_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

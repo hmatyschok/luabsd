@@ -186,14 +186,14 @@ CAP_RBUF_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t cap_rbuf_methods[] = {
+static luab_module_table_t cap_rbuf_methods[] = {
     LUAB_FUNC("iov_base",     CAP_RBUF_iov_base),
     LUAB_FUNC("iov_len",      CAP_RBUF_iov_len),
     LUAB_FUNC("get",          CAP_RBUF_get),
     LUAB_FUNC("__gc",         CAP_RBUF_gc),
     LUAB_FUNC("__len",        CAP_RBUF_len),
     LUAB_FUNC("__tostring",   CAP_RBUF_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

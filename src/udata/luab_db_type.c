@@ -391,7 +391,7 @@ DB_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t db_methods[] = {
+static luab_module_table_t db_methods[] = {
     LUAB_FUNC("close",        DB_close),
     LUAB_FUNC("del",          DB_del),
     LUAB_FUNC("get",          DB_get),
@@ -402,7 +402,7 @@ static luab_table_t db_methods[] = {
     LUAB_FUNC("__gc",         DB_gc),
     LUAB_FUNC("__len",        DB_len),
     LUAB_FUNC("__tostring",   DB_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

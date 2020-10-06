@@ -216,7 +216,7 @@ IN6_ADDR_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t in6_addr_methods[] = {
+static luab_module_table_t in6_addr_methods[] = {
     LUAB_FUNC("set_s6_addr",  IN6_ADDR_set_s6_addr),
     LUAB_FUNC("get",          IN6_ADDR_get),
     LUAB_FUNC("get_s6_addr",  IN6_ADDR_get_s6_addr),
@@ -224,7 +224,7 @@ static luab_table_t in6_addr_methods[] = {
     LUAB_FUNC("__gc",         IN6_ADDR_gc),
     LUAB_FUNC("__len",        IN6_ADDR_len),
     LUAB_FUNC("__tostring",   IN6_ADDR_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

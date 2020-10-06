@@ -258,7 +258,7 @@ HOOK_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t hook_methods[] = {
+static luab_module_table_t hook_methods[] = {
     LUAB_FUNC("set_char",     HOOK_set_char),
     LUAB_FUNC("set_int",      HOOK_set_int),
     LUAB_FUNC("set_long",     HOOK_set_long),
@@ -272,7 +272,7 @@ static luab_table_t hook_methods[] = {
     LUAB_FUNC("__gc",         HOOK_gc),
     LUAB_FUNC("__len",        HOOK_len),
     LUAB_FUNC("__tostring",   HOOK_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

@@ -251,7 +251,7 @@ LLDIV_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t lldiv_methods[] = {
+static luab_module_table_t lldiv_methods[] = {
     LUAB_FUNC("set_quot",     LLDIV_set_quot),
     LUAB_FUNC("set_rem",      LLDIV_set_rem),
     LUAB_FUNC("get",          LLDIV_get),
@@ -261,7 +261,7 @@ static luab_table_t lldiv_methods[] = {
     LUAB_FUNC("__gc",         LLDIV_gc),
     LUAB_FUNC("__len",        LLDIV_len),
     LUAB_FUNC("__tostring",   LLDIV_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

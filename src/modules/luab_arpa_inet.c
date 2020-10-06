@@ -941,7 +941,7 @@ luab_sockaddr_in6_create(lua_State *L)
  * Interface against <arpa/inet.h>.
  */
 
-static luab_table_t luab_arpa_inet_vec[] = {
+static luab_module_table_t luab_arpa_inet_vec[] = {
     LUAB_INT("INET_ADDRSTRLEN",       INET_ADDRSTRLEN),
     LUAB_INT("INET6_ADDRSTRLEN",      INET6_ADDRSTRLEN),
     LUAB_FUNC("inet_addr",            luab_inet_addr),
@@ -971,7 +971,7 @@ static luab_table_t luab_arpa_inet_vec[] = {
     /* XXX wrong, because maps to <netinet/in.h> */
     LUAB_FUNC("sockaddr_in_create",   luab_sockaddr_in_create),
     LUAB_FUNC("sockaddr_in6_create",  luab_sockaddr_in6_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_arpa_inet_lib = {

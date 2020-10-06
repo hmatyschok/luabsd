@@ -1224,7 +1224,7 @@ luab_erand48(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    xseed = luab_table_checklu_short(L, 1, 3);
+    xseed = luab_module_table_checklu_short(L, 1, 3);
     n = erand48(xseed);
     free(xseed);
 
@@ -1348,7 +1348,7 @@ luab_jrand48(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    xseed = luab_table_checklu_short(L, 1, 3);
+    xseed = luab_module_table_checklu_short(L, 1, 3);
     n = jrand48(xseed);
     free(xseed);
 
@@ -1416,7 +1416,7 @@ luab_lcong48(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    p = luab_table_checklu_short(L, 1, 7);
+    p = luab_module_table_checklu_short(L, 1, 7);
     lcong48(p);
     free(p);
 
@@ -1497,7 +1497,7 @@ luab_nrand48(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    xseed = luab_table_checklu_short(L, 1, 3);
+    xseed = luab_module_table_checklu_short(L, 1, 3);
     n = nrand48(xseed);
     free(xseed);
 
@@ -1661,7 +1661,7 @@ luab_seed48(lua_State *L)
 
     (void)luab_checkmaxargs(L, 1);
 
-    xseed = luab_table_checklu_short(L, 1, 3);
+    xseed = luab_module_table_checklu_short(L, 1, 3);
 
     if (seed48(xseed) == NULL) {
         errno = EINVAL;
@@ -1835,7 +1835,7 @@ luab_abort2(lua_State *L)
 
     why = luab_checklstring(L, 1, LUAB_ABORT2_MAXBUFLEN);
     nargs = luab_checkinteger(L, 2, INT_MAX);
-    args = luab_table_tolxargp(L, 3, nargs);
+    args = luab_module_table_tolxargp(L, 3, nargs);
 
     abort2(why, nargs, (void *)(intptr_t *)args);
         /* NOTREACHED */
@@ -2647,12 +2647,12 @@ luab_getloadavg(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    loadavg = luab_table_checkdouble(L, 1, &len);
+    loadavg = luab_module_table_checkdouble(L, 1, &len);
     nelem = (double)luaL_checknumber(L, 2);
 
     if ((size_t)nelem == len) {
         if ((status = getloadavg(loadavg, nelem)) > 0)
-            luab_table_pushldouble(L, 1, loadavg, len, 0);
+            luab_module_table_pushldouble(L, 1, loadavg, len, 0);
     } else {
         errno = ERANGE;
         status = -1;
@@ -3042,7 +3042,7 @@ luab_lldiv_create(lua_State *L)
  * Interface against <stdlib.h>.
  */
 
-static luab_table_t luab_stdlib_vec[] = {
+static luab_module_table_t luab_stdlib_vec[] = {
     LUAB_INT("EXIT_FAILURE",          EXIT_FAILURE),
     LUAB_INT("EXIT_SUCCESS",          EXIT_SUCCESS),
     LUAB_INT("RAND_MAX",              RAND_MAX),
@@ -3152,7 +3152,7 @@ static luab_table_t luab_stdlib_vec[] = {
     LUAB_FUNC("lldiv_create",         luab_lldiv_create),
 #endif /* __LONG_LONG_SUPPORTED */
 #endif /* __ISO_C_VISIBLE >= 1999 */
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_stdlib_lib = {

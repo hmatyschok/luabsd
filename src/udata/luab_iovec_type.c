@@ -621,7 +621,7 @@ IOVEC_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t iovec_methods[] = {
+static luab_module_table_t iovec_methods[] = {
     LUAB_FUNC("get",          IOVEC_get),
     LUAB_FUNC("set_len",      IOVEC_set_len),
     LUAB_FUNC("get_len",      IOVEC_get_len),
@@ -638,7 +638,7 @@ static luab_table_t iovec_methods[] = {
     LUAB_FUNC("__gc",         IOVEC_gc),
     LUAB_FUNC("__len",        IOVEC_len),
     LUAB_FUNC("__tostring",   IOVEC_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

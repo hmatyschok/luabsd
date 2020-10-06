@@ -261,7 +261,7 @@ ACCEPT_FILTER_ARG_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t accept_filter_arg_methods[] = {
+static luab_module_table_t accept_filter_arg_methods[] = {
     LUAB_FUNC("set_af_name",  ACCEPT_FILTER_ARG_set_af_name),
     LUAB_FUNC("set_af_arg",   ACCEPT_FILTER_ARG_set_af_arg),
     LUAB_FUNC("get",          ACCEPT_FILTER_ARG_get),
@@ -271,7 +271,7 @@ static luab_table_t accept_filter_arg_methods[] = {
     LUAB_FUNC("__gc",         ACCEPT_FILTER_ARG_gc),
     LUAB_FUNC("__len",        ACCEPT_FILTER_ARG_len),
     LUAB_FUNC("__tostring",   ACCEPT_FILTER_ARG_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

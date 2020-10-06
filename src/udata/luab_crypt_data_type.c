@@ -263,7 +263,7 @@ CRYPT_DATA_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t crypt_data_methods[] = {
+static luab_module_table_t crypt_data_methods[] = {
     LUAB_FUNC("set_initialized",  CRYPT_DATA_set_initialized),
     LUAB_FUNC("set_buf",          CRYPT_DATA_set_buf),
     LUAB_FUNC("get",              CRYPT_DATA_get),
@@ -273,7 +273,7 @@ static luab_table_t crypt_data_methods[] = {
     LUAB_FUNC("__gc",             CRYPT_DATA_gc),
     LUAB_FUNC("__len",            CRYPT_DATA_len),
     LUAB_FUNC("__tostring",       CRYPT_DATA_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

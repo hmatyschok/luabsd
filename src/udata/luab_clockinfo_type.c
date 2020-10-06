@@ -375,7 +375,7 @@ CLOCKINFO_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t clockinfo_methods[] = {
+static luab_module_table_t clockinfo_methods[] = {
     LUAB_FUNC("set_hz",       CLOCKINFO_set_hz),
     LUAB_FUNC("set_tickc",    CLOCKINFO_set_tick),
     LUAB_FUNC("set_stathz",   CLOCKINFO_set_stathz),
@@ -389,7 +389,7 @@ static luab_table_t clockinfo_methods[] = {
     LUAB_FUNC("__gc",         CLOCKINFO_gc),
     LUAB_FUNC("__len",        CLOCKINFO_len),
     LUAB_FUNC("__tostring",   CLOCKINFO_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

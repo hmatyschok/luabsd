@@ -1095,7 +1095,7 @@ luab_stat_create(lua_State *L)
  * Interface against <sys/stat.h>.
  */
 
-static luab_table_t luab_sys_stat_vec[] = {
+static luab_module_table_t luab_sys_stat_vec[] = {
     LUAB_INT("S_ISUID",       S_ISUID),
     LUAB_INT("S_ISGID",       S_ISGID),
 #if __BSD_VISIBLE
@@ -1194,7 +1194,7 @@ static luab_table_t luab_sys_stat_vec[] = {
     LUAB_FUNC("mknodat",      luab_mknodat),
 #endif
     LUAB_FUNC("stat_create",  luab_stat_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_sys_stat_lib = {

@@ -47,7 +47,7 @@ extern luab_module_t luab_net_if_lib;
  *
  * @function if_indextoname
  *
- * @param ifindex           Index, see ifntet(9).
+ * @param ifindex           Index, see ifnet(9) for further details.
  * @param ifname            Empty buffer, (LUA_TUSERDATA(IOVEC)), but
  *                          set up with length by bsd.net.IFNAMSIZ.
  *
@@ -194,7 +194,7 @@ luab_if_nameindex_create(lua_State *L)
  * Interface against <net/if.h>.
  */
 
-static luab_table_t luab_net_if_vec[] = {
+static luab_module_table_t luab_net_if_vec[] = {
     LUAB_INT("IF_NAMESIZE",           IF_NAMESIZE),
 #if __BSD_VISIBLE
     LUAB_INT("IFNAMSIZ",              IFNAMSIZ),
@@ -283,7 +283,7 @@ static luab_table_t luab_net_if_vec[] = {
     LUAB_FUNC("if_nameindex",         luab_if_nameindex),
     LUAB_FUNC("if_nametoindex",       luab_if_nametoindex),
     LUAB_FUNC("if_nameindex_create",  luab_if_nameindex_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_net_if_lib = {

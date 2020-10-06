@@ -45,7 +45,7 @@ extern luab_module_t luab_sys_file_lib;
  * Interface against <sys/file.h>.
  */
 
-static luab_table_t luab_sys_file_vec[] = {
+static luab_module_table_t luab_sys_file_vec[] = {
     LUAB_INT("DTYPE_NONE",        DTYPE_NONE),
     LUAB_INT("DTYPE_VNODE",       DTYPE_VNODE),
     LUAB_INT("DTYPE_SOCKET",      DTYPE_SOCKET),
@@ -61,7 +61,7 @@ static luab_table_t luab_sys_file_vec[] = {
     LUAB_INT("DTYPE_PROCDESC",    DTYPE_PROCDESC),
     LUAB_INT("DTYPE_LINUXEFD",    DTYPE_LINUXEFD),
     LUAB_INT("DTYPE_LINUXTFD",    DTYPE_LINUXTFD),
-    LUAB_INT(NULL, 0)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_sys_file_lib = {

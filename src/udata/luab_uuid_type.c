@@ -498,7 +498,7 @@ UUID_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t uuid_methods[] = {
+static luab_module_table_t uuid_methods[] = {
     LUAB_FUNC("set_time_low", UUID_set_time_low),
     LUAB_FUNC("set_time_mid", UUID_set_time_mid),
     LUAB_FUNC("set_time_hi_and_version",
@@ -522,7 +522,7 @@ static luab_table_t uuid_methods[] = {
     LUAB_FUNC("__gc",         UUID_gc),
     LUAB_FUNC("__len",        UUID_len),
     LUAB_FUNC("__tostring",   UUID_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

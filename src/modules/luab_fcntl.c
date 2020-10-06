@@ -50,12 +50,12 @@ extern luab_module_t luab_fcntl_lib;
  * @function open
  *
  * @param path              The specified file name.
- * @param flags             Values are constructed over
+ * @param flags             Values are constructed from
  *
  *                              bsd.fcntl.O_*
  *
  *                          by bitwise-inclusive OR.
- * @param mode              Values are constructed over
+ * @param mode              Values are constructed from
  *
  *                              bsd.sys.stat.S_*
  *
@@ -97,7 +97,7 @@ luab_open(lua_State *L)
  * @function creat
  *
  * @param path              The specified file name.
- * @param mode              Values are constructed over
+ * @param mode              Values are constructed from
  *
  *                              bsd.sys.stat.S_*
  *
@@ -132,7 +132,7 @@ luab_creat(lua_State *L)
  *
  * @function fcntl
  *
- * @param fd                The specified descriptor.
+ * @param fd                Open file descriptor.
  * @param cmd               Command operated on fd over
  *
  *                              bsd.fcntl.F_*,
@@ -182,7 +182,7 @@ luab_fcntl(lua_State *L)
  *
  * @function flock
  *
- * @param fd                The specified descriptor.
+ * @param fd                Open file descriptor.
  * @param operation         Specified by
  *
  *                              bsd.sys.file.LOCK_*,
@@ -205,7 +205,6 @@ luab_flock(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     operation = (int)luab_checkinteger(L, 2, INT_MAX);
-
     status = flock(fd, operation);
 
     return (luab_pusherr(L, status));
@@ -213,6 +212,43 @@ luab_flock(lua_State *L)
 #endif
 
 #if __POSIX_VISIBLE >= 200809
+/***
+ * openat(2) - apply or remove an advisory lock on an open file
+ *
+ * @function openat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes referenced file.
+ *
+ *                            #2 By path named file is relative to the directory
+ *                               associated with the file descriptor.
+ *
+ *                            #3 The current working directory is used, when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of openat(2).
+ *
+ * @param path              Specified file name.
+ * @param flags             Values are constructed from
+ *
+ *                              bsd.fcntl.O_*
+ *
+ *                          by bitwise-inclusive OR.
+ * @param mode              Values are constructed from
+ *
+ *                              bsd.sys.stat.S_*
+ *
+ *                          by bitwise-inclusive OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (value [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage value [, err, msg ] = bsd.fcntl.openat(fd, path, flags [, mode ])
+ */
 static int
 luab_openat(lua_State *L)
 {
@@ -239,6 +275,34 @@ luab_openat(lua_State *L)
 #endif
 
 #if __POSIX_VISIBLE >= 200112
+/***
+ * posix_fadvise(2) - give advise about use of file data
+ *
+ * @function posix_fadvise
+ *
+ * @param fd                Open file descriptor.
+ * @param offset            Specifies the point where the advice starts covering.
+ * @param len               Specifies range for got advise or the file entirely
+ *                          by 0.
+ *
+ * @param advice            Specifies advice parameter by values from:
+ *
+ *                              bsd.fcntl.POSIX_FADV_{
+ *                                  NORMAL,
+ *                                  RANDOM,
+ *                                  SEQUENTIAL,
+ *                                  WILLNEED,
+ *                                  DONTNEED,
+ *                                  NOREUSE
+ *                              }
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (value [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage value [, err, msg ] = bsd.fcntl.posix_fadvise(fd, offset, len, advice)
+ */
 static int
 luab_posix_fadvise(lua_State *L)
 {
@@ -263,6 +327,23 @@ luab_posix_fadvise(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * posix_fallocate(2) - pre-allocate storage for a range in a file
+ *
+ * @function posix_fallocate
+ *
+ * @param fd                Open file descriptor.
+ * @param offset            Specifies the point where the allocated range starts.
+ * @param len               Specifies range for got advise or the file entirely
+ *                          by 0.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (value [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage value [, err, msg ] = bsd.fcntl.posix_fallocate(fd, offset, len, advice)
+ */
 static int
 luab_posix_fallocate(lua_State *L)
 {
@@ -314,7 +395,7 @@ luab_flock_create(lua_State *L)
  * Interface against <fcntl.h>.
  */
 
-static luab_table_t luab_fcntl_vec[] = {
+static luab_module_table_t luab_fcntl_vec[] = {
     LUAB_INT("O_RDONLY",              O_RDONLY),
     LUAB_INT("O_WRONLY",              O_WRONLY),
     LUAB_INT("O_RDWR",                O_RDWR),
@@ -430,7 +511,7 @@ static luab_table_t luab_fcntl_vec[] = {
     LUAB_FUNC("posix_fallocate",      luab_posix_fallocate),
 #endif
     LUAB_FUNC("flock_create",         luab_flock_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_fcntl_lib = {

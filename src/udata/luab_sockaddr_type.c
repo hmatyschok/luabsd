@@ -1241,7 +1241,7 @@ SOCKADDR_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t sockaddr_methods[] = {
+static luab_module_table_t sockaddr_methods[] = {
     LUAB_FUNC("sa_len",               SOCKADDR_sa_len),
     LUAB_FUNC("sa_family",            SOCKADDR_sa_family),
     LUAB_FUNC("sdl_slen",             SOCKADDR_sdl_slen),
@@ -1272,7 +1272,7 @@ static luab_table_t sockaddr_methods[] = {
     LUAB_FUNC("__gc",                 SOCKADDR_gc),
     LUAB_FUNC("__len",                SOCKADDR_len),
     LUAB_FUNC("__tostring",           SOCKADDR_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

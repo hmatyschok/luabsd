@@ -66,7 +66,7 @@ luab_tm_create(lua_State *L)
  * Interface against <time.h>.
  */
 
-static luab_table_t luab_time_vec[] = { /* time.h */
+static luab_module_table_t luab_time_vec[] = { /* time.h */
 #if __POSIX_VISIBLE > 0 && __POSIX_VISIBLE < 200112 || __BSD_VISIBLE
     LUAB_INT("CLK_TCK",                   CLK_TCK),
 #endif
@@ -96,7 +96,7 @@ static luab_table_t luab_time_vec[] = { /* time.h */
 #endif /* !defined(TIMER_ABSTIME) && __POSIX_VISIBLE >= 200112 */
     LUAB_INT("CLOCKS_PER_SEC",            CLOCKS_PER_SEC),
     LUAB_FUNC("tm_create",                luab_tm_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_time_lib = {

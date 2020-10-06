@@ -343,11 +343,11 @@ luab_link_create(lua_State *L)
     return (luab_create(L, 0, luab_mx(LINK), NULL));
 }
 
-static luab_table_t luab_core_util_vec[] = {
+static luab_module_table_t luab_core_util_vec[] = {
     LUAB_FUNC("uuid",         luab_uuid),
     LUAB_FUNC("hook_create",  luab_hook_create),
     LUAB_FUNC("link_create",  luab_link_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_core_lib = {
@@ -377,7 +377,7 @@ static const char *copyright =
 static void
 luab_populate(lua_State *L, int narg, luab_module_t *m)
 {
-    luab_table_t *tok;
+    luab_module_table_t *tok;
 
     for (tok = m->vec; tok->key != NULL; tok++) {
         (void)(*tok->init)(L, &tok->val);
@@ -411,34 +411,28 @@ luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
  */
 
 /* Interface against <arpa/xxx.h>. */
-static luab_modulevec_t luab_arpa_vec[] = {
+static luab_module_vec_t luab_arpa_vec[] = {
     {
         .mv_mod = &luab_arpa_inet_lib,
         .mv_init = luab_newtable,
-    },{
-        .mv_mod = NULL,
-        .mv_init = NULL,
-        .mv_idx = -1,
-    }
+    },
+    LUAB_MOD_VEC_SENTINEL
 };
 
 /* Interface against <net/xxx.h>. */
-static luab_modulevec_t luab_net_vec[] = {
+static luab_module_vec_t luab_net_vec[] = {
     {
         .mv_mod = &luab_net_if_dl_lib,
         .mv_init = luab_newtable,
     },{
         .mv_mod = &luab_net_if_lib,
         .mv_init = luab_populate,
-    },{
-        .mv_mod = NULL,
-        .mv_init = NULL,
-        .mv_idx = -1,
-    }
+    },
+    LUAB_MOD_VEC_SENTINEL
 };
 
 /* Interface against <sys/xxx.h>. */
-static luab_modulevec_t luab_sys_vec[] = {
+static luab_module_vec_t luab_sys_vec[] = {
     {
         .mv_mod = &luab_sys_file_lib,
         .mv_init = luab_newtable,
@@ -463,15 +457,12 @@ static luab_modulevec_t luab_sys_vec[] = {
     },{
         .mv_mod = &luab_sys_socket_lib,
         .mv_init = luab_newtable,
-    },{
-        .mv_mod = NULL,
-        .mv_init = NULL,
-        .mv_idx = -1,
-    }
+    },
+    LUAB_MOD_VEC_SENTINEL
 };
 
 /* Interface against <xxx.h> or <core>. */
-static luab_modulevec_t luab_core_vec[] = {
+static luab_module_vec_t luab_core_vec[] = {
     {
         .mv_mod = &luab_core_lib,
         .mv_init = luab_newtable,
@@ -493,15 +484,12 @@ static luab_modulevec_t luab_core_vec[] = {
     },{
         .mv_mod = &luab_uuid_lib,
         .mv_init = luab_newtable,
-    },{
-        .mv_mod = NULL,
-        .mv_init = NULL,
-        .mv_idx = -1,
-    }
+    },
+    LUAB_MOD_VEC_SENTINEL
 };
 
 /* Bindings against complex data types. */
-luab_modulevec_t luab_typevec[] = {
+luab_module_vec_t luab_typevec[] = {
     {
         .mv_mod = &clockinfo_type,
         .mv_init = luab_newmetatable,
@@ -622,11 +610,7 @@ luab_modulevec_t luab_typevec[] = {
         .mv_idx = LUAB_CMSGCRED_IDX,
     },
 #endif  /* __BSD_VISIBLE */
-    {
-        .mv_mod = NULL,
-        .mv_init = NULL,
-        .mv_idx = -1,
-    }
+    LUAB_MOD_VEC_SENTINEL
 };
 
 /*
@@ -634,10 +618,10 @@ luab_modulevec_t luab_typevec[] = {
  */
 
 static void
-luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec,
+luab_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
     const char *name, int new)
 {
-    luab_modulevec_t *mv;
+    luab_module_vec_t *mv;
 
     if (name != NULL && new != 0)
         lua_newtable(L);
@@ -650,13 +634,13 @@ luab_initmodule(lua_State *L, int narg, luab_modulevec_t *vec,
 }
 
 static void
-luab_registerlib(lua_State *L, int narg, luab_modulevec_t *vec, const char *name)
+luab_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
 {
     luab_initmodule(L, narg, vec, name, 1);
 }
 
 static void
-luab_registertype(lua_State *L, int narg, luab_modulevec_t *vec)
+luab_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
 {
     luab_initmodule(L, narg, vec, NULL, 0);
 }

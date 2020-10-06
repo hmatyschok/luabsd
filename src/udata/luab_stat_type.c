@@ -845,7 +845,7 @@ STAT_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t stat_methods[] = {
+static luab_module_table_t stat_methods[] = {
     LUAB_FUNC("set_st_dev",       STAT_set_st_dev),
     LUAB_FUNC("set_st_ino",       STAT_set_st_ino),
     LUAB_FUNC("set_st_nlink",     STAT_set_st_nlink),
@@ -907,7 +907,7 @@ static luab_table_t stat_methods[] = {
     LUAB_FUNC("__gc",             STAT_gc),
     LUAB_FUNC("__len",            STAT_len),
     LUAB_FUNC("__tostring",       STAT_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

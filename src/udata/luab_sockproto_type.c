@@ -252,7 +252,7 @@ SOCKPROTO_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t sockproto_methods[] = {
+static luab_module_table_t sockproto_methods[] = {
     LUAB_FUNC("set_sp_family",    SOCKPROTO_set_sp_family),
     LUAB_FUNC("set_sp_protocol",  SOCKPROTO_set_sp_protocol),
     LUAB_FUNC("get",              SOCKPROTO_get),
@@ -262,7 +262,7 @@ static luab_table_t sockproto_methods[] = {
     LUAB_FUNC("__gc",             SOCKPROTO_gc),
     LUAB_FUNC("__len",            SOCKPROTO_len),
     LUAB_FUNC("__tostring",       SOCKPROTO_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

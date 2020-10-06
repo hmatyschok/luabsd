@@ -253,7 +253,7 @@ LINGER_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t linger_methods[] = {
+static luab_module_table_t linger_methods[] = {
     LUAB_FUNC("set_l_onoff",  LINGER_set_l_onoff),
     LUAB_FUNC("set_l_linger", LINGER_set_l_linger),
     LUAB_FUNC("get",          LINGER_get),
@@ -263,7 +263,7 @@ static luab_table_t linger_methods[] = {
     LUAB_FUNC("__gc",         LINGER_gc),
     LUAB_FUNC("__len",        LINGER_len),
     LUAB_FUNC("__tostring",   LINGER_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

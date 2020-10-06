@@ -314,7 +314,7 @@ CMSGCRED_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t cmsgcred_methods[] = {
+static luab_module_table_t cmsgcred_methods[] = {
     LUAB_FUNC("get",                  CMSGCRED_get),
     LUAB_FUNC("get_cmcred_pid",       CMSGCRED_cmcred_pid),
     LUAB_FUNC("get_cmcred_uid",       CMSGCRED_cmcred_uid),
@@ -326,7 +326,7 @@ static luab_table_t cmsgcred_methods[] = {
     LUAB_FUNC("__gc",                 CMSGCRED_gc),
     LUAB_FUNC("__len",                CMSGCRED_len),
     LUAB_FUNC("__tostring",           CMSGCRED_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

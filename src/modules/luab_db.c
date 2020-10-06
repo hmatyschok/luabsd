@@ -114,7 +114,7 @@ luab_dbt_create(lua_State *L)
  * Interface against <db.h>.
  */
 
-static luab_table_t luab_db_vec[] = {
+static luab_module_table_t luab_db_vec[] = {
     LUAB_INT("RET_ERROR",     RET_ERROR),
     LUAB_INT("RET_SUCCESS",   RET_SUCCESS),
     LUAB_INT("RET_SPECIAL",   RET_SPECIAL),
@@ -139,7 +139,7 @@ static luab_table_t luab_db_vec[] = {
     LUAB_FUNC("dbopen",       luab_dbopen),
     LUAB_FUNC("dbt_create",   luab_dbt_create),
 #endif
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_db_lib = {

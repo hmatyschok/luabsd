@@ -1095,7 +1095,7 @@ luab_socketpair(lua_State *L)
     (void)luab_checkltable(L, 4, 0);
 
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
-        luab_table_pushint(L, 4, socks, 0);
+        luab_module_table_pushint(L, 4, socks, 0);
 
     return (luab_pusherr(L, status));
 }
@@ -1228,7 +1228,7 @@ luab_sockproto_create(lua_State *L)
  * Interface against <sys/socket.h>.
  */
 
-static luab_table_t luab_sys_socket_vec[] = {
+static luab_module_table_t luab_sys_socket_vec[] = {
 #if __BSD_VISIBLE
     LUAB_INT("SOCK_MAXADDRLEN",           SOCK_MAXADDRLEN),
 #endif
@@ -1532,7 +1532,7 @@ static luab_table_t luab_sys_socket_vec[] = {
 #if __BSD_VISIBLE
     LUAB_FUNC("sockproto_create",          luab_sockproto_create),
 #endif
-    LUAB_INT(NULL, 0)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_sys_socket_lib = {

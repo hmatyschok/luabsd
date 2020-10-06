@@ -253,7 +253,7 @@ TIMEVAL_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t timeval_methods[] = {
+static luab_module_table_t timeval_methods[] = {
     LUAB_FUNC("set_tv_sec",   TIMEVAL_set_tv_sec),
     LUAB_FUNC("set_tv_usec",  TIMEVAL_set_tv_usec),
     LUAB_FUNC("get",          TIMEVAL_get),
@@ -263,7 +263,7 @@ static luab_table_t timeval_methods[] = {
     LUAB_FUNC("__gc",         TIMEVAL_gc),
     LUAB_FUNC("__len",        TIMEVAL_len),
     LUAB_FUNC("__tostring",   TIMEVAL_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

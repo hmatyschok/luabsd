@@ -341,7 +341,7 @@ FLOCK_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t flock_methods[] = {
+static luab_module_table_t flock_methods[] = {
     LUAB_FUNC("set_l_start",  FLOCK_set_l_start),
     LUAB_FUNC("set_l_len",    FLOCK_set_l_len),
     LUAB_FUNC("set_l_pid",    FLOCK_set_l_pid),
@@ -359,7 +359,7 @@ static luab_table_t flock_methods[] = {
     LUAB_FUNC("__gc",         FLOCK_gc),
     LUAB_FUNC("__len",        FLOCK_len),
     LUAB_FUNC("__tostring",   FLOCK_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

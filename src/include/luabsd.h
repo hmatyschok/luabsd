@@ -59,22 +59,24 @@ typedef union luab_primitive {   /* XXX namespace */
     wchar_t     un_wc;
 } luab_primitive_u;
 
-typedef void    (*luab_table_fn)(lua_State *, luab_primitive_u *);
+typedef void    (*luab_module_table_fn)(lua_State *, luab_primitive_u *);
 
-typedef struct luab_table {
-    luab_table_fn   init;
+typedef struct luab_module_table {
+    luab_module_table_fn   init;
     const char    *key;
     luab_primitive_u   val;
-} luab_table_t;
+} luab_module_table_t;
 
 #define LUAB_TYPE(fn, k, v) \
-    { .init = fn, .key = k, v }
+    { .init = fn, .key = k, v, }
 #define LUAB_INT(k, v) \
     LUAB_TYPE(luab_initinteger, k, .val.un_int = v)
 #define LUAB_FUNC(k, v) \
     LUAB_TYPE(luab_initcfunction, k, .val.un_fn = v)
 #define LUAB_STR(k, v) \
     LUAB_TYPE(luab_initstring, k, .val.un_cp = v)
+#define LUAB_MOD_TBL_SENTINEL \
+    LUAB_TYPE(NULL, NULL, .val.un_fn = NULL)
 
 static __inline void
 luab_initinteger(lua_State *L, luab_primitive_u *un)
@@ -103,10 +105,10 @@ typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
 
 typedef struct luab_module {
-    uint32_t    cookie;        /*  date -u +'%s' */
-    size_t  sz;
-    const char  *name;
-    luab_table_t    *vec;
+    uint32_t        cookie;        /*  date -u +'%s' */
+    size_t          sz;
+    const char      *name;
+    luab_module_table_t *vec;
     luab_ctor_fn    create;
     luab_init_fn    init;
     luab_get_fn    get;
@@ -114,11 +116,14 @@ typedef struct luab_module {
 
 typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
 
-typedef struct luab_modulevec {
+typedef struct luab_module_vec {
     luab_module_t   *mv_mod;
     luab_module_fn  mv_init;
     int             mv_idx;
-} luab_modulevec_t;
+} luab_module_vec_t;
+
+#define LUAB_MOD_VEC_SENTINEL \
+    { .mv_mod = NULL, .mv_init = NULL, .mv_idx = -1, }
 
 /*
  * Generic service primitives, subset of <core>.

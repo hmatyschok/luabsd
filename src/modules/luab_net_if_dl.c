@@ -161,11 +161,11 @@ luab_sockaddr_dl_create(lua_State *L)
  * Interface against <net/if_dl.h>.
  */
 
-static luab_table_t luab_net_if_dl_vec[] = {
+static luab_module_table_t luab_net_if_dl_vec[] = {
     LUAB_FUNC("link_addr",            luab_link_addr),
     LUAB_FUNC("link_ntoa",            luab_link_ntoa),
     LUAB_FUNC("sockaddr_dl_create",   luab_sockaddr_dl_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_net_if_dl_lib = {

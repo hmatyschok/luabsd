@@ -295,7 +295,7 @@ luab_timezone_create(lua_State *L)
  * Interface against <sys/time.h>.
  */
 
-static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
+static luab_module_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUAB_INT("DST_NONE",                  DST_NONE),
     LUAB_INT("DST_USA",                   DST_USA),
     LUAB_INT("DST_AUST",                  DST_AUST),
@@ -342,7 +342,7 @@ static luab_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUAB_FUNC("timespec_create",          luab_timespec_create),
     LUAB_FUNC("timeval_create",           luab_timeval_create),
     LUAB_FUNC("timezone_create",          luab_timezone_create),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_sys_time_lib = {

@@ -587,7 +587,7 @@ MSGHDR_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t msghdr_methods[] = {
+static luab_module_table_t msghdr_methods[] = {
     LUAB_FUNC("msg_iovlen",       MSGHDR_msg_iovlen),
     LUAB_FUNC("msg_flags",        MSGHDR_msg_flags),
     LUAB_FUNC("msg_len",          MSGHDR_msg_len),
@@ -606,7 +606,7 @@ static luab_table_t msghdr_methods[] = {
     LUAB_FUNC("__gc",             MSGHDR_gc),
     LUAB_FUNC("__len",            MSGHDR_len),
     LUAB_FUNC("__tostring",       MSGHDR_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

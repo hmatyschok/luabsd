@@ -182,14 +182,14 @@ LINK_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_table_t link_methods[] = {
+static luab_module_table_t link_methods[] = {
     LUAB_FUNC("set_ptr",      LINK_set_ptr),
     LUAB_FUNC("get",          LINK_get),
     LUAB_FUNC("get_ptr",      LINK_get_ptr),
     LUAB_FUNC("__gc",         LINK_gc),
     LUAB_FUNC("__len",        LINK_len),
     LUAB_FUNC("__tostring",   LINK_tostring),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 static void *

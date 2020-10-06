@@ -491,7 +491,7 @@ luab_uuid_create_nil(lua_State *L)
  * Interface against <uuid.h>.
  */
 
-static luab_table_t luab_uuid_vec[] = {
+static luab_module_table_t luab_uuid_vec[] = {
     LUAB_INT("uuid_s_ok",                     uuid_s_ok),
     LUAB_INT("uuid_s_bad_version",            uuid_s_bad_version),
     LUAB_INT("uuid_s_invalid_string_uuid",    uuid_s_invalid_string_uuid),
@@ -506,7 +506,7 @@ static luab_table_t luab_uuid_vec[] = {
     LUAB_FUNC("uuid_dec_le",                  luab_uuid_dec_le),
     LUAB_FUNC("uuid_enc_be",                  luab_uuid_enc_be),
     LUAB_FUNC("uuid_dec_be",                  luab_uuid_dec_be),
-    LUAB_FUNC(NULL, NULL)
+    LUAB_MOD_TBL_SENTINEL
 };
 
 luab_module_t luab_uuid_lib = {
