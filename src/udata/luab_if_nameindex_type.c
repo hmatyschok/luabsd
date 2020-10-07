@@ -95,7 +95,7 @@ IF_NAMEINDEX_get(lua_State *L)
 }
 
 /*
- * Accessor, immutable properties.
+ * Access functions, immutable properties.
  */
 
 /***

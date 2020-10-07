@@ -266,7 +266,7 @@ luab_iov_pwritev(struct iovec *iov, int fd, size_t n, off_t off)
 #endif
 
 /*
- * Accessor, [C -> stack].
+ * Access functions, [C -> stack].
  */
 
 int

@@ -139,7 +139,7 @@ IOVEC_clone(lua_State *L)
 }
 
 /*
- * Accessor, immutable properties.
+ * Access functions, immutable properties.
  */
 
 /***
@@ -178,7 +178,7 @@ IOVEC_max_len(lua_State *L)
 }
 
 /*
- * Accessor.
+ * Access functions.
  */
 
 /***

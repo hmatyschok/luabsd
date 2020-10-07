@@ -323,7 +323,7 @@ SOCKADDR_dump(lua_State *L)
 }
 
 /*
- * Accessor for immutable properties.
+ * Access functions for immutable properties.
  */
 
 /***
@@ -379,7 +379,7 @@ SOCKADDR_sa_family(lua_State *L)
 }
 
 /*
- * Accessor Link-Level sockaddr., AF_LINK domain(9).
+ * Access functions Link-Level sockaddr., AF_LINK domain(9).
  *
  *  struct sockaddr_dl {
  *      u_char  sdl_len;

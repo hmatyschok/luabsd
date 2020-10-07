@@ -36,7 +36,7 @@
 #include "luab_types.h"
 
 /*
- * Accessor, [stack -> C].
+ * Access functions, [stack -> C].
  */
 
 /* Translate an instance of (LUA_TTABLE) into an argv. */
@@ -69,7 +69,7 @@ luab_checkargv(lua_State *L, int narg)
 }
 
 /*
- * Accessor, [stack -> C].
+ * Access functions, [stack -> C].
  */
 
 const void **
@@ -207,7 +207,7 @@ luab_module_table_checklgid(lua_State *L, int narg, size_t len)
 }
 
 /*
- * Accessor, (LUA_TTABLE) as result argument at n-th index, [C -> stack].
+ * Access functions, (LUA_TTABLE) as result argument at n-th index, [C -> stack].
  */
 
 /*

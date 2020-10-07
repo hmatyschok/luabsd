@@ -117,7 +117,7 @@ CRYPT_DATA_dump(lua_State *L)
 }
 
 /*
- * Accessor.
+ * Access functions.
  */
 
 /***

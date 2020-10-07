@@ -38,9 +38,10 @@
 #include "luab_types.h"
 
 /*
- * Generator functions, [Lua -> stack].
+ * Generic service primitves, complex data types.
  */
 
+/* Generator function, [Lua -> stack] */
 void *
 luab_newudata(lua_State *L, luab_module_t *m, void *arg)
 {
@@ -66,48 +67,8 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
 }
 
 /*
- * Generic service primitves, complex data types.
+ * Access functions, [stack -> C].
  */
-
-void *
-luab_udata_add(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
-{
-    luab_udata_t *self, *ud;
-
-    self = luab_todata(L, narg, m, luab_udata_t *);
-    ud = luab_toxudata(L, xarg, NULL);  /* XXX */
-
-    if (ud != NULL && x != NULL) {
-        LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
-
-        *(void **)x = (void *)(ud + 1);
-        ud->ud_x = (caddr_t *)x;
-        ud->ud_xhd = &self->ud_list;
-
-        return (*ud->ud_x);
-    }
-    return (NULL);
-}
-
-void
-luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
-{
-    if (m != NULL && ud != NULL && arg != NULL)
-        (void)memmove(ud + 1, arg, luab_xlen(m));
-}
-
-/*
- * Accessor, [stack -> C].
- */
-
-void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
-{
-    if (m == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    return (luaL_checkudata(L, narg, m->m_name));
-}
 
 void *
 luab_isudata(lua_State *L, int narg, luab_module_t *m)
@@ -118,6 +79,15 @@ luab_isudata(lua_State *L, int narg, luab_module_t *m)
         return (NULL);
 
     return (ud + 1);
+}
+
+void *
+luab_checkudata(lua_State *L, int narg, luab_module_t *m)
+{
+    if (m == NULL)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    return (luaL_checkudata(L, narg, m->m_name));
 }
 
 void *
@@ -183,8 +153,9 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     luab_iovec_t *iov;
     void *buf;
-
+                                                        /* XXX */
     if ((iov = luab_isiovec(L, narg)) != NULL) {
+
         if (iov->iov.iov_base == NULL)
             luaL_argerror(L, narg, "Invalid argument.");
 
@@ -198,8 +169,27 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
     return (buf);
 }
 
+void *
+luab_udata_link(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
+{
+    luab_udata_t *self, *ud;
+
+    self = luab_todata(L, narg, m, luab_udata_t *);
+
+    if ((ud = luab_toxudata(L, xarg, NULL)) != NULL && x != NULL) {
+        LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
+
+        *(void **)x = (void *)(ud + 1);
+        ud->ud_x = (caddr_t *)x;
+        ud->ud_xhd = &self->ud_list;
+
+        return (*ud->ud_x);
+    }
+    return (NULL);
+}
+
 /*
- * Accessor, [C -> stack].
+ * Access functions, [C -> stack].
  */
 
 int
@@ -249,7 +239,7 @@ luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
 }
 
 /*
- * Accessor for (LUA_TTABLE), [C -> stack].
+ * Access functions for (LUA_TTABLE), [C -> stack].
  */
 
 void

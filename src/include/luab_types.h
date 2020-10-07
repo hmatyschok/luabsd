@@ -147,7 +147,7 @@ luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
 }
 
 /*
- * Accessor, (LUA_TTABLE), [stack -> C].
+ * Access functions, (LUA_TTABLE), [stack -> C].
  */
 
 static __inline size_t
@@ -215,15 +215,37 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
  * Generic service primitives.
  */
 
-void     *luab_newudata(lua_State *, luab_module_t *, void *);
-void     luab_udata_init(luab_module_t *, luab_udata_t *, void *);
+static __inline void
+luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
+{
+    if (m != NULL && ud != NULL && arg != NULL)
+        (void)memmove(ud + 1, arg, luab_xlen(m));
+}
+
+static __inline void
+luab_udata_remove(luab_udata_t *ud)
+{
+    if (ud != NULL) {
+        if (ud->ud_x != NULL) {
+            *(ud->ud_x) = NULL;
+            ud->ud_x = NULL;
+            ud->ud_xhd = NULL;
+        }
+        LIST_REMOVE(ud, ud_next);
+    }
+}
 
 /*
- * Accessor, [stack -> C].
+ * Access functions, [stack -> C].
  */
+
+void     *luab_newudata(lua_State *, luab_module_t *, void *);
 
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), ((m)->m_name)))
+
+void     *luab_isudata(lua_State *, int, luab_module_t *);
+
 #define luab_todata(L, narg, m, t) \
     ((t)luab_checkudata((L), (narg), (m)))
 #define luab_toldata(L, narg, m, t, len) \
@@ -234,14 +256,13 @@ void     luab_udata_init(luab_module_t *, luab_udata_t *, void *);
     ((t)(luab_checkudataisnil((L), (narg), (m))))
 
 void     *luab_checkudata(lua_State *, int, luab_module_t *);
-void     *luab_isudata(lua_State *, int, luab_module_t *);
 void     *luab_toudata(lua_State *, int, luab_module_t *);
 void     *luab_checkudataisnil(lua_State *, int, luab_module_t *);
 void     *luab_toxudata(lua_State *, int, luab_xarg_t *);
 void     *luab_toxdata(lua_State *, int, luab_xarg_t *);
 void     *luab_checkludata(lua_State *, int, luab_module_t *, size_t);
 
-void     *luab_udata_add(lua_State *, int, luab_module_t *, int, void **);
+void     *luab_udata_link(lua_State *, int, luab_module_t *, int, void **);
 
 #define luab_isiovec(L, narg) \
     (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
@@ -257,7 +278,7 @@ int  *luab_module_table_checklint(lua_State *, int, size_t);
 gid_t    *luab_module_table_checklgid(lua_State *, int, size_t);
 
 /*
- * Accessor, [C -> stack].
+ * Access functions, [C -> stack].
  */
 
 int  luab_pushudata(lua_State *, luab_module_t *, void *);

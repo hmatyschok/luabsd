@@ -102,7 +102,7 @@ CAP_RBUF_get(lua_State *L)
 }
 
 /*
- * Accessor for immutable properties.
+ * Access functions for immutable properties.
  */
 
 /***

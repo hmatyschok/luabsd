@@ -126,7 +126,7 @@ FLOCK_dump(lua_State *L)
 }
 
 /*
- * Accessor.
+ * Access functions.
  */
 
 /* starting offset - negative l_start, if l_whence = SEEK_{CUR,END} */

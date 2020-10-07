@@ -44,7 +44,7 @@
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
- * Accessor, [C -> stack].
+ * Access functions, [C -> stack].
  */
 
 int
@@ -215,23 +215,12 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 
     self = luab_todata(L, narg, m, luab_udata_t *);
 
-    LIST_FOREACH_SAFE(ud, &self->ud_list, ud_next, ud_tmp) {
+    LIST_FOREACH_SAFE(ud, &self->ud_list, ud_next, ud_tmp)
+        luab_udata_remove(ud);
 
-        if (ud->ud_x != NULL) {
-            *ud->ud_x = NULL;
-            ud->ud_x = NULL;
-            ud->ud_xhd = NULL;
-        }
-        LIST_REMOVE(ud, ud_next);
-    }
+    if (self->ud_xhd != NULL)
+        luab_udata_remove(self);
 
-    if (self->ud_xhd != NULL) {
-
-        if (self->ud_x != NULL)
-            *self->ud_x = NULL;
-
-        LIST_REMOVE(self, ud_next);
-    }
     (void)memset_s(self, m->m_sz, 0, m->m_sz);
 
     return (0);

@@ -77,7 +77,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
         }
     }
 
-    if ((xp = (luab_primitive_u *)luab_isudata(L, 5, luab_mx(PRIMITIVE))) != NULL)
+    if ((xp = luab_isudata(L, 5, luab_mx(PRIMITIVE))) != NULL)
         sopt->sopt_x = &(xp->un_socklen);
     else {
         sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, INT_MAX);

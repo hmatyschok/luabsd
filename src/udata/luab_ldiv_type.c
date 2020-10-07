@@ -110,7 +110,7 @@ LDIV_dump(lua_State *L)
 }
 
 /*
- * Accessor.
+ * Access functions.
  */
 
 /***

@@ -94,7 +94,7 @@ LINK_get(lua_State *L)
 }
 
 /*
- * Accessor.
+ * Access functions.
  */
 
 /***
@@ -121,7 +121,7 @@ LINK_set_ptr(lua_State *L)
 
     link = luab_udata(L, 1, &link_type, link_t *);  /* XXX */
     
-    if (luab_udata_add(L, 1, &link_type, 2, &link->link_dp) == NULL) {
+    if (luab_udata_link(L, 1, &link_type, 2, &link->link_dp) == NULL) {
         errno = ENOENT;
         status = -1;
     } else

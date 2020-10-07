@@ -127,7 +127,7 @@ CMSGCRED_dump(lua_State *L)
 }
 
 /*
- * Accessor, immutables.
+ * Access functions, immutables.
  */
 
 /***

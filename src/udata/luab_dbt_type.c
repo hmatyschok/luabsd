@@ -94,7 +94,7 @@ DBT_get(lua_State *L)
 }
 
 /*
- * Accessor for immutable properties.
+ * Access functions for immutable properties.
  */
 
 static int
@@ -112,7 +112,7 @@ DBT_get_size(lua_State *L)
 }
 
 /*
- * Accessor.
+ * Access functions.
  */
 
 /***

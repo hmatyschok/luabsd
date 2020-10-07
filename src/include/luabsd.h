@@ -158,7 +158,7 @@ luab_checkmaxargs(lua_State *L, int nmax)
 }
 
 /*
- * Accessor, n-th arg over argv, [stack -> C].
+ * Access functions, n-th arg over argv, [stack -> C].
  *
  * luab_check{l}xxx(3) accessor evaluates, if n-th arg exists, otherwise
  * lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does the same
@@ -220,7 +220,7 @@ luab_checklstring(lua_State *L, int narg, size_t max_len)
 }
 
 /*
- * Accessor, [C -> stack].
+ * Access functions, [C -> stack].
  */
 
 static __inline void
@@ -332,7 +332,7 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 }
 
 /*
- * Accessor, [C -> stack].
+ * Access functions, [C -> stack].
  */
 
 int  luab_pusherr(lua_State *, lua_Integer);

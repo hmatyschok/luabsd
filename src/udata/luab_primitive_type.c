@@ -73,7 +73,7 @@ typedef struct luab_primitive {
 #define LUAB_PRIMITIVE_TYPE   "PRIMITIVE*"
 
 /*
- * Accessor.
+ * Access functions.
  */
 
 static int
