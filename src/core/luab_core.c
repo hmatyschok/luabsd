@@ -273,7 +273,7 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
  *
  * @function uuid
  *
- * @return (LUA_TSTRING [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          (uuid [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
