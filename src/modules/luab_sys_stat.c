@@ -1198,7 +1198,7 @@ static luab_module_table_t luab_sys_stat_vec[] = {
 };
 
 luab_module_t luab_sys_stat_lib = {
-    .cookie = LUAB_SYS_STAT_LIB_ID,
-    .name = LUAB_SYS_STAT_LIB_KEY,
-    .vec = luab_sys_stat_vec,
+    .m_cookie   = LUAB_SYS_STAT_LIB_ID,
+    .m_name     = LUAB_SYS_STAT_LIB_KEY,
+    .m_vec      = luab_sys_stat_vec,
 };

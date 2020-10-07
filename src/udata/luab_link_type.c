@@ -211,11 +211,11 @@ link_udata(lua_State *L, int narg)
 }
 
 luab_module_t link_type = {
-    .cookie = LUAB_LINK_TYPE_ID,
-    .name = LUAB_LINK_TYPE,
-    .vec = link_methods,
-    .create = link_create,
-    .init = link_init,
-    .get = link_udata,
-    .sz = sizeof(luab_link_t),
+    .m_cookie   = LUAB_LINK_TYPE_ID,
+    .m_name     = LUAB_LINK_TYPE,
+    .m_vec      = link_methods,
+    .m_create   = link_create,
+    .m_init     = link_init,
+    .m_get      = link_udata,
+    .m_sz       = sizeof(luab_link_t),
 };

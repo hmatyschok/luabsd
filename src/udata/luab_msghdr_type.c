@@ -566,7 +566,7 @@ MSGHDR_gc(lua_State *L)
     while (buf->iov_base != NULL)
         luab_iov_free(buf++);
 
-    (void)memset_s(self, msghdr_type.sz, 0, msghdr_type.sz);
+    (void)memset_s(self, msghdr_type.m_sz, 0, msghdr_type.m_sz);
 
     return (0);
 }
@@ -660,12 +660,12 @@ msghdr_udata(lua_State *L, int narg)
 }
 
 luab_module_t msghdr_type = {
-    .cookie = LUAB_MSGHDR_TYPE_ID,
-    .name = LUAB_MSGHDR_TYPE,
-    .vec = msghdr_methods,
-    .create = msghdr_create,
-    .init = msghdr_init,
-    .get = msghdr_udata,
-    .sz = sizeof(luab_msghdr_t),
+    .m_cookie   = LUAB_MSGHDR_TYPE_ID,
+    .m_name     = LUAB_MSGHDR_TYPE,
+    .m_vec      = msghdr_methods,
+    .m_create   = msghdr_create,
+    .m_init     = msghdr_init,
+    .m_get      = msghdr_udata,
+    .m_sz       = sizeof(luab_msghdr_t),
 };
 #endif /* __BSD_VISIBLE */

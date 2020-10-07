@@ -515,7 +515,7 @@ static luab_module_table_t luab_fcntl_vec[] = {
 };
 
 luab_module_t luab_fcntl_lib = {
-    .cookie = LUAB_FCNTL_LIB_ID,
-    .name = LUAB_FCNTL_LIB_KEY,
-    .vec = luab_fcntl_vec,
+    .m_cookie   = LUAB_FCNTL_LIB_ID,
+    .m_name     = LUAB_FCNTL_LIB_KEY,
+    .m_vec      = luab_fcntl_vec,
 };

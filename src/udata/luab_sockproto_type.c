@@ -284,12 +284,12 @@ sockproto_udata(lua_State *L, int narg)
 }
 
 luab_module_t sockproto_type = {
-    .cookie = LUAB_SOCKPROTO_TYPE_ID,
-    .name = LUAB_SOCKPROTO_TYPE,
-    .vec = sockproto_methods,
-    .create = sockproto_create,
-    .init = sockproto_init,
-    .get = sockproto_udata,
-    .sz = sizeof(luab_sockproto_t),
+    .m_cookie   = LUAB_SOCKPROTO_TYPE_ID,
+    .m_name     = LUAB_SOCKPROTO_TYPE,
+    .m_vec      = sockproto_methods,
+    .m_create   = sockproto_create,
+    .m_init     = sockproto_init,
+    .m_get      = sockproto_udata,
+    .m_sz       = sizeof(luab_sockproto_t),
 };
 #endif /* __BSD_VISBLE */

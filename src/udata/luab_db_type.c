@@ -442,12 +442,12 @@ db_udata(lua_State *L, int narg)
 }
 
 luab_module_t db_type = {
-    .cookie = LUAB_DB_TYPE_ID,
-    .name = LUAB_DB_TYPE,
-    .vec = db_methods,
-    .create = db_create,
-    .init = db_init,
-    .get = db_udata,
-    .sz = sizeof(luab_db_t),
+    .m_cookie   = LUAB_DB_TYPE_ID,
+    .m_name     = LUAB_DB_TYPE,
+    .m_vec      = db_methods,
+    .m_create   = db_create,
+    .m_init     = db_init,
+    .m_get      = db_udata,
+    .m_sz       = sizeof(luab_db_t),
 };
 #endif /* __BSD_VISIBLE */

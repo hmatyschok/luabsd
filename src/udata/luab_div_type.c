@@ -283,11 +283,11 @@ div_udata(lua_State *L, int narg)
 }
 
 luab_module_t div_type = {
-    .cookie = LUAB_DIV_TYPE_ID,
-    .name = LUAB_DIV_TYPE,
-    .vec = div_methods,
-    .create = div_create,
-    .init = div_init,
-    .get = div_udata,
-    .sz = sizeof(luab_div_t),
+    .m_cookie   = LUAB_DIV_TYPE_ID,
+    .m_name     = LUAB_DIV_TYPE,
+    .m_vec      = div_methods,
+    .m_create   = div_create,
+    .m_init     = div_init,
+    .m_get      = div_udata,
+    .m_sz       = sizeof(luab_div_t),
 };

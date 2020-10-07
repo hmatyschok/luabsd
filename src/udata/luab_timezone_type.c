@@ -285,11 +285,11 @@ timezone_udata(lua_State *L, int narg)
 }
 
 luab_module_t timezone_type = {
-    .cookie = LUAB_TIMEZONE_TYPE_ID,
-    .name = LUAB_TIMEZONE_TYPE,
-    .vec = timezone_methods,
-    .create = timezone_create,
-    .init = timezone_init,
-    .get = timezone_udata,
-    .sz = sizeof(luab_timezone_t),
+    .m_cookie   = LUAB_TIMEZONE_TYPE_ID,
+    .m_name     = LUAB_TIMEZONE_TYPE,
+    .m_vec      = timezone_methods,
+    .m_create   = timezone_create,
+    .m_init     = timezone_init,
+    .m_get      = timezone_udata,
+    .m_sz       = sizeof(luab_timezone_t),
 };

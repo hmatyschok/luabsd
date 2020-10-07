@@ -281,11 +281,11 @@ itimerval_udata(lua_State *L, int narg)
 }
 
 luab_module_t itimerval_type = {
-    .cookie = LUAB_ITIMERVAL_TYPE_ID,
-    .name = LUAB_ITIMERVAL_TYPE,
-    .vec = itimerval_methods,
-    .create = itimerval_create,
-    .init = itimerval_init,
-    .get = itimerval_udata,
-    .sz = sizeof(luab_itimerval_t),
+    .m_cookie   = LUAB_ITIMERVAL_TYPE_ID,
+    .m_name     = LUAB_ITIMERVAL_TYPE,
+    .m_vec      = itimerval_methods,
+    .m_create   = itimerval_create,
+    .m_init     = itimerval_init,
+    .m_get      = itimerval_udata,
+    .m_sz       = sizeof(luab_itimerval_t),
 };

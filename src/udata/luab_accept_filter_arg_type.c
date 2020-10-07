@@ -293,12 +293,12 @@ accept_filter_arg_udata(lua_State *L, int narg)
 }
 
 luab_module_t accept_filter_arg_type = {
-    .cookie = LUAB_ACCEPT_FILTER_ARG_TYPE_ID,
-    .name = LUAB_ACCEPT_FILTER_ARG_TYPE,
-    .vec = accept_filter_arg_methods,
-    .create = accept_filter_arg_create,
-    .init = accept_filter_arg_init,
-    .get = accept_filter_arg_udata,
-    .sz = sizeof(luab_accept_filter_arg_t),
+    .m_cookie   = LUAB_ACCEPT_FILTER_ARG_TYPE_ID,
+    .m_name     = LUAB_ACCEPT_FILTER_ARG_TYPE,
+    .m_vec      = accept_filter_arg_methods,
+    .m_create   = accept_filter_arg_create,
+    .m_init     = accept_filter_arg_init,
+    .m_get      = accept_filter_arg_udata,
+    .m_sz       = sizeof(luab_accept_filter_arg_t),
 };
 #endif /* __BSD_VISIBLE */

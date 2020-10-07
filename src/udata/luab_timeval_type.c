@@ -285,11 +285,11 @@ timeval_udata(lua_State *L, int narg)
 }
 
 luab_module_t timeval_type = {
-    .cookie = LUAB_TIMEVAL_TYPE_ID,
-    .name = LUAB_TIMEVAL_TYPE,
-    .vec = timeval_methods,
-    .create = timeval_create,
-    .init = timeval_init,
-    .get = timeval_udata,
-    .sz = sizeof(luab_timeval_t),
+    .m_cookie   = LUAB_TIMEVAL_TYPE_ID,
+    .m_name     = LUAB_TIMEVAL_TYPE,
+    .m_vec      = timeval_methods,
+    .m_create   = timeval_create,
+    .m_init     = timeval_init,
+    .m_get      = timeval_udata,
+    .m_sz       = sizeof(luab_timeval_t),
 };

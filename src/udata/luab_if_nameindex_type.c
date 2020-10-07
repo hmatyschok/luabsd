@@ -214,11 +214,11 @@ if_nameindex_udata(lua_State *L, int narg)
 }
 
 luab_module_t if_nameindex_type = {
-    .cookie = LUAB_IF_NAMEINDEX_TYPE_ID,
-    .name = LUAB_IF_NAMEINDEX_TYPE,
-    .vec = if_nameindex_methods,
-    .create = if_nameindex_create,
-    .init = if_nameindex_init,
-    .get = if_nameindex_udata,
-    .sz = sizeof(luab_if_nameindex_t),
+    .m_cookie   = LUAB_IF_NAMEINDEX_TYPE_ID,
+    .m_name     = LUAB_IF_NAMEINDEX_TYPE,
+    .m_vec      = if_nameindex_methods,
+    .m_create   = if_nameindex_create,
+    .m_init     = if_nameindex_init,
+    .m_get      = if_nameindex_udata,
+    .m_sz       = sizeof(luab_if_nameindex_t),
 };

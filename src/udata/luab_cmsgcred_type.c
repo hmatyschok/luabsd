@@ -348,12 +348,12 @@ cmsgcred_udata(lua_State *L, int narg)
 }
 
 luab_module_t cmsgcred_type = {
-    .cookie = LUAB_CMSGCRED_TYPE_ID,
-    .name = LUAB_CMSGCRED_TYPE,
-    .vec = cmsgcred_methods,
-    .create = cmsgcred_create,
-    .init = cmsgcred_init,
-    .get = cmsgcred_udata,
-    .sz = sizeof(luab_cmsgcred_t),
+    .m_cookie   = LUAB_CMSGCRED_TYPE_ID,
+    .m_name     = LUAB_CMSGCRED_TYPE,
+    .m_vec      = cmsgcred_methods,
+    .m_create   = cmsgcred_create,
+    .m_init     = cmsgcred_init,
+    .m_get      = cmsgcred_udata,
+    .m_sz       = sizeof(luab_cmsgcred_t),
 };
 #endif /* __BSD_VISBLE */

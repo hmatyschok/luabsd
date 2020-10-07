@@ -285,11 +285,11 @@ timespec_udata(lua_State *L, int narg)
 }
 
 luab_module_t timespec_type = {
-    .cookie = LUAB_TIMESPEC_TYPE_ID,
-    .name = LUAB_TIMESPEC_TYPE,
-    .vec = timespec_methods,
-    .create = timespec_create,
-    .init = timespec_init,
-    .get = timespec_udata,
-    .sz = sizeof(luab_timespec_t),
+    .m_cookie   = LUAB_TIMESPEC_TYPE_ID,
+    .m_name     = LUAB_TIMESPEC_TYPE,
+    .m_vec      = timespec_methods,
+    .m_create   = timespec_create,
+    .m_init     = timespec_init,
+    .m_get      = timespec_udata,
+    .m_sz       = sizeof(luab_timespec_t),
 };

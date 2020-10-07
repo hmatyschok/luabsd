@@ -43,7 +43,7 @@ typedef struct luab_udata {
 static __inline size_t
 luab_xlen(luab_module_t *m)
 {
-    return ((m->sz - sizeof(luab_udata_t)));
+    return ((m->m_sz - sizeof(luab_udata_t)));
 }
 
 /*
@@ -139,13 +139,13 @@ typedef struct luab_iovec {
  */
 
 #define luab_isdata(L, narg, m, t) \
-    ((t)luaL_testudata((L), (narg), ((m)->name)))
+    ((t)luaL_testudata((L), (narg), ((m)->m_name)))
 #define luab_todata(L, narg, m, t) \
     ((t)luab_checkudata((L), (narg), (m)))
 #define luab_toldata(L, narg, m, t, len) \
     ((t)luab_checkludata((L), (narg), (m), (len)))
 #define luab_udata(L, narg, m, t) \
-    ((t)((*(m)->get)((L), (narg))))
+    ((t)((*(m)->m_get)((L), (narg))))
 #define luab_udataisnil(L, narg, m, t) \
     ((t)(luab_checkudataisnil((L), (narg), (m))))
 
@@ -155,7 +155,7 @@ luab_checkudata(lua_State *L, int narg, luab_module_t *m)
     if (m == NULL)
         luaL_argerror(L, narg, "Invalid argument");
 
-    return (luaL_checkudata(L, narg, m->name));
+    return (luaL_checkudata(L, narg, m->m_name));
 }
 
 static __inline void *
@@ -183,8 +183,8 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
     if (lua_isnil(L, narg) != 0)
         return (NULL);
 
-    if (m != NULL && m->get != NULL)
-        return ((*m->get)(L, narg));
+    if (m != NULL && m->m_get != NULL)
+        return ((*m->m_get)(L, narg));
 
     return (NULL);
 }
@@ -327,7 +327,7 @@ int  *luab_module_table_checklint(lua_State *, int, size_t);
 gid_t    *luab_module_table_checklgid(lua_State *, int, size_t);
 
 /*
- * Accessor, [stack -> C].
+ * Accessor, [C -> stack].
  */
 
 int  luab_pushudata(lua_State *, luab_module_t *, void *);

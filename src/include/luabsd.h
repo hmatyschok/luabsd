@@ -62,21 +62,21 @@ typedef union luab_primitive {
 typedef void    (*luab_module_table_fn)(lua_State *, luab_primitive_u *);
 
 typedef struct luab_module_table {
-    luab_module_table_fn   init;
-    const char    *key;
-    luab_primitive_u   val;
+    luab_module_table_fn    mt_init;
+    const char              *mt_key;
+    luab_primitive_u        mt_val;
 } luab_module_table_t;
 
 #define LUAB_TYPE(fn, k, v) \
-    { .init = fn, .key = k, v, }
+    { .mt_init = fn, .mt_key = k, v, }
 #define LUAB_INT(k, v) \
-    LUAB_TYPE(luab_initinteger, k, .val.un_int = v)
+    LUAB_TYPE(luab_initinteger, k, .mt_val.un_int = v)
 #define LUAB_FUNC(k, v) \
-    LUAB_TYPE(luab_initcfunction, k, .val.un_fn = v)
+    LUAB_TYPE(luab_initcfunction, k, .mt_val.un_fn = v)
 #define LUAB_STR(k, v) \
-    LUAB_TYPE(luab_initstring, k, .val.un_cp = v)
+    LUAB_TYPE(luab_initstring, k, .mt_val.un_cp = v)
 #define LUAB_MOD_TBL_SENTINEL \
-    LUAB_TYPE(NULL, NULL, .val.un_fn = NULL)
+    LUAB_TYPE(NULL, NULL, .mt_val.un_fn = NULL)
 
 static __inline void
 luab_initinteger(lua_State *L, luab_primitive_u *un)
@@ -105,13 +105,13 @@ typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
 
 typedef struct luab_module {
-    uint32_t        cookie;        /*  date -u +'%s' */
-    size_t          sz;
-    const char      *name;
-    luab_module_table_t *vec;
-    luab_ctor_fn    create;
-    luab_init_fn    init;
-    luab_get_fn    get;
+    uint32_t        m_cookie;        /*  date -u +'%s' */
+    size_t          m_sz;
+    const char      *m_name;
+    luab_module_table_t *m_vec;
+    luab_ctor_fn    m_create;
+    luab_init_fn    m_init;
+    luab_get_fn    m_get;
 } luab_module_t;
 
 typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);

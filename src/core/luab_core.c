@@ -198,8 +198,8 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 
     (void)luab_checkmaxargs(L, narg);
 
-    if (m != NULL && m->get != NULL)
-        dp = (caddr_t)(*m->get)(L, narg);
+    if (m != NULL && m->m_get != NULL)
+        dp = (caddr_t)(*m->m_get)(L, narg);
     else
         dp = NULL;
 
@@ -230,7 +230,7 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 
         LIST_REMOVE(self, ud_next);
     }
-    (void)memset_s(self, m->sz, 0, m->sz);
+    (void)memset_s(self, m->m_sz, 0, m->m_sz);
 
     return (0);
 }
@@ -259,7 +259,7 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
     (void)luab_checkmaxargs(L, narg);
 
     if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
-        lua_pushfstring(L, "%s (%p,%d)", m->name, ud, ud->ud_ts);
+        lua_pushfstring(L, "%s (%p,%d)", m->m_name, ud, ud->ud_ts);
 
     return (1);
 }
@@ -351,9 +351,9 @@ static luab_module_table_t luab_core_util_vec[] = {
 };
 
 luab_module_t luab_core_lib = {
-    .cookie = LUAB_CORE_LIB_ID,
-    .name = LUAB_CORE_LIB_KEY,
-    .vec = luab_core_util_vec,
+    .m_cookie = LUAB_CORE_LIB_ID,
+    .m_name = LUAB_CORE_LIB_KEY,
+    .m_vec = luab_core_util_vec,
 };
 
 static const char *copyright =
@@ -379,9 +379,9 @@ luab_populate(lua_State *L, int narg, luab_module_t *m)
 {
     luab_module_table_t *tok;
 
-    for (tok = m->vec; tok->key != NULL; tok++) {
-        (void)(*tok->init)(L, &tok->val);
-        lua_setfield(L, narg, tok->key);
+    for (tok = m->m_vec; tok->mt_key != NULL; tok++) {
+        (void)(*tok->mt_init)(L, &tok->mt_val);
+        lua_setfield(L, narg, tok->mt_key);
     }
     lua_pop(L, 0);
 }
@@ -391,13 +391,13 @@ luab_newtable(lua_State *L, int narg, luab_module_t *m)
 {
     lua_newtable(L);
     luab_populate(L, narg, m);
-    lua_setfield(L, narg, m->name);
+    lua_setfield(L, narg, m->m_name);
 }
 
 static void
 luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
 {
-    luaL_newmetatable(L, m->name);
+    luaL_newmetatable(L, m->m_name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
 

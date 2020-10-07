@@ -704,11 +704,11 @@ iovec_udata(lua_State *L, int narg)
 }
 
 luab_module_t iovec_type = {
-    .cookie = LUAB_IOVEC_TYPE_ID,
-    .name = LUAB_IOVEC_TYPE,
-    .vec = iovec_methods,
-    .create = iovec_create,
-    .init = iovec_init,
-    .get = iovec_udata,
-    .sz = sizeof(luab_iovec_t),
+    .m_cookie   = LUAB_IOVEC_TYPE_ID,
+    .m_name     = LUAB_IOVEC_TYPE,
+    .m_vec      = iovec_methods,
+    .m_create   = iovec_create,
+    .m_init     = iovec_init,
+    .m_get      = iovec_udata,
+    .m_sz       = sizeof(luab_iovec_t),
 };

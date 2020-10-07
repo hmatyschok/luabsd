@@ -286,12 +286,12 @@ bintime_udata(lua_State *L, int narg)
 }
 
 luab_module_t bintime_type = {
-    .cookie = LUAB_BINTIME_TYPE_ID,
-    .name = LUAB_BINTIME_TYPE,
-    .vec = bintime_methods,
-    .create = bintime_create,
-    .init = bintime_init,
-    .get = bintime_udata,
-    .sz = sizeof(luab_bintime_t),
+    .m_cookie   = LUAB_BINTIME_TYPE_ID,
+    .m_name     = LUAB_BINTIME_TYPE,
+    .m_vec      = bintime_methods,
+    .m_create   = bintime_create,
+    .m_init     = bintime_init,
+    .m_get      = bintime_udata,
+    .m_sz       = sizeof(luab_bintime_t),
 };
 #endif /* __BSD_VISIBLE */

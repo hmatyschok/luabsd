@@ -381,11 +381,11 @@ flock_udata(lua_State *L, int narg)
 }
 
 luab_module_t flock_type = {
-    .cookie = LUAB_FLOCK_TYPE_ID,
-    .name = LUAB_FLOCK_TYPE,
-    .vec = flock_methods,
-    .create = flock_create,
-    .init = flock_init,
-    .get = flock_udata,
-    .sz = sizeof(luab_flock_t),
+    .m_cookie   = LUAB_FLOCK_TYPE_ID,
+    .m_name     = LUAB_FLOCK_TYPE,
+    .m_vec      = flock_methods,
+    .m_create   = flock_create,
+    .m_init     = flock_init,
+    .m_get      = flock_udata,
+    .m_sz       = sizeof(luab_flock_t),
 };

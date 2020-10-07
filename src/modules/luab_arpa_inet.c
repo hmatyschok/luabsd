@@ -62,7 +62,7 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
         luaL_argerror(L, narg, "Invalid argument");
         break;  /* not reached */
     }
-    return ((*type->get)(L, narg));
+    return ((*type->m_get)(L, narg));
 }
 
 /*
@@ -975,7 +975,7 @@ static luab_module_table_t luab_arpa_inet_vec[] = {
 };
 
 luab_module_t luab_arpa_inet_lib = {
-    .cookie = LUAB_ARPA_INET_LIB_ID,
-    .name = LUAB_ARPA_INET_LIB_KEY,
-    .vec = luab_arpa_inet_vec,
+    .m_cookie   = LUAB_ARPA_INET_LIB_ID,
+    .m_name     = LUAB_ARPA_INET_LIB_KEY,
+    .m_vec      = luab_arpa_inet_vec,
 };

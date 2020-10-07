@@ -285,11 +285,11 @@ linger_udata(lua_State *L, int narg)
 }
 
 luab_module_t linger_type = {
-    .cookie = LUAB_LINGER_TYPE_ID,
-    .name = LUAB_LINGER_TYPE,
-    .vec = linger_methods,
-    .create = linger_create,
-    .init = linger_init,
-    .get = linger_udata,
-    .sz = sizeof(luab_linger_t),
+    .m_cookie   = LUAB_LINGER_TYPE_ID,
+    .m_name     = LUAB_LINGER_TYPE,
+    .m_vec      = linger_methods,
+    .m_create   = linger_create,
+    .m_init     = linger_init,
+    .m_get      = linger_udata,
+    .m_sz       = sizeof(luab_linger_t),
 };

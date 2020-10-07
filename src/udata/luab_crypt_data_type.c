@@ -295,12 +295,12 @@ crypt_data_udata(lua_State *L, int narg)
 }
 
 luab_module_t crypt_data_type = {
-    .cookie = LUAB_CRYPT_DATA_TYPE_ID,
-    .name = LUAB_CRYPT_DATA_TYPE,
-    .vec = crypt_data_methods,
-    .create = crypt_data_create,
-    .init = crypt_data_init,
-    .get = crypt_data_udata,
-    .sz = sizeof(luab_crypt_data_t),
+    .m_cookie   = LUAB_CRYPT_DATA_TYPE_ID,
+    .m_name     = LUAB_CRYPT_DATA_TYPE,
+    .m_vec      = crypt_data_methods,
+    .m_create   = crypt_data_create,
+    .m_init     = crypt_data_init,
+    .m_get      = crypt_data_udata,
+    .m_sz       = sizeof(luab_crypt_data_t),
 };
 #endif /* __BSD_VISIBLE */

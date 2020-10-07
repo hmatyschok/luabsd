@@ -411,11 +411,11 @@ clockinfo_udata(lua_State *L, int narg)
 }
 
 luab_module_t clockinfo_type = {
-    .cookie = LUAB_CLOCKINFO_TYPE_ID,
-    .name = LUAB_CLOCKINFO_TYPE,
-    .vec = clockinfo_methods,
-    .create = clockinfo_create,
-    .init = clockinfo_init,
-    .get = clockinfo_udata,
-    .sz = sizeof(luab_clockinfo_t),
+    .m_cookie   = LUAB_CLOCKINFO_TYPE_ID,
+    .m_name     = LUAB_CLOCKINFO_TYPE,
+    .m_vec      = clockinfo_methods,
+    .m_create   = clockinfo_create,
+    .m_init     = clockinfo_init,
+    .m_get      = clockinfo_udata,
+    .m_sz       = sizeof(luab_clockinfo_t),
 };

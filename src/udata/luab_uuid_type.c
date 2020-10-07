@@ -544,11 +544,11 @@ uuid_udata(lua_State *L, int narg)
 }
 
 luab_module_t uuid_type = {
-    .cookie = LUAB_UUID_TYPE_ID,
-    .name = LUAB_UUID_TYPE,
-    .vec = uuid_methods,
-    .create = _uuid_create,
-    .init = uuid_init,
-    .get = uuid_udata,
-    .sz = sizeof(luab_uuid_t),
+    .m_cookie   = LUAB_UUID_TYPE_ID,
+    .m_name     = LUAB_UUID_TYPE,
+    .m_vec      = uuid_methods,
+    .m_create   = _uuid_create,
+    .m_init     = uuid_init,
+    .m_get      = uuid_udata,
+    .m_sz       = sizeof(luab_uuid_t),
 };

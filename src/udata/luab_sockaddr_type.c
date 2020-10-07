@@ -1299,11 +1299,11 @@ sockaddr_udata(lua_State *L, int narg)
 }
 
 luab_module_t sockaddr_type = {
-    .cookie = LUAB_SOCKADDR_TYPE_ID,
-    .name = LUAB_SOCKADDR_TYPE,
-    .vec = sockaddr_methods,
-    .create = sockaddr_create,
-    .init = sockaddr_init,
-    .get = sockaddr_udata,
-    .sz = sizeof(luab_sockaddr_t),
+    .m_cookie   = LUAB_SOCKADDR_TYPE_ID,
+    .m_name     = LUAB_SOCKADDR_TYPE,
+    .m_vec      = sockaddr_methods,
+    .m_create   = sockaddr_create,
+    .m_init     = sockaddr_init,
+    .m_get      = sockaddr_udata,
+    .m_sz       = sizeof(luab_sockaddr_t),
 };

@@ -215,12 +215,12 @@ cap_rbuf_udata(lua_State *L, int narg)
 }
 
 luab_module_t cap_rbuf_type = {
-    .cookie = LUAB_CAP_RBUF_TYPE_ID,
-    .name = LUAB_CAP_RBUF_TYPE,
-    .vec = cap_rbuf_methods,
-    .create = cap_rbuf_create,
-    .init = cap_rbuf_init,
-    .get = cap_rbuf_udata,
-    .sz = sizeof(luab_cap_rbuf_t),
+    .m_cookie   = LUAB_CAP_RBUF_TYPE_ID,
+    .m_name     = LUAB_CAP_RBUF_TYPE,
+    .m_vec      = cap_rbuf_methods,
+    .m_create   = cap_rbuf_create,
+    .m_init     = cap_rbuf_init,
+    .m_get      = cap_rbuf_udata,
+    .m_sz       = sizeof(luab_cap_rbuf_t),
 };
 #endif /* __BSD_VISIBLE */

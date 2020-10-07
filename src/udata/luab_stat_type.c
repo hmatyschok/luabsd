@@ -929,11 +929,11 @@ stat_udata(lua_State *L, int narg)
 }
 
 luab_module_t stat_type = {
-    .cookie = LUAB_STAT_TYPE_ID,
-    .name = LUAB_STAT_TYPE,
-    .vec = stat_methods,
-    .create = stat_create,
-    .init = stat_init,
-    .get = stat_udata,
-    .sz = sizeof(luab_stat_t),
+    .m_cookie   = LUAB_STAT_TYPE_ID,
+    .m_name     = LUAB_STAT_TYPE,
+    .m_vec      = stat_methods,
+    .m_create   = stat_create,
+    .m_init     = stat_init,
+    .m_get      = stat_udata,
+    .m_sz       = sizeof(luab_stat_t),
 };

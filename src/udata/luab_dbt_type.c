@@ -260,12 +260,12 @@ dbt_udata(lua_State *L, int narg)
 }
 
 luab_module_t dbt_type = {
-    .cookie = LUAB_DBT_TYPE_ID,
-    .name = LUAB_DBT_TYPE,
-    .vec = dbt_methods,
-    .create = dbt_create,
-    .init = dbt_init,
-    .get = dbt_udata,
-    .sz = sizeof(luab_dbt_t),
+    .m_cookie   = LUAB_DBT_TYPE_ID,
+    .m_name     = LUAB_DBT_TYPE,
+    .m_vec      = dbt_methods,
+    .m_create   = dbt_create,
+    .m_init     = dbt_init,
+    .m_get      = dbt_udata,
+    .m_sz       = sizeof(luab_dbt_t),
 };
 #endif /* __BSD_VISIBLE */

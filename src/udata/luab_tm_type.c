@@ -803,11 +803,11 @@ tm_udata(lua_State *L, int narg)
 }
 
 luab_module_t tm_type = {
-    .cookie = LUAB_TM_TYPE_ID,
-    .name = LUAB_TM_TYPE,
-    .vec = tm_methods,
-    .create = tm_create,
-    .init = tm_init,
-    .get = tm_udata,
-    .sz = sizeof(luab_tm_t),
+    .m_cookie   = LUAB_TM_TYPE_ID,
+    .m_name     = LUAB_TM_TYPE,
+    .m_vec      = tm_methods,
+    .m_create   = tm_create,
+    .m_init     = tm_init,
+    .m_get      = tm_udata,
+    .m_sz       = sizeof(luab_tm_t),
 };

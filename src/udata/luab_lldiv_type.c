@@ -283,11 +283,11 @@ lldiv_udata(lua_State *L, int narg)
 }
 
 luab_module_t lldiv_type = {
-    .cookie = LUAB_LLDIV_TYPE_ID,
-    .name = LUAB_LLDIV_TYPE,
-    .vec = lldiv_methods,
-    .create = lldiv_create,
-    .init = lldiv_init,
-    .get = lldiv_udata,
-    .sz = sizeof(luab_lldiv_t),
+    .m_cookie   = LUAB_LLDIV_TYPE_ID,
+    .m_name     = LUAB_LLDIV_TYPE,
+    .m_vec      = lldiv_methods,
+    .m_create   = lldiv_create,
+    .m_init     = lldiv_init,
+    .m_get      = lldiv_udata,
+    .m_sz       = sizeof(luab_lldiv_t),
 };

@@ -224,11 +224,11 @@ in_addr_udata(lua_State *L, int narg)
 }
 
 luab_module_t in_addr_type = {
-    .cookie = LUAB_IN_ADDR_TYPE_ID,
-    .name = LUAB_IN_ADDR_TYPE,
-    .vec = in_addr_methods,
-    .create = in_addr_create,
-    .init = in_addr_init,
-    .get = in_addr_udata,
-    .sz = sizeof(luab_in_addr_t),
+    .m_cookie   = LUAB_IN_ADDR_TYPE_ID,
+    .m_name     = LUAB_IN_ADDR_TYPE,
+    .m_vec      = in_addr_methods,
+    .m_create   = in_addr_create,
+    .m_init     = in_addr_init,
+    .m_get      = in_addr_udata,
+    .m_sz       = sizeof(luab_in_addr_t),
 };

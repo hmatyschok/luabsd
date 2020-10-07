@@ -294,11 +294,11 @@ hook_udata(lua_State *L, int narg)
 }
 
 luab_module_t hook_type = {
-    .cookie = LUAB_HOOK_TYPE_ID,
-    .name = LUAB_HOOK_TYPE,
-    .vec = hook_methods,
-    .create = hook_create,
-    .init = hook_init,
-    .get = hook_udata,
-    .sz = sizeof(luab_hook_t),
+    .m_cookie   = LUAB_HOOK_TYPE_ID,
+    .m_name     = LUAB_HOOK_TYPE,
+    .m_vec      = hook_methods,
+    .m_create   = hook_create,
+    .m_init     = hook_init,
+    .m_get      = hook_udata,
+    .m_sz       = sizeof(luab_hook_t),
 };

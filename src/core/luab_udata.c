@@ -47,13 +47,13 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
     luab_udata_t *ud = NULL;
 
     if (m != NULL) {
-        if ((ud = lua_newuserdata(L, m->sz)) != NULL) {
-            (void)memset_s(ud, m->sz, 0, m->sz);
+        if ((ud = lua_newuserdata(L, m->m_sz)) != NULL) {
+            (void)memset_s(ud, m->m_sz, 0, m->m_sz);
 
-            if (m->init != NULL && arg != NULL)
-                (*m->init)(ud, arg);
+            if (m->m_init != NULL && arg != NULL)
+                (*m->m_init)(ud, arg);
 
-            luaL_setmetatable(L, m->name);
+            luaL_setmetatable(L, m->m_name);
 
             ud->ud_m = m;
             ud->ud_ts = time(NULL);
@@ -117,9 +117,9 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
     caddr_t msg;
     int status;
 
-    if (m != NULL && m->create != NULL) {
+    if (m != NULL && m->m_create != NULL) {
 
-        if ((*m->create)(L, arg) != NULL) {
+        if ((*m->m_create)(L, arg) != NULL) {
 
             if (save_errno != 0) {
                 lua_pushinteger(L, save_errno);
@@ -147,13 +147,13 @@ void
 luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
 {
 
-    if (m != NULL && m->create != NULL) {
+    if (m != NULL && m->m_create != NULL) {
         /*
          * Best effort, this means try to push things on
          * stack at least as it is possible, regardless
          * if allocation of memory is possible or not.
          */
-        if ((*m->create)(L, v) != NULL)
+        if ((*m->m_create)(L, v) != NULL)
             lua_rawseti(L, narg, k);
     }
 }
@@ -161,13 +161,13 @@ luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *
 void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
-    if (m != NULL && m->create != NULL) {
+    if (m != NULL && m->m_create != NULL) {
         /*
          * Best effort, this means try to push things on
          * stack at least as it is possible, regardless
          * if allocation of memory is possible or not.
          */
-        if ((*m->create)(L, v) != NULL)
+        if ((*m->m_create)(L, v) != NULL)
             lua_setfield(L, narg, k);
     }
 }

@@ -5576,7 +5576,7 @@ static luab_module_table_t luab_unistd_vec[] = {
 };
 
 luab_module_t luab_unistd_lib = {
-    .cookie = LUAB_UNISTD_LIB_ID,
-    .name = LUAB_UNISTD_LIB_KEY,
-    .vec = luab_unistd_vec,
+    .m_cookie   = LUAB_UNISTD_LIB_ID,
+    .m_name     = LUAB_UNISTD_LIB_KEY,
+    .m_vec      = luab_unistd_vec,
 };

@@ -246,11 +246,11 @@ in6_addr_udata(lua_State *L, int narg)
 }
 
 luab_module_t in6_addr_type = {
-    .cookie = LUAB_IN6_ADDR_TYPE_ID,
-    .name = LUAB_IN6_ADDR_TYPE,
-    .vec = in6_addr_methods,
-    .create = in6_addr_create,
-    .init = in6_addr_init,
-    .get = in6_addr_udata,
-    .sz = sizeof(luab_in6_addr_t),
+    .m_cookie   = LUAB_IN6_ADDR_TYPE_ID,
+    .m_name     = LUAB_IN6_ADDR_TYPE,
+    .m_vec      = in6_addr_methods,
+    .m_create   = in6_addr_create,
+    .m_init     = in6_addr_init,
+    .m_get      = in6_addr_udata,
+    .m_sz       = sizeof(luab_in6_addr_t),
 };
