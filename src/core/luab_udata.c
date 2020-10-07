@@ -148,8 +148,10 @@ luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
     luab_udata_t *ud;
 
     for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
-        if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL)
+        if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL) {
+            ud = luab_todata(L, narg, vec->mv_mod, luab_udata_t *);
             break;
+        }
     }
 
     if (pci != NULL) {
