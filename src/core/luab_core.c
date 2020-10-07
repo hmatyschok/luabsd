@@ -219,14 +219,16 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 
         if (ud->ud_x != NULL) {
             *ud->ud_x = NULL;
+            ud->ud_x = NULL;
             ud->ud_xhd = NULL;
         }
         LIST_REMOVE(ud, ud_next);
     }
 
-    if ((self->ud_xhd != NULL) &&
-        (self->ud_x != NULL)) {
-        *self->ud_x = NULL;
+    if (self->ud_xhd != NULL) {
+
+        if (self->ud_x != NULL)
+            *self->ud_x = NULL;
 
         LIST_REMOVE(self, ud_next);
     }

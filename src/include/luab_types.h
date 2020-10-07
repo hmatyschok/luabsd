@@ -47,12 +47,6 @@ luab_xlen(luab_module_t *m)
 }
 
 /*
- * Generator functions, [Lua -> stack].
- */
-
-void     *luab_newudata(lua_State *, luab_module_t *, void *);    /* XXX */
-
-/*
  * Protocol Control Information (PCI).
  */
 
@@ -133,96 +127,6 @@ typedef struct luab_iovec {
 #define IOV_BUFF    0x0004
 #define IOV_DUMP    0x0008
 #endif
-
-/*
- * Accessor, [stack -> C].
- */
-
-#define luab_isdata(L, narg, m, t) \
-    ((t)luaL_testudata((L), (narg), ((m)->m_name)))
-#define luab_todata(L, narg, m, t) \
-    ((t)luab_checkudata((L), (narg), (m)))
-#define luab_toldata(L, narg, m, t, len) \
-    ((t)luab_checkludata((L), (narg), (m), (len)))
-#define luab_udata(L, narg, m, t) \
-    ((t)((*(m)->m_get)((L), (narg))))
-#define luab_udataisnil(L, narg, m, t) \
-    ((t)(luab_checkudataisnil((L), (narg), (m))))
-
-static __inline void *
-luab_checkudata(lua_State *L, int narg, luab_module_t *m)
-{
-    if (m == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    return (luaL_checkudata(L, narg, m->m_name));
-}
-
-static __inline void *
-luab_isudata(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_udata_t *ud = luab_isdata(L, narg, m, luab_udata_t *);
-
-    if (ud == NULL)
-        return (NULL);
-
-    return (ud + 1);
-}
-
-static __inline void *
-luab_toudata(lua_State *L, int narg, luab_module_t *m)
-{
-    luab_udata_t *ud = luab_todata(L, narg, m, luab_udata_t *);
-
-    return (ud + 1);
-}
-
-static __inline void *
-luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (NULL);
-
-    if (m != NULL && m->m_get != NULL)
-        return ((*m->m_get)(L, narg));
-
-    return (NULL);
-}
-
-static __inline void *
-luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
-{
-    luab_module_vec_t *vec;
-    luab_udata_t *ud;
-
-    for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
-        if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL)
-            break;
-    }
-
-    if (pci != NULL) {
-
-        if (ud != NULL) {
-            pci->xarg_idx = vec->mv_idx;
-            pci->xarg_len = luab_xlen(vec->mv_mod);
-        } else {
-            pci->xarg_idx = -1;
-            pci->xarg_len = 0;
-        }
-    }
-    return (ud);
-}
-
-static __inline void *
-luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
-{
-    luab_udata_t *ud;
-
-    if ((ud = luab_toxudata(L, narg, pci)) != NULL)
-        return (ud + 1);
-
-    return (NULL);
-}
 
 /*
  * Generator functions, (LUA_TTABLE).
@@ -308,10 +212,36 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
 }
 
 /*
+ * Generic service primitives.
+ */
+
+void     *luab_newudata(lua_State *, luab_module_t *, void *);
+void     luab_udata_init(luab_module_t *, luab_udata_t *, void *);
+
+/*
  * Accessor, [stack -> C].
  */
 
+#define luab_isdata(L, narg, m, t) \
+    ((t)luaL_testudata((L), (narg), ((m)->m_name)))
+#define luab_todata(L, narg, m, t) \
+    ((t)luab_checkudata((L), (narg), (m)))
+#define luab_toldata(L, narg, m, t, len) \
+    ((t)luab_checkludata((L), (narg), (m), (len)))
+#define luab_udata(L, narg, m, t) \
+    ((t)((*(m)->m_get)((L), (narg))))
+#define luab_udataisnil(L, narg, m, t) \
+    ((t)(luab_checkudataisnil((L), (narg), (m))))
+
+void     *luab_checkudata(lua_State *, int, luab_module_t *);
+void     *luab_isudata(lua_State *, int, luab_module_t *);
+void     *luab_toudata(lua_State *, int, luab_module_t *);
+void     *luab_checkudataisnil(lua_State *, int, luab_module_t *);
+void     *luab_toxudata(lua_State *, int, luab_xarg_t *);
+void     *luab_toxdata(lua_State *, int, luab_xarg_t *);
 void     *luab_checkludata(lua_State *, int, luab_module_t *, size_t);
+
+void     *luab_udata_add(lua_State *, int, luab_module_t *, int, void **);
 
 #define luab_isiovec(L, narg) \
     (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
@@ -343,37 +273,6 @@ void     luab_module_table_pushdouble(lua_State *, int, double *, int);
 void     luab_module_table_pushint(lua_State *, int, int *, int);
 void     luab_module_table_pushldouble(lua_State *, int, double *, size_t, int);
 void     luab_module_table_pushlgidset(lua_State *, int, gid_t *, int, int);
-
-/*
- * Generic service primitves, complex data types.
- */
-
-static __inline void *
-luab_udata_add(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
-{
-    luab_udata_t *self, *ud;
-
-    self = luab_todata(L, narg, m, luab_udata_t *);
-    ud = luab_toxudata(L, xarg, NULL);
-
-    if (ud != NULL && x != NULL) {
-        LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
-
-        *(void **)x = (void *)(ud + 1);
-        ud->ud_x = (caddr_t *)x;
-        ud->ud_xhd = &self->ud_list;
-        
-        return (*ud->ud_x);
-    }
-    return (NULL);
-}
-
-static __inline void
-luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
-{
-    if (m != NULL && ud != NULL && arg != NULL)
-        (void)memmove(ud + 1, arg, luab_xlen(m));
-}
 
 /*
  * Service primitives.

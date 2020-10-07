@@ -53,11 +53,11 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
             if (m->m_init != NULL && arg != NULL)
                 (*m->m_init)(ud, arg);
 
-            luaL_setmetatable(L, m->m_name);
-
             ud->ud_m = m;
             ud->ud_ts = time(NULL);
             LIST_INIT(&ud->ud_list);
+
+            luaL_setmetatable(L, m->m_name);
         }
     } else
         errno = EINVAL;
@@ -65,26 +65,116 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
     return (ud);
 }
 
-int
-luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
+/*
+ * Generic service primitves, complex data types.
+ */
+
+void *
+luab_udata_add(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
 {
-    luab_module_t *m;
-    caddr_t arg;
+    luab_udata_t *self, *ud;
 
-    if ((m = (m1 != NULL) ? m1 : m0) != NULL) {
-        if (luab_checkmaxargs(L, narg) == 0)
-            arg = NULL;
-        else
-            arg = luab_udata(L, narg, m, caddr_t);
-    } else
-        arg = NULL;
+    self = luab_todata(L, narg, m, luab_udata_t *);
+    ud = luab_toxudata(L, xarg, NULL);  /* XXX */
 
-    return (luab_pushudata(L, m0, arg));
+    if (ud != NULL && x != NULL) {
+        LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
+
+        *(void **)x = (void *)(ud + 1);
+        ud->ud_x = (caddr_t *)x;
+        ud->ud_xhd = &self->ud_list;
+
+        return (*ud->ud_x);
+    }
+    return (NULL);
+}
+
+void
+luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
+{
+    if (m != NULL && ud != NULL && arg != NULL)
+        (void)memmove(ud + 1, arg, luab_xlen(m));
 }
 
 /*
  * Accessor, [stack -> C].
  */
+
+void *
+luab_checkudata(lua_State *L, int narg, luab_module_t *m)
+{
+    if (m == NULL)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    return (luaL_checkudata(L, narg, m->m_name));
+}
+
+void *
+luab_isudata(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *ud;
+
+    if ((ud = luab_isdata(L, narg, m, luab_udata_t *)) == NULL)
+        return (NULL);
+
+    return (ud + 1);
+}
+
+void *
+luab_toudata(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_udata_t *ud;
+
+    ud = luab_todata(L, narg, m, luab_udata_t *);
+    return (ud + 1);
+}
+
+void *
+luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (NULL);
+
+    if (m != NULL && m->m_get != NULL)
+        return ((*m->m_get)(L, narg));
+
+    return (NULL);
+}
+
+void *
+luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
+{
+    luab_module_vec_t *vec;
+    luab_udata_t *ud;
+
+    for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
+        if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL)
+            break;
+    }
+
+    if (pci != NULL) {
+
+        if (ud != NULL) {
+            pci->xarg_idx = vec->mv_idx;
+            pci->xarg_len = luab_xlen(vec->mv_mod);
+        } else {
+            pci->xarg_idx = -1;
+            pci->xarg_len = 0;
+        }
+    }
+    return (ud);
+}
+
+void *
+luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
+{
+    luab_udata_t *ud;
+
+    if ((ud = luab_toxudata(L, narg, pci)) != NULL)
+        return (ud + 1);
+
+    return (NULL);
+}
 
 void *
 luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
@@ -137,6 +227,23 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
         status = luab_pushnil(L);
     }
     return (status);
+}
+
+int
+luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
+{
+    luab_module_t *m;
+    caddr_t arg;
+
+    if ((m = (m1 != NULL) ? m1 : m0) != NULL) {
+        if (luab_checkmaxargs(L, narg) == 0)
+            arg = NULL;
+        else
+            arg = luab_udata(L, narg, m, caddr_t);
+    } else
+        arg = NULL;
+
+    return (luab_pushudata(L, m0, arg));
 }
 
 /*
