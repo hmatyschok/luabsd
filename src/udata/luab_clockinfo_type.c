@@ -401,10 +401,7 @@ clockinfo_create(lua_State *L, void *arg)
 static void
 clockinfo_init(void *ud, void *arg)
 {
-    luab_clockinfo_t *self;
-
-    if (((self = (luab_clockinfo_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_info, arg, sizeof(self->ud_info));
+    luab_udata_init(&clockinfo_type, ud, arg);
 }
 
 static void *

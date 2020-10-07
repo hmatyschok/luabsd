@@ -368,6 +368,13 @@ luab_udata_add(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
     return (NULL);
 }
 
+static __inline void
+luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
+{
+    if (m != NULL && ud != NULL && arg != NULL)
+        (void)memmove(ud + 1, arg, luab_xlen(m));
+}
+
 /*
  * Service primitives.
  */

@@ -273,10 +273,7 @@ div_create(lua_State *L, void *arg)
 static void
 div_init(void *ud, void *arg)
 {
-    luab_div_t *self;
-
-    if (((self = (luab_div_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_div, arg, sizeof(self->ud_div));
+    luab_udata_init(&div_type, ud, arg);
 }
 
 static void *

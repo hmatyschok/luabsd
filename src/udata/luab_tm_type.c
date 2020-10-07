@@ -793,10 +793,7 @@ tm_create(lua_State *L, void *arg)
 static void
 tm_init(void *ud, void *arg)
 {
-    luab_tm_t *self;
-
-    if (((self = (luab_tm_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_tm, arg, sizeof(self->ud_tm));
+    luab_udata_init(&tm_type, ud, arg);
 }
 
 static void *

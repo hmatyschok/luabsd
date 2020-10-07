@@ -283,9 +283,7 @@ accept_filter_arg_create(lua_State *L, void *arg)
 static void
 accept_filter_arg_init(void *ud, void *arg)
 {
-    luab_accept_filter_arg_t *self = (luab_accept_filter_arg_t *)ud;
-
-    (void)memmove(&self->ud_af, arg, sizeof(self->ud_af));
+    luab_udata_init(&accept_filter_arg_type, ud, arg);
 }
 
 static void *

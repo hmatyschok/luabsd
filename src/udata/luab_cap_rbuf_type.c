@@ -205,9 +205,7 @@ cap_rbuf_create(lua_State *L, void *arg)
 static void
 cap_rbuf_init(void *ud, void *arg)
 {
-    luab_cap_rbuf_t *self = (luab_cap_rbuf_t *)ud;
-
-    (void)memmove(&self->ud_iov, arg, sizeof(self->ud_iov));
+    luab_udata_init(&cap_rbuf_type, ud, arg);
 }
 
 static void *

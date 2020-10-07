@@ -275,10 +275,7 @@ timeval_create(lua_State *L, void *arg)
 static void
 timeval_init(void *ud, void *arg)
 {
-    luab_timeval_t *self;
-
-    if (((self = (luab_timeval_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_tv, arg, sizeof(self->ud_tv));
+    luab_udata_init(&timeval_type, ud, arg);
 }
 
 static void *

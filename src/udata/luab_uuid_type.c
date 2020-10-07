@@ -534,10 +534,7 @@ _uuid_create(lua_State *L, void *arg)
 static void
 uuid_init(void *ud, void *arg)
 {
-    luab_uuid_t *self;
-
-    if (((self = (luab_uuid_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_uuid, arg, sizeof(self->ud_uuid));
+    luab_udata_init(&uuid_type, ud, arg);
 }
 
 static void *

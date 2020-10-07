@@ -338,9 +338,7 @@ cmsgcred_create(lua_State *L, void *arg)
 static void
 cmsgcred_init(void *ud, void *arg)
 {
-    luab_cmsgcred_t *self = (luab_cmsgcred_t *)ud;
-
-    (void)memmove(&self->ud_cmcred, arg, sizeof(self->ud_cmcred));
+    luab_udata_init(&cmsgcred_type, ud, arg);
 }
 
 static void *

@@ -274,9 +274,7 @@ sockproto_create(lua_State *L, void *arg)
 static void
 sockproto_init(void *ud, void *arg)
 {
-    luab_sockproto_t *self = (luab_sockproto_t *)ud;
-
-    (void)memmove(&self->ud_sp, arg, sizeof(self->ud_sp));
+    luab_udata_init(&sockproto_type, ud, arg);
 }
 
 static void *

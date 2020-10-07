@@ -273,10 +273,7 @@ lldiv_create(lua_State *L, void *arg)
 static void
 lldiv_init(void *ud, void *arg)
 {
-    luab_lldiv_t *self;
-
-    if (((self = (luab_lldiv_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_lldiv, arg, sizeof(self->ud_lldiv));
+    luab_udata_init(&lldiv_type, ud, arg);
 }
 
 static void *

@@ -285,9 +285,7 @@ crypt_data_create(lua_State *L, void *arg)
 static void
 crypt_data_init(void *ud, void *arg)
 {
-    luab_crypt_data_t *self = (luab_crypt_data_t *)ud;
-
-    (void)memmove(&self->ud_data, arg, sizeof(self->ud_data));
+    luab_udata_init(&crypt_data_type, ud, arg);
 }
 
 static void *

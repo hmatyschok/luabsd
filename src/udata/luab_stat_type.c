@@ -919,10 +919,7 @@ stat_create(lua_State *L, void *arg)
 static void
 stat_init(void *ud, void *arg)
 {
-    luab_stat_t *self;
-
-    if (((self = (luab_stat_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_stat, arg, sizeof(self->ud_stat));
+    luab_udata_init(&stat_type, ud, arg);
 }
 
 static void *

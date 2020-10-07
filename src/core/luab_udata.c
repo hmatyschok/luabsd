@@ -107,7 +107,7 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 }
 
 /*
- * Acceesor, [C -> stack].
+ * Accessor, [C -> stack].
  */
 
 int
@@ -140,7 +140,7 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
 }
 
 /*
- * Acceesor for (LUA_TTABLE), [C -> stack].
+ * Accessor for (LUA_TTABLE), [C -> stack].
  */
 
 void

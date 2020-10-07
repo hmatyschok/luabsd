@@ -275,10 +275,7 @@ linger_create(lua_State *L, void *arg)
 static void
 linger_init(void *ud, void *arg)
 {
-    luab_linger_t *self;
-
-    if (((self = (luab_linger_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_l, arg, sizeof(self->ud_l));
+    luab_udata_init(&linger_type, ud, arg);
 }
 
 static void *

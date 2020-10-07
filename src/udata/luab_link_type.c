@@ -201,10 +201,7 @@ link_create(lua_State *L, void *arg)
 static void
 link_init(void *ud, void *arg)
 {
-    luab_link_t *self;
-
-    if (((self = (luab_link_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_link, arg, sizeof(self->ud_link));
+    luab_udata_init(&link_type, ud, arg);
 }
 
 static void *

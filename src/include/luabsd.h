@@ -40,7 +40,7 @@
  * Definitions for API method table.
  */
 
-typedef union luab_primitive {   /* XXX namespace */
+typedef union luab_primitive {
     char        un_char;
     short       un_short;
     int         un_int;

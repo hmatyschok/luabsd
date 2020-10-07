@@ -275,10 +275,7 @@ timespec_create(lua_State *L, void *arg)
 static void
 timespec_init(void *ud, void *arg)
 {
-    luab_timespec_t *self;
-
-    if (((self = (luab_timespec_t *)ud) != NULL) && (arg != NULL))
-        (void)memmove(&self->ud_tv, arg, sizeof(self->ud_tv));
+    luab_udata_init(&timespec_type, ud, arg);
 }
 
 static void *
