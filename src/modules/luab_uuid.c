@@ -422,31 +422,33 @@ luab_uuid_dec_be(lua_State *L)
  *
  * @function uuid_create
  *
- * @param status                    (LUA_T{NIL,USERDATA(PRIMITIVE)}), optional.
+ * @param status            Result argument, values from
+ *
+ *                              bsd.uuid.uuid_s_{
+ *                                  ok,
+ *                                  bad_version,
+ *                                  invalid_string_uuid,
+ *                                  no_memory
+ *                              }
+ *
+ *                          by (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uuid = bsd.uuid.uuid_create([ status ])
+ * @usage uuid [, err, msg ] = bsd.uuid.uuid_create(status)
  */
 static int
 luab_uuid_create(lua_State *L)
 {
-    luab_primitive_u *un;
+    luab_primitive_u *xp;
     uint32_t *status;
     uuid_t uuid;
 
-    switch (luab_checkmaxargs(L, 1)) {
-    case 1:
-        if ((un = luab_udataisnil(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *)) != NULL)
-            status = &(un->un_uint32);
-        else
-            status = NULL;
-        break;
-    default:
-        un = NULL;
-        status = NULL;
-        break;
-    }
+    (void)luab_checkmaxargs(L, 1);
+
+    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
+    status = &(xp->un_uint32);
+
     uuid_create(&uuid, status);
 
     return (luab_pushudata(L, luab_mx(UUID), &uuid));
@@ -457,31 +459,33 @@ luab_uuid_create(lua_State *L)
  *
  * @function uuid_create_nil
  *
- * @param status                    (LUA_T{NIL,USERDATA(PRIMITIVE)}), optional.
+ * @param status            Result argument, values from
+ *
+ *                              bsd.uuid.uuid_s_{
+ *                                  ok,
+ *                                  bad_version,
+ *                                  invalid_string_uuid,
+ *                                  no_memory
+ *                              }
+ *
+ *                          by (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uuid = bsd.uuid.uuid_create_nil([ status ])
+ * @usage uuid [, err, msg ] = bsd.uuid.uuid_create_nil(status)
  */
 static int
 luab_uuid_create_nil(lua_State *L)
 {
-    luab_primitive_u *un;
+    luab_primitive_u *xp;
     uint32_t *status;
     uuid_t uuid;
 
-    switch (luab_checkmaxargs(L, 1)) {
-    case 1:
-        if ((un = luab_udataisnil(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *)) != NULL)
-            status = &(un->un_uint32);
-        else
-            status = NULL;
-        break;
-    default:
-        un = NULL;
-        status = NULL;
-        break;
-    }
+    (void)luab_checkmaxargs(L, 1);
+
+    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
+    status = &(xp->un_uint32);
+
     uuid_create_nil(&uuid, status);
 
     return (luab_pushudata(L, luab_mx(UUID), &uuid));
