@@ -351,9 +351,9 @@ static luab_module_table_t luab_core_util_vec[] = {
 };
 
 luab_module_t luab_core_lib = {
-    .m_cookie = LUAB_CORE_LIB_ID,
-    .m_name = LUAB_CORE_LIB_KEY,
-    .m_vec = luab_core_util_vec,
+    .m_cookie   = LUAB_CORE_LIB_ID,
+    .m_name     = LUAB_CORE_LIB_KEY,
+    .m_vec      = luab_core_util_vec,
 };
 
 static const char *copyright =
@@ -652,10 +652,10 @@ luaopen_bsd(lua_State *L)
 
     lua_newtable(L);
 
-    luab_registerlib(L, -2, luab_arpa_vec, "arpa");
-    luab_registerlib(L, -2, luab_net_vec, "net");
-    luab_registerlib(L, -2, luab_sys_vec, "sys");
-    luab_registerlib(L, -2, luab_core_vec, NULL);
+    luab_registerlib(L, -2, luab_arpa_vec,  "arpa");
+    luab_registerlib(L, -2, luab_net_vec,   "net");
+    luab_registerlib(L, -2, luab_sys_vec,   "sys");
+    luab_registerlib(L, -2, luab_core_vec,  NULL);
 
     lua_pushvalue(L, -1);
 
