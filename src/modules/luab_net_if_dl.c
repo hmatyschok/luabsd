@@ -33,6 +33,7 @@
 
 #include "luabsd.h"
 #include "luab_types.h"
+#include "luab_sockaddr.h"
 
 #define LUAB_NET_IF_DL_LIB_ID    1596382827
 #define LUAB_NET_IF_DL_LIB_KEY    "if_dl"

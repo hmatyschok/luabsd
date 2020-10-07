@@ -427,22 +427,6 @@ int  luab_iovec_preadv(lua_State *, int, luab_iovec_t *, size_t, off_t);
 int  luab_iovec_pwritev(lua_State *, int, luab_iovec_t *, size_t, off_t);
 #endif
 
-/* (LUA_TUSERDATA(SOCKADDR)) */
-#define LUAB_SOCK_MAXADDRLEN    SOCK_MAXADDRLEN
-#define LUAB_SOCK_MINADDRLEN    2
-#define LUAB_SDL_MAXDATALEN    46
-#define LUAB_SDL_MAXADDRLEN    (LUAB_SDL_MAXDATALEN - IFNAMSIZ)
-#define LUAB_SUN_MAXPATHLEN    103
-
-static __inline void
-luab_sockaddr_pci(struct sockaddr *sa, sa_family_t af, uint8_t len)
-{
-    if (sa != NULL) {
-        sa->sa_len = len;
-        sa->sa_family = af;
-    }
-}
-
 /* (LUA_TTABLE) */
 #define luab_module_table_xlen(vec, type) \
     ((sizeof(vec)) / (sizeof(type)))

@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_types.h"
+#include "luab_sockaddr.h"
 
 #define LUAB_SYS_UN_LIB_ID    1597545462
 #define LUAB_SYS_UN_LIB_KEY    "un"
