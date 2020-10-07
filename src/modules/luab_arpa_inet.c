@@ -777,7 +777,7 @@ luab_inet_cidr_pton(lua_State *L)
     af = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
-    un = luab_udata(L, 4, luab_mx(HOOK), luab_primitive_u *);
+    un = luab_udata(L, 4, luab_mx(PRIMITIVE), luab_primitive_u *);
     bits = &(un->un_int);
 
     if (((src = buf->iov.iov_base) != NULL) &&

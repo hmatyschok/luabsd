@@ -34,7 +34,7 @@
 extern luab_module_t clockinfo_type;
 extern luab_module_t div_type;
 extern luab_module_t flock_type;
-extern luab_module_t hook_type;
+extern luab_module_t primitive_type;
 extern luab_module_t if_nameindex_type;
 extern luab_module_t in_addr_type;
 extern luab_module_t in6_addr_type;

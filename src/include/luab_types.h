@@ -64,7 +64,7 @@ typedef struct luab_xarg {
 #define LUAB_CLOCKINFO_IDX          0
 #define LUAB_DIV_IDX                1
 #define LUAB_FLOCK_IDX              2
-#define LUAB_HOOK_IDX               3
+#define LUAB_PRIMITIVE_IDX           3
 #define LUAB_IF_NAMEINDEX_IDX       4
 #define LUAB_IN_ADDR_IDX            5
 #define LUAB_IN6_ADDR_IDX           6

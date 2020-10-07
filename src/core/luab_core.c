@@ -306,23 +306,23 @@ luab_uuid(lua_State *L)
 }
 
 /***
- * Generator function - create an instance of (LUA_TUSERDATA(HOOK)).
+ * Generator function - create an instance of (LUA_TUSERDATA(PRIMITIVE)).
  *
- * @function hook_create
+ * @function primitive_create
  *
- * @param data          Instance of (LUA_TUSERDATA(HOOK)).
+ * @param data          Instance of (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (hook [, nil, nil]) on success or
+ *          (primitive [, nil, nil]) on success or
  *          (nil, (errno, strerror(errno)))
  *
- * @usage hook [, err, msg ] = bsd.core.hook_create([ data ])
+ * @usage primitive [, err, msg ] = bsd.core.primitive_create([ data ])
  */
 static int
-luab_hook_create(lua_State *L)
+luab_primitive_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(HOOK), NULL));
+    return (luab_create(L, 1, luab_mx(PRIMITIVE), NULL));
 }
 
 /***
@@ -344,9 +344,9 @@ luab_link_create(lua_State *L)
 }
 
 static luab_module_table_t luab_core_util_vec[] = {
-    LUAB_FUNC("uuid",         luab_uuid),
-    LUAB_FUNC("hook_create",  luab_hook_create),
-    LUAB_FUNC("link_create",  luab_link_create),
+    LUAB_FUNC("uuid",               luab_uuid),
+    LUAB_FUNC("primitive_create",   luab_primitive_create),
+    LUAB_FUNC("link_create",        luab_link_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
@@ -503,9 +503,9 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_FLOCK_IDX,
     },{
-        .mv_mod = &hook_type,
+        .mv_mod = &primitive_type,
         .mv_init = luab_newmetatable,
-        .mv_idx = LUAB_HOOK_IDX,
+        .mv_idx = LUAB_PRIMITIVE_IDX,
     },{
         .mv_mod = &if_nameindex_type,
         .mv_init = luab_newmetatable,

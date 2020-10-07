@@ -383,8 +383,8 @@ luab_mblen(lua_State *L)
  *
  * @function mbstowcs
  *
- * @param wcharp            Multy-byte character, (LUA_TUSERDATA(HOOK)).
- * @param mbchar            Single-byte character, (LUA_TUSERDATA(HOOK)).
+ * @param wcharp            Multy-byte character, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param mbchar            Single-byte character, (LUA_TUSERDATA(PRIMITIVE)).
  * @param nbytes            Specifies number of bytes for examination.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -442,8 +442,8 @@ luab_mbstowcs(lua_State *L)
  *
  * @function mbtowc
  *
- * @param wcharp            Multy-byte character, (LUA_TUSERDATA(HOOK)).
- * @param mbchar            Single-byte character, (LUA_TUSERDATA(HOOK)).
+ * @param wcharp            Multy-byte character, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param mbchar            Single-byte character, (LUA_TUSERDATA(PRIMITIVE)).
  * @param nbytes            Specifies number of bytes for examination.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -456,7 +456,7 @@ luab_mbstowcs(lua_State *L)
 static int
 luab_mbtowc(lua_State *L)
 {
-    luab_primitive_u *h0, *h1;
+    luab_primitive_u *xp, *h1;
     size_t nbytes;
     wchar_t *wcharp;
     const char *mbchar;
@@ -464,8 +464,8 @@ luab_mbtowc(lua_State *L)
 
     (void)luab_checkmaxargs(L, 3);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
-    h1 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
+    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
+    h1 = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
     nbytes = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -473,7 +473,7 @@ luab_mbtowc(lua_State *L)
     INT_MAX
 #endif
     );
-    wcharp = &(h0->un_wc);
+    wcharp = &(xp->un_wc);
     mbchar = &(h1->un_char);
 
     status = mbtowc(wcharp, mbchar, nbytes);
@@ -681,8 +681,8 @@ luab_system(lua_State *L)
  *
  * @function wctomb
  *
- * @param mbchar           Character, (LUA_TUSERDATA(HOOK)).
- * @param wchar            Wide-character, (LUA_TUSERDATA(HOOK)).
+ * @param mbchar           Character, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param wchar            Wide-character, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -694,17 +694,17 @@ luab_system(lua_State *L)
 static int
 luab_wctomb(lua_State *L)
 {
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     wchar_t wchar;
     char *mbchar;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
+    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
     wchar = (wchar_t)luab_checkinteger(L, 2, LONG_MAX);
 
-    mbchar = &(h0->un_char);
+    mbchar = &(xp->un_char);
     status = wctomb(mbchar, wchar);
 
     return (luab_pusherr(L, status));
@@ -1053,7 +1053,7 @@ luab_realpath(lua_State *L)
  *
  * @function rand_r
  *
- * @param ctx               Result argument, (LUA_TUSERDATA(HOOK)).
+ * @param ctx               Result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1065,14 +1065,14 @@ luab_realpath(lua_State *L)
 static int
 luab_rand_r(lua_State *L)
 {
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     u_int *ctx;
     int n;
 
     (void)luab_checkmaxargs(L, 1);
 
-    h0 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
-    ctx = &(h0->un_u_int);
+    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
+    ctx = &(xp->un_u_int);
 
     n = rand_r(ctx);
 
@@ -1954,9 +1954,9 @@ luab_arc4random_uniform(lua_State *L)
  *
  * @function getbsize
  *
- * @param headerlenp        Specifies length of bytes by (LUA_TUSERDATA(HOOK))
+ * @param headerlenp        Specifies length of bytes by (LUA_TUSERDATA(PRIMITIVE))
  *                          filled in region referred by result argument.
- * @param blocksizep        Result argument, (LUA_TUSERDATA(HOOK)).
+ * @param blocksizep        Result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1975,8 +1975,8 @@ luab_getbsize(lua_State *L)
 
     (void)luab_checkmaxargs(L, 2);
 
-    h1 = luab_udata(L, 1, luab_mx(HOOK), luab_primitive_u *);
-    h2 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
+    h1 = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
+    h2 = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
 
     headerlenp = &(h1->un_int);
     blocksizep = &(h2->un_long);
@@ -2229,7 +2229,7 @@ luab_cgetnext(lua_State *L)
  *
  * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
  * @param cap               Capability string, (LUA_TSTRING).
- * @param num               Numeric capability, (LUA_TUSERDATA(HOOK)).
+ * @param num               Numeric capability, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2243,7 +2243,7 @@ luab_cgetnum(lua_State *L)
 {
     struct iovec *buf;
     const char *cap;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     long *num;
     caddr_t bp;
     int status;
@@ -2252,8 +2252,8 @@ luab_cgetnum(lua_State *L)
 
     buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
     cap = luab_checklstring(L, 2, LUAL_BUFFERSIZE);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
-    num = &(h0->un_long);
+    xp = luab_udata(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
+    num = &(xp->un_long);
 
     if ((bp = buf->iov_base) != NULL)
         status = cgetnum(bp, cap, num);

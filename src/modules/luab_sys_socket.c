@@ -54,7 +54,7 @@ static void
 luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
 {
     luab_xarg_t *pci;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
 
     (void)luab_checkmaxargs(L, 5);
 #if 0
@@ -71,14 +71,14 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
 
     if ((sopt->sopt_val = luab_toxdata(L, 4, pci)) != NULL) {
 
-        if (pci->xarg_idx == LUAB_HOOK_IDX) {   /* XXX macro ??? */
+        if (pci->xarg_idx == LUAB_PRIMITIVE_IDX) {   /* XXX macro ??? */
             sopt->sopt_val = &(((luab_primitive_u *)sopt->sopt_val)->un_int);
             pci->xarg_len = sizeof(*(int *)sopt->sopt_val);
         }
     }
 
-    if ((h0 = (luab_primitive_u *)luab_isudata(L, 5, luab_mx(HOOK))) != NULL)
-        sopt->sopt_x = &(h0->un_socklen);
+    if ((xp = (luab_primitive_u *)luab_isudata(L, 5, luab_mx(PRIMITIVE))) != NULL)
+        sopt->sopt_x = &(xp->un_socklen);
     else {
         sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, INT_MAX);
 
@@ -143,7 +143,7 @@ luab_accept(lua_State *L)
 {
     int s;
     struct sockaddr *addr;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     socklen_t *addrlen;
     int as;
 
@@ -151,10 +151,10 @@ luab_accept(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    h0 = luab_udataisnil(L, 3, luab_mx(HOOK), luab_primitive_u *);
+    xp = luab_udataisnil(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
 
-    if (h0 != NULL)
-        addrlen = &(h0->un_socklen);
+    if (xp != NULL)
+        addrlen = &(xp->un_socklen);
     else
         addrlen = NULL;
 
@@ -258,7 +258,7 @@ luab_accept4(lua_State *L)
 {
     int s;
     struct sockaddr *addr;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     socklen_t *addrlen;
     int flags, as;
 
@@ -266,11 +266,11 @@ luab_accept4(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    h0 = luab_udataisnil(L, 3, luab_mx(HOOK), luab_primitive_u *);
+    xp = luab_udataisnil(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
-    if (h0 != NULL)
-        addrlen = &(h0->un_socklen);
+    if (xp != NULL)
+        addrlen = &(xp->un_socklen);
     else
         addrlen = NULL;
 
@@ -369,7 +369,7 @@ luab_connectat(lua_State *L)
  *
  * @param s                 Socket bound to an adress by bind(2).
  * @param name              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param namelen           Value-result argument, (LUA_TUSERDATA(HOOK)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -383,7 +383,7 @@ luab_getpeername(lua_State *L)
 {
     int s;
     struct sockaddr *name;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     socklen_t *namelen;
     int status;
 
@@ -391,8 +391,8 @@ luab_getpeername(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     name = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
-    namelen = &(h0->un_socklen);
+    xp = luab_udata(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
+    namelen = &(xp->un_socklen);
 
     status = getpeername(s, name, namelen);
 
@@ -406,7 +406,7 @@ luab_getpeername(lua_State *L)
  *
  * @param s                 Socket bound to an adress by bind(2).
  * @param name              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param namelen           Value-result argument, (LUA_TUSERDATA(HOOK)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -420,7 +420,7 @@ luab_getsockname(lua_State *L)
 {
     int s;
     struct sockaddr *name;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     socklen_t *namelen;
     int status;
 
@@ -428,8 +428,8 @@ luab_getsockname(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     name = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
-    namelen = &(h0->un_socklen);
+    xp = luab_udata(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
+    namelen = &(xp->un_socklen);
 
     status = getsockname(s, name, namelen);
 
@@ -564,7 +564,7 @@ luab_recv(lua_State *L)
  *
  *                          may combined by inclusive or.
  * @param from              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param fromlen           Value-result argument, (LUA_TUSERDATA(HOOK)).
+ * @param fromlen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -581,7 +581,7 @@ luab_recvfrom(lua_State *L)
     size_t len;
     int flags;
     struct sockaddr *from;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     socklen_t *fromlen;
 
     (void)luab_checkmaxargs(L, 6);
@@ -597,8 +597,8 @@ luab_recvfrom(lua_State *L)
     );
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
     from = luab_udataisnil(L, 5, luab_mx(SOCKADDR), struct sockaddr *);
-    h0 = luab_udata(L, 6, luab_mx(HOOK), luab_primitive_u *);
-    fromlen = &(h0->un_socklen);
+    xp = luab_udata(L, 6, luab_mx(PRIMITIVE), luab_primitive_u *);
+    fromlen = &(xp->un_socklen);
 
     return (luab_iovec_recvfrom(L, s, buf, &len, flags, from, fromlen));
 }

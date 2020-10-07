@@ -67,7 +67,7 @@ extern luab_module_t luab_uuid_lib;
  *                                  no_memory
  *                              }
  *
- *                          by (LUA_TUSERDATA(HOOK)).
+ *                          by (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -77,7 +77,7 @@ static int
 luab_uuid_compare(lua_State *L)
 {
     uuid_t *uuid1, *uuid2;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     uint32_t *status;
     int32_t ret;
 
@@ -85,8 +85,8 @@ luab_uuid_compare(lua_State *L)
 
     uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
     uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
-    status = &(h0->un_uint32);
+    xp = luab_udata(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
+    status = &(xp->un_uint32);
 
     ret = uuid_compare(uuid1, uuid2, status);
 
@@ -109,7 +109,7 @@ luab_uuid_compare(lua_State *L)
  *                                  no_memory
  *                              }
  *
- *                          by (LUA_TUSERDATA(HOOK)).
+ *                          by (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -119,7 +119,7 @@ static int
 luab_uuid_equal(lua_State *L)
 {
     uuid_t *uuid1, *uuid2;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     uint32_t *status;
     int32_t ret;
 
@@ -127,8 +127,8 @@ luab_uuid_equal(lua_State *L)
 
     uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
     uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
-    status = &(h0->un_uint32);
+    xp = luab_udata(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
+    status = &(xp->un_uint32);
 
     ret = uuid_equal(uuid1, uuid2, status);
 
@@ -151,7 +151,7 @@ luab_uuid_equal(lua_State *L)
  *                                  no_memory
  *                              }
  *
- *                          by (LUA_TUSERDATA(HOOK)).
+ *                          by (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -162,15 +162,15 @@ luab_uuid_from_string(lua_State *L)
 {
     const char *str;
     uuid_t *uuid;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     uint32_t *status;
 
     (void)luab_checkmaxargs(L, 3);
 
     str = luab_checklstring(L, 1, LUAB_UUID_STR_LEN);
     uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 3, luab_mx(HOOK), luab_primitive_u *);
-    status = &(h0->un_uint32);
+    xp = luab_udata(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
+    status = &(xp->un_uint32);
 
     uuid_from_string(str, uuid, status);
 
@@ -192,7 +192,7 @@ luab_uuid_from_string(lua_State *L)
  *                                  no_memory
  *                              }
  *
- *                          by (LUA_TUSERDATA(HOOK)).
+ *                          by (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -202,15 +202,15 @@ static int
 luab_uuid_hash(lua_State *L)
 {
     uuid_t *uuid;
-    luab_primitive_u *h0;
+    luab_primitive_u *xp;
     uint32_t *status;
     uint16_t hash;
 
     (void)luab_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
-    h0 = luab_udata(L, 2, luab_mx(HOOK), luab_primitive_u *);
-    status = &(h0->un_uint32);
+    xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+    status = &(xp->un_uint32);
 
     hash = uuid_hash(uuid, status);
 
@@ -422,7 +422,7 @@ luab_uuid_dec_be(lua_State *L)
  *
  * @function uuid_create
  *
- * @param status                    (LUA_T{NIL,USERDATA(HOOK)}), optional.
+ * @param status                    (LUA_T{NIL,USERDATA(PRIMITIVE)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -437,7 +437,7 @@ luab_uuid_create(lua_State *L)
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_primitive_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;
@@ -457,7 +457,7 @@ luab_uuid_create(lua_State *L)
  *
  * @function uuid_create_nil
  *
- * @param status                    (LUA_T{NIL,USERDATA(HOOK)}), optional.
+ * @param status                    (LUA_T{NIL,USERDATA(PRIMITIVE)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -472,7 +472,7 @@ luab_uuid_create_nil(lua_State *L)
 
     switch (luab_checkmaxargs(L, 1)) {
     case 1:
-        if ((un = luab_udataisnil(L, 1, luab_mx(HOOK), luab_primitive_u *)) != NULL)
+        if ((un = luab_udataisnil(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *)) != NULL)
             status = &(un->un_uint32);
         else
             status = NULL;

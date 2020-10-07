@@ -40,11 +40,15 @@
  * Definitions for API method table.
  */
 
-typedef union luab_primitive {
+typedef union primitive {
     char        un_char;
     short       un_short;
     int         un_int;
     long        un_long;
+    int8_t      un_int8;
+    int16_t     un_int16;
+    int32_t     un_int32;
+    int64_t     un_int64;
     uint8_t     un_uint8;
     uint16_t    un_uint16;
     uint32_t    un_uint32;
