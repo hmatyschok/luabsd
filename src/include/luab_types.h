@@ -188,11 +188,11 @@ const char   *luab_iovec_islxarg(lua_State *, int, size_t);
 const char   *luab_iovec_checklxarg(lua_State *, int, size_t);
 
 const char   **luab_checkargv(lua_State *, int);
-double   *luab_module_table_checkdouble(lua_State *, int, size_t *);
-const void   **luab_module_table_tolxargp(lua_State *, int, size_t);
-u_short  *luab_module_table_checklu_short(lua_State *, int, size_t);
-int  *luab_module_table_checklint(lua_State *, int, size_t);
-gid_t    *luab_module_table_checklgid(lua_State *, int, size_t);
+double   *luab_table_checkdouble(lua_State *, int, size_t *);
+const void   **luab_table_tolxargp(lua_State *, int, size_t);
+u_short  *luab_table_checklu_short(lua_State *, int, size_t);
+int  *luab_table_checklint(lua_State *, int, size_t);
+gid_t    *luab_table_checklgid(lua_State *, int, size_t);
 
 /*
  * Access functions, [C -> stack].
@@ -207,10 +207,10 @@ void     luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 void     luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void     luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
 
-void     luab_module_table_pushdouble(lua_State *, int, double *, int);
-void     luab_module_table_pushint(lua_State *, int, int *, int);
-void     luab_module_table_pushldouble(lua_State *, int, double *, size_t, int);
-void     luab_module_table_pushlgidset(lua_State *, int, gid_t *, int, int);
+void     luab_table_pushdouble(lua_State *, int, double *, int);
+void     luab_table_pushint(lua_State *, int, int *, int);
+void     luab_table_pushldouble(lua_State *, int, double *, size_t, int);
+void     luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
 
 /*
  * Service primitives.
@@ -265,7 +265,7 @@ int  luab_iovec_pwritev(lua_State *, int, luab_iovec_t *, size_t, off_t);
 #endif
 
 /* (LUA_TTABLE) */
-#define luab_module_table_xlen(vec, type) \
+#define luab_table_xlen(vec, type) \
     ((sizeof(vec)) / (sizeof(type)))
 
 #endif /* _LUAB_TYPES_H_ */

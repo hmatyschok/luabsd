@@ -1095,7 +1095,7 @@ luab_socketpair(lua_State *L)
     (void)luab_checkltable(L, 4, 0);
 
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
-        luab_module_table_pushint(L, 4, socks, 0);
+        luab_table_pushint(L, 4, socks, 0);
 
     return (luab_pusherr(L, status));
 }

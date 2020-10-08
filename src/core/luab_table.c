@@ -152,7 +152,7 @@ luab_checkargv(lua_State *L, int narg)
 }
 
 const void **
-luab_module_table_tolxargp(lua_State *L, int narg, size_t len)
+luab_table_tolxargp(lua_State *L, int narg, size_t len)
 {
     const void **argv;
     size_t n, k;
@@ -187,7 +187,7 @@ luab_module_table_tolxargp(lua_State *L, int narg, size_t len)
  */
 
 double *
-luab_module_table_checkdouble(lua_State *L, int narg, size_t *len)
+luab_table_checkdouble(lua_State *L, int narg, size_t *len)
 {
     double *vec;
     size_t n;
@@ -215,7 +215,7 @@ luab_module_table_checkdouble(lua_State *L, int narg, size_t *len)
 }
 
 u_short *
-luab_module_table_checklu_short(lua_State *L, int narg, size_t len)
+luab_table_checklu_short(lua_State *L, int narg, size_t len)
 {
     u_short *vec;
     int k, v;
@@ -239,7 +239,7 @@ luab_module_table_checklu_short(lua_State *L, int narg, size_t len)
 }
 
 int *
-luab_module_table_checklint(lua_State *L, int narg, size_t len)
+luab_table_checklint(lua_State *L, int narg, size_t len)
 {
     int *vec, k, v;
 
@@ -262,7 +262,7 @@ luab_module_table_checklint(lua_State *L, int narg, size_t len)
 }
 
 gid_t *
-luab_module_table_checklgid(lua_State *L, int narg, size_t len)
+luab_table_checklgid(lua_State *L, int narg, size_t len)
 {
     gid_t *vec, v;
     int k;
@@ -297,12 +297,12 @@ luab_module_table_checklgid(lua_State *L, int narg, size_t len)
  */
 
 void
-luab_module_table_pushdouble(lua_State *L, int narg, double *vec, int new)
+luab_table_pushdouble(lua_State *L, int narg, double *vec, int new)
 {
     size_t i, j, n;
 
     if (vec != NULL) {
-        n = luab_module_table_xlen(vec, double);
+        n = luab_table_xlen(vec, double);
 
         if (new != 0)   /* populate Table, if any */
             lua_newtable(L);
@@ -317,12 +317,12 @@ luab_module_table_pushdouble(lua_State *L, int narg, double *vec, int new)
 }
 
 void
-luab_module_table_pushint(lua_State *L, int narg, int *vec, int new)
+luab_table_pushint(lua_State *L, int narg, int *vec, int new)
 {
     size_t i, j, n;
 
     if (vec != NULL) {
-        n = luab_module_table_xlen(vec, int);
+        n = luab_table_xlen(vec, int);
 
         if (new != 0)   /* populate Table, if any */
             lua_newtable(L);
@@ -337,7 +337,7 @@ luab_module_table_pushint(lua_State *L, int narg, int *vec, int new)
 }
 
 void
-luab_module_table_pushldouble(lua_State *L, int narg, double *vec, size_t n, int new)
+luab_table_pushldouble(lua_State *L, int narg, double *vec, size_t n, int new)
 {
     size_t i, j;
 
@@ -355,7 +355,7 @@ luab_module_table_pushldouble(lua_State *L, int narg, double *vec, size_t n, int
 }
 
 void
-luab_module_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new)
+luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new)
 {
     int i, j;
 
