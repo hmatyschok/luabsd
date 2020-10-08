@@ -36,6 +36,89 @@
 #include "luab_types.h"
 
 /*
+ * Generator functions, (LUA_TTABLE).
+ */
+
+void *
+luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
+{
+    void *vec;
+
+    if (n == 0 && sz == 0)
+        luaL_argerror(L, narg, "Invalid argument");
+
+    if ((vec = calloc(n, sz)) == NULL)
+        luaL_argerror(L, narg, "Cannot allocate memory");
+
+    return (vec);
+}
+
+/*
+ * Access functions, (LUA_TTABLE), [stack -> C].
+ */
+
+size_t
+luab_checktable(lua_State *L, int narg)
+{
+    if (lua_istable(L, narg) == 0)
+        luaL_argerror(L, narg, "Table expected");
+
+    return (lua_rawlen(L, narg));
+}
+
+size_t
+luab_checktableisnil(lua_State *L, int narg)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (0);
+
+    return (luab_checktable(L, narg));
+}
+
+size_t
+luab_checkltable(lua_State *L, int narg, size_t len)
+{
+    size_t n;
+
+    if ((n = luab_checktable(L, narg)) != len)
+        luaL_argerror(L, narg, "Size mismatch");
+
+    return (len);
+}
+
+size_t
+luab_checkltableisnil(lua_State *L, int narg, size_t len)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (0);
+
+    return (luab_checkltable(L, narg, len));
+}
+
+/* Allocate an generic C-pointer array by cardinality of (LUA_TTABLE). */
+void *
+luab_newvector(lua_State *L, int narg, size_t *len, size_t sz)
+{
+    size_t n;
+
+    if ((n = luab_checktable(L, narg)) == 0)
+        luaL_argerror(L, narg, "Empty table");
+
+    if (len != NULL)
+        *len = n;
+
+    return (luab_alloctable(L, narg, n, sz));
+}
+
+/* Same as above, but the cardinality is constrained by value argument len. */
+void *
+luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
+{
+    size_t n = luab_checkltable(L, narg, len);
+    return (luab_alloctable(L, narg, n, sz));
+}
+
+/*
  * Access functions, [stack -> C].
  */
 
@@ -67,10 +150,6 @@ luab_checkargv(lua_State *L, int narg)
     }
     return (argv);
 }
-
-/*
- * Access functions, [stack -> C].
- */
 
 const void **
 luab_module_table_tolxargp(lua_State *L, int narg, size_t len)

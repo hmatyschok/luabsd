@@ -132,84 +132,19 @@ typedef struct luab_iovec {
  * Generator functions, (LUA_TTABLE).
  */
 
-static __inline void *
-luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
-{
-    void *vec;
-
-    if (n == 0 && sz == 0)
-        luaL_argerror(L, narg, "Invalid argument");
-
-    if ((vec = calloc(n, sz)) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
-
-    return (vec);
-}
+void     *luab_alloctable(lua_State *, int, size_t, size_t);
 
 /*
  * Access functions, (LUA_TTABLE), [stack -> C].
  */
 
-static __inline size_t
-luab_checktable(lua_State *L, int narg)
-{
-    if (lua_istable(L, narg) == 0)
-        luaL_argerror(L, narg, "Table expected");
+size_t   luab_checktable(lua_State *, int);
+size_t   luab_checktableisnil(lua_State *, int);
+size_t   luab_checkltable(lua_State *, int, size_t);
+size_t   luab_checkltableisnil(lua_State *, int, size_t);
 
-    return (lua_rawlen(L, narg));
-}
-
-static __inline size_t
-luab_checktableisnil(lua_State *L, int narg)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (0);
-
-    return (luab_checktable(L, narg));
-}
-
-static __inline size_t
-luab_checkltable(lua_State *L, int narg, size_t len)
-{
-    size_t n;
-
-    if ((n = luab_checktable(L, narg)) != len)
-        luaL_argerror(L, narg, "Size mismatch");
-
-    return (len);
-}
-
-static __inline size_t
-luab_checkltableisnil(lua_State *L, int narg, size_t len)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (0);
-
-    return (luab_checkltable(L, narg, len));
-}
-
-/* Allocate an generic C-pointer array by cardinality of (LUA_TTABLE). */
-static __inline void *
-luab_newvector(lua_State *L, int narg, size_t *len, size_t sz)
-{
-    size_t n;
-
-    if ((n = luab_checktable(L, narg)) == 0)
-        luaL_argerror(L, narg, "Empty table");
-
-    if (len != NULL)
-        *len = n;
-
-    return (luab_alloctable(L, narg, n, sz));
-}
-
-/* Same as above, but the cardinality is constrained by value argument len. */
-static __inline void *
-luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
-{
-    size_t n = luab_checkltable(L, narg, len);
-    return (luab_alloctable(L, narg, n, sz));
-}
+void     *luab_newvector(lua_State *, int, size_t *, size_t);
+void     *luab_newlvector(lua_State *, int, size_t, size_t);
 
 /*
  * Generic service primitives.
