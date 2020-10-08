@@ -120,7 +120,7 @@ LINK_set_ptr(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     link = luab_udata(L, 1, &link_type, link_t *);  /* XXX */
-    
+
     if (luab_udata_link(L, 1, &link_type, 2, &link->link_dp) == NULL) {
         errno = ENOENT;
         status = -1;

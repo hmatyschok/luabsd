@@ -38,10 +38,9 @@
 #include "luab_types.h"
 
 /*
- * Generic service primitves, complex data types.
+ * Generator function, [Lua -> stack].
  */
 
-/* Generator function, [Lua -> stack] */
 void *
 luab_newudata(lua_State *L, luab_module_t *m, void *arg)
 {
@@ -64,6 +63,30 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
         errno = EINVAL;
 
     return (ud);
+}
+
+/*
+ * Generic service primitives.
+ */
+
+void
+luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
+{
+    if (m != NULL && ud != NULL && arg != NULL)
+        (void)memmove(ud + 1, arg, luab_xlen(m));
+}
+
+void
+luab_udata_remove(luab_udata_t *ud)
+{
+    if (ud != NULL) {
+        if (ud->ud_x != NULL) {
+            *(ud->ud_x) = NULL;
+            ud->ud_x = NULL;
+            ud->ud_xhd = NULL;
+        }
+        LIST_REMOVE(ud, ud_next);
+    }
 }
 
 /*
@@ -172,18 +195,28 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 void *
 luab_udata_link(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
 {
-    luab_udata_t *self, *ud;
+    luab_udata_t *self, *ud, *ud_tmp;
 
     self = luab_todata(L, narg, m, luab_udata_t *);
 
-    if ((ud = luab_toxudata(L, xarg, NULL)) != NULL && x != NULL) {
-        LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
+    if (x != NULL) {
+        if ((ud = luab_toxudata(L, xarg, NULL)) != NULL) {
+            LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
 
-        *(void **)x = (void *)(ud + 1);
-        ud->ud_x = (caddr_t *)x;
-        ud->ud_xhd = &self->ud_list;
+            *(void **)x = (void *)(ud + 1);
 
-        return (*ud->ud_x);
+            ud->ud_x = x;
+            ud->ud_xhd = &self->ud_list;
+            return (*x);
+        } else {
+            LIST_FOREACH_SAFE(ud, &self->ud_list, ud_next, ud_tmp) {
+
+                if (*(ud->ud_x) == *x) {
+                    luab_udata_remove(ud);
+                    break;
+                }
+            }
+        }
     }
     return (NULL);
 }

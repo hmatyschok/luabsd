@@ -36,7 +36,7 @@ typedef struct luab_udata {
     LIST_HEAD(, luab_udata) ud_list;
     luab_module_t           *ud_m;
     time_t                  ud_ts;
-    caddr_t                 *ud_x;
+    void                    **ud_x;
     void                    *ud_xhd;
 } luab_udata_t;
 
@@ -214,32 +214,14 @@ luab_newlvector(lua_State *L, int narg, size_t len, size_t sz)
 /*
  * Generic service primitives.
  */
-
-static __inline void
-luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
-{
-    if (m != NULL && ud != NULL && arg != NULL)
-        (void)memmove(ud + 1, arg, luab_xlen(m));
-}
-
-static __inline void
-luab_udata_remove(luab_udata_t *ud)
-{
-    if (ud != NULL) {
-        if (ud->ud_x != NULL) {
-            *(ud->ud_x) = NULL;
-            ud->ud_x = NULL;
-            ud->ud_xhd = NULL;
-        }
-        LIST_REMOVE(ud, ud_next);
-    }
-}
+ 
+void     *luab_newudata(lua_State *, luab_module_t *, void *);
+void     luab_udata_init(luab_module_t *, luab_udata_t *, void *);
+void     luab_udata_remove(luab_udata_t *);
 
 /*
  * Access functions, [stack -> C].
  */
-
-void     *luab_newudata(lua_State *, luab_module_t *, void *);
 
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), ((m)->m_name)))
