@@ -197,6 +197,9 @@ u_short  *luab_table_checklu_short(lua_State *, int, size_t);
 int  *luab_table_checklint(lua_State *, int, size_t);
 gid_t    *luab_table_checklgid(lua_State *, int, size_t);
 
+/* C structures */
+struct timespec  *luab_table_checkltimespec(lua_State *, int, size_t);
+
 /*
  * Access functions, [C -> stack].
  */
@@ -214,6 +217,9 @@ void     luab_table_pushdouble(lua_State *, int, double *, int);
 void     luab_table_pushint(lua_State *, int, int *, int);
 void     luab_table_pushldouble(lua_State *, int, double *, size_t, int);
 void     luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
+
+/* C structures */
+void     luab_table_pushltimespec(lua_State *, int , size_t, void *);
 
 /*
  * Service primitives.

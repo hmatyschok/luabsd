@@ -285,7 +285,8 @@ luab_table_checklgid(lua_State *L, int narg, size_t card)
     return (vec);
 }
 
-/* complex data types */
+/* C structures */
+
 #if 0
 struct iovec *
 luab_table_checkliovec(lua_State *L, int narg, size_t card)
@@ -312,12 +313,37 @@ luab_table_checkliovec(lua_State *L, int narg, size_t card)
 }
 #endif
 
+/* (LUA_TTABLE) -> ([timespec{}]) */
+struct timespec *
+luab_table_checkltimespec(lua_State *L, int narg, size_t card)
+{
+    struct timespec *vec, *v;
+    size_t k;
+
+    vec = luab_newlvector(L, narg, card, sizeof(struct timespec));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isuserdata(L, -1) != 0)) {
+            v = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
+            (void)memmove(&vec[k], v, sizeof(struct timespec));
+        } else
+            luab_argerror(L, narg, vec, card, sizeof(struct timespec), EINVAL);
+
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
+
 /*
  * Access functions, (LUA_TTABLE) as result argument at n-th index, [C -> stack].
  */
 
 /*
- * Populate an array by (LUA_TTABLE) with elemts from an array of gid_t.
+ * Populate an array by (LUA_TTABLE) with elemts from an array of primitives.
  *
  * XXX well, should refactored and components redefined as boiler-plate
  *  code by use of specified macros.
@@ -400,4 +426,31 @@ luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new
     }
 }
 
-/* complex data types */
+/* C structures */
+
+/* ([timespec{}]) -> (LUA_TTABLE) */
+void
+luab_table_pushltimespec(lua_State *L, int narg, size_t card, void *arg)
+{
+    struct timespec *vec, *v;
+    size_t k;
+
+    (void)luab_checkltable(L, narg, card);
+
+    vec = (struct timespec *)arg;
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isuserdata(L, -1) != 0)) {
+            v = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
+            (void)memmove(v, &vec[k], sizeof(struct timespec));
+        } else
+            luab_argerror(L, narg, vec, card, sizeof(struct timespec), EINVAL);
+
+        lua_pop(L, 1);
+    }
+    free(vec);
+}

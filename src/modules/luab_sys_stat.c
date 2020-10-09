@@ -38,64 +38,6 @@
 
 extern luab_module_t luab_sys_stat_lib;
 
-/*
- * Subr.
- *
- * Translate an instance of
- *
- *  (LUA_TTABLE(LUA_TNUMBER,LUA_TUSERDATA(TIMESPEC)))
- *
- * into an array of timespec{} items.
- */
-static struct timespec *
-luab_checkltimesvector(lua_State *L, int narg, size_t card)
-{
-    struct timespec *vec, *v;
-    int k;
-
-    vec = luab_newlvector(L, narg, card, sizeof(struct timespec));
-
-    lua_pushnil(L);
-
-    for (k = 0; lua_next(L, narg) != 0; k++) {
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isuserdata(L, -1) != 0)) {
-            v = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
-            (void)memmove(&vec[k], v, sizeof(struct timespec));
-        } else
-            luab_argerror(L, narg, vec, card, sizeof(struct timespec), EINVAL);
-
-        lua_pop(L, 1);
-    }
-    return (vec);
-}
-
-static void
-luab_pushltimesvector(lua_State *L, int narg, size_t card, void *arg)
-{
-    struct timespec *vec, *v;
-    int k;
-
-    (void)luab_checkltable(L, narg, card);
-
-    vec = (struct timespec *)arg;
-
-    lua_pushnil(L);
-
-    for (k = 0; lua_next(L, narg) != 0; k++) {
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isuserdata(L, -1) != 0)) {
-            v = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
-            (void)memmove(v, &vec[k], sizeof(struct timespec));
-        } else
-            luab_argerror(L, narg, vec, card, sizeof(struct timespec), EINVAL);
-
-        lua_pop(L, 1);
-    }
-    free(vec);
-}
 
 /*
  * Service primitives.
@@ -459,14 +401,14 @@ luab_futimens(lua_State *L)
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
 
     if (lua_isnil(L, 2) != 0)   /* XXX */
-        times = luab_checkltimesvector(L, 2, 2);
+        times = luab_table_checkltimespec(L, 2, 2);
     else
         times = NULL;
 
     status = futimens(fd, times);
 
     if (times != NULL)
-        luab_pushltimesvector(L, 2, 2, times);
+        luab_table_pushltimespec(L, 2, 2, times);
 
     return (luab_pusherr(L, status));
 }
@@ -523,7 +465,7 @@ luab_utimensat(lua_State *L)
     path = luab_checklstring(L, 2, MAXPATHLEN);
 
     if (lua_isnil(L, 3) != 0)
-        times = luab_checkltimesvector(L, 2, 2);
+        times = luab_table_checkltimespec(L, 2, 2);
     else
         times = NULL;
 
@@ -532,7 +474,7 @@ luab_utimensat(lua_State *L)
     status = utimensat(fd, path, times, flag);
 
     if (times != NULL)
-        luab_pushltimesvector(L, 2, 2, times);
+        luab_table_pushltimespec(L, 2, 2, times);
 
     return (luab_pusherr(L, status));
 }
