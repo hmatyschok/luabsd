@@ -130,85 +130,6 @@ typedef struct luab_module_vec {
     { .mv_mod = NULL, .mv_init = NULL, .mv_idx = -1, }
 
 /*
- * Access functions, [C -> stack].
- */
-
-static __inline void
-luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-static __inline void
-luab_rawsetnumber(lua_State *L, int narg, lua_Integer k, lua_Number v)
-{
-    lua_pushnumber(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-static __inline void
-luab_rawsetstring(lua_State *L, int narg, lua_Integer k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-static __inline void
-luab_rawsetfstring(lua_State *L, int narg, lua_Integer k, const char *fmt, ...)
-{
-    va_list ap;
-    char buf[LUAL_BUFFERSIZE];
-
-    va_start(ap, fmt);
-    (void)vsnprintf(buf, LUAL_BUFFERSIZE, fmt, ap);
-    va_end(ap);
-
-    lua_pushstring(L, buf);
-    lua_rawseti(L, narg, k);
-}
-
-static __inline void
-luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
-{
-    luaL_Buffer b;
-    caddr_t dp;
-
-    if (v != NULL && len > 1) {
-        luaL_buffinit(L, &b);
-        dp = luaL_prepbuffsize(&b, len);
-
-        (void)memmove(dp, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_rawseti(L, narg, k);
-    }
-}
-
-static __inline void
-luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
-{
-    lua_pushcfunction(L, v);
-    lua_setfield(L, narg, k);
-}
-
-static __inline void
-luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_setfield(L, narg, k);
-}
-
-static __inline void
-luab_setstring(lua_State *L, int narg, const char *k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_setfield(L, narg, k);
-}
-
-/*
  * Access functions, n-th arg over argv, [stack -> C].
  */
 
@@ -222,6 +143,16 @@ const char   *luab_checklstring(lua_State *, int, size_t);
 /*
  * Access functions, [C -> stack].
  */
+
+void     luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer);
+void     luab_rawsetnumber(lua_State *, int, lua_Integer, lua_Number);
+void     luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
+void     luab_rawsetfstring(lua_State *, int, lua_Integer, const char *, ...);
+void     luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
+
+void     luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
+void     luab_setinteger(lua_State *, int, const char *, lua_Integer);
+void     luab_setstring(lua_State *, int, const char *, const char *);
 
 void     luab_setfstring(lua_State *, int, const char *, const char *, ...);
 void     luab_setldata(lua_State *, int, const char *, void *, size_t);

@@ -109,6 +109,81 @@ luab_checklstring(lua_State *L, int narg, size_t max_len)
  */
 
 void
+luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+void
+luab_rawsetnumber(lua_State *L, int narg, lua_Integer k, lua_Number v)
+{
+    lua_pushnumber(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+void
+luab_rawsetstring(lua_State *L, int narg, lua_Integer k, const char *v)
+{
+    lua_pushstring(L, v);
+    lua_rawseti(L, narg, k);
+}
+
+void
+luab_rawsetfstring(lua_State *L, int narg, lua_Integer k, const char *fmt, ...)
+{
+    va_list ap;
+    char buf[LUAL_BUFFERSIZE];
+
+    va_start(ap, fmt);
+    (void)vsnprintf(buf, LUAL_BUFFERSIZE, fmt, ap);
+    va_end(ap);
+
+    lua_pushstring(L, buf);
+    lua_rawseti(L, narg, k);
+}
+
+void
+luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t dp;
+
+    if (v != NULL && len > 1) {
+        luaL_buffinit(L, &b);
+        dp = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(dp, v, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        lua_rawseti(L, narg, k);
+    }
+}
+
+void
+luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
+{
+    lua_pushcfunction(L, v);
+    lua_setfield(L, narg, k);
+}
+
+void
+luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
+{
+    lua_pushinteger(L, v);
+    lua_setfield(L, narg, k);
+}
+
+void
+luab_setstring(lua_State *L, int narg, const char *k, const char *v)
+{
+    lua_pushstring(L, v);
+    lua_setfield(L, narg, k);
+}
+
+void
 luab_setfstring(lua_State *L, int narg, const char *k, const char *fmt, ...)
 {
     va_list ap;
