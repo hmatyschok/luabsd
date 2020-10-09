@@ -372,6 +372,7 @@ luab_table_pushdouble(lua_State *L, int narg, void *v, int new)
             luab_rawsetnumber(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
+        free(vec);
     }
 }
 
@@ -390,6 +391,7 @@ luab_table_pushint(lua_State *L, int narg, void *v, int new)
             luab_rawsetinteger(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
+        free(vec);
     }
 }
 
@@ -406,6 +408,7 @@ luab_table_pushldouble(lua_State *L, int narg, void *v, size_t card, int new)
             luab_rawsetnumber(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
+        free(vec);
     }
 }
 
@@ -422,6 +425,7 @@ luab_table_pushlgid(lua_State *L, int narg, void *v, size_t card, int new)
             luab_rawsetinteger(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
+        free(vec);
     }
 }
 
