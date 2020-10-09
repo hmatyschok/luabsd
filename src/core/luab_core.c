@@ -219,19 +219,19 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 int
 luab_pusherr(lua_State *L, lua_Integer res)
 {
-    int upcall = errno;
+    int up_call = errno;
     caddr_t msg;
     int status;
 
     lua_pushinteger(L, res);
 
-    if (upcall != 0 && res < 0) {
-        lua_pushinteger(L, upcall);
-        msg = strerror(upcall);
+    if (up_call != 0 && res < 0) {
+        lua_pushinteger(L, up_call);
+        msg = strerror(up_call);
         lua_pushstring(L, msg);
         status = 3;
-    } else if (upcall == res) {
-        msg = strerror(upcall);
+    } else if (up_call == res) {
+        msg = strerror(up_call);
         lua_pushstring(L, msg);
         status = 2;
     } else
@@ -243,19 +243,19 @@ luab_pusherr(lua_State *L, lua_Integer res)
 int
 luab_pushnumber(lua_State *L, lua_Number res)
 {
-    int upcall = errno;
+    int up_call = errno;
     caddr_t msg;
     int status;
 
     lua_pushnumber(L, res);
 
-    if (upcall != 0 && res < 0) {
-        lua_pushinteger(L, upcall);
-        msg = strerror(upcall);
+    if (up_call != 0 && res < 0) {
+        lua_pushinteger(L, up_call);
+        msg = strerror(up_call);
         lua_pushstring(L, msg);
         status = 3;
-    } else if (upcall == res) {
-        msg = strerror(upcall);
+    } else if (up_call == res) {
+        msg = strerror(up_call);
         lua_pushstring(L, msg);
         status = 2;
     } else
@@ -267,15 +267,15 @@ luab_pushnumber(lua_State *L, lua_Number res)
 int
 luab_pushnil(lua_State *L)
 {
-    int upcall = errno;
+    int up_call = errno;
     caddr_t msg;
     int status;
 
     lua_pushnil(L);
 
-    if (upcall != 0) {
-        lua_pushinteger(L, upcall);
-        msg = strerror(upcall);
+    if (up_call != 0) {
+        lua_pushinteger(L, up_call);
+        msg = strerror(up_call);
         lua_pushstring(L, msg);
         status = 3;
     } else
@@ -287,7 +287,7 @@ luab_pushnil(lua_State *L)
 int
 luab_pushstring(lua_State *L, const char *dp)
 {
-    int upcall = errno;
+    int up_call = errno;
     caddr_t msg;
     size_t len;
     int status;
@@ -296,9 +296,9 @@ luab_pushstring(lua_State *L, const char *dp)
         len = strnlen(dp, LUAL_BUFFERSIZE);
         lua_pushlstring(L, dp, len);
 
-        if (upcall != 0) {
-            lua_pushinteger(L, upcall);
-            msg = strerror(upcall);
+        if (up_call != 0) {
+            lua_pushinteger(L, up_call);
+            msg = strerror(up_call);
             lua_pushstring(L, msg);
             status = 3;
         } else
@@ -326,7 +326,7 @@ luab_pushfstring(lua_State *L, const char *fmt, ...)
 int
 luab_pushldata(lua_State *L, void *v, size_t len)
 {
-    int upcall = errno;
+    int up_call = errno;
     luaL_Buffer b;
     caddr_t dp, msg;
     int status;
@@ -340,9 +340,9 @@ luab_pushldata(lua_State *L, void *v, size_t len)
         luaL_addsize(&b, len);
         luaL_pushresult(&b);
 
-        if (upcall != 0) {
-            lua_pushinteger(L, upcall);
-            msg = strerror(upcall);
+        if (up_call != 0) {
+            lua_pushinteger(L, up_call);
+            msg = strerror(up_call);
             lua_pushstring(L, msg);
             status = 3;
         } else {
@@ -361,18 +361,18 @@ luab_pushldata(lua_State *L, void *v, size_t len)
  */
 
 void
-luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int upcall)
+luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int up_call)
 {
     size_t len;
 
-    errno = upcall;
+    errno = up_call;
 
     if ((v != NULL) &&
         ((len = n * sz) != 0)) {
         (void)memset_s(v, len, 0, len);
         free(v);
     }
-    luaL_argerror(L, narg, strerror(upcall));
+    luaL_argerror(L, narg, strerror(up_call));
 }
 
 int
