@@ -153,7 +153,7 @@ luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
             pci->xarg_idx = vec->mv_idx;
             pci->xarg_len = luab_xlen(vec->mv_mod);
         } else {
-            pci->xarg_idx = -1;
+            pci->xarg_idx = LUAB_TYPE_SENTINEL;
             pci->xarg_len = 0;
         }
     }

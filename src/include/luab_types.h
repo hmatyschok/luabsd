@@ -51,57 +51,9 @@ luab_xlen(luab_module_t *m)
  */
 
 typedef struct luab_xarg {
-    int         xarg_idx;
+    luab_type_t xarg_idx;
     size_t      xarg_len;
 } luab_xarg_t;
-
-/*
- * Selector.
- */
-
-typedef enum luab_type {
-    LUAB_CLOCKINFO_IDX,
-    LUAB_DIV_IDX,
-    LUAB_FLOCK_IDX,
-    LUAB_PRIMITIVE_IDX,
-    LUAB_IF_NAMEINDEX_IDX,
-    LUAB_IN_ADDR_IDX,
-    LUAB_IN6_ADDR_IDX,
-    LUAB_ITIMERVAL_IDX,
-    LUAB_LDIV_IDX,
-    LUAB_LLDIV_IDX,
-    LUAB_LINGER_IDX,
-    LUAB_MSGHDR_IDX,
-    LUAB_SOCKADDR_IDX,
-    LUAB_STAT_IDX,
-    LUAB_TIMESPEC_IDX,
-    LUAB_TIMEVAL_IDX,
-    LUAB_TIMEZONE_IDX,
-    LUAB_TM_IDX,
-    LUAB_UUID_IDX,
-    LUAB_IOVEC_IDX,
-    LUAB_LINK_IDX,
-#if __BSD_VISIBLE
-    LUAB_DBT_IDX,
-    LUAB_DB_IDX,
-    LUAB_BINTIME_IDX,
-    LUAB_CRYPT_DATA_IDX,
-    LUAB_CAP_RBUF_IDX,
-    LUAB_ACCEPT_FILTER_ARG_IDX,
-    LUAB_SOCKPROTO_IDX,
-    LUAB_CMSGCRED_IDX,
-#endif /* __BSD_VISIBLE */
-    LUAB_TYPE_SENTINEL
-} luab_type_t;
-
-#define luab_idx(name) \
-    (LUAB_##name##_IDX)
-#define luab_vx(idx) \
-    (luab_typevec[(idx)])
-#define luab_mx(name) \
-    ((luab_vx(luab_idx(name))).mv_mod)
-
-extern luab_module_vec_t luab_typevec[];
 
 /*
  * Definitions for (LUA_TUSERDATA(IOVEC)).
@@ -152,7 +104,7 @@ void     *luab_newlvector(lua_State *, int, size_t, size_t);
 /*
  * Generic service primitives.
  */
- 
+
 void     *luab_newudata(lua_State *, luab_module_t *, void *);
 void     luab_udata_init(luab_module_t *, luab_udata_t *, void *);
 void     luab_udata_remove(luab_udata_t *);
