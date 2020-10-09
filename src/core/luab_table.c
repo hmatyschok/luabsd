@@ -36,7 +36,7 @@
 #include "luab_types.h"
 
 static void
-luab_newtable(lua_State *L, int new)
+luab_table_create(lua_State *L, int new)
 {
     if (new != 0)   /* populate Table, if any */
         lua_newtable(L);
@@ -366,7 +366,7 @@ luab_table_pushdouble(lua_State *L, int narg, void *v, int new)
     if ((vec = (double *)v) != NULL) {
         card = luab_table_xlen(vec, double);
 
-        luab_newtable(L, new);
+        luab_table_create(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetnumber(L, narg, j, vec[i]);
@@ -384,7 +384,7 @@ luab_table_pushint(lua_State *L, int narg, void *v, int new)
     if ((vec = (int *)v) != NULL) {
         card = luab_table_xlen(vec, int);
 
-        luab_newtable(L, new);
+        luab_table_create(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetinteger(L, narg, j, vec[i]);
@@ -400,7 +400,7 @@ luab_table_pushldouble(lua_State *L, int narg, void *v, size_t card, int new)
     size_t i, j;
 
     if ((vec = (double *)v) != NULL) {
-        luab_newtable(L, new);
+        luab_table_create(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetnumber(L, narg, j, vec[i]);
@@ -416,7 +416,7 @@ luab_table_pushlgid(lua_State *L, int narg, void *v, size_t card, int new)
     size_t i, j;
 
     if ((vec = (gid_t *)v) != NULL) {
-        luab_newtable(L, new);
+        luab_table_create(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetinteger(L, narg, j, vec[i]);
@@ -438,7 +438,7 @@ luab_table_pushliovec(lua_State *L, int narg, void *v, size_t card, int new)
 
     if ((vec = (struct iovec *)v) != NULL) {
 
-        luab_newtable(L, new);
+        luab_table_create(L, new);
 
         for (k = 0; lua_next(L, narg) != 0; k++) {
 
@@ -466,7 +466,7 @@ luab_table_pushltimespec(lua_State *L, int narg, void *v, size_t card, int new)
 
     if ((vec = (struct timespec *)v) != NULL) {
 
-        luab_newtable(L, new);
+        luab_table_create(L, new);
 
         for (k = 0; lua_next(L, narg) != 0; k++) {
 
