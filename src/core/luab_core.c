@@ -98,8 +98,8 @@ luab_checklstring(lua_State *L, int narg, size_t max_len)
 
     dp = luaL_checklstring(L, narg, &len);
 
-    if (len > max_len)    /* XXX err_msg */
-        luaL_argerror(L, narg, "Value too large to be stored in data type");
+    if (len > max_len)
+        luab_argerror(L, narg, NULL, 0, 0, ERANGE);
 
     return (dp);
 }
