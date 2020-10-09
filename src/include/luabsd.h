@@ -130,67 +130,6 @@ typedef struct luab_module_vec {
     { .mv_mod = NULL, .mv_init = NULL, .mv_idx = -1, }
 
 /*
- * Access functions, n-th arg over argv, [stack -> C].
- *
- * luab_check{l}xxx(3) accessor evaluates, if n-th arg exists, otherwise
- * lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does the same
- * thing without throwing an error, but return NULL, if n-th arg does
- * not exist.
- */
-
-static __inline lua_Integer
-luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((luaL_checkinteger(L, narg)) & (b_msk));
-}
-
-static __inline lua_Integer
-luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((lua_tointeger(L, narg)) & (b_msk));
-}
-
-static __inline const char *
-luab_islstring(lua_State *L, int narg, size_t len)
-{
-    const char *dp;
-    size_t n;
-
-    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n <= len)
-            return (dp);
-    }
-    return (NULL);
-}
-
-static __inline const char *
-luab_tolstring(lua_State *L, int narg, size_t len)
-{
-    const char *dp;
-    size_t n;
-
-    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n == len)
-            return (dp);
-    }
-    return (NULL);
-}
-
-static __inline const char *
-luab_checklstring(lua_State *L, int narg, size_t max_len)
-{
-    const char *dp;
-    size_t len;
-
-    dp = luaL_checklstring(L, narg, &len);
-
-    if (len > max_len)    /* XXX err_msg */
-        luaL_argerror(L, narg, "Value too large to be stored in data type");
-
-    return (dp);
-}
-
-/*
  * Access functions, [C -> stack].
  */
 
@@ -269,42 +208,23 @@ luab_setstring(lua_State *L, int narg, const char *k, const char *v)
     lua_setfield(L, narg, k);
 }
 
-static __inline void
-luab_setfstring(lua_State *L, int narg, const char *k, const char *fmt, ...)
-{
-    va_list ap;
-    char buf[LUAL_BUFFERSIZE];
+/*
+ * Access functions, n-th arg over argv, [stack -> C].
+ */
 
-    va_start(ap, fmt);
-    (void)vsnprintf(buf, LUAL_BUFFERSIZE, fmt, ap);
-    va_end(ap);
+lua_Integer  luab_checkinteger(lua_State *, int, lua_Integer);
+lua_Integer  luab_tointeger(lua_State *, int, lua_Integer);
 
-    lua_pushstring(L, buf);
-    lua_setfield(L, narg, k);
-}
-
-static __inline void
-luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
-{
-    luaL_Buffer b;
-    caddr_t dp;
-
-    if (v != NULL && len > 1) {
-        luaL_buffinit(L, &b);
-        dp = luaL_prepbuffsize(&b, len);
-
-        (void)memmove(dp, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_setfield(L, narg, k);
-    }
-}
+const char   *luab_islstring(lua_State *, int, size_t);
+const char   *luab_tolstring(lua_State *, int, size_t);
+const char   *luab_checklstring(lua_State *, int, size_t);
 
 /*
  * Access functions, [C -> stack].
  */
+
+void     luab_setfstring(lua_State *, int, const char *, const char *, ...);
+void     luab_setldata(lua_State *, int, const char *, void *, size_t);
 
 int  luab_pusherr(lua_State *, lua_Integer);
 int  luab_pushnumber(lua_State *, lua_Number);

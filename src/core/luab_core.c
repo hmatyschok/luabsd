@@ -44,8 +44,102 @@
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
+ * Access functions, n-th arg over argv, [stack -> C].
+ *
+ * luab_check{l}xxx(3) accessor evaluates, if n-th arg exists, otherwise
+ * lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does the same
+ * thing without throwing an error, but return NULL, if n-th arg does
+ * not exist.
+ */
+
+lua_Integer
+luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((luaL_checkinteger(L, narg)) & (b_msk));
+}
+
+lua_Integer
+luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((lua_tointeger(L, narg)) & (b_msk));
+}
+
+const char *
+luab_islstring(lua_State *L, int narg, size_t len)
+{
+    const char *dp;
+    size_t n;
+
+    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
+        if (n <= len)
+            return (dp);
+    }
+    return (NULL);
+}
+
+const char *
+luab_tolstring(lua_State *L, int narg, size_t len)
+{
+    const char *dp;
+    size_t n;
+
+    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
+        if (n == len)
+            return (dp);
+    }
+    return (NULL);
+}
+
+const char *
+luab_checklstring(lua_State *L, int narg, size_t max_len)
+{
+    const char *dp;
+    size_t len;
+
+    dp = luaL_checklstring(L, narg, &len);
+
+    if (len > max_len)    /* XXX err_msg */
+        luaL_argerror(L, narg, "Value too large to be stored in data type");
+
+    return (dp);
+}
+
+/*
  * Access functions, [C -> stack].
  */
+
+void
+luab_setfstring(lua_State *L, int narg, const char *k, const char *fmt, ...)
+{
+    va_list ap;
+    char buf[LUAL_BUFFERSIZE];
+
+    va_start(ap, fmt);
+    (void)vsnprintf(buf, LUAL_BUFFERSIZE, fmt, ap);
+    va_end(ap);
+
+    lua_pushstring(L, buf);
+    lua_setfield(L, narg, k);
+}
+
+void
+luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
+{
+    luaL_Buffer b;
+    caddr_t dp;
+
+    if (v != NULL && len > 1) {
+        luaL_buffinit(L, &b);
+        dp = luaL_prepbuffsize(&b, len);
+
+        (void)memmove(dp, v, len);
+
+        luaL_addsize(&b, len);
+        luaL_pushresult(&b);
+
+        lua_setfield(L, narg, k);
+    }
+}
 
 int
 luab_pusherr(lua_State *L, lua_Integer res)
