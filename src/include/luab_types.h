@@ -198,6 +198,7 @@ int  *luab_table_checklint(lua_State *, int, size_t);
 gid_t    *luab_table_checklgid(lua_State *, int, size_t);
 
 /* C structures */
+struct iovec     *luab_table_checkliovec(lua_State *, int, size_t);
 struct timespec  *luab_table_checkltimespec(lua_State *, int, size_t);
 
 /*
@@ -213,13 +214,14 @@ void     luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 void     luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 void     luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
 
-void     luab_table_pushdouble(lua_State *, int, double *, int);
-void     luab_table_pushint(lua_State *, int, int *, int);
-void     luab_table_pushldouble(lua_State *, int, double *, size_t, int);
-void     luab_table_pushlgidset(lua_State *, int, gid_t *, int, int);
+void     luab_table_pushdouble(lua_State *, int, void *, int);
+void     luab_table_pushint(lua_State *, int, void *, int);
+void     luab_table_pushldouble(lua_State *, int, void *, size_t, int);
+void     luab_table_pushlgid(lua_State *, int, void *, size_t, int);
 
 /* C structures */
-void     luab_table_pushltimespec(lua_State *, int , size_t, void *);
+void     luab_table_pushliovec(lua_State *, int, void *, size_t, int);
+void     luab_table_pushltimespec(lua_State *, int, void *, size_t, int);
 
 /*
  * Service primitives.

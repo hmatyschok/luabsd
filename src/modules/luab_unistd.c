@@ -3408,7 +3408,7 @@ luab_getgrouplist(lua_State *L)
         if ((gidset = alloca((*ngroups) * sizeof(gid_t))) != NULL) {
 
             if ((status = getgrouplist(name, basegid, gidset, ngroups)) == 0)
-                luab_table_pushlgidset(L, 3, gidset, *ngroups, 0);
+                luab_table_pushlgid(L, 3, gidset, *ngroups, 0);
         } else
             status = -1;
     } else {
