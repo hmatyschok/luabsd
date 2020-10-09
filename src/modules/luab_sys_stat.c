@@ -48,12 +48,12 @@ extern luab_module_t luab_sys_stat_lib;
  * into an array of timespec{} items.
  */
 static struct timespec *
-luab_checkltimesvector(lua_State *L, int narg, size_t len)
+luab_checkltimesvector(lua_State *L, int narg, size_t card)
 {
     struct timespec *vec, *v;
     int k;
 
-    vec = luab_newlvector(L, narg, len, sizeof(struct timespec));
+    vec = luab_newlvector(L, narg, card, sizeof(struct timespec));
 
     lua_pushnil(L);
 
@@ -64,7 +64,7 @@ luab_checkltimesvector(lua_State *L, int narg, size_t len)
             v = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
             (void)memmove(&vec[k], v, sizeof(struct timespec));
         } else
-            luab_argerror(L, narg, vec, len, sizeof(struct timespec), EINVAL);
+            luab_argerror(L, narg, vec, card, sizeof(struct timespec), EINVAL);
 
         lua_pop(L, 1);
     }
@@ -72,12 +72,12 @@ luab_checkltimesvector(lua_State *L, int narg, size_t len)
 }
 
 static void
-luab_pushltimesvector(lua_State *L, int narg, size_t len, void *arg)
+luab_pushltimesvector(lua_State *L, int narg, size_t card, void *arg)
 {
     struct timespec *vec, *v;
     int k;
 
-    (void)luab_checkltable(L, narg, len);
+    (void)luab_checkltable(L, narg, card);
 
     vec = (struct timespec *)arg;
 
@@ -89,10 +89,9 @@ luab_pushltimesvector(lua_State *L, int narg, size_t len, void *arg)
             (lua_isuserdata(L, -1) != 0)) {
             v = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
             (void)memmove(v, &vec[k], sizeof(struct timespec));
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
+        } else
+            luab_argerror(L, narg, vec, card, sizeof(struct timespec), EINVAL);
+
         lua_pop(L, 1);
     }
     free(vec);

@@ -96,9 +96,9 @@ luab_checkmsgvec(lua_State *L, int narg)
 {
     struct mmsghdr *vec;
     struct msghdr *msg;
-    size_t k, n;
+    size_t k, card;
 
-    vec = luab_newvector(L, narg, &n, sizeof(struct mmsghdr));
+    vec = luab_newvector(L, narg, &card, sizeof(struct mmsghdr));
 
     lua_pushnil(L);
 
@@ -109,7 +109,7 @@ luab_checkmsgvec(lua_State *L, int narg)
             msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
             (void)memmove(&(vec[k].msg_hdr), msg, sizeof(struct msghdr));
         } else
-            luab_argerror(L, narg, vec, n, sizeof(struct msghdr), EINVAL);
+            luab_argerror(L, narg, vec, card, sizeof(struct msghdr), EINVAL);
 
         lua_pop(L, 1);
     }
