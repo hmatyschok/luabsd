@@ -38,18 +38,34 @@
 #include "luab_types.h"
 
 /*
- * Internal API for (LUA_TUSERDATA(IOVEC)).
+ * Access functions, [stack -> C].
  */
 
-const char *
-luab_iovec_islxarg(lua_State *L, int narg, size_t len)
+caddr_t
+luab_iovec_toldata(lua_State *L, int narg, size_t len)
 {
     luab_iovec_t *buf;
+    caddr_t bp;
+
+    buf = luab_udata(L, narg, luab_mx(IOVEC), luab_iovec_t *);
+
+    if ((buf->iov.iov_len <= buf->iov_max_len) &&
+        (len <= buf->iov_max_len))
+        bp = buf->iov.iov_base;
+    else {
+        errno = ERANGE;
+        bp = NULL;
+    }
+    return (bp);
+}
+
+const char *
+luab_iovec_islstring(lua_State *L, int narg, size_t len)
+{
     const char *dp;
 
-    if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        (len <= buf->iov_max_len))      /* XXX */
-        dp = buf->iov.iov_base;
+    if (luab_isiovec(L, narg) != NULL)
+        dp = luab_iovec_toldata(L, narg, len);
     else
         dp = luab_tolstring(L, narg, len);
 
@@ -57,11 +73,11 @@ luab_iovec_islxarg(lua_State *L, int narg, size_t len)
 }
 
 const char *
-luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
+luab_iovec_checklstring(lua_State *L, int narg, size_t len)
 {
     const char *dp;
 
-    if ((dp = luab_iovec_islxarg(L, narg, len)) == NULL)
+    if ((dp = luab_iovec_islstring(L, narg, len)) == NULL)
         luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     return (dp);

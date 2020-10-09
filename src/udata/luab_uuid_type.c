@@ -439,7 +439,7 @@ UUID_set_node(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, &uuid_type, struct uuid *);
-    data = luab_iovec_checklxarg(L, 2, _UUID_NODE_LEN);
+    data = luab_iovec_checklstring(L, 2, _UUID_NODE_LEN);
 
     (void)memmove(uuid->node, data, _UUID_NODE_LEN);
 

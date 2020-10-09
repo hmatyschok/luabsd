@@ -345,7 +345,7 @@ IOVEC_copy_in(lua_State *L)
     self = luab_to_iovec(L, 1);
     len = self->iov_max_len;
 
-    dp = luab_iovec_checklxarg(L, 2, len);
+    dp = luab_iovec_checklstring(L, 2, len);
     status = luab_iovec_copyin(self, dp, len);
     return (luab_pusherr(L, status));
 }

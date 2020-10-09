@@ -187,8 +187,9 @@ void     *luab_udata_link(lua_State *, int, luab_module_t *, int, void **);
 #define luab_isiovec(L, narg) \
     (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
 
-const char   *luab_iovec_islxarg(lua_State *, int, size_t);
-const char   *luab_iovec_checklxarg(lua_State *, int, size_t);
+caddr_t  luab_iovec_toldata(lua_State *, int, size_t);
+const char   *luab_iovec_islstring(lua_State *, int, size_t);
+const char   *luab_iovec_checklstring(lua_State *, int, size_t);
 
 const char   **luab_checkargv(lua_State *, int);
 double   *luab_table_checkdouble(lua_State *, int, size_t *);
