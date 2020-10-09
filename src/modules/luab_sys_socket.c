@@ -82,7 +82,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
     else {
         sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, INT_MAX);
 
-        if (sopt->sopt_len != pci->xarg_len)
+        if (sopt->sopt_len != pci->xarg_len)    /* XXX */
             (void)luaL_error(L, "%s: sopt->sopt_len != xarg->xarg_len", __func__);
     }
 }
@@ -109,7 +109,7 @@ luab_checkmsgvec(lua_State *L, int narg)
             msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
             (void)memmove(&(vec[k].msg_hdr), msg, sizeof(struct msghdr));
         } else
-            luab_argerror(L, narg, vec, n, sizeof(struct msghdr));
+            luab_argerror(L, narg, vec, n, sizeof(struct msghdr), EINVAL);
 
         lua_pop(L, 1);
     }

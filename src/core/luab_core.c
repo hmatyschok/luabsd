@@ -50,19 +50,19 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
 int
 luab_pusherr(lua_State *L, lua_Integer res)
 {
-    int save_errno = errno;
+    int upcall = errno;
     caddr_t msg;
     int status;
 
     lua_pushinteger(L, res);
 
-    if (save_errno != 0 && res < 0) {
-        lua_pushinteger(L, save_errno);
-        msg = strerror(save_errno);
+    if (upcall != 0 && res < 0) {
+        lua_pushinteger(L, upcall);
+        msg = strerror(upcall);
         lua_pushstring(L, msg);
         status = 3;
-    } else if (save_errno == res) {
-        msg = strerror(save_errno);
+    } else if (upcall == res) {
+        msg = strerror(upcall);
         lua_pushstring(L, msg);
         status = 2;
     } else
@@ -74,19 +74,19 @@ luab_pusherr(lua_State *L, lua_Integer res)
 int
 luab_pushnumber(lua_State *L, lua_Number res)
 {
-    int save_errno = errno;
+    int upcall = errno;
     caddr_t msg;
     int status;
 
     lua_pushnumber(L, res);
 
-    if (save_errno != 0 && res < 0) {
-        lua_pushinteger(L, save_errno);
-        msg = strerror(save_errno);
+    if (upcall != 0 && res < 0) {
+        lua_pushinteger(L, upcall);
+        msg = strerror(upcall);
         lua_pushstring(L, msg);
         status = 3;
-    } else if (save_errno == res) {
-        msg = strerror(save_errno);
+    } else if (upcall == res) {
+        msg = strerror(upcall);
         lua_pushstring(L, msg);
         status = 2;
     } else
@@ -98,15 +98,15 @@ luab_pushnumber(lua_State *L, lua_Number res)
 int
 luab_pushnil(lua_State *L)
 {
-    int save_errno = errno;
+    int upcall = errno;
     caddr_t msg;
     int status;
 
     lua_pushnil(L);
 
-    if (save_errno != 0) {
-        lua_pushinteger(L, save_errno);
-        msg = strerror(save_errno);
+    if (upcall != 0) {
+        lua_pushinteger(L, upcall);
+        msg = strerror(upcall);
         lua_pushstring(L, msg);
         status = 3;
     } else
@@ -118,7 +118,7 @@ luab_pushnil(lua_State *L)
 int
 luab_pushstring(lua_State *L, const char *dp)
 {
-    int save_errno = errno;
+    int upcall = errno;
     caddr_t msg;
     size_t len;
     int status;
@@ -127,9 +127,9 @@ luab_pushstring(lua_State *L, const char *dp)
         len = strnlen(dp, LUAL_BUFFERSIZE);
         lua_pushlstring(L, dp, len);
 
-        if (save_errno != 0) {
-            lua_pushinteger(L, save_errno);
-            msg = strerror(save_errno);
+        if (upcall != 0) {
+            lua_pushinteger(L, upcall);
+            msg = strerror(upcall);
             lua_pushstring(L, msg);
             status = 3;
         } else
@@ -157,7 +157,7 @@ luab_pushfstring(lua_State *L, const char *fmt, ...)
 int
 luab_pushldata(lua_State *L, void *v, size_t len)
 {
-    int save_errno = errno;
+    int upcall = errno;
     luaL_Buffer b;
     caddr_t dp, msg;
     int status;
@@ -171,9 +171,9 @@ luab_pushldata(lua_State *L, void *v, size_t len)
         luaL_addsize(&b, len);
         luaL_pushresult(&b);
 
-        if (save_errno != 0) {
-            lua_pushinteger(L, save_errno);
-            msg = strerror(save_errno);
+        if (upcall != 0) {
+            lua_pushinteger(L, upcall);
+            msg = strerror(upcall);
             lua_pushstring(L, msg);
             status = 3;
         } else {
@@ -190,6 +190,32 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 /*
  * Generic service primitives, subset of <core>.
  */
+
+void
+luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int upcall)
+{
+    size_t len;
+
+    errno = upcall;
+
+    if ((v != NULL) &&
+        ((len = n * sz) != 0)) {
+        (void)memset_s(v, len, 0, len);
+        free(v);
+    }
+    luaL_argerror(L, narg, strerror(errno));
+}
+
+int
+luab_checkmaxargs(lua_State *L, int nmax)
+{
+    int narg;
+
+    if ((narg = lua_gettop(L)) > nmax)  /* XXX */
+        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
+
+    return (narg);
+}
 
 int
 luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)

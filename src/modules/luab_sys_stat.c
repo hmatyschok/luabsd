@@ -63,10 +63,9 @@ luab_checkltimesvector(lua_State *L, int narg, size_t len)
             (lua_isuserdata(L, -1) != 0)) {
             v = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
             (void)memmove(&vec[k], v, sizeof(struct timespec));
-        } else {
-            free(vec);
-            luaL_argerror(L, narg, "Invalid argument");
-        }
+        } else
+            luab_argerror(L, narg, vec, len, sizeof(struct timespec), EINVAL);
+
         lua_pop(L, 1);
     }
     return (vec);

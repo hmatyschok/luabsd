@@ -130,34 +130,6 @@ typedef struct luab_module_vec {
     { .mv_mod = NULL, .mv_init = NULL, .mv_idx = -1, }
 
 /*
- * Generic service primitives, subset of <core>.
- */
-
-static __inline void
-luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz)
-{
-    size_t len;
-
-    if ((v != NULL) &&
-        ((len = n * sz) != 0)) {
-        (void)memset_s(v, len, 0, len);
-        free(v);
-    }
-    luaL_argerror(L, narg, "Invalid argument");
-}
-
-static __inline int
-luab_checkmaxargs(lua_State *L, int nmax)
-{
-    int narg;
-
-    if ((narg = lua_gettop(L)) > nmax)
-        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
-
-    return (narg);
-}
-
-/*
  * Access functions, n-th arg over argv, [stack -> C].
  *
  * luab_check{l}xxx(3) accessor evaluates, if n-th arg exists, otherwise
@@ -166,7 +138,6 @@ luab_checkmaxargs(lua_State *L, int nmax)
  * not exist.
  */
 
-/* Atomic data types. */
 static __inline lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
 {
@@ -348,6 +319,9 @@ int  luab_iov_pushdata(lua_State *, struct iovec *);
 /*
  * Generic service primitives, subset of <core>.
  */
+
+void     luab_argerror(lua_State *, int, void *, size_t, size_t, int);
+int  luab_checkmaxargs(lua_State *, int);
 
 int  luab_create(lua_State *, int, luab_module_t *, luab_module_t *);
 int  luab_dump(lua_State *, int, luab_module_t *, size_t);

@@ -60,7 +60,7 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
         *len = INET6_ADDRSTRLEN;
         break;
     default:
-        luaL_argerror(L, narg, "Invalid argument");
+        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
         break;  /* not reached */
     }
     return ((*type->m_get)(L, narg));

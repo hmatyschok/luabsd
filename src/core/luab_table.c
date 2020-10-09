@@ -45,10 +45,10 @@ luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
     void *vec;
 
     if (n == 0 && sz == 0)
-        luaL_argerror(L, narg, "Invalid argument");
+        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
 
     if ((vec = calloc(n, sz)) == NULL)
-        luaL_argerror(L, narg, "Cannot allocate memory");
+        luab_argerror(L, narg, NULL, -1, 0, ENOMEM);
 
     return (vec);
 }
@@ -61,7 +61,7 @@ size_t
 luab_checktable(lua_State *L, int narg)
 {
     if (lua_istable(L, narg) == 0)
-        luaL_argerror(L, narg, "Table expected");
+        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
 
     return (lua_rawlen(L, narg));
 }
@@ -81,7 +81,7 @@ luab_checkltable(lua_State *L, int narg, size_t len)
     size_t n;
 
     if ((n = luab_checktable(L, narg)) != len)
-        luaL_argerror(L, narg, "Size mismatch");
+        luab_argerror(L, narg, NULL, -1, 0, ERANGE);
 
     return (len);
 }
@@ -102,7 +102,7 @@ luab_newvector(lua_State *L, int narg, size_t *len, size_t sz)
     size_t n;
 
     if ((n = luab_checktable(L, narg)) == 0)
-        luaL_argerror(L, narg, "Empty table");
+        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
 
     if (len != NULL)
         *len = n;
@@ -130,7 +130,7 @@ luab_checkargv(lua_State *L, int narg)
     size_t n, k;
 
     if ((n = luab_checktable(L, narg)) == 0)    /* XXX DRY */
-        luaL_argerror(L, narg, "Empty table");
+        luab_argerror(L, narg, NULL, -1, 0, ERANGE);
 
     argv = luab_alloctable(L, narg, n + 1, sizeof(*argv));
 
@@ -144,7 +144,7 @@ luab_checkargv(lua_State *L, int narg)
             (lua_isstring(L, -1) != 0)) {
             argv[k] = lua_tostring(L, -1);
         } else
-            luab_argerror(L, narg, argv, n + 1, sizeof(*argv));
+            luab_argerror(L, narg, argv, n + 1, sizeof(*argv), EINVAL);
 
         lua_pop(L, 1);
     }
@@ -170,7 +170,7 @@ luab_table_tolxargp(lua_State *L, int narg, size_t len)
                 (lua_type(L, -1) != -1)) {
                 argv[k] = lua_topointer(L, -1);
             } else
-                luab_argerror(L, narg, argv, n, sizeof(void *));
+                luab_argerror(L, narg, argv, n, sizeof(void *), EINVAL);
 
             lua_pop(L, 1);
         }
@@ -207,7 +207,7 @@ luab_table_checkdouble(lua_State *L, int narg, size_t *len)
             v = (int)luab_tointeger(L, -1, UINT_MAX);
             vec[k] = v;
         } else
-            luab_argerror(L, narg, vec, n, sizeof(double));
+            luab_argerror(L, narg, vec, n, sizeof(double), EINVAL);
 
         lua_pop(L, 1);
     }
@@ -231,7 +231,7 @@ luab_table_checklu_short(lua_State *L, int narg, size_t len)
             v = (u_short)luab_tointeger(L, -1, USHRT_MAX);
             vec[k] = v;
         } else
-            luab_argerror(L, narg, vec, len, sizeof(u_short));
+            luab_argerror(L, narg, vec, len, sizeof(u_short), EINVAL);
 
         lua_pop(L, 1);
     }
@@ -254,7 +254,7 @@ luab_table_checklint(lua_State *L, int narg, size_t len)
             v = (int)luab_tointeger(L, -1, UINT_MAX);
             vec[k] = v;
         } else
-            luab_argerror(L, narg, vec, len, sizeof(int));
+            luab_argerror(L, narg, vec, len, sizeof(int), EINVAL);
 
         lua_pop(L, 1);
     }
@@ -278,12 +278,39 @@ luab_table_checklgid(lua_State *L, int narg, size_t len)
             v = (gid_t)luab_tointeger(L, -1, INT_MAX);
             vec[k] = v;
         } else
-            luab_argerror(L, narg, vec, len, sizeof(gid_t));
+            luab_argerror(L, narg, vec, len, sizeof(gid_t), EINVAL);
 
         lua_pop(L, 1);
     }
     return (vec);
 }
+
+/* complex data types */
+#if 0
+struct iovec *
+luab_table_checkliovec(lua_State *L, int narg, size_t len)
+{
+    struct iovec *vec, v*;
+    int k;
+
+    vec = luab_newlvector(L, narg, len, sizeof(struct iovec));
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {   /* XXX locking? */
+            v = luab_udata(L, -1, luab_mx(IOVEC), luab_iovec_t *);
+            (void)memmove(&vec[k], v, sizeof(struct iovec));
+        } else
+            luab_argerror(L, narg, vec, len, sizeof(struct iovec), EINVAL);
+
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
+#endif
 
 /*
  * Access functions, (LUA_TTABLE) as result argument at n-th index, [C -> stack].
@@ -372,3 +399,5 @@ luab_table_pushlgidset(lua_State *L, int narg, gid_t *gids, int ngroups, int new
         lua_pop(L, 0);
     }
 }
+
+/* complex data types */

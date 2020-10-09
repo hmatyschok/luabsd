@@ -108,7 +108,7 @@ void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
     if (m == NULL)
-        luaL_argerror(L, narg, "Invalid argument");
+        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
 
     return (luaL_checkudata(L, narg, m->m_name));
 }
@@ -180,10 +180,10 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
     if ((iov = luab_isiovec(L, narg)) != NULL) {
 
         if (iov->iov.iov_base == NULL)
-            luaL_argerror(L, narg, "Invalid argument.");
+            luab_argerror(L, narg, NULL, -1, 0, EINVAL);
 
         if (iov->iov.iov_len != len)
-            luaL_argerror(L, narg, "Invalid argument.");
+            luab_argerror(L, narg, NULL, -1, 0, EINVAL);
 
         buf = iov->iov.iov_base;
     } else
@@ -199,7 +199,7 @@ luab_udata_link(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
 
     self = luab_todata(L, narg, m, luab_udata_t *);
 
-    if (x != NULL) {
+    if (x != NULL) { /* XXX externalize it */
         if ((ud = luab_toxudata(L, xarg, NULL)) != NULL) {
             LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
 

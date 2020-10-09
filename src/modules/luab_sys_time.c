@@ -123,7 +123,7 @@ luab_setitimer(lua_State *L)
     value = luab_udataisnil(L, 2, luab_mx(ITIMERVAL), struct itimerval *);
     ovalue = luab_udataisnil(L, 3, luab_mx(ITIMERVAL), struct itimerval *);
 
-    if (lua_type(L, narg) != LUA_TFUNCTION)
+    if (lua_type(L, narg) != LUA_TFUNCTION) /* XXX */
         return luaL_error(L, "Missing callout handler.");
 
     lua_settop(L, narg);
