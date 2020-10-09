@@ -55,41 +55,44 @@ typedef struct luab_xarg {
     size_t      xarg_len;
 } luab_xarg_t;
 
-#define LUAB_CLOCKINFO_IDX          0
-#define LUAB_DIV_IDX                1
-#define LUAB_FLOCK_IDX              2
-#define LUAB_PRIMITIVE_IDX           3
-#define LUAB_IF_NAMEINDEX_IDX       4
-#define LUAB_IN_ADDR_IDX            5
-#define LUAB_IN6_ADDR_IDX           6
-#define LUAB_ITIMERVAL_IDX          7
-#define LUAB_LDIV_IDX               8
-#define LUAB_LLDIV_IDX              9
-#define LUAB_LINGER_IDX             10
-#define LUAB_MSGHDR_IDX             11
-#define LUAB_SOCKADDR_IDX           12
-#define LUAB_STAT_IDX               13
-#define LUAB_TIMESPEC_IDX           14
-#define LUAB_TIMEVAL_IDX            15
-#define LUAB_TIMEZONE_IDX           16
-#define LUAB_TM_IDX                 17
-#define LUAB_UUID_IDX               18
-#define LUAB_IOVEC_IDX              19
-#define LUAB_LINK_IDX               20
-#if __BSD_VISIBLE
-#define LUAB_DBT_IDX                21
-#define LUAB_DB_IDX                 22
-#define LUAB_BINTIME_IDX            23
-#define LUAB_CRYPT_DATA_IDX         24
-#define LUAB_CAP_RBUF_IDX           25
-#define LUAB_ACCEPT_FILTER_ARG_IDX  26
-#define LUAB_SOCKPROTO_IDX          27
-#define LUAB_CMSGCRED_IDX           28
-#endif /* __BSD_VISIBLE */
-
 /*
  * Selector.
  */
+
+typedef enum luab_type {
+    LUAB_CLOCKINFO_IDX,
+    LUAB_DIV_IDX,
+    LUAB_FLOCK_IDX,
+    LUAB_PRIMITIVE_IDX,
+    LUAB_IF_NAMEINDEX_IDX,
+    LUAB_IN_ADDR_IDX,
+    LUAB_IN6_ADDR_IDX,
+    LUAB_ITIMERVAL_IDX,
+    LUAB_LDIV_IDX,
+    LUAB_LLDIV_IDX,
+    LUAB_LINGER_IDX,
+    LUAB_MSGHDR_IDX,
+    LUAB_SOCKADDR_IDX,
+    LUAB_STAT_IDX,
+    LUAB_TIMESPEC_IDX,
+    LUAB_TIMEVAL_IDX,
+    LUAB_TIMEZONE_IDX,
+    LUAB_TM_IDX,
+    LUAB_UUID_IDX,
+    LUAB_IOVEC_IDX,
+    LUAB_LINK_IDX,
+#if __BSD_VISIBLE
+    LUAB_DBT_IDX,
+    LUAB_DB_IDX,
+    LUAB_BINTIME_IDX,
+    LUAB_CRYPT_DATA_IDX,
+    LUAB_CAP_RBUF_IDX,
+    LUAB_ACCEPT_FILTER_ARG_IDX,
+    LUAB_SOCKPROTO_IDX,
+    LUAB_CMSGCRED_IDX,
+#endif /* __BSD_VISIBLE */
+    LUAB_TYPE_SENTINEL
+} luab_type_t;
 
 #define luab_idx(name) \
     (LUAB_##name##_IDX)
