@@ -62,7 +62,7 @@ luab_iovec_checklxarg(lua_State *L, int narg, size_t len)
     const char *dp;
 
     if ((dp = luab_iovec_islxarg(L, narg, len)) == NULL)
-        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     return (dp);
 }

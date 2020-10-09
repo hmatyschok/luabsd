@@ -203,7 +203,7 @@ luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int upcall)
         (void)memset_s(v, len, 0, len);
         free(v);
     }
-    luaL_argerror(L, narg, strerror(errno));
+    luaL_argerror(L, narg, strerror(upcall));
 }
 
 int

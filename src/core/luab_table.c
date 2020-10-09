@@ -45,10 +45,10 @@ luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
     void *vec;
 
     if (n == 0 && sz == 0)
-        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     if ((vec = calloc(n, sz)) == NULL)
-        luab_argerror(L, narg, NULL, -1, 0, ENOMEM);
+        luab_argerror(L, narg, NULL, 0, 0, ENOMEM);
 
     return (vec);
 }
@@ -61,7 +61,7 @@ size_t
 luab_checktable(lua_State *L, int narg)
 {
     if (lua_istable(L, narg) == 0)
-        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     return (lua_rawlen(L, narg));
 }
@@ -81,7 +81,7 @@ luab_checkltable(lua_State *L, int narg, size_t len)
     size_t n;
 
     if ((n = luab_checktable(L, narg)) != len)
-        luab_argerror(L, narg, NULL, -1, 0, ERANGE);
+        luab_argerror(L, narg, NULL, 0, 0, ERANGE);
 
     return (len);
 }
@@ -102,7 +102,7 @@ luab_newvector(lua_State *L, int narg, size_t *len, size_t sz)
     size_t n;
 
     if ((n = luab_checktable(L, narg)) == 0)
-        luab_argerror(L, narg, NULL, -1, 0, EINVAL);
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     if (len != NULL)
         *len = n;
@@ -130,7 +130,7 @@ luab_checkargv(lua_State *L, int narg)
     size_t n, k;
 
     if ((n = luab_checktable(L, narg)) == 0)    /* XXX DRY */
-        luab_argerror(L, narg, NULL, -1, 0, ERANGE);
+        luab_argerror(L, narg, NULL, 0, 0, ERANGE);
 
     argv = luab_alloctable(L, narg, n + 1, sizeof(*argv));
 
