@@ -37,6 +37,11 @@
 #include "luab_table.h"
 
 /*
+ * XXX the implementation violates the DRY principle. Therefore, components
+ *  will be reimplemented by boiler-plate code or utilizing macros.
+ */
+ 
+/*
  * Service primitives.
  */
 
@@ -224,8 +229,6 @@ luab_table_tolxargp(lua_State *L, int narg, size_t card)
 
 /*
  * Translates instances of (LUA_TTABLE) into arrays over specific data types.
- *
- * XXX DRY, components will be replaced by so called boiler-plate code.
  */
 
 double *
@@ -417,10 +420,7 @@ luab_table_checkltimespec(lua_State *L, int narg, size_t card)
  */
 
 /*
- * Populate an array by (LUA_TTABLE) with elemts from an array of primitives.
- *
- * XXX well, should refactored and components redefined as boiler-plate
- *  code by use of specified macros.
+ * Populates the (LUA_TTABLE) with elemts from an array of primitives.
  */
 
 void
