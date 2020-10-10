@@ -35,8 +35,8 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-static void
-luab_table_create(lua_State *L, int new)
+void
+luab_table_populate(lua_State *L, int new)
 {
     if (new != 0)   /* populate Table, if any */
         lua_newtable(L);
@@ -199,8 +199,7 @@ double *
 luab_table_checkdouble(lua_State *L, int narg, size_t *card)
 {
     double *vec;
-    size_t n;
-    int k, v;
+    size_t n, k, v;
 
     vec = luab_newvector(L, narg, &n, sizeof(double));
 
@@ -227,7 +226,7 @@ u_short *
 luab_table_checklu_short(lua_State *L, int narg, size_t card)
 {
     u_short *vec;
-    int k, v;
+    size_t k, v;
 
     vec = luab_newlvector(L, narg, card, sizeof(u_short));
 
@@ -250,7 +249,8 @@ luab_table_checklu_short(lua_State *L, int narg, size_t card)
 int *
 luab_table_checklint(lua_State *L, int narg, size_t card)
 {
-    int *vec, k, v;
+    int *vec;
+    size_t k, v;
 
     vec = luab_newlvector(L, narg, card, sizeof(int));
 
@@ -274,7 +274,7 @@ gid_t *
 luab_table_checklgid(lua_State *L, int narg, size_t card)
 {
     gid_t *vec, v;
-    int k;
+    size_t k;
 
     vec = luab_newlvector(L, narg, card, sizeof(gid_t));
 
@@ -296,7 +296,36 @@ luab_table_checklgid(lua_State *L, int narg, size_t card)
 
 /* C structures */
 
-/* (LUA_TTABLE) -> ([iovec{}]) */
+/*
+ * (LUA_TTABLE) -> ([iovec{}])
+ */
+struct iovec *
+luab_table_checkiovec(lua_State *L, int narg, size_t *card)
+{
+    struct iovec *vec, *v;
+    size_t n, k;
+
+    vec = luab_newvector(L, narg, &n, sizeof(struct iovec));
+
+    if (card != NULL)
+        *card = n;
+
+    lua_pushnil(L);
+
+    for (k = 0; lua_next(L, narg) != 0; k++) {
+
+        if ((lua_isnumber(L, -2) != 0) &&
+            (lua_isnumber(L, -1) != 0)) {   /* XXX locking? */
+            v = luab_udata(L, -1, luab_mx(IOVEC), struct iovec *);
+            (void)memmove(&vec[k], v, sizeof(struct iovec));
+        } else
+            luab_argerror(L, narg, vec, n, sizeof(struct iovec), EINVAL);
+
+        lua_pop(L, 1);
+    }
+    return (vec);
+}
+
 struct iovec *
 luab_table_checkliovec(lua_State *L, int narg, size_t card)
 {
@@ -366,7 +395,7 @@ luab_table_pushdouble(lua_State *L, int narg, void *v, int new)
     if ((vec = (double *)v) != NULL) {
         card = luab_table_xlen(vec, double);
 
-        luab_table_create(L, new);
+        luab_table_populate(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetnumber(L, narg, j, vec[i]);
@@ -385,7 +414,7 @@ luab_table_pushint(lua_State *L, int narg, void *v, int new)
     if ((vec = (int *)v) != NULL) {
         card = luab_table_xlen(vec, int);
 
-        luab_table_create(L, new);
+        luab_table_populate(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetinteger(L, narg, j, vec[i]);
@@ -402,7 +431,7 @@ luab_table_pushldouble(lua_State *L, int narg, void *v, size_t card, int new)
     size_t i, j;
 
     if ((vec = (double *)v) != NULL) {
-        luab_table_create(L, new);
+        luab_table_populate(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetnumber(L, narg, j, vec[i]);
@@ -419,7 +448,7 @@ luab_table_pushlgid(lua_State *L, int narg, void *v, size_t card, int new)
     size_t i, j;
 
     if ((vec = (gid_t *)v) != NULL) {
-        luab_table_create(L, new);
+        luab_table_populate(L, new);
 
         for (i = 0, j = 1; i < card; i++, j++)
             luab_rawsetinteger(L, narg, j, vec[i]);
@@ -442,7 +471,7 @@ luab_table_pushliovec(lua_State *L, int narg, void *v, size_t card, int new)
 
     if ((vec = (struct iovec *)v) != NULL) {
 
-        luab_table_create(L, new);
+        luab_table_populate(L, new);
 
         for (k = 0; lua_next(L, narg) != 0; k++) {
 
@@ -470,7 +499,7 @@ luab_table_pushltimespec(lua_State *L, int narg, void *v, size_t card, int new)
 
     if ((vec = (struct timespec *)v) != NULL) {
 
-        luab_table_create(L, new);
+        luab_table_populate(L, new);
 
         for (k = 0; lua_next(L, narg) != 0; k++) {
 

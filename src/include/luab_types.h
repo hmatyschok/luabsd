@@ -100,6 +100,7 @@ size_t   luab_checkltableisnil(lua_State *, int, size_t);
 
 void     *luab_newvector(lua_State *, int, size_t *, size_t);
 void     *luab_newlvector(lua_State *, int, size_t, size_t);
+void     luab_table_populate(lua_State *, int);
 
 /*
  * Generic service primitives.
@@ -152,6 +153,7 @@ int  *luab_table_checklint(lua_State *, int, size_t);
 gid_t    *luab_table_checklgid(lua_State *, int, size_t);
 
 /* C structures */
+struct iovec     *luab_table_checkiovec(lua_State *, int, size_t *);
 struct iovec     *luab_table_checkliovec(lua_State *, int, size_t);
 struct timespec  *luab_table_checkltimespec(lua_State *, int, size_t);
 
