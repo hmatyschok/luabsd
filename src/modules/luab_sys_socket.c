@@ -73,7 +73,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
 
         if (pci->xarg_idx == LUAB_PRIMITIVE_IDX) {   /* XXX macro ??? */
             sopt->sopt_val = &(((luab_primitive_u *)sopt->sopt_val)->un_int);
-            pci->xarg_len = sizeof(*(int *)sopt->sopt_val);
+            pci->xarg_len = sizeof(*(int *)(sopt->sopt_val));
         }
     }
 

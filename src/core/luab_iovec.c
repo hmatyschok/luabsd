@@ -37,10 +37,23 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
+#if 0
+static void
+luab_iovec_iop_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_len)
+{
+    (void)memset_s(iop, sizeof(*iop), 0, sizeof(*iop));
+
+    iop->iop_iov.iov_len = max_len;
+    iop->iop_data.iov_len = len;
+    iop->iop_data.iov_base = v;
+}
+#endif
+
 /*
  * Access functions, [stack -> C].
  */
 
+/* Gets data region or NULL, if ERANGE. */
 caddr_t
 luab_iovec_toldata(lua_State *L, int narg, size_t len)
 {
@@ -91,9 +104,9 @@ int
 luab_iovec_pushudata(lua_State *L, void *v, size_t len, size_t max_len)
 {
     luab_iovec_param_t iop;
-    int status;
+    luab_module_t *m;
 
-    if (max_len >= len) {
+    if (len <= max_len) {
         (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
 
         iop.iop_iov.iov_len = max_len;
@@ -102,12 +115,11 @@ luab_iovec_pushudata(lua_State *L, void *v, size_t len, size_t max_len)
             iop.iop_data.iov_len = len;
             iop.iop_data.iov_base = v;
         }
-        status = luab_pushudata(L, luab_mx(IOVEC), &iop);
-    } else {
-        errno = EINVAL;
-        status = luab_pushnil(L);
-    }
-    return (status);
+        m = luab_mx(IOVEC);
+    } else
+        m = NULL;
+
+    return (luab_pushudata(L, m, &iop));
 }
 
 /*
