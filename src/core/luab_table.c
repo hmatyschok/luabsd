@@ -131,7 +131,7 @@ luab_newlvector(lua_State *L, int narg, size_t card, size_t sz)
  * Access functions, [stack -> C].
  */
 
-/* Translate an instance of (LUA_TTABLE) into an argv. */
+/* Translate an instance of (LUA_TTABLE) into an array of C pointer. */
 const char **
 luab_table_checkargv(lua_State *L, int narg)
 {
