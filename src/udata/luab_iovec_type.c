@@ -593,15 +593,16 @@ IOVEC_gc(lua_State *L)
 
     self = luab_to_iovec(L, 1);
 
-    if ((self->iov.iov_base != NULL) &&
+    if (((dp = self->iov.iov_base) != NULL) &&
         (self->iov_flags & IOV_BUFF)) {
-        dp = self->iov.iov_base;    /* XXX */
         len = self->iov_max_len;
 
         (void)memset_s(dp, len, 0, len);
 
         free(dp);
-    }
+    } else
+        dp = NULL;
+
     return (luab_gc(L, 1, &iovec_type));
 }
 
@@ -662,8 +663,6 @@ iovec_create(lua_State *L, void *arg)
             self = luab_newiovec(L, iop);
         else
             self = NULL;    /* XXX IOV_PROXY, not yet. */
-
-        (void)memset_s(iop, sizeof(*iop), 0, sizeof(*iop));
     } else
         self = NULL;
 

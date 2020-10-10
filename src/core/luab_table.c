@@ -133,7 +133,7 @@ luab_newlvector(lua_State *L, int narg, size_t card, size_t sz)
 
 /* Translate an instance of (LUA_TTABLE) into an argv. */
 const char **
-luab_checkargv(lua_State *L, int narg)
+luab_table_checkargv(lua_State *L, int narg)
 {
     const char **argv;
     size_t n, k;

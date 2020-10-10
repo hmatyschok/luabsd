@@ -143,7 +143,8 @@ caddr_t  luab_iovec_toldata(lua_State *, int, size_t);
 const char   *luab_iovec_islstring(lua_State *, int, size_t);
 const char   *luab_iovec_checklstring(lua_State *, int, size_t);
 
-const char   **luab_checkargv(lua_State *, int);
+const char   **luab_table_checkargv(lua_State *, int);
+
 double   *luab_table_checkdouble(lua_State *, int, size_t *);
 const void   **luab_table_tolxargp(lua_State *, int, size_t);
 u_short  *luab_table_checklu_short(lua_State *, int, size_t);
@@ -195,6 +196,9 @@ ssize_t  luab_iov_writev(struct iovec *, int, size_t);
 ssize_t  luab_iov_preadv(struct iovec *, int, size_t, off_t);
 ssize_t  luab_iov_pwritev(struct iovec *, int, size_t, off_t);
 #endif
+
+luab_module_t    *luab_iovec_param_init(luab_iovec_param_t *, void *, size_t,
+    size_t);
 
 int  luab_iovec_copyin(luab_iovec_t *, const void *, size_t);
 int  luab_iovec_copyout(luab_iovec_t *, void *, size_t);

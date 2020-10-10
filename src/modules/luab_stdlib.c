@@ -2085,7 +2085,7 @@ luab_cgetent(lua_State *L)
     (void)luab_checkmaxargs(L, 3);
 
     buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
-    db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
+    db_array = (void *)(intptr_t *)luab_table_checkargv(L, 2);
     name = luab_checklstring(L, 3, LUAL_BUFFERSIZE);
 
     if ((bp = buf->iov_base) == NULL) {
@@ -2130,7 +2130,7 @@ luab_cgetfirst(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
-    db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
+    db_array = (void *)(intptr_t *)luab_table_checkargv(L, 2);
 
     if ((bp = buf->iov_base) != NULL) {
         if ((status = cgetfirst(&bp, db_array)) == 0)
@@ -2211,7 +2211,7 @@ luab_cgetnext(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
-    db_array = (void *)(intptr_t *)luab_checkargv(L, 2);
+    db_array = (void *)(intptr_t *)luab_table_checkargv(L, 2);
 
     if ((bp = buf->iov_base) != NULL)
         status = cgetnext(&bp, db_array);

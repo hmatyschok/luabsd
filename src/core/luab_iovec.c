@@ -37,17 +37,46 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
-#if 0
-static void
-luab_iovec_iop_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_len)
+/*
+ * Initializes message primitive for instantiation of (LUA_TUSERDATA(IOVEC)).
+ *
+ *  #1: The parameter len specifies size of data region v.
+ *
+ *  #2: The parameter max_len specifies size of data region iov_base, but the
+ *      size in bytes is constrained by the value of (LUAL_BUFFERSIZE).
+ *
+ *  #3: If constraints are viaolated, NULL will be returned and call of
+ *
+ *       (a) luab_pushudata(3),
+ *
+ *       (b) luab_rawsetudata(3) or
+ *
+ *       (c) luab_setudata(3)
+ *
+ *     fails implecitely.
+ */
+luab_module_t *
+luab_iovec_param_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_len)
 {
-    (void)memset_s(iop, sizeof(*iop), 0, sizeof(*iop));
+    luab_module_t *m;
 
-    iop->iop_iov.iov_len = max_len;
-    iop->iop_data.iov_len = len;
-    iop->iop_data.iov_base = v;
+    if ((iop != NULL) &&
+        (len <= max_len) &&
+        (max_len <= LUAL_BUFFERSIZE)) {
+        (void)memset_s(iop, sizeof(*iop), 0, sizeof(*iop));
+
+        iop->iop_iov.iov_len = max_len;
+
+        if (v != NULL && len > 1) {
+            iop->iop_data.iov_len = (len == max_len) ? max_len : len;
+            iop->iop_data.iov_base = v;
+        }
+        m = luab_mx(IOVEC);
+    } else
+        m = NULL;
+
+    return (m);
 }
-#endif
 
 /*
  * Access functions, [stack -> C].
@@ -103,23 +132,11 @@ luab_iovec_checklstring(lua_State *L, int narg, size_t len)
 int
 luab_iovec_pushudata(lua_State *L, void *v, size_t len, size_t max_len)
 {
-    luab_iovec_param_t iop;
+    luab_iovec_param_t mpi;
     luab_module_t *m;
 
-    if (len <= max_len) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_iov.iov_len = max_len;
-
-        if (v != NULL && len > 1) {
-            iop.iop_data.iov_len = len;
-            iop.iop_data.iov_base = v;
-        }
-        m = luab_mx(IOVEC);
-    } else
-        m = NULL;
-
-    return (luab_pushudata(L, m, &iop));
+    m = luab_iovec_param_init(&mpi, v, len, max_len);
+    return (luab_pushudata(L, m, &mpi));
 }
 
 /*
@@ -129,33 +146,21 @@ luab_iovec_pushudata(lua_State *L, void *v, size_t len, size_t max_len)
 void
 luab_iovec_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 {
-    luab_iovec_param_t iop;
+    luab_iovec_param_t mpi;
+    luab_module_t *m;
 
-    if (v != NULL && len > 1) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_iov.iov_len = len;
-        iop.iop_data.iov_len = len;
-        iop.iop_data.iov_base = v;
-
-        luab_rawsetudata(L, narg, luab_mx(IOVEC), k, &iop);
-    }
+    m = luab_iovec_param_init(&mpi, v, len, len);
+    luab_rawsetudata(L, narg, m, k, &mpi);
 }
 
 void
 luab_iovec_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 {
-    luab_iovec_param_t iop;
+    luab_iovec_param_t mpi;
+    luab_module_t *m;
 
-    if (v != NULL && len > 1) {
-        (void)memset_s(&iop, sizeof(iop), 0, sizeof(iop));
-
-        iop.iop_iov.iov_len = len;
-        iop.iop_data.iov_len = len;
-        iop.iop_data.iov_base = v;
-
-        luab_setudata(L, narg, luab_mx(IOVEC), k, &iop);
-    }
+    m = luab_iovec_param_init(&mpi, v, len, len);
+    luab_setudata(L, narg, m, k, &mpi);
 }
 
 /*

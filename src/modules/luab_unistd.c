@@ -378,7 +378,7 @@ luab_execv(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
+    argv = luab_table_checkargv(L, 2);
 
     status = execv(path, __DECONST(char **, argv));
 
@@ -416,7 +416,7 @@ luab_execve(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
+    argv = luab_table_checkargv(L, 2);
 
     status = execve(path, __DECONST(char **, argv), environ);
 
@@ -454,7 +454,7 @@ luab_execvp(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     file = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
+    argv = luab_table_checkargv(L, 2);
 
     status = execvp(file, __DECONST(char **, argv));
 
@@ -2164,7 +2164,7 @@ luab_fexecve(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
-    argv = luab_checkargv(L, 2);
+    argv = luab_table_checkargv(L, 2);
 
     status = fexecve(fd, __DECONST(char **, argv), environ);
 
@@ -3133,7 +3133,7 @@ luab_exect(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
-    argv = luab_checkargv(L, 2);
+    argv = luab_table_checkargv(L, 2);
 
     status = exect(path, __DECONST(char **, argv), environ);
 
@@ -3174,7 +3174,7 @@ luab_execvP(lua_State *L)
 
     file = luab_checklstring(L, 1, MAXPATHLEN);
     search_path = luab_checklstring(L, 2, MAXPATHLEN);
-    argv = luab_checkargv(L, 3);
+    argv = luab_table_checkargv(L, 3);
 
     status = execvP(file, search_path, __DECONST(char **, argv));
 
