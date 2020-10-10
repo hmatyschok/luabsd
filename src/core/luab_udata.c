@@ -199,7 +199,7 @@ luab_udata_link(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
 
     self = luab_todata(L, narg, m, luab_udata_t *);
 
-    if (x != NULL) { /* XXX externalize it */
+    if (x != NULL) { /* XXX well, I'll externalize insertion/traversal */
         if ((ud = luab_toxudata(L, xarg, NULL)) != NULL) {
             LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
 

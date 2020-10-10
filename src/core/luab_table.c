@@ -105,7 +105,7 @@ luab_checkltableisnil(lua_State *L, int narg, size_t card)
     return (luab_checkltable(L, narg, card));
 }
 
-/* Allocate an generic C-pointer array by cardinality of (LUA_TTABLE). */
+/* Allocate a C array by cardinality of (LUA_TTABLE). */
 void *
 luab_newvector(lua_State *L, int narg, size_t *card, size_t sz)
 {
@@ -120,7 +120,39 @@ luab_newvector(lua_State *L, int narg, size_t *card, size_t sz)
     return (luab_alloctable(L, narg, n, sz));
 }
 
-/* Same as above, but the cardinality is constrained by value argument len. */
+/*
+ * Allocates an array by cardinality of (LUA_TTABLE) at n-th index.
+ *
+ *  (a) Result argument *card returns cardinality, if not NULL.
+ *
+ *  (b) Throws lua_error, if (LUA_TTABLE) not exists.
+ *
+ *  (c) Returns an array, if allocation was performed successfully,
+ *      but throws lua_error when allocation was not possible,
+ *
+ *  (d) Returns NULL, if cardinality of (LUA_TTABLE) is 0.
+ */
+void *
+luab_newvectornil(lua_State *L, int narg, size_t *card, size_t sz)
+{
+    void *vec;
+    size_t n;
+
+    if ((n = luab_checktable(L, narg)) != 0)
+        vec = luab_alloctable(L, narg, n, sz);
+    else
+        vec = NULL;
+
+    if (card != NULL)
+        *card = n;
+
+    return (vec);
+}
+
+/*
+ * Similar as luab_newvector(3), but the cardinality is constrained by value
+ * argument len.
+ */
 void *
 luab_newlvector(lua_State *L, int narg, size_t card, size_t sz)
 {

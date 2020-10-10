@@ -42,6 +42,11 @@ void     luab_table_populate(lua_State *, int);
 
 void     *luab_alloctable(lua_State *, int, size_t, size_t);
 
+void     *luab_newvector(lua_State *, int, size_t *, size_t);
+void     *luab_newvectornil(lua_State *, int, size_t *, size_t);
+void     *luab_newlvector(lua_State *, int, size_t, size_t);
+
+
 /*
  * Access functions, [stack -> C].
  */
@@ -50,9 +55,6 @@ size_t   luab_checktable(lua_State *, int);
 size_t   luab_checktableisnil(lua_State *, int);
 size_t   luab_checkltable(lua_State *, int, size_t);
 size_t   luab_checkltableisnil(lua_State *, int, size_t);
-
-void     *luab_newvector(lua_State *, int, size_t *, size_t);
-void     *luab_newlvector(lua_State *, int, size_t, size_t);
 
 const char   **luab_table_checkargv(lua_State *, int);
 double   *luab_table_checkdouble(lua_State *, int, size_t *);
