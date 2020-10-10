@@ -45,6 +45,7 @@
 
 #include "luabsd.h"
 #include "luab_types.h"
+#include "luab_table.h"
 
 #define LUAB_UNISTD_LIB_ID    1593623310
 #define LUAB_UNISTD_LIB_KEY   "unistd"

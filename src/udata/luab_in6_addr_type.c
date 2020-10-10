@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_types.h"
+#include "luab_table.h"
 
 extern luab_module_t in6_addr_type;
 

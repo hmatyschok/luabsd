@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_types.h"
+#include "luab_table.h"
 
 #define LUAB_NET_IF_LIB_ID    1596485465
 #define LUAB_NET_IF_LIB_KEY    "net"

@@ -34,6 +34,7 @@
 
 #include "luabsd.h"
 #include "luab_types.h"
+#include "luab_table.h"
 
 void
 luab_table_populate(lua_State *L, int new)
@@ -297,7 +298,8 @@ luab_table_checklgid(lua_State *L, int narg, size_t card)
 /* C structures */
 
 /*
- * (LUA_TTABLE) -> ([iovec{}])
+ * Translates an instance of (LUA_TTABLE) into an array of iovec{}s. The result
+ * argument *card returns the cardinality of (LUA_TTABLE).
  */
 struct iovec *
 luab_table_checkiovec(lua_State *L, int narg, size_t *card)
