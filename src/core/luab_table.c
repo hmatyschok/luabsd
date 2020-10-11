@@ -27,6 +27,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sysexits.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -116,7 +117,7 @@ luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t idx)
         luab_table_iovec_free(vec, idx);
         luab_argerror(L, narg, vec, card, sz, errno);
     } else
-        exit(EXIT_FAILURE);
+        exit(EX_DATAERR);
 }
 
 /* Performs deep copying. */
