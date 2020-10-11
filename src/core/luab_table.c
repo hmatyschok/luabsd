@@ -51,7 +51,7 @@ size_t
 luab_checktable(lua_State *L, int narg)
 {
     if (lua_istable(L, narg) == 0)
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+        luab_argerror(L, narg, NULL, 0, 0, ENOENT);
 
     return (lua_rawlen(L, narg));
 }
@@ -169,39 +169,6 @@ luab_table_iovec_populate(lua_State *L, int narg, struct iovec *vec, int new)
 
 /*
  * Generator functions.
- *
- * luab_alloctable:
- *
- *  Wrapper for an allocator, throws lua_error if
- *
- *   (a) invalid parameter or
- *
- *   (b) something went wrong during allocation.
- *
- * luab_newvector:
- *
- *  Wrapper for luab_alloctable(3).
- *
- *   (a) Throws lua_error, if cardinality is zero.
- *
- *   (b) Result argument *card returns cardinality, if not NULL.
- *
- * luab_newvectornil:
- *
- *  Allocates an array by cardinality of (LUA_TTABLE) at n-th index.
- *
- *   (a) Throws lua_error, if (LUA_TTABLE) not exists.
- *
- *   (b) Returns an array, if allocation was performed successfully,
- *       but throws lua_error when allocation was not possible.
- *
- *   (c) Returns NULL, if cardinality of (LUA_TTABLE) is 0.
- *
- *   (d) Result argument *card returns cardinality, if not NULL.
- *
- * luab_newlvectornil:
- *
- *  Similar as above, but the cardinality is constrained by value argument len.
  */
 
 void *
