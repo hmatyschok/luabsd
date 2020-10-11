@@ -34,14 +34,18 @@
 extern luab_module_t link_type;
 
 typedef struct link {
-    void    *link_dp;
+    void            *link_dp;
+    struct sockaddr *link_sa;
+    struct iovec    *link_iov;
 } link_t;
 
 /*
  * Interface against
  *
  *  typedef struct link {
- *      void    *link_dp;
+ *      void            *link_dp;
+ *      struct sockaddr *link_sa;
+ *      struct iovec    *link_iov;
  *  } link_t;
  *
  * implements test-case for linkage.
@@ -87,7 +91,10 @@ LINK_get(lua_State *L)
     link = luab_udata(L, 1, &link_type, link_t *);
 
     lua_newtable(L);
-    luab_setfstring(L, -2, "link_dp", "(%p)",    link->link_dp);
+    luab_setfstring(L, -2, "link_dp", "(%p)",           link->link_dp);
+#if 0
+    luab_setudata(L, -2, "link_sa", luab_mx(SOCKADDR),  link->link_sa);
+#endif
     lua_pushvalue(L, -1);
 
     return (1);

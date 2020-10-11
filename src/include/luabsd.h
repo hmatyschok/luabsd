@@ -212,9 +212,6 @@ int  luab_pushstring(lua_State *, const char *);
 int  luab_pushfstring(lua_State *, const char *, ...);
 int  luab_pushldata(lua_State *, void *, size_t);
 
-int  luab_iov_pushlen(lua_State *, struct iovec *);
-int  luab_iov_pushdata(lua_State *, struct iovec *);
-
 /*
  * Generic service primitives, subset of <core>.
  */

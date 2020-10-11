@@ -27,6 +27,8 @@
 #ifndef _LUAB_TYPES_H_
 #define _LUAB_TYPES_H_
 
+#include "luab_buf.h"
+
 /*
  * Interface Control Information (ICI).
  */
@@ -86,22 +88,6 @@ typedef struct luab_iovec {
 /*
  * Generic service primitives.
  */
-
-int  luab_iov_clear(struct iovec *);
-int  luab_iov_free(struct iovec *);
-
-int  luab_iov_alloc(struct iovec *, size_t);
-int  luab_iov_realloc(struct iovec *, size_t);
-
-int  luab_iov_copyin(struct iovec *, const void *, ssize_t);
-int  luab_iov_copyout(struct iovec *, void *, ssize_t);
-
-ssize_t  luab_iov_readv(struct iovec *, int, size_t);
-ssize_t  luab_iov_writev(struct iovec *, int, size_t);
-#if __BSD_VISIBLE
-ssize_t  luab_iov_preadv(struct iovec *, int, size_t, off_t);
-ssize_t  luab_iov_pwritev(struct iovec *, int, size_t, off_t);
-#endif
 
 luab_module_t    *luab_iovec_param_init(luab_iovec_param_t *, void *, size_t,
     size_t);
@@ -192,9 +178,4 @@ int  luab_iovec_sendto(lua_State *, int, luab_iovec_t *, size_t *,
 int  luab_iovec_preadv(lua_State *, int, luab_iovec_t *, size_t, off_t);
 int  luab_iovec_pwritev(lua_State *, int, luab_iovec_t *, size_t, off_t);
 #endif
-
-/* (LUA_TTABLE) */
-#define luab_table_xlen(vec, type) \
-    ((sizeof(vec)) / (sizeof(type)))
-
 #endif /* _LUAB_TYPES_H_ */

@@ -39,6 +39,27 @@
 #include "luab_types.h"
 
 /*
+ * Subr.
+ */
+
+static caddr_t
+luab_iov_base(struct iovec *iov, size_t *len)
+{
+    caddr_t dp;
+
+    if (iov != NULL && len != NULL) {
+
+        if ((dp = iov->iov_base) != NULL)
+            *len = iov->iov_len;
+        else
+            *len = 0;
+    } else
+        dp = NULL;
+
+    return (dp);
+}
+
+/*
  * Generic service primitives for handling iovec{}s.
  *
  *   #1 bp refers iov->iov_base.
@@ -286,16 +307,59 @@ luab_iov_pushlen(lua_State *L, struct iovec *iov)
 int
 luab_iov_pushdata(lua_State *L, struct iovec *iov)
 {
-    caddr_t bp;
+    caddr_t dp;
     size_t len;
 
-    if ((iov == NULL) ||
-        ((bp = iov->iov_base) == NULL)) {
-        errno = EINVAL;
-        bp = NULL;
-        len = 0;
-    } else
-        len = iov->iov_len;
+    dp = luab_iov_base(iov, &len);
+    return (luab_pushldata(L, dp, len));
+}
 
-    return (luab_pushldata(L, bp, len));
+int
+luab_iov_pushxdata(lua_State *L, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    return (luab_iovec_pushudata(L, dp, len, len));
+}
+
+void
+luab_iov_rawsetdata(lua_State *L, int narg, lua_Integer k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_rawsetldata(L, narg, k, dp, len);
+}
+
+void
+luab_iov_rawsetxdata(lua_State *L, int narg, lua_Integer k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_iovec_rawsetldata(L, narg, k, dp, len);
+}
+
+void
+luab_iov_setdata(lua_State *L, int narg, const char *k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_setldata(L, narg, k, dp, len);
+}
+
+void
+luab_iov_setxdata(lua_State *L, int narg, const char *k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_iovec_setldata(L, narg, k, dp, len);
 }
