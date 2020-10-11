@@ -95,18 +95,14 @@ static void
 msghdr_free_iov(struct msghdr *msg)
 {
     struct iovec *iov;
-    int i, iovlen;
+    size_t i, iovlen;
 
     if (((iov = msg->msg_iov) != NULL) &&
         ((iovlen = msg->msg_iovlen) > 0)) {
 
-        for (i = 0; i < iovlen; i++) {
-            if (iov->iov_base != NULL) {
-                free(iov->iov_base);
-                iov->iov_base = NULL;
-                iov->iov_len = 0;
-            }
-        }
+        for (i = 0; i < iovlen; i++)
+            (void)luab_iov_free(&iov[i]);
+
         free(msg->msg_iov);
         msg->msg_iov = NULL;
         msg->msg_iovlen = 0;
@@ -123,7 +119,7 @@ msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
     int status;
 
     /*
-     * XXX race-cond. with gc, as a workaround.
+     * XXX race-cond. with gc, as a workaround, but "this" is wrong!
      */
 
     if (((buf = luab_isiovec(L, narg)) != NULL) &&
