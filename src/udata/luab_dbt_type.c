@@ -53,7 +53,7 @@ typedef struct luab_dbt {
 #define luab_new_dbt(L, arg) \
     ((luab_dbt_t *)luab_newudata(L, &dbt_type, (arg)))
 #define luab_to_dbt(L, narg) \
-    (luab_toudata((L), (narg), &dbt_type))
+    ((DBT *)luab_toudata((L), (narg), &dbt_type))
 
 #define LUAB_DBT_TYPE_ID    1596025036
 #define LUAB_DBT_TYPE   "DBT*"
@@ -91,6 +91,24 @@ DBT_get(lua_State *L)
     lua_pushvalue(L, -1);
 
     return (1);
+}
+
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+DBT_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -214,13 +232,14 @@ DBT_tostring(lua_State *L)
  */
 
 static luab_module_table_t dbt_methods[] = {
-    LUAB_FUNC("set_data",     DBT_set_data),
-    LUAB_FUNC("get",          DBT_get),
-    LUAB_FUNC("get_data",     DBT_get_data),
-    LUAB_FUNC("get_size",     DBT_get_size),
-    LUAB_FUNC("__gc",         DBT_gc),
-    LUAB_FUNC("__len",        DBT_len),
-    LUAB_FUNC("__tostring",   DBT_tostring),
+    LUAB_FUNC("set_data",       DBT_set_data),
+    LUAB_FUNC("get",            DBT_get),
+    LUAB_FUNC("get_data",       DBT_get_data),
+    LUAB_FUNC("get_size",       DBT_get_size),
+    LUAB_FUNC("dump",           DBT_dump),
+    LUAB_FUNC("__gc",           DBT_gc),
+    LUAB_FUNC("__len",          DBT_len),
+    LUAB_FUNC("__tostring",     DBT_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

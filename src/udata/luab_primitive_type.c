@@ -67,10 +67,32 @@ typedef struct luab_primitive {
 #define luab_new_primitive(L, arg) \
     ((luab_primitive_t *)luab_newudata(L, &primitive_type, (arg)))
 #define luab_to_primitive(L, narg) \
-    (luab_toudata((L), (narg), &primitive_type))
+    ((luab_primitive_u *)luab_toudata((L), (narg), &primitive_type))
 
 #define LUAB_PRIMITIVE_TYPE_ID    1595975665
 #define LUAB_PRIMITIVE_TYPE   "PRIMITIVE*"
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+PRIMITIVE_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
+}
 
 /*
  * Access functions.
@@ -259,19 +281,20 @@ PRIMITIVE_tostring(lua_State *L)
  */
 
 static luab_module_table_t primitive_methods[] = {
-    LUAB_FUNC("set_char",     PRIMITIVE_set_char),
-    LUAB_FUNC("set_int",      PRIMITIVE_set_int),
-    LUAB_FUNC("set_long",     PRIMITIVE_set_long),
-    LUAB_FUNC("set_short",    PRIMITIVE_set_short),
-    LUAB_FUNC("set_socklen",  PRIMITIVE_set_socklen),
-    LUAB_FUNC("get_char",     PRIMITIVE_get_char),
-    LUAB_FUNC("get_int",      PRIMITIVE_get_int),
-    LUAB_FUNC("get_long",     PRIMITIVE_get_long),
-    LUAB_FUNC("get_short",    PRIMITIVE_get_short),
-    LUAB_FUNC("get_socklen",  PRIMITIVE_get_socklen),
-    LUAB_FUNC("__gc",         PRIMITIVE_gc),
-    LUAB_FUNC("__len",        PRIMITIVE_len),
-    LUAB_FUNC("__tostring",   PRIMITIVE_tostring),
+    LUAB_FUNC("set_char",       PRIMITIVE_set_char),
+    LUAB_FUNC("set_int",        PRIMITIVE_set_int),
+    LUAB_FUNC("set_long",       PRIMITIVE_set_long),
+    LUAB_FUNC("set_short",      PRIMITIVE_set_short),
+    LUAB_FUNC("set_socklen",    PRIMITIVE_set_socklen),
+    LUAB_FUNC("get_char",       PRIMITIVE_get_char),
+    LUAB_FUNC("get_int",        PRIMITIVE_get_int),
+    LUAB_FUNC("get_long",       PRIMITIVE_get_long),
+    LUAB_FUNC("get_short",      PRIMITIVE_get_short),
+    LUAB_FUNC("get_socklen",    PRIMITIVE_get_socklen),
+    LUAB_FUNC("dump",           PRIMITIVE_dump),
+    LUAB_FUNC("__gc",           PRIMITIVE_gc),
+    LUAB_FUNC("__len",          PRIMITIVE_len),
+    LUAB_FUNC("__tostring",     PRIMITIVE_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

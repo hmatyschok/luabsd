@@ -138,6 +138,24 @@ IOVEC_clone(lua_State *L)
     return (status);
 }
 
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+IOVEC_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
+}
+
 /*
  * Access functions, immutable properties.
  */
@@ -623,22 +641,23 @@ IOVEC_tostring(lua_State *L)
  */
 
 static luab_module_table_t iovec_methods[] = {
-    LUAB_FUNC("get",          IOVEC_get),
-    LUAB_FUNC("set_len",      IOVEC_set_len),
-    LUAB_FUNC("get_len",      IOVEC_get_len),
-    LUAB_FUNC("max_len",      IOVEC_max_len),
-    LUAB_FUNC("clear",        IOVEC_clear),
-    LUAB_FUNC("clone",        IOVEC_clone),
-    LUAB_FUNC("copy_in",      IOVEC_copy_in),
-    LUAB_FUNC("copy_out",     IOVEC_copy_out),
-    LUAB_FUNC("resize",       IOVEC_resize),
-    LUAB_FUNC("read",         IOVEC_read),
-    LUAB_FUNC("write",        IOVEC_write),
-    LUAB_FUNC("recv",         IOVEC_recv),
-    LUAB_FUNC("send",         IOVEC_send),
-    LUAB_FUNC("__gc",         IOVEC_gc),
-    LUAB_FUNC("__len",        IOVEC_len),
-    LUAB_FUNC("__tostring",   IOVEC_tostring),
+    LUAB_FUNC("get",            IOVEC_get),
+    LUAB_FUNC("set_len",        IOVEC_set_len),
+    LUAB_FUNC("get_len",        IOVEC_get_len),
+    LUAB_FUNC("max_len",        IOVEC_max_len),
+    LUAB_FUNC("clear",          IOVEC_clear),
+    LUAB_FUNC("clone",          IOVEC_clone),
+    LUAB_FUNC("copy_in",        IOVEC_copy_in),
+    LUAB_FUNC("copy_out",       IOVEC_copy_out),
+    LUAB_FUNC("resize",         IOVEC_resize),
+    LUAB_FUNC("read",           IOVEC_read),
+    LUAB_FUNC("write",          IOVEC_write),
+    LUAB_FUNC("recv",           IOVEC_recv),
+    LUAB_FUNC("send",           IOVEC_send),
+    LUAB_FUNC("dump",           IOVEC_dump),
+    LUAB_FUNC("__gc",           IOVEC_gc),
+    LUAB_FUNC("__len",          IOVEC_len),
+    LUAB_FUNC("__tostring",     IOVEC_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

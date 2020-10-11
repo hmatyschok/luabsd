@@ -55,7 +55,7 @@ typedef struct luab_link {
 #define luab_new_link(L, arg) \
     ((luab_link_t *)luab_newudata(L, &link_type, (arg)))
 #define luab_to_link(L, narg) \
-    (luab_todata((L), (narg), &link_type, link_t *))
+    ((link_t *)luab_toudata((L), (narg), &link_type))
 
 #define LUAB_LINK_TYPE_ID    1601843279
 #define LUAB_LINK_TYPE    "LINK*"
@@ -91,6 +91,24 @@ LINK_get(lua_State *L)
     lua_pushvalue(L, -1);
 
     return (1);
+}
+
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+LINK_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -183,12 +201,13 @@ LINK_tostring(lua_State *L)
  */
 
 static luab_module_table_t link_methods[] = {
-    LUAB_FUNC("set_ptr",      LINK_set_ptr),
-    LUAB_FUNC("get",          LINK_get),
-    LUAB_FUNC("get_ptr",      LINK_get_ptr),
-    LUAB_FUNC("__gc",         LINK_gc),
-    LUAB_FUNC("__len",        LINK_len),
-    LUAB_FUNC("__tostring",   LINK_tostring),
+    LUAB_FUNC("set_ptr",        LINK_set_ptr),
+    LUAB_FUNC("get",            LINK_get),
+    LUAB_FUNC("get_ptr",        LINK_get_ptr),
+    LUAB_FUNC("dump",           LINK_dump),
+    LUAB_FUNC("__gc",           LINK_gc),
+    LUAB_FUNC("__len",          LINK_len),
+    LUAB_FUNC("__tostring",     LINK_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

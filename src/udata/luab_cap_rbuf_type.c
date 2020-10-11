@@ -60,7 +60,7 @@ typedef struct luab_cap_rbuf {
 #define luab_new_cap(L, arg) \
     ((luab_cap_rbuf_t *)luab_newudata(L, &cap_rbuf_type, (arg)))
 #define luab_to_cap(L, narg) \
-    (luab_todata((L), (narg), &cap_rbuf_type, luab_cap_rbuf_t *))
+    ((luab_cap_rbuf_t *)luab_toudata((L), (narg), &cap_rbuf_type))
 
 #define LUAB_CAP_RBUF_TYPE_ID    1601143331
 #define LUAB_CAP_RBUF_TYPE    "CAP_RBUF*"
@@ -99,6 +99,24 @@ CAP_RBUF_get(lua_State *L)
     lua_pushvalue(L, -1);
 
     return (1);
+}
+
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+CAP_RBUF_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -187,12 +205,13 @@ CAP_RBUF_tostring(lua_State *L)
  */
 
 static luab_module_table_t cap_rbuf_methods[] = {
-    LUAB_FUNC("iov_base",     CAP_RBUF_iov_base),
-    LUAB_FUNC("iov_len",      CAP_RBUF_iov_len),
-    LUAB_FUNC("get",          CAP_RBUF_get),
-    LUAB_FUNC("__gc",         CAP_RBUF_gc),
-    LUAB_FUNC("__len",        CAP_RBUF_len),
-    LUAB_FUNC("__tostring",   CAP_RBUF_tostring),
+    LUAB_FUNC("iov_base",       CAP_RBUF_iov_base),
+    LUAB_FUNC("iov_len",        CAP_RBUF_iov_len),
+    LUAB_FUNC("get",            CAP_RBUF_get),
+    LUAB_FUNC("dump",           CAP_RBUF_dump),
+    LUAB_FUNC("__gc",           CAP_RBUF_gc),
+    LUAB_FUNC("__len",          CAP_RBUF_len),
+    LUAB_FUNC("__tostring",     CAP_RBUF_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

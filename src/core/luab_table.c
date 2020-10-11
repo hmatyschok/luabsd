@@ -185,7 +185,6 @@ luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
     return (vec);
 }
 
-
 void *
 luab_newvector(lua_State *L, int narg, size_t *card, size_t sz)
 {

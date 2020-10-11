@@ -226,6 +226,24 @@ MSGHDR_get(lua_State *L)
     return (1);
 }
 
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+MSGHDR_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
+}
+
 /*
  * Access functions for immutable properties.
  */
@@ -585,24 +603,25 @@ MSGHDR_tostring(lua_State *L)
  */
 
 static luab_module_table_t msghdr_methods[] = {
-    LUAB_FUNC("msg_iovlen",       MSGHDR_msg_iovlen),
-    LUAB_FUNC("msg_flags",        MSGHDR_msg_flags),
-    LUAB_FUNC("msg_len",          MSGHDR_msg_len),
-/*  LUAB_FUNC("msg_controllen",   MSGHDR_msg_controllen), */
-    LUAB_FUNC("set_msg_name",     MSGHDR_set_msg_name),
-    LUAB_FUNC("set_msg_namelen",  MSGHDR_set_msg_namelen),
-    LUAB_FUNC("set_msg_iov",      MSGHDR_set_msg_iov),
-/*  LUAB_FUNC("set_msg_control",  MSGHDR_set_msg_control), */
-    LUAB_FUNC("set_msg_flags",    MSGHDR_set_msg_iov),
-    LUAB_FUNC("get",              MSGHDR_get),
-    LUAB_FUNC("get_msg_name",     MSGHDR_get_msg_name),
-    LUAB_FUNC("get_msg_namelen",  MSGHDR_get_msg_namelen),
-    LUAB_FUNC("get_msg_iov",      MSGHDR_get_msg_iov),
-/*  LUAB_FUNC("get_msg_control",  MSGHDR_get_msg_control), */
-    LUAB_FUNC("get_msg_flags",    MSGHDR_get_msg_iov),
-    LUAB_FUNC("__gc",             MSGHDR_gc),
-    LUAB_FUNC("__len",            MSGHDR_len),
-    LUAB_FUNC("__tostring",       MSGHDR_tostring),
+    LUAB_FUNC("msg_iovlen",         MSGHDR_msg_iovlen),
+    LUAB_FUNC("msg_flags",          MSGHDR_msg_flags),
+    LUAB_FUNC("msg_len",            MSGHDR_msg_len),
+/*  LUAB_FUNC("msg_controllen",     MSGHDR_msg_controllen), */
+    LUAB_FUNC("set_msg_name",       MSGHDR_set_msg_name),
+    LUAB_FUNC("set_msg_namelen",    MSGHDR_set_msg_namelen),
+    LUAB_FUNC("set_msg_iov",        MSGHDR_set_msg_iov),
+/*  LUAB_FUNC("set_msg_control",    MSGHDR_set_msg_control), */
+    LUAB_FUNC("set_msg_flags",      MSGHDR_set_msg_iov),
+    LUAB_FUNC("get",                MSGHDR_get),
+    LUAB_FUNC("get_msg_name",       MSGHDR_get_msg_name),
+    LUAB_FUNC("get_msg_namelen",    MSGHDR_get_msg_namelen),
+    LUAB_FUNC("get_msg_iov",        MSGHDR_get_msg_iov),
+/*  LUAB_FUNC("get_msg_control",    MSGHDR_get_msg_control), */
+    LUAB_FUNC("get_msg_flags",      MSGHDR_get_msg_iov),
+    LUAB_FUNC("dump",               MSGHDR_dump),
+    LUAB_FUNC("__gc",               MSGHDR_gc),
+    LUAB_FUNC("__len",              MSGHDR_len),
+    LUAB_FUNC("__tostring",         MSGHDR_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

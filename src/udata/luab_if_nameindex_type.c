@@ -54,7 +54,7 @@ typedef struct luab_if_nameindex {
 #define luab_new_if_nameindex(L, arg) \
     ((luab_if_nameindex_t *)luab_newudata(L, &if_nameindex_type, (arg)))
 #define luab_to_if_nameindex(L, narg) \
-    (luab_toudata((L), (narg), &if_nameindex_type))
+    ((struct if_nameindex *)luab_toudata((L), (narg), &if_nameindex_type))
 
 #define LUAB_IF_NAMEINDEX_TYPE_ID    1596840702
 #define LUAB_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
@@ -92,6 +92,24 @@ IF_NAMEINDEX_get(lua_State *L)
     lua_pushvalue(L, -1);
 
     return (1);
+}
+
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+IF_NAMEINDEX_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -177,12 +195,13 @@ IF_NAMEINDEX_tostring(lua_State *L)
  */
 
 static luab_module_table_t if_nameindex_methods[] = {
-    LUAB_FUNC("if_index",     IF_NAMEINDEX_if_index),
-    LUAB_FUNC("if_name",      IF_NAMEINDEX_if_name),
-    LUAB_FUNC("get",          IF_NAMEINDEX_get),
-    LUAB_FUNC("__gc",         IF_NAMEINDEX_gc),
-    LUAB_FUNC("__len",        IF_NAMEINDEX_len),
-    LUAB_FUNC("__tostring",   IF_NAMEINDEX_tostring),
+    LUAB_FUNC("if_index",       IF_NAMEINDEX_if_index),
+    LUAB_FUNC("if_name",        IF_NAMEINDEX_if_name),
+    LUAB_FUNC("get",            IF_NAMEINDEX_get),
+    LUAB_FUNC("dump",           IF_NAMEINDEX_dump),
+    LUAB_FUNC("__gc",           IF_NAMEINDEX_gc),
+    LUAB_FUNC("__len",          IF_NAMEINDEX_len),
+    LUAB_FUNC("__tostring",     IF_NAMEINDEX_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

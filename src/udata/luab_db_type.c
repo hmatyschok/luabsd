@@ -86,6 +86,28 @@ db_close(DB *db)
 }
 
 /*
+ * Generator functions.
+ */
+
+/***
+ * Generator function - returns (LUA_TNIL).
+ *
+ * @function dump
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (iovec [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage iovec [, err, msg ] = cmsgcred:dump()
+ */
+static int
+DB_dump(lua_State *L)
+{
+    return (luab_dump(L, 1, NULL, 0));
+} 
+
+/*
  * Database access methods.
  */
 
@@ -392,16 +414,17 @@ DB_tostring(lua_State *L)
  */
 
 static luab_module_table_t db_methods[] = {
-    LUAB_FUNC("close",        DB_close),
-    LUAB_FUNC("del",          DB_del),
-    LUAB_FUNC("get",          DB_get),
-    LUAB_FUNC("fd",           DB_fd),
-    LUAB_FUNC("put",          DB_put),
-    LUAB_FUNC("seq",          DB_seq),
-    LUAB_FUNC("sync",         DB_sync),
-    LUAB_FUNC("__gc",         DB_gc),
-    LUAB_FUNC("__len",        DB_len),
-    LUAB_FUNC("__tostring",   DB_tostring),
+    LUAB_FUNC("close",          DB_close),
+    LUAB_FUNC("del",            DB_del),
+    LUAB_FUNC("get",            DB_get),
+    LUAB_FUNC("fd",             DB_fd),
+    LUAB_FUNC("put",            DB_put),
+    LUAB_FUNC("seq",            DB_seq),
+    LUAB_FUNC("sync",           DB_sync),
+    LUAB_FUNC("dump",           DB_dump),
+    LUAB_FUNC("__gc",           DB_gc),
+    LUAB_FUNC("__len",          DB_len),
+    LUAB_FUNC("__tostring",     DB_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 
