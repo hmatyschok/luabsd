@@ -89,6 +89,43 @@ luab_udata_remove(luab_udata_t *ud)
     }
 }
 
+luab_udata_t *
+luab_udata_find(luab_udata_t *udx, void **x)
+{
+    luab_udata_t *ud, *ud_tmp;
+
+    if (udx != NULL && x != NULL) {
+        LIST_FOREACH_SAFE(ud, &udx->ud_list, ud_next, ud_tmp) {
+
+            if (*(ud->ud_x) == *x)
+                break;
+        }
+    } else
+        ud = NULL;
+
+    return (ud);
+}
+
+void *
+luab_udata_insert(luab_udata_t *udx, luab_udata_t *ud, void **x)
+{
+    void *dp;
+
+    if (udx != NULL && ud != NULL && x != NULL) {
+        LIST_INSERT_HEAD(&udx->ud_list, ud, ud_next);
+
+        *(void **)x = (void *)(ud + 1);
+
+        ud->ud_x = x;
+        ud->ud_xhd = &udx->ud_list;
+
+        dp = *x;
+    } else
+        dp = NULL;
+
+    return (dp);
+}
+
 /*
  * Access functions, [stack -> C].
  */
@@ -195,30 +232,23 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 void *
 luab_udata_link(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
 {
-    luab_udata_t *self, *ud, *ud_tmp;
+    luab_udata_t *udx, *ud;
+    void *dp;
 
-    self = luab_todata(L, narg, m, luab_udata_t *);
+    udx = luab_todata(L, narg, m, luab_udata_t *);
 
-    if (x != NULL) { /* XXX well, I'll externalize insertion/traversal */
-        if ((ud = luab_toxudata(L, xarg, NULL)) != NULL) {
-            LIST_INSERT_HEAD(&self->ud_list, ud, ud_next);
+    if (x != NULL) {
+        if ((ud = luab_udata_find(udx, x)) != NULL)
+            luab_udata_remove(ud);
 
-            *(void **)x = (void *)(ud + 1);
+        if ((ud = luab_toxudata(L, xarg, NULL)) != NULL)
+            dp = luab_udata_insert(udx, ud, x);
+        else
+            dp = NULL;
+    } else
+        dp = NULL;
 
-            ud->ud_x = x;
-            ud->ud_xhd = &self->ud_list;
-            return (*x);
-        } else {
-            LIST_FOREACH_SAFE(ud, &self->ud_list, ud_next, ud_tmp) {
-
-                if (*(ud->ud_x) == *x) {
-                    luab_udata_remove(ud);
-                    break;
-                }
-            }
-        }
-    }
-    return (NULL);
+    return (dp);
 }
 
 /*

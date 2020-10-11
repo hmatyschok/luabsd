@@ -95,6 +95,8 @@ luab_module_t    *luab_iovec_param_init(luab_iovec_param_t *, void *, size_t,
 void     *luab_newudata(lua_State *, luab_module_t *, void *);
 void     luab_udata_init(luab_module_t *, luab_udata_t *, void *);
 void     luab_udata_remove(luab_udata_t *);
+luab_udata_t     *luab_udata_find(luab_udata_t *, void **);
+void     *luab_udata_insert(luab_udata_t *, luab_udata_t *, void **);
 
 /*
  * Access functions, [stack -> C].
