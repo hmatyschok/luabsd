@@ -101,7 +101,7 @@ void     *luab_udata_insert(luab_udata_t *, luab_udata_t *, void **);
 /*
  * Access functions, [stack -> C].
  */
-
+#define luab_dptox(dp) ((void *)&(dp))
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), ((m)->m_name)))
 
@@ -119,11 +119,17 @@ void     *luab_isudata(lua_State *, int, luab_module_t *);
 void     *luab_checkudata(lua_State *, int, luab_module_t *);
 void     *luab_toudata(lua_State *, int, luab_module_t *);
 void     *luab_checkudataisnil(lua_State *, int, luab_module_t *);
-void     *luab_toxudata(lua_State *, int, luab_xarg_t *);
-void     *luab_toxdata(lua_State *, int, luab_xarg_t *);
 void     *luab_checkludata(lua_State *, int, luab_module_t *, size_t);
 
-void     *luab_udata_link(lua_State *, int, luab_module_t *, int, void **);
+void     *luab_checkxdata(lua_State *, int, luab_module_t *, luab_udata_t **);
+void     *luab_checkxdataisnil(lua_State *, int, luab_module_t *);
+
+void     *luab_toxudata(lua_State *, int, luab_xarg_t *);
+void     *luab_toxdata(lua_State *, int, luab_xarg_t *);
+
+void     *luab_udata_xlink(lua_State *, int, luab_udata_t *, void **);
+void     *luab_udata_checkxlink(lua_State *L, int narg, luab_module_t *m,
+    luab_udata_t *udx, void **x);
 
 #define luab_isiovec(L, narg) \
     (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))

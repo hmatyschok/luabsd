@@ -511,6 +511,7 @@ luab_primitive_create(lua_State *L)
     return (luab_create(L, 1, luab_mx(PRIMITIVE), NULL));
 }
 
+#if LUAB_DEBUG
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(LINK)).
  *
@@ -528,11 +529,14 @@ luab_link_create(lua_State *L)
 {
     return (luab_create(L, 0, luab_mx(LINK), NULL));
 }
+#endif /* LUAB_DEBUG */
 
 static luab_module_table_t luab_core_util_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
     LUAB_FUNC("primitive_create",   luab_primitive_create),
+#if LUAB_DEBUG
     LUAB_FUNC("link_create",        luab_link_create),
+#endif
     LUAB_MOD_TBL_SENTINEL
 };
 
@@ -756,11 +760,14 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &iovec_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_IOVEC_IDX,
-    },{
+    },
+#if LUAB_DEBUG
+    {
         .mv_mod = &link_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_LINK_IDX,
     },
+#endif /* LUAB_DEBUG */
 #if __BSD_VISIBLE
     {
         .mv_mod = &dbt_type,

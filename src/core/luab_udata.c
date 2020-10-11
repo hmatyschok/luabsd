@@ -151,6 +151,16 @@ luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 }
 
 void *
+luab_checkxdata(lua_State *L, int narg, luab_module_t *m, luab_udata_t **udx)
+{
+    if (udx == NULL)
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+
+    *udx = luab_todata(L, narg, m, luab_udata_t *);;
+    return (*udx + 1);
+}
+
+void *
 luab_toudata(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *ud;
@@ -169,6 +179,15 @@ luab_checkudataisnil(lua_State *L, int narg, luab_module_t *m)
         return ((*m->m_get)(L, narg));
 
     return (NULL);
+}
+
+void *
+luab_checkxdataisnil(lua_State *L, int narg, luab_module_t *m)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (NULL);
+
+    return (luab_todata(L, narg, m, luab_udata_t *));
 }
 
 void *
@@ -230,24 +249,45 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 }
 
 void *
-luab_udata_link(lua_State *L, int narg, luab_module_t *m, int xarg, void **x)
+luab_udata_xlink(lua_State *L, int narg, luab_udata_t *udx, void **x)
 {
-    luab_udata_t *udx, *ud;
+    luab_udata_t *ud;
     void *dp;
 
-    udx = luab_todata(L, narg, m, luab_udata_t *);
+    if (udx == NULL || x == NULL)
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-    if (x != NULL) {
-        if ((ud = luab_udata_find(udx, x)) != NULL)
-            luab_udata_remove(ud);
+    if ((ud = luab_udata_find(udx, x)) != NULL)
+        luab_udata_remove(ud);
 
-        if ((ud = luab_toxudata(L, xarg, NULL)) != NULL)
-            dp = luab_udata_insert(udx, ud, x);
-        else
-            dp = NULL;
-    } else
+    if ((ud = luab_toxudata(L, narg, NULL)) != NULL)
+        dp = luab_udata_insert(udx, ud, x);
+    else {
+        errno = ENOENT;
         dp = NULL;
+    }
+    return (dp);
+}
 
+void *
+luab_udata_checkxlink(lua_State *L, int narg, luab_module_t *m,
+    luab_udata_t *udx, void **x)
+{
+    luab_udata_t *ud;
+    void *dp;
+
+    if (udx == NULL || x == NULL)
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+
+    if ((ud = luab_udata_find(udx, x)) != NULL)
+        luab_udata_remove(ud);
+
+    if ((ud = luab_checkxdataisnil(L, narg, m)) != NULL)
+        dp = luab_udata_insert(udx, ud, x);
+    else {
+        errno = ENOENT;
+        dp = NULL;
+    }
     return (dp);
 }
 

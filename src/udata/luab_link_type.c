@@ -31,6 +31,7 @@
 #include "luabsd.h"
 #include "luab_types.h"
 
+#if LUAB_DEBUG
 extern luab_module_t link_type;
 
 typedef struct link {
@@ -76,7 +77,8 @@ typedef struct luab_link {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              link_dp  = (LUA_TSTRING),
+ *              link_dp = (LUA_TSTRING),
+ *              link_sa = (LUA_TSTRING),
  *          }
  *
  * @usage t = link:get()
@@ -91,10 +93,8 @@ LINK_get(lua_State *L)
     link = luab_udata(L, 1, &link_type, link_t *);
 
     lua_newtable(L);
-    luab_setfstring(L, -2, "link_dp", "(%p)",           link->link_dp);
-#if 0
-    luab_setudata(L, -2, "link_sa", luab_mx(SOCKADDR),  link->link_sa);
-#endif
+    luab_setfstring(L, -2, "link_dp", "(%p)", link->link_dp);
+    luab_setudata(L, -2, luab_mx(SOCKADDR), "link_sa", link->link_sa);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -139,18 +139,20 @@ LINK_dump(lua_State *L)
 static int
 LINK_set_ptr(lua_State *L)
 {
+    luab_udata_t *udx;
     link_t *link;
+    void **dp;
     int status;
 
     (void)luab_checkmaxargs(L, 2);
 
-    link = luab_udata(L, 1, &link_type, link_t *);  /* XXX */
+    link = (link_t *)luab_checkxdata(L, 1, &link_type, &udx);
+    dp = luab_dptox(link->link_dp);
 
-    if (luab_udata_link(L, 1, &link_type, 2, &link->link_dp) == NULL) {
-        errno = ENOENT;
-        status = -1;
-    } else
+    if (luab_udata_xlink(L, 2, udx, dp) != NULL)
         status = 0;
+    else
+        status = -1;
 
     return (luab_pusherr(L, status));
 }
@@ -171,14 +173,75 @@ static int
 LINK_get_ptr(lua_State *L)
 {
     link_t *link;
-    caddr_t base;
+    void *dp;
 
     (void)luab_checkmaxargs(L, 1);
 
     link = luab_udata(L, 1, &link_type, link_t *);
-    base = link->link_dp;
+    dp = link->link_dp;
 
-    return (luab_pushfstring(L, "(%p)", base));
+    return (luab_pushfstring(L, "(%p)", dp));
+}
+
+/***
+ * Set reference to a sockaddr{}.
+ *
+ * @function set_sockaddr
+ *
+ * @param data              Refferred object.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (0 [, nil, nil]) on success or
+ *          (-1, (errno, strerror(errno)))
+ *
+ * @usage ret [, err, msg ] = link:set_sockaddr(data)
+ */
+static int
+LINK_set_sockaddr(lua_State *L)
+{
+    luab_udata_t *udx;
+    link_t *link;
+    void **dp;
+    int status;
+
+    (void)luab_checkmaxargs(L, 2);
+
+    link = (link_t *)luab_checkxdata(L, 1, &link_type, &udx);
+    dp = luab_dptox(link->link_sa);
+
+    if (luab_udata_checkxlink(L, 2, luab_mx(SOCKADDR), udx, dp) != NULL)
+        status = 0;
+    else
+        status = -1;
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * Get base address of referred sockaddr{}.
+ *
+ * @function get_sockaddr
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (base [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage base [, err, msg ] = link:get_sockaddr()
+ */
+static int
+LINK_get_sockaddr(lua_State *L)
+{
+    link_t *link;
+    void *dp;
+
+    (void)luab_checkmaxargs(L, 1);
+
+    link = luab_udata(L, 1, &link_type, link_t *);
+    dp = link->link_sa;
+
+    return (luab_pushfstring(L, "(%p)", dp));
 }
 
 /*
@@ -209,8 +272,10 @@ LINK_tostring(lua_State *L)
 
 static luab_module_table_t link_methods[] = {
     LUAB_FUNC("set_ptr",        LINK_set_ptr),
+    LUAB_FUNC("set_sockaddr",   LINK_set_sockaddr),
     LUAB_FUNC("get",            LINK_get),
     LUAB_FUNC("get_ptr",        LINK_get_ptr),
+    LUAB_FUNC("get_sockaddr",   LINK_get_sockaddr),
     LUAB_FUNC("dump",           LINK_dump),
     LUAB_FUNC("__gc",           LINK_gc),
     LUAB_FUNC("__len",          LINK_len),
@@ -245,3 +310,4 @@ luab_module_t link_type = {
     .m_get      = link_udata,
     .m_sz       = sizeof(luab_link_t),
 };
+#endif /* LUAB_DEBUG */

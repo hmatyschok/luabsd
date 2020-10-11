@@ -51,7 +51,11 @@ extern luab_module_t timezone_type;
 extern luab_module_t tm_type;
 extern luab_module_t uuid_type;
 extern luab_module_t iovec_type;
+
+#if LUAB_DEBUG
 extern luab_module_t link_type;
+#endif
+
 #if __BSD_VISIBLE
 extern luab_module_t dbt_type;
 extern luab_module_t db_type;
