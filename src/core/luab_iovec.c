@@ -82,13 +82,6 @@ luab_iovec_param_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_l
  * Access functions, [stack -> C].
  */
 
-/*
- * Get pointer of data region iov_base or NULL.
- *
- *  (a) Throws lua_error, if not metatable found for requested object.
- * 
- *  (b) Returns NULL, if ERANGE.
- */
 caddr_t
 luab_iovec_toldata(lua_State *L, int narg, size_t len)
 {
@@ -107,13 +100,6 @@ luab_iovec_toldata(lua_State *L, int narg, size_t len)
     return (bp);
 }
 
-/*
- * Get pointer of data region iov_base or (LUA_TSTRING) or NULL.
- *
- *  (a) Throws lua_error, if call of luab_iovec_toldata(3) fails.
- * 
- *  (b) Returns NULL, if requsted object is (LUA_TSTRING).
- */
 const char *
 luab_iovec_islstring(lua_State *L, int narg, size_t len)
 {
@@ -127,10 +113,6 @@ luab_iovec_islstring(lua_State *L, int narg, size_t len)
     return (dp);
 }
 
-/*
- * Get pointer of data region iov_base or (LUA_TSTRING), throws lua_error,
- * if call of luab_iovec_islstring(3) fails.
- */
 const char *
 luab_iovec_checklstring(lua_State *L, int narg, size_t len)
 {
