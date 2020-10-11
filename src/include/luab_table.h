@@ -31,15 +31,19 @@
  * Service primitives.
  */
 
-#define luab_table_xlen(vec, type) \
-    ((sizeof(vec)) / (sizeof(type)))
-
-void     luab_table_populate(lua_State *, int);
-
 size_t   luab_checktable(lua_State *, int);
 size_t   luab_checktableisnil(lua_State *, int);
 size_t   luab_checkltable(lua_State *, int, size_t);
 size_t   luab_checkltableisnil(lua_State *, int, size_t);
+
+#define luab_table_xlen(vec, type) \
+    ((sizeof(vec)) / (sizeof(type)))
+    
+void     luab_table_populate(lua_State *, int);
+void     luab_table_iovec_free(struct iovec *, size_t);
+void     luab_table_iovec_argerror(lua_State *, int, struct iovec *, size_t);
+void     luab_table_iovec_init(lua_State *, int, struct iovec *, size_t);
+void     luab_table_iovec_populate(lua_State *, int, struct iovec *, int);
 
 /*
  * Generator functions.

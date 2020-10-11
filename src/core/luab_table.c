@@ -43,97 +43,8 @@
  */
 
 /*
- * Subr.
- */
-
-static void
-luab_table_iovec_free(struct iovec *vec, size_t card)
-{
-    size_t idx;
-
-    if (vec != NULL && card > 0) {
-        for (idx = 0; idx < card; idx++)
-            (void)luab_iov_free(&vec[idx]);
-    }
-}
-
-static void
-luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t idx)
-{
-    size_t sz, card;
-
-    if (vec != NULL) {
-        sz = sizeof(struct iovec);
-        card = luab_table_xlen(vec, sz);
-
-        luab_table_iovec_free(vec, idx);
-        luab_argerror(L, narg, vec, card, sz, errno);
-    } else
-        exit(EXIT_FAILURE);
-}
-
-/*
- * Select n-th iovec{} by #idx, initialize iovec{} and performs deep copying.
- */
-static void
-luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec, size_t idx)
-{
-    luab_iovec_t *buf;
-    struct iovec *src;
-    struct iovec *dst;
-    int status;
-
-    buf = luab_udata(L, narg, luab_mx(IOVEC), luab_iovec_t *);
-
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
-
-        src = &(buf->iov);
-        dst = &(vec[idx]);
-
-
-        if ((status = luab_iov_alloc(dst, src->iov_len)) == 0)
-            status = luab_iov_copyin(dst, src->iov_base, src->iov_len);
-
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = -1;
-    }
-
-    if (status != 0)
-        luab_table_iovec_argerror(L, narg, vec, idx);
-}
-
-static void
-luab_table_iovec_populate(lua_State *L, int narg, struct iovec *vec, int new)
-{
-    size_t i, j, card;
-
-    if (vec != NULL) {
-        card = luab_table_xlen(vec, sizeof(struct iovec));
-
-        luab_table_populate(L, new);
-
-        for (i = 0, j = 1; i < card; i++, j++, vec++)
-            luab_iovec_rawsetldata(L, narg, j, vec->iov_base, vec->iov_len);
-
-        lua_pop(L, 0);
-    }
-}
-
-/*
  * Service primitives.
  */
-
-void
-luab_table_populate(lua_State *L, int new)
-{
-    if (new != 0)   /* populate Table, if any */
-        lua_newtable(L);
-    else
-        lua_pushnil(L);
-}
 
 size_t
 luab_checktable(lua_State *L, int narg)
@@ -173,24 +84,121 @@ luab_checkltableisnil(lua_State *L, int narg, size_t card)
     return (luab_checkltable(L, narg, card));
 }
 
+void
+luab_table_populate(lua_State *L, int new)
+{
+    if (new != 0)   /* populate Table, if any */
+        lua_newtable(L);
+    else
+        lua_pushnil(L);
+}
+
+void
+luab_table_iovec_free(struct iovec *vec, size_t card)
+{
+    size_t idx;
+
+    if (vec != NULL && card > 0) {
+        for (idx = 0; idx < card; idx++)
+            (void)luab_iov_free(&vec[idx]);
+    }
+}
+
+void
+luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t idx)
+{
+    size_t sz, card;
+
+    if (vec != NULL) {
+        sz = sizeof(struct iovec);
+        card = luab_table_xlen(vec, sz);
+
+        luab_table_iovec_free(vec, idx);
+        luab_argerror(L, narg, vec, card, sz, errno);
+    } else
+        exit(EXIT_FAILURE);
+}
+
+/* Performs deep copying. */
+void
+luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec, size_t idx)
+{
+    luab_iovec_t *buf;
+    struct iovec *src;
+    struct iovec *dst;
+    int status;
+
+    if (((buf = luab_isiovec(L, narg)) != NULL) &&
+        ((buf->iov_flags & IOV_LOCK) == 0)) {
+        buf->iov_flags |= IOV_LOCK;
+
+        src = &(buf->iov);
+        dst = &(vec[idx]);
+
+        if ((status = luab_iov_alloc(dst, src->iov_len)) == 0)
+            status = luab_iov_copyin(dst, src->iov_base, src->iov_len);
+
+        buf->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+
+    if (status != 0)
+        luab_table_iovec_argerror(L, narg, vec, idx);
+}
+
+void
+luab_table_iovec_populate(lua_State *L, int narg, struct iovec *vec, int new)
+{
+    struct iovec *iov;
+    size_t i, j, card;
+
+    if ((iov = vec) != NULL) {
+        card = luab_table_xlen(vec, sizeof(struct iovec));
+
+        luab_table_populate(L, new);
+
+        for (i = 0, j = 1; i < card; i++, j++, iov++)
+            luab_iovec_rawsetldata(L, narg, j, iov->iov_base, iov->iov_len);
+
+        lua_pop(L, 0);
+    }
+}
+
 /*
  * Generator functions.
  *
- * luab_luab_newvectornil:
+ * luab_alloctable:
+ *
+ *  Wrapper for an allocator, throws lua_error if
+ *
+ *   (a) invalid parameter or
+ *
+ *   (b) something went wrong during allocation.
+ *
+ * luab_newvector:
+ *
+ *  Wrapper for luab_alloctable(3).
+ *
+ *   (a) Throws lua_error, if cardinality is zero.
+ *
+ *   (b) Result argument *card returns cardinality, if not NULL.
+ *
+ * luab_newvectornil:
  *
  *  Allocates an array by cardinality of (LUA_TTABLE) at n-th index.
  *
- *   (a) Result argument *card returns cardinality, if not NULL.
+ *   (a) Throws lua_error, if (LUA_TTABLE) not exists.
  *
- *   (b) Throws lua_error, if (LUA_TTABLE) not exists.
- *
- *   (c) Returns an array, if allocation was performed successfully,
+ *   (b) Returns an array, if allocation was performed successfully,
  *       but throws lua_error when allocation was not possible.
  *
- *   (d) Returns NULL, if cardinality of (LUA_TTABLE) is 0.
+ *   (c) Returns NULL, if cardinality of (LUA_TTABLE) is 0.
  *
+ *   (d) Result argument *card returns cardinality, if not NULL.
  *
- * luab_luab_newlvectornil:
+ * luab_newlvectornil:
  *
  *  Similar as above, but the cardinality is constrained by value argument len.
  */
