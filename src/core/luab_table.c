@@ -164,7 +164,8 @@ luab_table_iovec_populate(lua_State *L, int narg, struct iovec *vec, int new)
             luab_iovec_rawsetldata(L, narg, j, iov->iov_base, iov->iov_len);
 
         lua_pop(L, 0);
-    }
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
 
 /*
@@ -579,7 +580,8 @@ luab_table_pushliovec(lua_State *L, int narg, void *v, size_t card, int new)
         luab_table_iovec_populate(L, narg, vec, new);
         luab_table_iovec_free(vec, card);
         free(vec);
-    }
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
 
 /* ([timespec{}]) -> (LUA_TTABLE) */
