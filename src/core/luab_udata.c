@@ -35,7 +35,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 /*
  * Generator function, [Lua -> stack].

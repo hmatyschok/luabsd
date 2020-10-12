@@ -29,7 +29,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 extern luab_module_t lldiv_type;
 

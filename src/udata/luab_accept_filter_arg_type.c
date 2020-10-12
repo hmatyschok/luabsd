@@ -31,7 +31,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 #ifdef __BSD_VISIBLE
 extern luab_module_t accept_filter_arg_type;

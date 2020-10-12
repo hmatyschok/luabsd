@@ -29,7 +29,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 #include "luab_table.h"
 
 #define LUAB_STDLIB_LIB_ID    1593623310

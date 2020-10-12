@@ -32,7 +32,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 #include "luab_sockaddr.h"
 
 #define LUAB_ARPA_INET_LIB_ID    1595780686

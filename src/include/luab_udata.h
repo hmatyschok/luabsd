@@ -24,8 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LUAB_TYPES_H_
-#define _LUAB_TYPES_H_
+#ifndef _LUAB_UDATA_H_
+#define _LUAB_UDATA_H_
 
 #include "luab_buf.h"
 
@@ -186,4 +186,4 @@ int  luab_iovec_sendto(lua_State *, int, luab_iovec_t *, size_t *,
 int  luab_iovec_preadv(lua_State *, int, luab_iovec_t *, size_t, off_t);
 int  luab_iovec_pwritev(lua_State *, int, luab_iovec_t *, size_t, off_t);
 #endif
-#endif /* _LUAB_TYPES_H_ */
+#endif /* _LUAB_UDATA_H_ */

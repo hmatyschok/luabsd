@@ -29,7 +29,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 #include "luab_table.h"
 
 #define LUAB_SYS_SOCKET_LIB_ID    1594740107

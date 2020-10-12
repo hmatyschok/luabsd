@@ -33,7 +33,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 #define LUAB_FCNTL_LIB_ID    1593623310
 #define LUAB_FCNTL_LIB_KEY    "fcntl"

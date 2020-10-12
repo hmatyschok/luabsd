@@ -31,7 +31,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 #define LUAB_TIME_LIB_ID    1594167179
 #define LUAB_TIME_LIB_KEY    "time"

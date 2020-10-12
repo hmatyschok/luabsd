@@ -35,7 +35,7 @@
 #include "luabsd.h"
 
 #if __BSD_VISIBLE
-#include "luab_types.h"
+#include "luab_udata.h"
 #endif
 
 #define LUAB_DB_LIB_ID    1593623310

@@ -29,7 +29,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 #if __BSD_VISIBLE
 extern luab_module_t cmsgcred_type;

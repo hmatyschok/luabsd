@@ -36,7 +36,7 @@
 
 #include "luabsd.h"
 #include "luab_modules.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"

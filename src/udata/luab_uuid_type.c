@@ -32,7 +32,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-#include "luab_types.h"
+#include "luab_udata.h"
 
 extern luab_module_t uuid_type;
 
