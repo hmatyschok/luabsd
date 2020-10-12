@@ -421,9 +421,9 @@ luab_table_checkiovec(lua_State *L, int narg, size_t *card)
         for (k = 0; lua_next(L, narg) != 0; k++) {
 
             if ((lua_isnumber(L, -2) != 0) &&
-                (lua_isnumber(L, -1) != 0))
+                (lua_isnumber(L, -1) != 0)) {
                 luab_table_iovec_init(L, -1, vec, k);
-            else
+            } else
                 luab_argerror(L, narg, vec, n, sz, EINVAL);
 
             lua_pop(L, 1);
@@ -450,9 +450,9 @@ luab_table_checkliovec(lua_State *L, int narg, size_t card)
     for (k = 0; lua_next(L, narg) != 0; k++) {
 
         if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isnumber(L, -1) != 0))
+            (lua_isnumber(L, -1) != 0)) {
             luab_table_iovec_init(L, -1, vec, k);
-        else
+        } else
             luab_argerror(L, narg, vec, card, sz, EINVAL);
 
         lua_pop(L, 1);
