@@ -41,7 +41,7 @@ size_t   luab_checkltableisnil(lua_State *, int, size_t);
     
 void     luab_table_populate(lua_State *, int);
 void     luab_table_iovec_free(struct iovec *, size_t);
-void     luab_table_iovec_argerror(lua_State *, int, struct iovec *, size_t);
+void     luab_table_iovec_argerror(lua_State *, int, struct iovec *, size_t *);
 void     luab_table_iovec_init(lua_State *, int, struct iovec *, size_t);
 void     luab_table_iovec_populate(lua_State *, int, struct iovec *, int);
 

@@ -106,15 +106,20 @@ luab_table_iovec_free(struct iovec *vec, size_t card)
 }
 
 void
-luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t idx)
+luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t *idx)
 {
-    size_t sz, card;
+    size_t sz, card, nmax;
 
     if (vec != NULL) {
         sz = sizeof(struct iovec);
         card = luab_table_xlen(vec, sz);
 
-        luab_table_iovec_free(vec, idx);
+        if (idx != NULL)
+            nmax = (*idx < card) ? *idx : card;
+        else
+            nmax = card;
+
+        luab_table_iovec_free(vec, nmax);
         luab_argerror(L, narg, vec, card, sz, errno);
     } else
         exit(EX_DATAERR);
@@ -145,7 +150,7 @@ luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec, size_t idx)
     }
 
     if (status != 0)
-        luab_table_iovec_argerror(L, narg, vec, idx);
+        luab_table_iovec_argerror(L, narg, vec, &idx);
 }
 
 void
