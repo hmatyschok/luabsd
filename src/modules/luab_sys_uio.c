@@ -53,9 +53,6 @@ extern luab_module_t luab_sys_uio_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage count [, err, msg ] = bsd.sys.uio.readv(fd, iov, iovcnt)
  */
 static int
@@ -89,9 +86,6 @@ luab_readv(lua_State *L)
  * @param iovcnt            Specifies number of tx'd bytes, (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = bsd.sys.uio.writev(fd, iov, iovcnt)
  */
@@ -128,9 +122,6 @@ luab_writev(lua_State *L)
  * @param offset            Specifies start position for input, (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = bsd.sys.uio.preadv(fd, iov, iovcnt, offset)
  */
@@ -169,9 +160,6 @@ luab_preadv(lua_State *L)
  * @param offset            Specifies start position for input, (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = bsd.sys.uio.pwritev(fd, iov, iovcnt, offset)
  */
@@ -212,9 +200,6 @@ luab_pwritev(lua_State *L)
  * @param max_len           Capacity in bytes, (LUA_TNUMBER).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage iovec [, err, msg ] = bsd.sys.uio.iovec_create(max_len)
  */

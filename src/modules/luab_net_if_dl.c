@@ -50,9 +50,6 @@ extern luab_module_t luab_net_if_dl_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.net.if_dl.link_addr(addr, sdl)
  */
 static int
@@ -82,9 +79,6 @@ luab_link_addr(lua_State *L)
  *                          ASCII string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.net.if_dl.link_ntoa(sdl, buf)
  */
@@ -138,9 +132,6 @@ luab_link_ntoa(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(SOCKADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (sockaddr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage sockaddr [, err, msg ] = bsd.net.if_dl.sockaddr_dl_create([ data ])
  */

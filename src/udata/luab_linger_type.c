@@ -100,9 +100,6 @@ LINGER_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = linger:dump()
  */
 static int
@@ -123,9 +120,6 @@ LINGER_dump(lua_State *L)
  * @param data              Option.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = linger:set_l_onoff(data)
  */
@@ -152,9 +146,6 @@ LINGER_set_l_onoff(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = linger:get_l_onoff()
  */
 static int
@@ -172,16 +163,13 @@ LINGER_get_l_onoff(lua_State *L)
 }
 
 /***
- * Set value for for system time.
+ * Set value for linger.
  *
  * @function set_l_linger
  *
  * @param data              Specifies l_linger.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = linger:set_l_linger(data)
  */
@@ -202,14 +190,11 @@ LINGER_set_l_linger(lua_State *L)
 }
 
 /***
- * Get value for for system time.
+ * Get value for linger.
  *
  * @function get_l_linger
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = linger:get_l_linger()
  */

@@ -108,9 +108,6 @@ CAP_RBUF_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = cmsgcred:dump()
  */
 static int
@@ -129,9 +126,6 @@ CAP_RBUF_dump(lua_State *L)
  * @function iov_base
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (str [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage str [, err, msg ] = cap_rbuf:iov_base()
  */
@@ -153,9 +147,6 @@ CAP_RBUF_iov_base(lua_State *L)
  * @function iov_len
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (len [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage len [, err, msg ] = cap_rbuf:iov_len()
  */

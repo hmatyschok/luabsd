@@ -180,9 +180,6 @@ STAT_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = stat:dump()
  */
 static int

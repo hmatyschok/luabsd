@@ -109,9 +109,6 @@ IOVEC_get(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = iovec:clone()
  */
 static int
@@ -145,9 +142,6 @@ IOVEC_clone(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = cmsgcred:dump()
  */
 static int
@@ -166,9 +160,6 @@ IOVEC_dump(lua_State *L)
  * @function max_len
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage nbytes [, err, msg ] = iovec:max_len()
  */
@@ -207,9 +198,6 @@ IOVEC_max_len(lua_State *L)
  * @param nbytes            Amount of rx'd data in bytes.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage nbytes [, err, msg ] = iovec:set_len(nbytes)
  */
@@ -261,9 +249,6 @@ IOVEC_set_len(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (nbytes [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage nbytes [, err, msg ] = iovec:get_len()
  */
 static int
@@ -301,9 +286,6 @@ IOVEC_get_len(lua_State *L)
  * @function clear
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = iovec:clear()
  */
@@ -345,9 +327,6 @@ IOVEC_clear(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = iovec:copy_in(data)
  */
 static int
@@ -374,9 +353,6 @@ IOVEC_copy_in(lua_State *L)
  * @function copy_out
  *
  * @return (LUA_TSTRING [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = iovec:copy_out()
  */
@@ -413,9 +389,6 @@ IOVEC_copy_out(lua_State *L)
  * @param len               Size by (LUA_TNUMBER).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = iovec:resize(len)
  */
@@ -475,9 +448,6 @@ IOVEC_resize(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage count [, err, msg ] = iovec:read(fd)
  */
 static int
@@ -502,9 +472,6 @@ IOVEC_read(lua_State *L)
  * @param fd                Open file descriptor.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = iovec:write(fd)
  */
@@ -541,9 +508,6 @@ IOVEC_write(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage count [, err, msg ] = iovec:recv(s, flags)
  */
 static int
@@ -575,9 +539,6 @@ IOVEC_recv(lua_State *L)
  *                          may combined by inclusive or.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = iovec:send(s, flags)
  */

@@ -101,9 +101,6 @@ BINTIME_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = bintime:dump()
  */
 static int
@@ -124,9 +121,6 @@ BINTIME_dump(lua_State *L)
  * @param data              Seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = bintime:set_sec(data)
  */
@@ -153,9 +147,6 @@ BINTIME_set_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = bintime:get_sec()
  */
 static int
@@ -181,9 +172,6 @@ BINTIME_get_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = bintime:set_frac(data)
  */
 static int
@@ -208,9 +196,6 @@ BINTIME_set_frac(lua_State *L)
  * @function get_frac
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = bintime:get_frac()
  */
@@ -255,15 +240,15 @@ BINTIME_tostring(lua_State *L)
  */
 
 static luab_module_table_t bintime_methods[] = {
-    LUAB_FUNC("set_sec",      BINTIME_set_sec),
-    LUAB_FUNC("set_frac",     BINTIME_set_frac),
-    LUAB_FUNC("get",          BINTIME_get),
-    LUAB_FUNC("get_sec",      BINTIME_get_sec),
-    LUAB_FUNC("get_frac",     BINTIME_get_frac),
-    LUAB_FUNC("dump",         BINTIME_dump),
-    LUAB_FUNC("__gc",         BINTIME_gc),
-    LUAB_FUNC("__len",        BINTIME_len),
-    LUAB_FUNC("__tostring",   BINTIME_tostring),
+    LUAB_FUNC("set_sec",        BINTIME_set_sec),
+    LUAB_FUNC("set_frac",       BINTIME_set_frac),
+    LUAB_FUNC("get",            BINTIME_get),
+    LUAB_FUNC("get_sec",        BINTIME_get_sec),
+    LUAB_FUNC("get_frac",       BINTIME_get_frac),
+    LUAB_FUNC("dump",           BINTIME_dump),
+    LUAB_FUNC("__gc",           BINTIME_gc),
+    LUAB_FUNC("__len",          BINTIME_len),
+    LUAB_FUNC("__tostring",     BINTIME_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

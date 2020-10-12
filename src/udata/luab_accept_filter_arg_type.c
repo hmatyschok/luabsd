@@ -104,9 +104,6 @@ ACCEPT_FILTER_ARG_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = accept_filter_arg:dump()
  */
 static int
@@ -127,9 +124,6 @@ ACCEPT_FILTER_ARG_dump(lua_State *L)
  * @param data              Specifies protocol domain(9) by name, (LUA_TSTRING).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = accept_filter_arg:set_af_name(data)
  */
@@ -155,9 +149,6 @@ ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
  * @function get_af_name
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = accept_filter_arg:get_af_name()
  */
@@ -186,9 +177,6 @@ ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
  *
  * @return (LUA_T{NIL,NUMBER} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = accept_filter_arg:set_af_name(data)
  */
 static int
@@ -213,9 +201,6 @@ ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
  * @function get_af_name
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = accept_filter_arg:get_af_name()
  */
@@ -262,15 +247,15 @@ ACCEPT_FILTER_ARG_tostring(lua_State *L)
  */
 
 static luab_module_table_t accept_filter_arg_methods[] = {
-    LUAB_FUNC("set_af_name",  ACCEPT_FILTER_ARG_set_af_name),
-    LUAB_FUNC("set_af_arg",   ACCEPT_FILTER_ARG_set_af_arg),
-    LUAB_FUNC("get",          ACCEPT_FILTER_ARG_get),
-    LUAB_FUNC("get_af_name",  ACCEPT_FILTER_ARG_get_af_name),
-    LUAB_FUNC("get_af_arg",   ACCEPT_FILTER_ARG_get_af_arg),
-    LUAB_FUNC("dump",         ACCEPT_FILTER_ARG_dump),
-    LUAB_FUNC("__gc",         ACCEPT_FILTER_ARG_gc),
-    LUAB_FUNC("__len",        ACCEPT_FILTER_ARG_len),
-    LUAB_FUNC("__tostring",   ACCEPT_FILTER_ARG_tostring),
+    LUAB_FUNC("set_af_name",    ACCEPT_FILTER_ARG_set_af_name),
+    LUAB_FUNC("set_af_arg",     ACCEPT_FILTER_ARG_set_af_arg),
+    LUAB_FUNC("get",            ACCEPT_FILTER_ARG_get),
+    LUAB_FUNC("get_af_name",    ACCEPT_FILTER_ARG_get_af_name),
+    LUAB_FUNC("get_af_arg",     ACCEPT_FILTER_ARG_get_af_arg),
+    LUAB_FUNC("dump",           ACCEPT_FILTER_ARG_dump),
+    LUAB_FUNC("__gc",           ACCEPT_FILTER_ARG_gc),
+    LUAB_FUNC("__len",          ACCEPT_FILTER_ARG_len),
+    LUAB_FUNC("__tostring",     ACCEPT_FILTER_ARG_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -98,9 +98,6 @@ LLDIV_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = lldiv:dump()
  */
 static int
@@ -121,9 +118,6 @@ LLDIV_dump(lua_State *L)
  * @param data              Quotient.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = lldiv:set_quot(data)
  */
@@ -150,9 +144,6 @@ LLDIV_set_quot(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = lldiv:get_quot()
  */
 static int
@@ -178,9 +169,6 @@ LLDIV_get_quot(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = lldiv:set_rem(data)
  */
 static int
@@ -205,9 +193,6 @@ LLDIV_set_rem(lua_State *L)
  * @function get_rem
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = lldiv:get_rem()
  */

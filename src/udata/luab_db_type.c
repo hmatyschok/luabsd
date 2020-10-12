@@ -96,9 +96,6 @@ db_close(DB *db)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = cmsgcred:dump()
  */
 static int
@@ -117,9 +114,6 @@ DB_dump(lua_State *L)
  * @function close
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = db:close()
  */
@@ -153,9 +147,6 @@ DB_close(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          ({0,1} [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = db:del(key, flags)
  */
 static int
@@ -186,9 +177,6 @@ DB_del(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = db:fd()
  */
 static int
@@ -217,9 +205,6 @@ DB_fd(lua_State *L)
  * @param flags             Set to 0.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          ({0,1} [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = db:get(key, data, flags)
  */
@@ -261,9 +246,6 @@ DB_get(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          ({0,1} [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = db:put(key, data, flags)
  */
 static int
@@ -303,9 +285,6 @@ DB_put(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          ({0,1,2} [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = db:seq(key, data, flags)
  */
 static int
@@ -342,9 +321,6 @@ DB_seq(lua_State *L)
  *                          as possible value.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = db:sync(flags)
  */

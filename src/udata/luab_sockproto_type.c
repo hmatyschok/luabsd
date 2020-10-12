@@ -101,9 +101,6 @@ SOCKPROTO_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = sockproto:dump()
  */
 static int
@@ -124,9 +121,6 @@ SOCKPROTO_dump(lua_State *L)
  * @param data              Specifies protocol domain(9) by name, (LUA_TSTRING).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = sockproto:set_sp_family(data)
  */
@@ -151,9 +145,6 @@ SOCKPROTO_set_sp_family(lua_State *L)
  * @function get_sp_family
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = sockproto:get_sp_family()
  */
@@ -180,9 +171,6 @@ SOCKPROTO_get_sp_family(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = sockproto:set_sp_protocol(data)
  */
 static int
@@ -206,9 +194,6 @@ SOCKPROTO_set_sp_protocol(lua_State *L)
  * @function get_sp_protocol
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = sockproto:get_sp_protocol()
  */

@@ -51,9 +51,6 @@ extern luab_module_t luab_time_lib;
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (tm [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage tm [, err, msg ] = bsd.time.tm_create([ data ])
  */
 static int

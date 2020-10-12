@@ -105,9 +105,6 @@ IN6_ADDR_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = in6_addr:dump()
  */
 static int
@@ -128,9 +125,6 @@ IN6_ADDR_dump(lua_State *L)
  * @param data              LUA_TTABLE(uint32_t) with cardinality of #4.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = in6_addr:set_s6_addr(id)
  */

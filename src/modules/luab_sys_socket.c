@@ -134,9 +134,6 @@ luab_checkmsgvec(lua_State *L, int narg)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (as [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage as [, err, msg ] = bsd.sys.socket.accept(s, addr, addrlen)
  */
 static int
@@ -175,9 +172,6 @@ luab_accept(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.socket.bind(s, addr, addrlen)
  */
 static int
@@ -209,9 +203,6 @@ luab_bind(lua_State *L)
  * @param namelen           Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.socket.connect(s, name, namelen)
  */
@@ -248,9 +239,6 @@ luab_connect(lua_State *L)
  * @param flags             See accept4(2) for further details.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (as [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage as [, err, msg ] = bsd.sys.socket.accept4(s, addr, addrlen, flags)
  */
@@ -296,9 +284,6 @@ luab_accept4(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.socket.bindat(fd, s, addr, addrlen)
  */
 static int
@@ -337,9 +322,6 @@ luab_bindat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.socket.connectat(fd s, name, namelen)
  */
 static int
@@ -374,9 +356,6 @@ luab_connectat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage as [, err, msg ] = bsd.sys.socket.getpeername(s, name, namelen)
  */
 static int
@@ -410,9 +389,6 @@ luab_getpeername(lua_State *L)
  * @param namelen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage as [, err, msg ] = bsd.sys.socket.getsockname(s, name, namelen)
  */
@@ -454,9 +430,6 @@ luab_getsockname(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.socket.getsockopt(s, level, optname, optval, optlen)
  */
 static int
@@ -482,9 +455,6 @@ luab_getsockopt(lua_State *L)
  * @param backlog           Specifies backlog.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.listen.listen(s, backlog)
  */
@@ -520,9 +490,6 @@ luab_listen(lua_State *L)
  *                          may combined by inclusive or.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = bsd.sys.socket.recv(s, buf, len, flags)
  */
@@ -568,9 +535,6 @@ luab_recv(lua_State *L)
  * @param fromlen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = bsd.sys.socket.recvfrom(s, buf, len, flags, from, fromlen)
  */
@@ -620,9 +584,6 @@ luab_recvfrom(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage count [, err, msg ] = bsd.sys.socket.recvmsg(s, msg, flags)
  */
 static int
@@ -667,9 +628,6 @@ luab_recvmsg(lua_State *L)
  * @param timeout           Specifies timeout, if !nil.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = bsd.sys.socket.recvmmsg(s, msgvec, vlen, flags, timeout)
  */
@@ -722,9 +680,6 @@ luab_recvmmsg(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage count [, err, msg ] = bsd.sys.socket.send(s, msg, len, flags)
  */
 static int
@@ -769,9 +724,6 @@ luab_send(lua_State *L)
  * @param tolen             Size of address.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage count [, err, msg ] = bsd.sys.socket.sendto(s, buf, len, flags, to, tolen)
  */
@@ -819,9 +771,6 @@ luab_sendto(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage count [, err, msg ] = bsd.sys.socket.sendmsg(s, msg, flags)
  */
 static int
@@ -866,9 +815,6 @@ luab_sendmsg(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (count [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage count [, err, msg ] = bsd.sys.socket.sendmmsg(s, msgvec, vlen, flags)
  */
 static int
@@ -907,9 +853,6 @@ luab_sendmmsg(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.socket.setfib(fib)
  */
 static int
@@ -944,9 +887,6 @@ luab_setfib(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.socket.setsockopt(s, level, optname, optval, optlen)
  */
 static int
@@ -975,9 +915,6 @@ luab_setsockopt(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.socket.shutdown(s, how)
  */
 static int
@@ -1003,9 +940,6 @@ luab_shutdown(lua_State *L)
  * @param s                 Open socket(9).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.socket.shutdown(s, how)
  */
@@ -1034,9 +968,6 @@ luab_sockatmark(lua_State *L)
  *                          particular Protocol.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (s [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage s [, err, msg ] = bsd.sys.socket.socket(domain, type, protocol)
  */
@@ -1072,9 +1003,6 @@ luab_socket(lua_State *L)
  * @param sv                Result argument, empty (LUA_TTABLE).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (s [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage s [, err, msg ] = bsd.sys.socket.socketpair(domain, type, protocol)
  */
@@ -1114,9 +1042,6 @@ luab_socketpair(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (linger [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage linger [, err, msg ] = bsd.sys.socket.linger_create([ data ])
  */
 static int
@@ -1135,9 +1060,6 @@ luab_linger_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (linger [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage accept_filter_arg [, err, msg ] = bsd.sys.socket.accept_filter_arg_create([ data ])
  */
 static int
@@ -1153,9 +1075,6 @@ luab_accept_filter_arg_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (msghdr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage msghdr [, err, msg ] = bsd.sys.socket.msghdr_create()
  */
 static int
@@ -1170,9 +1089,6 @@ luab_msghdr_create(lua_State *L)
  * @function cmsgcred_create
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (cmsgcred [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage cmsgcred [, err, msg ] = bsd.sys.socket.cmsgcred_create()
  */
@@ -1192,9 +1108,6 @@ luab_cmsgcred_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (sockaddr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_create([ data ])
  */
 static int
@@ -1212,9 +1125,6 @@ luab_sockaddr_create(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(SOCKPROTO)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (sockproto [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage sockproto [, err, msg ] = bsd.sys.socket.sockproto_create([ data ])
  */

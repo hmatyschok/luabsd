@@ -105,9 +105,6 @@ CRYPT_DATA_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = crypt_data:dump()
  */
 static int
@@ -128,9 +125,6 @@ CRYPT_DATA_dump(lua_State *L)
  * @param data              Integer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = crypt_data:set_initialized(data)
  */
@@ -157,9 +151,6 @@ CRYPT_DATA_set_initialized(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = crypt_data:get_initialized()
  */
 static int
@@ -184,9 +175,6 @@ CRYPT_DATA_get_initialized(lua_State *L)
  * @param data              Byte string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = crypt_data:set_buf(data)
  */
@@ -215,9 +203,6 @@ CRYPT_DATA_set_buf(lua_State *L)
  * @function get_buf
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [err, msg ] = crypt_data:get_buf()
  */
@@ -264,15 +249,15 @@ CRYPT_DATA_tostring(lua_State *L)
  */
 
 static luab_module_table_t crypt_data_methods[] = {
-    LUAB_FUNC("set_initialized",  CRYPT_DATA_set_initialized),
-    LUAB_FUNC("set_buf",          CRYPT_DATA_set_buf),
-    LUAB_FUNC("get",              CRYPT_DATA_get),
-    LUAB_FUNC("get_initialized",  CRYPT_DATA_get_initialized),
-    LUAB_FUNC("get_buf",          CRYPT_DATA_get_buf),
-    LUAB_FUNC("dump",             CRYPT_DATA_dump),
-    LUAB_FUNC("__gc",             CRYPT_DATA_gc),
-    LUAB_FUNC("__len",            CRYPT_DATA_len),
-    LUAB_FUNC("__tostring",       CRYPT_DATA_tostring),
+    LUAB_FUNC("set_initialized",    CRYPT_DATA_set_initialized),
+    LUAB_FUNC("set_buf",            CRYPT_DATA_set_buf),
+    LUAB_FUNC("get",                CRYPT_DATA_get),
+    LUAB_FUNC("get_initialized",    CRYPT_DATA_get_initialized),
+    LUAB_FUNC("get_buf",            CRYPT_DATA_get_buf),
+    LUAB_FUNC("dump",               CRYPT_DATA_dump),
+    LUAB_FUNC("__gc",               CRYPT_DATA_gc),
+    LUAB_FUNC("__len",              CRYPT_DATA_len),
+    LUAB_FUNC("__tostring",         CRYPT_DATA_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

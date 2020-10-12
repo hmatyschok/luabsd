@@ -100,9 +100,6 @@ TIMEZONE_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = timezone:dump()
  */
 static int
@@ -123,9 +120,6 @@ TIMEZONE_dump(lua_State *L)
  * @param data              Specifies value in minutes.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = timezone:get_tz_minuteswest(data)
  */
@@ -152,9 +146,6 @@ TIMEZONE_set_tz_minuteswest(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = timezone:get_tz_minuteswest()
  */
 static int
@@ -180,9 +171,6 @@ TIMEZONE_get_tz_minuteswest(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = timezone:set_tz_dsttime(data)
  */
 static int
@@ -207,9 +195,6 @@ TIMEZONE_set_tz_dsttime(lua_State *L)
  * @function get_tz_dsttime
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = timezone:get_tz_dsttime()
  */

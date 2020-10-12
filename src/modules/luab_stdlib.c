@@ -50,9 +50,6 @@ extern luab_module_t luab_stdlib_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.abort()
  */
 static int
@@ -73,9 +70,6 @@ luab_abort(lua_State *L)
  * @param j                 Integer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage k [, err, msg ] = bsd.stdlib.abs(j)
  */
@@ -100,9 +94,6 @@ luab_abs(lua_State *L)
  * @param nptr              Specifies number by ASCII string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.atof(nptr)
  */
@@ -157,9 +148,6 @@ luab_atoi(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.atol(nptr)
  */
 static int
@@ -185,9 +173,6 @@ luab_atol(lua_State *L)
  * @param denom             Denominator.
  *
  * @return (LUA_T{NIL,USERDATA(DIV)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (div [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage div [, err, msg ] = bsd.stdlib.div(num, denom)
  */
@@ -220,9 +205,6 @@ luab_div(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage div [, err, msg ] = bsd.stdlib.exit(status)
  */
 static int
@@ -246,9 +228,6 @@ luab_exit(lua_State *L)
  * @param name              Requested variable.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (value [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage value [, err, msg ] = bsd.stdlib.getenv(status)
  */
@@ -275,9 +254,6 @@ luab_getenv(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.labs(j)
  */
 static int
@@ -302,9 +278,6 @@ luab_labs(lua_State *L)
  * @param denom             Denominator.
  *
  * @return (LUA_T{NIL,USERDATA(DIV)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (ldiv [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage ldiv [, err, msg ] = bsd.stdlib.ldiv(num, denom)
  */
@@ -333,9 +306,6 @@ luab_ldiv(lua_State *L)
  * @param nbytes            Length in bytes about to be axaminated.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (len [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ldiv [, err, msg ] = bsd.stdlib.mblen(mbchar, nbytes)
  */
@@ -389,9 +359,6 @@ luab_mblen(lua_State *L)
  * @param nbytes            Specifies number of bytes for examination.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.mbtowcs(wcstring, mbstring, nbytes)
  */
@@ -449,9 +416,6 @@ luab_mbstowcs(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.mbtowc(wcharp, mbchar, nbytes)
  */
 static int
@@ -489,9 +453,6 @@ luab_mbtowc(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.rand()
  */
 static int
@@ -514,9 +475,6 @@ luab_rand(lua_State *L)
  * @param seed              Seed for next random sequence.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.srand(seed)
  */
@@ -541,9 +499,6 @@ luab_srand(lua_State *L)
  * @param nptr              Specifies number by ASCII string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.strtod(nptr)
  */
@@ -570,9 +525,6 @@ luab_strtod(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.strtof(nptr)
  */
 static int
@@ -597,9 +549,6 @@ luab_strtof(lua_State *L)
  * @param nptr              Specifies number by ASCII string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.strtold(nptr)
  */
@@ -658,9 +607,6 @@ luab_strtoul(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.strtoul(nptr)
  */
 static int
@@ -686,9 +632,6 @@ luab_system(lua_State *L)
  * @param wchar            Wide-character, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.wctomb(mbchar, wchar)
  */
@@ -721,9 +664,6 @@ luab_wctomb(lua_State *L)
  * @param nbytes            Number of bytes of character string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.wcstombs(mbchar, wchar, nbytes)
  */
@@ -787,9 +727,6 @@ luab_wcstombs(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.atoll(nptr)
  */
 static int
@@ -815,9 +752,6 @@ luab_atoll(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.llabs(j)
  */
 static int
@@ -842,9 +776,6 @@ luab_llabs(lua_State *L)
  * @param denom             Denominator.
  *
  * @return (LUA_T{NIL,USERDATA(DIV)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (lldiv [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage lldiv [, err, msg ] = bsd.stdlib.lldiv(num, denom)
  */
@@ -874,9 +805,6 @@ luab_lldiv(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.strtoll(nptr, base)
  */
 static int
@@ -905,9 +833,6 @@ luab_strtoll(lua_State *L)
  * @param base              Specifies conversion base.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.strtoull(nptr, base)
  */
@@ -940,9 +865,6 @@ luab_strtoull(lua_State *L)
  *                          are passed as argument.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage rat [, err, msg ] = bsd.stdlib._Exit(status)
  */
@@ -1004,9 +926,6 @@ luab_quick_exit(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.realpath(pathname, resolved_path)
  */
 static int
@@ -1058,9 +977,6 @@ luab_realpath(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.rand_r(ctx)
  */
 static int
@@ -1093,9 +1009,6 @@ luab_rand_r(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.setenv(name, value, overwrite)
  */
 static int
@@ -1126,9 +1039,6 @@ luab_setenv(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.unsetenv(name)
  */
 static int
@@ -1156,9 +1066,6 @@ luab_unsetenv(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.a64l(s)
  */
 static int
@@ -1181,9 +1088,6 @@ luab_a64l(lua_State *L)
  * @function drand48
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.drand48()
  */
@@ -1212,9 +1116,6 @@ luab_drand48(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.erand48(xseed)
  */
 static int
@@ -1240,9 +1141,6 @@ luab_erand48(lua_State *L)
  * @param fildes            Open file descriptor.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.grantpt(fildes)
  */
@@ -1270,9 +1168,6 @@ luab_grantpt(lua_State *L)
  * @param n                 Specifies the size of the state array.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.initstate(seed, state, n)
  */
@@ -1336,9 +1231,6 @@ luab_initstate(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.jrand48(xseed)
  */
 static int
@@ -1364,9 +1256,6 @@ luab_jrand48(lua_State *L)
  * @param l                 Long integer.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.l64a(s)
  */
@@ -1405,9 +1294,6 @@ luab_l64a(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.lcong48(p)
  */
 static int
@@ -1431,9 +1317,6 @@ luab_lcong48(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.lrand48()
  */
 static int
@@ -1454,9 +1337,6 @@ luab_lrand48(lua_State *L)
  * @function mrand48
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.mrand48()
  */
@@ -1484,9 +1364,6 @@ luab_mrand48(lua_State *L)
  *                          by (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage n [, err, msg ] = bsd.stdlib.nrand48(xseed)
  */
@@ -1518,9 +1395,6 @@ luab_nrand48(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (fd [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage fd [, err, msg ] = bsd.stdlib.posix_openpt(oflag)
  */
 static int
@@ -1546,9 +1420,6 @@ luab_posix_openpt(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (pts [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage pts [, err, msg ] = bsd.stdlib.ptsname(fildes)
  */
 static int
@@ -1573,9 +1444,6 @@ luab_ptsname(lua_State *L)
  * @param string            Specifies "name=value" pair, (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.putenv(string)
  */
@@ -1619,9 +1487,6 @@ luab_putenv(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.random()
  */
 static int
@@ -1648,9 +1513,6 @@ luab_random(lua_State *L)
  *                          by (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.seed48(xseed)
  */
@@ -1683,9 +1545,6 @@ luab_seed48(lua_State *L)
  * @param state             State array, (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.setstate(state)
  */
@@ -1735,9 +1594,6 @@ luab_setstate(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.srand48(seed)
  */
 static int
@@ -1762,9 +1618,6 @@ luab_srand48(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.srandom(seed)
  */
 static int
@@ -1788,9 +1641,6 @@ luab_srandom(lua_State *L)
  * @param fildes            Open filedescriptor.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.unlockpt(fildes)
  */
@@ -1820,9 +1670,6 @@ luab_unlockpt(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.abort2(fildes)
  */
 static int
@@ -1850,9 +1697,6 @@ luab_abort2(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.arc4random()
  */
 static int
@@ -1876,9 +1720,6 @@ luab_arc4random(lua_State *L)
  * @param nbytes            Length in bytes of by random data filled region.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.arc4random_buf(buf, nbytes)
  */
@@ -1932,9 +1773,6 @@ luab_arc4random_buf(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (n [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage n [, err, msg ] = bsd.stdlib.arc4random_uniform(upper_bound)
  */
 static int
@@ -1960,9 +1798,6 @@ luab_arc4random_uniform(lua_State *L)
  * @param blocksizep        Result argument, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (str [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage str [, err, msg ] = bsd.stdlib.getbsize(headerlenp, blocksizep)
  */
@@ -1998,9 +1833,6 @@ luab_getbsize(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (str [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage str [, err, msg ] = bsd.stdlib.getcap(buf, cap, type)
  */
 static int
@@ -2034,9 +1866,6 @@ luab_cgetcap(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetclose()
  */
 static int
@@ -2068,9 +1897,6 @@ luab_cgetclose(lua_State *L)
  * @param name              Capability string, (LUA_TSTRING).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetent(buf, db_array, name)
  */
@@ -2115,9 +1941,6 @@ luab_cgetent(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetfirst(buf, db_array)
  */
 static int
@@ -2152,9 +1975,6 @@ luab_cgetfirst(lua_State *L)
  * @param name              Capability string, (LUA_TSTRING).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetmatch(buf, name)
  */
@@ -2196,9 +2016,6 @@ luab_cgetmatch(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetnext(buf, db_array)
  */
 static int
@@ -2233,9 +2050,6 @@ luab_cgetnext(lua_State *L)
  * @param num               Numeric capability, (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetnum(buf, db_array)
  */
@@ -2274,9 +2088,6 @@ luab_cgetnum(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetset(ent)
  */
 static int
@@ -2303,9 +2114,6 @@ luab_cgetset(lua_State *L)
  * @param str               Result argument, (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetstr(buf, cap, str)
  */
@@ -2346,9 +2154,6 @@ luab_cgetstr(lua_State *L)
  * @param str               Result argument, (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.cgetustr(buf, cap, str)
  */
@@ -2391,9 +2196,6 @@ luab_cgetustr(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.daemon(nochdir, noclose)
  */
 static int
@@ -2423,9 +2225,6 @@ luab_daemon(lua_State *L)
  *                          to "/dev/zero".
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.daemonfd(chdirfd, nullfd)
  */
@@ -2457,9 +2256,6 @@ luab_daemonfd(lua_State *L)
  *                              bsd.sys.stat.S_{IFBLK,S_IFCHR}.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (name [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage name [, err, msg ] = bsd.stdlib.devname(dev, type)
  */
@@ -2495,9 +2291,6 @@ luab_devname(lua_State *L)
  * @param len               Specifies length of requested node name.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (name [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage name [, err, msg ] = bsd.stdlib.devname_r(dev, type, buf, len)
  */
@@ -2548,9 +2341,6 @@ luab_devname_r(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (name [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage name [, err, msg ] = bsd.stdlib.fdevname(fd)
  */
 static int
@@ -2578,9 +2368,6 @@ luab_fdevname(lua_State *L)
  * @param len               Specifies length of requested node name.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (name [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage name [, err, msg ] = bsd.stdlib.fdevname_r(fd, buf, len)
  */
@@ -2633,9 +2420,6 @@ luab_fdevname_r(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.getloadavg(loadavg, nelem)
  */
 static int
@@ -2668,9 +2452,6 @@ luab_getloadavg(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (name [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage name [, err, msg ] = bsd.stdlib.getprogname()
  */
 static int
@@ -2695,9 +2476,6 @@ luab_getprogname(lua_State *L)
  * @param buflen            Buffer size.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.l64a_r(l, buffer, buflen)
  */
@@ -2757,9 +2535,6 @@ luab_l64a_r(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.unistd.mkostemp(template, oflags)
  */
 static int
@@ -2817,9 +2592,6 @@ luab_mkostemp(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.mkostemps(template, suffixlen, oflags)
  */
 static int
@@ -2868,9 +2640,6 @@ luab_mkostemps(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.setprogname(progname)
  */
 static int
@@ -2893,9 +2662,6 @@ luab_setprogname(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.stdlib.sranddev()
  */
 static int
@@ -2914,9 +2680,6 @@ luab_sranddev(lua_State *L)
  * @function srandomdev
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.srandomdev()
  */
@@ -2941,9 +2704,6 @@ luab_srandomdev(lua_State *L)
  * @param errstr            Result argument, reason, (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.stdlib.strtonum(nptr, minval, maxval, errstr)
  */
@@ -2984,9 +2744,6 @@ luab_strtonum(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (div [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage div [, err, msg ] = bsd.stdlib.div_create([ data ])
  */
 static int
@@ -3003,9 +2760,6 @@ luab_div_create(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(LDIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (ldiv [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage ldiv [, err, msg ] = bsd.stdlib.ldiv_create([ data ])
  */
@@ -3025,9 +2779,6 @@ luab_ldiv_create(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(LLDIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (lldiv [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage lldiv [, err, msg ] = bsd.stdlib.lldiv_create([ data ])
  */

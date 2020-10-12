@@ -34,7 +34,7 @@
 
 #if __BSD_VISIBLE
 /*
- * XXX well, the implementation if this "feature" is
+ * XXX well, the "implementation" of this "feature" is
  *  incomplete and _under_construction_ [sic!], etc.
  */
 
@@ -233,9 +233,6 @@ MSGHDR_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = cmsgcred:dump()
  */
 static int
@@ -254,9 +251,6 @@ MSGHDR_dump(lua_State *L)
  * @function msg_iovlen
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (size [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage size [, err, msg ] = msghdr:msg_iovlen()
  */
@@ -281,9 +275,6 @@ MSGHDR_msg_iovlen(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (flags [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage flags [, err, msg ] = msghdr:msg_flags()
  */
 static int
@@ -306,9 +297,6 @@ MSGHDR_msg_flags(lua_State *L)
  * @function msg_len
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (size [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage flags [, err, msg ] = msghdr:msg_len()
  */
@@ -338,9 +326,6 @@ MSGHDR_msg_len(lua_State *L)
  * @param name              Instance of (LUA_TUSERDATA(IOVEC)) or nil.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = msghdr:set_msg_name(name)
  */
@@ -382,9 +367,6 @@ MSGHDR_set_msg_name(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = msghdr:get_msg_name(name)
  */
 static int
@@ -420,9 +402,6 @@ MSGHDR_get_msg_name(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = msghdr:set_msg_namelen(size)
  */
 static int
@@ -447,9 +426,6 @@ MSGHDR_set_msg_namelen(lua_State *L)
  * @function get_msg_namelen
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (size [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage size [, err, msg ] = msghdr:get_msg_namelen()
  */
@@ -476,9 +452,6 @@ MSGHDR_get_msg_namelen(lua_State *L)
  *
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = msghdr:set_msg_iov(t)
  */
@@ -540,9 +513,6 @@ MSGHDR_set_msg_iov(lua_State *L)
  *                          with cardinality of 0.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = msghdr:get_msg_iov()
  */

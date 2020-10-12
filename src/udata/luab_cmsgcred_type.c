@@ -113,9 +113,6 @@ CMSGCRED_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = cmsgcred:dump()
  */
 static int
@@ -134,9 +131,6 @@ CMSGCRED_dump(lua_State *L)
  * @function cmcred_pid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = cmsgcred:cmcred_pid()
  */
@@ -161,9 +155,6 @@ CMSGCRED_cmcred_pid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = cmsgcred:cmcred_uid()
  */
 static int
@@ -186,9 +177,6 @@ CMSGCRED_cmcred_uid(lua_State *L)
  * @function cmcred_euid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = cmsgcred:cmcred_euid()
  */
@@ -213,9 +201,6 @@ CMSGCRED_cmcred_euid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = cmsgcred:cmcred_gid()
  */
 static int
@@ -239,9 +224,6 @@ CMSGCRED_cmcred_gid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = cmsgcred:cmcred_ngroups()
  */
 static int
@@ -264,9 +246,6 @@ CMSGCRED_cmcred_ngroups(lua_State *L)
  * @function cmcred_groups
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = cmsgcred:cmcred_groups()
  */
@@ -313,17 +292,17 @@ CMSGCRED_tostring(lua_State *L)
  */
 
 static luab_module_table_t cmsgcred_methods[] = {
-    LUAB_FUNC("get",                  CMSGCRED_get),
-    LUAB_FUNC("get_cmcred_pid",       CMSGCRED_cmcred_pid),
-    LUAB_FUNC("get_cmcred_uid",       CMSGCRED_cmcred_uid),
-    LUAB_FUNC("get_cmcred_euid",      CMSGCRED_cmcred_euid),
-    LUAB_FUNC("get_cmcred_gid",       CMSGCRED_cmcred_gid),
-    LUAB_FUNC("get_cmcred_ngroups",   CMSGCRED_cmcred_ngroups),
-    LUAB_FUNC("get_cmcred_groups",    CMSGCRED_cmcred_groups),
-    LUAB_FUNC("dump",                 CMSGCRED_dump),
-    LUAB_FUNC("__gc",                 CMSGCRED_gc),
-    LUAB_FUNC("__len",                CMSGCRED_len),
-    LUAB_FUNC("__tostring",           CMSGCRED_tostring),
+    LUAB_FUNC("get",                    CMSGCRED_get),
+    LUAB_FUNC("get_cmcred_pid",         CMSGCRED_cmcred_pid),
+    LUAB_FUNC("get_cmcred_uid",         CMSGCRED_cmcred_uid),
+    LUAB_FUNC("get_cmcred_euid",        CMSGCRED_cmcred_euid),
+    LUAB_FUNC("get_cmcred_gid",         CMSGCRED_cmcred_gid),
+    LUAB_FUNC("get_cmcred_ngroups",     CMSGCRED_cmcred_ngroups),
+    LUAB_FUNC("get_cmcred_groups",      CMSGCRED_cmcred_groups),
+    LUAB_FUNC("dump",                   CMSGCRED_dump),
+    LUAB_FUNC("__gc",                   CMSGCRED_gc),
+    LUAB_FUNC("__len",                  CMSGCRED_len),
+    LUAB_FUNC("__tostring",             CMSGCRED_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

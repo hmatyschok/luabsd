@@ -54,9 +54,6 @@ extern luab_module_t luab_net_if_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.net.if_indextoname(ifindex)
  */
 static int
@@ -108,9 +105,6 @@ luab_if_indextoname(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.net.if_nameindex(ifni)
  */
 static int
@@ -148,9 +142,6 @@ luab_if_nameindex(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (index [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
- *
  * @usage index [, err, msg ] = bsd.net.if_nametoindex(ifname)
  */
 static int
@@ -179,9 +170,6 @@ luab_if_nametoindex(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(IF_NAMEINDEX)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (if_nameindex [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage if_nameindex [, err, msg ] = bsd.net.if_nameindex_create([ data ])
  */

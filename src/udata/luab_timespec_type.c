@@ -100,9 +100,6 @@ TIMESPEC_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = timespec:dump()
  */
 static int
@@ -123,9 +120,6 @@ TIMESPEC_dump(lua_State *L)
  * @param data              Specifies value in seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = timespec:set_tv_sec(data)
  */
@@ -152,9 +146,6 @@ TIMESPEC_set_tv_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = timespec:get_tv_sec()
  */
 static int
@@ -180,9 +171,6 @@ TIMESPEC_get_tv_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = timespec:set_tv_nsec(data)
  */
 static int
@@ -207,9 +195,6 @@ TIMESPEC_set_tv_nsec(lua_State *L)
  * @function get_tv_nsec
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = timespec:get_tv_nsec()
  */

@@ -107,9 +107,6 @@ LINK_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = cmsgcred:dump()
  */
 static int
@@ -130,9 +127,6 @@ LINK_dump(lua_State *L)
  * @param data              Refferred object.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = link:set_ptr(data)
  */
@@ -164,9 +158,6 @@ LINK_set_ptr(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (base [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage base [, err, msg ] = link:get_ptr()
  */
 static int
@@ -191,9 +182,6 @@ LINK_get_ptr(lua_State *L)
  * @param data              Refferred object.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = link:set_sockaddr(data)
  */
@@ -224,9 +212,6 @@ LINK_set_sockaddr(lua_State *L)
  * @function get_sockaddr
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (base [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage base [, err, msg ] = link:get_sockaddr()
  */

@@ -63,9 +63,6 @@ extern luab_module_t luab_fcntl_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (fd [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage fd [, err, msg ] = bsd.fcntl.open(path, flags [, mode ])
  */
 static int
@@ -105,9 +102,6 @@ luab_open(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (fd [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage fd [, err, msg ] = bsd.fcntl.creat(path, mode)
  */
 static int
@@ -141,9 +135,6 @@ luab_creat(lua_State *L)
  * @param arg               Optional, depends on applied cmd.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (value [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage value [, err, msg ] = bsd.fcntl.fcntl(fd, cmd [, arg ])
  */
@@ -190,9 +181,6 @@ luab_fcntl(lua_State *L)
  *                          over <sys/file.h>.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (value [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage value [, err, msg ] = bsd.fcntl.flock(fd, operation)
  */
@@ -243,9 +231,6 @@ luab_flock(lua_State *L)
  *                          by bitwise-inclusive OR.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (value [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage value [, err, msg ] = bsd.fcntl.openat(fd, path, flags [, mode ])
  */
@@ -298,9 +283,6 @@ luab_openat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (value [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage value [, err, msg ] = bsd.fcntl.posix_fadvise(fd, offset, len, advice)
  */
 static int
@@ -339,9 +321,6 @@ luab_posix_fadvise(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (value [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage value [, err, msg ] = bsd.fcntl.posix_fallocate(fd, offset, len, advice)
  */
 static int
@@ -379,9 +358,6 @@ luab_posix_fallocate(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(FLOCK)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (flock [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage flock [, err, msg ] = bsd.fcntl.flock_create([ data ])
  */

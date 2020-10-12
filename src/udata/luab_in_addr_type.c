@@ -98,9 +98,6 @@ IN_ADDR_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = in_addr:dump()
  */
 static int
@@ -121,9 +118,6 @@ IN_ADDR_dump(lua_State *L)
  * @param id                IPv4 address.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (id [, nil, nil]) on success or
- *          (id, (errno, strerror(errno)))
  *
  * @usage id [, err, mag ] = in_addr:set_s_addr(id)
  */
@@ -149,9 +143,6 @@ IN_ADDR_set_s_addr(lua_State *L)
  * @function get_s_addr
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (id [, nil, nil]) on success or
- *          (id, (errno, strerror(errno)))
  *
  * @usage id [, err, msg ] = in_addr:get_s_addr()
  */

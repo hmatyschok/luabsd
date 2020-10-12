@@ -101,9 +101,6 @@ ITIMERVAL_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA(TIMEVAL)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = itimerval:dump()
  */
 static int
@@ -124,9 +121,6 @@ ITIMERVAL_dump(lua_State *L)
  * @param timeval          Instance of (LUA_TUSERDATA(TIMEVAL)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = itimerval:set_it_interval(timeval)
  */
@@ -178,9 +172,6 @@ ITIMERVAL_get_it_interval(lua_State *L)
  * @param timeval          Instance of (LUA_TUSERDATA(TIMEVAL)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (0, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = itimerval:set_it_value(timeval)
  */

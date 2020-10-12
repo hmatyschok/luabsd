@@ -117,9 +117,6 @@ UUID_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = uuid:dump()
  */
 static int
@@ -140,9 +137,6 @@ UUID_dump(lua_State *L)
  * @param data              Octets maps to 0-3.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = uuid:set_time_low(data)
  */
@@ -169,9 +163,6 @@ UUID_set_time_low(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = uuid:get_time_low()
  */
 static int
@@ -197,9 +188,6 @@ UUID_get_time_low(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = uuid:set_time_mid(data)
  */
 static int
@@ -224,9 +212,6 @@ UUID_set_time_mid(lua_State *L)
  * @function get_time_mid
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = uuid:get_time_mid()
  */
@@ -254,9 +239,6 @@ UUID_get_time_mid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = uuid:set_time_hi_and_version(data)
  */
 static int
@@ -282,9 +264,6 @@ UUID_set_time_hi_and_version(lua_State *L)
  * @function get_time_hi_and_version
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = uuid:get_time_hi_and_version()
  */
@@ -312,9 +291,6 @@ UUID_get_time_hi_and_version(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = uuid:set_clock_seq_hi_and_reserved(data)
  */
 static int
@@ -341,9 +317,6 @@ UUID_set_clock_seq_hi_and_reserved(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = uuid:get_clock_seq_hi_and_reserved()
  */
 static int
@@ -368,9 +341,6 @@ UUID_get_clock_seq_hi_and_reserved(lua_State *L)
  * @param data              Octet maps to 9.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = uuid:set_clock_seq_low(data)
  */
@@ -397,9 +367,6 @@ UUID_set_clock_seq_low(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = uuid:get_clock_seq_low()
  */
 static int
@@ -425,9 +392,6 @@ UUID_get_clock_seq_low(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (str [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage str [, err, msg ] = uuid:set_node(data)
  */
 static int
@@ -452,9 +416,6 @@ UUID_set_node(lua_State *L)
  * @function get_node
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (str [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage str [, err, msg ] = uuid:get_node()
  */

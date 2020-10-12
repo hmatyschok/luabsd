@@ -52,9 +52,6 @@ extern luab_module_t luab_sys_un_lib;
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (sockaddr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
  */
 static int

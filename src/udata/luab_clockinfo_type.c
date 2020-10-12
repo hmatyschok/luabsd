@@ -110,9 +110,6 @@ CLOCKINFO_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = clockinfo:dump()
  */
 static int
@@ -133,9 +130,6 @@ CLOCKINFO_dump(lua_State *L)
  * @param data              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = clockinfo:set_hz(data)
  */
@@ -162,9 +156,6 @@ CLOCKINFO_set_hz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = clockinfo:get_hz()
  */
 static int
@@ -189,9 +180,6 @@ CLOCKINFO_get_hz(lua_State *L)
  * @param data              Tick.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = clockinfo:set_tick(data)
  */
@@ -218,9 +206,6 @@ CLOCKINFO_set_tick(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = clockinfo:get_tick()
  */
 static int
@@ -245,9 +230,6 @@ CLOCKINFO_get_tick(lua_State *L)
  * @param data              Frequency.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = clockinfo:set_stathz(data)
  */
@@ -274,9 +256,6 @@ CLOCKINFO_set_stathz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = clockinfo:get_stathz()
  */
 static int
@@ -302,9 +281,6 @@ CLOCKINFO_get_stathz(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
- *
  * @usage data [, err, msg ] = clockinfo:set_profhz(data)
  */
 static int
@@ -329,9 +305,6 @@ CLOCKINFO_set_profhz(lua_State *L)
  * @function get_profhz
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (data [, nil, nil]) on success or
- *          (data, (errno, strerror(errno)))
  *
  * @usage data [, err, msg ] = clockinfo:get_profhz()
  */
@@ -376,19 +349,19 @@ CLOCKINFO_tostring(lua_State *L)
  */
 
 static luab_module_table_t clockinfo_methods[] = {
-    LUAB_FUNC("set_hz",       CLOCKINFO_set_hz),
-    LUAB_FUNC("set_tickc",    CLOCKINFO_set_tick),
-    LUAB_FUNC("set_stathz",   CLOCKINFO_set_stathz),
-    LUAB_FUNC("set_profhz",   CLOCKINFO_set_profhz),
-    LUAB_FUNC("get",          CLOCKINFO_get),
-    LUAB_FUNC("get_hz",       CLOCKINFO_get_hz),
-    LUAB_FUNC("get_tick",     CLOCKINFO_get_tick),
-    LUAB_FUNC("get_stathz",   CLOCKINFO_get_stathz),
-    LUAB_FUNC("get_profhz",   CLOCKINFO_get_profhz),
-    LUAB_FUNC("dump",         CLOCKINFO_dump),
-    LUAB_FUNC("__gc",         CLOCKINFO_gc),
-    LUAB_FUNC("__len",        CLOCKINFO_len),
-    LUAB_FUNC("__tostring",   CLOCKINFO_tostring),
+    LUAB_FUNC("set_hz",         CLOCKINFO_set_hz),
+    LUAB_FUNC("set_tickc",      CLOCKINFO_set_tick),
+    LUAB_FUNC("set_stathz",     CLOCKINFO_set_stathz),
+    LUAB_FUNC("set_profhz",     CLOCKINFO_set_profhz),
+    LUAB_FUNC("get",            CLOCKINFO_get),
+    LUAB_FUNC("get_hz",         CLOCKINFO_get_hz),
+    LUAB_FUNC("get_tick",       CLOCKINFO_get_tick),
+    LUAB_FUNC("get_stathz",     CLOCKINFO_get_stathz),
+    LUAB_FUNC("get_profhz",     CLOCKINFO_get_profhz),
+    LUAB_FUNC("dump",           CLOCKINFO_dump),
+    LUAB_FUNC("__gc",           CLOCKINFO_gc),
+    LUAB_FUNC("__len",          CLOCKINFO_len),
+    LUAB_FUNC("__tostring",     CLOCKINFO_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

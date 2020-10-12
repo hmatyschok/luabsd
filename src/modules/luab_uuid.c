@@ -41,8 +41,6 @@ extern luab_module_t luab_uuid_lib;
 /*
  * Service primitives.
  *
- * XXX wrote this,
- *
  *      (-1 [, errno, strerror(errno)]), if (uuid1,uuid2)
  *      (0 [, nil, nil]), if (uuid1,uuid2) and (uuid2,uuid1)
  *      (1, [, errno, strerror(errno)]), if (uuid2,uuid1)

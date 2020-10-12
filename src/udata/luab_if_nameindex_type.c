@@ -101,9 +101,6 @@ IF_NAMEINDEX_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = cmsgcred:dump()
  */
 static int
@@ -122,9 +119,6 @@ IF_NAMEINDEX_dump(lua_State *L)
  * @function if_index
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (index [, nil, nil]) on success or
- *          (index, (errno, strerror(errno)))
  *
  * @usage index [, err, msg ] = if_nameindex:if_index()
  */
@@ -148,9 +142,6 @@ IF_NAMEINDEX_if_index(lua_State *L)
  * @function if_name
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (name [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage name [, err, msg ]= if_nameindex:if_name()
  */

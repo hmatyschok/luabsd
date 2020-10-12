@@ -33,10 +33,8 @@
 #include <lualib.h>
 
 #include "luabsd.h"
-
 #if __BSD_VISIBLE
 #include "luab_udata.h"
-#endif
 
 #define LUAB_DB_LIB_ID    1593623310
 #define LUAB_DB_LIB_KEY    "db"
@@ -47,7 +45,6 @@ extern luab_module_t luab_db_lib;
  * Service primitives.
  */
 
-#if __BSD_VISIBLE
 /***
  * dbopen(3) - database access methods
  *
@@ -60,9 +57,6 @@ extern luab_module_t luab_db_lib;
  * @param type                      Specifies DBTYPE as defined in <db.h>.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (db [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage iovec [, err, msg ] = bsd.db.dbopen(file, flags, mode, type)
  */
@@ -97,9 +91,6 @@ luab_dbopen(lua_State *L)
  * @param data          (LUA_T{NIL,USERDATA(IOVEC)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (dbt [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage dbt [, err, msg ] = bsd.db.dbt_create([ data ])
  */

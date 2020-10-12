@@ -64,9 +64,6 @@ extern luab_module_t luab_sys_stat_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.chflags(path, flags)
  */
 static int
@@ -120,9 +117,6 @@ luab_chflags(lua_State *L)
  *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.chflagsat(fd, path, flags, atflags)
  */
@@ -178,9 +172,6 @@ luab_chflagsat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.chmod(path, mode)
  */
 static int
@@ -219,9 +210,6 @@ luab_chmod(lua_State *L)
  *                          are formatted by inclusive or.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.fchflags(path, flags)
  */
@@ -272,9 +260,6 @@ luab_fchflags(lua_State *L)
  *                          are formatted by inclusive or.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.fchmod(fd, mode)
  */
@@ -342,9 +327,6 @@ luab_fchmod(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.fchmodat(fd, path, mode, flag)
  */
 static int
@@ -384,9 +366,6 @@ luab_fchmodat(lua_State *L)
  *                          two instances of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.futimens(fd, times)
  */
@@ -447,9 +426,6 @@ luab_futimens(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.utimensat(fd, path, times, flag)
  */
 static int
@@ -492,9 +468,6 @@ luab_utimensat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.fstat(fd, sb)
  */
 static int
@@ -533,9 +506,6 @@ luab_fstat(lua_State *L)
  *                          are formatted by inclusive or.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.lchflags(path, flags)
  */
@@ -586,9 +556,6 @@ luab_lchflags(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.lchmod(path, mode)
  */
 static int
@@ -618,9 +585,6 @@ luab_lchmod(lua_State *L)
  * @param sb                Result argument, instance of (LUA_TUSERDATA(STAT)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.lstat(path, sb)
  */
@@ -653,9 +617,6 @@ luab_lstat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.mkdir(path, mode)
  */
 static int
@@ -685,9 +646,6 @@ luab_mkdir(lua_State *L)
  *                          FIFO.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.mkfifo(path, mode)
  */
@@ -720,9 +678,6 @@ luab_mkfifo(lua_State *L)
  * @param dev               Specification, denotes particular device.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.mknodat(fd, path, mode)
  */
@@ -757,9 +712,6 @@ luab_mknod(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.stat(path, sb)
  */
 static int
@@ -787,9 +739,6 @@ luab_stat(lua_State *L)
  * @param numask            Mode mask.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (oumask [, nil, nil]) on success or
- *          (oumask, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.umask(umask)
  */
@@ -833,9 +782,6 @@ luab_umask(lua_State *L)
  *                              bsd.fcntl.AT_SYMLINK_NOFOLLOW.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.fstatat(fd, path, sb, flag)
  */
@@ -884,9 +830,6 @@ luab_fstatat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.mkdirat(fd, path, mode)
  */
 static int
@@ -931,9 +874,6 @@ luab_mkdirat(lua_State *L)
  *                          FIFO.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, err, msg ] = bsd.sys.stat.mkfifoat(fd, path, mode)
  */
@@ -981,9 +921,6 @@ luab_mkfifoat(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = bsd.sys.stat.mknodat(fd, path, mode)
  */
 static int
@@ -1020,9 +957,6 @@ luab_mknodat(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(STAT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (stat [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage hook [, err, msg ] = bsd.sys.stat.stat_create([ data ])
  */

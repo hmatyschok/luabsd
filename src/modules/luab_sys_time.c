@@ -113,11 +113,12 @@ out:
 static int
 luab_setitimer(lua_State *L)
 {
-    int narg = luab_checkmaxargs(L, 4);
-    int which;
+    int narg, which;
     struct itimerval *value;
     struct itimerval *ovalue;
     int status;
+
+    narg = luab_checkmaxargs(L, 4);
 
     which = (int)luab_checkinteger(L, 1, INT_MAX);
     value = luab_udataisnil(L, 2, luab_mx(ITIMERVAL), struct itimerval *);
@@ -179,9 +180,6 @@ luab_getitimer(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (bintime [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ data ])
  */
 static int
@@ -200,9 +198,6 @@ luab_bintime_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (clockinfo [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ data ])
  */
 static int
@@ -219,9 +214,6 @@ luab_clockinfo_create(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(ITIMERVAL)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (itimerval [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ data ])
  */
@@ -240,9 +232,6 @@ luab_itimerval_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (timespec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ data ])
  */
 static int
@@ -260,9 +249,6 @@ luab_timespec_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (timeval [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage timeval [, err, msg ] = bsd.sys.time.timeval_create([ data ])
  */
 static int
@@ -279,9 +265,6 @@ luab_timeval_create(lua_State *L)
  * @param data          Instance of (LUA_TUSERDATA(TIMEZONE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (timezone [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ data ])
  */

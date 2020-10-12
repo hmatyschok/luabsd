@@ -305,9 +305,6 @@ SOCKADDR_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (iovec [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
  * @usage iovec [, err, msg ] = sockaddr:dump()
  */
 static int
@@ -333,9 +330,6 @@ SOCKADDR_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (len [, nil, nil]) on success or
- *          (len, (errno, strerror(errno)))
- *
  * @usage len [, err, msg ] = sockaddr:sa_len()
  */
 static int
@@ -358,9 +352,6 @@ SOCKADDR_sa_len(lua_State *L)
  * @function sa_family
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (domain [, nil, nil]) on success or
- *          (domain, (errno, strerror(errno)))
  *
  * @usage domain [, err, msg ] = sockaddr:sa_family()
  */
@@ -402,9 +393,6 @@ SOCKADDR_sa_family(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, msg] = sockaddr:set_sdl_index(index)
  */
 static int
@@ -436,9 +424,6 @@ SOCKADDR_set_sdl_index(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (index [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage index [, err, msg ] = sockaddr:get_sdl_index()
  */
 static int
@@ -468,9 +453,6 @@ SOCKADDR_get_sdl_index(lua_State *L)
  * @param type              Specifies interface type, see net/if_types or RFC1573.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, msg] = sockaddr:set_sdl_type(type)
  */
@@ -503,9 +485,6 @@ SOCKADDR_set_sdl_type(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (type [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage type [, err, msg ] = sockaddr:get_sdl_type()
  */
 static int
@@ -535,9 +514,6 @@ SOCKADDR_get_sdl_type(lua_State *L)
  * @param len               Specifies interface name length.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, msg] = sockaddr:set_sdl_nlen(len)
  */
@@ -570,9 +546,6 @@ SOCKADDR_set_sdl_nlen(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (len [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage len [, err, msg ] = sockaddr:get_sdl_nlen()
  */
 static int
@@ -602,9 +575,6 @@ SOCKADDR_get_sdl_nlen(lua_State *L)
  * @param len               Specifies link level adress length.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, msg] = sockaddr:set_sdl_alen(alen)
  */
@@ -637,9 +607,6 @@ SOCKADDR_set_sdl_alen(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (len [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage len [, err, msg ] = sockaddr:get_sdl_alen()
  */
 static int
@@ -667,9 +634,6 @@ SOCKADDR_get_sdl_alen(lua_State *L)
  * @function sdl_slen
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (slen [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage slen = sockaddr:sdl_slen()
  */
@@ -715,9 +679,6 @@ SOCKADDR_sdl_slen(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, msg] = sockaddr:set_sin_port(port)
  */
 static int
@@ -748,9 +709,6 @@ SOCKADDR_set_sin_port(lua_State *L)
  * @function get_sin_port
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (port [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage port [, err, msg ] = sockaddr:get_sin_port()
  */
@@ -783,9 +741,6 @@ SOCKADDR_get_sin_port(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = sockaddr:set_sin_addr(addr)
  */
 static int
@@ -817,9 +772,6 @@ SOCKADDR_set_sin_addr(lua_State *L)
  * @function get_sin_addr
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (addr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage addr [, err, msg ] = sockaddr:get_sin_addr()
  */
@@ -869,9 +821,6 @@ SOCKADDR_get_sin_addr(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, msg] = sockaddr:set_sin6_port(port)
  */
 static int
@@ -903,9 +852,6 @@ SOCKADDR_set_sin6_port(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (port [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage port [, err, msg ] = sockaddr:get_sin6_port()
  */
 static int
@@ -935,9 +881,6 @@ SOCKADDR_get_sin6_port(lua_State *L)
  * @param info              Specifies Flow Label, see RFC6437.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage ret [, msg] = sockaddr:set_sin6_flowinfo(flowinfo)
  */
@@ -970,9 +913,6 @@ SOCKADDR_set_sin6_flowinfo(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (flowinfo [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage flowinfo [, err, msg ] = sockaddr:get_sin6_flowinfo()
  */
 static int
@@ -1004,9 +944,6 @@ SOCKADDR_get_sin6_flowinfo(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = sockaddr:set_sin6_addr(addr)
  */
 static int
@@ -1037,9 +974,6 @@ SOCKADDR_set_sin6_addr(lua_State *L)
  * @function get_sin6_addr
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (addr [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage addr [, err, msg ] = sockaddr:get_sin6_addr()
  */
@@ -1073,9 +1007,6 @@ SOCKADDR_get_sin6_addr(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, msg] = sockaddr:set_sin6_scope_id(id)
  */
 static int
@@ -1106,9 +1037,6 @@ SOCKADDR_set_sin6_scope_id(lua_State *L)
  * @function get_sin6_scope_id
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (id [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
  *
  * @usage id [, err, msg ] = sockaddr:get_sin6_scope_id()
  */
@@ -1150,9 +1078,6 @@ SOCKADDR_get_sin6_scope_id(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (0 [, nil, nil]) on success or
- *          (-1, (errno, strerror(errno)))
- *
  * @usage ret [, err, msg ] = sockaddr:set_sun_path(path)
  */
 static int
@@ -1183,9 +1108,6 @@ SOCKADDR_set_sun_path(lua_State *L)
  * @function get_sun_path
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- *          (path [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
  *
  * @usage path [, err, msg ] = sockaddr:get_sun_path()
  */
