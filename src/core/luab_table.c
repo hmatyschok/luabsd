@@ -39,7 +39,7 @@
 
 /*
  * XXX the whole implementation violates the DRY principle. Therefore,
- *  components will be reimplemented by boiler-plate code or utilizing
+ *  components shall reimplemented by boiler-plate code or utilizing
  *  macros.
  */
 
@@ -120,7 +120,6 @@ luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t idx)
         exit(EX_DATAERR);
 }
 
-/* Performs deep copying. */
 void
 luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec, size_t idx)
 {
@@ -136,7 +135,7 @@ luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec, size_t idx)
         src = &(buf->iov);
         dst = &(vec[idx]);
 
-        if ((status = luab_iov_alloc(dst, src->iov_len)) == 0)
+        if ((status = luab_iov_alloc(dst, src->iov_len)) == 0) /* deep copy */
             status = luab_iov_copyin(dst, src->iov_base, src->iov_len);
 
         buf->iov_flags &= ~IOV_LOCK;
@@ -228,7 +227,6 @@ luab_newlvector(lua_State *L, int narg, size_t card, size_t sz)
  * Access functions, [stack -> C].
  */
 
-/* Translate an instance of (LUA_TTABLE) into an array of C pointer. */
 const char **
 luab_table_checkargv(lua_State *L, int narg)
 {
@@ -289,10 +287,6 @@ luab_table_tolxargp(lua_State *L, int narg, size_t card)
     return (argv);
 }
 
-/*
- * Translates instances of (LUA_TTABLE) into arrays over specific data types.
- */
-
 double *
 luab_table_checkdouble(lua_State *L, int narg, size_t *card)
 {
@@ -310,6 +304,36 @@ luab_table_checkdouble(lua_State *L, int narg, size_t *card)
                 (lua_isnumber(L, -1) != 0)) {
                 v = (int)luab_tointeger(L, -1, UINT_MAX);
                 vec[k] = v;
+            } else
+                luab_argerror(L, narg, vec, n, sz, EINVAL);
+
+            lua_pop(L, 1);
+        }
+    }
+
+    if (card != NULL)
+        *card = n;
+
+    return (vec);
+}
+
+struct iovec *
+luab_table_checkiovec(lua_State *L, int narg, size_t *card)
+{
+    struct iovec *vec;
+    size_t n, k, sz;
+
+    sz = sizeof(struct iovec);
+
+    if ((vec = luab_newvectornil(L, narg, &n, sz)) != NULL) {
+
+        lua_pushnil(L);
+
+        for (k = 0; lua_next(L, narg) != 0; k++) {
+
+            if ((lua_isnumber(L, -2) != 0) &&
+                (lua_isnumber(L, -1) != 0)) {
+                luab_table_iovec_init(L, -1, vec, k);
             } else
                 luab_argerror(L, narg, vec, n, sz, EINVAL);
 
@@ -398,44 +422,6 @@ luab_table_checklgid(lua_State *L, int narg, size_t card)
     return (vec);
 }
 
-/* C structures */
-
-
-/*
- * Translates an instance of (LUA_TTABLE) into an array of iovec{}s. The result
- * argument *card returns the cardinality of (LUA_TTABLE).
- */
-
-struct iovec *
-luab_table_checkiovec(lua_State *L, int narg, size_t *card)
-{
-    struct iovec *vec;
-    size_t n, k, sz;
-
-    sz = sizeof(struct iovec);
-
-    if ((vec = luab_newvectornil(L, narg, &n, sz)) != NULL) {
-
-        lua_pushnil(L);
-
-        for (k = 0; lua_next(L, narg) != 0; k++) {
-
-            if ((lua_isnumber(L, -2) != 0) &&
-                (lua_isnumber(L, -1) != 0)) {
-                luab_table_iovec_init(L, -1, vec, k);
-            } else
-                luab_argerror(L, narg, vec, n, sz, EINVAL);
-
-            lua_pop(L, 1);
-        }
-    }
-
-    if (card != NULL)
-        *card = n;
-
-    return (vec);
-}
-
 struct iovec *
 luab_table_checkliovec(lua_State *L, int narg, size_t card)
 {
@@ -460,7 +446,6 @@ luab_table_checkliovec(lua_State *L, int narg, size_t card)
     return (vec);
 }
 
-/* (LUA_TTABLE) -> ([timespec{}]) */
 struct timespec *
 luab_table_checkltimespec(lua_State *L, int narg, size_t card)
 {
@@ -487,11 +472,13 @@ luab_table_checkltimespec(lua_State *L, int narg, size_t card)
 }
 
 /*
- * Access functions, (LUA_TTABLE) as result argument at n-th index, [C -> stack].
- */
-
-/*
- * Populates the (LUA_TTABLE) with elemts from an array of primitives.
+ * Access functions, [C -> stack].
+ *
+ * Populates (LUA_TTABLE)s by elements from arrays either with
+ *
+ *  (a)  primitives or
+ *
+ *  (b)  C structures xxx{} by (LUA_TUSERDATA(XXX)).
  */
 
 void
@@ -510,7 +497,8 @@ luab_table_pushdouble(lua_State *L, int narg, void *v, int new)
 
         lua_pop(L, 0);
         free(vec);
-    }
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
 
 void
@@ -529,7 +517,8 @@ luab_table_pushint(lua_State *L, int narg, void *v, int new)
 
         lua_pop(L, 0);
         free(vec);
-    }
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
 
 void
@@ -546,7 +535,8 @@ luab_table_pushldouble(lua_State *L, int narg, void *v, size_t card, int new)
 
         lua_pop(L, 0);
         free(vec);
-    }
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
 
 void
@@ -563,12 +553,10 @@ luab_table_pushlgid(lua_State *L, int narg, void *v, size_t card, int new)
 
         lua_pop(L, 0);
         free(vec);
-    }
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
 
-/* C structures */
-
-/* ([iovec{}]) -> (LUA_TTABLE) */
 void
 luab_table_pushliovec(lua_State *L, int narg, void *v, size_t card, int new)
 {
@@ -584,7 +572,6 @@ luab_table_pushliovec(lua_State *L, int narg, void *v, size_t card, int new)
         luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
 
-/* ([timespec{}]) -> (LUA_TTABLE) */
 void
 luab_table_pushltimespec(lua_State *L, int narg, void *v, size_t card, int new)
 {
@@ -609,5 +596,6 @@ luab_table_pushltimespec(lua_State *L, int narg, void *v, size_t card, int new)
             lua_pop(L, 1);
         }
         free(vec);
-    }
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 }
