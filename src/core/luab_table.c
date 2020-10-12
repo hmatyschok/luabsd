@@ -45,6 +45,9 @@
 
 /*
  * Service primitives.
+ *
+ * The family of luab_check{l}able{isnil}(3) functions performs condition tests
+ * about if n-th arg is an instance of (LUA_TTABLE) and/or cardinality, if any.
  */
 
 size_t
@@ -174,6 +177,9 @@ luab_table_iovec_populate(lua_State *L, int narg, struct iovec *vec, int new)
 
 /*
  * Generator functions.
+ *
+ * Pre-allocates data region for arrays by cardinality from an instance
+ * of (LUA_TTABLE) as precondition for performing a deep copy.
  */
 
 void *
