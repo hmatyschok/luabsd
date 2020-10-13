@@ -65,6 +65,7 @@ extern luab_module_t cap_rbuf_type;
 extern luab_module_t accept_filter_arg_type;
 extern luab_module_t sockproto_type;
 extern luab_module_t cmsgcred_type;
+extern luab_module_t sf_hdtr_type;
 #endif
 
 /*

@@ -801,6 +801,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &cmsgcred_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_CMSGCRED_IDX,
+    },{
+        .mv_mod = &sf_hdtr_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_SF_HDTR_IDX,
     },
 #endif  /* __BSD_VISIBLE */
     LUAB_MOD_VEC_SENTINEL

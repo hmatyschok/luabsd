@@ -30,3 +30,4 @@ SRCS+=	luab_accept_filter_arg_type.c
 SRCS+=	luab_sockproto_type.c
 SRCS+=	luab_cmsgcred_type.c
 SRCS+=	luab_link_type.c
+SRCS+=	luab_sf_hdtr_type.c

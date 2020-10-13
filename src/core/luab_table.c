@@ -98,18 +98,26 @@ luab_table_populate(lua_State *L, int new)
 }
 
 void
-luab_table_iovec_free(struct iovec *vec, size_t card)
+luab_table_iovec_free(struct iovec **vec, size_t *idx)
 {
-    size_t idx;
+    size_t sz, card, nmax, i;
 
-    if (vec != NULL && card > 0) {
-        for (idx = 0; idx < card; idx++)
-            (void)luab_iov_free(&vec[idx]);
+    if (vec != NULL) {
+        sz = sizeof(struct iovec);
+        card = luab_table_xlen(vec, sz);
+
+        if (idx != NULL)
+            nmax = (*idx < card) ? *idx : card;
+        else
+            nmax = card;
+
+        for (i = 0; i < nmax; i++)
+            (void)luab_iov_free(vec[i]);
     }
 }
 
 void
-luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t *idx)
+luab_table_iovec_argerror(lua_State *L, int narg, struct iovec **vec, size_t *idx)
 {
     size_t sz, card, nmax;
 
@@ -122,7 +130,7 @@ luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec, size_t *idx
         else
             nmax = card;
 
-        luab_table_iovec_free(vec, nmax);
+        luab_table_iovec_free(vec, &nmax);
         luab_argerror(L, narg, vec, card, sz, errno);
     } else
         exit(EX_DATAERR);
@@ -153,22 +161,21 @@ luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec, size_t idx)
     }
 
     if (status != 0)
-        luab_table_iovec_argerror(L, narg, vec, &idx);
+        luab_table_iovec_argerror(L, narg, &vec, &idx);
 }
 
 void
-luab_table_iovec_populate(lua_State *L, int narg, struct iovec *vec, int new)
+luab_table_iovec_populate(lua_State *L, int narg, struct iovec **vec, int new)
 {
-    struct iovec *iov;
     size_t i, j, card;
 
-    if ((iov = vec) != NULL) {
+    if (vec != NULL) {
         card = luab_table_xlen(vec, sizeof(struct iovec));
 
         luab_table_populate(L, new);
 
-        for (i = 0, j = 1; i < card; i++, j++, iov++)
-            luab_iovec_rawsetldata(L, narg, j, iov->iov_base, iov->iov_len);
+        for (i = 0, j = 1; i < card; i++, j++)
+            luab_iov_rawsetxdata(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
     } else
@@ -343,7 +350,7 @@ luab_table_checkiovec(lua_State *L, int narg, size_t *card)
         for (k = 0; lua_next(L, narg) != 0; k++) {
 
             if ((lua_isnumber(L, -2) != 0) &&
-                (lua_isnumber(L, -1) != 0)) {
+                (lua_isuserdata(L, -1) != 0)) {
                 luab_table_iovec_init(L, -1, vec, k);
             } else
                 luab_argerror(L, narg, vec, n, sz, EINVAL);
@@ -447,7 +454,7 @@ luab_table_checkliovec(lua_State *L, int narg, size_t card)
     for (k = 0; lua_next(L, narg) != 0; k++) {
 
         if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isnumber(L, -1) != 0)) {
+            (lua_isuserdata(L, -1) != 0)) {
             luab_table_iovec_init(L, -1, vec, k);
         } else
             luab_argerror(L, narg, vec, card, sz, EINVAL);
@@ -576,8 +583,8 @@ luab_table_pushliovec(lua_State *L, int narg, void *v, size_t card, int new)
     (void)luab_checkltable(L, narg, card);
 
     if ((vec = (struct iovec *)v) != NULL) {
-        luab_table_iovec_populate(L, narg, vec, new);
-        luab_table_iovec_free(vec, card);
+        luab_table_iovec_populate(L, narg, &vec, new);
+        luab_table_iovec_free(&vec, &card);
         free(vec);
     } else
         luab_argerror(L, narg, NULL, 0, 0, EINVAL);
