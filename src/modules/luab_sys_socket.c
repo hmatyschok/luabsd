@@ -87,7 +87,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
             (void)luaL_error(L, "%s: sopt->sopt_len != xarg->xarg_len", __func__);
     }
 }
-
+#if notyet
 /*
  * Evaluates if set contains instances of (LUA_TTABLE(LUA_TUSERDATA(MSGHDR)))
  * and translate its elements or items this into an array of mmsghdr{} items.
@@ -116,7 +116,7 @@ luab_checkmsgvec(lua_State *L, int narg)
     }
     return (vec);
 }
-
+#endif
 /*
  * Service primitives.
  */
@@ -568,6 +568,7 @@ luab_recvfrom(lua_State *L)
     return (luab_iovec_recvfrom(L, s, buf, &len, flags, from, fromlen));
 }
 
+#if notyet
 /***
  * recvmsg(2) - receive message(s) from a socket(9)
  *
@@ -662,7 +663,7 @@ luab_recvmmsg(lua_State *L)
     return (luab_pusherr(L, count));
 }
 #endif
-
+#endif /* notyet */
 /***
  * send(2) - send message(s) from a socket(9)
  *
@@ -754,7 +755,7 @@ luab_sendto(lua_State *L)
 
     return (luab_iovec_sendto(L, s, buf, &len, flags, to, tolen));
 }
-
+#if notyet
 /***
  * sendmsg(2) - send message(s) from a socket(9)
  *
@@ -796,8 +797,9 @@ luab_sendmsg(lua_State *L)
     }
     return (luab_pusherr(L, count));
 }
-
+#endif
 #if __BSD_VISIBLE
+#if 0
 /***
  * sendmmsg(2) - send multiple message(s) at a call from a socket(9)
  *
@@ -843,6 +845,7 @@ luab_sendmmsg(lua_State *L)
 
     return (luab_pusherr(L, count));
 }
+#endif /* notyet */
 
 /***
  * setfib(2) - set the default FIB (routing table) for the calling process
@@ -1024,7 +1027,7 @@ luab_socketpair(lua_State *L)
     (void)luab_checkltable(L, 4, 0);
 
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
-        luab_table_pushint(L, 4, socks, 0);
+        luab_table_pushlint(L, 4, socks, 2, 0); /* XXX missing sentinel */
 
     return (luab_pusherr(L, status));
 }
@@ -1067,7 +1070,7 @@ luab_accept_filter_arg_create(lua_State *L)
 {
     return (luab_create(L, 1, luab_mx(ACCEPT_FILTER_ARG), NULL));
 }
-
+#if notyet
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(MSGHDR)).
  *
@@ -1082,7 +1085,7 @@ luab_msghdr_create(lua_State *L)
 {
     return (luab_create(L, 0, luab_mx(MSGHDR), NULL));
 }
-
+#endif /* notyet */
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(CMSGCRED)).
  *
@@ -1428,18 +1431,24 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("listen",                     luab_listen),
     LUAB_FUNC("recv",                       luab_recv),
     LUAB_FUNC("recvfrom",                   luab_recvfrom),
+#if notyet    
     LUAB_FUNC("recvmsg",                    luab_recvmsg),
 #if __BSD_VISIBLE
     LUAB_FUNC("recvmmesg",                  luab_recvmmsg),
 #endif
+#endif /* notyet */
     LUAB_FUNC("send",                       luab_send),
     LUAB_FUNC("sendto",                     luab_sendto),
+#if notyet
     LUAB_FUNC("sendmsg",                    luab_sendmsg),
+#endif /* notyet */
 #if __BSD_VISIBLE
 #if 0
     LUAB_FUNC("sendfile",                   luab_sendfile),
 #endif
+#if notyet
     LUAB_FUNC("sendmmesg",                  luab_sendmmsg),
+#endif /* notyet */
     LUAB_FUNC("setfib",                     luab_setfib),
 #endif
     LUAB_FUNC("setsockopt",                 luab_setsockopt),
@@ -1451,7 +1460,9 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("linger_create",              luab_linger_create),
 #if __BSD_VISIBLE
     LUAB_FUNC("accept_filter_arg_create",   luab_accept_filter_arg_create),
+#if notyet
     LUAB_FUNC("msghdr_create",              luab_msghdr_create),
+#endif /* notyet */
     LUAB_FUNC("cmsgcred_create",            luab_cmsgcred_create),
 #endif
     LUAB_FUNC("sockaddr_create",            luab_sockaddr_create),

@@ -32,6 +32,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
+#if notyet
 #if __BSD_VISIBLE
 /*
  * XXX well, the "implementation" of this "feature" is
@@ -655,3 +656,4 @@ luab_module_t msghdr_type = {
     .m_sz       = sizeof(luab_msghdr_t),
 };
 #endif /* __BSD_VISIBLE */
+#endif /* notyet */

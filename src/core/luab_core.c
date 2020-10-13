@@ -680,6 +680,13 @@ static luab_module_vec_t luab_core_vec[] = {
 
 /* Bindings against complex data types. */
 luab_module_vec_t luab_typevec[] = {
+#if LUAB_DEBUG
+    {
+        .mv_mod = &link_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_LINK_IDX,
+    },
+#endif /* LUAB_DEBUG */
     {
         .mv_mod = &clockinfo_type,
         .mv_init = luab_newmetatable,
@@ -724,11 +731,15 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &linger_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_LINGER_IDX,
-    },{
+    },
+#if notyet
+    {
         .mv_mod = &msghdr_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_MSGHDR_IDX,
-    },{
+    },
+#endif /* notyet */
+    {
         .mv_mod = &sockaddr_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_SOCKADDR_IDX,
@@ -761,13 +772,6 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_IOVEC_IDX,
     },
-#if LUAB_DEBUG
-    {
-        .mv_mod = &link_type,
-        .mv_init = luab_newmetatable,
-        .mv_idx = LUAB_LINK_IDX,
-    },
-#endif /* LUAB_DEBUG */
 #if __BSD_VISIBLE
     {
         .mv_mod = &dbt_type,

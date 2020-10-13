@@ -339,7 +339,7 @@ luab_iov_rawsetxdata(lua_State *L, int narg, lua_Integer k, struct iovec *iov)
 {
     caddr_t dp;
     size_t len;
-
+(void)printf("%s: (k:%zu,dp:%p,len:%zu)\n", __func__, k, iov->iov_base, iov->iov_len);
     dp = luab_iov_base(iov, &len);
     luab_iovec_rawsetldata(L, narg, k, dp, len);
 }

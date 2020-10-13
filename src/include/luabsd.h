@@ -125,6 +125,9 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
  */
 
 typedef enum luab_type {
+#if LUAB_DEBUG
+    LUAB_LINK_IDX,
+#endif /* LUAB_DEBUG */    
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
     LUAB_FLOCK_IDX,
@@ -136,7 +139,9 @@ typedef enum luab_type {
     LUAB_LDIV_IDX,
     LUAB_LLDIV_IDX,
     LUAB_LINGER_IDX,
+#if notyet    
     LUAB_MSGHDR_IDX,
+#endif /* notyet */
     LUAB_SOCKADDR_IDX,
     LUAB_STAT_IDX,
     LUAB_TIMESPEC_IDX,
@@ -145,10 +150,6 @@ typedef enum luab_type {
     LUAB_TM_IDX,
     LUAB_UUID_IDX,
     LUAB_IOVEC_IDX,
-
-#if LUAB_DEBUG
-    LUAB_LINK_IDX,
-#endif /* LUAB_DEBUG */
 #if __BSD_VISIBLE
     LUAB_DBT_IDX,
     LUAB_DB_IDX,

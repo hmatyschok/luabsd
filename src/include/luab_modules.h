@@ -31,6 +31,9 @@
  * Set of complex data types.
  */
 
+#if LUAB_DEBUG
+extern luab_module_t link_type;
+#endif
 extern luab_module_t clockinfo_type;
 extern luab_module_t div_type;
 extern luab_module_t flock_type;
@@ -42,7 +45,9 @@ extern luab_module_t itimerval_type;
 extern luab_module_t ldiv_type;
 extern luab_module_t lldiv_type;
 extern luab_module_t linger_type;
+#if notyet
 extern luab_module_t msghdr_type;
+#endif /* notyet */
 extern luab_module_t sockaddr_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
@@ -51,10 +56,6 @@ extern luab_module_t timezone_type;
 extern luab_module_t tm_type;
 extern luab_module_t uuid_type;
 extern luab_module_t iovec_type;
-
-#if LUAB_DEBUG
-extern luab_module_t link_type;
-#endif
 
 #if __BSD_VISIBLE
 extern luab_module_t dbt_type;

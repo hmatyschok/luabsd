@@ -43,6 +43,35 @@
  *  macros.
  */
 
+static void
+luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec,
+    size_t idx, size_t card)
+{
+    luab_iovec_t *buf;
+    struct iovec *src;
+    struct iovec *dst;
+    int status;
+
+    if (((buf = luab_isiovec(L, narg)) != NULL) &&
+        ((buf->iov_flags & IOV_LOCK) == 0)) {
+        buf->iov_flags |= IOV_LOCK;
+
+        src = &(buf->iov);
+        dst = &(vec[idx]);
+
+        if ((status = luab_iov_alloc(dst, src->iov_len)) == 0) /* deep copy */
+            status = luab_iov_copyin(dst, src->iov_base, src->iov_len);
+
+        buf->iov_flags &= ~IOV_LOCK;
+    } else {
+        errno = ENXIO;
+        status = -1;
+    }
+
+    if (status != 0)
+        luab_table_iovec_argerror(L, narg, vec, &idx, card);
+}
+
 /*
  * Service primitives.
  *
@@ -98,84 +127,50 @@ luab_table_populate(lua_State *L, int new)
 }
 
 void
-luab_table_iovec_free(struct iovec **vec, size_t *idx)
+luab_table_iovec_free(struct iovec *vec, size_t card)
 {
-    size_t sz, card, nmax, i;
+    struct iovec *iov;
+    size_t i;
 
-    if (vec != NULL) {
-        sz = sizeof(struct iovec);
-        card = luab_table_xlen(vec, sz);
-
-        if (idx != NULL)
-            nmax = (*idx < card) ? *idx : card;
-        else
-            nmax = card;
-
-        for (i = 0; i < nmax; i++)
-            (void)luab_iov_free(vec[i]);
-    }
+    if ((iov = vec) != NULL) {
+        for (i = 0; i < card; i++, iov++)
+            (void)luab_iov_free(iov);
+    } else
+        errno = EINVAL;
 }
 
 void
-luab_table_iovec_argerror(lua_State *L, int narg, struct iovec **vec, size_t *idx)
+luab_table_iovec_argerror(lua_State *L, int narg, struct iovec *vec,
+    size_t *idx, size_t card)
 {
-    size_t sz, card, nmax;
+    size_t sz, nmax;
 
     if (vec != NULL) {
         sz = sizeof(struct iovec);
-        card = luab_table_xlen(vec, sz);
 
         if (idx != NULL)
             nmax = (*idx < card) ? *idx : card;
         else
             nmax = card;
 
-        luab_table_iovec_free(vec, &nmax);
+        luab_table_iovec_free(vec, nmax);
         luab_argerror(L, narg, vec, card, sz, errno);
     } else
         exit(EX_DATAERR);
 }
 
 void
-luab_table_iovec_init(lua_State *L, int narg, struct iovec *vec, size_t idx)
+luab_table_iovec_populate(lua_State *L, int narg, struct iovec *vec,
+    size_t card, int new)
 {
-    luab_iovec_t *buf;
-    struct iovec *src;
-    struct iovec *dst;
-    int status;
+    struct iovec *iov;
+    size_t i, j;
 
-    if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        ((buf->iov_flags & IOV_LOCK) == 0)) {
-        buf->iov_flags |= IOV_LOCK;
-
-        src = &(buf->iov);
-        dst = &(vec[idx]);
-
-        if ((status = luab_iov_alloc(dst, src->iov_len)) == 0) /* deep copy */
-            status = luab_iov_copyin(dst, src->iov_base, src->iov_len);
-
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = ENXIO;
-        status = -1;
-    }
-
-    if (status != 0)
-        luab_table_iovec_argerror(L, narg, &vec, &idx);
-}
-
-void
-luab_table_iovec_populate(lua_State *L, int narg, struct iovec **vec, int new)
-{
-    size_t i, j, card;
-
-    if (vec != NULL) {
-        card = luab_table_xlen(vec, sizeof(struct iovec));
-
+    if ((iov = vec) != NULL) {
         luab_table_populate(L, new);
-
-        for (i = 0, j = 1; i < card; i++, j++)
-            luab_iov_rawsetxdata(L, narg, j, vec[i]);
+                                /* XXX missing sentinel, (card + 1) := nil */
+        for (i = 0, j = 1; i < card; i++, j++, iov++)
+            luab_iov_rawsetxdata(L, narg, j, iov++);
 
         lua_pop(L, 0);
     } else
@@ -187,6 +182,8 @@ luab_table_iovec_populate(lua_State *L, int narg, struct iovec **vec, int new)
  *
  * Pre-allocates data region for arrays by cardinality from an instance
  * of (LUA_TTABLE) as precondition for performing a deep copy.
+ *
+ * XXX missing sentinel by (card + 1) := nil.
  */
 
 void *
@@ -197,7 +194,7 @@ luab_alloctable(lua_State *L, int narg, size_t n, size_t sz)
     if (n == 0 && sz == 0)
         luab_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-    if ((vec = calloc(n, sz)) == NULL)
+    if ((vec = calloc(n, sz)) == NULL) /* <- . */
         luab_argerror(L, narg, NULL, 0, 0, ENOMEM);
 
     return (vec);
@@ -351,7 +348,7 @@ luab_table_checkiovec(lua_State *L, int narg, size_t *card)
 
             if ((lua_isnumber(L, -2) != 0) &&
                 (lua_isuserdata(L, -1) != 0)) {
-                luab_table_iovec_init(L, -1, vec, k);
+                luab_table_iovec_init(L, -1, vec, k, n);
             } else
                 luab_argerror(L, narg, vec, n, sz, EINVAL);
 
@@ -455,7 +452,7 @@ luab_table_checkliovec(lua_State *L, int narg, size_t card)
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isuserdata(L, -1) != 0)) {
-            luab_table_iovec_init(L, -1, vec, k);
+            luab_table_iovec_init(L, -1, vec, k, card);
         } else
             luab_argerror(L, narg, vec, card, sz, EINVAL);
 
@@ -497,47 +494,9 @@ luab_table_checkltimespec(lua_State *L, int narg, size_t card)
  *  (a)  primitives or
  *
  *  (b)  C structures xxx{} by (LUA_TUSERDATA(XXX)).
+ *
+ * XXX missing sentinel by (card + 1) := nil
  */
-
-void
-luab_table_pushdouble(lua_State *L, int narg, void *v, int new)
-{
-    double *vec;
-    size_t i, j, card;
-
-    if ((vec = (double *)v) != NULL) {
-        card = luab_table_xlen(vec, double);
-
-        luab_table_populate(L, new);
-
-        for (i = 0, j = 1; i < card; i++, j++)
-            luab_rawsetnumber(L, narg, j, vec[i]);
-
-        lua_pop(L, 0);
-        free(vec);
-    } else
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
-}
-
-void
-luab_table_pushint(lua_State *L, int narg, void *v, int new)
-{
-    int *vec;
-    size_t i, j, card;
-
-    if ((vec = (int *)v) != NULL) {
-        card = luab_table_xlen(vec, int);
-
-        luab_table_populate(L, new);
-
-        for (i = 0, j = 1; i < card; i++, j++)
-            luab_rawsetinteger(L, narg, j, vec[i]);
-
-        lua_pop(L, 0);
-        free(vec);
-    } else
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
-}
 
 void
 luab_table_pushldouble(lua_State *L, int narg, void *v, size_t card, int new)
@@ -548,7 +507,7 @@ luab_table_pushldouble(lua_State *L, int narg, void *v, size_t card, int new)
     if ((vec = (double *)v) != NULL) {
         luab_table_populate(L, new);
 
-        for (i = 0, j = 1; i < card; i++, j++)
+        for (i = 0, j = 1; i < card; i++, j++)  /* XXX */
             luab_rawsetnumber(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
@@ -566,8 +525,26 @@ luab_table_pushlgid(lua_State *L, int narg, void *v, size_t card, int new)
     if ((vec = (gid_t *)v) != NULL) {
         luab_table_populate(L, new);
 
-        for (i = 0, j = 1; i < card; i++, j++)
+        for (i = 0, j = 1; i < card; i++, j++)  /* XXX */
             luab_rawsetinteger(L, narg, j, vec[i]);
+
+        lua_pop(L, 0);
+        free(vec);
+    } else
+        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+}
+
+void
+luab_table_pushlint(lua_State *L, int narg, void *v, size_t card, int new)
+{
+    int *vec;
+    size_t i, j;
+
+    if ((vec = (int *)v) != NULL) {
+        luab_table_populate(L, new);
+
+        for (i = 0, j = 1; i < card; i++, j++)  /* XXX */
+            luab_rawsetnumber(L, narg, j, vec[i]);
 
         lua_pop(L, 0);
         free(vec);
@@ -582,9 +559,9 @@ luab_table_pushliovec(lua_State *L, int narg, void *v, size_t card, int new)
 
     (void)luab_checkltable(L, narg, card);
 
-    if ((vec = (struct iovec *)v) != NULL) {
-        luab_table_iovec_populate(L, narg, &vec, new);
-        luab_table_iovec_free(&vec, &card);
+    if ((vec = (struct iovec *)v) != NULL) { /* XXX */
+        luab_table_iovec_populate(L, narg, vec, card, new);
+        luab_table_iovec_free(vec, card);
         free(vec);
     } else
         luab_argerror(L, narg, NULL, 0, 0, EINVAL);
@@ -605,7 +582,7 @@ luab_table_pushltimespec(lua_State *L, int narg, void *v, size_t card, int new)
         for (k = 0, sz = sizeof(struct timespec); lua_next(L, narg) != 0; k++) {
 
             if ((lua_isnumber(L, -2) != 0) &&
-                (lua_isuserdata(L, -1) != 0)) {
+                (lua_isuserdata(L, -1) != 0)) { /* XXX */
                 x = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
                 (void)memmove(x, &vec[k], sz);
             } else

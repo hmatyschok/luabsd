@@ -36,14 +36,12 @@ size_t   luab_checktableisnil(lua_State *, int);
 size_t   luab_checkltable(lua_State *, int, size_t);
 size_t   luab_checkltableisnil(lua_State *, int, size_t);
 
-#define luab_table_xlen(vec, type) \
-    ((sizeof(vec)) / (sizeof(type)))
-    
 void     luab_table_populate(lua_State *, int);
-void     luab_table_iovec_free(struct iovec **, size_t *);
-void     luab_table_iovec_argerror(lua_State *, int, struct iovec **, size_t *);
-void     luab_table_iovec_init(lua_State *, int, struct iovec *, size_t);
-void     luab_table_iovec_populate(lua_State *, int, struct iovec **, int);
+
+void     luab_table_iovec_free(struct iovec *, size_t);
+void     luab_table_iovec_argerror(lua_State *, int, struct iovec *,
+    size_t *, size_t);
+void     luab_table_iovec_populate(lua_State *, int, struct iovec *, size_t, int);
 
 /*
  * Generator functions.
@@ -74,11 +72,10 @@ struct timespec  *luab_table_checkltimespec(lua_State *, int, size_t);
 /*
  * Access functions, [C -> stack].
  */
-
 void     luab_table_pushdouble(lua_State *, int, void *, int);
-void     luab_table_pushint(lua_State *, int, void *, int);
 void     luab_table_pushldouble(lua_State *, int, void *, size_t, int);
 void     luab_table_pushlgid(lua_State *, int, void *, size_t, int);
+void     luab_table_pushlint(lua_State *, int, void *, size_t, int);
 
 /* C structures */
 void     luab_table_pushliovec(lua_State *, int, void *, size_t, int);
