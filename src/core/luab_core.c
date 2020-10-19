@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <err.h>
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -38,10 +39,86 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
+/*
+ * XXX namespeace, primitives shall renamed by, e. g.
+ *
+ *  (a) luab_xxx(3) by luab_core_xxx(3) and/or
+ *
+ *  (b) the implementation family of luab_core_warn{3}(3) functions,
+ *
+ * etc..
+ */
+
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
+
+/*
+ * Generic service primitives, subset of <core>.
+ */
+
+void
+luab_free(void *v, size_t sz)
+{
+    if (v != NULL) {
+        if (sz > 0)
+            (void)memset_s(v, sz, 0, sz);
+
+        free(v);
+        errno = EEXIST;
+    } else
+        errno = ENOENT;
+}
+
+void
+luab_sysexits_errx(int eval, const char *fmt, ...)
+{
+    va_list ap;
+
+    va_start(ap, fmt);
+    verrx(eval, fmt, ap);
+    va_end(ap);
+}
+
+void
+luab_sysexits_err(int eval, const char *fname, int up_call)
+{
+    err(eval, "%s: %s", fname, strerror(up_call));
+}
+
+void
+luab_sysexits_warn(const char *fmt, ...)
+{
+    va_list ap;
+
+    va_start(ap, fmt);
+    vwarn(fmt, ap);
+    va_end(ap);
+}
+
+void
+luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int up_call)
+{
+    size_t len;
+
+    if ((len = n * sz) != 0)
+        luab_free(v, len);
+
+    errno = up_call;
+    luaL_argerror(L, narg, strerror(up_call));
+}
+
+int
+luab_checkmaxargs(lua_State *L, int nmax)
+{
+    int narg;
+
+    if ((narg = lua_gettop(L)) > nmax)  /* XXX */
+        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
+
+    return (narg);
+}
 
 /*
  * Access functions, n-th arg over argv, [stack -> C].
@@ -313,8 +390,8 @@ luab_pushstring(lua_State *L, const char *dp)
 int
 luab_pushfstring(lua_State *L, const char *fmt, ...)
 {
-    va_list ap;
     char buf[LUAL_BUFFERSIZE];
+    va_list ap;
 
     va_start(ap, fmt);
     (void)vsnprintf(buf, LUAL_BUFFERSIZE, fmt, ap);
@@ -357,34 +434,8 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 }
 
 /*
- * Generic service primitives, subset of <core>.
+ * Common service primitives, interface of <core>.
  */
-
-void
-luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int up_call)
-{
-    size_t len;
-
-    errno = up_call;
-
-    if ((v != NULL) &&
-        ((len = n * sz) != 0)) {
-        (void)memset_s(v, len, 0, len);
-        free(v);
-    }
-    luaL_argerror(L, narg, strerror(up_call));
-}
-
-int
-luab_checkmaxargs(lua_State *L, int nmax)
-{
-    int narg;
-
-    if ((narg = lua_gettop(L)) > nmax)  /* XXX */
-        luaL_error(L, "#%d args, but #%d expected", narg, nmax);
-
-    return (narg);
-}
 
 int
 luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
@@ -449,10 +500,6 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
 
     return (1);
 }
-
-/*
- * Common service primitives, subset of <core>.
- */
 
 /***
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).

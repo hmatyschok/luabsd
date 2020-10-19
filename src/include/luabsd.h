@@ -35,6 +35,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sysexits.h>
 
 /*
  * Definitions for API method table.
@@ -55,6 +56,7 @@ typedef union primitive {
     uint64_t    un_uint64;
     u_int       un_u_int;
     u_long      un_u_long;
+    size_t      un_size;
     socklen_t   un_socklen;
     lua_Integer un_intx;
     lua_Number  un_numx;
@@ -127,7 +129,7 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
 typedef enum luab_type {
 #if LUAB_DEBUG
     LUAB_LINK_IDX,
-#endif /* LUAB_DEBUG */    
+#endif /* LUAB_DEBUG */
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
     LUAB_FLOCK_IDX,
@@ -139,7 +141,7 @@ typedef enum luab_type {
     LUAB_LDIV_IDX,
     LUAB_LLDIV_IDX,
     LUAB_LINGER_IDX,
-#if notyet    
+#if notyet
     LUAB_MSGHDR_IDX,
 #endif /* notyet */
     LUAB_SOCKADDR_IDX,
@@ -183,6 +185,19 @@ typedef struct luab_module_vec {
 extern luab_module_vec_t luab_typevec[];
 
 /*
+ * Generic service primitives, subset of <core>.
+ */
+
+void     luab_free(void *, size_t);
+
+void     luab_sysexits_err(int, const char *, int);
+void     luab_sysexits_errx(int, const char *, ...);
+void     luab_sysexits_warn(const char *, ...);
+void     luab_argerror(lua_State *, int, void *, size_t, size_t, int);
+
+int  luab_checkmaxargs(lua_State *, int);
+
+/*
  * Access functions, n-th arg over argv, [stack -> C].
  */
 
@@ -218,11 +233,8 @@ int  luab_pushfstring(lua_State *, const char *, ...);
 int  luab_pushldata(lua_State *, void *, size_t);
 
 /*
- * Generic service primitives, subset of <core>.
+ * Generic service primitives, interface of <core>.
  */
-
-void     luab_argerror(lua_State *, int, void *, size_t, size_t, int);
-int  luab_checkmaxargs(lua_State *, int);
 
 int  luab_create(lua_State *, int, luab_module_t *, luab_module_t *);
 int  luab_dump(lua_State *, int, luab_module_t *, size_t);

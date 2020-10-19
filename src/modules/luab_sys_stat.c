@@ -380,7 +380,7 @@ luab_futimens(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
 
-    if (lua_isnil(L, 2) != 0)   /* XXX */
+    if (lua_isnil(L, 2) != 0)
         times = luab_table_checkltimespec(L, 2, 2);
     else
         times = NULL;
@@ -388,7 +388,7 @@ luab_futimens(lua_State *L)
     status = futimens(fd, times);
 
     if (times != NULL)
-        luab_table_pushltimespec(L, 2, times, 2, 0);
+        luab_table_pushtimespec(L, 2, times, 0, 1);
 
     return (luab_pusherr(L, status));
 }
@@ -451,7 +451,7 @@ luab_utimensat(lua_State *L)
     status = utimensat(fd, path, times, flag);
 
     if (times != NULL)
-        luab_table_pushltimespec(L, 2, times, 2, 0);
+        luab_table_pushtimespec(L, 2, times, 0, 1);
 
     return (luab_pusherr(L, status));
 }

@@ -60,5 +60,4 @@ void     luab_iov_rawsetxdata(lua_State *, int, lua_Integer, struct iovec *);
 
 void     luab_iov_setdata(lua_State *, int, const char *, struct iovec *);
 void     luab_iov_setxdata(lua_State *, int, const char *, struct iovec *);
-
 #endif /* _LUAB_BUF_H_ */

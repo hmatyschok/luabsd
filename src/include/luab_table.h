@@ -27,6 +27,8 @@
 #ifndef _LUAB_TABLE_H_
 #define _LUAB_TABLE_H_
 
+#define LUAB_TABLE_XS_FLAG  0x7e
+
 /*
  * Service primitives.
  */
@@ -36,22 +38,28 @@ size_t   luab_checktableisnil(lua_State *, int);
 size_t   luab_checkltable(lua_State *, int, size_t);
 size_t   luab_checkltableisnil(lua_State *, int, size_t);
 
-void     luab_table_populate(lua_State *, int);
+void     luab_table_init(lua_State *, int);
+void     luab_table_free(void *, size_t, size_t);
 
-void     luab_table_iovec_free(struct iovec *, size_t);
-void     luab_table_iovec_argerror(lua_State *, int, struct iovec *,
-    size_t *, size_t);
-void     luab_table_iovec_populate(lua_State *, int, struct iovec *, size_t, int);
+void     luab_table_iovec_free(struct iovec *);
+
+/*
+ * Error handler.
+ */
+
+void     luab_table_iovec_argerror(lua_State *, int, struct iovec *, size_t);
 
 /*
  * Generator functions.
  */
 
-void     *luab_alloctable(lua_State *, int, size_t, size_t);
+void     *luab_alloctablenil(lua_State *, int, size_t, size_t, size_t *);
+void     *luab_alloctable(lua_State *, int, size_t, size_t, size_t *);
 
 void     *luab_newvector(lua_State *, int, size_t *, size_t);
 void     *luab_newvectornil(lua_State *, int, size_t *, size_t);
-void     *luab_newlvector(lua_State *, int, size_t, size_t);
+void     *luab_newlvector(lua_State *, int, size_t, size_t, size_t *);
+void     *luab_newlvectornil(lua_State *, int, size_t, size_t, size_t *);
 
 /*
  * Access functions, [stack -> C].
@@ -72,13 +80,13 @@ struct timespec  *luab_table_checkltimespec(lua_State *, int, size_t);
 /*
  * Access functions, [C -> stack].
  */
-void     luab_table_pushdouble(lua_State *, int, void *, int);
-void     luab_table_pushldouble(lua_State *, int, void *, size_t, int);
-void     luab_table_pushlgid(lua_State *, int, void *, size_t, int);
-void     luab_table_pushlint(lua_State *, int, void *, size_t, int);
+
+void     luab_table_pushdouble(lua_State *, int, double *, int, int);
+void     luab_table_pushgid(lua_State *, int, gid_t *, int, int);
+void     luab_table_pushint(lua_State *, int, int *, int, int);
 
 /* C structures */
-void     luab_table_pushliovec(lua_State *, int, void *, size_t, int);
-void     luab_table_pushltimespec(lua_State *, int, void *, size_t, int);
+void     luab_table_pushiovec(lua_State *, int, struct iovec *, int, int);
+void     luab_table_pushtimespec(lua_State *, int, struct timespec *, int, int);
 
 #endif /* _LUAB_TABLE_H_ */

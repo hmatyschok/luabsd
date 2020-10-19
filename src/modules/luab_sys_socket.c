@@ -72,7 +72,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
 
     if ((sopt->sopt_val = luab_toxdata(L, 4, pci)) != NULL) {
 
-        if (pci->xarg_idx == LUAB_PRIMITIVE_IDX) {   /* XXX macro ??? */
+        if (pci->xarg_idx == LUAB_PRIMITIVE_IDX) {   /* XXX macro, anyone ??? */
             sopt->sopt_val = &(((luab_primitive_u *)sopt->sopt_val)->un_int);
             pci->xarg_len = sizeof(*(int *)(sopt->sopt_val));
         }
@@ -1024,10 +1024,10 @@ luab_socketpair(lua_State *L)
     type = (int)luab_checkinteger(L, 2, INT_MAX);
     protocol = (int)luab_checkinteger(L, 3, INT_MAX);
 
-    (void)luab_checkltable(L, 4, 0);
+    (void)luab_checkltable(L, 4, 0);    /* XXX */
 
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
-        luab_table_pushlint(L, 4, socks, 2, 0); /* XXX missing sentinel */
+        luab_table_pushint(L, 4, socks, 0, 0);
 
     return (luab_pusherr(L, status));
 }
@@ -1431,7 +1431,7 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("listen",                     luab_listen),
     LUAB_FUNC("recv",                       luab_recv),
     LUAB_FUNC("recvfrom",                   luab_recvfrom),
-#if notyet    
+#if notyet
     LUAB_FUNC("recvmsg",                    luab_recvmsg),
 #if __BSD_VISIBLE
     LUAB_FUNC("recvmmesg",                  luab_recvmmsg),

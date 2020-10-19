@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
  * All rights reserved.
@@ -98,7 +97,6 @@ luab_iov_alloc(struct iovec *iov, size_t len)
     if (iov != NULL && len > 1) {
 
         if ((iov->iov_base = malloc(len)) != NULL) {
-            (void)memset_s(iov->iov_base, len, 0, len);
             iov->iov_len = len;
             status = 0;
         } else {
@@ -339,7 +337,7 @@ luab_iov_rawsetxdata(lua_State *L, int narg, lua_Integer k, struct iovec *iov)
 {
     caddr_t dp;
     size_t len;
-(void)printf("%s: (k:%zu,dp:%p,len:%zu)\n", __func__, k, iov->iov_base, iov->iov_len);
+
     dp = luab_iov_base(iov, &len);
     luab_iovec_rawsetldata(L, narg, k, dp, len);
 }

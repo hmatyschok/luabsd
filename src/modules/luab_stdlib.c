@@ -2433,11 +2433,11 @@ luab_getloadavg(lua_State *L)
     (void)luab_checkmaxargs(L, 2);
 
     loadavg = luab_table_checkdouble(L, 1, &len);
-    nelem = (double)luaL_checknumber(L, 2);
+    nelem = (int)luab_checkinteger(L, 2, INT_MAX);  /* XXX */
 
     if ((size_t)nelem == len) {
         if ((status = getloadavg(loadavg, nelem)) > 0)
-            luab_table_pushldouble(L, 1, loadavg, len, 0);
+            luab_table_pushdouble(L, 1, loadavg, 0, 1);
     } else {
         errno = ERANGE;
         status = -1;

@@ -3104,7 +3104,7 @@ luab_getgrouplist(lua_State *L)
     gid_t basegid;
     gid_t *gidset;
     luab_primitive_u *hook;
-    int *ngroups;
+    size_t *ngroups, card;
     int status;
 
     (void)luab_checkmaxargs(L, 4);
@@ -3115,16 +3115,17 @@ luab_getgrouplist(lua_State *L)
     (void)luab_checkltable(L, 3, 0);  /* only empty table are accepted */
 
     hook = luab_udata(L, 4, luab_mx(PRIMITIVE), luab_primitive_u *);
-    ngroups = &(hook->un_int);
+    ngroups = &(hook->un_size);
 
     if (*ngroups != 0) {
 
-        if ((gidset = alloca((*ngroups) * sizeof(gid_t))) != NULL) {
+        if ((gidset = luab_alloctablenil(L, 3, *ngroups, sizeof(gid_t), &card)) != NULL) {
 
-            if ((status = getgrouplist(name, basegid, gidset, ngroups)) == 0)
-                luab_table_pushlgid(L, 3, gidset, *ngroups, 0);
+            if ((status = getgrouplist(name, basegid, gidset, (int *)ngroups)) == 0)
+                luab_table_pushgid(L, 3, gidset, 0, 1);
         } else
             status = -1;
+
     } else {
         errno = EINVAL;
         status = -1;
