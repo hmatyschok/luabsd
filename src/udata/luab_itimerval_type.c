@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ ITIMERVAL_get(lua_State *L)
 {
     struct itimerval *it;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     it = luab_udata(L, 1, &itimerval_type, struct itimerval *);
 
@@ -130,7 +130,7 @@ ITIMERVAL_set_it_interval(lua_State *L)
     struct itimerval *it;
     struct timeval *tv;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     it = luab_udata(L, 1, &itimerval_type, struct itimerval *);
     tv = luab_udata(L, 2, luab_mx(TIMEVAL), struct timeval *);
@@ -155,7 +155,7 @@ ITIMERVAL_get_it_interval(lua_State *L)
     struct itimerval *it;
     struct timeval *tv;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     it = luab_udata(L, 1, &itimerval_type, struct itimerval *);
     tv = &(it->it_interval);
@@ -181,7 +181,7 @@ ITIMERVAL_set_it_value(lua_State *L)
     struct itimerval *it;
     struct timeval *tv;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     it = luab_udata(L, 1, &itimerval_type, struct itimerval *);
     tv = luab_udata(L, 2, luab_mx(TIMEVAL), struct timeval *);
@@ -206,7 +206,7 @@ ITIMERVAL_get_it_value(lua_State *L)
     struct itimerval *it;
     struct timeval *tv;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     it = luab_udata(L, 1, &itimerval_type, struct itimerval *);
     tv = &(it->it_value);

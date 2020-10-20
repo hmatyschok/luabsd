@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -80,7 +80,7 @@ IN_ADDR_get(lua_State *L)
 {
     struct in_addr *ia;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
 
@@ -127,7 +127,7 @@ IN_ADDR_set_s_addr(lua_State *L)
     struct in_addr *ia;
     in_addr_t id;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
     id = (in_addr_t)luab_checkinteger(L, 2, UINT_MAX);
@@ -152,7 +152,7 @@ IN_ADDR_get_s_addr(lua_State *L)
     struct in_addr *ia;
     in_addr_t id;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
     id = ia->s_addr;

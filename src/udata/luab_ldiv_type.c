@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ LDIV_get(lua_State *L)
 {
     ldiv_t *ldiv;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
 
@@ -127,7 +127,7 @@ LDIV_set_quot(lua_State *L)
     ldiv_t *ldiv;
     long data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = (long)luab_checkinteger(L, 2, INT_MAX);
@@ -152,7 +152,7 @@ LDIV_get_quot(lua_State *L)
     ldiv_t *ldiv;
     long data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = ldiv->quot;
@@ -177,7 +177,7 @@ LDIV_set_rem(lua_State *L)
     ldiv_t *ldiv;
     long data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = (long)luab_checkinteger(L, 2, INT_MAX);
@@ -202,7 +202,7 @@ LDIV_get_rem(lua_State *L)
     ldiv_t *ldiv;
     long data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ldiv = luab_udata(L, 1, &ldiv_type, ldiv_t *);
     data = ldiv->rem;

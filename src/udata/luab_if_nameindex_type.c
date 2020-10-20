@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ IF_NAMEINDEX_get(lua_State *L)
 {
     struct if_nameindex *ifni;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ifni = luab_udata(L, 1, &if_nameindex_type, struct if_nameindex *);
 
@@ -128,7 +128,7 @@ IF_NAMEINDEX_if_index(lua_State *L)
     struct if_nameindex *ifni;
     u_int if_index;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ifni = luab_udata(L, 1, &if_nameindex_type, struct if_nameindex *);
     if_index = ifni->if_index;
@@ -151,7 +151,7 @@ IF_NAMEINDEX_if_name(lua_State *L)
     struct if_nameindex *ifni;
     char *if_name;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ifni = luab_udata(L, 1, &if_nameindex_type, struct if_nameindex *);
     if_name = ifni->if_name;

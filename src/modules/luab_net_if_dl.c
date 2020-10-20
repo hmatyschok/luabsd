@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,7 +58,7 @@ luab_link_addr(lua_State *L)
     const char *addr;
     struct sockaddr_dl *sdl;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     addr = luab_checklstring(L, 1, LUAB_SDL_MAXDATALEN); /* XXX */
     sdl = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr_dl *);
@@ -91,7 +91,7 @@ luab_link_ntoa(lua_State *L)
     size_t len;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     sdl = luab_udata(L, 1, luab_mx(SOCKADDR), struct sockaddr_dl *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -141,7 +141,7 @@ luab_sockaddr_dl_create(lua_State *L)
     struct sockaddr_dl sdl;
     struct sockaddr *data;
 
-    (void)luab_checkmaxargs(L, 0);
+    (void)luab_core_checkmaxargs(L, 0);
 
     data = (struct sockaddr *)&sdl;
     luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));

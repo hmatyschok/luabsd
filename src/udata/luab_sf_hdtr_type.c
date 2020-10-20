@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,8 +34,9 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
+#if notyet
 #if __BSD_VISIBLE
-extern caddr_t luab_sysexits_xsentinel_flag;
+extern caddr_t luab_core_xsentinel_flag;
 extern luab_module_t sf_hdtr_type;
 
 /*
@@ -51,8 +52,8 @@ extern luab_module_t sf_hdtr_type;
  */
 
 typedef struct luab_sf_hdtr {
-    luab_udata_t        ud_softc;
-    struct sf_hdtr     ud_hdtr;
+    luab_udata_t    ud_softc;
+    struct sf_hdtr  ud_hdtr;
 } luab_sf_hdtr_t;
 
 #define luab_new_sf_hdtr(L, arg) \
@@ -74,7 +75,7 @@ sf_hdtr_checkiovec(lua_State *L, int narg, struct iovec *vec, size_t *n)
     size_t card;
 
     if (n == NULL)
-        luab_sysexits_err(EX_NOINPUT, __func__, EINVAL);
+        luab_core_err(EX_NOINPUT, __func__, EINVAL);
 
     luab_table_iovec_free(vec);
 
@@ -90,7 +91,7 @@ sf_hdtr_pushiovec(lua_State *L, int narg, struct iovec *vec, const char *k)
     struct iovec *iov;
     int up_call, status;
 
-    luab_sysexits_warn("%s", __func__);
+    luab_core_warn("%s", __func__);
 
     if ((iov = vec) != NULL) {
         luab_table_pushiovec(L, narg, iov, 1, 0);
@@ -142,7 +143,7 @@ SF_HDTR_get(lua_State *L)
 {
     struct sf_hdtr *hdtr;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
 
@@ -181,7 +182,7 @@ SF_HDTR_hdr_cnt(lua_State *L)
     struct sf_hdtr *hdtr;
     int data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
     data = hdtr->hdr_cnt;
@@ -204,7 +205,7 @@ SF_HDTR_trl_cnt(lua_State *L)
     struct sf_hdtr *hdtr;
     int data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
     data = hdtr->trl_cnt;
@@ -240,7 +241,7 @@ SF_HDTR_set_headers(lua_State *L)
     struct iovec *vec;
     size_t card;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
     vec = sf_hdtr_checkiovec(L, 2, hdtr->headers, &card);
@@ -266,7 +267,7 @@ SF_HDTR_get_headers(lua_State *L)
     struct sf_hdtr *hdtr;
     struct iovec *vec;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
     vec = hdtr->headers;
@@ -302,7 +303,7 @@ SF_HDTR_set_trailers(lua_State *L)
     struct iovec *vec;
     size_t card;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
     vec = sf_hdtr_checkiovec(L, 2, hdtr->trailers, &card);
@@ -328,7 +329,7 @@ SF_HDTR_get_trailers(lua_State *L)
     struct sf_hdtr *hdtr;
     struct iovec *vec;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
     vec = hdtr->trailers;
@@ -404,3 +405,4 @@ luab_module_t sf_hdtr_type = {
     .m_sz       = sizeof(luab_sf_hdtr_t),
 };
 #endif /* __BSD_VISBLE */
+#endif /* notyet */

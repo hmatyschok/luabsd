@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -119,7 +119,7 @@ luab_iovec_checklstring(lua_State *L, int narg, size_t len)
     const char *dp;
 
     if ((dp = luab_iovec_islstring(L, narg, len)) == NULL)
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     return (dp);
 }

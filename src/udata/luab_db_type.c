@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -123,7 +123,7 @@ DB_close(lua_State *L)
     luab_db_t *self;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_db(L, 1);
 
@@ -157,7 +157,7 @@ DB_del(lua_State *L)
     u_int flags;
     int status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
@@ -185,7 +185,7 @@ DB_fd(lua_State *L)
     DB *db;
     int fd;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL)
         fd = (*db->fd)(db);
@@ -216,7 +216,7 @@ DB_get(lua_State *L)
     u_int flags;
     int status;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
@@ -256,7 +256,7 @@ DB_put(lua_State *L)
     u_int flags;
     int status;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
@@ -295,7 +295,7 @@ DB_seq(lua_State *L)
     u_int flags;
     int status;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
@@ -331,7 +331,7 @@ DB_sync(lua_State *L)
     u_int flags;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
         flags = (u_int)luab_checkinteger(L, 2, INT_MAX);
@@ -352,7 +352,7 @@ DB_gc(lua_State *L)
 {
     luab_db_t *self;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_db(L, 1);
 
@@ -373,7 +373,7 @@ DB_tostring(lua_State *L)
 {
     luab_db_t *self;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_db(L, 1);
 

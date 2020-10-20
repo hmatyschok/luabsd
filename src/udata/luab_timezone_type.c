@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ TIMEZONE_get(lua_State *L)
 {
     struct timezone *tz;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     tz = luab_udata(L, 1, &timezone_type, struct timezone *);
 
@@ -129,7 +129,7 @@ TIMEZONE_set_tz_minuteswest(lua_State *L)
     struct timezone *tz;
     int data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     tz = luab_udata(L, 1, &timezone_type, struct timezone *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -154,7 +154,7 @@ TIMEZONE_get_tz_minuteswest(lua_State *L)
     struct timezone *tz;
     int data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     tz = luab_udata(L, 1, &timezone_type, struct timezone *);
     data = tz->tz_minuteswest;
@@ -179,7 +179,7 @@ TIMEZONE_set_tz_dsttime(lua_State *L)
     struct timezone *tz;
     int data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     tz = luab_udata(L, 1, &timezone_type, struct timezone *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -204,7 +204,7 @@ TIMEZONE_get_tz_dsttime(lua_State *L)
     struct timezone *tz;
     int data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     tz = luab_udata(L, 1, &timezone_type, struct timezone *);
     data = tz->tz_dsttime;

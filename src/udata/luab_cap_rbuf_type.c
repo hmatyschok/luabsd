@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ CAP_RBUF_get(lua_State *L)
 {
     struct iovec *iov;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
 
@@ -134,7 +134,7 @@ CAP_RBUF_iov_base(lua_State *L)
 {
     struct iovec *iov;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
 
@@ -155,7 +155,7 @@ CAP_RBUF_iov_len(lua_State *L)
 {
     struct iovec *iov;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
 
@@ -171,7 +171,7 @@ CAP_RBUF_gc(lua_State *L)
 {
     struct iovec *iov;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
     (void)luab_iov_free(iov);

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ BINTIME_get(lua_State *L)
 {
     struct bintime *bt;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     bt = luab_udata(L, 1, &bintime_type, struct bintime *);
 
@@ -130,7 +130,7 @@ BINTIME_set_sec(lua_State *L)
     struct bintime *bt;
     time_t data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = (time_t)luab_checkinteger(L, 2, INT_MAX);
@@ -155,7 +155,7 @@ BINTIME_get_sec(lua_State *L)
     struct bintime *bt;
     time_t data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = bt->sec;
@@ -180,7 +180,7 @@ BINTIME_set_frac(lua_State *L)
     struct bintime *bt;
     uint64_t data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = (uint64_t)luab_checkinteger(L, 2, LONG_MAX);
@@ -205,7 +205,7 @@ BINTIME_get_frac(lua_State *L)
     struct bintime *bt;
     uint64_t data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     bt = luab_udata(L, 1, &bintime_type, struct bintime *);
     data = bt->frac;

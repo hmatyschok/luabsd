@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -67,7 +67,7 @@ luab_dbopen(lua_State *L)
     int flags, mode, type;
     DB *db;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     file = luab_islstring(L, 1, MAXPATHLEN);
     flags = luab_checkinteger(L, 2, INT_MAX);

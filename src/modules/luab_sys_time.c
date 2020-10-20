@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -118,7 +118,7 @@ luab_setitimer(lua_State *L)
     struct itimerval *ovalue;
     int status;
 
-    narg = luab_checkmaxargs(L, 4);
+    narg = luab_core_checkmaxargs(L, 4);
 
     which = (int)luab_checkinteger(L, 1, INT_MAX);
     value = luab_udataisnil(L, 2, luab_mx(ITIMERVAL), struct itimerval *);
@@ -155,7 +155,7 @@ luab_getitimer(lua_State *L)
     struct itimerval *value;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     which = (int)luab_checkinteger(L, 1, INT_MAX);
     value = luab_udata(L, 2, luab_mx(ITIMERVAL), struct itimerval *);

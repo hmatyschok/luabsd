@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ LINK_get(lua_State *L)
 {
     link_t *link;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     link = luab_udata(L, 1, &link_type, link_t *);
 
@@ -138,7 +138,7 @@ LINK_set_ptr(lua_State *L)
     void **dp;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     link = (link_t *)luab_checkxdata(L, 1, &link_type, &udx);
     dp = luab_dptox(link->link_dp);
@@ -166,7 +166,7 @@ LINK_get_ptr(lua_State *L)
     link_t *link;
     void *dp;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     link = luab_udata(L, 1, &link_type, link_t *);
     dp = link->link_dp;
@@ -193,7 +193,7 @@ LINK_set_sockaddr(lua_State *L)
     void **dp;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     link = (link_t *)luab_checkxdata(L, 1, &link_type, &udx);
     dp = luab_dptox(link->link_sa);
@@ -221,7 +221,7 @@ LINK_get_sockaddr(lua_State *L)
     link_t *link;
     void *dp;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     link = luab_udata(L, 1, &link_type, link_t *);
     dp = link->link_sa;

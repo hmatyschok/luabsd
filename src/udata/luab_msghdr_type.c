@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -207,7 +207,7 @@ MSGHDR_get(lua_State *L)
 {
     struct msghdr *msg;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
 
@@ -261,7 +261,7 @@ MSGHDR_msg_iovlen(lua_State *L)
     struct msghdr *msg;
     int msg_iovlen;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_iovlen = msg->msg_iovlen;
@@ -284,7 +284,7 @@ MSGHDR_msg_flags(lua_State *L)
     struct msghdr *msg;
     int msg_flags;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_flags = msg->msg_flags;
@@ -307,7 +307,7 @@ MSGHDR_msg_len(lua_State *L)
     struct mmsghdr *msg;
     int msg_len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     msg = luab_udata(L, 1, &msghdr_type, struct mmsghdr *);
     msg_len = msg->msg_len;
@@ -340,7 +340,7 @@ MSGHDR_set_msg_name(lua_State *L)
     caddr_t name;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_msghdr(L, 1);
     sa = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -378,7 +378,7 @@ MSGHDR_get_msg_name(lua_State *L)
     struct sockaddr *src;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     dst = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -411,7 +411,7 @@ MSGHDR_set_msg_namelen(lua_State *L)
     struct msghdr *msg;
     socklen_t msg_namelen;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_namelen = (socklen_t)luab_checkinteger(L, 2, INT_MAX);
@@ -436,7 +436,7 @@ MSGHDR_get_msg_namelen(lua_State *L)
     struct msghdr *msg;
     socklen_t msg_namelen;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
     msg_namelen = msg->msg_namelen;
@@ -463,7 +463,7 @@ MSGHDR_set_msg_iov(lua_State *L)
     struct iovec *iov;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     /*
      * Translate a LUA_TTABLE over LUA_TUSERDATA into an array for scattered I/O.
@@ -523,7 +523,7 @@ MSGHDR_get_msg_iov(lua_State *L)
     struct msghdr *msg;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
 
@@ -544,7 +544,7 @@ MSGHDR_gc(lua_State *L)
     luab_msghdr_t *self;
     struct iovec *buf;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_msghdr(L, 1);
     buf = self->msg_buf;

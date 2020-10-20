@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -88,7 +88,7 @@ CMSGCRED_get(lua_State *L)
 {
     struct cmsgcred *cmcred;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
 
@@ -140,7 +140,7 @@ CMSGCRED_cmcred_pid(lua_State *L)
     struct cmsgcred *cmcred;
     pid_t data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_pid;
@@ -163,7 +163,7 @@ CMSGCRED_cmcred_uid(lua_State *L)
     struct cmsgcred *cmcred;
     uid_t data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_uid;
@@ -186,7 +186,7 @@ CMSGCRED_cmcred_euid(lua_State *L)
     struct cmsgcred *cmcred;
     uid_t data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_euid;
@@ -209,7 +209,7 @@ CMSGCRED_cmcred_gid(lua_State *L)
     struct cmsgcred *cmcred;
     gid_t data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_gid;
@@ -232,7 +232,7 @@ CMSGCRED_cmcred_ngroups(lua_State *L)
     struct cmsgcred *cmcred;
     short data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_ngroups;
@@ -256,7 +256,7 @@ CMSGCRED_cmcred_groups(lua_State *L)
     void *data;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_groups;

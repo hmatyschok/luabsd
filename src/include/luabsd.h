@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -161,7 +161,10 @@ typedef enum luab_type {
     LUAB_ACCEPT_FILTER_ARG_IDX,
     LUAB_SOCKPROTO_IDX,
     LUAB_CMSGCRED_IDX,
+#if notyet
     LUAB_SF_HDTR_IDX,
+#endif
+
 #endif /* __BSD_VISIBLE */
     LUAB_TYPE_SENTINEL
 } luab_type_t;
@@ -169,7 +172,7 @@ typedef enum luab_type {
 #define luab_idx(name) \
     (LUAB_##name##_IDX)
 #define luab_vx(idx) \
-    (luab_typevec[(idx)])
+    (luab_typevec[((idx) % (LUAB_TYPE_SENTINEL))])
 #define luab_mx(name) \
     ((luab_vx(luab_idx(name))).mv_mod)
 
@@ -188,14 +191,14 @@ extern luab_module_vec_t luab_typevec[];
  * Generic service primitives, subset of <core>.
  */
 
-void     luab_free(void *, size_t);
+void     luab_core_free(void *, size_t);
 
-void     luab_sysexits_err(int, const char *, int);
-void     luab_sysexits_errx(int, const char *, ...);
-void     luab_sysexits_warn(const char *, ...);
-void     luab_argerror(lua_State *, int, void *, size_t, size_t, int);
+void     luab_core_err(int, const char *, int);
+void     luab_core_errx(int, const char *, ...);
+void     luab_core_warn(const char *, ...);
+void     luab_core_argerror(lua_State *, int, void *, size_t, size_t, int);
 
-int  luab_checkmaxargs(lua_State *, int);
+int  luab_core_checkmaxargs(lua_State *, int);
 
 /*
  * Access functions, n-th arg over argv, [stack -> C].

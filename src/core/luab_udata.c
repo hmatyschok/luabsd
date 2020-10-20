@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -145,7 +145,7 @@ void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
     if (m == NULL)
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     return (luaL_checkudata(L, narg, m->m_name));
 }
@@ -154,7 +154,7 @@ void *
 luab_checkxdata(lua_State *L, int narg, luab_module_t *m, luab_udata_t **udx)
 {
     if (udx == NULL)
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     *udx = luab_todata(L, narg, m, luab_udata_t *);;
     return (*udx + 1);
@@ -236,10 +236,10 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
     if ((iov = luab_isiovec(L, narg)) != NULL) {
 
         if (iov->iov.iov_base == NULL)
-            luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+            luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
         if (iov->iov.iov_len != len)
-            luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+            luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
         buf = iov->iov.iov_base;
     } else
@@ -255,7 +255,7 @@ luab_udata_xlink(lua_State *L, int narg, luab_udata_t *udx, void **x)
     void *dp;
 
     if (udx == NULL || x == NULL)
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     if ((ud = luab_udata_find(udx, x)) != NULL)
         luab_udata_remove(ud);
@@ -277,7 +277,7 @@ luab_udata_checkxlink(lua_State *L, int narg, luab_module_t *m,
     void *dp;
 
     if (udx == NULL || x == NULL)
-        luab_argerror(L, narg, NULL, 0, 0, EINVAL);
+        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
     if ((ud = luab_udata_find(udx, x)) != NULL)
         luab_udata_remove(ud);
@@ -331,7 +331,7 @@ luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
     caddr_t arg;
 
     if ((m = (m1 != NULL) ? m1 : m0) != NULL) {
-        if (luab_checkmaxargs(L, narg) == 0)
+        if (luab_core_checkmaxargs(L, narg) == 0)
             arg = NULL;
         else
             arg = luab_udata(L, narg, m, caddr_t);

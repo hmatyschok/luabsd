@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ luab_if_indextoname(lua_State *L)
     caddr_t bp;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     ifindex = (u_int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -114,7 +114,7 @@ luab_if_nameindex(lua_State *L)
     struct if_nameindex *ifni;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
     (void)luab_checkltable(L, 1, 0);
 
     if ((vec = if_nameindex()) != NULL) {
@@ -150,7 +150,7 @@ luab_if_nametoindex(lua_State *L)
     const char *ifname;
     u_int index;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     ifname = luab_checklstring(L, 1, IFNAMSIZ);
     index = if_nametoindex(ifname);

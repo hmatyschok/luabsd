@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ LINGER_get(lua_State *L)
 {
     struct linger *l;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &linger_type, struct linger *);
 
@@ -129,7 +129,7 @@ LINGER_set_l_onoff(lua_State *L)
     struct linger *l;
     int data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &linger_type, struct linger *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -154,7 +154,7 @@ LINGER_get_l_onoff(lua_State *L)
     struct linger *l;
     int data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &linger_type, struct linger *);
     data = l->l_onoff;
@@ -179,7 +179,7 @@ LINGER_set_l_linger(lua_State *L)
     struct linger *l;
     int data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &linger_type, struct linger *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -204,7 +204,7 @@ LINGER_get_l_linger(lua_State *L)
     struct linger *l;
     int data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &linger_type, struct linger *);
     data = l->l_linger;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -39,16 +39,6 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
-/*
- * XXX namespeace, primitives shall renamed by, e. g.
- *
- *  (a) luab_xxx(3) by luab_core_xxx(3) and/or
- *
- *  (b) the implementation family of luab_core_warn{3}(3) functions,
- *
- * etc..
- */
-
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"
 
@@ -59,7 +49,7 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
  */
 
 void
-luab_free(void *v, size_t sz)
+luab_core_free(void *v, size_t sz)
 {
     if (v != NULL) {
         if (sz > 0)
@@ -72,7 +62,7 @@ luab_free(void *v, size_t sz)
 }
 
 void
-luab_sysexits_errx(int eval, const char *fmt, ...)
+luab_core_errx(int eval, const char *fmt, ...)
 {
     va_list ap;
 
@@ -82,13 +72,13 @@ luab_sysexits_errx(int eval, const char *fmt, ...)
 }
 
 void
-luab_sysexits_err(int eval, const char *fname, int up_call)
+luab_core_err(int eval, const char *fname, int up_call)
 {
     err(eval, "%s: %s", fname, strerror(up_call));
 }
 
 void
-luab_sysexits_warn(const char *fmt, ...)
+luab_core_warn(const char *fmt, ...)
 {
     va_list ap;
 
@@ -98,19 +88,19 @@ luab_sysexits_warn(const char *fmt, ...)
 }
 
 void
-luab_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int up_call)
+luab_core_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int up_call)
 {
     size_t len;
 
     if ((len = n * sz) != 0)
-        luab_free(v, len);
+        luab_core_free(v, len);
 
     errno = up_call;
     luaL_argerror(L, narg, strerror(up_call));
 }
 
 int
-luab_checkmaxargs(lua_State *L, int nmax)
+luab_core_checkmaxargs(lua_State *L, int nmax)
 {
     int narg;
 
@@ -176,7 +166,7 @@ luab_checklstring(lua_State *L, int narg, size_t max_len)
     dp = luaL_checklstring(L, narg, &len);
 
     if (len > max_len)
-        luab_argerror(L, narg, NULL, 0, 0, ERANGE);
+        luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
 
     return (dp);
 }
@@ -442,7 +432,7 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     caddr_t dp;
 
-    (void)luab_checkmaxargs(L, narg);
+    (void)luab_core_checkmaxargs(L, narg);
 
     if (m != NULL && m->m_get != NULL)
         dp = (caddr_t)(*m->m_get)(L, narg);
@@ -457,7 +447,7 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *self, *ud, *ud_tmp;
 
-    (void)luab_checkmaxargs(L, narg);
+    (void)luab_core_checkmaxargs(L, narg);
 
     self = luab_todata(L, narg, m, luab_udata_t *);
 
@@ -478,7 +468,7 @@ luab_len(lua_State *L, int narg, luab_module_t *m)
     luab_udata_t *ud;
     ssize_t len;
 
-    (void)luab_checkmaxargs(L, narg);
+    (void)luab_core_checkmaxargs(L, narg);
 
     if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
         len = luab_xlen(m);
@@ -493,7 +483,7 @@ luab_tostring(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *ud;
 
-    (void)luab_checkmaxargs(L, narg);
+    (void)luab_core_checkmaxargs(L, narg);
 
     if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
         lua_pushfstring(L, "%s (%p,%d)", m->m_name, ud, ud->ud_ts);
@@ -520,7 +510,7 @@ luab_uuid(lua_State *L)
     caddr_t buf;
     int status;
 
-    (void)luab_checkmaxargs(L, 0);
+    (void)luab_core_checkmaxargs(L, 0);
 
     if ((status = uuidgen(&uuid, 1)) != 0)
         status = luab_pushnil(L);
@@ -594,7 +584,7 @@ luab_module_t luab_core_lib = {
 };
 
 static const char *copyright =
-    " Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>\n"
+    " Copyright (c) 2020 Henning Matyschok\n"
     " All rights reserved.\n"
     "\n"
     "  The implementation of the interface against alarm(3) and setitimer(2)\n"
@@ -852,11 +842,14 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &cmsgcred_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_CMSGCRED_IDX,
-    },{
+    },
+#if notyet
+    {
         .mv_mod = &sf_hdtr_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_SF_HDTR_IDX,
     },
+#endif
 #endif  /* __BSD_VISIBLE */
     LUAB_MOD_VEC_SENTINEL
 };

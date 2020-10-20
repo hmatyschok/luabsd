@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -82,7 +82,7 @@ SOCKPROTO_get(lua_State *L)
 {
     struct sockproto *sp;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
 
@@ -130,7 +130,7 @@ SOCKPROTO_set_sp_family(lua_State *L)
     struct sockproto *sp;
     u_short data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
     data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
@@ -154,7 +154,7 @@ SOCKPROTO_get_sp_family(lua_State *L)
     struct sockproto *sp;
     u_short data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
     data = sp->sp_family;
@@ -179,7 +179,7 @@ SOCKPROTO_set_sp_protocol(lua_State *L)
     struct sockproto *sp;
     u_short data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
     data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
@@ -203,7 +203,7 @@ SOCKPROTO_get_sp_protocol(lua_State *L)
     struct sockproto *sp;
     u_short data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
     data = sp->sp_protocol;

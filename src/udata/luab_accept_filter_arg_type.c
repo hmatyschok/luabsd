@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -85,7 +85,7 @@ ACCEPT_FILTER_ARG_get(lua_State *L)
 {
     struct accept_filter_arg *af;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
 
@@ -134,7 +134,7 @@ ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
     const char *data;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
     data = luab_checklstring(L, 2, LUAB_AF_NAMEMAXLEN);
@@ -159,7 +159,7 @@ ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
     caddr_t data;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
     data = af->af_name;
@@ -186,7 +186,7 @@ ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
     const char *data;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
     data = luab_checklstring(L, 2, LUAB_AF_ARGMAXLEN);
@@ -211,7 +211,7 @@ ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
     caddr_t data;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
     data = af->af_arg;

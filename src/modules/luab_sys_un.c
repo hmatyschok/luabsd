@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -64,7 +64,7 @@ luab_sockaddr_un_create(lua_State *L)
     data = (struct sockaddr *)&sun;
     luab_sockaddr_pci(data, AF_UNIX, sizeof(sun));
 
-    switch (luab_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
+    switch (luab_core_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
     case 1:
         sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN);
         (void)memmove(sun.sun_path, sun_path, strlen(sun_path));

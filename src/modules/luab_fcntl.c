@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -74,7 +74,7 @@ luab_open(lua_State *L)
     mode_t mode;
     int fd;
 
-    narg = luab_checkmaxargs(L, 3);
+    narg = luab_core_checkmaxargs(L, 3);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
     flags = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -111,7 +111,7 @@ luab_creat(lua_State *L)
     mode_t mode;
     int fd;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, MAXPATHLEN);
     mode = (mode_t)luab_checkinteger(L, 2, ALLPERMS);
@@ -145,7 +145,7 @@ luab_fcntl(lua_State *L)
     int fd, cmd, arg, status;
     struct flock *argp;
 
-    narg = luab_checkmaxargs(L, 3);
+    narg = luab_core_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     cmd = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -189,7 +189,7 @@ luab_flock(lua_State *L)
 {
     int fd, operation, status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     operation = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -243,7 +243,7 @@ luab_openat(lua_State *L)
     mode_t mode;
     int fd;
 
-    narg = luab_checkmaxargs(L, 4);
+    narg = luab_core_checkmaxargs(L, 4);
 
     dirfd = (int)luab_checkinteger(L, 1, INT_MAX);
     path = luab_checklstring(L, 2, MAXPATHLEN);
@@ -294,7 +294,7 @@ luab_posix_fadvise(lua_State *L)
     int advice;
     int status;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     offset = (off_t)luab_checkinteger(L, 2, INT_MAX);   /* XXX */
@@ -331,7 +331,7 @@ luab_posix_fallocate(lua_State *L)
     off_t len;
     int status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     offset = (off_t)luab_checkinteger(L, 2, INT_MAX);  /* XXX */

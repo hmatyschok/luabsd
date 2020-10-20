@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,7 +57,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
     luab_xarg_t *pci;
     luab_primitive_u *xp;
 
-    (void)luab_checkmaxargs(L, 5);
+    (void)luab_core_checkmaxargs(L, 5);
 #if 0
     if (sopt == NULL)
         (void)luaL_error(L, "%s: sopt == NULL", __func__);
@@ -110,7 +110,7 @@ luab_checkmsgvec(lua_State *L, int narg)
             msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
             (void)memmove(&(vec[k].msg_hdr), msg, sizeof(struct msghdr));
         } else
-            luab_argerror(L, narg, vec, card, sizeof(struct msghdr), EINVAL);
+            luab_core_argerror(L, narg, vec, card, sizeof(struct msghdr), EINVAL);
 
         lua_pop(L, 1);
     }
@@ -145,7 +145,7 @@ luab_accept(lua_State *L)
     socklen_t *addrlen;
     int as;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -182,7 +182,7 @@ luab_bind(lua_State *L)
     socklen_t addrlen;
     int status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -214,7 +214,7 @@ luab_connect(lua_State *L)
     socklen_t namelen;
     int status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     name = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -251,7 +251,7 @@ luab_accept4(lua_State *L)
     socklen_t *addrlen;
     int flags, as;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     addr = luab_udataisnil(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -294,7 +294,7 @@ luab_bindat(lua_State *L)
     socklen_t addrlen;
     int status;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     s = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -332,7 +332,7 @@ luab_connectat(lua_State *L)
     socklen_t namelen;
     int status;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, INT_MAX);
     s = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -367,7 +367,7 @@ luab_getpeername(lua_State *L)
     socklen_t *namelen;
     int status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     name = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -401,7 +401,7 @@ luab_getsockname(lua_State *L)
     socklen_t *namelen;
     int status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     name = luab_udata(L, 2, luab_mx(SOCKADDR), struct sockaddr *);
@@ -464,7 +464,7 @@ luab_listen(lua_State *L)
     int s, backlog;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     backlog = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -501,7 +501,7 @@ luab_recv(lua_State *L)
     size_t len;
     int flags;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -549,7 +549,7 @@ luab_recvfrom(lua_State *L)
     luab_primitive_u *xp;
     socklen_t *fromlen;
 
-    (void)luab_checkmaxargs(L, 6);
+    (void)luab_core_checkmaxargs(L, 6);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -595,7 +595,7 @@ luab_recvmsg(lua_State *L)
     int flags;
     ssize_t count;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     msg = luab_udata(L, 2, luab_mx(MSGHDR), struct msghdr *);
@@ -642,7 +642,7 @@ luab_recvmmsg(lua_State *L)
     struct timespec *timeout;
     ssize_t count;
 
-    (void)luab_checkmaxargs(L, 5);
+    (void)luab_core_checkmaxargs(L, 5);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     msgvec = luab_checkmsgvec(L, 2);
@@ -691,7 +691,7 @@ luab_send(lua_State *L)
     size_t len;
     int flags;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     msg = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -738,7 +738,7 @@ luab_sendto(lua_State *L)
     struct sockaddr *to;
     socklen_t tolen;
 
-    (void)luab_checkmaxargs(L, 6);
+    (void)luab_core_checkmaxargs(L, 6);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -782,7 +782,7 @@ luab_sendmsg(lua_State *L)
     int flags;
     ssize_t count;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     msg = luab_udata(L, 2, luab_mx(MSGHDR), struct msghdr *);
@@ -828,7 +828,7 @@ luab_sendmmsg(lua_State *L)
     int flags;
     ssize_t count;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     msgvec = luab_checkmsgvec(L, 2);
@@ -864,7 +864,7 @@ luab_setfib(lua_State *L)
     int fib;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     fib = (int)luab_checkinteger(L, 1, INT_MAX);
     status = setfib(fib);
@@ -926,7 +926,7 @@ luab_shutdown(lua_State *L)
     int s, how;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     how = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -951,7 +951,7 @@ luab_sockatmark(lua_State *L)
 {
     int s, status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     status = sockatmark(s);
@@ -982,7 +982,7 @@ luab_socket(lua_State *L)
     int protocol;
     int s;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     domain = (int)luab_checkinteger(L, 1, INT_MAX);
     type = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -1015,19 +1015,25 @@ luab_socketpair(lua_State *L)
     int domain;
     int type;
     int protocol;
-    int socks[2];
+    luab_table_t *tbl;
+    int *socks;
     int status;
 
-    (void)luab_checkmaxargs(L, 4);
+    (void)luab_core_checkmaxargs(L, 4);
 
     domain = (int)luab_checkinteger(L, 1, INT_MAX);
     type = (int)luab_checkinteger(L, 2, INT_MAX);
     protocol = (int)luab_checkinteger(L, 3, INT_MAX);
 
-    (void)luab_checkltable(L, 4, 0);    /* XXX */
+    (void)luab_checkltable(L, 4, 0);
+
+    if ((tbl = luab_table_alloc(L, 4, 2, sizeof(int))) != NULL)
+        socks = (int *)(tbl->tbl_vec);
+    else
+        socks = NULL;
 
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
-        luab_table_pushint(L, 4, socks, 0, 0);
+        luab_table_pushint(L, 4, tbl, 0, 1);
 
     return (luab_pusherr(L, status));
 }
@@ -1137,6 +1143,7 @@ luab_sockproto_create(lua_State *L)
     return (luab_create(L, 1, luab_mx(SOCKPROTO), NULL));
 }
 
+#if notyet
 /***
  * Generator function.
  *
@@ -1151,6 +1158,7 @@ luab_sf_hdtr_create(lua_State *L)
 {
     return (luab_create(L, 0, luab_mx(SF_HDTR), NULL));
 }
+#endif /* notyet */
 #endif
 
 /*
@@ -1468,7 +1476,9 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("sockaddr_create",            luab_sockaddr_create),
 #if __BSD_VISIBLE
     LUAB_FUNC("sockproto_create",           luab_sockproto_create),
+#if notyet
     LUAB_FUNC("sf_hdtr_create",             luab_sf_hdtr_create),
+#endif
 #endif
     LUAB_MOD_TBL_SENTINEL
 };

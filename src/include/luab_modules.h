@@ -1,5 +1,5 @@
 /*-
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -66,7 +66,9 @@ extern luab_module_t cap_rbuf_type;
 extern luab_module_t accept_filter_arg_type;
 extern luab_module_t sockproto_type;
 extern luab_module_t cmsgcred_type;
+#if notyet
 extern luab_module_t sf_hdtr_type;
+#endif
 #endif
 
 /*

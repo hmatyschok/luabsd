@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ TIMEVAL_get(lua_State *L)
 {
     struct timeval *tv;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     tv = luab_udata(L, 1, &timeval_type, struct timeval *);
 
@@ -129,7 +129,7 @@ TIMEVAL_set_tv_sec(lua_State *L)
     struct timeval *tv;
     time_t data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     tv = luab_udata(L, 1, &timeval_type, struct timeval *);
     data = (time_t)luab_checkinteger(L, 2, INT_MAX);
@@ -154,7 +154,7 @@ TIMEVAL_get_tv_sec(lua_State *L)
     struct timeval *tv;
     time_t data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     tv = luab_udata(L, 1, &timeval_type, struct timeval *);
     data = tv->tv_sec;
@@ -179,7 +179,7 @@ TIMEVAL_set_tv_usec(lua_State *L)
     struct timeval *tv;
     long data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     tv = luab_udata(L, 1, &timeval_type, struct timeval *);
     data = (long)luab_checkinteger(L, 2, LONG_MAX);
@@ -204,7 +204,7 @@ TIMEVAL_get_tv_usec(lua_State *L)
     struct timeval *tv;
     long data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     tv = luab_udata(L, 1, &timeval_type, struct timeval *);
     data = tv->tv_usec;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -84,7 +84,7 @@ CRYPT_DATA_get(lua_State *L)
 {
     struct crypt_data *cd;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
 
@@ -134,7 +134,7 @@ CRYPT_DATA_set_initialized(lua_State *L)
     struct crypt_data *cd;
     int data;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -159,7 +159,7 @@ CRYPT_DATA_get_initialized(lua_State *L)
     struct crypt_data *cd;
     int data;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
     data = cd->initialized;
@@ -185,7 +185,7 @@ CRYPT_DATA_set_buf(lua_State *L)
     const char *buf;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
     buf = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN);
@@ -213,7 +213,7 @@ CRYPT_DATA_get_buf(lua_State *L)
     caddr_t buf;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
     buf = cd->__buf;

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -79,7 +79,7 @@ luab_uuid_compare(lua_State *L)
     uint32_t *status;
     int32_t ret;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
     uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
@@ -121,7 +121,7 @@ luab_uuid_equal(lua_State *L)
     uint32_t *status;
     int32_t ret;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     uuid1 = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
     uuid2 = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
@@ -163,7 +163,7 @@ luab_uuid_from_string(lua_State *L)
     luab_primitive_u *xp;
     uint32_t *status;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     str = luab_checklstring(L, 1, LUAB_UUID_STR_LEN);
     uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
@@ -204,7 +204,7 @@ luab_uuid_hash(lua_State *L)
     uint32_t *status;
     uint16_t hash;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, luab_mx(UUID), uuid_t *);
     xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
@@ -235,7 +235,7 @@ luab_uuid_enc_le(lua_State *L)
     caddr_t bp;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
     uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
@@ -284,7 +284,7 @@ luab_uuid_dec_le(lua_State *L)
     caddr_t bp;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
     uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
@@ -333,7 +333,7 @@ luab_uuid_enc_be(lua_State *L)
     caddr_t bp;
     int status;
                                         /* XXX DRY */
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
     uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
@@ -382,7 +382,7 @@ luab_uuid_dec_be(lua_State *L)
     caddr_t bp;
     int status;
                                         /* XXX DRY */
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
     uuid = luab_udata(L, 2, luab_mx(UUID), uuid_t *);
@@ -442,7 +442,7 @@ luab_uuid_create(lua_State *L)
     uint32_t *status;
     uuid_t uuid;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
     status = &(xp->un_uint32);
@@ -479,7 +479,7 @@ luab_uuid_create_nil(lua_State *L)
     uint32_t *status;
     uuid_t uuid;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
     status = &(xp->un_uint32);

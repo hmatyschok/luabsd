@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -81,7 +81,7 @@ DBT_get(lua_State *L)
 {
     DBT *dbt;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
 
@@ -118,7 +118,7 @@ DBT_get_size(lua_State *L)
     DBT *dbt;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
     len = dbt->size;
@@ -148,7 +148,7 @@ DBT_set_data(lua_State *L)
     luab_iovec_t *buf;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -181,7 +181,7 @@ DBT_get_data(lua_State *L)
     luab_iovec_t *buf;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, &dbt_type, DBT *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
@@ -198,7 +198,7 @@ DBT_gc(lua_State *L)
 {
     DBT *dbt;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     dbt = luab_to_dbt(L, 1);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok <hmatyschok@outlook.com>
+ * Copyright (c) 2020 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -86,7 +86,7 @@ IOVEC_get(lua_State *L)
 {
     luab_iovec_t *self;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_iovec(L, 1);
 
@@ -117,7 +117,7 @@ IOVEC_clone(lua_State *L)
     luab_iovec_t *self;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_iovec(L, 1);
 
@@ -169,7 +169,7 @@ IOVEC_max_len(lua_State *L)
     luab_iovec_t *self;
     ssize_t nbytes;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_iovec(L, 1);
 
@@ -209,7 +209,7 @@ IOVEC_set_len(lua_State *L)
     struct iovec *iov;
     ssize_t len;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
     nbytes = (size_t)luab_checkinteger(L, 2,
@@ -258,7 +258,7 @@ IOVEC_get_len(lua_State *L)
     struct iovec *iov;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_iovec(L, 1);
     iov = &(self->iov);
@@ -296,7 +296,7 @@ IOVEC_clear(lua_State *L)
     struct iovec *iov;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_iovec(L, 1);
     iov = &(self->iov);
@@ -337,7 +337,7 @@ IOVEC_copy_in(lua_State *L)
     size_t len;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
     len = self->iov_max_len;
@@ -363,7 +363,7 @@ IOVEC_copy_out(lua_State *L)
     struct iovec *iov;
     int status;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_iovec(L, 1);
     iov = &(self->iov);
@@ -400,7 +400,7 @@ IOVEC_resize(lua_State *L)
     size_t len;
     int status;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
     iov = &(self->iov);
@@ -456,7 +456,7 @@ IOVEC_read(lua_State *L)
     luab_iovec_t *self;
     int fd;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
     fd = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -481,7 +481,7 @@ IOVEC_write(lua_State *L)
     luab_iovec_t *self;
     int fd;
 
-    (void)luab_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_iovec(L, 1);
     fd = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -516,7 +516,7 @@ IOVEC_recv(lua_State *L)
     luab_iovec_t *self;
     int s, flags;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     self = luab_to_iovec(L, 1);
     s = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -548,7 +548,7 @@ IOVEC_send(lua_State *L)
     luab_iovec_t *self;
     int s, flags;
 
-    (void)luab_checkmaxargs(L, 3);
+    (void)luab_core_checkmaxargs(L, 3);
 
     self = luab_to_iovec(L, 1);
     s = (int)luab_checkinteger(L, 2, INT_MAX);
@@ -568,7 +568,7 @@ IOVEC_gc(lua_State *L)
     caddr_t dp;
     size_t len;
 
-    (void)luab_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_iovec(L, 1);
 
