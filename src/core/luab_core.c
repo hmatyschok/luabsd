@@ -216,7 +216,9 @@ luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
     luaL_Buffer b;
     caddr_t dp;
 
-    if (v != NULL && len > 1) {
+    if ((v != NULL) &&
+        (len > 1) &&
+        (len < LUAL_BUFFERSIZE)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -270,7 +272,9 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
     luaL_Buffer b;
     caddr_t dp;
 
-    if (v != NULL && len > 1) {
+    if ((v != NULL) &&
+        (len > 1) &&
+        (len < LUAL_BUFFERSIZE)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -398,7 +402,9 @@ luab_pushldata(lua_State *L, void *v, size_t len)
     caddr_t dp, msg;
     int status;
 
-    if (v != NULL && len > 1) {
+    if ((v != NULL) &&
+        (len > 1) &&
+        (len < LUAL_BUFFERSIZE)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
