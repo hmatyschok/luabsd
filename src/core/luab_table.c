@@ -302,9 +302,10 @@ luab_table_checkargv(lua_State *L, int narg)
                         x[m] = (intptr_t)lua_tostring(L, -1);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
@@ -337,9 +338,10 @@ luab_table_toxargp(lua_State *L, int narg)
                         x[m] = (intptr_t)lua_topointer(L, -1);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
@@ -370,9 +372,10 @@ luab_table_checkdouble(lua_State *L, int narg)
                         x[m] = (double)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
@@ -403,9 +406,10 @@ luab_table_checkgid(lua_State *L, int narg)
                         x[m] = (gid_t)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
@@ -436,9 +440,10 @@ luab_table_checkint(lua_State *L, int narg)
                         x[m] = (int)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
@@ -469,9 +474,10 @@ luab_table_checku_short(lua_State *L, int narg)
                         x[m] = (u_short)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
@@ -501,9 +507,10 @@ luab_table_checkiovec(lua_State *L, int narg)
                         luab_table_iovec_init(L, -1, &(x[m]));
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
@@ -536,9 +543,10 @@ luab_table_checktimespec(lua_State *L, int narg)
                         (void)memmove(&(x[m]), ts, sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else
+                } else {
                     errno = ENOENT;
-
+                    break;
+                }
                 lua_pop(L, 1);
             }
         }
