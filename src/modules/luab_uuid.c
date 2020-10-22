@@ -242,6 +242,7 @@ luab_uuid_enc_le(lua_State *L)
 
     if ((buf != NULL) &&
         ((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -291,6 +292,7 @@ luab_uuid_dec_le(lua_State *L)
 
     if ((buf != NULL) &&
         ((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
@@ -340,6 +342,7 @@ luab_uuid_enc_be(lua_State *L)
 
     if ((buf != NULL) &&
         ((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -389,6 +392,7 @@ luab_uuid_dec_be(lua_State *L)
 
     if ((buf != NULL) &&
         ((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
