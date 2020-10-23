@@ -207,11 +207,16 @@ luab_iov_readv(struct iovec *iov, int fd, size_t n)
 {
     ssize_t count;
 
-    if (iov != NULL && iov->iov_base != NULL) {
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
 
-        if (n <= iov->iov_len)
-            count = readv(fd, iov, n);
-        else {
+            if (n <= iov->iov_len)
+                count = readv(fd, iov, n);
+            else {
+                errno = ERANGE;
+                count = -1;
+            }
+        } else {
             errno = ERANGE;
             count = -1;
         }
@@ -227,11 +232,16 @@ luab_iov_writev(struct iovec *iov, int fd, size_t n)
 {
     ssize_t count;
 
-    if (iov != NULL && iov->iov_base != NULL) {
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
 
-        if (n <= iov->iov_len)
-            count = writev(fd, iov, n);
-        else {
+            if (n <= iov->iov_len)
+                count = writev(fd, iov, n);
+            else {
+                errno = ERANGE;
+                count = -1;
+            }
+        } else {
             errno = ERANGE;
             count = -1;
         }
@@ -248,11 +258,16 @@ luab_iov_preadv(struct iovec *iov, int fd, size_t n, off_t off)
 {
     ssize_t count;
 
-    if (iov != NULL && iov->iov_base != NULL) {
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
 
-        if (n <= iov->iov_len && (size_t)off < n)
-            count = preadv(fd, iov, n, off);
-        else {
+            if (n <= iov->iov_len && (size_t)off < n)
+                count = preadv(fd, iov, n, off);
+            else {
+                errno = ERANGE;
+                count = -1;
+            }
+        } else {
             errno = ERANGE;
             count = -1;
         }
@@ -268,11 +283,16 @@ luab_iov_pwritev(struct iovec *iov, int fd, size_t n, off_t off)
 {
     ssize_t count;
 
-    if (iov != NULL && iov->iov_base != NULL) {
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
 
-        if (n <= iov->iov_len && (size_t)off < n)
-            count = pwritev(fd, iov, n, off);
-        else {
+            if (n <= iov->iov_len && (size_t)off < n)
+                count = pwritev(fd, iov, n, off);
+            else {
+                errno = ERANGE;
+                count = -1;
+            }
+        } else {
             errno = ERANGE;
             count = -1;
         }
