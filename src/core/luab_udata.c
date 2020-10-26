@@ -47,6 +47,7 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
     luab_udata_t *ud = NULL;
 
     if (m != NULL) {
+
         if ((ud = lua_newuserdata(L, m->m_sz)) != NULL) {
             (void)memset_s(ud, m->m_sz, 0, m->m_sz);
 
@@ -298,25 +299,32 @@ luab_udata_checkxlink(lua_State *L, int narg, luab_module_t *m,
 int
 luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
 {
-    int save_errno = errno;
+    int up_call;
     caddr_t msg;
     int status;
 
-    if (m != NULL && m->m_create != NULL) {
+    if (m != NULL) {
+        up_call = errno;
 
-        if ((*m->m_create)(L, arg) != NULL) {
+        if (m->m_create != NULL) {
 
-            if (save_errno != 0) {
-                lua_pushinteger(L, save_errno);
-                msg = strerror(save_errno);
-                lua_pushstring(L, msg);
-                status = 3;
-            } else {
-                msg = NULL;
-                status = 1;
-            }
-        } else
+            if ((*m->m_create)(L, arg) != NULL) {
+
+                if (up_call != 0) {
+                    lua_pushinteger(L, up_call);
+                    msg = strerror(up_call);
+                    lua_pushstring(L, msg);
+                    status = 3;
+                } else {
+                    msg = NULL;
+                    status = 1;
+                }
+            } else
+                status = luab_pushnil(L);
+        } else {
+            errno = ENXIO;
             status = luab_pushnil(L);
+        }
     } else {
         errno = EINVAL;
         status = luab_pushnil(L);
@@ -326,33 +334,32 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
 
 /*
  * Access functions for (LUA_TTABLE), [C -> stack].
+ *
+ * Best effort, this means try to push things on
+ * stack at least as it is possible, regardless
+ * if allocation of memory is possible or not.
  */
 
 void
 luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
 {
+    if (m != NULL) {
+        if (m->m_create != NULL && v != NULL) {
 
-    if (m != NULL && m->m_create != NULL && v != NULL) {
-        /*
-         * Best effort, this means try to push things on
-         * stack at least as it is possible, regardless
-         * if allocation of memory is possible or not.
-         */
-        if ((*m->m_create)(L, v) != NULL)
-            lua_rawseti(L, narg, k);
+            if ((*m->m_create)(L, v) != NULL)
+                lua_rawseti(L, narg, k);
+        }
     }
 }
 
 void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
-    if (m != NULL && m->m_create != NULL && v != NULL) {
-        /*
-         * Best effort, this means try to push things on
-         * stack at least as it is possible, regardless
-         * if allocation of memory is possible or not.
-         */
-        if ((*m->m_create)(L, v) != NULL)
-            lua_setfield(L, narg, k);
+    if (m != NULL) {
+        if (m->m_create != NULL && v != NULL) {
+
+            if ((*m->m_create)(L, v) != NULL)
+                lua_setfield(L, narg, k);
+        }
     }
 }

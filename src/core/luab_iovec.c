@@ -38,7 +38,8 @@
 #include "luab_udata.h"
 
 /*
- * Luab_iovec_param_init(3) initializes message primitive for instantiation of (LUA_TUSERDATA(IOVEC)).
+ * Message primitive for instantiation of (LUA_TUSERDATA(IOVEC)) are initialized
+ * by luab_iovec_param_init(3):
  *
  *  #1: The parameter len specifies size of data region v in bytes.
  *
@@ -55,7 +56,7 @@
  *
  *     fails implecitely.
  */
- 
+
 luab_module_t *
 luab_iovec_param_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_len)
 {
@@ -492,7 +493,7 @@ luab_iovec_pwrite(lua_State *L, int fd, luab_iovec_t *buf, size_t *n, off_t off)
     ssize_t count;
 
     if (buf != NULL) {
-        
+
         if ((buf->iov_max_len <= LUAL_BUFFERSIZE) &&
             (buf->iov_flags & IOV_BUFF)) {
 
