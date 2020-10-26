@@ -239,9 +239,9 @@ int  luab_pushldata(lua_State *, void *, size_t);
  * Generic service primitives, interface of <core>.
  */
 
-int  luab_create(lua_State *, int, luab_module_t *, luab_module_t *);
-int  luab_dump(lua_State *, int, luab_module_t *, size_t);
-int  luab_gc(lua_State *, int, luab_module_t *);
-int  luab_len(lua_State *, int, luab_module_t *);
-int  luab_tostring(lua_State *, int, luab_module_t *);
+int  luab_core_create(lua_State *, int, luab_module_t *, luab_module_t *);
+int  luab_core_dump(lua_State *, int, luab_module_t *, size_t);
+int  luab_core_gc(lua_State *, int, luab_module_t *);
+int  luab_core_len(lua_State *, int, luab_module_t *);
+int  luab_core_tostring(lua_State *, int, luab_module_t *);
 #endif /* _LUAB_H_ */

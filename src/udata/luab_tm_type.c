@@ -136,7 +136,7 @@ TM_get(lua_State *L)
 static int
 TM_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &tm_type, sizeof(struct tm)));
+    return (luab_core_dump(L, 1, &tm_type, sizeof(struct tm)));
 }
 
 /*
@@ -673,19 +673,19 @@ TM_tm_zone(lua_State *L)
 static int
 TM_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &tm_type));
+    return (luab_core_gc(L, 1, &tm_type));
 }
 
 static int
 TM_len(lua_State *L)
 {
-    return (luab_len(L, 2, &tm_type));
+    return (luab_core_len(L, 2, &tm_type));
 }
 
 static int
 TM_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &tm_type));
+    return (luab_core_tostring(L, 1, &tm_type));
 }
 
 static luab_module_table_t tm_methods[] = {

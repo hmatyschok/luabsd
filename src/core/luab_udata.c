@@ -324,23 +324,6 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
     return (status);
 }
 
-int
-luab_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
-{
-    luab_module_t *m;
-    caddr_t arg;
-
-    if ((m = (m1 != NULL) ? m1 : m0) != NULL) {
-        if (luab_core_checkmaxargs(L, narg) == 0)
-            arg = NULL;
-        else
-            arg = luab_udata(L, narg, m, caddr_t);
-    } else
-        arg = NULL;
-
-    return (luab_pushudata(L, m0, arg));
-}
-
 /*
  * Access functions for (LUA_TTABLE), [C -> stack].
  */

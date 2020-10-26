@@ -103,7 +103,7 @@ DIV_get(lua_State *L)
 static int
 DIV_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &div_type, sizeof(div_t)));
+    return (luab_core_dump(L, 1, &div_type, sizeof(div_t)));
 }
 
 /*
@@ -217,19 +217,19 @@ DIV_get_rem(lua_State *L)
 static int
 DIV_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &div_type));
+    return (luab_core_gc(L, 1, &div_type));
 }
 
 static int
 DIV_len(lua_State *L)
 {
-    return (luab_len(L, 2, &div_type));
+    return (luab_core_len(L, 2, &div_type));
 }
 
 static int
 DIV_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &div_type));
+    return (luab_core_tostring(L, 1, &div_type));
 }
 
 /*

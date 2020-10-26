@@ -106,7 +106,7 @@ IF_NAMEINDEX_get(lua_State *L)
 static int
 IF_NAMEINDEX_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, NULL, 0));
+    return (luab_core_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -166,19 +166,19 @@ IF_NAMEINDEX_if_name(lua_State *L)
 static int
 IF_NAMEINDEX_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &if_nameindex_type));
+    return (luab_core_gc(L, 1, &if_nameindex_type));
 }
 
 static int
 IF_NAMEINDEX_len(lua_State *L)
 {
-    return (luab_len(L, 2, &if_nameindex_type));
+    return (luab_core_len(L, 2, &if_nameindex_type));
 }
 
 static int
 IF_NAMEINDEX_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &if_nameindex_type));
+    return (luab_core_tostring(L, 1, &if_nameindex_type));
 }
 
 /*

@@ -4836,7 +4836,7 @@ luab_undelete(lua_State *L)
 static int
 luab_crypt_data_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(CRYPT_DATA), NULL));
+    return (luab_core_create(L, 1, luab_mx(CRYPT_DATA), NULL));
 }
 
 /*

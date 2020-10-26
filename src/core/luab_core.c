@@ -434,7 +434,24 @@ luab_pushldata(lua_State *L, void *v, size_t len)
  */
 
 int
-luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
+luab_core_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
+{
+    luab_module_t *m;
+    caddr_t arg;
+
+    if ((m = (m1 != NULL) ? m1 : m0) != NULL) {
+        if (luab_core_checkmaxargs(L, narg) == 0)
+            arg = NULL;
+        else
+            arg = luab_udata(L, narg, m, caddr_t);
+    } else
+        arg = NULL;
+
+    return (luab_pushudata(L, m0, arg));
+}
+
+int
+luab_core_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     caddr_t dp;
 
@@ -449,7 +466,7 @@ luab_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 }
 
 int
-luab_gc(lua_State *L, int narg, luab_module_t *m)
+luab_core_gc(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *self, *ud, *ud_tmp;
 
@@ -469,7 +486,7 @@ luab_gc(lua_State *L, int narg, luab_module_t *m)
 }
 
 int
-luab_len(lua_State *L, int narg, luab_module_t *m)
+luab_core_len(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *ud;
     ssize_t len;
@@ -485,7 +502,7 @@ luab_len(lua_State *L, int narg, luab_module_t *m)
 }
 
 int
-luab_tostring(lua_State *L, int narg, luab_module_t *m)
+luab_core_tostring(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *ud;
 
@@ -551,7 +568,7 @@ luab_uuid(lua_State *L)
 static int
 luab_primitive_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(PRIMITIVE), NULL));
+    return (luab_core_create(L, 1, luab_mx(PRIMITIVE), NULL));
 }
 
 #if LUAB_DEBUG
@@ -570,7 +587,7 @@ luab_primitive_create(lua_State *L)
 static int
 luab_link_create(lua_State *L)
 {
-    return (luab_create(L, 0, luab_mx(LINK), NULL));
+    return (luab_core_create(L, 0, luab_mx(LINK), NULL));
 }
 #endif /* LUAB_DEBUG */
 

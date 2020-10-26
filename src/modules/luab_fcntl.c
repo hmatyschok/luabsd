@@ -364,7 +364,7 @@ luab_posix_fallocate(lua_State *L)
 static int
 luab_flock_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(FLOCK), NULL));
+    return (luab_core_create(L, 1, luab_mx(FLOCK), NULL));
 }
 
 /*

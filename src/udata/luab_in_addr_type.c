@@ -103,7 +103,7 @@ IN_ADDR_get(lua_State *L)
 static int
 IN_ADDR_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &in_addr_type, sizeof(struct in_addr)));
+    return (luab_core_dump(L, 1, &in_addr_type, sizeof(struct in_addr)));
 }
 
 /*
@@ -167,19 +167,19 @@ IN_ADDR_get_s_addr(lua_State *L)
 static int
 IN_ADDR_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &in_addr_type));
+    return (luab_core_gc(L, 1, &in_addr_type));
 }
 
 static int
 IN_ADDR_len(lua_State *L)
 {
-    return (luab_len(L, 2, &in_addr_type));
+    return (luab_core_len(L, 2, &in_addr_type));
 }
 
 static int
 IN_ADDR_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &in_addr_type));
+    return (luab_core_tostring(L, 1, &in_addr_type));
 }
 
 /*

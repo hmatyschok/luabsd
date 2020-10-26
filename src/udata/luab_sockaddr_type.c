@@ -316,7 +316,7 @@ SOCKADDR_dump(lua_State *L)
 
     sa = luab_udata(L, 1, &sockaddr_type, struct sockaddr *);
 
-    return (luab_dump(L, 1, &sockaddr_type, sa->sa_len));
+    return (luab_core_dump(L, 1, &sockaddr_type, sa->sa_len));
 }
 
 /*
@@ -1139,7 +1139,7 @@ SOCKADDR_get_sun_path(lua_State *L)
 static int
 SOCKADDR_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &sockaddr_type));
+    return (luab_core_gc(L, 1, &sockaddr_type));
 }
 
 static int
@@ -1157,7 +1157,7 @@ SOCKADDR_len(lua_State *L)
 static int
 SOCKADDR_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &sockaddr_type));
+    return (luab_core_tostring(L, 1, &sockaddr_type));
 }
 
 /*

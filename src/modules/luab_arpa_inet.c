@@ -784,7 +784,7 @@ luab_inet_cidr_pton(lua_State *L)
 static int
 luab_in_addr_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(IN_ADDR), NULL));
+    return (luab_core_create(L, 1, luab_mx(IN_ADDR), NULL));
 }
 
 /***
@@ -801,7 +801,7 @@ luab_in_addr_create(lua_State *L)
 static int
 luab_in6_addr_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(IN6_ADDR), NULL));
+    return (luab_core_create(L, 1, luab_mx(IN6_ADDR), NULL));
 }
 
 /*

@@ -112,7 +112,7 @@ LINK_get(lua_State *L)
 static int
 LINK_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, NULL, 0));
+    return (luab_core_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -236,19 +236,19 @@ LINK_get_sockaddr(lua_State *L)
 static int
 LINK_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &link_type));
+    return (luab_core_gc(L, 1, &link_type));
 }
 
 static int
 LINK_len(lua_State *L)
 {
-    return (luab_len(L, 2, &link_type));
+    return (luab_core_len(L, 2, &link_type));
 }
 
 static int
 LINK_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &link_type));
+    return (luab_core_tostring(L, 1, &link_type));
 }
 
 /*

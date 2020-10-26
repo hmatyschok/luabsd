@@ -101,7 +101,7 @@ db_close(DB *db)
 static int
 DB_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, NULL, 0));
+    return (luab_core_dump(L, 1, NULL, 0));
 } 
 
 /*
@@ -365,7 +365,7 @@ DB_gc(lua_State *L)
 static int
 DB_len(lua_State *L)
 {
-    return (luab_len(L, 2, &db_type));
+    return (luab_core_len(L, 2, &db_type));
 }
 
 static int

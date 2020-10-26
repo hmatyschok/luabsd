@@ -109,7 +109,7 @@ ACCEPT_FILTER_ARG_get(lua_State *L)
 static int
 ACCEPT_FILTER_ARG_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &accept_filter_arg_type, sizeof(struct accept_filter_arg)));
+    return (luab_core_dump(L, 1, &accept_filter_arg_type, sizeof(struct accept_filter_arg)));
 }
 
 /*
@@ -227,19 +227,19 @@ ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
 static int
 ACCEPT_FILTER_ARG_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &accept_filter_arg_type));
+    return (luab_core_gc(L, 1, &accept_filter_arg_type));
 }
 
 static int
 ACCEPT_FILTER_ARG_len(lua_State *L)
 {
-    return (luab_len(L, 2, &accept_filter_arg_type));
+    return (luab_core_len(L, 2, &accept_filter_arg_type));
 }
 
 static int
 ACCEPT_FILTER_ARG_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &accept_filter_arg_type));
+    return (luab_core_tostring(L, 1, &accept_filter_arg_type));
 }
 
 /*

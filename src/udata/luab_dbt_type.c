@@ -105,7 +105,7 @@ DBT_get(lua_State *L)
 static int
 DBT_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, NULL, 0));
+    return (luab_core_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -212,13 +212,13 @@ DBT_gc(lua_State *L)
 static int
 DBT_len(lua_State *L)
 {
-    return (luab_len(L, 2, &dbt_type));
+    return (luab_core_len(L, 2, &dbt_type));
 }
 
 static int
 DBT_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &dbt_type));
+    return (luab_core_tostring(L, 1, &dbt_type));
 }
 
 /*

@@ -1056,7 +1056,7 @@ luab_socketpair(lua_State *L)
 static int
 luab_linger_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(LINGER), NULL));
+    return (luab_core_create(L, 1, luab_mx(LINGER), NULL));
 }
 
 #if __BSD_VISIBLE
@@ -1074,7 +1074,7 @@ luab_linger_create(lua_State *L)
 static int
 luab_accept_filter_arg_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(ACCEPT_FILTER_ARG), NULL));
+    return (luab_core_create(L, 1, luab_mx(ACCEPT_FILTER_ARG), NULL));
 }
 #if notyet
 /***
@@ -1089,7 +1089,7 @@ luab_accept_filter_arg_create(lua_State *L)
 static int
 luab_msghdr_create(lua_State *L)
 {
-    return (luab_create(L, 0, luab_mx(MSGHDR), NULL));
+    return (luab_core_create(L, 0, luab_mx(MSGHDR), NULL));
 }
 #endif /* notyet */
 /***
@@ -1104,7 +1104,7 @@ luab_msghdr_create(lua_State *L)
 static int
 luab_cmsgcred_create(lua_State *L)
 {
-    return (luab_create(L, 0, luab_mx(CMSGCRED), NULL));
+    return (luab_core_create(L, 0, luab_mx(CMSGCRED), NULL));
 }
 #endif
 
@@ -1122,7 +1122,7 @@ luab_cmsgcred_create(lua_State *L)
 static int
 luab_sockaddr_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(SOCKADDR), NULL));
+    return (luab_core_create(L, 1, luab_mx(SOCKADDR), NULL));
 }
 
 #if __BSD_VISIBLE
@@ -1140,7 +1140,7 @@ luab_sockaddr_create(lua_State *L)
 static int
 luab_sockproto_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(SOCKPROTO), NULL));
+    return (luab_core_create(L, 1, luab_mx(SOCKPROTO), NULL));
 }
 
 #if notyet
@@ -1156,7 +1156,7 @@ luab_sockproto_create(lua_State *L)
 static int
 luab_sf_hdtr_create(lua_State *L)
 {
-    return (luab_create(L, 0, luab_mx(SF_HDTR), NULL));
+    return (luab_core_create(L, 0, luab_mx(SF_HDTR), NULL));
 }
 #endif /* notyet */
 #endif

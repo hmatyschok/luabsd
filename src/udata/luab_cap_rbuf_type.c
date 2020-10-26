@@ -113,7 +113,7 @@ CAP_RBUF_get(lua_State *L)
 static int
 CAP_RBUF_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, NULL, 0));
+    return (luab_core_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -176,19 +176,19 @@ CAP_RBUF_gc(lua_State *L)
     iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
     (void)luab_iov_free(iov);
 
-    return (luab_gc(L, 1, &cap_rbuf_type));
+    return (luab_core_gc(L, 1, &cap_rbuf_type));
 }
 
 static int
 CAP_RBUF_len(lua_State *L)
 {
-    return (luab_len(L, 2, &cap_rbuf_type));
+    return (luab_core_len(L, 2, &cap_rbuf_type));
 }
 
 static int
 CAP_RBUF_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &cap_rbuf_type));
+    return (luab_core_tostring(L, 1, &cap_rbuf_type));
 }
 
 /*

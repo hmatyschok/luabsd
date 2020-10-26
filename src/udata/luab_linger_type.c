@@ -105,7 +105,7 @@ LINGER_get(lua_State *L)
 static int
 LINGER_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &linger_type, sizeof(struct linger)));
+    return (luab_core_dump(L, 1, &linger_type, sizeof(struct linger)));
 }
 
 /*
@@ -219,19 +219,19 @@ LINGER_get_l_linger(lua_State *L)
 static int
 LINGER_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &linger_type));
+    return (luab_core_gc(L, 1, &linger_type));
 }
 
 static int
 LINGER_len(lua_State *L)
 {
-    return (luab_len(L, 2, &linger_type));
+    return (luab_core_len(L, 2, &linger_type));
 }
 
 static int
 LINGER_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &linger_type));
+    return (luab_core_tostring(L, 1, &linger_type));
 }
 
 /*

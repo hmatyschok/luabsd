@@ -185,7 +185,7 @@ luab_getitimer(lua_State *L)
 static int
 luab_bintime_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(BINTIME), NULL));
+    return (luab_core_create(L, 1, luab_mx(BINTIME), NULL));
 }
 #endif
 
@@ -203,7 +203,7 @@ luab_bintime_create(lua_State *L)
 static int
 luab_clockinfo_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(CLOCKINFO), NULL));
+    return (luab_core_create(L, 1, luab_mx(CLOCKINFO), NULL));
 }
 
 /***
@@ -220,7 +220,7 @@ luab_clockinfo_create(lua_State *L)
 static int
 luab_itimerval_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(ITIMERVAL), NULL));
+    return (luab_core_create(L, 1, luab_mx(ITIMERVAL), NULL));
 }
 
 /***
@@ -237,7 +237,7 @@ luab_itimerval_create(lua_State *L)
 static int
 luab_timespec_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(TIMESPEC), NULL));
+    return (luab_core_create(L, 1, luab_mx(TIMESPEC), NULL));
 }
 
 /***
@@ -254,7 +254,7 @@ luab_timespec_create(lua_State *L)
 static int
 luab_timeval_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(TIMEVAL), NULL));
+    return (luab_core_create(L, 1, luab_mx(TIMEVAL), NULL));
 }
 
 /***
@@ -271,7 +271,7 @@ luab_timeval_create(lua_State *L)
 static int
 luab_timezone_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(TIMEZONE), NULL));
+    return (luab_core_create(L, 1, luab_mx(TIMEZONE), NULL));
 }
 
 /*

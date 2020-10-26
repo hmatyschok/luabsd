@@ -105,7 +105,7 @@ TIMEVAL_get(lua_State *L)
 static int
 TIMEVAL_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &timeval_type, sizeof(struct timeval)));
+    return (luab_core_dump(L, 1, &timeval_type, sizeof(struct timeval)));
 }
 
 /*
@@ -219,19 +219,19 @@ TIMEVAL_get_tv_usec(lua_State *L)
 static int
 TIMEVAL_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &timeval_type));
+    return (luab_core_gc(L, 1, &timeval_type));
 }
 
 static int
 TIMEVAL_len(lua_State *L)
 {
-    return (luab_len(L, 2, &timeval_type));
+    return (luab_core_len(L, 2, &timeval_type));
 }
 
 static int
 TIMEVAL_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &timeval_type));
+    return (luab_core_tostring(L, 1, &timeval_type));
 }
 
 /*

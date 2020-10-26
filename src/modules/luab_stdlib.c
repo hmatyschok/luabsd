@@ -2797,7 +2797,7 @@ luab_strtonum(lua_State *L)
 static int
 luab_div_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(DIV), NULL));
+    return (luab_core_create(L, 1, luab_mx(DIV), NULL));
 }
 
 /***
@@ -2814,7 +2814,7 @@ luab_div_create(lua_State *L)
 static int
 luab_ldiv_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(LDIV), NULL));
+    return (luab_core_create(L, 1, luab_mx(LDIV), NULL));
 }
 
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
@@ -2833,7 +2833,7 @@ luab_ldiv_create(lua_State *L)
 static int
 luab_lldiv_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(LLDIV), NULL));
+    return (luab_core_create(L, 1, luab_mx(LLDIV), NULL));
 }
 #endif /* __LONG_LONG_SUPPORTED */
 #endif /* __ISO_C_VISIBLE >= 1999 */

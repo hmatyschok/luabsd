@@ -975,7 +975,7 @@ luab_mknodat(lua_State *L)
 static int
 luab_stat_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(STAT), NULL));
+    return (luab_core_create(L, 1, luab_mx(STAT), NULL));
 }
 
 /*

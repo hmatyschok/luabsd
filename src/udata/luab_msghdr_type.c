@@ -239,7 +239,7 @@ MSGHDR_get(lua_State *L)
 static int
 MSGHDR_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, NULL, 0));
+    return (luab_core_dump(L, 1, NULL, 0));
 }
 
 /*
@@ -560,13 +560,13 @@ MSGHDR_gc(lua_State *L)
 static int
 MSGHDR_len(lua_State *L)
 {
-    return (luab_len(L, 2, &msghdr_type));
+    return (luab_core_len(L, 2, &msghdr_type));
 }
 
 static int
 MSGHDR_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &msghdr_type));
+    return (luab_core_tostring(L, 1, &msghdr_type));
 }
 
 /*

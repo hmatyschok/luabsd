@@ -119,7 +119,7 @@ FLOCK_get(lua_State *L)
 static int
 FLOCK_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &flock_type, sizeof(struct flock)));
+    return (luab_core_dump(L, 1, &flock_type, sizeof(struct flock)));
 }
 
 /*
@@ -319,19 +319,19 @@ FLOCK_get_l_sysid(lua_State *L)
 static int
 FLOCK_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &flock_type));
+    return (luab_core_gc(L, 1, &flock_type));
 }
 
 static int
 FLOCK_len(lua_State *L)
 {
-    return (luab_len(L, 2, &flock_type));
+    return (luab_core_len(L, 2, &flock_type));
 }
 
 static int
 FLOCK_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &flock_type));
+    return (luab_core_tostring(L, 1, &flock_type));
 }
 
 /*

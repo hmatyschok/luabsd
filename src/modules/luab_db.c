@@ -97,7 +97,7 @@ luab_dbopen(lua_State *L)
 static int
 luab_dbt_create(lua_State *L)
 {
-    return (luab_create(L, 1, luab_mx(DBT), luab_mx(IOVEC)));
+    return (luab_core_create(L, 1, luab_mx(DBT), luab_mx(IOVEC)));
 }
 #endif /* __BSD_VISIBLE */
 

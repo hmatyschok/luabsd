@@ -103,7 +103,7 @@ LLDIV_get(lua_State *L)
 static int
 LLDIV_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &lldiv_type, sizeof(lldiv_t)));
+    return (luab_core_dump(L, 1, &lldiv_type, sizeof(lldiv_t)));
 }
 
 /*
@@ -217,19 +217,19 @@ LLDIV_get_rem(lua_State *L)
 static int
 LLDIV_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &lldiv_type));
+    return (luab_core_gc(L, 1, &lldiv_type));
 }
 
 static int
 LLDIV_len(lua_State *L)
 {
-    return (luab_len(L, 2, &lldiv_type));
+    return (luab_core_len(L, 2, &lldiv_type));
 }
 
 static int
 LLDIV_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &lldiv_type));
+    return (luab_core_tostring(L, 1, &lldiv_type));
 }
 
 /*

@@ -122,7 +122,7 @@ UUID_get(lua_State *L)
 static int
 UUID_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &uuid_type, sizeof(struct uuid)));
+    return (luab_core_dump(L, 1, &uuid_type, sizeof(struct uuid)));
 }
 
 /*
@@ -440,19 +440,19 @@ UUID_get_node(lua_State *L)
 static int
 UUID_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &uuid_type));
+    return (luab_core_gc(L, 1, &uuid_type));
 }
 
 static int
 UUID_len(lua_State *L)
 {
-    return (luab_len(L, 2, &uuid_type));
+    return (luab_core_len(L, 2, &uuid_type));
 }
 
 static int
 UUID_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &uuid_type));
+    return (luab_core_tostring(L, 1, &uuid_type));
 }
 
 /*

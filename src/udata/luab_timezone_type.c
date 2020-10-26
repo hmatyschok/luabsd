@@ -105,7 +105,7 @@ TIMEZONE_get(lua_State *L)
 static int
 TIMEZONE_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &timezone_type, sizeof(struct timezone)));
+    return (luab_core_dump(L, 1, &timezone_type, sizeof(struct timezone)));
 }
 
 /*
@@ -219,19 +219,19 @@ TIMEZONE_get_tz_dsttime(lua_State *L)
 static int
 TIMEZONE_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &timezone_type));
+    return (luab_core_gc(L, 1, &timezone_type));
 }
 
 static int
 TIMEZONE_len(lua_State *L)
 {
-    return (luab_len(L, 2, &timezone_type));
+    return (luab_core_len(L, 2, &timezone_type));
 }
 
 static int
 TIMEZONE_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &timezone_type));
+    return (luab_core_tostring(L, 1, &timezone_type));
 }
 
 /*

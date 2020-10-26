@@ -110,7 +110,7 @@ CRYPT_DATA_get(lua_State *L)
 static int
 CRYPT_DATA_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &crypt_data_type, sizeof(struct crypt_data)));
+    return (luab_core_dump(L, 1, &crypt_data_type, sizeof(struct crypt_data)));
 }
 
 /*
@@ -229,19 +229,19 @@ CRYPT_DATA_get_buf(lua_State *L)
 static int
 CRYPT_DATA_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &crypt_data_type));
+    return (luab_core_gc(L, 1, &crypt_data_type));
 }
 
 static int
 CRYPT_DATA_len(lua_State *L)
 {
-    return (luab_len(L, 2, &crypt_data_type));
+    return (luab_core_len(L, 2, &crypt_data_type));
 }
 
 static int
 CRYPT_DATA_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &crypt_data_type));
+    return (luab_core_tostring(L, 1, &crypt_data_type));
 }
 
 /*

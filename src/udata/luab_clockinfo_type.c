@@ -115,7 +115,7 @@ CLOCKINFO_get(lua_State *L)
 static int
 CLOCKINFO_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &clockinfo_type, sizeof(struct clockinfo)));
+    return (luab_core_dump(L, 1, &clockinfo_type, sizeof(struct clockinfo)));
 }
 
 /*
@@ -329,19 +329,19 @@ CLOCKINFO_get_profhz(lua_State *L)
 static int
 CLOCKINFO_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &clockinfo_type));
+    return (luab_core_gc(L, 1, &clockinfo_type));
 }
 
 static int
 CLOCKINFO_len(lua_State *L)
 {
-    return (luab_len(L, 2, &clockinfo_type));
+    return (luab_core_len(L, 2, &clockinfo_type));
 }
 
 static int
 CLOCKINFO_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &clockinfo_type));
+    return (luab_core_tostring(L, 1, &clockinfo_type));
 }
 
 /*

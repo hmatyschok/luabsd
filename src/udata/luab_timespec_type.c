@@ -105,7 +105,7 @@ TIMESPEC_get(lua_State *L)
 static int
 TIMESPEC_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &timespec_type, sizeof(struct timespec)));
+    return (luab_core_dump(L, 1, &timespec_type, sizeof(struct timespec)));
 }
 
 /*
@@ -219,19 +219,19 @@ TIMESPEC_get_tv_nsec(lua_State *L)
 static int
 TIMESPEC_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &timespec_type));
+    return (luab_core_gc(L, 1, &timespec_type));
 }
 
 static int
 TIMESPEC_len(lua_State *L)
 {
-    return (luab_len(L, 2, &timespec_type));
+    return (luab_core_len(L, 2, &timespec_type));
 }
 
 static int
 TIMESPEC_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &timespec_type));
+    return (luab_core_tostring(L, 1, &timespec_type));
 }
 
 /*

@@ -106,7 +106,7 @@ SOCKPROTO_get(lua_State *L)
 static int
 SOCKPROTO_dump(lua_State *L)
 {
-    return (luab_dump(L, 1, &sockproto_type, sizeof(struct sockproto)));
+    return (luab_core_dump(L, 1, &sockproto_type, sizeof(struct sockproto)));
 }
 
 /*
@@ -218,19 +218,19 @@ SOCKPROTO_get_sp_protocol(lua_State *L)
 static int
 SOCKPROTO_gc(lua_State *L)
 {
-    return (luab_gc(L, 1, &sockproto_type));
+    return (luab_core_gc(L, 1, &sockproto_type));
 }
 
 static int
 SOCKPROTO_len(lua_State *L)
 {
-    return (luab_len(L, 2, &sockproto_type));
+    return (luab_core_len(L, 2, &sockproto_type));
 }
 
 static int
 SOCKPROTO_tostring(lua_State *L)
 {
-    return (luab_tostring(L, 1, &sockproto_type));
+    return (luab_core_tostring(L, 1, &sockproto_type));
 }
 
 /*
