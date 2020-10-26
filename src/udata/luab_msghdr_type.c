@@ -150,7 +150,7 @@ msghdr_init_iov(lua_State *L, int narg, struct iovec *iov, int idx)
         }
         buf->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (status);

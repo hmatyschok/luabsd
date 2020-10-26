@@ -307,7 +307,7 @@ IOVEC_clear(lua_State *L)
         if (self->iov_flags & IOV_BUFF)
             status = luab_iov_clear(iov);
         else {
-            errno = ENXIO;
+            errno = ERANGE;
             status = -1;
         }
         self->iov_flags &= ~IOV_LOCK;
@@ -424,7 +424,7 @@ IOVEC_resize(lua_State *L)
                     self->iov_max_len = len;
             }
         } else {
-            errno = ENXIO;
+            errno = ERANGE;
             status = -1;
         }
         self->iov_flags &= ~IOV_LOCK;

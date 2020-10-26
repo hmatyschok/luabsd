@@ -554,7 +554,7 @@ luab_getcwd(lua_State *L)
             status = NULL;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = NULL;
     }
     return (luab_pushstring(L, status));
@@ -1286,7 +1286,7 @@ luab_ttyname_r(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1480,7 +1480,7 @@ luab_getlogin_r(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1606,7 +1606,7 @@ luab_gethostname(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2447,7 +2447,7 @@ luab_swab(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2602,7 +2602,7 @@ luab_getwd(lua_State *L)
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
-            errno = ENXIO;
+            errno = ERANGE;
             status = NULL;
         }
     } else {
@@ -3072,7 +3072,7 @@ luab_getdomainname(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -3127,7 +3127,7 @@ luab_getentropy(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -3242,7 +3242,7 @@ luab_getloginclass(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -3290,7 +3290,7 @@ luab_getmode(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -3570,7 +3570,7 @@ luab_iruserok_sa(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -3669,7 +3669,7 @@ luab_mkdtemp(lua_State *L)
             dp = NULL;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         dp = NULL;
     }
     return (luab_pushstring(L, dp));
@@ -3714,7 +3714,7 @@ luab_mkstemp(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -3762,7 +3762,7 @@ luab_mkstemps(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -3807,7 +3807,7 @@ luab_mktemp(lua_State *L)
             dp = NULL;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         dp = NULL;
     }
     return (luab_pushstring(L, dp));
@@ -3923,7 +3923,7 @@ luab_profil(lua_State *L)
                 status = -1;
             }
         } else {
-            errno = ENXIO;
+            errno = ERANGE;
             status = -1;
         }
     } else
@@ -3993,7 +3993,7 @@ luab_rcmd(lua_State *L)
             s = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         s = -1;
     }
     return (luab_pusherr(L, s));
@@ -4063,7 +4063,7 @@ luab_rcmd_af(lua_State *L)
             s = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         s = -1;
     }
     return (luab_pusherr(L, s));
@@ -4124,7 +4124,7 @@ luab_rcmdsh(lua_State *L)
             s = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         s = -1;
     }
     return (luab_pusherr(L, s));
@@ -4344,7 +4344,7 @@ luab_setdomainname(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -4474,7 +4474,7 @@ luab_setloginclass(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -4525,7 +4525,7 @@ luab_setmode(lua_State *L)
             status = luab_pushnil(L);
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = luab_pushnil(L);
     }
     return (status);

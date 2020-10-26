@@ -605,7 +605,7 @@ luab_recvmsg(lua_State *L)
         (msg->msg_iovlen > 0))
         count = recvmsg(s, msg, flags);
     else {
-        errno = ENXIO;
+        errno = ERANGE;
         count = -1;
     }
     return (luab_pusherr(L, count));
@@ -792,7 +792,7 @@ luab_sendmsg(lua_State *L)
         (msg->msg_iovlen > 0))
         count = sendmsg(s, msg, flags);
     else {
-        errno = ENXIO;
+        errno = ERANGE;
         count = -1;
     }
     return (luab_pusherr(L, count));

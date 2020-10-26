@@ -79,7 +79,7 @@ luab_iov_clear(struct iovec *iov)
             (void)memset_s(bp, len, 0, len);
             status = 0;
         } else {
-            errno = ENXIO;
+            errno = ERANGE;
             status = -1;
         }
     } else {
@@ -145,7 +145,7 @@ luab_iov_copyin(struct iovec *iov, const void *v, ssize_t len)
 
             status = 0;
         } else {
-            errno = ENXIO;
+            errno = ERANGE;
             status = -1;
         }
     } else {
@@ -169,7 +169,7 @@ luab_iov_copyout(struct iovec *iov, void *v, ssize_t len)
 
             status = 0;
         } else {
-            errno = ENXIO;
+            errno = ERANGE;
             status = -1;
         }
     } else {

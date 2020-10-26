@@ -259,7 +259,7 @@ luab_uuid_enc_le(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -309,7 +309,7 @@ luab_uuid_dec_le(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -359,7 +359,7 @@ luab_uuid_enc_be(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -409,7 +409,7 @@ luab_uuid_dec_be(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));

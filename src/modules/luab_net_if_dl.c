@@ -119,7 +119,7 @@ luab_link_ntoa(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));

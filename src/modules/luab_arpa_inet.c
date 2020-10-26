@@ -181,7 +181,7 @@ luab_inet_ntop(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -236,7 +236,7 @@ luab_inet_pton(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -384,7 +384,7 @@ luab_inet_neta(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -504,7 +504,7 @@ luab_inet_net_ntop(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -567,7 +567,7 @@ luab_inet_net_pton(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -628,7 +628,7 @@ luab_inet_ntoa_r(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -698,7 +698,7 @@ luab_inet_cidr_ntop(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -759,7 +759,7 @@ luab_inet_cidr_pton(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));

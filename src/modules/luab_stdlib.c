@@ -344,7 +344,7 @@ luab_mblen(lua_State *L)
             len = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         len = -1;
     }
     return (luab_pusherr(L, len));
@@ -401,7 +401,7 @@ luab_mbstowcs(lua_State *L)
             len = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         len = -1;
     }
     return (luab_pusherr(L, len));
@@ -712,7 +712,7 @@ luab_wcstombs(lua_State *L)
             len = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         len = -1;
     }
     return (luab_pusherr(L, len));
@@ -963,7 +963,7 @@ luab_realpath(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1222,7 +1222,7 @@ luab_initstate(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1498,7 +1498,7 @@ luab_putenv(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1604,7 +1604,7 @@ luab_setstate(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1789,7 +1789,7 @@ luab_arc4random_buf(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -1884,7 +1884,7 @@ luab_cgetcap(lua_State *L)
     if ((bp = buf->iov_base) != NULL)
         str = cgetcap(bp, cap, type);
     else {
-        errno = ENXIO;
+        errno = ERANGE;
         str = NULL;
     }
     return (luab_pushstring(L, str));
@@ -1991,7 +1991,7 @@ luab_cgetfirst(lua_State *L)
         if ((status = cgetfirst(&bp, db_array)) == 0)
             buf->iov_len = strnlen(bp, LUAL_BUFFERSIZE);
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2025,7 +2025,7 @@ luab_cgetmatch(lua_State *L)
     if ((bp = buf->iov_base) != NULL)
         status = cgetmatch(bp, name);
     else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2065,7 +2065,7 @@ luab_cgetnext(lua_State *L)
     if ((bp = buf->iov_base) != NULL)
         status = cgetnext(&bp, db_array);
     else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2104,7 +2104,7 @@ luab_cgetnum(lua_State *L)
     if ((bp = buf->iov_base) != NULL)
         status = cgetnum(bp, cap, num);
     else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2358,7 +2358,7 @@ luab_devname_r(lua_State *L)
             dp = NULL;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         dp = NULL;
     }
     return (luab_pushstring(L, dp));
@@ -2434,7 +2434,7 @@ luab_fdevname_r(lua_State *L)
             dp = NULL;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         dp = NULL;
     }
     return (luab_pushstring(L, dp));
@@ -2556,7 +2556,7 @@ luab_l64a_r(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2613,7 +2613,7 @@ luab_mkostemp(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
@@ -2673,7 +2673,7 @@ luab_mkostemps(lua_State *L)
             status = -1;
         }
     } else {
-        errno = ENXIO;
+        errno = ERANGE;
         status = -1;
     }
     return (luab_pusherr(L, status));
