@@ -799,6 +799,73 @@ luab_sendmsg(lua_State *L)
 }
 #endif
 #if __BSD_VISIBLE
+/***
+ * sendfile(2) - send a file to a socket
+ *
+ * @function sendfile
+ *
+ * @param fd                Specifies either regular file or shared memory object.
+ * @param s                 File descriptor for open socket(9).
+ * @param offset            Specifies where transmission of contents starts.
+ * @param nbytes            Specifies how many bytes will be transmitted.
+ * @param hdtr              Specifies optional HDR/TRL, by an instance
+ *                          of (LUA_TUSERDATA(SF_HDTR)).
+ * @param sbytes            Result argument, how many bytes are sent, instance
+ *                          of (LUA_TUSERDATA(PRIMITIVE)).
+ * @param flags             Flags argument over
+ *
+ *                              bsd.sys.socket.SF_{
+ *                                  NODISKIO,
+ *                                  NOCACHE,
+ *                                  SYNC,
+ *                                  USER_READAHEAD
+ *                              }
+ *
+ *                          may combined by inclusive or.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.socket.sendfile(fd, s, offset, nbytes, hdtr, sbytes, flags)
+ */
+static int
+luab_sendfile(lua_State *L)
+{
+    int fd, s;
+    off_t offset;
+    size_t nbytes;
+    struct sf_hdtr *hdtr;
+    luab_primitive_u *xp;
+    off_t *sbytes;
+    int flags;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 7);
+
+    fd = luab_checkinteger(L, 1, INT_MAX);
+    s = luab_checkinteger(L, 2, INT_MAX);
+    offset = luab_checkinteger(L, 3, LONG_MAX);
+    nbytes = (size_t)luab_checkinteger(L, 4,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    hdtr = luab_udataisnil(L, 5, luab_mx(SF_HDTR), struct sf_hdtr *);
+    xp = luab_udataisnil(L, 6, luab_mx(PRIMITIVE), luab_primitive_u *);
+
+    if (xp != NULL)
+        sbytes = &(xp->un_off);
+    else
+        sbytes = NULL;
+
+    flags = luab_checkinteger(L, 7, INT_MAX);
+
+    status = sendfile(fd, s, offset, nbytes, hdtr, sbytes, flags);
+
+    return (luab_pusherr(L, status));
+}
+
 #if 0
 /***
  * sendmmsg(2) - send multiple message(s) at a call from a socket(9)
@@ -1449,9 +1516,7 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("sendmsg",                    luab_sendmsg),
 #endif /* notyet */
 #if __BSD_VISIBLE
-#if 0
     LUAB_FUNC("sendfile",                   luab_sendfile),
-#endif
 #if notyet
     LUAB_FUNC("sendmmesg",                  luab_sendmmsg),
 #endif /* notyet */

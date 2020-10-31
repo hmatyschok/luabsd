@@ -56,6 +56,7 @@ typedef union primitive {
     uint64_t    un_uint64;
     u_int       un_u_int;
     u_long      un_u_long;
+    off_t       un_off;
     size_t      un_size;
     socklen_t   un_socklen;
     lua_Integer un_intx;
