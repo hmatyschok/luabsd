@@ -1143,7 +1143,6 @@ luab_sockproto_create(lua_State *L)
     return (luab_core_create(L, 1, luab_mx(SOCKPROTO), NULL));
 }
 
-#if notyet
 /***
  * Generator function.
  *
@@ -1158,7 +1157,6 @@ luab_sf_hdtr_create(lua_State *L)
 {
     return (luab_core_create(L, 0, luab_mx(SF_HDTR), NULL));
 }
-#endif /* notyet */
 #endif
 
 /*
@@ -1476,9 +1474,7 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("sockaddr_create",            luab_sockaddr_create),
 #if __BSD_VISIBLE
     LUAB_FUNC("sockproto_create",           luab_sockproto_create),
-#if notyet
     LUAB_FUNC("sf_hdtr_create",             luab_sf_hdtr_create),
-#endif
 #endif
     LUAB_MOD_TBL_SENTINEL
 };

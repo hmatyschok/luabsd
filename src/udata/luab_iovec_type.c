@@ -43,7 +43,7 @@ extern luab_module_t iovec_type;
  *      size_t   iov_len;
  *  };
  *
- * maps to
+ * by
  *
  *  typedef struct luab_iovec {
  *      luab_udata_t    ud_softc;

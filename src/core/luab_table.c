@@ -792,7 +792,8 @@ luab_table_pushiovec(lua_State *L, int narg, luab_table_t *tbl, int new, int clr
         } else
             errno = ERANGE;
 
-        if (clr != 0) /* XXX */
+        /* XXX */
+        if (clr != 0)
             luab_table_free(tbl);
     } else
         errno = EINVAL;

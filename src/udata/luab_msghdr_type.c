@@ -67,8 +67,8 @@ extern luab_module_t msghdr_type;
 #define MH_MAX_BUF  2
 
 /*
- * By *msg_{name,control} reffered data maps to msg_buf[MH_{NAME,CONTROL}] avoids
- * possible race-cond. with Lua-gc.
+ * By *msg_{name,control} reffered data maps to msg_buf[MH_{NAME,CONTROL}]
+ * avoids possible race-cond. with Lua-gc.
  *
  * XXX msg_buf[MH_{NAME,CONTROL}] or "this" shall replaced by hooks.
  */

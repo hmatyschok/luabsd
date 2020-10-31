@@ -34,7 +34,6 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-#if notyet
 #if __BSD_VISIBLE
 extern luab_module_t sf_hdtr_type;
 
@@ -50,21 +49,22 @@ extern luab_module_t sf_hdtr_type;
  *
  */
 
-enum sf_hdtr_tbl {
-    SF_HDTR_HDR,
-    SF_HDTR_TRL,
-    SF_HDTR_MAX
+enum sf_hdtr_cache {
+    SF_HDTR_CH_HDR,
+    SF_HDTR_CH_TRL,
+    SF_HDTR_CH_MAX
 };
 
 typedef struct luab_sf_hdtr {
     luab_udata_t    ud_softc;
-    luab_table_t    *ud_vec[SF_HDTR_MAX];
+    struct sf_hdtr  ud_hdtr;
+    luab_table_t    *ud_cache[SF_HDTR_CH_MAX];
 } luab_sf_hdtr_t;
 
 #define luab_new_sf_hdtr(L, arg) \
     ((luab_sf_hdtr_t *)luab_newudata(L, &sf_hdtr_type, (arg)))
 #define luab_to_sf_hdtr(L, narg) \
-    ((luab_table_t *)luab_toudata((L), (narg), &sf_hdtr_type))
+    (luab_todata((L), (narg), &sf_hdtr_type, luab_sf_hdtr_t *))
 
 #define LUAB_SF_HDTR_TYPE_ID    1602287699
 #define LUAB_SF_HDTR_TYPE    "SF_HDTR*"
@@ -74,42 +74,100 @@ typedef struct luab_sf_hdtr {
  */
 
 static int
-sf_hdtr_cnt(luab_table_t *vec, enum sf_hdtr_tbl idx)
+sf_hdtr_cnt(luab_sf_hdtr_t *ud, enum sf_hdtr_cache idx)
 {
     luab_table_t *tbl;
+    int card = 0;
 
-    if ((tbl = (vec + idx)) )
+    if (ud != NULL) {
+
+        if ((tbl = (ud->ud_cache[idx % SF_HDTR_CH_MAX])) != NULL)
+            card = ((tbl->tbl_card - 1) & INT_MAX);
+        else
+            errno = ENOENT;
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+
+    return (card);
 }
 
-static struct iovec *
-sf_hdtr_checkiovec(lua_State *L, int narg, struct iovec *vec, size_t *n)
+static luab_table_t *
+sf_hdtr_iovec(luab_sf_hdtr_t *ud, enum sf_hdtr_cache n, luab_table_t *tbl)
 {
-    struct iovec *iov;
-    size_t card;
+    struct sf_hdtr *hdtr;
+    enum sf_hdtr_cache idx;
+    luab_table_t *cur;
 
-    if (n == NULL)
-        luab_core_err(EX_NOINPUT, __func__, EINVAL);
+    if (ud != NULL) {
+        hdtr = &(ud->ud_hdtr);
+        idx = (n % SF_HDTR_CH_MAX);
 
-    luab_table_iovec_free(vec);
+        if ((cur = ud->ud_cache[idx]) != NULL) {
 
-    iov = luab_table_checkiovec(L, narg, &card);
-    *n = card + 1;
+            if (tbl != NULL) {
+                luab_table_free(cur);
+add_tbl:
+                ud->ud_cache[idx] = tbl;
+                cur = ud->ud_cache[idx];
+            }
 
-    return (iov);
+            if (idx == SF_HDTR_CH_HDR) {
+                hdtr->headers = (struct iovec *)(cur->tbl_vec);
+                hdtr->hdr_cnt = sf_hdtr_cnt(ud, idx);
+            } else {
+                hdtr->trailers = (struct iovec *)(cur->tbl_vec);
+                hdtr->trl_cnt = sf_hdtr_cnt(ud, idx);
+            }
+            return (cur);
+        }
+
+        if (tbl != NULL)
+            goto add_tbl;
+
+        if (idx == SF_HDTR_CH_HDR) {
+            hdtr->headers = NULL;
+            hdtr->hdr_cnt = 0;
+        } else {
+            hdtr->trailers = NULL;
+            hdtr->trl_cnt = 0;
+        }
+        errno = ENOENT;
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+
+    return (NULL);
 }
 
 static int
-sf_hdtr_pushiovec(lua_State *L, int narg, struct iovec *vec, const char *k)
+sf_hdtr_checkiovec(lua_State *L, int narg, luab_sf_hdtr_t *ud,
+    enum sf_hdtr_cache idx)
 {
-    struct iovec *iov;
+    luab_table_t *cur;
+    int card = 0;
+
+    if (ud != NULL) {
+
+        if ((cur = luab_table_checkiovec(L, narg)) != NULL)
+            (void)sf_hdtr_iovec(ud, idx, cur);
+
+        card = sf_hdtr_cnt(ud, idx);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+
+    return (card);
+}
+
+static int
+sf_hdtr_pushiovec(lua_State *L, int narg, const char *k, luab_sf_hdtr_t *ud,
+    enum sf_hdtr_cache idx)
+{
+    luab_table_t *cur;
     int up_call, status;
 
-    luab_core_warn("%s", __func__);
+    if ((cur = sf_hdtr_iovec(ud, idx, NULL)) != NULL) {
+        luab_table_pushiovec(L, narg, cur, 1, 0);
 
-    if ((iov = vec) != NULL) {
-        luab_table_pushiovec(L, narg, iov, 1, 0);
-
-        /* set field k or push on top of Lua stack */
+        /* set field k and/or push on top of Lua stack */
         if (k != NULL)
             lua_setfield(L, narg, k);
         else {
@@ -120,12 +178,11 @@ sf_hdtr_pushiovec(lua_State *L, int narg, struct iovec *vec, const char *k)
         }
         up_call = 0;
     } else
-        up_call = ERANGE;
+        up_call = ENOENT;
 
-    if (up_call != 0) {
-        errno = up_call;
+    if ((errno = up_call) != 0)
         status = luab_pushnil(L);
-    } else
+    else
         status = 1;
 
     return (status);
@@ -154,22 +211,24 @@ sf_hdtr_pushiovec(lua_State *L, int narg, struct iovec *vec, const char *k)
 static int
 SF_HDTR_get(lua_State *L)
 {
-    luab_table_t *tbl;
+    luab_sf_hdtr_t *ud;
+    struct sf_hdtr *hdtr;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tbl = luab_udata(L, 1, &sf_hdtr_type, luab_table_t *);
+    ud = luab_to_sf_hdtr(L, 1);
+    hdtr = &(ud->ud_hdtr);
 
     lua_newtable(L);
 
-    luab_setinteger(L, -2, "hdr_cnt", tbl]->hdr_cnt);
+    luab_setinteger(L, -2, "hdr_cnt", hdtr->hdr_cnt);
     luab_setinteger(L, -2, "trl_cnt", hdtr->trl_cnt);
 
     if (hdtr->headers != NULL)
-        (void)sf_hdtr_pushiovec(L, -2, hdtr->headers, "headers");
+        (void)sf_hdtr_pushiovec(L, -2, "headers", ud, SF_HDTR_CH_HDR);
 
-    if (hdtr->headers != NULL)
-        (void)sf_hdtr_pushiovec(L, -2, hdtr->trailers, "trailers");
+    if (hdtr->trailers != NULL)
+        (void)sf_hdtr_pushiovec(L, -2, "trailers", ud, SF_HDTR_CH_TRL);
 
     lua_pushvalue(L, -1);
 
@@ -192,15 +251,15 @@ SF_HDTR_get(lua_State *L)
 static int
 SF_HDTR_hdr_cnt(lua_State *L)
 {
-    luab_table_t *tbl;
-    int data;
+    struct sf_hdtr *hdtr;
+    int card;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tbl = luab_udata(L, 1, &sf_hdtr_type, luab_table_t *);
-    data = hdtr->hdr_cnt;
+    hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
+    card = hdtr->hdr_cnt;
 
-    return (luab_pusherr(L, data));
+    return (luab_pusherr(L, card));
 }
 
 /***
@@ -215,19 +274,19 @@ SF_HDTR_hdr_cnt(lua_State *L)
 static int
 SF_HDTR_trl_cnt(lua_State *L)
 {
-    luab_table_t *tbl;
-    int data;
+    struct sf_hdtr *hdtr;
+    int card;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tbl = luab_udata(L, 1, &sf_hdtr_type, luab_table_t *);
-    data = hdtr->trl_cnt;
+    hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
+    card = hdtr->trl_cnt;
 
-    return (luab_pusherr(L, data));
+    return (luab_pusherr(L, card));
 }
 
 /***
- * Set headers by array of iovec{}s
+ * Set headers by an array of iovec{}s
  *
  * @function set_headers
  *
@@ -245,23 +304,18 @@ SF_HDTR_trl_cnt(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = sf_hdtr:set_headers(data)
+ * @usage card [, err, msg ] = sf_hdtr:set_headers(data)
  */
 static int
 SF_HDTR_set_headers(lua_State *L)
 {
-    luab_table_t *tbl;
-    struct iovec *vec;
-    size_t card;
+    luab_sf_hdtr_t *ud;
+    int card;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    tbl = luab_udata(L, 1, &sf_hdtr_type, luab_table_t *);
-    vec = sf_hdtr_checkiovec(L, 2, hdtr->headers, &card);
-
-    hdtr->headers = vec;
-    hdtr->hdr_cnt = (card & INT_MAX);
-
+    ud = luab_to_sf_hdtr(L, 1);
+    card = sf_hdtr_checkiovec(L, 2, ud, SF_HDTR_CH_HDR);
     return (luab_pusherr(L, card));
 }
 
@@ -277,19 +331,16 @@ SF_HDTR_set_headers(lua_State *L)
 static int
 SF_HDTR_get_headers(lua_State *L)
 {
-    luab_table_t *tbl;
-    struct iovec *vec;
+    luab_sf_hdtr_t *ud;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tbl = luab_udata(L, 1, &sf_hdtr_type, luab_table_t *);
-    vec = hdtr->headers;
-
-    return (sf_hdtr_pushiovec(L, -2, vec, NULL));
+    ud = luab_to_sf_hdtr(L, 1);
+    return (sf_hdtr_pushiovec(L, -2, NULL, ud, SF_HDTR_CH_HDR));
 }
 
 /***
- * Set trailers by array of iovec{}s
+ * Set trailers by an array of iovec{}s
  *
  * @function set_trailers
  *
@@ -312,18 +363,13 @@ SF_HDTR_get_headers(lua_State *L)
 static int
 SF_HDTR_set_trailers(lua_State *L)
 {
-    luab_table_t *tbl;
-    struct iovec *vec;
-    size_t card;
+    luab_sf_hdtr_t *ud;
+    int card;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    tbl = luab_udata(L, 1, &sf_hdtr_type, luab_table_t *);
-    vec = sf_hdtr_checkiovec(L, 2, hdtr->trailers, &card);
-
-    hdtr->trailers = vec;
-    hdtr->trl_cnt = (card & INT_MAX);
-
+    ud = luab_to_sf_hdtr(L, 1);
+    card = sf_hdtr_checkiovec(L, 2, ud, SF_HDTR_CH_TRL);
     return (luab_pusherr(L, card));
 }
 
@@ -339,15 +385,12 @@ SF_HDTR_set_trailers(lua_State *L)
 static int
 SF_HDTR_get_trailers(lua_State *L)
 {
-    luab_table_t *tbl;
-    struct iovec *vec;
+    luab_sf_hdtr_t *ud;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tbl = luab_udata(L, 1, &sf_hdtr_type, luab_table_t *);
-    vec = hdtr->trailers;
-
-    return (sf_hdtr_pushiovec(L, -2, vec, NULL));
+    ud = luab_to_sf_hdtr(L, 1);
+    return (sf_hdtr_pushiovec(L, -2, NULL, ud, SF_HDTR_CH_TRL));
 }
 
 /*
@@ -357,6 +400,16 @@ SF_HDTR_get_trailers(lua_State *L)
 static int
 SF_HDTR_gc(lua_State *L)
 {
+    luab_sf_hdtr_t *ud;
+    enum sf_hdtr_cache n;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    ud = luab_to_sf_hdtr(L, 1);
+
+    for (n = SF_HDTR_CH_HDR; n < SF_HDTR_CH_MAX; n++)
+        luab_table_free(ud->ud_cache[n]);
+
     return (luab_core_gc(L, 1, &sf_hdtr_type));
 }
 
@@ -405,7 +458,10 @@ sf_hdtr_init(void *ud, void *arg)
 static void *
 sf_hdtr_udata(lua_State *L, int narg)
 {
-    return (luab_to_sf_hdtr(L, narg));
+    luab_sf_hdtr_t *ud;
+
+    ud = luab_to_sf_hdtr(L, narg);
+    return (&(ud->ud_hdtr));
 }
 
 luab_module_t sf_hdtr_type = {
@@ -418,4 +474,3 @@ luab_module_t sf_hdtr_type = {
     .m_sz       = sizeof(luab_sf_hdtr_t),
 };
 #endif /* __BSD_VISBLE */
-#endif /* notyet */

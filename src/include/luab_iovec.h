@@ -29,10 +29,6 @@
 
 #include "luab_buf.h"
 
-/*
- * Definitions for (LUA_TUSERDATA(IOVEC)).
- */
-
 typedef struct luab_iovec_param {
     struct iovec    iop_iov;    /* maps-to allocated memory region, iov_base */
     struct iovec    iop_data;   /* maps-to supplied data */
