@@ -539,7 +539,6 @@ luab_recvfrom(lua_State *L)
     return (luab_iovec_recvfrom(L, s, buf, &len, flags, from, fromlen));
 }
 
-#if notyet
 /***
  * recvmsg(2) - receive message(s) from a socket(9)
  *
@@ -582,6 +581,7 @@ luab_recvmsg(lua_State *L)
     return (luab_pusherr(L, count));
 }
 
+#if 0
 #if __BSD_VISIBLE
 /***
  * recvmmsg(2) - receive multiple message(s) at a call from a socket(9)
@@ -634,7 +634,7 @@ luab_recvmmsg(lua_State *L)
     return (luab_pusherr(L, count));
 }
 #endif
-#endif /* notyet */
+#endif
 /***
  * send(2) - send message(s) from a socket(9)
  *
@@ -726,7 +726,7 @@ luab_sendto(lua_State *L)
 
     return (luab_iovec_sendto(L, s, buf, &len, flags, to, tolen));
 }
-#if notyet
+
 /***
  * sendmsg(2) - send message(s) from a socket(9)
  *
@@ -768,7 +768,7 @@ luab_sendmsg(lua_State *L)
     }
     return (luab_pusherr(L, count));
 }
-#endif
+
 #if __BSD_VISIBLE
 /***
  * sendfile(2) - send a file to a socket
@@ -1477,17 +1477,15 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("listen",                     luab_listen),
     LUAB_FUNC("recv",                       luab_recv),
     LUAB_FUNC("recvfrom",                   luab_recvfrom),
-#if notyet
     LUAB_FUNC("recvmsg",                    luab_recvmsg),
+#if 0
 #if __BSD_VISIBLE
     LUAB_FUNC("recvmmesg",                  luab_recvmmsg),
 #endif
 #endif /* notyet */
     LUAB_FUNC("send",                       luab_send),
     LUAB_FUNC("sendto",                     luab_sendto),
-#if notyet
     LUAB_FUNC("sendmsg",                    luab_sendmsg),
-#endif /* notyet */
 #if __BSD_VISIBLE
     LUAB_FUNC("sendfile",                   luab_sendfile),
     LUAB_FUNC("sendmmesg",                  luab_sendmmsg),
