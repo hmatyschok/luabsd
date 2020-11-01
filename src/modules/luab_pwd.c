@@ -46,6 +46,23 @@ extern luab_module_t luab_pwd_lib;
  * Generator functions.
  */
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(PASSWD)).
+ *
+ * @function passwd_create
+ *
+ * @param passwd          Instance of (LUA_TUSERDATA(PASSWD)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage passwd [, err, msg ] = bsd.pwd.passwd_create([ passwd ])
+ */
+static int
+luab_passwd_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(PASSWD), NULL));
+}
+
 /*
  * Interface against <pwd.h>.
  */
@@ -85,6 +102,7 @@ static luab_module_table_t luab_pwd_vec[] = { /* pwd.h */
     LUAB_INT("_PWF_FILES",              _PWF_FILES),
     LUAB_INT("_PWF_NIS",                _PWF_NIS),
     LUAB_INT("_PWF_HESIOD",             _PWF_HESIOD),
+    LUAB_FUNC("passwd_create",          luab_passwd_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

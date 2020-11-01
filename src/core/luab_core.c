@@ -437,7 +437,7 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 }
 
 /*
- * Common service primitives, interface of <core>.
+ * Common service primitives.
  */
 
 int
@@ -520,6 +520,10 @@ luab_core_tostring(lua_State *L, int narg, luab_module_t *m)
 
     return (1);
 }
+
+/*
+ * Interface of <core>.
+ */
 
 /***
  * Interface against uuidgen(2), derived from implementation of uuidgen(1).
@@ -837,6 +841,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &iovec_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_IOVEC_IDX,
+    },{
+        .mv_mod = &passwd_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_PASSWD_IDX,
     },
 #if __BSD_VISIBLE
     {
