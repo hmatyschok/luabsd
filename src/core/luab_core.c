@@ -798,15 +798,11 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &linger_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_LINGER_IDX,
-    },
-#if notyet
-    {
+    },{
         .mv_mod = &msghdr_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_MSGHDR_IDX,
-    },
-#endif /* notyet */
-    {
+    },{
         .mv_mod = &sockaddr_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_SOCKADDR_IDX,

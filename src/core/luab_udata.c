@@ -157,7 +157,7 @@ luab_checkxdata(lua_State *L, int narg, luab_module_t *m, luab_udata_t **udx)
     if (udx == NULL)
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-    *udx = luab_todata(L, narg, m, luab_udata_t *);;
+    *udx = luab_todata(L, narg, m, luab_udata_t *);
     return (*udx + 1);
 }
 

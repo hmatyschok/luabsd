@@ -142,9 +142,7 @@ typedef enum luab_type {
     LUAB_LDIV_IDX,
     LUAB_LLDIV_IDX,
     LUAB_LINGER_IDX,
-#if notyet
     LUAB_MSGHDR_IDX,
-#endif /* notyet */
     LUAB_SOCKADDR_IDX,
     LUAB_STAT_IDX,
     LUAB_TIMESPEC_IDX,

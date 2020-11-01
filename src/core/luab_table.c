@@ -519,6 +519,43 @@ luab_table_checkiovec(lua_State *L, int narg)
 }
 
 luab_table_t *
+luab_table_checkmmsghdr(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct mmsghdr *x;
+    struct msghdr *msg;
+    size_t m, n, sz;
+
+    sz = sizeof(struct mmsghdr);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct mmsghdr *)(tbl->tbl_vec)) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
+                        (void)memmove(&(x[m].msg_hdr), msg, sizeof(struct msghdr));
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+luab_table_t *
 luab_table_checktimespec(lua_State *L, int narg)
 {
     luab_table_t *tbl;
@@ -553,6 +590,10 @@ luab_table_checktimespec(lua_State *L, int narg)
     }
     return (tbl);
 }
+
+/*
+ * XXX DRY this set of primitives shall merged into one by callback.
+ */
 
 luab_table_t *
 luab_table_checkldouble(lua_State *L, int narg, size_t nmax)
@@ -794,7 +835,7 @@ luab_table_pushiovec(lua_State *L, int narg, luab_table_t *tbl, int new, int clr
 
         /* XXX */
         if (clr != 0)
-            luab_table_free(tbl);
+            luab_table_iovec_free(tbl);
     } else
         errno = EINVAL;
 }

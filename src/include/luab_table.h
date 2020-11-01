@@ -89,6 +89,7 @@ luab_table_t     *luab_table_checkgid(lua_State *, int);
 luab_table_t     *luab_table_checkint(lua_State *, int);
 luab_table_t     *luab_table_checku_short(lua_State *, int);
 luab_table_t     *luab_table_checkiovec(lua_State *, int);
+luab_table_t     *luab_table_checkmmsghdr(lua_State *, int);
 luab_table_t     *luab_table_checktimespec(lua_State *, int);
 
 luab_table_t     *luab_table_tolxargp(lua_State *, int, size_t);

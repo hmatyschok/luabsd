@@ -68,6 +68,7 @@ void     *luab_udata_insert(luab_udata_t *, luab_udata_t *, void **);
 /*
  * Access functions, [stack -> C].
  */
+
 #define luab_dptox(dp) ((void *)&(dp))
 #define luab_isdata(L, narg, m, t) \
     ((t)luaL_testudata((L), (narg), ((m)->m_name)))

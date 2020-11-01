@@ -87,36 +87,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
             (void)luaL_error(L, "%s: sopt->sopt_len != xarg->xarg_len", __func__);
     }
 }
-#if notyet
-/*
- * Evaluates if set contains instances of (LUA_TTABLE(LUA_TUSERDATA(MSGHDR)))
- * and translate its elements or items this into an array of mmsghdr{} items.
- */
-static struct mmsghdr *
-luab_checkmsgvec(lua_State *L, int narg)
-{
-    struct mmsghdr *vec;
-    struct msghdr *msg;
-    size_t k, card;
 
-    vec = luab_newvector(L, narg, &card, sizeof(struct mmsghdr));
-
-    lua_pushnil(L);
-
-    for (k = 0; lua_next(L, narg) != 0; k++) {  /* XXX DRY */
-
-        if ((lua_isnumber(L, -2) != 0) &&
-            (lua_isnumber(L, -1) != 0)) {
-            msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
-            (void)memmove(&(vec[k].msg_hdr), msg, sizeof(struct msghdr));
-        } else
-            luab_core_argerror(L, narg, vec, card, sizeof(struct msghdr), EINVAL);
-
-        lua_pop(L, 1);
-    }
-    return (vec);
-}
-#endif
 /*
  * Service primitives.
  */
@@ -866,7 +837,6 @@ luab_sendfile(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
-#if 0
 /***
  * sendmmsg(2) - send multiple message(s) at a call from a socket(9)
  *
@@ -890,15 +860,16 @@ static int
 luab_sendmmsg(lua_State *L)
 {
     int s;
-    struct mmsghdr *msgvec;
+    luab_table_t *tbl;
     size_t vlen;
     int flags;
+    struct mmsghdr *msgvec;
     ssize_t count;
 
     (void)luab_core_checkmaxargs(L, 4);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
-    msgvec = luab_checkmsgvec(L, 2);
+    tbl = luab_table_checkmmsghdr(L, 2);
     vlen = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -907,12 +878,16 @@ luab_sendmmsg(lua_State *L)
 #endif
     );
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
-    count = sendmmsg(s, msgvec, vlen, flags);
-    free(msgvec);
+
+    if (tbl != NULL) {
+        msgvec = (struct mmsghdr *)(tbl->tbl_vec);
+        count = sendmmsg(s, msgvec, vlen, flags);
+        luab_table_free(tbl);
+    } else
+        count = -1;
 
     return (luab_pusherr(L, count));
 }
-#endif /* notyet */
 
 /***
  * setfib(2) - set the default FIB (routing table) for the calling process
@@ -1126,55 +1101,6 @@ luab_linger_create(lua_State *L)
     return (luab_core_create(L, 1, luab_mx(LINGER), NULL));
 }
 
-#if __BSD_VISIBLE
-/***
- * Generator function.
- *
- * @function accept_filter_arg_create
- *
- * @param data          Instance of (LUA_TUSERDATA(ACCEPT_FILTER_ARG)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage accept_filter_arg [, err, msg ] = bsd.sys.socket.accept_filter_arg_create([ data ])
- */
-static int
-luab_accept_filter_arg_create(lua_State *L)
-{
-    return (luab_core_create(L, 1, luab_mx(ACCEPT_FILTER_ARG), NULL));
-}
-#if notyet
-/***
- * Generator function - create an instance of (LUA_TUSERDATA(MSGHDR)).
- *
- * @function msghdr_create
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage msghdr [, err, msg ] = bsd.sys.socket.msghdr_create()
- */
-static int
-luab_msghdr_create(lua_State *L)
-{
-    return (luab_core_create(L, 0, luab_mx(MSGHDR), NULL));
-}
-#endif /* notyet */
-/***
- * Generator function - create an instance of (LUA_TUSERDATA(CMSGCRED)).
- *
- * @function cmsgcred_create
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage cmsgcred [, err, msg ] = bsd.sys.socket.cmsgcred_create()
- */
-static int
-luab_cmsgcred_create(lua_State *L)
-{
-    return (luab_core_create(L, 0, luab_mx(CMSGCRED), NULL));
-}
-#endif
-
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
@@ -1192,7 +1118,54 @@ luab_sockaddr_create(lua_State *L)
     return (luab_core_create(L, 1, luab_mx(SOCKADDR), NULL));
 }
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(MSGHDR)).
+ *
+ * @function msghdr_create
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage msghdr [, err, msg ] = bsd.sys.socket.msghdr_create()
+ */
+static int
+luab_msghdr_create(lua_State *L)
+{
+    return (luab_core_create(L, 0, luab_mx(MSGHDR), NULL));
+}
+
 #if __BSD_VISIBLE
+/***
+ * Generator function.
+ *
+ * @function accept_filter_arg_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(ACCEPT_FILTER_ARG)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage accept_filter_arg [, err, msg ] = bsd.sys.socket.accept_filter_arg_create([ data ])
+ */
+static int
+luab_accept_filter_arg_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(ACCEPT_FILTER_ARG), NULL));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(CMSGCRED)).
+ *
+ * @function cmsgcred_create
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage cmsgcred [, err, msg ] = bsd.sys.socket.cmsgcred_create()
+ */
+static int
+luab_cmsgcred_create(lua_State *L)
+{
+    return (luab_core_create(L, 0, luab_mx(CMSGCRED), NULL));
+}
+
 /***
  * Generator function.
  *
@@ -1517,9 +1490,7 @@ static luab_module_table_t luab_sys_socket_vec[] = {
 #endif /* notyet */
 #if __BSD_VISIBLE
     LUAB_FUNC("sendfile",                   luab_sendfile),
-#if notyet
     LUAB_FUNC("sendmmesg",                  luab_sendmmsg),
-#endif /* notyet */
     LUAB_FUNC("setfib",                     luab_setfib),
 #endif
     LUAB_FUNC("setsockopt",                 luab_setsockopt),
@@ -1529,15 +1500,11 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("socketpair",                 luab_socketpair),
     /* generator functions */
     LUAB_FUNC("linger_create",              luab_linger_create),
+    LUAB_FUNC("sockaddr_create",            luab_sockaddr_create),
+    LUAB_FUNC("msghdr_create",              luab_msghdr_create),
 #if __BSD_VISIBLE
     LUAB_FUNC("accept_filter_arg_create",   luab_accept_filter_arg_create),
-#if notyet
-    LUAB_FUNC("msghdr_create",              luab_msghdr_create),
-#endif /* notyet */
     LUAB_FUNC("cmsgcred_create",            luab_cmsgcred_create),
-#endif
-    LUAB_FUNC("sockaddr_create",            luab_sockaddr_create),
-#if __BSD_VISIBLE
     LUAB_FUNC("sockproto_create",           luab_sockproto_create),
     LUAB_FUNC("sf_hdtr_create",             luab_sf_hdtr_create),
 #endif

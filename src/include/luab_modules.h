@@ -45,9 +45,7 @@ extern luab_module_t itimerval_type;
 extern luab_module_t ldiv_type;
 extern luab_module_t lldiv_type;
 extern luab_module_t linger_type;
-#if notyet
 extern luab_module_t msghdr_type;
-#endif /* notyet */
 extern luab_module_t sockaddr_type;
 extern luab_module_t stat_type;
 extern luab_module_t timespec_type;
