@@ -60,7 +60,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
     (void)luab_core_checkmaxargs(L, 5);
 #if 0
     if (sopt == NULL)
-        (void)luaL_error(L, "%s: sopt == NULL", __func__);
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
 
     (void)memset_s(sizeof(*sopt), 0, sizeof(*sopt));
 #endif
@@ -83,8 +83,8 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
     else {
         sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, INT_MAX);
 
-        if (sopt->sopt_len != pci->xarg_len)    /* XXX */
-            (void)luaL_error(L, "%s: sopt->sopt_len != xarg->xarg_len", __func__);
+        if (sopt->sopt_len != pci->xarg_len)
+            luab_core_err(EX_DATAERR, __func__, ERANGE);
     }
 }
 
@@ -455,8 +455,13 @@ luab_listen(lua_State *L)
  * @param len               Assumed number of bytes to be rx'd.
  * @param flags             Flags argument, values from
  *
- *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  PEEK,
+ *                                  WAITALL,
+ *                                  DONTWAIT,
+ *                                  CMSG_CLOEXEC
+ *                              }
  *
  *                          may combined by inclusive or.
  *
@@ -498,8 +503,13 @@ luab_recv(lua_State *L)
  * @param len               Assumed number of bytes to be rx'd.
  * @param flags             Flags argument, values from
  *
- *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  PEEK,
+ *                                  WAITALL,
+ *                                  DONTWAIT,
+ *                                  CMSG_CLOEXEC
+ *                              }
  *
  *                          may combined by inclusive or.
  * @param from              Result argument, (LUA_TUSERDATA(SOCKADDR)).
@@ -548,8 +558,13 @@ luab_recvfrom(lua_State *L)
  * @param msg               Instance of LUA_TUSERDATA(MSGHDR).
  * @param flags             Flags argument, values from
  *
- *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  PEEK,
+ *                                  WAITALL,
+ *                                  DONTWAIT,
+ *                                  CMSG_CLOEXEC
+ *                              }
  *
  *                          may combined by inclusive or.
  *
@@ -581,7 +596,6 @@ luab_recvmsg(lua_State *L)
     return (luab_pusherr(L, count));
 }
 
-#if 0
 #if __BSD_VISIBLE
 /***
  * recvmmsg(2) - receive multiple message(s) at a call from a socket(9)
@@ -593,8 +607,14 @@ luab_recvmsg(lua_State *L)
  * @param vlen              Constraint for #n received messages.
  * @param flags             Flags argument, values from
  *
- *                              bsd.sys.socket.MSG_{OOB,PEEK,WAITALL,
- *                                  DONTWAIT,CMSG_CLOEXEC,WAITFORONE}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  PEEK,
+ *                                  WAITALL,
+ *                                  DONTWAIT,
+ *                                  CMSG_CLOEXEC,
+ *                                  WAITFORONE
+ *                              }
  *
  *                          may combined by inclusive or.
  * @param timeout           Specifies timeout, if !nil.
@@ -607,16 +627,17 @@ static int
 luab_recvmmsg(lua_State *L)
 {
     int s;                              /* XXX */
-    struct mmsghdr *msgvec;
+    luab_table_t *tbl;
     size_t vlen;
     int flags;
     struct timespec *timeout;
+    struct mmsghdr *msgvec;
     ssize_t count;
 
     (void)luab_core_checkmaxargs(L, 5);
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
-    msgvec = luab_checkmsgvec(L, 2);
+    tbl = luab_table_checkmmsghdr(L, 2);
     vlen = (size_t)luab_checkinteger(L, 3,
 #ifdef  __LP64__
     LONG_MAX
@@ -627,14 +648,17 @@ luab_recvmmsg(lua_State *L)
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
     timeout = luab_udataisnil(L, 5, luab_mx(TIMESPEC), struct timespec *);
 
-    count = recvmmsg(s, msgvec, vlen, flags, timeout);
-
-    free(msgvec);
+    if (tbl != NULL) {
+        msgvec = (struct mmsghdr *)(tbl->tbl_vec);
+        count = recvmmsg(s, msgvec, vlen, flags, timeout);
+        luab_table_free(tbl);
+    } else
+        count = -1;
 
     return (luab_pusherr(L, count));
 }
 #endif
-#endif
+
 /***
  * send(2) - send message(s) from a socket(9)
  *
@@ -645,8 +669,14 @@ luab_recvmmsg(lua_State *L)
  * @param len               Assumed number of bytes to be rx'd.
  * @param flags             Flags argument, values from
  *
- *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
- *                                  DONTWAIT,EOF,NOSIGNAL}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  DONTROUTE,
+ *                                  EOR,
+ *                                  DONTWAIT,
+ *                                  EOF,
+ *                                  NOSIGNAL
+ *                              }
  *
  *                          may combined by inclusive or.
  *
@@ -688,8 +718,14 @@ luab_send(lua_State *L)
  * @param len               Assumed number of bytes to be tx'd.
  * @param flags             Flags argument, values from
  *
- *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
- *                                  DONTWAIT,EOF,NOSIGNAL}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  DONTROUTE,
+ *                                  EOR,
+ *                                  DONTWAIT,
+ *                                  EOF,
+ *                                  NOSIGNAL
+ *                              }
  *
  *                          may combined by inclusive or.
  * @param to                Result argument, (LUA_TUSERDATA(SOCKADDR)).
@@ -736,8 +772,14 @@ luab_sendto(lua_State *L)
  * @param msg               Instance of LUA_TUSERDATA(MSGHDR).
  * @param flags             Flags argument over
  *
- *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
- *                                  DONTWAIT,EOF,NOSIGNAL}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  DONTROUTE,
+ *                                  EOR,
+ *                                  DONTWAIT,
+ *                                  EOF,
+ *                                  NOSIGNAL
+ *                              }
  *
  *                          may combined by inclusive or.
  *
@@ -847,8 +889,14 @@ luab_sendfile(lua_State *L)
  * @param vlen              Constraint for transmission of #n messages.
  * @param flags             Flags argument over
  *
- *                              bsd.sys.socket.MSG_{OOB,DONTROUTE,EOR,
- *                                  DONTWAIT,EOF,NOSIGNAL}
+ *                              bsd.sys.socket.MSG_{
+ *                                  OOB,
+ *                                  DONTROUTE,
+ *                                  EOR,
+ *                                  DONTWAIT,
+ *                                  EOF,
+ *                                  NOSIGNAL
+ *                              }
  *
  *                          may combined by inclusive or.
  *
@@ -956,7 +1004,11 @@ luab_setsockopt(lua_State *L)
  * @param s                 Open socket(9).
  * @param how               Specifies type of shutdown by values from:
  *
- *                              bsd.sys.socket.SHUT_{RD,WR,RDWR}
+ *                              bsd.sys.socket.SHUT_{
+ *                                  RD,
+ *                                  WR,
+ *                                  RDWR
+ *                              }
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1465,7 +1517,6 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("accept",                     luab_accept),
     LUAB_FUNC("bind",                       luab_bind),
     LUAB_FUNC("connect",                    luab_connect),
-
 #if __BSD_VISIBLE
     LUAB_FUNC("accept4",                    luab_accept4),
     LUAB_FUNC("bindat",                     luab_bindat),
@@ -1478,11 +1529,9 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("recv",                       luab_recv),
     LUAB_FUNC("recvfrom",                   luab_recvfrom),
     LUAB_FUNC("recvmsg",                    luab_recvmsg),
-#if 0
 #if __BSD_VISIBLE
     LUAB_FUNC("recvmmesg",                  luab_recvmmsg),
 #endif
-#endif /* notyet */
     LUAB_FUNC("send",                       luab_send),
     LUAB_FUNC("sendto",                     luab_sendto),
     LUAB_FUNC("sendmsg",                    luab_sendmsg),
