@@ -730,6 +730,9 @@ static luab_module_vec_t luab_core_vec[] = {
         .mv_mod = &luab_fcntl_lib,
         .mv_init = luab_newtable,
     },{
+        .mv_mod = &luab_pwd_lib,
+        .mv_init = luab_newtable,
+    },{
         .mv_mod = &luab_stdlib_lib,
         .mv_init = luab_newtable,
     },{
