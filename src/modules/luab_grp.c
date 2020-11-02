@@ -50,8 +50,9 @@
 extern luab_module_t luab_grp_lib;
 
 /*
- * Service primitves.
+ * Service primitives.
  */
+
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
 /***
  * endgrent(3) - group database operations
@@ -156,6 +157,69 @@ luab_getgrnam(lua_State *L)
 
     return (status);
 }
+
+#if __BSD_VISIBLE
+/***
+ * group_from_gid(3) - cache group entries
+ *
+ * @function group_from_gid
+ *
+ * @param gid               Specifies group ID.
+ * @param nosuer            Specifies if (LUA_TNIL) shall returned, if set
+ *                          non-zero, when user name by requested GID does
+ *                          not exist.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage str [, err, msg ] = bsd.grp.group_from_gid(gid, nouser)
+ */
+static int
+luab_group_from_gid(lua_State *L)
+{
+    gid_t gid;
+    int nouser;
+    const char *name;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    gid = luab_checkinteger(L, 1, INT_MAX);
+    nouser = luab_checkinteger(L, 2, INT_MAX);
+
+    name = group_from_gid(gid, nouser);
+    return (luab_pushstring(L, name));
+}
+
+/***
+ * gid_from_group(3) - cache password entries
+ *
+ * @function gid_from_group
+ *
+ * @param name              Specifies group name.
+ * @param gid               Result argument, with name linked GID,
+ *                          instance of (LUA_TUSERDATA(PRIMITIVE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.grp.gid_from_group(name, gid)
+ */
+static int
+luab_gid_from_group(lua_State *L)
+{
+    const char *name;
+    luab_primitive_u *xp;
+    gid_t *gid;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    name = luab_checklstring(L, 1, MAXLOGNAME);
+    xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+    gid = &(xp->un_gid);
+
+    status = gid_from_group(name, gid);
+    return (luab_pusherr(L, status));
+}
+#endif /* __BSD_VISIBLE */
 
 #if __XSI_VISIBLE
 /***
@@ -438,10 +502,8 @@ static luab_module_table_t luab_grp_vec[] = { /* grp.h */
     LUAB_FUNC("getgrgid",           luab_getgrgid),
     LUAB_FUNC("getgrnam",           luab_getgrnam),
 #if __BSD_VISIBLE
-# if 0
     LUAB_FUNC("group_from_gid",     luab_group_from_gid),
     LUAB_FUNC("gid_from_group",     luab_gid_from_group),
-# endif
 #endif
 #if __XSI_VISIBLE
     LUAB_FUNC("setgrent",           luab_setgrent),

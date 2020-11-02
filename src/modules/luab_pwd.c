@@ -50,7 +50,7 @@
 extern luab_module_t luab_pwd_lib;
 
 /*
- * Service primitves.
+ * Service primitives.
  */
 
 /***
@@ -437,14 +437,13 @@ luab_user_from_uid(lua_State *L)
  *
  * @function uid_from_user
  *
- * @param uid               Specifies user ID.
- * @param nosuer            Specifies if (LUA_TNIL) shall returned, if set
- *                          non-zero, when user name by requested UID does
- *                          not exist.
+ * @param name              Specifies user name.
+ * @param uid               Result argument, with name linked UID,
+ *                          instance of (LUA_TUSERDATA(PRIMITIVE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = bsd.pwd.uid_from_user(uid, nouser)
+ * @usage ret [, err, msg ] = bsd.pwd.uid_from_user(name, uid)
  */
 static int
 luab_uid_from_user(lua_State *L)
