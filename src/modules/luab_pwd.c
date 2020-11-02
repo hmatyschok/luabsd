@@ -33,6 +33,17 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
+/*
+ * XXX
+ *
+ *      int  pwcache_userdb(int (*)(int), void (*)(void),
+ *              struct passwd * (*)(const char *),
+ *              struct passwd * (*)(uid_t));
+ *
+ *  Implementation depends on specific luab_type(3) implements autoboxing
+ *  for (LUA_TCFUNCTION) objects or set of callbacks over vector table.
+ */
+
 #define LUAB_PWD_LIB_ID    1604247804
 #define LUAB_PWD_LIB_KEY    "pwd"
 
@@ -390,6 +401,68 @@ luab_getpwent_r(lua_State *L)
     }
     return (luab_pusherr(L, status));
 }
+
+/***
+ * user_from_uid(3) - cache password entries
+ *
+ * @function user_from_uid
+ *
+ * @param uid               Specifies user ID.
+ * @param nosuer            Specifies if (LUA_TNIL) shall returned, if set
+ *                          non-zero, when user name by requested UID does
+ *                          not exist.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage str [, err, msg ] = bsd.pwd.user_from_uid(uid, nouser)
+ */
+static int
+luab_user_from_uid(lua_State *L)
+{
+    uid_t uid;
+    int nouser;
+    const char *name;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    uid = luab_checkinteger(L, 1, INT_MAX);
+    nouser = luab_checkinteger(L, 2, INT_MAX);
+
+    name = user_from_uid(uid, nouser);
+    return (luab_pushstring(L, name));
+}
+
+/***
+ * uid_from_user(3) - cache password entries
+ *
+ * @function uid_from_user
+ *
+ * @param uid               Specifies user ID.
+ * @param nosuer            Specifies if (LUA_TNIL) shall returned, if set
+ *                          non-zero, when user name by requested UID does
+ *                          not exist.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pwd.uid_from_user(uid, nouser)
+ */
+static int
+luab_uid_from_user(lua_State *L)
+{
+    const char *name;
+    luab_primitive_u *xp;
+    uid_t *uid;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    name = luab_checklstring(L, 1, MAXLOGNAME);
+    xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+    uid = &(xp->un_uid);
+
+    status = uid_from_user(name, uid);
+    return (luab_pusherr(L, status));
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -466,6 +539,8 @@ static luab_module_table_t luab_pwd_vec[] = { /* pwd.h */
 #ifdef __BSD_VISIBLE
     LUAB_FUNC("setpassent",             luab_setpassent),
     LUAB_FUNC("getpwent_r",             luab_getpwent_r),
+    LUAB_FUNC("user_from_uid",          luab_user_from_uid),
+    LUAB_FUNC("uid_from_user",          luab_uid_from_user),
 #endif
     LUAB_FUNC("passwd_create",          luab_passwd_create),
     LUAB_MOD_TBL_SENTINEL
