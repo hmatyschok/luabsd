@@ -52,7 +52,357 @@ extern luab_module_t luab_grp_lib;
 /*
  * Service primitves.
  */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+/***
+ * endgrent(3) - group database operations
+ *
+ * @function endgrent
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pwd.endgrent()
+ */
+static int
+luab_endgrent(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
 
+    endgrent();
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * getgrent(3) - group database operations
+ *
+ * @function getgrent
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage passwd [, err, msg ] = bsd.grp.getgrent()
+ */
+static int
+luab_getgrent(lua_State *L)
+{
+    struct group *grp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    if ((grp = getgrent()) != NULL)
+        status = luab_pushudata(L, luab_mx(GROUP), grp);
+    else
+        status = luab_pushnil(L);
+
+    return (status);
+}
+#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
+
+/***
+ * getgrgid(3) - group database operations
+ *
+ * @function getgrgid
+ *
+ * @param gid               Specifies group ID.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage group [, err, msg ] = bsd.grp.getgrgid(gid)
+ */
+static int
+luab_getgrgid(lua_State *L)
+{
+    gid_t gid;
+    struct group *grp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    gid = luab_checkinteger(L, 1, INT_MAX);
+
+    if ((grp = getgrgid(gid)) != NULL)
+        status = luab_pushudata(L, luab_mx(GROUP), grp);
+    else
+        status = luab_pushnil(L);
+
+    return (status);
+}
+
+/***
+ * getgrnam(3) - group database operations
+ *
+ * @function getgrnam
+ *
+ * @param name              Specifies group name.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage group [, err, msg ] = bsd.grp.getgrnam(name)
+ */
+static int
+luab_getgrnam(lua_State *L)
+{
+    const char *name;
+    struct group *grp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    name = luab_checklstring(L, 1, MAXLOGNAME);
+
+    if ((grp = getgrnam(name)) != NULL)
+        status = luab_pushudata(L, luab_mx(GROUP), grp);
+    else
+        status = luab_pushnil(L);
+
+    return (status);
+}
+
+#if __XSI_VISIBLE
+/***
+ * setgrent(3) - group database operations
+ *
+ * @function setgrent
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.grp.setgrent()
+ */
+static int
+luab_setgrent(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
+
+    setgrent();
+    return (luab_pusherr(L, 0));
+}
+#endif
+
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+/***
+ * getgrgid_r(3) - group database operations
+ *
+ * @function getgrgid_r
+ *
+ * @param gid               Specifies group ID.
+ * @param grp               Storage, instance of (LUA_TUSERDATA(GROUP)).
+ * @param buffer            Line buffer, instance of (LUA_TUSERDATA(IOVEC)),
+ *                          see group(5) for further details.
+ * @param bufsize           By _SC_GETGR_R_SIZE_MAX over sysconf(3) determined
+ *                          size in bytes to hold at least one line by group(5)
+ *                          specified format.
+ * @param result            Result argument, instance of (LUA_TUSERDATA(GROUP)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.grp.getgrgid_r(gid, grp, buffer, bufsize, result)
+ */
+static int
+luab_getgrgid_r(lua_State *L)
+{
+    gid_t gid;
+    struct group *grp;
+    luab_iovec_t *buf;
+    size_t bufsize;
+    struct group *ret;
+    caddr_t bp;
+    struct group *result;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 5);
+
+    gid = luab_checkinteger(L, 1, INT_MAX);
+    grp = luab_udata(L, 2, luab_mx(GROUP), struct group *);
+    buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+    bufsize = (size_t)luab_checkinteger(L, 4,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    ret = luab_udata(L, 5, luab_mx(GROUP), struct group *);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (bufsize <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = getgrgid_r(gid, grp, bp, bufsize, &result)) != 0)
+                (void)memmove(ret, result, sizeof(struct group));
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = 0;
+        }
+    } else {
+        errno = ERANGE;
+        status = 0;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * getgrnam_r(3) - group database operations
+ *
+ * @function getgrnam_r
+ *
+ * @param name              Specifies group name.
+ * @param grp               Storage, instance of (LUA_TUSERDATA(GROUP)).
+ * @param buffer            Line buffer, instance of (LUA_TUSERDATA(IOVEC)),
+ *                          see group(5) for further details.
+ * @param bufsize           By _SC_GETGR_R_SIZE_MAX over sysconf(3) determined
+ *                          size in bytes to hold at least one line by group(5)
+ *                          specified format.
+ * @param result            Result argument, instance of (LUA_TUSERDATA(GROUP)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.grp.getgrnam_r(name, grp, buffer, bufsize, result)
+ */
+static int
+luab_getgrnam_r(lua_State *L)
+{
+    const char *name;
+    struct group *grp;
+    luab_iovec_t *buf;
+    size_t bufsize;
+    struct group *ret;
+    caddr_t bp;
+    struct group *result;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 5);
+
+    name = luab_checklstring(L, 1, MAXLOGNAME);
+    grp = luab_udata(L, 2, luab_mx(GROUP), struct group *);
+    buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+    bufsize = (size_t)luab_checkinteger(L, 4,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    ret = luab_udata(L, 5, luab_mx(GROUP), struct group *);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (bufsize <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = getgrnam_r(name, grp, bp, bufsize, &result)) != 0)
+                (void)memmove(ret, result, sizeof(struct group));
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = 0;
+        }
+    } else {
+        errno = ERANGE;
+        status = 0;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
+
+#if __BSD_VISIBLE
+/***
+ * getgrent_r(3) - group database operations
+ *
+ * @function getgrent_r
+ *
+ * @param grp               Storage, instance of (LUA_TUSERDATA(GROUP)).
+ * @param buffer            Line buffer, instance of (LUA_TUSERDATA(IOVEC)),
+ *                          see group(5) for further details.
+ * @param bufsize           By _SC_GETGR_R_SIZE_MAX over sysconf(3) determined
+ *                          size in bytes to hold at least one line by group(5)
+ *                          specified format.
+ * @param result            Result argument, instance of (LUA_TUSERDATA(GROUP)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.grp.getgrent_r(grp, buffer, bufsize, result)
+ */
+static int
+luab_getgrent_r(lua_State *L)
+{
+    struct group *grp;
+    luab_iovec_t *buf;
+    size_t bufsize;
+    struct group *ret;
+    caddr_t bp;
+    struct group *result;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 4);
+
+    grp = luab_udata(L, 1, luab_mx(GROUP), struct group *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    bufsize = (size_t)luab_checkinteger(L, 3,
+#ifdef  __LP64__
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    ret = luab_udata(L, 4, luab_mx(GROUP), struct group *);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (bufsize <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = getgrent_r(grp, bp, bufsize, &result)) != 0)
+                (void)memmove(ret, result, sizeof(struct group));
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = 0;
+        }
+    } else {
+        errno = ERANGE;
+        status = 0;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * setgroupent(3) - group database operations
+ *
+ * @function setgroupent
+ *
+ * @param stayopen          Specifies, if file descriptors from db(3) stays
+ *                          open when its value is set non-zero.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.grp.setgroupent(stayopen)
+ */
+static int
+luab_setgroupent(lua_State *L)
+{
+    int stayopen;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stayopen = luab_checkinteger(L, 1, INT_MAX);
+    status = setgroupent(stayopen);
+    return (luab_pusherr(L, status));
+}
+#endif /* __BSD_VISIBLE */
 
 /*
  * Generator functions.
@@ -81,6 +431,29 @@ luab_group_create(lua_State *L)
 
 static luab_module_table_t luab_grp_vec[] = { /* grp.h */
     LUAB_STR("_PATH_GROUP",         _PATH_GROUP),
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+    LUAB_FUNC("endgrent",           luab_endgrent),
+    LUAB_FUNC("getgrent",           luab_getgrent),
+#endif
+    LUAB_FUNC("getgrgid",           luab_getgrgid),
+    LUAB_FUNC("getgrnam",           luab_getgrnam),
+#if __BSD_VISIBLE
+# if 0
+    LUAB_FUNC("group_from_gid",     luab_group_from_gid),
+    LUAB_FUNC("gid_from_group",     luab_gid_from_group),
+# endif
+#endif
+#if __XSI_VISIBLE
+    LUAB_FUNC("setgrent",           luab_setgrent),
+#endif
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+    LUAB_FUNC("getgrgid_r",         luab_getgrgid_r),
+    LUAB_FUNC("getgrnam_r",         luab_getgrnam_r),
+#endif
+#if __BSD_VISIBLE
+    LUAB_FUNC("getgrent_r",         luab_getgrent_r),
+    LUAB_FUNC("setgroupent",        luab_setgroupent),
+#endif
     LUAB_FUNC("group_create",       luab_group_create),
     LUAB_MOD_TBL_SENTINEL
 };
