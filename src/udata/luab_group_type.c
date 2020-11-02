@@ -54,9 +54,6 @@ extern luab_module_t group_type;
 typedef struct luab_group {
     luab_udata_t    ud_softc;
     struct group    ud_grp;
-#if 0
-    luab_table_t    *ud_buf;
-#endif
 } luab_group_t;
 
 #define luab_new_group(L, arg) \
@@ -225,18 +222,16 @@ GROUP_gr_mem(lua_State *L)
 static int
 GROUP_gc(lua_State *L)
 {
-#if 0
     struct group *grp;
-
+    
     (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &group_type, struct group *);
 
-    luab_core_free(grp->gr_name, strlen(grp->gr_name));
-    luab_core_free(grp->gr_passwd, strlen(grp->gr_passwd));
+    luab_core_free(grp->gr_name, 0);
+    luab_core_free(grp->gr_passwd, 0);
+    luab_core_free(grp->gr_mem, 0);
 
-    free(grp->gr_mem); /* XXX */
-#endif
     return (luab_core_gc(L, 1, &group_type));
 }
 

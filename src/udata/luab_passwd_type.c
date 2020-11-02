@@ -399,20 +399,19 @@ PASSWD_pw_fields(lua_State *L)
 static int
 PASSWD_gc(lua_State *L)
 {
-#if 0
     struct passwd *pwd;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
 
-    luab_core_free(pwd->pw_name, strlen(pwd->pw_name));
-    luab_core_free(pwd->pw_passwd, strlen(pwd->pw_passwd));
-    luab_core_free(pwd->pw_class, strlen(pwd->pw_class));
-    luab_core_free(pwd->pw_gecos, strlen(pwd->pw_gecos));
-    luab_core_free(pwd->pw_dir, strlen(pwd->pw_dir));
-    luab_core_free(pwd->pw_shell, strlen(pwd->pw_shell));
-#endif
+    luab_core_free(pwd->pw_name, 0);
+    luab_core_free(pwd->pw_passwd, 0);
+    luab_core_free(pwd->pw_class, 0);
+    luab_core_free(pwd->pw_gecos, 0);
+    luab_core_free(pwd->pw_dir, 0);
+    luab_core_free(pwd->pw_shell, 0);
+
     return (luab_core_gc(L, 1, &passwd_type));
 }
 

@@ -188,7 +188,7 @@ luab_table_argerror(lua_State *L, int narg, luab_table_t *tbl, int up_call)
 /*
  * Generator functions.
  *
- * Pre-allocates data region for by luab_table{} encapsulated arrays by
+ * Pre-allocates data region for by luab_table{} encapsulated arrays over
  * cardinality from focussed instance of (LUA_TTABLE) as precondition for
  * performing operations, e. g. deep copying.
  */
