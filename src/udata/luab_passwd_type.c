@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/time.h>
-
 #include <pwd.h>
 
 #include <lua.h>
@@ -408,12 +406,12 @@ PASSWD_gc(lua_State *L)
 
     pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
 
-    free(pwd->pw_name);
-    free(pwd->pw_passwd);
-    free(pwd->pw_class);
-    free(pwd->pw_gecos);
-    free(pwd->pw_dir);
-    free(pwd->pw_shell);
+    luab_core_free(pwd->pw_name, strlen(pwd->pw_name));
+    luab_core_free(pwd->pw_passwd, strlen(pwd->pw_passwd));
+    luab_core_free(pwd->pw_class, strlen(pwd->pw_class));
+    luab_core_free(pwd->pw_gecos, strlen(pwd->pw_gecos));
+    luab_core_free(pwd->pw_dir, strlen(pwd->pw_dir));
+    luab_core_free(pwd->pw_shell, strlen(pwd->pw_shell));
 #endif
     return (luab_core_gc(L, 1, &passwd_type));
 }

@@ -55,6 +55,7 @@ extern luab_module_t tm_type;
 extern luab_module_t uuid_type;
 extern luab_module_t iovec_type;
 extern luab_module_t passwd_type;
+extern luab_module_t group_type;
 
 #if __BSD_VISIBLE
 extern luab_module_t dbt_type;
@@ -90,6 +91,7 @@ extern luab_module_t luab_core_lib;
 
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_fcntl_lib;
+extern luab_module_t luab_grp_lib;
 extern luab_module_t luab_pwd_lib;
 extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_time_lib;
