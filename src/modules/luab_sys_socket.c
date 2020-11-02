@@ -481,13 +481,7 @@ luab_recv(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    len = (size_t)luab_checklinteger(L, 3);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
     return (luab_iovec_recv(L, s, buf, &len, flags));
@@ -534,13 +528,7 @@ luab_recvfrom(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    len = (size_t)luab_checklinteger(L, 3);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
     from = luab_udataisnil(L, 5, luab_mx(SOCKADDR), struct sockaddr *);
     xp = luab_udata(L, 6, luab_mx(PRIMITIVE), luab_primitive_u *);
@@ -638,13 +626,7 @@ luab_recvmmsg(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     tbl = luab_table_checkmmsghdr(L, 2);
-    vlen = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    vlen = (size_t)luab_checklinteger(L, 3);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
     timeout = luab_udataisnil(L, 5, luab_mx(TIMESPEC), struct timespec *);
 
@@ -696,13 +678,7 @@ luab_send(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     msg = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    len = (size_t)luab_checklinteger(L, 3);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
     return (luab_iovec_send(L, s, msg, &len, flags));
@@ -749,13 +725,7 @@ luab_sendto(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    len = (size_t)luab_checklinteger(L, 3);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
     to = luab_udataisnil(L, 5, luab_mx(SOCKADDR), struct sockaddr *);
     tolen = (socklen_t)luab_checkinteger(L, 4, INT_MAX);
@@ -857,13 +827,7 @@ luab_sendfile(lua_State *L)
     fd = luab_checkinteger(L, 1, INT_MAX);
     s = luab_checkinteger(L, 2, INT_MAX);
     offset = luab_checkinteger(L, 3, LONG_MAX);
-    nbytes = (size_t)luab_checkinteger(L, 4,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    nbytes = (size_t)luab_checklinteger(L, 4);
     hdtr = luab_udataisnil(L, 5, luab_mx(SF_HDTR), struct sf_hdtr *);
     xp = luab_udataisnil(L, 6, luab_mx(PRIMITIVE), luab_primitive_u *);
 
@@ -918,13 +882,7 @@ luab_sendmmsg(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     tbl = luab_table_checkmmsghdr(L, 2);
-    vlen = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    vlen = (size_t)luab_checklinteger(L, 3);
     flags = (int)luab_checkinteger(L, 4, INT_MAX);
 
     if (tbl != NULL) {

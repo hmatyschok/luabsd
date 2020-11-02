@@ -153,13 +153,7 @@ luab_inet_ntop(lua_State *L)
     af = (int)luab_checkinteger(L, 1, INT_MAX);
     src = luab_checkxaddr(L, 2, af, &size);
     buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
-    size = (size_t)luab_checkinteger(L, 4,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    size = (size_t)luab_checklinteger(L, 4);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
@@ -356,13 +350,7 @@ luab_inet_neta(lua_State *L)
 
     src = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    size = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    size = (size_t)luab_checklinteger(L, 3);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
@@ -476,13 +464,7 @@ luab_inet_net_ntop(lua_State *L)
     src = luab_checkxaddr(L, 2, af, &size);
     bits = (int)luab_checkinteger(L, 3, UINT_MAX);
     buf = luab_udata(L, 4, luab_mx(IOVEC), luab_iovec_t *);
-    size = (size_t)luab_checkinteger(L, 5,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    size = (size_t)luab_checklinteger(L, 5);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
@@ -542,13 +524,7 @@ luab_inet_net_pton(lua_State *L)
     af = (int)luab_checkinteger(L, 1, INT_MAX);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
-    size = (size_t)luab_checkinteger(L, 4,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    size = (size_t)luab_checklinteger(L, 4);
 
     if (((src = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
@@ -600,13 +576,7 @@ luab_inet_ntoa_r(lua_State *L)
 
     in = luab_udata(L, 1, luab_mx(IN_ADDR), struct in_addr *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    size = (size_t)luab_checkinteger(L, 3,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    size = (size_t)luab_checklinteger(L, 3);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
@@ -670,13 +640,7 @@ luab_inet_cidr_ntop(lua_State *L)
     src = luab_checkxaddr(L, 2, af, &size);
     bits = (int)luab_checkinteger(L, 3, UINT_MAX);
     buf = luab_udata(L, 4, luab_mx(IOVEC), luab_iovec_t *);
-    size = (size_t)luab_checkinteger(L, 5,
-#ifdef  __LP64__
-    LONG_MAX
-#else
-    INT_MAX
-#endif
-    );
+    size = (size_t)luab_checklinteger(L, 5);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= LUAL_BUFFERSIZE) &&

@@ -131,6 +131,21 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
     return ((lua_tointeger(L, narg)) & (b_msk));
 }
 
+lua_Integer
+luab_checklinteger(lua_State *L, int narg)
+{
+    lua_Integer b_msk;
+
+    b_msk = (
+#if defined(__LP64__) || defined(__mips_n64)
+    LONG_MAX
+#else
+    INT_MAX
+#endif
+    );
+    return (luab_checkinteger(L, narg, b_msk));
+}
+
 const char *
 luab_islstring(lua_State *L, int narg, size_t len)
 {
