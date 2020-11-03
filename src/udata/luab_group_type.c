@@ -128,6 +128,7 @@ GROUP_get(lua_State *L)
     grp = luab_udata(L, 1, &group_type, struct group *);
 
     lua_newtable(L);
+
     luab_setstring(L, -2, "gr_name",    grp->gr_name);
     luab_setstring(L, -2, "gr_passwd",   grp->gr_passwd);
     luab_setinteger(L, -2, "gr_gid",    grp->gr_gid);

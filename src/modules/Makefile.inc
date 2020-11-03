@@ -19,6 +19,7 @@ SRCS+=  luab_db.c
 SRCS+=  luab_fcntl.c
 SRCS+=  luab_grp.c
 SRCS+=  luab_pwd.c
+SRCS+=  luab_regex.c
 SRCS+=  luab_stdlib.c
 SRCS+=  luab_time.c
 SRCS+=  luab_unistd.c
