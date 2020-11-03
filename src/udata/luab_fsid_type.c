@@ -61,7 +61,7 @@ typedef struct luab_fsid {
  */
 
 static int
-fsid_pushdata(lua_State *L, int narg, const char *k, int32_t *vec)
+fsid_pushtable(lua_State *L, int narg, const char *k, int32_t *vec)
 {
     int up_call, status;
     size_t m, n;
@@ -120,7 +120,7 @@ FSID_get(lua_State *L)
     fsid = luab_udata(L, 1, &fsid_type, fsid_t *);
 
     lua_newtable(L);
-    (void)fsid_pushdata(L, -2, "val", fsid->val);
+    (void)fsid_pushtable(L, -2, "val", fsid->val);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -160,12 +160,12 @@ FSID_val(lua_State *L)
     fsid_t *fsid;
     int32_t *dp;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     fsid = luab_udata(L, 1, &fsid_type, fsid_t *);
     dp = fsid->val;
 
-    return (fsid_pushdata(L, -2, NULL, dp));
+    return (fsid_pushtable(L, -2, NULL, dp));
 }
 
 /*

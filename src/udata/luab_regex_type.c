@@ -140,7 +140,7 @@ REGEX_re_magic(lua_State *L)
     regex_t *re;
     int data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     re = luab_udata(L, 1, &regex_type, regex_t *);
     data = re->re_magic;
@@ -163,7 +163,7 @@ REGEX_re_nsub(lua_State *L)
     regex_t *re;
     size_t data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     re = luab_udata(L, 1, &regex_type, regex_t *);
     data = re->re_nsub;
@@ -186,7 +186,7 @@ REGEX_re_endp(lua_State *L)
     regex_t *re;
     const char *dp;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     re = luab_udata(L, 1, &regex_type, regex_t *);
     dp = re->re_endp;
@@ -209,7 +209,7 @@ REGEX_re_g(lua_State *L)
     regex_t *re;
     caddr_t dp;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     re = luab_udata(L, 1, &regex_type, regex_t *);
     dp = (caddr_t)(re->re_g);

@@ -130,7 +130,7 @@ REGMATCH_rm_so(lua_State *L)
     regmatch_t *rm;
     regoff_t data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     rm = luab_udata(L, 1, &regmatch_type, regmatch_t *);
     data = rm->rm_so;
@@ -153,7 +153,7 @@ REGMATCH_rm_eo(lua_State *L)
     regmatch_t *rm;
     regoff_t data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     rm = luab_udata(L, 1, &regmatch_type, regmatch_t *);
     data = rm->rm_eo;

@@ -132,7 +132,7 @@ FID_fid_len(lua_State *L)
     struct fid *fid;
     u_short data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     fid = luab_udata(L, 1, &fid_type, struct fid *);
     data = fid->fid_len;
@@ -155,7 +155,7 @@ FID_fid_data0(lua_State *L)
     struct fid *fid;
     u_short data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     fid = luab_udata(L, 1, &fid_type, struct fid *);
     data = fid->fid_data0;
@@ -178,7 +178,7 @@ FID_fid_data(lua_State *L)
     struct fid *fid;
     caddr_t dp;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     fid = luab_udata(L, 1, &fid_type, struct fid *);
     dp = fid->fid_data;

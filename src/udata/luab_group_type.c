@@ -66,7 +66,7 @@ typedef struct luab_group {
  */
 
 static int
-group_pushgrmem(lua_State *L, int narg, const char *k, caddr_t *vec)
+group_pushtable(lua_State *L, int narg, const char *k, caddr_t *vec)
 {
     int up_call, status;
     size_t m, n;
@@ -134,7 +134,7 @@ GROUP_get(lua_State *L)
     luab_setinteger(L, -2, "gr_gid",    grp->gr_gid);
 
     if (grp->gr_mem != NULL)
-        (void)group_pushgrmem(L, -2, "gr_mem", grp->gr_mem);
+        (void)group_pushtable(L, -2, "gr_mem", grp->gr_mem);
 
     lua_pushvalue(L, -1);
 
@@ -175,7 +175,7 @@ GROUP_gr_name(lua_State *L)
     struct group *grp;
     char *data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &group_type, struct group *);
     data = grp->gr_name;
@@ -198,7 +198,7 @@ GROUP_gr_passwd(lua_State *L)
     struct group *grp;
     char *data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &group_type, struct group *);
     data = grp->gr_passwd;
@@ -221,7 +221,7 @@ GROUP_gr_gid(lua_State *L)
     struct group *grp;
     gid_t data;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &group_type, struct group *);
     data = grp->gr_gid;
@@ -244,12 +244,12 @@ GROUP_gr_mem(lua_State *L)
     struct group *grp;
     caddr_t *vec;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &group_type, struct group *);
     vec = grp->gr_mem;
 
-    return (group_pushgrmem(L, -2, NULL, vec));
+    return (group_pushtable(L, -2, NULL, vec));
 }
 
 /*
