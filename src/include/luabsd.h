@@ -159,6 +159,7 @@ typedef enum luab_type {
     LUAB_REGMATCH_IDX,
     LUAB_FSID_IDX,
     LUAB_FID_IDX,
+    LUAB_STATFS_IDX,
 #if __BSD_VISIBLE
     LUAB_DBT_IDX,
     LUAB_DB_IDX,
