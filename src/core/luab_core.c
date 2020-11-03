@@ -720,6 +720,9 @@ static luab_module_vec_t luab_sys_vec[] = {
         .mv_mod = &luab_sys_file_lib,
         .mv_init = luab_newtable,
     },{
+        .mv_mod = &luab_sys_mount_lib,
+        .mv_init = luab_newtable,
+    },{
         .mv_mod = &luab_sys_stat_lib,
         .mv_init = luab_newtable,
     },{

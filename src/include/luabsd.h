@@ -79,7 +79,7 @@ typedef struct luab_module_table {
 #define LUAB_TYPE(fn, k, v) \
     { .mt_init = fn, .mt_key = k, v, }
 #define LUAB_INT(k, v) \
-    LUAB_TYPE(luab_initinteger, k, .mt_val.un_int = v)
+    LUAB_TYPE(luab_initinteger, k, .mt_val.un_intx = v)
 #define LUAB_FUNC(k, v) \
     LUAB_TYPE(luab_initcfunction, k, .mt_val.un_fn = v)
 #define LUAB_STR(k, v) \
@@ -90,7 +90,7 @@ typedef struct luab_module_table {
 static __inline void
 luab_initinteger(lua_State *L, luab_primitive_u *un)
 {
-    lua_pushinteger(L, un->un_int);
+    lua_pushinteger(L, un->un_intx);
 }
 
 static __inline void

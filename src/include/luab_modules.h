@@ -81,6 +81,7 @@ extern luab_module_t luab_net_if_lib;
 extern luab_module_t luab_net_if_dl_lib;
 
 extern luab_module_t luab_sys_file_lib;
+extern luab_module_t luab_sys_mount_lib;
 extern luab_module_t luab_sys_stat_lib;
 extern luab_module_t luab_sys_time_lib;
 extern luab_module_t luab_sys_uio_lib;
