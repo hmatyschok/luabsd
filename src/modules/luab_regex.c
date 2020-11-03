@@ -46,6 +46,23 @@ extern luab_module_t luab_regex_lib;
  * Generator functions.
  */
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(REGEX)).
+ *
+ * @function regex_create
+ *
+ * @param data          Instance of (LUA_TUSERDATA(TM)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage regex [, err, msg ] = bsd.regex.regex_create([ regex ])
+ */
+static int
+luab_regex_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(REGEX), NULL));
+}
+
 /*
  * Interface against <regex.h>.
  */
@@ -85,7 +102,7 @@ static luab_module_table_t luab_regex_vec[] = { /* regex.h */
     LUAB_INT("REG_TRACE",           REG_TRACE),
     LUAB_INT("REG_LARGE",           REG_LARGE),
     LUAB_INT("REG_BACKR",           REG_BACKR),
-
+    LUAB_FUNC("regex_create",       luab_regex_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

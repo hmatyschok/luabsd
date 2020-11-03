@@ -56,6 +56,7 @@ extern luab_module_t uuid_type;
 extern luab_module_t iovec_type;
 extern luab_module_t passwd_type;
 extern luab_module_t group_type;
+extern luab_module_t regex_type;
 
 #if __BSD_VISIBLE
 extern luab_module_t dbt_type;

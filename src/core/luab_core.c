@@ -877,6 +877,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &group_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_GROUP_IDX,
+    },{
+        .mv_mod = &regex_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_REGEX_IDX,
     },
 #if __BSD_VISIBLE
     {
