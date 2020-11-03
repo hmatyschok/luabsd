@@ -199,7 +199,7 @@ REGEX_re_endp(lua_State *L)
  *
  * @function re_g
  *
- * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  * @usage data [, err, msg ] = regex:re_g()
  */

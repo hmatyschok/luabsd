@@ -881,6 +881,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &regex_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_REGEX_IDX,
+    },{
+        .mv_mod = &regmatch_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_REGMATCH_IDX,
     },
 #if __BSD_VISIBLE
     {

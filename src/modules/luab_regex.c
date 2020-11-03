@@ -51,7 +51,7 @@ extern luab_module_t luab_regex_lib;
  *
  * @function regex_create
  *
- * @param data          Instance of (LUA_TUSERDATA(TM)).
+ * @param regex             Instance of (LUA_TUSERDATA(REGEX)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -61,6 +61,23 @@ static int
 luab_regex_create(lua_State *L)
 {
     return (luab_core_create(L, 1, luab_mx(REGEX), NULL));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(REGMATCH)).
+ *
+ * @function regmatch_create
+ *
+ * @param regmatch          Instance of (LUA_TUSERDATA(REGMATCH)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage regmatch [, err, msg ] = bsd.regex.regmatch_create([ regmatch ])
+ */
+static int
+luab_regmatch_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(REGMATCH), NULL));
 }
 
 /*
@@ -103,6 +120,7 @@ static luab_module_table_t luab_regex_vec[] = { /* regex.h */
     LUAB_INT("REG_LARGE",           REG_LARGE),
     LUAB_INT("REG_BACKR",           REG_BACKR),
     LUAB_FUNC("regex_create",       luab_regex_create),
+    LUAB_FUNC("regmatch_create",    luab_regmatch_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
