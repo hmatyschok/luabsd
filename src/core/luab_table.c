@@ -843,7 +843,7 @@ luab_table_pushiovec(lua_State *L, int narg, luab_table_t *tbl, int new, int clr
 void
 luab_table_pushtimespec(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
-    struct iovec *x;
+    struct timespec *x;
     size_t m, n, k;
 
     if (tbl != NULL) {
