@@ -58,6 +58,7 @@ extern luab_module_t passwd_type;
 extern luab_module_t group_type;
 extern luab_module_t regex_type;
 extern luab_module_t regmatch_type;
+extern luab_module_t fsid_type;
 extern luab_module_t fid_type;
 
 #if __BSD_VISIBLE

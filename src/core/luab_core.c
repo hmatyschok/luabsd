@@ -889,6 +889,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_REGMATCH_IDX,
     },{
+        .mv_mod = &fsid_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_FSID_IDX,
+    },{
         .mv_mod = &fid_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_FID_IDX,

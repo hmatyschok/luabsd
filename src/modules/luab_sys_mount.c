@@ -46,6 +46,23 @@ extern luab_module_t luab_sys_mount_lib;
  */
 
 /***
+ * Generator function - create an instance of (LUA_TUSERDATA(FSID)).
+ *
+ * @function fsid_create
+ *
+ * @param fsid              Instance of (LUA_TUSERDATA(FSID)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage fsid [, err, msg ] = bsd.sys.mount.fsid_create([ fsid ])
+ */
+static int
+luab_fsid_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(FSID), NULL));
+}
+
+/***
  * Generator function - create an instance of (LUA_TUSERDATA(FID)).
  *
  * @function fid_create
@@ -174,6 +191,7 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_INT("VQ_FLAG2000",             VQ_FLAG2000),
     LUAB_INT("VQ_FLAG4000",             VQ_FLAG4000),
     LUAB_INT("VQ_FLAG8000",             VQ_FLAG8000),
+    LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_MOD_TBL_SENTINEL
 };
