@@ -62,6 +62,13 @@ luab_core_free(void *v, size_t sz)
 }
 
 void
+luab_core_freestr(caddr_t dp)
+{
+    if (dp != NULL)
+        luab_core_free(dp, strnlen(dp, LUAL_BUFFERSIZE));
+}
+
+void
 luab_core_errx(int eval, const char *fmt, ...)
 {
     va_list ap;

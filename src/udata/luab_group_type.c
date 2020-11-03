@@ -32,11 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
-
-/*
- * XXX
- *  Extensions on luab_table(3) API are neccessary.
- */
+#include "luab_table.h"
 
 extern luab_module_t group_type;
 
@@ -64,6 +60,43 @@ typedef struct luab_group {
 
 #define LUAB_GROUP_TYPE_ID    1604324396
 #define LUAB_GROUP_TYPE    "GROUP*"
+
+/*
+ * Subr.
+ */
+
+static int
+group_pushgrmem(lua_State *L, int narg, const char *k, caddr_t *vec)
+{
+    int up_call, status;
+    size_t m, n;
+
+    if (vec != NULL) {
+        luab_table_init(L, 1);
+
+        for (m = 0, n = 1; vec[m] != NULL; m++, n++)
+            luab_rawsetstring(L, narg, n, vec[m]);
+
+        /* set field k and/or push on top of Lua stack */
+        if (k != NULL)
+            lua_setfield(L, narg, k);
+        else {
+            if (narg < 0)
+                lua_pushvalue(L, narg + 1);
+            else
+                lua_pushvalue(L, narg);
+        }
+        up_call = 0;
+    } else
+        up_call = ENOENT;
+
+    if ((errno = up_call) != 0)
+        status = luab_pushnil(L);
+    else
+        status = 1;
+
+    return (status);
+}
 
 /*
  * Generator functions.
@@ -98,6 +131,10 @@ GROUP_get(lua_State *L)
     luab_setstring(L, -2, "gr_name",    grp->gr_name);
     luab_setstring(L, -2, "gr_passwd",   grp->gr_passwd);
     luab_setinteger(L, -2, "gr_gid",    grp->gr_gid);
+
+    if (grp->gr_mem != NULL)
+        (void)group_pushgrmem(L, -2, "gr_mem", grp->gr_mem);
+
     lua_pushvalue(L, -1);
 
     return (1);
@@ -191,7 +228,6 @@ GROUP_gr_gid(lua_State *L)
     return (luab_pusherr(L, data));
 }
 
-#if 0
 /***
  * Get group members.
  *
@@ -205,15 +241,15 @@ static int
 GROUP_gr_mem(lua_State *L)
 {
     struct group *grp;
-    luab_table_t *tbl;
+    caddr_t *vec;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     grp = luab_udata(L, 1, &group_type, struct group *);
+    vec = grp->gr_mem;
 
-    return (luab_pusherr(L, data));
+    return (group_pushgrmem(L, -2, NULL, vec));
 }
-#endif
 
 /*
  * Meta-methods.
@@ -223,15 +259,22 @@ static int
 GROUP_gc(lua_State *L)
 {
     struct group *grp;
-    
+    caddr_t *vec;
+    size_t n;
+
     (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &group_type, struct group *);
 
-    luab_core_free(grp->gr_name, 0);
-    luab_core_free(grp->gr_passwd, 0);
-    luab_core_free(grp->gr_mem, 0);
+    luab_core_freestr(grp->gr_name);
+    luab_core_freestr(grp->gr_passwd);
 
+    if ((vec = grp->gr_mem) != NULL) {
+        for (n = 0; vec[n] != NULL; n++)
+            luab_core_freestr(vec[n]);
+
+        luab_core_free(vec, 0);
+    }
     return (luab_core_gc(L, 1, &group_type));
 }
 
@@ -255,9 +298,7 @@ static luab_module_table_t group_methods[] = {
     LUAB_FUNC("gr_name",        GROUP_gr_name),
     LUAB_FUNC("gr_passwd",      GROUP_gr_passwd),
     LUAB_FUNC("gr_gid",         GROUP_gr_gid),
-#if 0
     LUAB_FUNC("gr_mem",         GROUP_gr_mem),
-#endif
     LUAB_FUNC("get",            GROUP_get),
     LUAB_FUNC("dump",           GROUP_dump),
     LUAB_FUNC("__gc",           GROUP_gc),

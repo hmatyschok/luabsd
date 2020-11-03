@@ -405,12 +405,12 @@ PASSWD_gc(lua_State *L)
 
     pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
 
-    luab_core_free(pwd->pw_name, 0);
-    luab_core_free(pwd->pw_passwd, 0);
-    luab_core_free(pwd->pw_class, 0);
-    luab_core_free(pwd->pw_gecos, 0);
-    luab_core_free(pwd->pw_dir, 0);
-    luab_core_free(pwd->pw_shell, 0);
+    luab_core_freestr(pwd->pw_name);
+    luab_core_freestr(pwd->pw_passwd);
+    luab_core_freestr(pwd->pw_class);
+    luab_core_freestr(pwd->pw_gecos);
+    luab_core_freestr(pwd->pw_dir);
+    luab_core_freestr(pwd->pw_shell);
 
     return (luab_core_gc(L, 1, &passwd_type));
 }

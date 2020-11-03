@@ -192,6 +192,7 @@ extern luab_module_vec_t luab_typevec[];
  */
 
 void     luab_core_free(void *, size_t);
+void     luab_core_freestr(caddr_t);
 
 void     luab_core_err(int, const char *, int);
 void     luab_core_errx(int, const char *, ...);
