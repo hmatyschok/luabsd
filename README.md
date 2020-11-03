@@ -141,8 +141,10 @@ As mentioned before, C Structures are e. g. accessible
         end
         local k = nil
 
-        if j.get ~= nil then
+        if type(j) == "userdata" then
             k = j:get()
+        else
+            k = j
         end
 
         print(pfx, i, j)

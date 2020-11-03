@@ -900,6 +900,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &statfs_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_STATFS_IDX,
+    },{
+        .mv_mod = &fhandle_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_FHANDLE_IDX,
     },
 #if __BSD_VISIBLE
     {

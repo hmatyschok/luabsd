@@ -96,6 +96,23 @@ luab_statfs_create(lua_State *L)
     return (luab_core_create(L, 1, luab_mx(STATFS), NULL));
 }
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(FHANDLE)).
+ *
+ * @function fhandle_create
+ *
+ * @param fhandle           Instance of (LUA_TUSERDATA(FHANDLE)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage fhandle [, err, msg ] = bsd.sys.mount.statfs_create([ fhandle ])
+ */
+static int
+luab_fhandle_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(FHANDLE), NULL));
+}
+
 /*
  * Interface against <sys/mount.h>
  */
@@ -211,6 +228,7 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_FUNC("statfs_create",          luab_statfs_create),
+    LUAB_FUNC("fhandle_create",         luab_fhandle_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
