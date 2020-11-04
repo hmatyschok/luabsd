@@ -91,15 +91,6 @@ luab_fhlink(lua_State *L)
  *
  *                               was passed by call of fhlinkat(2).
  *
- *                          Finally, possible values from
- *
- *                                  bsd.fcntl.AT_{
- *                                      SYMLINK_FOLLOW,
- *                                      BENEATH
- *                                  }
- *
- *                          are constructed by bitwise-inclusive OR.
- *
  * @param to                Specifies directory entry.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -217,36 +208,6 @@ luab_fhstatfs(lua_State *L)
 }
 
 /***
- * statfs(2) - get file system statistics
- *
- * @function statfs
- *
- * @param path              Specifies the path name for any file about
- *                          the mounted file system.
- * @param buf               Result argument, instance of (LUA_TUSERDATA(STATFS)).
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage ret [, err, msg ] = bsd.sys.mount.statfs(path, buf)
- */
-static int
-luab_statfs(lua_State *L)
-{
-    const char *path;
-    struct statfs *buf;
-    int status;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    path = luab_checklstring(L, 1, MAXPATHLEN);
-    buf = luab_udata(L, 2, luab_mx(STATFS), struct statfs *);
-
-    status = statfs(path, buf);
-
-    return (luab_pusherr(L, status));
-}
-
-/***
  * fstatfs(2) - get file system statistics
  *
  * @function fstatfs
@@ -275,6 +236,155 @@ luab_fstatfs(lua_State *L)
 
     return (luab_pusherr(L, status));
 }
+
+/***
+ * getfh(2) - get file handle
+ *
+ * @function getfh
+ *
+ * @param path              Specifies the path name for any file residing
+ *                          within the mounted file system.
+ * @param fhp               Result argument, instance of (LUA_TUSERDATA(FHANDLE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.getfh(path, fhp)
+ */
+static int
+luab_getfh(lua_State *L)
+{
+    const char *path;
+    fhandle_t *fhp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    fhp = luab_udata(L, 2, luab_mx(FHANDLE), fhandle_t *);
+
+    status = getfh(path, fhp);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * getfhat(2) - get file handle
+ *
+ * @function getfhat
+ *
+ * @param fd                Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes referenced file object.
+ *
+ *                            #2 By path named object is relative to the
+ *                               directory to associated with the file
+ *                               descriptor.
+ *
+ *                            #3 The current working directory is used, when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of fhlinkat(2).
+ *
+ * @param path              Specifies the path name for any file residing
+ *                          within the mounted file system.
+ * @param fhp               Result argument, instance of (LUA_TUSERDATA(FHANDLE)).
+ * @param flags             Values from
+ *
+ *                                  bsd.fcntl.AT_{
+ *                                      SYMLINK_FOLLOW,
+ *                                      BENEATH
+ *                                  }
+ *
+ *                          are constructed by bitwise-inclusive OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.getfhat(fd, path, fhp, flag)
+ */
+static int
+luab_getfhat(lua_State *L)
+{
+    int fd;
+    const char *path;
+    fhandle_t *fhp;
+    int flag, status;
+
+    (void)luab_core_checkmaxargs(L, 4);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    path = luab_checklstring(L, 2, MAXPATHLEN);
+    fhp = luab_udata(L, 3, luab_mx(FHANDLE), fhandle_t *);
+    flag = (int)luab_checkinteger(L, 4, INT_MAX);
+
+    status = getfhat(fd, (void *)(intptr_t)path, fhp, flag);
+
+    return (luab_pusherr(L, status));
+}
+
+
+/***
+ * lgetfh(2) - get file handle
+ *
+ * @function lgetfh
+ *
+ * @param path              Specifies the path name for any file residing within
+ *                          the mounted file system. But if by path specified
+ *                          object denotes a symbolic link, then information
+ *                          about this link are described by returned file handle.
+ * @param fhp               Result argument, instance of (LUA_TUSERDATA(FHANDLE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.lgetfh(path, fhp)
+ */
+static int
+luab_lgetfh(lua_State *L)
+{
+    const char *path;
+    fhandle_t *fhp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    fhp = luab_udata(L, 2, luab_mx(FHANDLE), fhandle_t *);
+
+    status = lgetfh(path, fhp);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * statfs(2) - get file system statistics
+ *
+ * @function statfs
+ *
+ * @param path              Specifies the path name for any file residing
+ *                          within the mounted file system.
+ * @param buf               Result argument, instance of (LUA_TUSERDATA(STATFS)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.statfs(path, buf)
+ */
+static int
+luab_statfs(lua_State *L)
+{
+    const char *path;
+    struct statfs *buf;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    buf = luab_udata(L, 2, luab_mx(STATFS), struct statfs *);
+
+    status = statfs(path, buf);
+
+    return (luab_pusherr(L, status));
+}
+
 
 /*
  * Generator functions.
@@ -463,10 +573,17 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("fhlink",                 luab_fhlink),
     LUAB_FUNC("fhlinkat",               luab_fhlinkat),
     LUAB_FUNC("fhopen",                 luab_fhopen),
+
     LUAB_FUNC("fhstat",                 luab_fhstat),
     LUAB_FUNC("fhstatfs",               luab_fhstatfs),
-    LUAB_FUNC("statfs",                 luab_statfs),
     LUAB_FUNC("fstatfs",                luab_fstatfs),
+    LUAB_FUNC("getfh",                  luab_getfh),
+    LUAB_FUNC("getfhat",                luab_getfhat),
+
+    LUAB_FUNC("lgetfh",                 luab_lgetfh),
+
+    LUAB_FUNC("statfs",                 luab_statfs),
+
     LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_FUNC("statfs_create",          luab_statfs_create),
