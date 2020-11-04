@@ -150,6 +150,57 @@ luab_fhopen(lua_State *L)
 }
 
 /***
+ * fhreadlink(2) - read value of a symbolic link
+ *
+ * @function fhreadlink
+ *
+ * @param fhp               Identifies the file object.
+ * @param buf               Storage, instance of (LUA_TUSERDATA(IOVEC)).
+ * @param bufsize           Constraint.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.fhreadlink(fhp, buf, bufsize)
+ */
+static int
+luab_fhreadlink(lua_State *L)
+{
+    fhandle_t *fhp;
+    luab_iovec_t *buf;
+    size_t bufsize;
+    caddr_t bp;
+    int count;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
+    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    bufsize = (size_t)luab_checklinteger(L, 3);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (bufsize <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((count = fhreadlink(fhp, bp, bufsize)) > 0)
+                buf->iov.iov_len = count;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            count = -1;
+        }
+    } else {
+        errno = ERANGE;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+/***
  * fhstat(2) - access file via file handle
  *
  * @function fhstat
@@ -573,7 +624,7 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("fhlink",                 luab_fhlink),
     LUAB_FUNC("fhlinkat",               luab_fhlinkat),
     LUAB_FUNC("fhopen",                 luab_fhopen),
-
+    LUAB_FUNC("fhreadlink",             luab_fhreadlink),
     LUAB_FUNC("fhstat",                 luab_fhstat),
     LUAB_FUNC("fhstatfs",               luab_fhstatfs),
     LUAB_FUNC("fstatfs",                luab_fstatfs),
