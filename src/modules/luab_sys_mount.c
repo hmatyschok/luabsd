@@ -31,6 +31,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_udata.h"
 
 #define LUAB_SYS_MOUNT_LIB_ID    1604415113
 #define LUAB_SYS_MOUNT_LIB_KEY   "mount"
@@ -40,6 +41,89 @@ extern luab_module_t luab_sys_mount_lib;
 /*
  * Service primitives.
  */
+
+/***
+ * fhlink(2) - make a hard file link
+ *
+ * @function fhlink
+ *
+ * @param fhp               Identifies the file object.
+ * @param to                Specifies directory entry.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.fhlink(fhp, to)
+ */
+static int
+luab_fhlink(lua_State *L)
+{
+    fhandle_t *fhp;
+    const char *to;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
+    to = luab_checklstring(L, 2, MAXPATHLEN);
+
+    status = fhlink(fhp, to);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * fhlinkat(2) - make a hard file link
+ *
+ * @function fhlinkat
+ *
+ * @param fhp               Identifies the file object.
+ * @param tofd              Filedescriptor, three cases are considered here:
+ *
+ *                            #1 Denotes referenced file object.
+ *
+ *                            #2 By path named object is relative to the
+ *                               directory to associated with the file
+ *                               descriptor.
+ *
+ *                            #3 The current working directory is used, when
+ *
+ *                                  bsd.fcntl.AT_FDCWD
+ *
+ *                               was passed by call of fhlinkat(2).
+ *
+ *                          Finally, possible values from
+ *
+ *                                  bsd.fcntl.AT_{
+ *                                      SYMLINK_FOLLOW,
+ *                                      BENEATH
+ *                                  }
+ *
+ *                          are constructed by bitwise-inclusive OR.
+ *
+ * @param to                Specifies directory entry.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.fhlinkat(fhp, tofd, to)
+ */
+static int
+luab_fhlinkat(lua_State *L)
+{
+    fhandle_t *fhp;
+    int tofd;
+    const char *to;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
+    tofd = (int)luab_checkinteger(L, 2, INT_MAX);
+    to = luab_checklstring(L, 3, MAXPATHLEN);
+
+    status = fhlinkat(fhp, tofd, to);
+
+    return (luab_pusherr(L, status));
+}
 
 /*
  * Generator functions.
@@ -225,6 +309,8 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_INT("VQ_FLAG2000",             VQ_FLAG2000),
     LUAB_INT("VQ_FLAG4000",             VQ_FLAG4000),
     LUAB_INT("VQ_FLAG8000",             VQ_FLAG8000),
+    LUAB_FUNC("fhlink",                 luab_fhlink),
+    LUAB_FUNC("fhlinkat",               luab_fhlinkat),
     LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_FUNC("statfs_create",          luab_statfs_create),
