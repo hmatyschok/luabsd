@@ -125,6 +125,97 @@ luab_fhlinkat(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * fhopen(2) - access file via file handle
+ *
+ * @function fhopen
+ *
+ * @param fhp               Identifies the file object.
+ * @param flags             Values are constructed from
+ *
+ *                              bsd.fcntl.O_*
+ *
+ *                          by bitwise-inclusive OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.fhopen(fhp, flags)
+ */
+static int
+luab_fhopen(lua_State *L)
+{
+    fhandle_t *fhp;
+    int flags;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
+    flags = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    status = fhopen(fhp, flags);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * fhstat(2) - access file via file handle
+ *
+ * @function fhstat
+ *
+ * @param fhp               Identifies the file object.
+ * @param sb                Result argument, instance of (LUA_TUSERDATA(STAT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.fhstat(fhp, sb)
+ */
+static int
+luab_fhstat(lua_State *L)
+{
+    fhandle_t *fhp;
+    struct stat *sb;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
+    sb = luab_udata(L, 2, luab_mx(STAT), struct stat *);
+
+    status = fhstat(fhp, sb);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * fhstatfs(2) - access file via file handle
+ *
+ * @function fhstatfs
+ *
+ * @param fhp               Identifies the file object.
+ * @param buf               Result argument, instance of (LUA_TUSERDATA(STATFS)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.fhstatfs(fhp, statfs)
+ */
+static int
+luab_fhstatfs(lua_State *L)
+{
+    fhandle_t *fhp;
+    struct statfs *buf;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
+    buf = luab_udata(L, 2, luab_mx(STATFS), struct statfs *);
+
+    status = fhstatfs(fhp, buf);
+
+    return (luab_pusherr(L, status));
+}
+
 /*
  * Generator functions.
  */
@@ -311,6 +402,9 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_INT("VQ_FLAG8000",             VQ_FLAG8000),
     LUAB_FUNC("fhlink",                 luab_fhlink),
     LUAB_FUNC("fhlinkat",               luab_fhlinkat),
+    LUAB_FUNC("fhopen",                 luab_fhopen),
+    LUAB_FUNC("fhstat",                 luab_fhstat),
+    LUAB_FUNC("fhstatfs",               luab_fhstatfs),
     LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_FUNC("statfs_create",          luab_statfs_create),

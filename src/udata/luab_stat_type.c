@@ -75,7 +75,7 @@ extern luab_module_t stat_type;
 
 typedef struct luab_stat {
     luab_udata_t    ud_softc;
-    struct stat     ud_stat;
+    struct stat     ud_st;
 } luab_stat_t;
 
 #define luab_new_stat(L, arg) \
