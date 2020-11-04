@@ -216,6 +216,66 @@ luab_fhstatfs(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * statfs(2) - get file system statistics
+ *
+ * @function statfs
+ *
+ * @param path              Specifies the path name for any file about
+ *                          the mounted file system.
+ * @param buf               Result argument, instance of (LUA_TUSERDATA(STATFS)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.statfs(path, buf)
+ */
+static int
+luab_statfs(lua_State *L)
+{
+    const char *path;
+    struct statfs *buf;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    buf = luab_udata(L, 2, luab_mx(STATFS), struct statfs *);
+
+    status = statfs(path, buf);
+
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * fstatfs(2) - get file system statistics
+ *
+ * @function fstatfs
+ *
+ * @param fd                Open file descriptor points to an object within the
+ *                          mounted file system.
+ * @param buf               Result argument, instance of (LUA_TUSERDATA(STATFS)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.fstatfs(fd, fd)
+ */
+static int
+luab_fstatfs(lua_State *L)
+{
+    int fd;
+    struct statfs *buf;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    buf = luab_udata(L, 2, luab_mx(STATFS), struct statfs *);
+
+    status = fstatfs(fd, buf);
+
+    return (luab_pusherr(L, status));
+}
+
 /*
  * Generator functions.
  */
@@ -405,6 +465,8 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("fhopen",                 luab_fhopen),
     LUAB_FUNC("fhstat",                 luab_fhstat),
     LUAB_FUNC("fhstatfs",               luab_fhstatfs),
+    LUAB_FUNC("statfs",                 luab_statfs),
+    LUAB_FUNC("fstatfs",                luab_fstatfs),
     LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_FUNC("statfs_create",          luab_statfs_create),
