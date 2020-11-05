@@ -32,11 +32,41 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 #define LUAB_SYS_MOUNT_LIB_ID    1604415113
 #define LUAB_SYS_MOUNT_LIB_KEY   "mount"
 
 extern luab_module_t luab_sys_mount_lib;
+
+/*
+ * Subr.
+ */
+
+static void
+luab_table_pushtstatfs(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct statfs *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, luab_mx(STATFS), k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
 
 /*
  * Service primitives.
@@ -373,6 +403,80 @@ luab_getfhat(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * getfsstat(2) - get list of all mounted file systems
+ *
+ * @function getfsstat
+ *
+ * @param buf               Either (LUA_TNIL) or an instance of (LUA_TTABLE)
+ *                          over (LUA_TUSERDATA(STATFS)) with cardinality by
+ *                          the value of bufsize.
+ * @param bufsize           Specifies the number of the mounted file systems,
+ *                          if got by previous call of getfsstat(2) with
+ *
+ *                            #1: buf denotes (LUA_TNIL) and
+ *
+ *                            #2: bufsize was set to zero.
+ *
+ * @param mode              Values are from
+ *
+ *                              bsd.sys.mount.MNT_{
+ *                                  WAIT,
+ *                                  NOWAIT
+ *                              }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.getfsstat(buf, bufsize, mode)
+ */
+static int
+luab_getfsstat(lua_State *L)
+{
+    long m, bufsize;
+    int mode, card;
+    size_t sz;
+    luab_table_t *tbl;
+    struct statfs *buf;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    /*
+     * First arg of argv is either
+     *
+     *  a) nil or an instance of
+     *
+     *  b) (LUA_TTABLE) over (LUA_TUSERDATA(STATFS)).
+     */
+
+    m = (long)luab_checktableisnil(L, 1);
+    bufsize = (long)luab_checkinteger(L, 2, LONG_MAX);
+    mode = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (m == bufsize) {
+        sz = sizeof(struct statfs);
+
+        if ((bufsize = (m * sz)) != 0) {
+
+            if ((tbl = luab_table_allocnil(m, sz)) != NULL)
+                buf = (struct statfs *)(tbl->tbl_vec);
+            else
+                buf = NULL;
+        } else {
+            tbl = NULL;
+            buf = NULL;
+        }
+
+        if ((card = getfsstat(buf, bufsize, mode)) > 0)
+            luab_table_pushtstatfs(L, 1, tbl, 0, 1);
+        else
+            luab_table_free(tbl);
+
+    } else {
+        errno = ERANGE;
+        card = -1;
+    }
+    return (luab_pusherr(L, card));
+}
 
 /***
  * lgetfh(2) - get file handle
@@ -630,7 +734,7 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("fstatfs",                luab_fstatfs),
     LUAB_FUNC("getfh",                  luab_getfh),
     LUAB_FUNC("getfhat",                luab_getfhat),
-
+    LUAB_FUNC("getfsstat",              luab_getfsstat),
     LUAB_FUNC("lgetfh",                 luab_lgetfh),
 
     LUAB_FUNC("statfs",                 luab_statfs),
