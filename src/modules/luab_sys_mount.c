@@ -44,7 +44,7 @@ extern luab_module_t luab_sys_mount_lib;
  */
 
 static void
-luab_table_pushtstatfs(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+luab_table_pushstatfs(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct statfs *x;
     size_t m, n, k;
@@ -467,7 +467,7 @@ luab_getfsstat(lua_State *L)
         }
 
         if ((card = getfsstat(buf, bufsize, mode)) > 0)
-            luab_table_pushtstatfs(L, 1, tbl, 0, 1);
+            luab_table_pushstatfs(L, 1, tbl, 0, 1);
         else
             luab_table_free(tbl);
 
@@ -476,6 +476,59 @@ luab_getfsstat(lua_State *L)
         card = -1;
     }
     return (luab_pusherr(L, card));
+}
+
+/***
+ * getmntinfo(3) - get information about mounted file systems
+ *
+ * @function getmntinfo
+ *
+ * @param mntbufp           Result argument, instance of (LUA_TTABLE) with the
+ *                          cardinality of zero is utilized for retrieval of a
+ *                          set over (LUA_TUSERDATA(STATFS)).
+ *
+ * @param mode              Values are from
+ *
+ *                              bsd.sys.mount.MNT_{
+ *                                  WAIT,
+ *                                  NOWAIT
+ *                              }.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.getmntinfo(mntbufp, mode)
+ */
+static int
+luab_getmntinfo(lua_State *L)
+{
+    int mode;
+    ssize_t nmts, sz;
+    struct statfs *vec;
+    luab_table_t *tbl;
+
+    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_checkltable(L, 1, 0);
+
+    mode = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    if ((tbl = luab_table_allocnil(0, 0)) != NULL) {
+
+        if ((nmts = getmntinfo(&vec, mode)) > 0) {
+            tbl->tbl_sz = sizeof(struct statfs);
+            tbl->tbl_card = (nmts + 1);     /* XXX externalize it */
+
+            sz = (tbl->tbl_sz * tbl->tbl_card);
+
+            if ((tbl->tbl_vec = realloc(vec, sz)) == NULL)
+                luab_core_err(EX_DATAERR, __func__, errno);
+
+            luab_table_pushstatfs(L, 1, tbl, 0, 1);
+        } else
+            luab_table_free(tbl);
+    } else
+        nmts = -1;
+
+    return (luab_pusherr(L, nmts));
 }
 
 /***
@@ -735,6 +788,7 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("getfh",                  luab_getfh),
     LUAB_FUNC("getfhat",                luab_getfhat),
     LUAB_FUNC("getfsstat",              luab_getfsstat),
+    LUAB_FUNC("getmntinfo",             luab_getmntinfo),
     LUAB_FUNC("lgetfh",                 luab_lgetfh),
 
     LUAB_FUNC("statfs",                 luab_statfs),
