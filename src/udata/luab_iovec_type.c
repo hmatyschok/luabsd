@@ -88,7 +88,7 @@ IOVEC_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
 
     lua_newtable(L);
 
@@ -119,7 +119,7 @@ IOVEC_clone(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
@@ -171,7 +171,7 @@ IOVEC_max_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
         self->iov_flags |= IOV_LOCK;
@@ -211,7 +211,7 @@ IOVEC_set_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     nbytes = (size_t)luab_checkinteger(L, 2,
 #ifdef  __LP64__
     LONG_MAX
@@ -260,7 +260,7 @@ IOVEC_get_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     iov = &(self->iov);
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
@@ -298,7 +298,7 @@ IOVEC_clear(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     iov = &(self->iov);
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
@@ -339,7 +339,7 @@ IOVEC_copy_in(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     len = self->iov_max_len;
 
     dp = luab_iovec_checklstring(L, 2, len);
@@ -365,7 +365,7 @@ IOVEC_copy_out(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     iov = &(self->iov);
 
     if ((self->iov_flags & IOV_LOCK) == 0) {
@@ -402,7 +402,7 @@ IOVEC_resize(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     iov = &(self->iov);
 
     len = (size_t)luab_checkinteger(L, 2,
@@ -458,7 +458,7 @@ IOVEC_read(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     fd = (int)luab_checkinteger(L, 2, INT_MAX);
 
     return (luab_iovec_read(L, fd, self, NULL));
@@ -483,7 +483,7 @@ IOVEC_write(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     fd = (int)luab_checkinteger(L, 2, INT_MAX);
 
     return (luab_iovec_write(L, fd, self, NULL));
@@ -518,7 +518,7 @@ IOVEC_recv(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     s = (int)luab_checkinteger(L, 2, INT_MAX);
     flags = (int)luab_checkinteger(L, 3, INT_MAX);
 
@@ -550,7 +550,7 @@ IOVEC_send(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
     s = (int)luab_checkinteger(L, 2, INT_MAX);
     flags = (int)luab_checkinteger(L, 3, INT_MAX);
 
@@ -570,7 +570,7 @@ IOVEC_gc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_iovec(L, 1);
+    self = luab_udata(L, 1, &iovec_type, luab_iovec_t *);
 
     if (((dp = self->iov.iov_base) != NULL) &&
         (self->iov_flags & IOV_BUFF)) {

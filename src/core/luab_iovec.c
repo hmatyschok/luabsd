@@ -111,7 +111,7 @@ luab_iovec_islstring(lua_State *L, int narg, size_t len)
     if (luab_isiovec(L, narg) != NULL)
         dp = luab_iovec_toldata(L, narg, len);
     else
-        dp = luab_tolstring(L, narg, len);
+        dp = luab_islstring(L, narg, len);
 
     return (dp);
 }

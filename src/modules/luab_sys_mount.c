@@ -564,6 +564,124 @@ luab_lgetfh(lua_State *L)
 }
 
 /***
+ * mount(2) - mount a file system
+ *
+ * @function mount
+ *
+ * @param type              Specifies the file system type.
+ * @param dir               Specifies path of target directory.
+ * @param flags             Values from
+ *
+ *                              bsd.sys.mount.MNT_{
+ *                                  RDONLY,
+ *                                  NOEXEC,
+ *                                  NOSUID,
+ *                                  NOATIME,
+ *                                  SNAPSHOT,
+ *                                  SUIDDIR,
+ *                                  SYNCHRONOUS,
+ *                                  ASYNC,
+ *                                  FORCE,
+ *                                  NOCLUSTERR,
+ *                                  NOCLUSTERW
+ *                              }
+ *
+ *                          are constructed by bitwise-inclusive OR.
+ *
+ * @param data              File system specific argument structure.
+ *
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.mount(type, dir, flags, data)
+ */
+static int
+luab_mount(lua_State *L)
+{
+    const char *type;
+    const char *dir;
+    int flags;
+    void *data;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 4);
+
+    type = luab_checklstring(L, 1, MAXPATHLEN);
+    dir = luab_checklstring(L, 2, MAXPATHLEN);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if ((data = luab_toxdata(L, 4, NULL)) != NULL)
+        status = mount(type, dir, flags, data);
+    else {
+        errno = EINVAL;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * nmount(2) - mount a file system
+ *
+ * @function nmount
+ *
+ * @param iov               Specifies (LUA_TTABLE) for each name-value pair
+ *                          with mount options over (LUA_TUSERDATA(IOVEC)).
+ * @param niov              Cardinality of utelized instance of (LUA_TTABLE).
+ * @param flags             Values from
+ *
+ *                              bsd.sys.mount.MNT_{
+ *                                  RDONLY,
+ *                                  NOEXEC,
+ *                                  NOSUID,
+ *                                  NOATIME,
+ *                                  SNAPSHOT,
+ *                                  SUIDDIR,
+ *                                  SYNCHRONOUS,
+ *                                  ASYNC,
+ *                                  FORCE,
+ *                                  NOCLUSTERR,
+ *                                  NOCLUSTERW
+ *                              }
+ *
+ *                          are constructed by bitwise-inclusive OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.nmount(iov, niov, flags)
+ */
+static int
+luab_nmount(lua_State *L)
+{
+    luab_table_t *tbl;
+    struct iovec *iov;
+    u_int niov;
+    int flags;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    tbl = luab_table_checkiovec(L, 1);
+    niov = (u_int)luab_checkinteger(L, 2, INT_MAX);
+    flags = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (tbl != NULL) {
+
+        if ((tbl->tbl_card - 1) == (size_t)niov) {
+            iov = (struct iovec *)(tbl->tbl_vec);
+            status = nmount(iov, niov, flags);
+            luab_table_pushiovec(L, 1, tbl, 0, 1);
+        } else {
+            luab_table_iovec_free(tbl);
+            errno = ERANGE;
+            status = -1;
+        }
+    } else
+        status = -1;
+
+    return (luab_pusherr(L, status));
+}
+
+/***
  * statfs(2) - get file system statistics
  *
  * @function statfs
@@ -593,6 +711,50 @@ luab_statfs(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * unmount(2) - dismount a file system
+ *
+ * @function unmount
+ *
+ * @param dir               Specifies path of target directory.
+ * @param flags             Values from
+ *
+ *                              bsd.sys.mount.MNT_{
+ *                                  RDONLY,
+ *                                  NOEXEC,
+ *                                  NOSUID,
+ *                                  NOATIME,
+ *                                  SNAPSHOT,
+ *                                  SUIDDIR,
+ *                                  SYNCHRONOUS,
+ *                                  ASYNC,
+ *                                  FORCE,
+ *                                  NOCLUSTERR,
+ *                                  NOCLUSTERW
+ *                              }
+ *
+ *                          are constructed by bitwise-inclusive OR.
+ *
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.unmount(dir, flags)
+ */
+static int
+luab_unmount(lua_State *L)
+{
+    const char *dir;
+    int flags, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    dir = luab_checklstring(L, 1, MAXPATHLEN);
+    flags = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    status = unmount(dir, flags);
+
+    return (luab_pusherr(L, status));
+}
 
 /*
  * Generator functions.
@@ -790,9 +952,10 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("getfsstat",              luab_getfsstat),
     LUAB_FUNC("getmntinfo",             luab_getmntinfo),
     LUAB_FUNC("lgetfh",                 luab_lgetfh),
-
+    LUAB_FUNC("mount",                  luab_mount),
+    LUAB_FUNC("nmount",                 luab_nmount),
     LUAB_FUNC("statfs",                 luab_statfs),
-
+    LUAB_FUNC("unmount",                luab_unmount),
     LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_FUNC("statfs_create",          luab_statfs_create),
