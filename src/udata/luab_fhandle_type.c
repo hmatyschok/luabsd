@@ -111,47 +111,20 @@ FHANDLE_dump(lua_State *L)
 }
 
 /*
- * Access functions.
+ * Access functions, immutable properties.
  */
-
-/***
- * Set filesystem ID of mount point.
- *
- * @function set_fh_fsid
- *
- * @param data              ID, instance of (LUA_TUSERDATA(FSID)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage data [, err, msg ] = fhandle:set_fh_fsid(data)
- */
-static int
-FHANDLE_set_fh_fsid(lua_State *L)
-{
-    fhandle_t *fh;
-    fsid_t *fsid;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    fh = luab_udata(L, 1, &fhandle_type, fhandle_t *);
-    fsid = luab_udata(L, 2, luab_mx(FSID), fsid_t *);
-
-    (void)memmove(&(fh->fh_fsid), fsid, sizeof(fsid_t));
-
-    return (luab_pushudata(L, luab_mx(FSID), fsid));
-}
 
 /***
  * Get filesystem ID of mount point.
  *
- * @function get_fh_fsid
+ * @function fh_fsid
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fhandle:set_fh_fsid()
+ * @usage data [, err, msg ] = fhandle:fh_fsid()
  */
 static int
-FHANDLE_get_fh_fsid(lua_State *L)
+FHANDLE_fh_fsid(lua_State *L)
 {
     fhandle_t *fh;
     fsid_t *fsid;
@@ -165,43 +138,16 @@ FHANDLE_get_fh_fsid(lua_State *L)
 }
 
 /***
- * Set filesystem specific ID.
- *
- * @function set_fh_fid
- *
- * @param data              ID, instance of (LUA_TUSERDATA(FID)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage data [, err, msg ] = fhandle:set_fh_fid(data)
- */
-static int
-FHANDLE_set_fh_fid(lua_State *L)
-{
-    fhandle_t *fh;
-    struct fid *fid;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    fh = luab_udata(L, 1, &fhandle_type, fhandle_t *);
-    fid = luab_udata(L, 2, luab_mx(FID), struct fid *);
-
-    (void)memmove(&(fh->fh_fid), fid, sizeof(struct fid));
-
-    return (luab_pushudata(L, luab_mx(FID), fid));
-}
-
-/***
  * Get filesystem specific ID.
  *
- * @function get_fh_fid
+ * @function fh_fid
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fhandle:set_fh_fid()
+ * @usage data [, err, msg ] = fhandle:fh_fid()
  */
 static int
-FHANDLE_get_fh_fid(lua_State *L)
+FHANDLE_fh_fid(lua_State *L)
 {
     fhandle_t *fh;
     struct fid *fid;
@@ -241,11 +187,9 @@ FHANDLE_tostring(lua_State *L)
  */
 
 static luab_module_table_t fhandle_methods[] = {
-    LUAB_FUNC("set_fh_fsid",    FHANDLE_set_fh_fsid),
-    LUAB_FUNC("set_fh_fid",     FHANDLE_set_fh_fid),
+    LUAB_FUNC("fh_fsid",        FHANDLE_fh_fsid),
+    LUAB_FUNC("fh_fid",         FHANDLE_fh_fid),
     LUAB_FUNC("get",            FHANDLE_get),
-    LUAB_FUNC("get_fh_fsid",    FHANDLE_get_fh_fsid),
-    LUAB_FUNC("get_fh_fid",     FHANDLE_get_fh_fid),
     LUAB_FUNC("dump",           FHANDLE_dump),
     LUAB_FUNC("__gc",           FHANDLE_gc),
     LUAB_FUNC("__len",          FHANDLE_len),
