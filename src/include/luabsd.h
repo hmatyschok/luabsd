@@ -161,6 +161,7 @@ typedef enum luab_type {
     LUAB_FID_IDX,
     LUAB_STATFS_IDX,
     LUAB_FHANDLE_IDX,
+    LUAB_XVFSCONF_IDX,
 #if __BSD_VISIBLE
     LUAB_DBT_IDX,
     LUAB_DB_IDX,
@@ -232,16 +233,18 @@ void     luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 
 void     luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
 void     luab_setinteger(lua_State *, int, const char *, lua_Integer);
-void     luab_setstring(lua_State *, int, const char *, const char *);
 
+void     luab_setstring(lua_State *, int, const char *, const char *);
 void     luab_setfstring(lua_State *, int, const char *, const char *, ...);
 void     luab_setldata(lua_State *, int, const char *, void *, size_t);
 
 int  luab_pusherr(lua_State *, lua_Integer);
 int  luab_pushnumber(lua_State *, lua_Number);
 int  luab_pushnil(lua_State *);
+
 int  luab_pushstring(lua_State *, const char *);
 int  luab_pushfstring(lua_State *, const char *, ...);
+
 int  luab_pushldata(lua_State *, void *, size_t);
 
 /*

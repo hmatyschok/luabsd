@@ -756,6 +756,34 @@ luab_unmount(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * getvfsbyname(3) - get information about a file system
+ *
+ * @function getvfsbyname
+ *
+ * @param name              Specifies the name of file system.
+ * @param vfc               Result argument, instance of (LUA_TUSERDATA(XVFSCONF)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.mount.getvfsbyname(name, vfc)
+ */
+static int
+luab_getvfsbyname(lua_State *L)
+{
+    const char *name;
+    struct xvfsconf *vfc;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    name = luab_checklstring(L, 1, MFSNAMELEN);
+    vfc = luab_udata(L, 2, luab_mx(XVFSCONF), struct xvfsconf *);
+
+    status = getvfsbyname(name, vfc);
+    return (luab_pusherr(L, status));
+}
+
 /*
  * Generator functions.
  */
@@ -826,6 +854,23 @@ static int
 luab_fhandle_create(lua_State *L)
 {
     return (luab_core_create(L, 1, luab_mx(FHANDLE), NULL));
+}
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(XVFSCONF)).
+ *
+ * @function xvfsconf_create
+ *
+ * @param xvfsconf           Instance of (LUA_TUSERDATA(XVFSCONF)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage xvfsconf [, err, msg ] = bsd.sys.mount.statfs_create([ xvfsconf ])
+ */
+static int
+luab_xvfsconf_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(XVFSCONF), NULL));
 }
 
 /*
@@ -956,10 +1001,12 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("nmount",                 luab_nmount),
     LUAB_FUNC("statfs",                 luab_statfs),
     LUAB_FUNC("unmount",                luab_unmount),
+    LUAB_FUNC("getvfsbyname",           luab_getvfsbyname),
     LUAB_FUNC("fsid_create",            luab_fsid_create),
     LUAB_FUNC("fid_create",             luab_fid_create),
     LUAB_FUNC("statfs_create",          luab_statfs_create),
     LUAB_FUNC("fhandle_create",         luab_fhandle_create),
+    LUAB_FUNC("xvfsconf_create",        luab_xvfsconf_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

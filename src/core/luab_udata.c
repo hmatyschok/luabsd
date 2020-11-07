@@ -355,7 +355,7 @@ luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *
 void
 luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
-    if (m != NULL) {
+    if (m != NULL && k != NULL) {
         if (m->m_create != NULL && v != NULL) {
 
             if ((*m->m_create)(L, v) != NULL)

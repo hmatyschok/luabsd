@@ -62,6 +62,7 @@ extern luab_module_t fsid_type;
 extern luab_module_t fid_type;
 extern luab_module_t statfs_type;
 extern luab_module_t fhandle_type;
+extern luab_module_t xvfsconf_type;
 
 #if __BSD_VISIBLE
 extern luab_module_t dbt_type;
