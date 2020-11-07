@@ -36,7 +36,7 @@
 #include "luab_udata.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t db_type;
+extern luab_module_t luab_db_type;
 
 /*
  * Interface against
@@ -63,9 +63,9 @@ typedef struct luab_db {
 } luab_db_t;
 
 #define luab_new_db(L, arg) \
-    ((luab_db_t *)luab_newudata(L, &db_type, (arg)))
+    ((luab_db_t *)luab_newudata(L, &luab_db_type, (arg)))
 #define luab_to_db(L, narg) \
-    (luab_todata((L), (narg), &db_type, luab_db_t *))
+    (luab_todata((L), (narg), &luab_db_type, luab_db_t *))
 
 /*
  * Subr.
@@ -159,7 +159,7 @@ DB_del(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 3, INT_MAX);
 
@@ -187,7 +187,7 @@ DB_fd(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL)
+    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL)
         fd = (*db->fd)(db);
     else
         fd = -1;
@@ -218,7 +218,7 @@ DB_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
         v = luab_udata(L, 3, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
@@ -258,7 +258,7 @@ DB_put(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
         v = luab_udata(L, 3, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
@@ -297,7 +297,7 @@ DB_seq(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
         k = luab_udata(L, 2, luab_mx(DBT), DBT *);
         v = luab_udata(L, 3, luab_mx(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, INT_MAX);
@@ -333,7 +333,7 @@ DB_sync(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    if ((db = luab_udata(L, 1, &db_type, DB *)) != NULL) {
+    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
         flags = (u_int)luab_checkinteger(L, 2, INT_MAX);
 
         status = (*db->sync)(db, flags);
@@ -365,7 +365,7 @@ DB_gc(lua_State *L)
 static int
 DB_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &db_type));
+    return (luab_core_len(L, 2, &luab_db_type));
 }
 
 static int
@@ -440,7 +440,7 @@ db_udata(lua_State *L, int narg)
     return (self->ud_db);
 }
 
-luab_module_t db_type = {
+luab_module_t luab_db_type = {
     .m_cookie   = LUAB_DB_TYPE_ID,
     .m_name     = LUAB_DB_TYPE,
     .m_vec      = db_methods,

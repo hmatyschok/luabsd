@@ -33,7 +33,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t passwd_type;
+extern luab_module_t luab_passwd_type;
 
 /*
  * Interface against
@@ -59,9 +59,9 @@ typedef struct luab_passwd {
 } luab_passwd_t;
 
 #define luab_new_passwd(L, arg) \
-    ((luab_passwd_t *)luab_newudata(L, &passwd_type, (arg)))
+    ((luab_passwd_t *)luab_newudata(L, &luab_passwd_type, (arg)))
 #define luab_to_passwd(L, narg) \
-    (luab_toldata((L), (narg), &passwd_type, \
+    (luab_toldata((L), (narg), &luab_passwd_type, \
         struct passwd *, sizeof(struct passwd)))
 
 #define LUAB_PASSWD_TYPE_ID    1604262109
@@ -101,7 +101,7 @@ PASSWD_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
 
     lua_newtable(L);
     luab_setstring(L, -2, "pw_name",    pwd->pw_name);
@@ -132,7 +132,7 @@ PASSWD_get(lua_State *L)
 static int
 PASSWD_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &passwd_type, sizeof(struct passwd)));
+    return (luab_core_dump(L, 1, &luab_passwd_type, sizeof(struct passwd)));
 }
 
 /*
@@ -156,7 +156,7 @@ PASSWD_pw_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_name;
 
     return (luab_pushstring(L, data));
@@ -179,7 +179,7 @@ PASSWD_pw_passwd(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_passwd;
 
     return (luab_pushstring(L, data));
@@ -202,7 +202,7 @@ PASSWD_pw_uid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_uid;
 
     return (luab_pusherr(L, data));
@@ -225,7 +225,7 @@ PASSWD_pw_gid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_gid;
 
     return (luab_pusherr(L, data));
@@ -248,7 +248,7 @@ PASSWD_pw_change(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_change;
 
     return (luab_pusherr(L, data));
@@ -271,7 +271,7 @@ PASSWD_pw_class(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_class;
 
     return (luab_pushstring(L, data));
@@ -294,7 +294,7 @@ PASSWD_pw_gecos(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_gecos;
 
     return (luab_pushstring(L, data));
@@ -317,7 +317,7 @@ PASSWD_pw_dir(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_dir;
 
     return (luab_pushstring(L, data));
@@ -340,7 +340,7 @@ PASSWD_pw_shell(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_shell;
 
     return (luab_pushstring(L, data));
@@ -363,7 +363,7 @@ PASSWD_pw_expire(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_expire;
 
     return (luab_pusherr(L, data));
@@ -386,7 +386,7 @@ PASSWD_pw_fields(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_fields;
 
     return (luab_pusherr(L, data));
@@ -403,7 +403,7 @@ PASSWD_gc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &passwd_type, struct passwd *);
+    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
 
     luab_core_freestr(pwd->pw_name);
     luab_core_freestr(pwd->pw_passwd);
@@ -412,19 +412,19 @@ PASSWD_gc(lua_State *L)
     luab_core_freestr(pwd->pw_dir);
     luab_core_freestr(pwd->pw_shell);
 
-    return (luab_core_gc(L, 1, &passwd_type));
+    return (luab_core_gc(L, 1, &luab_passwd_type));
 }
 
 static int
 PASSWD_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &passwd_type));
+    return (luab_core_len(L, 2, &luab_passwd_type));
 }
 
 static int
 PASSWD_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &passwd_type));
+    return (luab_core_tostring(L, 1, &luab_passwd_type));
 }
 
 /*
@@ -460,7 +460,7 @@ passwd_create(lua_State *L, void *arg)
 static void
 passwd_init(void *ud, void *arg)
 {
-    luab_udata_init(&passwd_type, ud, arg);
+    luab_udata_init(&luab_passwd_type, ud, arg);
 }
 
 static void *
@@ -469,7 +469,7 @@ passwd_udata(lua_State *L, int narg)
     return (luab_to_passwd(L, narg));
 }
 
-luab_module_t passwd_type = {
+luab_module_t luab_passwd_type = {
     .m_cookie   = LUAB_PASSWD_TYPE_ID,
     .m_name     = LUAB_PASSWD_TYPE,
     .m_vec      = passwd_methods,

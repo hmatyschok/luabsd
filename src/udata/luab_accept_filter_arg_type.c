@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #ifdef __BSD_VISIBLE
-extern luab_module_t accept_filter_arg_type;
+extern luab_module_t luab_accept_filter_arg_type;
 
 /*
  * Interface against
@@ -54,9 +54,9 @@ typedef struct luab_accept_filter_arg {
 #define LUAB_AF_ARGMAXLEN   240
 
 #define luab_new_accept_filter_arg(L, arg) \
-    ((luab_accept_filter_arg_t *)luab_newudata(L, &accept_filter_arg_type, (arg)))
+    ((luab_accept_filter_arg_t *)luab_newudata(L, &luab_accept_filter_arg_type, (arg)))
 #define luab_to_accept_filter_arg(L, narg) \
-    (luab_toldata((L), (narg), &accept_filter_arg_type, \
+    (luab_toldata((L), (narg), &luab_accept_filter_arg_type, \
         struct accept_filter_arg *, sizeof(struct accept_filter_arg)))
 
 #define LUAB_ACCEPT_FILTER_ARG_TYPE_ID    1601330449
@@ -87,7 +87,7 @@ ACCEPT_FILTER_ARG_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
+    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
 
     lua_newtable(L);
     luab_setldata(L, -2, "af_name", af->af_name, strlen(af->af_name));
@@ -109,7 +109,7 @@ ACCEPT_FILTER_ARG_get(lua_State *L)
 static int
 ACCEPT_FILTER_ARG_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &accept_filter_arg_type, sizeof(struct accept_filter_arg)));
+    return (luab_core_dump(L, 1, &luab_accept_filter_arg_type, sizeof(struct accept_filter_arg)));
 }
 
 /*
@@ -136,7 +136,7 @@ ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
+    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
     data = luab_checklstring(L, 2, LUAB_AF_NAMEMAXLEN);
     len = strlen(data);
     (void)memmove(af->af_name, data, len);
@@ -161,7 +161,7 @@ ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
+    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
     data = af->af_name;
     len = strlen(data);
 
@@ -188,7 +188,7 @@ ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
+    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
     data = luab_checklstring(L, 2, LUAB_AF_ARGMAXLEN);
     len = strlen(data);
     (void)memmove(af->af_arg, data, len);
@@ -213,7 +213,7 @@ ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    af = luab_udata(L, 1, &accept_filter_arg_type, struct accept_filter_arg *);
+    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
     data = af->af_arg;
     len = strlen(data);
 
@@ -227,19 +227,19 @@ ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
 static int
 ACCEPT_FILTER_ARG_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &accept_filter_arg_type));
+    return (luab_core_gc(L, 1, &luab_accept_filter_arg_type));
 }
 
 static int
 ACCEPT_FILTER_ARG_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &accept_filter_arg_type));
+    return (luab_core_len(L, 2, &luab_accept_filter_arg_type));
 }
 
 static int
 ACCEPT_FILTER_ARG_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &accept_filter_arg_type));
+    return (luab_core_tostring(L, 1, &luab_accept_filter_arg_type));
 }
 
 /*
@@ -268,7 +268,7 @@ accept_filter_arg_create(lua_State *L, void *arg)
 static void
 accept_filter_arg_init(void *ud, void *arg)
 {
-    luab_udata_init(&accept_filter_arg_type, ud, arg);
+    luab_udata_init(&luab_accept_filter_arg_type, ud, arg);
 }
 
 static void *
@@ -277,7 +277,7 @@ accept_filter_arg_udata(lua_State *L, int narg)
     return (luab_to_accept_filter_arg(L, narg));
 }
 
-luab_module_t accept_filter_arg_type = {
+luab_module_t luab_accept_filter_arg_type = {
     .m_cookie   = LUAB_ACCEPT_FILTER_ARG_TYPE_ID,
     .m_name     = LUAB_ACCEPT_FILTER_ARG_TYPE,
     .m_vec      = accept_filter_arg_methods,

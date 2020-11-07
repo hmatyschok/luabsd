@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t in_addr_type;
+extern luab_module_t luab_in_addr_type;
 
 /*
  * Interface against
@@ -50,9 +50,9 @@ typedef struct luab_in_addr {
 } luab_in_addr_t;
 
 #define luab_new_in_addr(L, arg) \
-    ((luab_in_addr_t *)luab_newudata(L, &in_addr_type, (arg)))
+    ((luab_in_addr_t *)luab_newudata(L, &luab_in_addr_type, (arg)))
 #define luab_to_in_addr(L, narg) \
-    (luab_toldata((L), (narg), &in_addr_type, \
+    (luab_toldata((L), (narg), &luab_in_addr_type, \
         struct in_addr *, sizeof(struct in_addr)))
 
 #define LUAB_IN_ADDR_TYPE_ID    1595799233
@@ -82,7 +82,7 @@ IN_ADDR_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
+    ia = luab_udata(L, 1, &luab_in_addr_type, struct in_addr *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "s_addr", ia->s_addr);
@@ -103,7 +103,7 @@ IN_ADDR_get(lua_State *L)
 static int
 IN_ADDR_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &in_addr_type, sizeof(struct in_addr)));
+    return (luab_core_dump(L, 1, &luab_in_addr_type, sizeof(struct in_addr)));
 }
 
 /*
@@ -129,7 +129,7 @@ IN_ADDR_set_s_addr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
+    ia = luab_udata(L, 1, &luab_in_addr_type, struct in_addr *);
     id = (in_addr_t)luab_checkinteger(L, 2, UINT_MAX);
 
     ia->s_addr = id;
@@ -154,7 +154,7 @@ IN_ADDR_get_s_addr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &in_addr_type, struct in_addr *);
+    ia = luab_udata(L, 1, &luab_in_addr_type, struct in_addr *);
     id = ia->s_addr;
 
     return (luab_pusherr(L, id));
@@ -167,19 +167,19 @@ IN_ADDR_get_s_addr(lua_State *L)
 static int
 IN_ADDR_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &in_addr_type));
+    return (luab_core_gc(L, 1, &luab_in_addr_type));
 }
 
 static int
 IN_ADDR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &in_addr_type));
+    return (luab_core_len(L, 2, &luab_in_addr_type));
 }
 
 static int
 IN_ADDR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &in_addr_type));
+    return (luab_core_tostring(L, 1, &luab_in_addr_type));
 }
 
 /*
@@ -206,7 +206,7 @@ in_addr_create(lua_State *L, void *arg)
 static void
 in_addr_init(void *ud, void *arg)
 {
-    luab_udata_init(&in_addr_type, ud, arg);
+    luab_udata_init(&luab_in_addr_type, ud, arg);
 }
 
 static void *
@@ -215,7 +215,7 @@ in_addr_udata(lua_State *L, int narg)
     return (luab_to_in_addr(L, narg));
 }
 
-luab_module_t in_addr_type = {
+luab_module_t luab_in_addr_type = {
     .m_cookie   = LUAB_IN_ADDR_TYPE_ID,
     .m_name     = LUAB_IN_ADDR_TYPE,
     .m_vec      = in_addr_methods,

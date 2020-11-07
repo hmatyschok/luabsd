@@ -31,7 +31,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t primitive_type;
+extern luab_module_t luab_primitive_type;
 
 /*
  * Interface against
@@ -65,9 +65,9 @@ typedef struct luab_primitive {
 } luab_primitive_t;
 
 #define luab_new_primitive(L, arg) \
-    ((luab_primitive_t *)luab_newudata(L, &primitive_type, (arg)))
+    ((luab_primitive_t *)luab_newudata(L, &luab_primitive_type, (arg)))
 #define luab_to_primitive(L, narg) \
-    ((luab_primitive_u *)luab_toudata((L), (narg), &primitive_type))
+    ((luab_primitive_u *)luab_toudata((L), (narg), &luab_primitive_type))
 
 #define LUAB_PRIMITIVE_TYPE_ID    1595975665
 #define LUAB_PRIMITIVE_TYPE   "PRIMITIVE*"
@@ -103,7 +103,7 @@ PRIMITIVE_set_char(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
     value = luab_checkinteger(L, 2, UCHAR_MAX);
 
     xp->un_char = (char)value;
@@ -119,7 +119,7 @@ PRIMITIVE_get_char(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
     value = (xp->un_intx & UCHAR_MAX);
 
@@ -134,7 +134,7 @@ PRIMITIVE_set_short(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
     value = luab_checkinteger(L, 2, USHRT_MAX);
 
     xp->un_short = (short)value;
@@ -150,7 +150,7 @@ PRIMITIVE_get_short(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
     value = (xp->un_intx & USHRT_MAX);
 
@@ -166,7 +166,7 @@ PRIMITIVE_set_int(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
     value = luab_checkinteger(L, 2, UINT_MAX);
 
     xp->un_int = (int)value;
@@ -182,7 +182,7 @@ PRIMITIVE_get_int(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
     value = (xp->un_intx & UINT_MAX);
 
@@ -197,7 +197,7 @@ PRIMITIVE_set_long(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
     value = luab_checkinteger(L, 2, ULONG_MAX);
 
     xp->un_long = (long)value;
@@ -213,7 +213,7 @@ PRIMITIVE_get_long(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
     value = (xp->un_intx & ULONG_MAX);
 
@@ -228,7 +228,7 @@ PRIMITIVE_set_socklen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
     value = luab_checkinteger(L, 2, INT_MAX);
 
     xp->un_socklen = (socklen_t)value;
@@ -244,7 +244,7 @@ PRIMITIVE_get_socklen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, &primitive_type, luab_primitive_u *);
+    xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
     value = (xp->un_intx & INT_MAX);
 
@@ -258,19 +258,19 @@ PRIMITIVE_get_socklen(lua_State *L)
 static int
 PRIMITIVE_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &primitive_type));
+    return (luab_core_gc(L, 1, &luab_primitive_type));
 }
 
 static int
 PRIMITIVE_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &primitive_type));
+    return (luab_core_len(L, 2, &luab_primitive_type));
 }
 
 static int
 PRIMITIVE_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &primitive_type));
+    return (luab_core_tostring(L, 1, &luab_primitive_type));
 }
 
 /*
@@ -304,7 +304,7 @@ primitive_create(lua_State *L, void *arg)
 static void
 primitive_init(void *ud, void *arg)
 {
-    luab_udata_init(&primitive_type, ud, arg);
+    luab_udata_init(&luab_primitive_type, ud, arg);
 }
 
 static void *
@@ -313,7 +313,7 @@ primitive_udata(lua_State *L, int narg)
     return (luab_to_primitive(L, narg));
 }
 
-luab_module_t primitive_type = {
+luab_module_t luab_primitive_type = {
     .m_cookie   = LUAB_PRIMITIVE_TYPE_ID,
     .m_name     = LUAB_PRIMITIVE_TYPE,
     .m_vec      = primitive_methods,

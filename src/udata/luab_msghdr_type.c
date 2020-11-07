@@ -38,7 +38,7 @@
  *  incomplete and _under_construction_ [sic!], etc.
  */
 
-extern luab_module_t msghdr_type;
+extern luab_module_t luab_msghdr_type;
 
 /*
  * Interface against
@@ -73,9 +73,9 @@ typedef struct luab_msghdr {
 } luab_msghdr_t;
 
 #define luab_new_msghdr(L, arg) \
-    ((luab_msghdr_t *)luab_newudata(L, &msghdr_type, (arg)))
+    ((luab_msghdr_t *)luab_newudata(L, &luab_msghdr_type, (arg)))
 #define luab_to_msghdr(L, narg) \
-    (luab_todata((L), (narg), &msghdr_type, luab_msghdr_t *))
+    (luab_todata((L), (narg), &luab_msghdr_type, luab_msghdr_t *))
 
 #define LUAB_MSGHDR_TYPE_ID    1597320239
 #define LUAB_MSGHDR_TYPE    "MSGHDR*"
@@ -197,7 +197,7 @@ MSGHDR_msg_namelen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
     namelen = msg->msg_namelen;
 
     return (luab_pusherr(L, namelen));
@@ -220,7 +220,7 @@ MSGHDR_msg_iovlen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
     iovlen = msg->msg_iovlen;
 
     return (luab_pusherr(L, iovlen));
@@ -243,7 +243,7 @@ MSGHDR_msg_flags(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
     flags = msg->msg_flags;
 
     return (luab_pusherr(L, flags));
@@ -266,7 +266,7 @@ MSGHDR_msg_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &msghdr_type, struct mmsghdr *);
+    msg = luab_udata(L, 1, &luab_msghdr_type, struct mmsghdr *);
     len = msg->msg_len;
 
     return (luab_pusherr(L, len));
@@ -298,7 +298,7 @@ MSGHDR_set_msg_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    msg = (struct msghdr *)luab_checkxdata(L, 1, &msghdr_type, &udx);
+    msg = (struct msghdr *)luab_checkxdata(L, 1, &luab_msghdr_type, &udx);
     dp = luab_dptox(msg->msg_name);
 
     sa = luab_udata_checkxlink(L, 2, luab_mx(SOCKADDR), udx, dp);
@@ -331,7 +331,7 @@ MSGHDR_get_msg_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &msghdr_type, struct msghdr *);
+    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
 
     if ((sa = msg->msg_name) != NULL)
         status = luab_pushudata(L, luab_mx(SOCKADDR), sa);
@@ -421,19 +421,19 @@ MSGHDR_gc(lua_State *L)
 
     luab_table_iovec_free(iov);
 
-    return (luab_core_gc(L, 1, &msghdr_type));
+    return (luab_core_gc(L, 1, &luab_msghdr_type));
 }
 
 static int
 MSGHDR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &msghdr_type));
+    return (luab_core_len(L, 2, &luab_msghdr_type));
 }
 
 static int
 MSGHDR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &msghdr_type));
+    return (luab_core_tostring(L, 1, &luab_msghdr_type));
 }
 
 /*
@@ -482,7 +482,7 @@ msghdr_udata(lua_State *L, int narg)
     return (&(ud->msg_hdr));
 }
 
-luab_module_t msghdr_type = {
+luab_module_t luab_msghdr_type = {
     .m_cookie   = LUAB_MSGHDR_TYPE_ID,
     .m_name     = LUAB_MSGHDR_TYPE,
     .m_vec      = msghdr_methods,

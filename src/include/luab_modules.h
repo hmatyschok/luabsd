@@ -32,48 +32,49 @@
  */
 
 #if LUAB_DEBUG
-extern luab_module_t link_type;
+extern luab_module_t luab_link_type;
 #endif
-extern luab_module_t clockinfo_type;
-extern luab_module_t div_type;
-extern luab_module_t flock_type;
-extern luab_module_t primitive_type;
-extern luab_module_t if_nameindex_type;
-extern luab_module_t in_addr_type;
-extern luab_module_t in6_addr_type;
-extern luab_module_t itimerval_type;
-extern luab_module_t ldiv_type;
-extern luab_module_t lldiv_type;
-extern luab_module_t linger_type;
-extern luab_module_t msghdr_type;
-extern luab_module_t sockaddr_type;
-extern luab_module_t stat_type;
-extern luab_module_t timespec_type;
-extern luab_module_t timeval_type;
-extern luab_module_t timezone_type;
-extern luab_module_t tm_type;
-extern luab_module_t uuid_type;
-extern luab_module_t iovec_type;
-extern luab_module_t passwd_type;
-extern luab_module_t group_type;
-extern luab_module_t regex_type;
-extern luab_module_t regmatch_type;
-extern luab_module_t fsid_type;
-extern luab_module_t fid_type;
-extern luab_module_t statfs_type;
-extern luab_module_t fhandle_type;
-extern luab_module_t xvfsconf_type;
+extern luab_module_t luab_clockinfo_type;
+extern luab_module_t luab_div_type;
+extern luab_module_t luab_flock_type;
+extern luab_module_t luab_primitive_type;
+extern luab_module_t luab_if_nameindex_type;
+extern luab_module_t luab_in_addr_type;
+extern luab_module_t luab_in6_addr_type;
+extern luab_module_t luab_itimerval_type;
+extern luab_module_t luab_ldiv_type;
+extern luab_module_t luab_lldiv_type;
+extern luab_module_t luab_linger_type;
+extern luab_module_t luab_msghdr_type;
+extern luab_module_t luab_sockaddr_type;
+extern luab_module_t luab_stat_type;
+extern luab_module_t luab_timespec_type;
+extern luab_module_t luab_timeval_type;
+extern luab_module_t luab_timezone_type;
+extern luab_module_t luab_tm_type;
+extern luab_module_t luab_uuid_type;
+extern luab_module_t luab_iovec_type;
+extern luab_module_t luab_passwd_type;
+extern luab_module_t luab_group_type;
+extern luab_module_t luab_regex_type;
+extern luab_module_t luab_regmatch_type;
+extern luab_module_t luab_fsid_type;
+extern luab_module_t luab_fid_type;
+extern luab_module_t luab_statfs_type;
+extern luab_module_t luab_fhandle_type;
+extern luab_module_t luab_xvfsconf_type;
+extern luab_module_t luab_ttyent_type;
 
 #if __BSD_VISIBLE
-extern luab_module_t dbt_type;
-extern luab_module_t db_type;
-extern luab_module_t bintime_type;
-extern luab_module_t crypt_data_type;
-extern luab_module_t cap_rbuf_type;
-extern luab_module_t accept_filter_arg_type;
-extern luab_module_t sockproto_type;
-extern luab_module_t cmsgcred_type;
-extern luab_module_t sf_hdtr_type;
+extern luab_module_t luab_dbt_type;
+extern luab_module_t luab_db_type;
+extern luab_module_t luab_bintime_type;
+extern luab_module_t luab_crypt_data_type;
+extern luab_module_t luab_cap_rbuf_type;
+extern luab_module_t luab_accept_filter_arg_type;
+extern luab_module_t luab_sockproto_type;
+extern luab_module_t luab_cmsgcred_type;
+extern luab_module_t luab_sf_hdtr_type;
 #endif
 
 /*
@@ -104,6 +105,7 @@ extern luab_module_t luab_pwd_lib;
 extern luab_module_t luab_regex_lib;
 extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_time_lib;
+extern luab_module_t luab_ttyent_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 #endif /* _LUAB_MODULES_H_ */

@@ -33,7 +33,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t if_nameindex_type;
+extern luab_module_t luab_if_nameindex_type;
 
 /*
  * Interface against
@@ -52,9 +52,9 @@ typedef struct luab_if_nameindex {
 } luab_if_nameindex_t;
 
 #define luab_new_if_nameindex(L, arg) \
-    ((luab_if_nameindex_t *)luab_newudata(L, &if_nameindex_type, (arg)))
+    ((luab_if_nameindex_t *)luab_newudata(L, &luab_if_nameindex_type, (arg)))
 #define luab_to_if_nameindex(L, narg) \
-    ((struct if_nameindex *)luab_toudata((L), (narg), &if_nameindex_type))
+    ((struct if_nameindex *)luab_toudata((L), (narg), &luab_if_nameindex_type))
 
 #define LUAB_IF_NAMEINDEX_TYPE_ID    1596840702
 #define LUAB_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
@@ -84,7 +84,7 @@ IF_NAMEINDEX_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ifni = luab_udata(L, 1, &if_nameindex_type, struct if_nameindex *);
+    ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "if_index",  ifni->if_index);
@@ -130,7 +130,7 @@ IF_NAMEINDEX_if_index(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ifni = luab_udata(L, 1, &if_nameindex_type, struct if_nameindex *);
+    ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
     if_index = ifni->if_index;
 
     return (luab_pusherr(L, if_index));
@@ -153,7 +153,7 @@ IF_NAMEINDEX_if_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ifni = luab_udata(L, 1, &if_nameindex_type, struct if_nameindex *);
+    ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
     if_name = ifni->if_name;
 
     return (luab_pushstring(L, ifni->if_name));
@@ -166,19 +166,19 @@ IF_NAMEINDEX_if_name(lua_State *L)
 static int
 IF_NAMEINDEX_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &if_nameindex_type));
+    return (luab_core_gc(L, 1, &luab_if_nameindex_type));
 }
 
 static int
 IF_NAMEINDEX_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &if_nameindex_type));
+    return (luab_core_len(L, 2, &luab_if_nameindex_type));
 }
 
 static int
 IF_NAMEINDEX_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &if_nameindex_type));
+    return (luab_core_tostring(L, 1, &luab_if_nameindex_type));
 }
 
 /*
@@ -223,7 +223,7 @@ if_nameindex_udata(lua_State *L, int narg)
     return (luab_to_if_nameindex(L, narg));
 }
 
-luab_module_t if_nameindex_type = {
+luab_module_t luab_if_nameindex_type = {
     .m_cookie   = LUAB_IF_NAMEINDEX_TYPE_ID,
     .m_name     = LUAB_IF_NAMEINDEX_TYPE,
     .m_vec      = if_nameindex_methods,

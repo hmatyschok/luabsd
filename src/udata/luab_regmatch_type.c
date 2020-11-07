@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t regmatch_type;
+extern luab_module_t luab_regmatch_type;
 
 /*
  * Interface against
@@ -51,9 +51,9 @@ typedef struct luab_regmatch {
 } luab_regmatch_t;
 
 #define luab_new_regmatch(L, arg) \
-    ((luab_regmatch_t *)luab_newudata(L, &regmatch_type, (arg)))
+    ((luab_regmatch_t *)luab_newudata(L, &luab_regmatch_type, (arg)))
 #define luab_to_regmatch(L, narg) \
-    (luab_toldata((L), (narg), &regmatch_type, \
+    (luab_toldata((L), (narg), &luab_regmatch_type, \
         regmatch_t *, sizeof(regmatch_t)))
 
 #define LUAB_REGMATCH_TYPE_ID    1604371586
@@ -84,7 +84,7 @@ REGMATCH_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    rm = luab_udata(L, 1, &regmatch_type, regmatch_t *);
+    rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
 
     lua_newtable(L);
 
@@ -108,7 +108,7 @@ REGMATCH_get(lua_State *L)
 static int
 REGMATCH_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &regmatch_type, sizeof(regmatch_t)));
+    return (luab_core_dump(L, 1, &luab_regmatch_type, sizeof(regmatch_t)));
 }
 
 /*
@@ -132,7 +132,7 @@ REGMATCH_rm_so(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    rm = luab_udata(L, 1, &regmatch_type, regmatch_t *);
+    rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
     data = rm->rm_so;
 
     return (luab_pusherr(L, data));
@@ -155,7 +155,7 @@ REGMATCH_rm_eo(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    rm = luab_udata(L, 1, &regmatch_type, regmatch_t *);
+    rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
     data = rm->rm_eo;
 
     return (luab_pusherr(L, data));
@@ -168,19 +168,19 @@ REGMATCH_rm_eo(lua_State *L)
 static int
 REGMATCH_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &regmatch_type));
+    return (luab_core_gc(L, 1, &luab_regmatch_type));
 }
 
 static int
 REGMATCH_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &regmatch_type));
+    return (luab_core_len(L, 2, &luab_regmatch_type));
 }
 
 static int
 REGMATCH_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &regmatch_type));
+    return (luab_core_tostring(L, 1, &luab_regmatch_type));
 }
 
 /*
@@ -207,7 +207,7 @@ regmatch_create(lua_State *L, void *arg)
 static void
 regmatch_init(void *ud, void *arg)
 {
-    luab_udata_init(&regmatch_type, ud, arg);
+    luab_udata_init(&luab_regmatch_type, ud, arg);
 }
 
 static void *
@@ -216,7 +216,7 @@ regmatch_udata(lua_State *L, int narg)
     return (luab_to_regmatch(L, narg));
 }
 
-luab_module_t regmatch_type = {
+luab_module_t luab_regmatch_type = {
     .m_cookie   = LUAB_REGMATCH_TYPE_ID,
     .m_name     = LUAB_REGMATCH_TYPE,
     .m_vec      = regmatch_methods,

@@ -32,7 +32,7 @@
 #include "luab_udata.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t cmsgcred_type;
+extern luab_module_t luab_cmsgcred_type;
 
 /*
  * Interface against
@@ -53,9 +53,9 @@ typedef struct luab_cmsgcred {
 } luab_cmsgcred_t;
 
 #define luab_new_cmsgcred(L, arg) \
-    ((luab_cmsgcred_t *)luab_newudata(L, &cmsgcred_type, (arg)))
+    ((luab_cmsgcred_t *)luab_newudata(L, &luab_cmsgcred_type, (arg)))
 #define luab_to_cmsgcred(L, narg) \
-    (luab_toldata((L), (narg), &cmsgcred_type, \
+    (luab_toldata((L), (narg), &luab_cmsgcred_type, \
         struct cmsgcred *, sizeof(struct cmsgcred)))
 
 #define LUAB_CMSGCRED_TYPE_ID    1601557495
@@ -90,7 +90,7 @@ CMSGCRED_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "cmcred_pid",        cmcred->cmcred_pid);
@@ -118,7 +118,7 @@ CMSGCRED_get(lua_State *L)
 static int
 CMSGCRED_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &cmsgcred_type, sizeof(struct cmsgcred)));
+    return (luab_core_dump(L, 1, &luab_cmsgcred_type, sizeof(struct cmsgcred)));
 }
 
 /*
@@ -142,7 +142,7 @@ CMSGCRED_cmcred_pid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_pid;
 
     return (luab_pusherr(L, data));
@@ -165,7 +165,7 @@ CMSGCRED_cmcred_uid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_uid;
 
     return (luab_pusherr(L, data));
@@ -188,7 +188,7 @@ CMSGCRED_cmcred_euid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_euid;
 
     return (luab_pusherr(L, data));
@@ -211,7 +211,7 @@ CMSGCRED_cmcred_gid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_gid;
 
     return (luab_pusherr(L, data));
@@ -234,7 +234,7 @@ CMSGCRED_cmcred_ngroups(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_ngroups;
 
     return (luab_pusherr(L, data));
@@ -258,7 +258,7 @@ CMSGCRED_cmcred_groups(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_groups;
     len = NGROUPS_MAX * sizeof(gid_t);
         /* XXX (LUA_TTABLE) */
@@ -272,19 +272,19 @@ CMSGCRED_cmcred_groups(lua_State *L)
 static int
 CMSGCRED_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &cmsgcred_type));
+    return (luab_core_gc(L, 1, &luab_cmsgcred_type));
 }
 
 static int
 CMSGCRED_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &cmsgcred_type));
+    return (luab_core_len(L, 2, &luab_cmsgcred_type));
 }
 
 static int
 CMSGCRED_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &cmsgcred_type));
+    return (luab_core_tostring(L, 1, &luab_cmsgcred_type));
 }
 
 /*
@@ -315,7 +315,7 @@ cmsgcred_create(lua_State *L, void *arg)
 static void
 cmsgcred_init(void *ud, void *arg)
 {
-    luab_udata_init(&cmsgcred_type, ud, arg);
+    luab_udata_init(&luab_cmsgcred_type, ud, arg);
 }
 
 static void *
@@ -324,7 +324,7 @@ cmsgcred_udata(lua_State *L, int narg)
     return (luab_to_cmsgcred(L, narg));
 }
 
-luab_module_t cmsgcred_type = {
+luab_module_t luab_cmsgcred_type = {
     .m_cookie   = LUAB_CMSGCRED_TYPE_ID,
     .m_name     = LUAB_CMSGCRED_TYPE,
     .m_vec      = cmsgcred_methods,

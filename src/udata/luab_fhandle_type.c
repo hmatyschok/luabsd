@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t fhandle_type;
+extern luab_module_t luab_fhandle_type;
 
 /*
  * Interface against
@@ -52,9 +52,9 @@ typedef struct luab_fhandle {
 } luab_fhandle_t;
 
 #define luab_new_fhandle(L, arg) \
-    ((luab_fhandle_t *)luab_newudata(L, &fhandle_type, (arg)))
+    ((luab_fhandle_t *)luab_newudata(L, &luab_fhandle_type, (arg)))
 #define luab_to_fhandle(L, narg) \
-    (luab_toldata((L), (narg), &fhandle_type, \
+    (luab_toldata((L), (narg), &luab_fhandle_type, \
         fhandle_t *, sizeof(fhandle_t)))
 
 #define LUAB_FHANDLE_TYPE_ID    1604445207
@@ -85,7 +85,7 @@ FHANDLE_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fh = luab_udata(L, 1, &fhandle_type, fhandle_t *);
+    fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
 
     lua_newtable(L);
     luab_setudata(L, -2, luab_mx(FSID), "fh_fsid",  &(fh->fh_fsid));
@@ -107,7 +107,7 @@ FHANDLE_get(lua_State *L)
 static int
 FHANDLE_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &fhandle_type, sizeof(fhandle_t)));
+    return (luab_core_dump(L, 1, &luab_fhandle_type, sizeof(fhandle_t)));
 }
 
 /*
@@ -131,7 +131,7 @@ FHANDLE_fh_fsid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fh = luab_udata(L, 1, &fhandle_type, fhandle_t *);
+    fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     fsid = &(fh->fh_fsid);
 
     return (luab_pushudata(L, luab_mx(FSID), fsid));
@@ -154,7 +154,7 @@ FHANDLE_fh_fid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fh = luab_udata(L, 1, &fhandle_type, fhandle_t *);
+    fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     fid = &(fh->fh_fid);
 
     return (luab_pushudata(L, luab_mx(FID), fid));
@@ -167,19 +167,19 @@ FHANDLE_fh_fid(lua_State *L)
 static int
 FHANDLE_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &fhandle_type));
+    return (luab_core_gc(L, 1, &luab_fhandle_type));
 }
 
 static int
 FHANDLE_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &fhandle_type));
+    return (luab_core_len(L, 2, &luab_fhandle_type));
 }
 
 static int
 FHANDLE_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &fhandle_type));
+    return (luab_core_tostring(L, 1, &luab_fhandle_type));
 }
 
 /*
@@ -206,7 +206,7 @@ fhandle_create(lua_State *L, void *arg)
 static void
 fhandle_init(void *ud, void *arg)
 {
-    luab_udata_init(&fhandle_type, ud, arg);
+    luab_udata_init(&luab_fhandle_type, ud, arg);
 }
 
 static void *
@@ -215,7 +215,7 @@ fhandle_udata(lua_State *L, int narg)
     return (luab_to_fhandle(L, narg));
 }
 
-luab_module_t fhandle_type = {
+luab_module_t luab_fhandle_type = {
     .m_cookie   = LUAB_FHANDLE_TYPE_ID,
     .m_name     = LUAB_FHANDLE_TYPE,
     .m_vec      = fhandle_methods,

@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t cap_rbuf_type;
+extern luab_module_t luab_cap_rbuf_type;
 
 /*
  * Interface against
@@ -58,9 +58,9 @@ typedef struct luab_cap_rbuf {
 } luab_cap_rbuf_t;
 
 #define luab_new_cap(L, arg) \
-    ((luab_cap_rbuf_t *)luab_newudata(L, &cap_rbuf_type, (arg)))
+    ((luab_cap_rbuf_t *)luab_newudata(L, &luab_cap_rbuf_type, (arg)))
 #define luab_to_cap(L, narg) \
-    ((luab_cap_rbuf_t *)luab_toudata((L), (narg), &cap_rbuf_type))
+    ((luab_cap_rbuf_t *)luab_toudata((L), (narg), &luab_cap_rbuf_type))
 
 #define LUAB_CAP_RBUF_TYPE_ID    1601143331
 #define LUAB_CAP_RBUF_TYPE    "CAP_RBUF*"
@@ -90,7 +90,7 @@ CAP_RBUF_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
+    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
 
     lua_newtable(L);
 
@@ -136,7 +136,7 @@ CAP_RBUF_iov_base(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
+    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
 
     return (luab_iov_pushdata(L, iov));
 }
@@ -157,7 +157,7 @@ CAP_RBUF_iov_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
+    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
 
     return (luab_iov_pushlen(L, iov));
 }
@@ -173,22 +173,22 @@ CAP_RBUF_gc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &cap_rbuf_type, struct iovec *);
+    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
     (void)luab_iov_free(iov);
 
-    return (luab_core_gc(L, 1, &cap_rbuf_type));
+    return (luab_core_gc(L, 1, &luab_cap_rbuf_type));
 }
 
 static int
 CAP_RBUF_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &cap_rbuf_type));
+    return (luab_core_len(L, 2, &luab_cap_rbuf_type));
 }
 
 static int
 CAP_RBUF_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &cap_rbuf_type));
+    return (luab_core_tostring(L, 1, &luab_cap_rbuf_type));
 }
 
 /*
@@ -215,7 +215,7 @@ cap_rbuf_create(lua_State *L, void *arg)
 static void
 cap_rbuf_init(void *ud, void *arg)
 {
-    luab_udata_init(&cap_rbuf_type, ud, arg);
+    luab_udata_init(&luab_cap_rbuf_type, ud, arg);
 }
 
 static void *
@@ -224,7 +224,7 @@ cap_rbuf_udata(lua_State *L, int narg)
     return (luab_to_cap(L, narg));
 }
 
-luab_module_t cap_rbuf_type = {
+luab_module_t luab_cap_rbuf_type = {
     .m_cookie   = LUAB_CAP_RBUF_TYPE_ID,
     .m_name     = LUAB_CAP_RBUF_TYPE,
     .m_vec      = cap_rbuf_methods,

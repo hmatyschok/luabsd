@@ -33,7 +33,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t fid_type;
+extern luab_module_t luab_fid_type;
 
 /*
  * Interface against
@@ -51,9 +51,9 @@ typedef struct luab_fid {
 } luab_fid_t;
 
 #define luab_new_fid(L, arg) \
-    ((luab_fid_t *)luab_newudata(L, &fid_type, (arg)))
+    ((luab_fid_t *)luab_newudata(L, &luab_fid_type, (arg)))
 #define luab_to_fid(L, narg) \
-    (luab_toldata((L), (narg), &fid_type, \
+    (luab_toldata((L), (narg), &luab_fid_type, \
         struct fid *, sizeof(struct fid)))
 
 #define LUAB_FID_TYPE_ID    1604423994
@@ -85,7 +85,7 @@ FID_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &fid_type, struct fid *);
+    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
 
     lua_newtable(L);
 
@@ -110,7 +110,7 @@ FID_get(lua_State *L)
 static int
 FID_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &fid_type, sizeof(struct fid)));
+    return (luab_core_dump(L, 1, &luab_fid_type, sizeof(struct fid)));
 }
 
 /*
@@ -134,7 +134,7 @@ FID_fid_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &fid_type, struct fid *);
+    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
     data = fid->fid_len;
 
     return (luab_pusherr(L, data));
@@ -157,7 +157,7 @@ FID_fid_data0(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &fid_type, struct fid *);
+    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
     data = fid->fid_data0;
 
     return (luab_pusherr(L, data));
@@ -180,7 +180,7 @@ FID_fid_data(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &fid_type, struct fid *);
+    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
     dp = fid->fid_data;
 
     return (luab_pushldata(L, dp, MAXFIDSZ));
@@ -193,19 +193,19 @@ FID_fid_data(lua_State *L)
 static int
 FID_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &fid_type));
+    return (luab_core_gc(L, 1, &luab_fid_type));
 }
 
 static int
 FID_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &fid_type));
+    return (luab_core_len(L, 2, &luab_fid_type));
 }
 
 static int
 FID_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &fid_type));
+    return (luab_core_tostring(L, 1, &luab_fid_type));
 }
 
 /*
@@ -233,7 +233,7 @@ fid_create(lua_State *L, void *arg)
 static void
 fid_init(void *ud, void *arg)
 {
-    luab_udata_init(&fid_type, ud, arg);
+    luab_udata_init(&luab_fid_type, ud, arg);
 }
 
 static void *
@@ -242,7 +242,7 @@ fid_udata(lua_State *L, int narg)
     return (luab_to_fid(L, narg));
 }
 
-luab_module_t fid_type = {
+luab_module_t luab_fid_type = {
     .m_cookie   = LUAB_FID_TYPE_ID,
     .m_name     = LUAB_FID_TYPE,
     .m_vec      = fid_methods,

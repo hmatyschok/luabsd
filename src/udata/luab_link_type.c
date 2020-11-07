@@ -32,7 +32,7 @@
 #include "luab_udata.h"
 
 #if LUAB_DEBUG
-extern luab_module_t link_type;
+extern luab_module_t luab_link_type;
 
 typedef struct link {
     void            *link_dp;
@@ -58,9 +58,9 @@ typedef struct luab_link {
 } luab_link_t;
 
 #define luab_new_link(L, arg) \
-    ((luab_link_t *)luab_newudata(L, &link_type, (arg)))
+    ((luab_link_t *)luab_newudata(L, &luab_link_type, (arg)))
 #define luab_to_link(L, narg) \
-    ((link_t *)luab_toudata((L), (narg), &link_type))
+    ((link_t *)luab_toudata((L), (narg), &luab_link_type))
 
 #define LUAB_LINK_TYPE_ID    1601843279
 #define LUAB_LINK_TYPE    "LINK*"
@@ -90,7 +90,7 @@ LINK_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    link = luab_udata(L, 1, &link_type, link_t *);
+    link = luab_udata(L, 1, &luab_link_type, link_t *);
 
     lua_newtable(L);
     luab_setfstring(L, -2, "link_dp", "(%p)", link->link_dp);
@@ -140,7 +140,7 @@ LINK_set_ptr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    link = (link_t *)luab_checkxdata(L, 1, &link_type, &udx);
+    link = (link_t *)luab_checkxdata(L, 1, &luab_link_type, &udx);
     dp = luab_dptox(link->link_dp);
 
     if (luab_udata_xlink(L, 2, udx, dp) != NULL)
@@ -168,7 +168,7 @@ LINK_get_ptr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    link = luab_udata(L, 1, &link_type, link_t *);
+    link = luab_udata(L, 1, &luab_link_type, link_t *);
     dp = link->link_dp;
 
     return (luab_pushfstring(L, "(%p)", dp));
@@ -195,7 +195,7 @@ LINK_set_sockaddr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    link = (link_t *)luab_checkxdata(L, 1, &link_type, &udx);
+    link = (link_t *)luab_checkxdata(L, 1, &luab_link_type, &udx);
     dp = luab_dptox(link->link_sa);
 
     if (luab_udata_checkxlink(L, 2, luab_mx(SOCKADDR), udx, dp) != NULL)
@@ -223,7 +223,7 @@ LINK_get_sockaddr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    link = luab_udata(L, 1, &link_type, link_t *);
+    link = luab_udata(L, 1, &luab_link_type, link_t *);
     dp = link->link_sa;
 
     return (luab_pushfstring(L, "(%p)", dp));
@@ -236,19 +236,19 @@ LINK_get_sockaddr(lua_State *L)
 static int
 LINK_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &link_type));
+    return (luab_core_gc(L, 1, &luab_link_type));
 }
 
 static int
 LINK_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &link_type));
+    return (luab_core_len(L, 2, &luab_link_type));
 }
 
 static int
 LINK_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &link_type));
+    return (luab_core_tostring(L, 1, &luab_link_type));
 }
 
 /*
@@ -277,7 +277,7 @@ link_create(lua_State *L, void *arg)
 static void
 link_init(void *ud, void *arg)
 {
-    luab_udata_init(&link_type, ud, arg);
+    luab_udata_init(&luab_link_type, ud, arg);
 }
 
 static void *
@@ -286,7 +286,7 @@ link_udata(lua_State *L, int narg)
     return (luab_to_link(L, narg));
 }
 
-luab_module_t link_type = {
+luab_module_t luab_link_type = {
     .m_cookie   = LUAB_LINK_TYPE_ID,
     .m_name     = LUAB_LINK_TYPE,
     .m_vec      = link_methods,

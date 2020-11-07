@@ -33,7 +33,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t clockinfo_type;
+extern luab_module_t luab_clockinfo_type;
 
 /*
  * Interface against getkerninfo clock information structure
@@ -53,9 +53,9 @@ typedef struct luab_clockinfo {
 } luab_clockinfo_t;
 
 #define luab_new_clockinfo(L, arg) \
-    ((luab_clockinfo_t *)luab_newudata(L, &clockinfo_type, (arg)))
+    ((luab_clockinfo_t *)luab_newudata(L, &luab_clockinfo_type, (arg)))
 #define luab_to_clockinfo(L, narg) \
-    (luab_toldata((L), (narg), &clockinfo_type, \
+    (luab_toldata((L), (narg), &luab_clockinfo_type, \
         struct clockinfo *, sizeof(struct clockinfo)))
 
 #define LUAB_CLOCKINFO_TYPE_ID    1594164272
@@ -89,7 +89,7 @@ CLOCKINFO_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
 
     lua_newtable(L);
 
@@ -115,7 +115,7 @@ CLOCKINFO_get(lua_State *L)
 static int
 CLOCKINFO_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &clockinfo_type, sizeof(struct clockinfo)));
+    return (luab_core_dump(L, 1, &luab_clockinfo_type, sizeof(struct clockinfo)));
 }
 
 /*
@@ -141,7 +141,7 @@ CLOCKINFO_set_hz(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     ci->hz = data;
@@ -166,7 +166,7 @@ CLOCKINFO_get_hz(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->hz;
 
     return (luab_pusherr(L, data));
@@ -191,7 +191,7 @@ CLOCKINFO_set_tick(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     ci->tick = data;
@@ -216,7 +216,7 @@ CLOCKINFO_get_tick(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->tick;
 
     return (luab_pusherr(L, data));
@@ -241,7 +241,7 @@ CLOCKINFO_set_stathz(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     ci->stathz = data;
@@ -266,7 +266,7 @@ CLOCKINFO_get_stathz(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->stathz;
 
     return (luab_pusherr(L, data));
@@ -291,7 +291,7 @@ CLOCKINFO_set_profhz(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     ci->profhz = data;
@@ -316,7 +316,7 @@ CLOCKINFO_get_profhz(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ci = luab_udata(L, 1, &clockinfo_type, struct clockinfo *);
+    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->profhz;
 
     return (luab_pusherr(L, data));
@@ -329,19 +329,19 @@ CLOCKINFO_get_profhz(lua_State *L)
 static int
 CLOCKINFO_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &clockinfo_type));
+    return (luab_core_gc(L, 1, &luab_clockinfo_type));
 }
 
 static int
 CLOCKINFO_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &clockinfo_type));
+    return (luab_core_len(L, 2, &luab_clockinfo_type));
 }
 
 static int
 CLOCKINFO_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &clockinfo_type));
+    return (luab_core_tostring(L, 1, &luab_clockinfo_type));
 }
 
 /*
@@ -374,7 +374,7 @@ clockinfo_create(lua_State *L, void *arg)
 static void
 clockinfo_init(void *ud, void *arg)
 {
-    luab_udata_init(&clockinfo_type, ud, arg);
+    luab_udata_init(&luab_clockinfo_type, ud, arg);
 }
 
 static void *
@@ -383,7 +383,7 @@ clockinfo_udata(lua_State *L, int narg)
     return (luab_to_clockinfo(L, narg));
 }
 
-luab_module_t clockinfo_type = {
+luab_module_t luab_clockinfo_type = {
     .m_cookie   = LUAB_CLOCKINFO_TYPE_ID,
     .m_name     = LUAB_CLOCKINFO_TYPE,
     .m_vec      = clockinfo_methods,

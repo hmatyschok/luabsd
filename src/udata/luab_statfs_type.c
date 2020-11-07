@@ -33,7 +33,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t statfs_type;
+extern luab_module_t luab_statfs_type;
 
 /*
  * Interface against
@@ -70,9 +70,9 @@ typedef struct luab_statfs {
 } luab_statfs_t;
 
 #define luab_new_statfs(L, arg) \
-    ((luab_statfs_t *)luab_newudata(L, &statfs_type, (arg)))
+    ((luab_statfs_t *)luab_newudata(L, &luab_statfs_type, (arg)))
 #define luab_to_statfs(L, narg) \
-    (luab_toldata((L), (narg), &statfs_type, \
+    (luab_toldata((L), (narg), &luab_statfs_type, \
         struct statfs *, sizeof(struct statfs)))
 
 #define LUAB_STATFS_TYPE_ID    1604429614
@@ -121,7 +121,7 @@ STATFS_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
 
     lua_newtable(L);
 
@@ -165,7 +165,7 @@ STATFS_get(lua_State *L)
 static int
 STATFS_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &statfs_type, sizeof(struct statfs)));
+    return (luab_core_dump(L, 1, &luab_statfs_type, sizeof(struct statfs)));
 }
 
 /*
@@ -189,7 +189,7 @@ STATFS_f_version(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_version;
 
     return (luab_pusherr(L, data));
@@ -212,7 +212,7 @@ STATFS_f_type(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_type;
 
     return (luab_pusherr(L, data));
@@ -235,7 +235,7 @@ STATFS_f_flags(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_flags;
 
     return (luab_pusherr(L, data));
@@ -258,7 +258,7 @@ STATFS_f_bsize(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_bsize;
 
     return (luab_pusherr(L, data));
@@ -281,7 +281,7 @@ STATFS_f_iosize(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_iosize;
 
     return (luab_pusherr(L, data));
@@ -304,7 +304,7 @@ STATFS_f_blocks(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_blocks;
 
     return (luab_pusherr(L, data));
@@ -327,7 +327,7 @@ STATFS_f_bfree(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_bfree;
 
     return (luab_pusherr(L, data));
@@ -350,7 +350,7 @@ STATFS_f_bavail(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_bavail;
 
     return (luab_pusherr(L, data));
@@ -373,7 +373,7 @@ STATFS_f_files(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_files;
 
     return (luab_pusherr(L, data));
@@ -396,7 +396,7 @@ STATFS_f_ffree(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_ffree;
 
     return (luab_pusherr(L, data));
@@ -419,7 +419,7 @@ STATFS_f_syncwrites(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_syncwrites;
 
     return (luab_pusherr(L, data));
@@ -442,7 +442,7 @@ STATFS_f_asyncwrites(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_asyncwrites;
 
     return (luab_pusherr(L, data));
@@ -465,7 +465,7 @@ STATFS_f_syncreads(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_syncreads;
 
     return (luab_pusherr(L, data));
@@ -488,7 +488,7 @@ STATFS_f_asyncreads(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_asyncreads;
 
     return (luab_pusherr(L, data));
@@ -511,7 +511,7 @@ STATFS_f_namemax(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_namemax;
 
     return (luab_pusherr(L, data));
@@ -534,7 +534,7 @@ STATFS_f_owner(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_owner;
 
     return (luab_pusherr(L, data));
@@ -557,7 +557,7 @@ STATFS_f_fsid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     dp = (void *)&(f->f_fsid);
 
     return (luab_pushudata(L, luab_mx(FSID), dp));
@@ -580,7 +580,7 @@ STATFS_f_fstypename(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     dp = f->f_fstypename;
 
     return (luab_pushldata(L, dp, MFSNAMELEN));
@@ -603,7 +603,7 @@ STATFS_f_mntfromname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     dp = f->f_mntfromname;
 
     return (luab_pushldata(L, dp, MNAMELEN));
@@ -626,7 +626,7 @@ STATFS_f_mntonname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &statfs_type, struct statfs *);
+    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     dp = f->f_mntonname;
 
     return (luab_pushldata(L, dp, MNAMELEN));
@@ -639,19 +639,19 @@ STATFS_f_mntonname(lua_State *L)
 static int
 STATFS_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &statfs_type));
+    return (luab_core_gc(L, 1, &luab_statfs_type));
 }
 
 static int
 STATFS_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &statfs_type));
+    return (luab_core_len(L, 2, &luab_statfs_type));
 }
 
 static int
 STATFS_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &statfs_type));
+    return (luab_core_tostring(L, 1, &luab_statfs_type));
 }
 
 /*
@@ -696,7 +696,7 @@ statfs_create(lua_State *L, void *arg)
 static void
 statfs_init(void *ud, void *arg)
 {
-    luab_udata_init(&statfs_type, ud, arg);
+    luab_udata_init(&luab_statfs_type, ud, arg);
 }
 
 static void *
@@ -705,7 +705,7 @@ statfs_udata(lua_State *L, int narg)
     return (luab_to_statfs(L, narg));
 }
 
-luab_module_t statfs_type = {
+luab_module_t luab_statfs_type = {
     .m_cookie   = LUAB_STATFS_TYPE_ID,
     .m_name     = LUAB_STATFS_TYPE,
     .m_vec      = statfs_methods,

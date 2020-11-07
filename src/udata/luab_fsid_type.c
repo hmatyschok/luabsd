@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t fsid_type;
+extern luab_module_t luab_fsid_type;
 
 /*
  * Interface against
@@ -48,9 +48,9 @@ typedef struct luab_fsid {
 } luab_fsid_t;
 
 #define luab_new_fsid(L, arg) \
-    ((luab_fsid_t *)luab_newudata(L, &fsid_type, (arg)))
+    ((luab_fsid_t *)luab_newudata(L, &luab_fsid_type, (arg)))
 #define luab_to_fsid(L, narg) \
-    (luab_toldata((L), (narg), &fsid_type, \
+    (luab_toldata((L), (narg), &luab_fsid_type, \
         fsid_t *, sizeof(fsid_t)))
 
 #define LUAB_FSID_TYPE_ID    1604426384
@@ -117,7 +117,7 @@ FSID_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fsid = luab_udata(L, 1, &fsid_type, fsid_t *);
+    fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
 
     lua_newtable(L);
     (void)fsid_pushtable(L, -2, "val", fsid->val);
@@ -138,7 +138,7 @@ FSID_get(lua_State *L)
 static int
 FSID_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &fsid_type, sizeof(struct fsid)));
+    return (luab_core_dump(L, 1, &luab_fsid_type, sizeof(struct fsid)));
 }
 
 /*
@@ -162,7 +162,7 @@ FSID_val(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fsid = luab_udata(L, 1, &fsid_type, fsid_t *);
+    fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
     dp = fsid->val;
 
     return (fsid_pushtable(L, -2, NULL, dp));
@@ -175,19 +175,19 @@ FSID_val(lua_State *L)
 static int
 FSID_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &fsid_type));
+    return (luab_core_gc(L, 1, &luab_fsid_type));
 }
 
 static int
 FSID_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &fsid_type));
+    return (luab_core_len(L, 2, &luab_fsid_type));
 }
 
 static int
 FSID_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &fsid_type));
+    return (luab_core_tostring(L, 1, &luab_fsid_type));
 }
 
 /*
@@ -213,7 +213,7 @@ fsid_create(lua_State *L, void *arg)
 static void
 fsid_init(void *ud, void *arg)
 {
-    luab_udata_init(&fsid_type, ud, arg);
+    luab_udata_init(&luab_fsid_type, ud, arg);
 }
 
 static void *
@@ -222,7 +222,7 @@ fsid_udata(lua_State *L, int narg)
     return (luab_to_fsid(L, narg));
 }
 
-luab_module_t fsid_type = {
+luab_module_t luab_fsid_type = {
     .m_cookie   = LUAB_FSID_TYPE_ID,
     .m_name     = LUAB_FSID_TYPE,
     .m_vec      = fsid_methods,

@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #ifdef __BSD_VISIBLE
-extern luab_module_t bintime_type;
+extern luab_module_t luab_bintime_type;
 
 /*
  * Interface against
@@ -51,9 +51,9 @@ typedef struct luab_bintime {
 } luab_bintime_t;
 
 #define luab_new_bintime(L, arg) \
-    ((luab_bintime_t *)luab_newudata(L, &bintime_type, (arg)))
+    ((luab_bintime_t *)luab_newudata(L, &luab_bintime_type, (arg)))
 #define luab_to_bintime(L, narg) \
-    (luab_toldata((L), (narg), &bintime_type, \
+    (luab_toldata((L), (narg), &luab_bintime_type, \
         struct bintime *, sizeof(struct bintime)))
 
 #define LUAB_BINTIME_TYPE_ID    1594161740
@@ -84,7 +84,7 @@ BINTIME_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "sec",   bt->sec);
@@ -106,7 +106,7 @@ BINTIME_get(lua_State *L)
 static int
 BINTIME_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &bintime_type, sizeof(struct bintime)));
+    return (luab_core_dump(L, 1, &luab_bintime_type, sizeof(struct bintime)));
 }
 
 /*
@@ -132,7 +132,7 @@ BINTIME_set_sec(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
     data = (time_t)luab_checkinteger(L, 2, INT_MAX);
 
     bt->sec = data;
@@ -157,7 +157,7 @@ BINTIME_get_sec(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
     data = bt->sec;
 
     return (luab_pusherr(L, data));
@@ -182,7 +182,7 @@ BINTIME_set_frac(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
     data = (uint64_t)luab_checkinteger(L, 2, LONG_MAX);
 
     bt->frac = data;
@@ -207,7 +207,7 @@ BINTIME_get_frac(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    bt = luab_udata(L, 1, &bintime_type, struct bintime *);
+    bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
     data = bt->frac;
 
     return (luab_pusherr(L, data));
@@ -220,19 +220,19 @@ BINTIME_get_frac(lua_State *L)
 static int
 BINTIME_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &bintime_type));
+    return (luab_core_gc(L, 1, &luab_bintime_type));
 }
 
 static int
 BINTIME_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &bintime_type));
+    return (luab_core_len(L, 2, &luab_bintime_type));
 }
 
 static int
 BINTIME_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &bintime_type));
+    return (luab_core_tostring(L, 1, &luab_bintime_type));
 }
 
 /*
@@ -261,7 +261,7 @@ bintime_create(lua_State *L, void *arg)
 static void
 bintime_init(void *ud, void *arg)
 {
-    luab_udata_init(&bintime_type, ud, arg);
+    luab_udata_init(&luab_bintime_type, ud, arg);
 }
 
 static void *
@@ -270,7 +270,7 @@ bintime_udata(lua_State *L, int narg)
     return (luab_to_bintime(L, narg));
 }
 
-luab_module_t bintime_type = {
+luab_module_t luab_bintime_type = {
     .m_cookie   = LUAB_BINTIME_TYPE_ID,
     .m_name     = LUAB_BINTIME_TYPE,
     .m_vec      = bintime_methods,

@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t regex_type;
+extern luab_module_t luab_regex_type;
 
 /*
  * Interface against
@@ -53,9 +53,9 @@ typedef struct luab_regex {
 } luab_regex_t;
 
 #define luab_new_regex(L, arg) \
-    ((luab_regex_t *)luab_newudata(L, &regex_type, (arg)))
+    ((luab_regex_t *)luab_newudata(L, &luab_regex_type, (arg)))
 #define luab_to_regex(L, narg) \
-    (luab_toldata((L), (narg), &regex_type, \
+    (luab_toldata((L), (narg), &luab_regex_type, \
         regex_t *, sizeof(regex_t)))
 
 #define LUAB_REGEX_TYPE_ID    1604367435
@@ -88,7 +88,7 @@ REGEX_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    re = luab_udata(L, 1, &regex_type, regex_t *);
+    re = luab_udata(L, 1, &luab_regex_type, regex_t *);
 
     lua_newtable(L);
 
@@ -118,7 +118,7 @@ REGEX_get(lua_State *L)
 static int
 REGEX_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &regex_type, sizeof(regex_t)));
+    return (luab_core_dump(L, 1, &luab_regex_type, sizeof(regex_t)));
 }
 
 /*
@@ -142,7 +142,7 @@ REGEX_re_magic(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    re = luab_udata(L, 1, &regex_type, regex_t *);
+    re = luab_udata(L, 1, &luab_regex_type, regex_t *);
     data = re->re_magic;
 
     return (luab_pusherr(L, data));
@@ -165,7 +165,7 @@ REGEX_re_nsub(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    re = luab_udata(L, 1, &regex_type, regex_t *);
+    re = luab_udata(L, 1, &luab_regex_type, regex_t *);
     data = re->re_nsub;
 
     return (luab_pusherr(L, data));
@@ -188,7 +188,7 @@ REGEX_re_endp(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    re = luab_udata(L, 1, &regex_type, regex_t *);
+    re = luab_udata(L, 1, &luab_regex_type, regex_t *);
     dp = re->re_endp;
 
     return (luab_pushfstring(L, "(%p)", dp));
@@ -211,7 +211,7 @@ REGEX_re_g(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    re = luab_udata(L, 1, &regex_type, regex_t *);
+    re = luab_udata(L, 1, &luab_regex_type, regex_t *);
     dp = (caddr_t)(re->re_g);
 
     return (luab_pushfstring(L, "(%p)", dp));
@@ -224,19 +224,19 @@ REGEX_re_g(lua_State *L)
 static int
 REGEX_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &regex_type));
+    return (luab_core_gc(L, 1, &luab_regex_type));
 }
 
 static int
 REGEX_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &regex_type));
+    return (luab_core_len(L, 2, &luab_regex_type));
 }
 
 static int
 REGEX_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &regex_type));
+    return (luab_core_tostring(L, 1, &luab_regex_type));
 }
 
 /*
@@ -265,7 +265,7 @@ regex_create(lua_State *L, void *arg)
 static void
 regex_init(void *ud, void *arg)
 {
-    luab_udata_init(&regex_type, ud, arg);
+    luab_udata_init(&luab_regex_type, ud, arg);
 }
 
 static void *
@@ -274,7 +274,7 @@ regex_udata(lua_State *L, int narg)
     return (luab_to_regex(L, narg));
 }
 
-luab_module_t regex_type = {
+luab_module_t luab_regex_type = {
     .m_cookie   = LUAB_REGEX_TYPE_ID,
     .m_name     = LUAB_REGEX_TYPE,
     .m_vec      = regex_methods,

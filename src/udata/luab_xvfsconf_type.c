@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t xvfsconf_type;
+extern luab_module_t luab_xvfsconf_type;
 
 /*
  * Interface against
@@ -69,9 +69,9 @@ typedef struct luab_xvfsconf {
 } luab_xvfsconf_t;
 
 #define luab_new_xvfsconf(L, arg) \
-    ((luab_xvfsconf_t *)luab_newudata(L, &xvfsconf_type, (arg)))
+    ((luab_xvfsconf_t *)luab_newudata(L, &luab_xvfsconf_type, (arg)))
 #define luab_to_xvfsconf(L, narg) \
-    (luab_toldata((L), (narg), &xvfsconf_type, \
+    (luab_toldata((L), (narg), &luab_xvfsconf_type, \
         struct xvfsconf *, sizeof(struct xvfsconf)))
 
 #define LUAB_XVFSCONF_TYPE_ID    1604736441
@@ -105,7 +105,7 @@ XVFSCONF_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    vfc = luab_udata(L, 1, &xvfsconf_type, struct xvfsconf *);
+    vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
 
     lua_newtable(L);
     luab_setfstring(L, -2, "vfc_vfsops", "(%p)",    vfc->vfc_vfsops);
@@ -130,7 +130,7 @@ XVFSCONF_get(lua_State *L)
 static int
 XVFSCONF_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &xvfsconf_type, sizeof(struct xvfsconf)));
+    return (luab_core_dump(L, 1, &luab_xvfsconf_type, sizeof(struct xvfsconf)));
 }
 
 /*
@@ -154,7 +154,7 @@ XVFSCONF_vfc_vfsops(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    vfc = luab_udata(L, 1, &xvfsconf_type, struct xvfsconf *);
+    vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     dp = (void *)(vfc->vfc_vfsops);
 
     return (luab_pushfstring(L, "(%s)", dp));
@@ -177,7 +177,7 @@ XVFSCONF_vfc_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    vfc = luab_udata(L, 1, &xvfsconf_type, struct xvfsconf *);
+    vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     dp = vfc->vfc_name;
 
     return (luab_pushstring(L, dp));
@@ -200,7 +200,7 @@ XVFSCONF_vfc_typenum(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    vfc = luab_udata(L, 1, &xvfsconf_type, struct xvfsconf *);
+    vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     data = vfc->vfc_typenum;
 
     return (luab_pusherr(L, data));
@@ -223,7 +223,7 @@ XVFSCONF_vfc_refcount(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    vfc = luab_udata(L, 1, &xvfsconf_type, struct xvfsconf *);
+    vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     data = vfc->vfc_refcount;
 
     return (luab_pusherr(L, data));
@@ -246,7 +246,7 @@ XVFSCONF_vfc_flags(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    vfc = luab_udata(L, 1, &xvfsconf_type, struct xvfsconf *);
+    vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     data = vfc->vfc_flags;
 
     return (luab_pusherr(L, data));
@@ -259,19 +259,19 @@ XVFSCONF_vfc_flags(lua_State *L)
 static int
 XVFSCONF_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &xvfsconf_type));
+    return (luab_core_gc(L, 1, &luab_xvfsconf_type));
 }
 
 static int
 XVFSCONF_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &xvfsconf_type));
+    return (luab_core_len(L, 2, &luab_xvfsconf_type));
 }
 
 static int
 XVFSCONF_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &xvfsconf_type));
+    return (luab_core_tostring(L, 1, &luab_xvfsconf_type));
 }
 
 /*
@@ -301,7 +301,7 @@ xvfsconf_create(lua_State *L, void *arg)
 static void
 xvfsconf_init(void *ud, void *arg)
 {
-    luab_udata_init(&xvfsconf_type, ud, arg);
+    luab_udata_init(&luab_xvfsconf_type, ud, arg);
 }
 
 static void *
@@ -310,7 +310,7 @@ xvfsconf_udata(lua_State *L, int narg)
     return (luab_to_xvfsconf(L, narg));
 }
 
-luab_module_t xvfsconf_type = {
+luab_module_t luab_xvfsconf_type = {
     .m_cookie   = LUAB_XVFSCONF_TYPE_ID,
     .m_name     = LUAB_XVFSCONF_TYPE,
     .m_vec      = xvfsconf_methods,

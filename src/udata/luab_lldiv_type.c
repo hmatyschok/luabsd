@@ -31,7 +31,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t lldiv_type;
+extern luab_module_t luab_lldiv_type;
 
 /*
  * Interface against
@@ -48,9 +48,9 @@ typedef struct luab_lldiv {
 } luab_lldiv_t;
 
 #define luab_new_lldiv(L, arg) \
-    ((luab_lldiv_t *)luab_newudata(L, &lldiv_type, (arg)))
+    ((luab_lldiv_t *)luab_newudata(L, &luab_lldiv_type, (arg)))
 #define luab_to_lldiv(L, narg) \
-    (luab_toldata((L), (narg), &lldiv_type, \
+    (luab_toldata((L), (narg), &luab_lldiv_type, \
         lldiv_t *, sizeof(lldiv_t)))
 
 #define LUAB_LLDIV_TYPE_ID    1600628549
@@ -81,7 +81,7 @@ LLDIV_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    lldiv = luab_udata(L, 1, &lldiv_type, lldiv_t *);
+    lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "quot",  lldiv->quot);
@@ -103,7 +103,7 @@ LLDIV_get(lua_State *L)
 static int
 LLDIV_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &lldiv_type, sizeof(lldiv_t)));
+    return (luab_core_dump(L, 1, &luab_lldiv_type, sizeof(lldiv_t)));
 }
 
 /*
@@ -129,7 +129,7 @@ LLDIV_set_quot(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    lldiv = luab_udata(L, 1, &lldiv_type, lldiv_t *);
+    lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
     data = (long)luab_checkinteger(L, 2, INT_MAX);
 
     lldiv->quot = data;
@@ -154,7 +154,7 @@ LLDIV_get_quot(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    lldiv = luab_udata(L, 1, &lldiv_type, lldiv_t *);
+    lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
     data = lldiv->quot;
 
     return (luab_pusherr(L, data));
@@ -179,7 +179,7 @@ LLDIV_set_rem(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    lldiv = luab_udata(L, 1, &lldiv_type, lldiv_t *);
+    lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
     data = (long)luab_checkinteger(L, 2, INT_MAX);
 
     lldiv->rem = data;
@@ -204,7 +204,7 @@ LLDIV_get_rem(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    lldiv = luab_udata(L, 1, &lldiv_type, lldiv_t *);
+    lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
     data = lldiv->rem;
 
     return (luab_pusherr(L, data));
@@ -217,19 +217,19 @@ LLDIV_get_rem(lua_State *L)
 static int
 LLDIV_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &lldiv_type));
+    return (luab_core_gc(L, 1, &luab_lldiv_type));
 }
 
 static int
 LLDIV_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &lldiv_type));
+    return (luab_core_len(L, 2, &luab_lldiv_type));
 }
 
 static int
 LLDIV_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &lldiv_type));
+    return (luab_core_tostring(L, 1, &luab_lldiv_type));
 }
 
 /*
@@ -258,7 +258,7 @@ lldiv_create(lua_State *L, void *arg)
 static void
 lldiv_init(void *ud, void *arg)
 {
-    luab_udata_init(&lldiv_type, ud, arg);
+    luab_udata_init(&luab_lldiv_type, ud, arg);
 }
 
 static void *
@@ -267,7 +267,7 @@ lldiv_udata(lua_State *L, int narg)
     return (luab_to_lldiv(L, narg));
 }
 
-luab_module_t lldiv_type = {
+luab_module_t luab_lldiv_type = {
     .m_cookie   = LUAB_LLDIV_TYPE_ID,
     .m_name     = LUAB_LLDIV_TYPE,
     .m_vec      = lldiv_methods,

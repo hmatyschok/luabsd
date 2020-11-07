@@ -35,7 +35,7 @@
 #include "luab_table.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t sf_hdtr_type;
+extern luab_module_t luab_sf_hdtr_type;
 
 /*
  * Interface against
@@ -62,9 +62,9 @@ typedef struct luab_sf_hdtr {
 } luab_sf_hdtr_t;
 
 #define luab_new_sf_hdtr(L, arg) \
-    ((luab_sf_hdtr_t *)luab_newudata(L, &sf_hdtr_type, (arg)))
+    ((luab_sf_hdtr_t *)luab_newudata(L, &luab_sf_hdtr_type, (arg)))
 #define luab_to_sf_hdtr(L, narg) \
-    (luab_todata((L), (narg), &sf_hdtr_type, luab_sf_hdtr_t *))
+    (luab_todata((L), (narg), &luab_sf_hdtr_type, luab_sf_hdtr_t *))
 
 #define LUAB_SF_HDTR_TYPE_ID    1602287699
 #define LUAB_SF_HDTR_TYPE    "SF_HDTR*"
@@ -256,7 +256,7 @@ SF_HDTR_hdr_cnt(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
+    hdtr = luab_udata(L, 1, &luab_sf_hdtr_type, struct sf_hdtr *);
     card = hdtr->hdr_cnt;
 
     return (luab_pusherr(L, card));
@@ -279,7 +279,7 @@ SF_HDTR_trl_cnt(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    hdtr = luab_udata(L, 1, &sf_hdtr_type, struct sf_hdtr *);
+    hdtr = luab_udata(L, 1, &luab_sf_hdtr_type, struct sf_hdtr *);
     card = hdtr->trl_cnt;
 
     return (luab_pusherr(L, card));
@@ -410,19 +410,19 @@ SF_HDTR_gc(lua_State *L)
     for (n = SF_HDTR_CH_HDR; n < SF_HDTR_CH_MAX; n++)
         luab_table_free(ud->ud_cache[n]);
 
-    return (luab_core_gc(L, 1, &sf_hdtr_type));
+    return (luab_core_gc(L, 1, &luab_sf_hdtr_type));
 }
 
 static int
 SF_HDTR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &sf_hdtr_type));
+    return (luab_core_len(L, 2, &luab_sf_hdtr_type));
 }
 
 static int
 SF_HDTR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &sf_hdtr_type));
+    return (luab_core_tostring(L, 1, &luab_sf_hdtr_type));
 }
 
 /*
@@ -452,7 +452,7 @@ sf_hdtr_create(lua_State *L, void *arg)
 static void
 sf_hdtr_init(void *ud, void *arg)
 {
-    luab_udata_init(&sf_hdtr_type, ud, arg);
+    luab_udata_init(&luab_sf_hdtr_type, ud, arg);
 }
 
 static void *
@@ -464,7 +464,7 @@ sf_hdtr_udata(lua_State *L, int narg)
     return (&(ud->ud_hdtr));
 }
 
-luab_module_t sf_hdtr_type = {
+luab_module_t luab_sf_hdtr_type = {
     .m_cookie   = LUAB_SF_HDTR_TYPE_ID,
     .m_name     = LUAB_SF_HDTR_TYPE,
     .m_vec      = sf_hdtr_methods,

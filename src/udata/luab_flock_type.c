@@ -33,7 +33,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t flock_type;
+extern luab_module_t luab_flock_type;
 
 /*
  * Interface against
@@ -54,9 +54,9 @@ typedef struct luab_flock {
 } luab_flock_t;
 
 #define luab_new_flock(L, arg) \
-    ((luab_flock_t *)luab_newudata(L, &flock_type, (arg)))
+    ((luab_flock_t *)luab_newudata(L, &luab_flock_type, (arg)))
 #define luab_to_flock(L, narg) \
-    (luab_toldata((L), (narg), &flock_type, \
+    (luab_toldata((L), (narg), &luab_flock_type, \
         struct flock *, sizeof(struct flock)))
 
 #define LUAB_FLOCK_TYPE_ID    1593623399
@@ -91,7 +91,7 @@ FLOCK_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
 
     lua_newtable(L);
 
@@ -119,7 +119,7 @@ FLOCK_get(lua_State *L)
 static int
 FLOCK_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &flock_type, sizeof(struct flock)));
+    return (luab_core_dump(L, 1, &luab_flock_type, sizeof(struct flock)));
 }
 
 /*
@@ -135,7 +135,7 @@ FLOCK_set_l_start(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = (off_t)luab_checkinteger(L, 2, ULONG_MAX);
 
     l->l_start = data;
@@ -151,7 +151,7 @@ FLOCK_get_l_start(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_start;
 
     return (luab_pusherr(L, data));
@@ -166,7 +166,7 @@ FLOCK_set_l_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = (off_t)luab_checkinteger(L, 2, LONG_MAX);
 
     l->l_len = data;
@@ -182,7 +182,7 @@ FLOCK_get_l_len(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_len;
 
     return (luab_pusherr(L, data));
@@ -197,7 +197,7 @@ FLOCK_set_l_pid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = (pid_t)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_pid = data;
@@ -213,7 +213,7 @@ FLOCK_get_l_pid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_pid;
 
     return (luab_pusherr(L, data));
@@ -228,7 +228,7 @@ FLOCK_set_l_type(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = (short)luab_checkinteger(L, 2, SHRT_MAX);
 
     l->l_type = data;
@@ -244,7 +244,7 @@ FLOCK_get_l_type(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_type;
 
     return (luab_pusherr(L, data));
@@ -259,7 +259,7 @@ FLOCK_set_l_whence(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = (short)luab_checkinteger(L, 2, SHRT_MAX);
 
     l->l_whence = data;
@@ -275,7 +275,7 @@ FLOCK_get_l_whence(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_whence;
 
     return (luab_pusherr(L, data));
@@ -290,7 +290,7 @@ FLOCK_set_l_sysid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_sysid = data;
@@ -306,7 +306,7 @@ FLOCK_get_l_sysid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &flock_type, struct flock *);
+    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_sysid;
 
     return (luab_pusherr(L, data));
@@ -319,19 +319,19 @@ FLOCK_get_l_sysid(lua_State *L)
 static int
 FLOCK_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &flock_type));
+    return (luab_core_gc(L, 1, &luab_flock_type));
 }
 
 static int
 FLOCK_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &flock_type));
+    return (luab_core_len(L, 2, &luab_flock_type));
 }
 
 static int
 FLOCK_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &flock_type));
+    return (luab_core_tostring(L, 1, &luab_flock_type));
 }
 
 /*
@@ -368,7 +368,7 @@ flock_create(lua_State *L, void *arg)
 static void
 flock_init(void *ud, void *arg)
 {
-    luab_udata_init(&flock_type, ud, arg);
+    luab_udata_init(&luab_flock_type, ud, arg);
 }
 
 static void *
@@ -377,7 +377,7 @@ flock_udata(lua_State *L, int narg)
     return (luab_to_flock(L, narg));
 }
 
-luab_module_t flock_type = {
+luab_module_t luab_flock_type = {
     .m_cookie   = LUAB_FLOCK_TYPE_ID,
     .m_name     = LUAB_FLOCK_TYPE,
     .m_vec      = flock_methods,

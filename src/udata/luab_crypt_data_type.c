@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t crypt_data_type;
+extern luab_module_t luab_crypt_data_type;
 
 /*
  * Interface against
@@ -53,9 +53,9 @@ typedef struct luab_crypt_data {
 #define LUAB_CRYPT_DATAMAXLEN  256
 
 #define luab_new_crypt_data(L, arg) \
-    ((luab_crypt_data_t *)luab_newudata(L, &crypt_data_type, (arg)))
+    ((luab_crypt_data_t *)luab_newudata(L, &luab_crypt_data_type, (arg)))
 #define luab_to_crypt_data(L, narg) \
-    (luab_toldata((L), (narg), &crypt_data_type, \
+    (luab_toldata((L), (narg), &luab_crypt_data_type, \
         struct crypt_data *, sizeof(struct crypt_data)))
 
 #define LUAB_CRYPT_DATA_TYPE_ID    1595491033
@@ -86,7 +86,7 @@ CRYPT_DATA_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
+    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
 
     lua_newtable(L);
 
@@ -110,7 +110,7 @@ CRYPT_DATA_get(lua_State *L)
 static int
 CRYPT_DATA_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &crypt_data_type, sizeof(struct crypt_data)));
+    return (luab_core_dump(L, 1, &luab_crypt_data_type, sizeof(struct crypt_data)));
 }
 
 /*
@@ -136,7 +136,7 @@ CRYPT_DATA_set_initialized(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
+    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     cd->initialized = data;
@@ -161,7 +161,7 @@ CRYPT_DATA_get_initialized(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
+    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
     data = cd->initialized;
 
     return (luab_pusherr(L, data));
@@ -187,7 +187,7 @@ CRYPT_DATA_set_buf(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
+    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
     buf = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN);
 
     len = strnlen(buf, LUAB_CRYPT_DATAMAXLEN);
@@ -215,7 +215,7 @@ CRYPT_DATA_get_buf(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cd = luab_udata(L, 1, &crypt_data_type, struct crypt_data *);
+    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
     buf = cd->__buf;
     len = strnlen(buf, LUAB_CRYPT_DATAMAXLEN);
 
@@ -229,19 +229,19 @@ CRYPT_DATA_get_buf(lua_State *L)
 static int
 CRYPT_DATA_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &crypt_data_type));
+    return (luab_core_gc(L, 1, &luab_crypt_data_type));
 }
 
 static int
 CRYPT_DATA_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &crypt_data_type));
+    return (luab_core_len(L, 2, &luab_crypt_data_type));
 }
 
 static int
 CRYPT_DATA_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &crypt_data_type));
+    return (luab_core_tostring(L, 1, &luab_crypt_data_type));
 }
 
 /*
@@ -270,7 +270,7 @@ crypt_data_create(lua_State *L, void *arg)
 static void
 crypt_data_init(void *ud, void *arg)
 {
-    luab_udata_init(&crypt_data_type, ud, arg);
+    luab_udata_init(&luab_crypt_data_type, ud, arg);
 }
 
 static void *
@@ -279,7 +279,7 @@ crypt_data_udata(lua_State *L, int narg)
     return (luab_to_crypt_data(L, narg));
 }
 
-luab_module_t crypt_data_type = {
+luab_module_t luab_crypt_data_type = {
     .m_cookie   = LUAB_CRYPT_DATA_TYPE_ID,
     .m_name     = LUAB_CRYPT_DATA_TYPE,
     .m_vec      = crypt_data_methods,

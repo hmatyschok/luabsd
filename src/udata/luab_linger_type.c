@@ -33,7 +33,7 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
-extern luab_module_t linger_type;
+extern luab_module_t luab_linger_type;
 
 /*
  * Interface against
@@ -50,9 +50,9 @@ typedef struct luab_linger {
 } luab_linger_t;
 
 #define luab_new_linger(L, arg) \
-    ((luab_linger_t *)luab_newudata(L, &linger_type, (arg)))
+    ((luab_linger_t *)luab_newudata(L, &luab_linger_type, (arg)))
 #define luab_to_linger(L, narg) \
-    (luab_toldata((L), (narg), &linger_type, \
+    (luab_toldata((L), (narg), &luab_linger_type, \
         struct linger *, sizeof(struct linger)))
 
 #define LUAB_LINGER_TYPE_ID    1597012436
@@ -83,7 +83,7 @@ LINGER_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &linger_type, struct linger *);
+    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "l_onoff",   l->l_onoff);
@@ -105,7 +105,7 @@ LINGER_get(lua_State *L)
 static int
 LINGER_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &linger_type, sizeof(struct linger)));
+    return (luab_core_dump(L, 1, &luab_linger_type, sizeof(struct linger)));
 }
 
 /*
@@ -131,7 +131,7 @@ LINGER_set_l_onoff(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &linger_type, struct linger *);
+    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_onoff = data;
@@ -156,7 +156,7 @@ LINGER_get_l_onoff(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &linger_type, struct linger *);
+    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
     data = l->l_onoff;
 
     return (luab_pusherr(L, data));
@@ -181,7 +181,7 @@ LINGER_set_l_linger(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &linger_type, struct linger *);
+    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
     data = (int)luab_checkinteger(L, 2, INT_MAX);
 
     l->l_linger = data;
@@ -206,7 +206,7 @@ LINGER_get_l_linger(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &linger_type, struct linger *);
+    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
     data = l->l_linger;
 
     return (luab_pusherr(L, data));
@@ -219,19 +219,19 @@ LINGER_get_l_linger(lua_State *L)
 static int
 LINGER_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &linger_type));
+    return (luab_core_gc(L, 1, &luab_linger_type));
 }
 
 static int
 LINGER_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &linger_type));
+    return (luab_core_len(L, 2, &luab_linger_type));
 }
 
 static int
 LINGER_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &linger_type));
+    return (luab_core_tostring(L, 1, &luab_linger_type));
 }
 
 /*
@@ -260,7 +260,7 @@ linger_create(lua_State *L, void *arg)
 static void
 linger_init(void *ud, void *arg)
 {
-    luab_udata_init(&linger_type, ud, arg);
+    luab_udata_init(&luab_linger_type, ud, arg);
 }
 
 static void *
@@ -269,7 +269,7 @@ linger_udata(lua_State *L, int narg)
     return (luab_to_linger(L, narg));
 }
 
-luab_module_t linger_type = {
+luab_module_t luab_linger_type = {
     .m_cookie   = LUAB_LINGER_TYPE_ID,
     .m_name     = LUAB_LINGER_TYPE,
     .m_vec      = linger_methods,

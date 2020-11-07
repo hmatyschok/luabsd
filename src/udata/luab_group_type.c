@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t group_type;
+extern luab_module_t luab_group_type;
 
 /*
  * Interface against
@@ -53,9 +53,9 @@ typedef struct luab_group {
 } luab_group_t;
 
 #define luab_new_group(L, arg) \
-    ((luab_group_t *)luab_newudata(L, &group_type, (arg)))
+    ((luab_group_t *)luab_newudata(L, &luab_group_type, (arg)))
 #define luab_to_group(L, narg) \
-    (luab_toldata((L), (narg), &group_type, \
+    (luab_toldata((L), (narg), &luab_group_type, \
         struct group *, sizeof(struct group)))
 
 #define LUAB_GROUP_TYPE_ID    1604324396
@@ -125,7 +125,7 @@ GROUP_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    grp = luab_udata(L, 1, &group_type, struct group *);
+    grp = luab_udata(L, 1, &luab_group_type, struct group *);
 
     lua_newtable(L);
 
@@ -153,7 +153,7 @@ GROUP_get(lua_State *L)
 static int
 GROUP_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &group_type, sizeof(struct group)));
+    return (luab_core_dump(L, 1, &luab_group_type, sizeof(struct group)));
 }
 
 /*
@@ -177,7 +177,7 @@ GROUP_gr_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    grp = luab_udata(L, 1, &group_type, struct group *);
+    grp = luab_udata(L, 1, &luab_group_type, struct group *);
     data = grp->gr_name;
 
     return (luab_pushstring(L, data));
@@ -200,7 +200,7 @@ GROUP_gr_passwd(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    grp = luab_udata(L, 1, &group_type, struct group *);
+    grp = luab_udata(L, 1, &luab_group_type, struct group *);
     data = grp->gr_passwd;
 
     return (luab_pushstring(L, data));
@@ -223,7 +223,7 @@ GROUP_gr_gid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    grp = luab_udata(L, 1, &group_type, struct group *);
+    grp = luab_udata(L, 1, &luab_group_type, struct group *);
     data = grp->gr_gid;
 
     return (luab_pusherr(L, data));
@@ -246,7 +246,7 @@ GROUP_gr_mem(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    grp = luab_udata(L, 1, &group_type, struct group *);
+    grp = luab_udata(L, 1, &luab_group_type, struct group *);
     vec = grp->gr_mem;
 
     return (group_pushtable(L, -2, NULL, vec));
@@ -265,7 +265,7 @@ GROUP_gc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    grp = luab_udata(L, 1, &group_type, struct group *);
+    grp = luab_udata(L, 1, &luab_group_type, struct group *);
 
     luab_core_freestr(grp->gr_name);
     luab_core_freestr(grp->gr_passwd);
@@ -276,19 +276,19 @@ GROUP_gc(lua_State *L)
 
         luab_core_free(vec, 0);
     }
-    return (luab_core_gc(L, 1, &group_type));
+    return (luab_core_gc(L, 1, &luab_group_type));
 }
 
 static int
 GROUP_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &group_type));
+    return (luab_core_len(L, 2, &luab_group_type));
 }
 
 static int
 GROUP_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &group_type));
+    return (luab_core_tostring(L, 1, &luab_group_type));
 }
 
 /*
@@ -317,7 +317,7 @@ group_create(lua_State *L, void *arg)
 static void
 group_init(void *ud, void *arg)
 {
-    luab_udata_init(&group_type, ud, arg);
+    luab_udata_init(&luab_group_type, ud, arg);
 }
 
 static void *
@@ -326,7 +326,7 @@ group_udata(lua_State *L, int narg)
     return (luab_to_group(L, narg));
 }
 
-luab_module_t group_type = {
+luab_module_t luab_group_type = {
     .m_cookie   = LUAB_GROUP_TYPE_ID,
     .m_name     = LUAB_GROUP_TYPE,
     .m_vec      = group_methods,

@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t dbt_type;
+extern luab_module_t luab_dbt_type;
 
 /*
  * Interface against
@@ -51,9 +51,9 @@ typedef struct luab_dbt {
 } luab_dbt_t;
 
 #define luab_new_dbt(L, arg) \
-    ((luab_dbt_t *)luab_newudata(L, &dbt_type, (arg)))
+    ((luab_dbt_t *)luab_newudata(L, &luab_dbt_type, (arg)))
 #define luab_to_dbt(L, narg) \
-    ((DBT *)luab_toudata((L), (narg), &dbt_type))
+    ((DBT *)luab_toudata((L), (narg), &luab_dbt_type))
 
 #define LUAB_DBT_TYPE_ID    1596025036
 #define LUAB_DBT_TYPE   "DBT*"
@@ -83,7 +83,7 @@ DBT_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dbt = luab_udata(L, 1, &dbt_type, DBT *);
+    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
 
     lua_newtable(L);
     luab_iovec_setldata(L, -2, "data",    dbt->data, dbt->size);
@@ -120,7 +120,7 @@ DBT_get_size(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dbt = luab_udata(L, 1, &dbt_type, DBT *);
+    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
     len = dbt->size;
 
     return (luab_pusherr(L, len));
@@ -150,7 +150,7 @@ DBT_set_data(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    dbt = luab_udata(L, 1, &dbt_type, DBT *);
+    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
@@ -183,7 +183,7 @@ DBT_get_data(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    dbt = luab_udata(L, 1, &dbt_type, DBT *);
+    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     status = luab_iovec_copyin(buf, dbt->data, dbt->size);
     return (luab_pusherr(L, status));
@@ -212,13 +212,13 @@ DBT_gc(lua_State *L)
 static int
 DBT_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &dbt_type));
+    return (luab_core_len(L, 2, &luab_dbt_type));
 }
 
 static int
 DBT_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &dbt_type));
+    return (luab_core_tostring(L, 1, &luab_dbt_type));
 }
 
 /*
@@ -272,7 +272,7 @@ dbt_udata(lua_State *L, int narg)
     return (luab_to_dbt(L, narg));
 }
 
-luab_module_t dbt_type = {
+luab_module_t luab_dbt_type = {
     .m_cookie   = LUAB_DBT_TYPE_ID,
     .m_name     = LUAB_DBT_TYPE,
     .m_vec      = dbt_methods,

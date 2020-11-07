@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t in6_addr_type;
+extern luab_module_t luab_in6_addr_type;
 
 /*
  * Interface against
@@ -57,9 +57,9 @@ typedef struct luab_in6_addr {
 #define s6_addr32   __u6_addr.__u6_addr32
 
 #define luab_new_in6_addr(L, arg) \
-    ((luab_in6_addr_t *)luab_newudata(L, &in6_addr_type, (arg)))
+    ((luab_in6_addr_t *)luab_newudata(L, &luab_in6_addr_type, (arg)))
 #define luab_to_in6_addr(L, narg) \
-    (luab_toldata((L), (narg), &in6_addr_type, \
+    (luab_toldata((L), (narg), &luab_in6_addr_type, \
         struct in6_addr *, sizeof(struct in6_addr)))
 
 #define LUAB_IN6_ADDR_TYPE_ID    1595890830
@@ -89,7 +89,7 @@ IN6_ADDR_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &in6_addr_type, struct in6_addr *);
+    ia = luab_udata(L, 1, &luab_in6_addr_type, struct in6_addr *);
 
     lua_newtable(L);
     luab_setldata(L, -2, "s6_addr", &ia->s6_addr, sizeof(ia->__u6_addr));
@@ -110,7 +110,7 @@ IN6_ADDR_get(lua_State *L)
 static int
 IN6_ADDR_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &in6_addr_type, sizeof(struct in6_addr)));
+    return (luab_core_dump(L, 1, &luab_in6_addr_type, sizeof(struct in6_addr)));
 }
 
 /*
@@ -136,7 +136,7 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ia = luab_udata(L, 1, &in6_addr_type, struct in6_addr *);
+    ia = luab_udata(L, 1, &luab_in6_addr_type, struct in6_addr *);
 
     (void)luab_checkltable(L, 2, 4);
 
@@ -173,7 +173,7 @@ IN6_ADDR_get_s6_addr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &in6_addr_type, struct in6_addr *);
+    ia = luab_udata(L, 1, &luab_in6_addr_type, struct in6_addr *);
 
     lua_newtable(L);
 
@@ -192,19 +192,19 @@ IN6_ADDR_get_s6_addr(lua_State *L)
 static int
 IN6_ADDR_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &in6_addr_type));
+    return (luab_core_gc(L, 1, &luab_in6_addr_type));
 }
 
 static int
 IN6_ADDR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &in6_addr_type));
+    return (luab_core_len(L, 2, &luab_in6_addr_type));
 }
 
 static int
 IN6_ADDR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &in6_addr_type));
+    return (luab_core_tostring(L, 1, &luab_in6_addr_type));
 }
 
 /*
@@ -231,7 +231,7 @@ in6_addr_create(lua_State *L, void *arg)
 static void
 in6_addr_init(void *ud, void *arg)
 {
-    luab_udata_init(&in6_addr_type, ud, arg);
+    luab_udata_init(&luab_in6_addr_type, ud, arg);
 }
 
 static void *
@@ -240,7 +240,7 @@ in6_addr_udata(lua_State *L, int narg)
     return (luab_to_in6_addr(L, narg));
 }
 
-luab_module_t in6_addr_type = {
+luab_module_t luab_in6_addr_type = {
     .m_cookie   = LUAB_IN6_ADDR_TYPE_ID,
     .m_name     = LUAB_IN6_ADDR_TYPE,
     .m_vec      = in6_addr_methods,

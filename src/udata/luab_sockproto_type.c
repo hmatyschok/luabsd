@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #if __BSD_VISIBLE
-extern luab_module_t sockproto_type;
+extern luab_module_t luab_sockproto_type;
 
 /*
  * Interface against
@@ -51,9 +51,9 @@ typedef struct luab_sockproto {
 } luab_sockproto_t;
 
 #define luab_new_sockproto(L, arg) \
-    ((luab_sockproto_t *)luab_newudata(L, &sockproto_type, (arg)))
+    ((luab_sockproto_t *)luab_newudata(L, &luab_sockproto_type, (arg)))
 #define luab_to_sockproto(L, narg) \
-    (luab_toldata((L), (narg), &sockproto_type, \
+    (luab_toldata((L), (narg), &luab_sockproto_type, \
         struct sockproto *, sizeof(struct sockproto)))
 
 #define LUAB_SOCKPROTO_TYPE_ID    1601383780
@@ -84,7 +84,7 @@ SOCKPROTO_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
+    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "sp_family",     sp->sp_family);
@@ -106,7 +106,7 @@ SOCKPROTO_get(lua_State *L)
 static int
 SOCKPROTO_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &sockproto_type, sizeof(struct sockproto)));
+    return (luab_core_dump(L, 1, &luab_sockproto_type, sizeof(struct sockproto)));
 }
 
 /*
@@ -132,7 +132,7 @@ SOCKPROTO_set_sp_family(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
+    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
     data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
     sp->sp_family = data;
 
@@ -156,7 +156,7 @@ SOCKPROTO_get_sp_family(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
+    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
     data = sp->sp_family;
 
     return (luab_pusherr(L, data));
@@ -181,7 +181,7 @@ SOCKPROTO_set_sp_protocol(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
+    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
     data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
     sp->sp_protocol = data;
 
@@ -205,7 +205,7 @@ SOCKPROTO_get_sp_protocol(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    sp = luab_udata(L, 1, &sockproto_type, struct sockproto *);
+    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
     data = sp->sp_protocol;
 
     return (luab_pusherr(L, data));
@@ -218,19 +218,19 @@ SOCKPROTO_get_sp_protocol(lua_State *L)
 static int
 SOCKPROTO_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &sockproto_type));
+    return (luab_core_gc(L, 1, &luab_sockproto_type));
 }
 
 static int
 SOCKPROTO_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &sockproto_type));
+    return (luab_core_len(L, 2, &luab_sockproto_type));
 }
 
 static int
 SOCKPROTO_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &sockproto_type));
+    return (luab_core_tostring(L, 1, &luab_sockproto_type));
 }
 
 /*
@@ -259,7 +259,7 @@ sockproto_create(lua_State *L, void *arg)
 static void
 sockproto_init(void *ud, void *arg)
 {
-    luab_udata_init(&sockproto_type, ud, arg);
+    luab_udata_init(&luab_sockproto_type, ud, arg);
 }
 
 static void *
@@ -268,7 +268,7 @@ sockproto_udata(lua_State *L, int narg)
     return (luab_to_sockproto(L, narg));
 }
 
-luab_module_t sockproto_type = {
+luab_module_t luab_sockproto_type = {
     .m_cookie   = LUAB_SOCKPROTO_TYPE_ID,
     .m_name     = LUAB_SOCKPROTO_TYPE,
     .m_vec      = sockproto_methods,

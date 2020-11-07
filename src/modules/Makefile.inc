@@ -23,6 +23,7 @@ SRCS+=  luab_pwd.c
 SRCS+=  luab_regex.c
 SRCS+=  luab_stdlib.c
 SRCS+=  luab_time.c
+SRCS+=  luab_ttyent.c
 SRCS+=  luab_unistd.c
 SRCS+=  luab_uuid.c
 
