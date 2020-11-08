@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #define LUAB_SYS_UIO_LIB_ID    1594559271
-#define LUAB_SYS_UIO_LIB_KEY   "uio"
+#define LUAB_SYS_UIO_LIB_KEY   "sys_uio"
 
 extern luab_module_t luab_sys_uio_lib;
 

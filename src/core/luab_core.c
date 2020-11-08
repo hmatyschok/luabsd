@@ -721,6 +721,9 @@ static luab_module_vec_t luab_net_vec[] = {
 /* Interface against <sys/xxx.h>. */
 static luab_module_vec_t luab_sys_vec[] = {
     {
+        .mv_mod = &luab_sys_dirent_lib,
+        .mv_init = luab_newtable,
+    },{
         .mv_mod = &luab_sys_file_lib,
         .mv_init = luab_newtable,
     },{
@@ -926,6 +929,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_dir_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_DIR_IDX,
+    },{
+        .mv_mod = &luab_dirent_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_DIRENT_IDX,
     },
 #if __BSD_VISIBLE
     {

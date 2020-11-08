@@ -48,7 +48,7 @@
 #include "luab_udata.h"
 
 #define LUAB_SYS_TIME_LIB_ID    1593623310
-#define LUAB_SYS_TIME_LIB_KEY    "time"
+#define LUAB_SYS_TIME_LIB_KEY    "sys_time"
 
 extern luab_module_t luab_sys_time_lib;
 

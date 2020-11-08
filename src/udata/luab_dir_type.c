@@ -155,7 +155,7 @@ DIR_tostring(lua_State *L)
  */
 
 static luab_module_table_t dir_methods[] = {
-    LUAB_FUNC("ty_name",        DIR_dirp),
+    LUAB_FUNC("dirp",           DIR_dirp),
     LUAB_FUNC("get",            DIR_get),
     LUAB_FUNC("dump",           DIR_dump),
     LUAB_FUNC("__gc",           DIR_gc),

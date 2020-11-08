@@ -24,48 +24,67 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/file.h>
+#include <sys/dirent.h>
 
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_udata.h"
 
-#define LUAB_SYS_FILE_LIB_ID    1593623310
-#define LUAB_SYS_FILE_LIB_KEY    "sys_file"
+#define LUAB_SYS_DIRENT_LIB_ID    1604795840
+#define LUAB_SYS_DIRENT_LIB_KEY    "sys_dirent"
 
-extern luab_module_t luab_sys_file_lib;
+extern luab_module_t luab_sys_dirent_lib;
 
 /*
  * Service primitives.
  */
 
 /*
- * Interface against <sys/file.h>.
+ * Generator functions.
  */
 
-static luab_module_table_t luab_sys_file_vec[] = {
-    LUAB_INT("DTYPE_NONE",        DTYPE_NONE),
-    LUAB_INT("DTYPE_VNODE",       DTYPE_VNODE),
-    LUAB_INT("DTYPE_SOCKET",      DTYPE_SOCKET),
-    LUAB_INT("DTYPE_PIPE",        DTYPE_PIPE),
-    LUAB_INT("DTYPE_FIFO",        DTYPE_FIFO),
-    LUAB_INT("DTYPE_KQUEUE",      DTYPE_KQUEUE),
-    LUAB_INT("DTYPE_CRYPTO",      DTYPE_CRYPTO),
-    LUAB_INT("DTYPE_MQUEUE",      DTYPE_MQUEUE),
-    LUAB_INT("DTYPE_SHM",         DTYPE_SHM),
-    LUAB_INT("DTYPE_SEM",         DTYPE_SEM),
-    LUAB_INT("DTYPE_PTS",         DTYPE_PTS),
-    LUAB_INT("DTYPE_DEV",         DTYPE_DEV),
-    LUAB_INT("DTYPE_PROCDESC",    DTYPE_PROCDESC),
-    LUAB_INT("DTYPE_LINUXEFD",    DTYPE_LINUXEFD),
-    LUAB_INT("DTYPE_LINUXTFD",    DTYPE_LINUXTFD),
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(DIRENT)).
+ *
+ * @function dirent_create
+ *
+ * @param dirent            Instance of (LUA_TUSERDATA(DIR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage dirent [, err, msg ] = bsd.sys_dirent.dirent_create([ dirent ])
+ */
+static int
+luab_dirent_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(DIRENT), NULL));
+}
+
+/*
+ * Interface against <sys/dirent.h>.
+ */
+
+static luab_module_table_t luab_sys_dirent_vec[] = { /* sys/dirent.h */
+#if __BSD_VISIBLE
+    LUAB_INT("DT_UNKNOWN",              DT_UNKNOWN),
+    LUAB_INT("DT_FIFO",                 DT_FIFO),
+    LUAB_INT("DT_CHR",                  DT_CHR),
+    LUAB_INT("DT_DIR",                  DT_DIR),
+    LUAB_INT("DT_BLK",                  DT_BLK),
+    LUAB_INT("DT_REG",                  DT_REG),
+    LUAB_INT("DT_LNK",                  DT_LNK),
+    LUAB_INT("DT_SOCK",                 DT_SOCK),
+    LUAB_INT("DT_WHT",                  DT_WHT),
+#endif /* __BSD_VISIBLE */
+    LUAB_FUNC("dirent_create",          luab_dirent_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
-luab_module_t luab_sys_file_lib = {
-    .m_cookie   = LUAB_SYS_FILE_LIB_ID,
-    .m_name     = LUAB_SYS_FILE_LIB_KEY,
-    .m_vec      = luab_sys_file_vec,
+luab_module_t luab_sys_dirent_lib = {
+    .m_cookie   = LUAB_SYS_DIRENT_LIB_ID,
+    .m_name     = LUAB_SYS_DIRENT_LIB_KEY,
+    .m_vec      = luab_sys_dirent_vec,
 };

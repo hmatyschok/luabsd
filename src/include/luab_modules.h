@@ -65,6 +65,7 @@ extern luab_module_t luab_fhandle_type;
 extern luab_module_t luab_xvfsconf_type;
 extern luab_module_t luab_ttyent_type;
 extern luab_module_t luab_dir_type;
+extern luab_module_t luab_dirent_type;
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;
 extern luab_module_t luab_db_type;
@@ -86,6 +87,7 @@ extern luab_module_t luab_arpa_inet_lib;
 extern luab_module_t luab_net_if_lib;
 extern luab_module_t luab_net_if_dl_lib;
 
+extern luab_module_t luab_sys_dirent_lib;
 extern luab_module_t luab_sys_file_lib;
 extern luab_module_t luab_sys_mount_lib;
 extern luab_module_t luab_sys_stat_lib;

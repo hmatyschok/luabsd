@@ -33,7 +33,7 @@
 #include "luabsd.h"
 
 #define LUAB_SYS_UNISTD_LIB_ID    1593623310
-#define LUAB_SYS_UNISTD_LIB_KEY   "unistd"
+#define LUAB_SYS_UNISTD_LIB_KEY   "sys_unistd"
 
 extern luab_module_t luab_sys_unistd_lib;
 

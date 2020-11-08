@@ -42,3 +42,4 @@ SRCS+=  luab_fhandle_type.c
 SRCS+=  luab_xvfsconf_type.c
 SRCS+=  luab_ttyent_type.c
 SRCS+=  luab_dir_type.c
+SRCS+=  luab_dirent_type.c
