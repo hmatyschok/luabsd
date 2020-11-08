@@ -326,7 +326,7 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
             status = luab_pushnil(L);
         }
     } else {
-        errno = EINVAL;
+        errno = ENOENT;
         status = luab_pushnil(L);
     }
     return (status);

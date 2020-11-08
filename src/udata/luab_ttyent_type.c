@@ -58,7 +58,7 @@ extern luab_module_t luab_ttyent_type;
 
 typedef struct luab_ttyent {
     luab_udata_t    ud_softc;
-    struct ttyent   ud_ty;
+    struct ttyent   ud_tty;
 } luab_ttyent_t;
 
 #define luab_new_ttyent(L, arg) \
@@ -302,19 +302,6 @@ TTYENT_ty_group(lua_State *L)
 static int
 TTYENT_gc(lua_State *L)
 {
-    struct ttyent *typ;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    typ = luab_udata(L, 1, &luab_ttyent_type, struct ttyent *);
-
-    luab_core_freestr(typ->ty_name);
-    luab_core_freestr(typ->ty_getty);
-    luab_core_freestr(typ->ty_type);
-    luab_core_freestr(typ->ty_window);
-    luab_core_freestr(typ->ty_comment);
-    luab_core_freestr(typ->ty_group);
-
     return (luab_core_gc(L, 1, &luab_ttyent_type));
 }
 

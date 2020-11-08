@@ -156,7 +156,7 @@ luab_inet_ntop(lua_State *L)
     size = (size_t)luab_checklinteger(L, 4);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -214,7 +214,7 @@ luab_inet_pton(lua_State *L)
     dst = luab_checkxaddr(L, 3, af, &size);
 
     if (((src = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (size <= buf->iov.iov_len) &&
         (buf->iov_flags & IOV_BUFF)) {
@@ -353,7 +353,7 @@ luab_inet_neta(lua_State *L)
     size = (size_t)luab_checklinteger(L, 3);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -467,7 +467,7 @@ luab_inet_net_ntop(lua_State *L)
     size = (size_t)luab_checklinteger(L, 5);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -527,7 +527,7 @@ luab_inet_net_pton(lua_State *L)
     size = (size_t)luab_checklinteger(L, 4);
 
     if (((src = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (size <= buf->iov.iov_len) &&
         (buf->iov_flags & IOV_BUFF)) {
@@ -579,7 +579,7 @@ luab_inet_ntoa_r(lua_State *L)
     size = (size_t)luab_checklinteger(L, 3);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -643,7 +643,7 @@ luab_inet_cidr_ntop(lua_State *L)
     size = (size_t)luab_checklinteger(L, 5);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -707,7 +707,7 @@ luab_inet_cidr_pton(lua_State *L)
     bits = &(un->un_int);
 
     if (((src = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (size <= buf->iov.iov_len) &&
         (buf->iov_flags & IOV_BUFF)) {

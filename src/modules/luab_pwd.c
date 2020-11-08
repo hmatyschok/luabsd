@@ -216,7 +216,7 @@ luab_getpwnam_r(lua_State *L)
     ret = luab_udata(L, 5, luab_mx(PASSWD), struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -277,7 +277,7 @@ luab_getpwuid_r(lua_State *L)
     ret = luab_udata(L, 5, luab_mx(PASSWD), struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -362,7 +362,7 @@ luab_getpwent_r(lua_State *L)
     ret = luab_udata(L, 4, luab_mx(PASSWD), struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= LUAL_BUFFERSIZE) &&
+        (buf->iov_max_len <= luab_nmax) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 

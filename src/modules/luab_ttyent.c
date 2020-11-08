@@ -42,6 +42,149 @@ extern luab_module_t luab_ttyent_lib;
  * Service primitives.
  */
 
+/***
+ * getttyent(3) - ttys(5) file routines
+ *
+ * @function getttyent
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ttyent.getttyent()
+ */
+static int
+luab_getttyent(lua_State *L)
+{
+    struct ttyent *typ;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    if ((typ = getttyent()) != NULL)
+        m = luab_mx(TTYENT);
+    else
+        m = NULL;
+
+     return (luab_pushudata(L, m, typ));
+}
+
+/***
+ * getttynam(3) - ttys(5) file routines
+ *
+ * @function getttynam
+ *
+ * @param name              Specifies name of character-special file.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ttyent.getttynam(name)
+ */
+static int
+luab_getttynam(lua_State *L)
+{
+    const char *name;
+    struct ttyent *typ;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    name = luab_checklstring(L, 1, luab_tty_nmax);
+
+    if ((typ = getttynam(name)) != NULL)
+        m = luab_mx(TTYENT);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, typ));
+}
+
+/***
+ * setttyent(3) - ttys(5) file routines
+ *
+ * @function setttyent
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ttyent.setttyent()
+ */
+static int
+luab_setttyent(lua_State *L)
+{
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    status = setttyent();
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * endttyent(3) - ttys(5) file routines
+ *
+ * @function endttyent
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ttyent.endttyent()
+ */
+static int
+luab_endttyent(lua_State *L)
+{
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    status = endttyent();
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * isdialuptty(3) - ttys(5) file routines
+ *
+ * @function isdialuptty
+ *
+ * @param name              Specifies name of character-special file.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ttyent.isdialuptty(name)
+ */
+static int
+luab_isdialuptty(lua_State *L)
+{
+    const char *name;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    name = luab_checklstring(L, 1, luab_tty_nmax);
+    status = isdialuptty(name);
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * isnettty(3) - ttys(5) file routines
+ *
+ * @function isnettty
+ *
+ * @param name              Specifies name of character-special file.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ttyent.isnettty(name)
+ */
+static int
+luab_isnettty(lua_State *L)
+{
+    const char *name;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    name = luab_checklstring(L, 1, luab_tty_nmax);
+    status = isnettty(name);
+    return (luab_pusherr(L, status));
+}
+
 /*
  * Generator functions.
  */
@@ -86,6 +229,12 @@ static luab_module_table_t luab_ttyent_vec[] = { /* ttyent.h */
     LUAB_INT("TTY_NETWORK",             TTY_NETWORK),
     LUAB_INT("TTY_IFEXISTS",            TTY_IFEXISTS),
     LUAB_INT("TTY_IFCONSOLE",           TTY_IFCONSOLE),
+    LUAB_FUNC("getttyent",              luab_getttyent),
+    LUAB_FUNC("getttynam",              luab_getttynam),
+    LUAB_FUNC("settyend",               luab_setttyent),
+    LUAB_FUNC("endttyent",              luab_endttyent),
+    LUAB_FUNC("isdialuptty",            luab_isdialuptty),
+    LUAB_FUNC("isnettty",               luab_isnettty),
     LUAB_FUNC("ttyent_create",          luab_ttyent_create),
     LUAB_MOD_TBL_SENTINEL
 };

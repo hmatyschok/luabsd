@@ -37,6 +37,9 @@
 #include <string.h>
 #include <sysexits.h>
 
+extern size_t luab_nmax;
+extern size_t luab_tty_nmax;
+
 /*
  * Definitions for API method table.
  */
