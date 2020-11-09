@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 #define LUAB_DIRENT_LIB_ID    1604795103
 #define LUAB_DIRENT_LIB_KEY    "dirent"
@@ -57,6 +58,71 @@
  */
 
 extern luab_module_t luab_dirent_lib;
+
+/*
+ * Subr.
+ */
+
+static luab_table_t *
+luab_table_checkdirent(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct dirent *x, *dp;
+    size_t m, n, sz;
+
+    sz = sizeof(struct dirent);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct dirent *)(tbl->tbl_vec)) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        dp = luab_udata(L, -1, luab_mx(DIRENT), struct dirent *);
+                        (void)memmove(&(x[m]), dp, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+luab_table_pushdirent(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct dirent *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, luab_mx(DIRENT), k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
 
 /*
  * Service primitives.
@@ -90,6 +156,169 @@ luab_dirfd(lua_State *L)
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE >= 700 */
 
 #if __BSD_VISIBLE
+/***
+ * fdclosedir(3) - directory operations
+ *
+ * @function fdclosedir
+ *
+ * @param name              Specifies directory stream by its name.
+ * @param flags             Values from
+ *
+ *                              bsd.dirent.{__}DTF_{
+ *                                  NODUP,
+ *                                  REWIND,
+ *                                  READALL,
+ *                                  SKIPREAD
+ *                              }
+ *
+ *                          are constructed by inclusive-OR.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage dir [, err, msg ] = bsd.dirent.opendir2(dirp, flags)
+ */
+static int
+luab_opendir2(lua_State *L)
+{
+    const char *name;
+    int flags;
+    DIR *dirp;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    name = luab_checklstring(L, 1, MAXPATHLEN);
+    flags = (int)luab_checkinteger(L, 2, INT_MAX);
+
+    if ((dirp = __opendir2(name, flags)) != NULL)
+        m = luab_mx(DIR);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, dirp));
+}
+
+/***
+ * getdents(2) - get directory entries in a filsytem independent format
+ *
+ * @function getdents
+ *
+ * @param fd                Specifies directory stream by file descriptor.
+ * @param buf               Temporary storage, instance of (LUA_TABLE)
+ *
+ *                              buf = {
+ *                                  dirent0,
+ *                                  dirent1,
+ *                                   ...
+ *                                  direntN
+ *                              }
+ *
+ *                          over (LUA_TUSERDATA(DIRENT)).
+ *
+ * @param nbytes            Reflects the cardinality of (LUA_TTABLE).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.getdents(fd, buf, nbytes)
+ */
+static int
+luab_getdents(lua_State *L)
+{
+    int fd;
+    luab_table_t *tbl;
+    size_t nbytes;
+    ssize_t count;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    tbl = luab_table_checkdirent(L, 2);
+    nbytes = (size_t)luab_checklinteger(L, 3);
+
+    if (tbl != NULL && nbytes > 0) {
+
+        if ((tbl->tbl_card - 1) == nbytes) {
+            nbytes *= tbl->tbl_sz;
+
+            count = getdents(fd, tbl->tbl_vec, nbytes);
+            luab_table_pushdirent(L, 2, tbl, 0, 1);
+        } else {
+            luab_table_free(tbl);
+            errno = ERANGE;
+            count = -1;
+        }
+    } else {
+        errno = ERANGE;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
+/***
+ * getdirentries(2) - get directory entries in a filsytem independent format
+ *
+ * @function getdirentries
+ *
+ * @param fd                Specifies directory stream by file descriptor.
+ * @param buf               Temporary storage, instance of (LUA_TABLE)
+ *
+ *                              buf = {
+ *                                  dirent0,
+ *                                  dirent1,
+ *                                   ...
+ *                                  direntN
+ *                              }
+ *
+ *                          over (LUA_TUSERDATA(DIRENT)).
+ *
+ * @param nbytes            Reflects the cardinality of (LUA_TTABLE).
+ * @param basep             Specifies location for position block read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.getdirentries(fd, buf, nbytes, basep)
+ */
+static int
+luab_getdirentries(lua_State *L)
+{
+    int fd;
+    luab_table_t *tbl;
+    size_t nbytes;
+    luab_primitive_u *xp;
+    off_t *basep;
+    ssize_t count;
+
+    (void)luab_core_checkmaxargs(L, 4);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    tbl = luab_table_checkdirent(L, 2);
+    nbytes = (size_t)luab_checklinteger(L, 3);
+    xp = luab_udataisnil(L, 4, luab_mx(PRIMITIVE), luab_primitive_u *);
+
+    if (xp != NULL)
+        basep = &(xp->un_off);
+    else
+        basep = NULL;
+
+    if (tbl != NULL && nbytes > 0) {
+
+        if ((tbl->tbl_card - 1) == nbytes) {
+            nbytes *= tbl->tbl_sz;
+
+            count = getdirentries(fd, tbl->tbl_vec, nbytes, basep);
+            luab_table_pushdirent(L, 2, tbl, 0, 1);
+        } else {
+            luab_table_free(tbl);
+            errno = ERANGE;
+            count = -1;
+        }
+    } else {
+        errno = ERANGE;
+        count = -1;
+    }
+    return (luab_pusherr(L, count));
+}
+
 /***
  * fdclosedir(3) - directory operations
  *
@@ -382,7 +611,10 @@ static luab_module_table_t luab_dirent_vec[] = { /* dirent.h */
     LUAB_FUNC("dirfd",                  luab_dirfd),
 #endif
 #if __BSD_VISIBLE
+    LUAB_FUNC("opendir2",               luab_opendir2),
     LUAB_FUNC("fdclosedir",             luab_fdclosedir),
+    LUAB_FUNC("getdents",               luab_getdents),
+    LUAB_FUNC("getdirentries",          luab_getdirentries),
 #endif
     LUAB_FUNC("opendir",                luab_opendir),
     LUAB_FUNC("fdopendir",              luab_fdopendir),
