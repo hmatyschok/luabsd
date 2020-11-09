@@ -36,11 +36,313 @@
 #define LUAB_DIRENT_LIB_ID    1604795103
 #define LUAB_DIRENT_LIB_KEY    "dirent"
 
+/*
+ * XXX
+ *
+ *  int
+ *   scandir(const char *dirname, struct dirent ***namelist,
+ *       int (*select)(const struct dirent *),
+ *       int (*compar)(const struct dirent **, const struct dirent **));
+ *
+ *   int
+ *   scandir_b(const char *dirname, struct dirent ***namelist,
+ *       int (*select(rp(const struct dirent *),
+ *       int (^compar)(const struct dirent **, const struct dirent **));
+ *
+ *   int
+ *   alphasort(const struct dirent **d1, const struct dirent **d2);
+ *
+ * Implementation depends on specific luab_type(3) implements autoboxing
+ * for (LUA_TCFUNCTION) objects or set of callbacks over vector table.
+ */
+
 extern luab_module_t luab_dirent_lib;
 
 /*
  * Service primitives.
  */
+
+#if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE >= 700
+/***
+ * dirfd(3) - directory operations
+ *
+ * @function dirfd
+ *
+ * @param dirp              Specifies named directory stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.dirfd(dirp)
+ */
+static int
+luab_dirfd(lua_State *L)
+{
+    DIR *dirp;
+    int fd;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+    fd = dirfd(dirp);
+
+    return (luab_pusherr(L, fd));
+}
+#endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE >= 700 */
+
+#if __BSD_VISIBLE
+/***
+ * fdclosedir(3) - directory operations
+ *
+ * @function fdclosedir
+ *
+ * @param dirp              Specifies named directory stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.fdclosedir(dirp)
+ */
+static int
+luab_fdclosedir(lua_State *L)
+{
+    DIR *dirp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+    status = fdclosedir(dirp);
+
+    return (luab_pusherr(L, status));
+}
+#endif /* __BSD_VISIBLE */
+
+/***
+ * opendir(3) - directory operations
+ *
+ * @function opendir
+ *
+ * @param filename          Specifies directory named by filename.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage dir [, err, msg ] = bsd.dirent.opendir(filename)
+ */
+static int
+luab_opendir(lua_State *L)
+{
+    const char *filename;
+    DIR *dirp;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    filename = luab_checklstring(L, 1, MAXPATHLEN);
+
+    if ((dirp = opendir(filename)) != NULL)
+        m = luab_mx(DIR);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, dirp));
+}
+
+/***
+ * fdopendir(3) - directory operations
+ *
+ * @function fdopendir
+ *
+ * @param fd                Specifies directory named by file descriptor.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage dir [, err, msg ] = bsd.dirent.fdopendir(fd)
+ */
+static int
+luab_fdopendir(lua_State *L)
+{
+    int fd;
+    DIR *dirp;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+
+    if ((dirp = fdopendir(fd)) != NULL)
+        m = luab_mx(DIR);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, dirp));
+}
+
+/***
+ * readdir(3) - directory operations
+ *
+ * @function readdir
+ *
+ * @param dirp              Specifies named directory stream.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage dirent [, err, msg ] = bsd.dirent.readdir(dirp)
+ */
+static int
+luab_readdir(lua_State *L)
+{
+    DIR *dirp;
+    struct dirent *dp;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+
+    if ((dp = readdir(dirp)) != NULL)
+        m = luab_mx(DIRENT);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, dp));
+}
+
+#if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 500
+/***
+ * readdir_r(3) - directory operations
+ *
+ * @function readdir_r
+ *
+ * @param dirp              Specifies named directory stream.
+ * @param entry             Temporary storage, instance of (LUA_TUSERDATA(DIRENT)).
+ * @param result            Result argument, instance of (LUA_TUSERDATA(DIREN)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.readdir_r(dirp)
+ */
+static int
+luab_readdir_r(lua_State *L)
+{
+    DIR *dirp;
+    struct dirent *entry;
+    struct dirent *ret;
+    struct dirent *result;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+    entry = luab_udata(L, 2, luab_mx(DIRENT), struct dirent *);
+    ret = luab_udata(L, 3, luab_mx(DIRENT), struct dirent *);
+
+    if ((status = readdir_r(dirp, entry, &result)) == 0) {
+        if (result != NULL)
+            (void)memmove(ret, result, sizeof(struct dirent));
+    }
+    return (luab_pusherr(L, status));
+}
+#endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 500 */
+
+/***
+ * rewinddir(3) - directory operations
+ *
+ * @function rewinddir
+ *
+ * @param dirp              Specifies named directory stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.rewinddir(dirp)
+ */
+static int
+luab_rewinddir(lua_State *L)
+{
+    DIR *dirp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+    rewinddir(dirp);
+    return (luab_pusherr(L, 0));
+}
+
+#if __XSI_VISIBLE
+/***
+ * seekdir(3) - directory operations
+ *
+ * @function seekdir
+ *
+ * @param dirp              Specifies named directory stream.
+ * @param loc               Specifies position on directory stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.seekdir(dirp, loc)
+ */
+static int
+luab_seekdir(lua_State *L)
+{
+    DIR *dirp;
+    long loc;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+    loc = (long)luab_checkinteger(L, 2, LONG_MAX);
+
+    seekdir(dirp, loc);
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * telldir(3) - directory operations
+ *
+ * @function telldir
+ *
+ * @param dirp              Specifies named directory stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.telldir(dirp)
+ */
+static int
+luab_telldir(lua_State *L)
+{
+    DIR *dirp;
+    long tok;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+
+    tok = telldir(dirp);
+    return (luab_pusherr(L, tok));
+}
+#endif /* __XSI_VISIBLE */
+
+/***
+ * closedir(3) - directory operations
+ *
+ * @function closedir
+ *
+ * @param dirp              Specifies named directory stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.dirent.closedir(dirp)
+ */
+static int
+luab_closedir(lua_State *L)
+{
+    DIR *dirp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
+    status = closedir(dirp);
+    return (luab_pusherr(L, status));
+}
 
 /*
  * Generator functions.
@@ -76,6 +378,24 @@ static luab_module_table_t luab_dirent_vec[] = { /* dirent.h */
     LUAB_INT("__DTF_READALL",           __DTF_READALL),
     LUAB_INT("__DTF_SKIPREAD",          __DTF_SKIPREAD),
 #endif /* __BSD_VISIBLE */
+#if __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE >= 700
+    LUAB_FUNC("dirfd",                  luab_dirfd),
+#endif
+#if __BSD_VISIBLE
+    LUAB_FUNC("fdclosedir",             luab_fdclosedir),
+#endif
+    LUAB_FUNC("opendir",                luab_opendir),
+    LUAB_FUNC("fdopendir",              luab_fdopendir),
+    LUAB_FUNC("readdir",                luab_readdir),
+#if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 500
+    LUAB_FUNC("readdir_r",              luab_readdir_r),
+#endif
+    LUAB_FUNC("rewinddir",              luab_rewinddir),
+#if __XSI_VISIBLE
+    LUAB_FUNC("seekdir",                luab_seekdir),
+    LUAB_FUNC("telldir",                luab_telldir),
+#endif
+    LUAB_FUNC("closedir",               luab_closedir),
     LUAB_FUNC("dir_create",             luab_dir_create),
     LUAB_MOD_TBL_SENTINEL
 };

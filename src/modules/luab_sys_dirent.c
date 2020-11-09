@@ -34,7 +34,7 @@
 #include "luab_udata.h"
 
 #define LUAB_SYS_DIRENT_LIB_ID    1604795840
-#define LUAB_SYS_DIRENT_LIB_KEY    "sys_dirent"
+#define LUAB_SYS_DIRENT_LIB_KEY    "dirent"
 
 extern luab_module_t luab_sys_dirent_lib;
 

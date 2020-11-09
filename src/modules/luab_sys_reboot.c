@@ -33,7 +33,7 @@
 #include "luabsd.h"
 
 #define LUAB_SYS_REBOOT_LIB_ID    1600295164
-#define LUAB_SYS_REBOOT_LIB_KEY   "sys_reboot"
+#define LUAB_SYS_REBOOT_LIB_KEY   "reboot"
 
 extern luab_module_t luab_sys_reboot_lib;
 

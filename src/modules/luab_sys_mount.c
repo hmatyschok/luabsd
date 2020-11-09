@@ -35,7 +35,7 @@
 #include "luab_table.h"
 
 #define LUAB_SYS_MOUNT_LIB_ID    1604415113
-#define LUAB_SYS_MOUNT_LIB_KEY   "sys_mount"
+#define LUAB_SYS_MOUNT_LIB_KEY   "mount"
 
 extern luab_module_t luab_sys_mount_lib;
 

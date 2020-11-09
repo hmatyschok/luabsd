@@ -35,7 +35,7 @@
 #include "luab_sockaddr.h"
 
 #define LUAB_SYS_UN_LIB_ID    1597545462
-#define LUAB_SYS_UN_LIB_KEY    "sys_un"
+#define LUAB_SYS_UN_LIB_KEY    "un"
 
 extern luab_module_t luab_sys_un_lib;
 

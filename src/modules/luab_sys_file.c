@@ -33,7 +33,7 @@
 #include "luabsd.h"
 
 #define LUAB_SYS_FILE_LIB_ID    1593623310
-#define LUAB_SYS_FILE_LIB_KEY    "sys_file"
+#define LUAB_SYS_FILE_LIB_KEY    "file"
 
 extern luab_module_t luab_sys_file_lib;
 

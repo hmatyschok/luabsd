@@ -35,7 +35,7 @@
 #include "luab_table.h"
 
 #define LUAB_SYS_STAT_LIB_ID    1593623310
-#define LUAB_SYS_STAT_LIB_KEY    "sys_stat"
+#define LUAB_SYS_STAT_LIB_KEY    "stat"
 
 extern luab_module_t luab_sys_stat_lib;
 

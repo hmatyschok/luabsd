@@ -36,7 +36,7 @@
 #include "luab_sockaddr.h"
 
 #define LUAB_ARPA_INET_LIB_ID    1595780686
-#define LUAB_ARPA_INET_LIB_KEY   "arpa_inet"
+#define LUAB_ARPA_INET_LIB_KEY   "inet"
 
 extern luab_module_t luab_arpa_inet_lib;
 
