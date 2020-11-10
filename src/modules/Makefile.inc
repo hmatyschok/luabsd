@@ -20,6 +20,7 @@ SRCS+=  luab_sys_socket.c
 SRCS+=  luab_db.c
 SRCS+=  luab_dirent.c
 SRCS+=  luab_fcntl.c
+SRCS+=  luab_fstab.c
 SRCS+=  luab_grp.c
 SRCS+=  luab_pwd.c
 SRCS+=  luab_regex.c

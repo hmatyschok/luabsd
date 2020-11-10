@@ -766,10 +766,13 @@ static luab_module_vec_t luab_core_vec[] = {
         .mv_mod = &luab_dirent_lib,
         .mv_init = luab_newtable,
     },{
-        .mv_mod = &luab_grp_lib,
+        .mv_mod = &luab_fcntl_lib,
         .mv_init = luab_newtable,
     },{
-        .mv_mod = &luab_fcntl_lib,
+        .mv_mod = &luab_fstab_lib,
+        .mv_init = luab_newtable,
+    },{
+        .mv_mod = &luab_grp_lib,
         .mv_init = luab_newtable,
     },{
         .mv_mod = &luab_pwd_lib,
@@ -933,6 +936,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_dirent_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_DIRENT_IDX,
+    },{
+        .mv_mod = &luab_fstab_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_FSTAB_IDX,
     },
 #if __BSD_VISIBLE
     {
