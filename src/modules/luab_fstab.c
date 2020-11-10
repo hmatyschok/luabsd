@@ -43,6 +43,173 @@ extern luab_module_t luab_fstab_lib;
  * Service primitives.
  */
 
+/***
+ * getfsent(3) - get file system descriptor file entry
+ *
+ * @function getfsent
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage fstab [, err, msg ] = bsd.fstab.getfsent()
+ */
+static int
+luab_getfsent(lua_State *L)
+{
+    struct fstab *fs;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    if ((fs = getfsent()) != NULL)
+        m = luab_mx(FSTAB);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, fs));
+}
+
+/***
+ * getfsspec(3) - get file system descriptor file entry
+ *
+ * @function getfsspec
+ *
+ * @param spec              Specifies block special device name.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage fstab [, err, msg ] = bsd.fstab.getfsspec(spec)
+ */
+static int
+luab_getfsspec(lua_State *L)
+{
+    const char *spec;
+    struct fstab *fs;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    spec = luab_checklstring(L, 1, SPECNAMELEN);
+
+    if ((fs = getfsspec(spec)) != NULL)
+        m = luab_mx(FSTAB);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, fs));
+}
+
+/***
+ * getfsfile(3) - get file system descriptor file entry
+ *
+ * @function getfsfile
+ *
+ * @param file              Specifies file system path prefix.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage fstab [, err, msg ] = bsd.fstab.getfsfile(file)
+ */
+static int
+luab_getfsfile(lua_State *L)
+{
+    const char *file;
+    struct fstab *fs;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    file = luab_checklstring(L, 1, MAXPATHLEN);
+
+    if ((fs = getfsfile(file)) != NULL)
+        m = luab_mx(FSTAB);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, fs));
+}
+
+/***
+ * setfsent(3) - get file system descriptor file entry
+ *
+ * @function setfsent
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.fstab.setfsent()
+ */
+static int
+luab_setfsent(lua_State *L)
+{
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    status = setfsent();
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * endfsent(3) - get file system descriptor file entry
+ *
+ * @function endfsent
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.fstab.endfsent()
+ */
+static int
+luab_endfsent(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
+
+    endfsent();
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * setfsab(3) - get file system descriptor file entry
+ *
+ * @function setfstab
+ *
+ * @param file              Specifies file to be used for subsequent operations.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.fstab.setfstab(file)
+ */
+static int
+luab_setfstab(lua_State *L)
+{
+    const char *file;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    file = luab_checklstring(L, 1, MAXPATHLEN);
+
+    setfstab(file);
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * getfsab(3) - get file system descriptor file entry
+ *
+ * @function getfstab
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.fstab.getfstab()
+ */
+static int
+luab_getfstab(lua_State *L)
+{
+    const char *dp;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    dp = getfstab();
+    return (luab_pushstring(L, dp));
+}
+
 /*
  * Generator functions.
  */
@@ -75,6 +242,13 @@ static luab_module_table_t luab_fstab_vec[] = { /* fstab.h */
     LUAB_STR("FSTAB_RO",            FSTAB_RO),
     LUAB_STR("FSTAB_SW",            FSTAB_SW),
     LUAB_STR("FSTAB_XX",            FSTAB_XX),
+    LUAB_FUNC("getfsent",           luab_getfsent),
+    LUAB_FUNC("getfsspec",          luab_getfsspec),
+    LUAB_FUNC("getfsfile",          luab_getfsfile),
+    LUAB_FUNC("setfsent",           luab_setfsent),
+    LUAB_FUNC("endfsent",           luab_endfsent),
+    LUAB_FUNC("setfstab",           luab_setfstab),
+    LUAB_FUNC("getfstab",           luab_getfstab),
     LUAB_FUNC("fstab_create",       luab_fstab_create),
     LUAB_MOD_TBL_SENTINEL
 };
