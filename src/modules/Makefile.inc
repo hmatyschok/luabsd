@@ -24,6 +24,7 @@ SRCS+=  luab_fstab.c
 SRCS+=  luab_grp.c
 SRCS+=  luab_pwd.c
 SRCS+=  luab_regex.c
+SRCS+=  luab_stdio.c
 SRCS+=  luab_stdlib.c
 SRCS+=  luab_time.c
 SRCS+=  luab_ttyent.c

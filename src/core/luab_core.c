@@ -780,6 +780,10 @@ static luab_module_vec_t luab_core_vec[] = {
     },{
         .mv_mod = &luab_regex_lib,
         .mv_init = luab_newtable,
+    },
+    {
+        .mv_mod = &luab_stdio_lib,
+        .mv_init = luab_newtable,
     },{
         .mv_mod = &luab_stdlib_lib,
         .mv_init = luab_newtable,
@@ -940,6 +944,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_fstab_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_FSTAB_IDX,
+    },{
+        .mv_mod = &luab_sfile_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB_SFILE_IDX,
     },
 #if __BSD_VISIBLE
     {

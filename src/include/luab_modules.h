@@ -67,6 +67,7 @@ extern luab_module_t luab_ttyent_type;
 extern luab_module_t luab_dir_type;
 extern luab_module_t luab_dirent_type;
 extern luab_module_t luab_fstab_type;
+extern luab_module_t luab_sfile_type;
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;
 extern luab_module_t luab_db_type;
@@ -108,6 +109,7 @@ extern luab_module_t luab_fstab_lib;
 extern luab_module_t luab_grp_lib;
 extern luab_module_t luab_pwd_lib;
 extern luab_module_t luab_regex_lib;
+extern luab_module_t luab_stdio_lib;
 extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_time_lib;
 extern luab_module_t luab_ttyent_lib;
