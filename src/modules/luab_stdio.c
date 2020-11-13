@@ -110,6 +110,20 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 #ifndef FOPEN_MAX
     LUAB_INT("FOPEN_MAX",           FOPEN_MAX),
 #endif
+#if __XSI_VISIBLE
+    LUAB_STR("P_tmpdir",            P_tmpdir),
+#endif
+    LUAB_INT("L_tmpnam",            L_tmpnam),
+    LUAB_INT("TMP_MAX",             TMP_MAX),
+#ifndef SEEK_SET
+    LUAB_INT("SEEK_SET",            SEEK_SET),
+#endif
+#ifndef SEEK_CUR
+    LUAB_INT("SEEK_CUR",            SEEK_CUR),
+#endif
+#ifndef SEEK_END
+    LUAB_INT("SEEK_END",            SEEK_END),
+#endif
     LUAB_INT("FILENAME_MAX",        FILENAME_MAX),
     LUAB_FUNC("sbuf_create",        luab_sbuf_create),
     LUAB_FUNC("sfile_create",       luab_sfile_create),
