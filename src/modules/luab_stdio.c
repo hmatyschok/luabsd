@@ -47,6 +47,23 @@ extern luab_module_t luab_stdio_lib;
  */
 
 /***
+ * Generator function - create an instance of (LUA_TUSERDATA(__SBUF)).
+ *
+ * @function sbuf_create
+ *
+ * @param __sbuf          Instance of (LUA_TUSERDATA(__SBUUF)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage __sbuf [, err, msg ] = bsd.stdio.sbuf_create([ __sbuf ])
+ */
+static int
+luab_sbuf_create(lua_State *L)
+{
+    return (luab_core_create(L, 1, luab_mx(__SBUF), NULL));
+}
+
+/***
  * Generator function - create an instance of (LUA_TUSERDATA(SFILE)).
  *
  * @function sfile_create
@@ -68,7 +85,8 @@ luab_sfile_create(lua_State *L)
  */
 
 static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
-    LUAB_FUNC("sfile_create",        luab_sfile_create),
+    LUAB_FUNC("sbuf_create",            luab_sbuf_create),
+    LUAB_FUNC("sfile_create",           luab_sfile_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -67,6 +67,7 @@ extern luab_module_t luab_ttyent_type;
 extern luab_module_t luab_dir_type;
 extern luab_module_t luab_dirent_type;
 extern luab_module_t luab_fstab_type;
+extern luab_module_t luab___sbuf_type;
 extern luab_module_t luab_sfile_type;
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;

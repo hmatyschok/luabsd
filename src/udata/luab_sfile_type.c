@@ -126,15 +126,13 @@ SFILE_get(lua_State *L)
 
     if (fp != NULL) {   /* XXX exception handling */
         lua_newtable(L);
-        luab_setfstring(L, -2, "_p", "(%s)",        fp->_p);
-        luab_setinteger(L, -2, "_r",                fp->_r);
-        luab_setinteger(L, -2, "_w",                fp->_w);
-        luab_setinteger(L, -2, "_flags",            fp->_flags);
-        luab_setinteger(L, -2, "_file",             fp->_file);
-#if 0
-        luab_setudata(L, -2, luab_mx(__SBUF),       fp->_bf);
-#endif
-        luab_setfstring(L, -2, "_cookie", "(%p)",   fp->_cookie);
+        luab_setfstring(L, -2, "_p", "(%s)",            fp->_p);
+        luab_setinteger(L, -2, "_r",                    fp->_r);
+        luab_setinteger(L, -2, "_w",                    fp->_w);
+        luab_setinteger(L, -2, "_flags",                fp->_flags);
+        luab_setinteger(L, -2, "_file",                 fp->_file);
+        luab_setudata(L, -2, luab_mx(__SBUF), "_bf",    &(fp->_bf));
+        luab_setfstring(L, -2, "_cookie", "(%p)",       fp->_cookie);
         lua_pushvalue(L, -1);
     }
     return (1);
@@ -299,7 +297,6 @@ SFILE_file(lua_State *L)
     return (luab_pusherr(L, data));
 }
 
-#if 0
 /***
  * Get buffer.
  *
@@ -329,7 +326,6 @@ SFILE_bf(lua_State *L)
     }
     return (luab_pushudata(L, luab_mx(__SBUF), dp));
 }
-#endif
 
 /***
  * Get base address of cookie.
@@ -397,9 +393,7 @@ static luab_module_table_t sfile_methods[] = {
     LUAB_FUNC("_w",             SFILE_w),
     LUAB_FUNC("_flags",         SFILE_flags),
     LUAB_FUNC("_file",          SFILE_file),
-#if 0
     LUAB_FUNC("_bf",            SFILE_bf),
-#endif
     LUAB_FUNC("_cookie",        SFILE_cookie),
     LUAB_FUNC("get",            SFILE_get),
     LUAB_FUNC("dump",           SFILE_dump),

@@ -945,6 +945,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_FSTAB_IDX,
     },{
+        .mv_mod = &luab___sbuf_type,
+        .mv_init = luab_newmetatable,
+        .mv_idx = LUAB___SBUF_IDX,
+    },{
         .mv_mod = &luab_sfile_type,
         .mv_init = luab_newmetatable,
         .mv_idx = LUAB_SFILE_IDX,

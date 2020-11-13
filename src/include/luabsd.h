@@ -169,6 +169,7 @@ typedef enum luab_type {
     LUAB_DIR_IDX,
     LUAB_DIRENT_IDX,
     LUAB_FSTAB_IDX,
+    LUAB___SBUF_IDX,
     LUAB_SFILE_IDX,
 #if __BSD_VISIBLE
     LUAB_DBT_IDX,
