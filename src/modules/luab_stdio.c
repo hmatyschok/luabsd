@@ -163,7 +163,35 @@ luab_ferror(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * fflush(3) - fluah a stream
+ *
+ * @function fflush
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fflush(stream)
+ */
+static int
+luab_fflush(lua_State *L)
+{
+    FILE *stream;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = fflush(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
 
 
 
@@ -423,6 +451,36 @@ luab_fdclose(lua_State *L)
     }
     return (luab_pusherr(L, status));
 }
+
+/***
+ * fpurge(3) - flush a stream
+ *
+ * @function fpurge
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fpurge(stream)
+ */
+static int
+luab_fpurge(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = fpurge(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
 #endif /* __BSD_VISIBLE */
 
 
@@ -526,7 +584,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fclose",                 luab_fclose),
     LUAB_FUNC("feof",                   luab_feof),
     LUAB_FUNC("ferror",                 luab_ferror),
-
+    LUAB_FUNC("fflush",                 luab_fflush),
 
 
 
@@ -564,6 +622,10 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 #if __BSD_VISIBLE
     LUAB_FUNC("fcloseall",              luab_fcloseall),
     LUAB_FUNC("fdclose",                luab_fdclose),
+
+
+    LUAB_FUNC("fpurge",                 luab_fpurge),
+
 #endif /* __BSD_VISIBLE */
 
 
