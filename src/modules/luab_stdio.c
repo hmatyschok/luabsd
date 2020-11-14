@@ -85,48 +85,54 @@ luab_sfile_create(lua_State *L)
  */
 
 static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
-    LUAB_INT("__SLBF",              __SLBF),
-    LUAB_INT("__SNBF",              __SNBF),
-    LUAB_INT("__SRD",               __SRD),
-    LUAB_INT("__SWR",               __SWR),
-    LUAB_INT("__SRW",               __SRW),
-    LUAB_INT("__SEOF",              __SEOF),
-    LUAB_INT("__SERR",              __SERR),
-    LUAB_INT("__SMBF",              __SMBF),
-    LUAB_INT("__SAPP",              __SAPP),
-    LUAB_INT("__SSTR",              __SSTR),
-    LUAB_INT("__SOPT",              __SOPT),
-    LUAB_INT("__SNPT",              __SNPT),
-    LUAB_INT("__SOFF",              __SOFF),
-    LUAB_INT("__SMOD",              __SMOD),
-    LUAB_INT("__SALC",              __SALC),
-    LUAB_INT("__SIGN",              __SIGN),
-    LUAB_INT("__S2OAP",             __S2OAP),
-    LUAB_INT("_IOFBF",              _IOFBF),
-    LUAB_INT("_IOLBF",              _IOLBF),
-    LUAB_INT("_IONBF",              _IONBF),
-    LUAB_INT("BUFSIZ",              BUFSIZ),
-    LUAB_INT("EOF",                 EOF),
+    LUAB_INT("__SLBF",                  __SLBF),
+    LUAB_INT("__SNBF",                  __SNBF),
+    LUAB_INT("__SRD",                   __SRD),
+    LUAB_INT("__SWR",                   __SWR),
+    LUAB_INT("__SRW",                   __SRW),
+    LUAB_INT("__SEOF",                  __SEOF),
+    LUAB_INT("__SERR",                  __SERR),
+    LUAB_INT("__SMBF",                  __SMBF),
+    LUAB_INT("__SAPP",                  __SAPP),
+    LUAB_INT("__SSTR",                  __SSTR),
+    LUAB_INT("__SOPT",                  __SOPT),
+    LUAB_INT("__SNPT",                  __SNPT),
+    LUAB_INT("__SOFF",                  __SOFF),
+    LUAB_INT("__SMOD",                  __SMOD),
+    LUAB_INT("__SALC",                  __SALC),
+    LUAB_INT("__SIGN",                  __SIGN),
+    LUAB_INT("__S2OAP",                 __S2OAP),
+    LUAB_INT("_IOFBF",                  _IOFBF),
+    LUAB_INT("_IOLBF",                  _IOLBF),
+    LUAB_INT("_IONBF",                  _IONBF),
+    LUAB_INT("BUFSIZ",                  BUFSIZ),
+    LUAB_INT("EOF",                     EOF),
 #ifndef FOPEN_MAX
-    LUAB_INT("FOPEN_MAX",           FOPEN_MAX),
+    LUAB_INT("FOPEN_MAX",               FOPEN_MAX),
 #endif
 #if __XSI_VISIBLE
-    LUAB_STR("P_tmpdir",            P_tmpdir),
+    LUAB_STR("P_tmpdir",                P_tmpdir),
 #endif
-    LUAB_INT("L_tmpnam",            L_tmpnam),
-    LUAB_INT("TMP_MAX",             TMP_MAX),
+    LUAB_INT("L_tmpnam",                L_tmpnam),
+    LUAB_INT("TMP_MAX",                 TMP_MAX),
 #ifndef SEEK_SET
-    LUAB_INT("SEEK_SET",            SEEK_SET),
+    LUAB_INT("SEEK_SET",                SEEK_SET),
 #endif
 #ifndef SEEK_CUR
-    LUAB_INT("SEEK_CUR",            SEEK_CUR),
+    LUAB_INT("SEEK_CUR",                SEEK_CUR),
 #endif
 #ifndef SEEK_END
-    LUAB_INT("SEEK_END",            SEEK_END),
+    LUAB_INT("SEEK_END",                SEEK_END),
 #endif
-    LUAB_INT("FILENAME_MAX",        FILENAME_MAX),
-    LUAB_FUNC("sbuf_create",        luab_sbuf_create),
-    LUAB_FUNC("sfile_create",       luab_sfile_create),
+#if __BSD_VISIBLE || (__POSIX_VISIBLE && __POSIX_VISIBLE <= 199506)
+    LUAB_INT("L_cuserid",               L_cuserid),
+#endif
+#if __POSIX_VISIBLE
+    LUAB_INT("L_ctermid",               L_ctermid),
+#endif
+    LUAB_INT("FILENAME_MAX",            FILENAME_MAX),
+    LUAB_FUNC("sbuf_create",            luab_sbuf_create),
+    LUAB_FUNC("sfile_create",           luab_sfile_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
