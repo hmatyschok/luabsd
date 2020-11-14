@@ -73,7 +73,35 @@ luab_clearerr(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
-/* fclose(3) */
+/***
+ * fclose(3) - close a stream
+ *
+ * @function fclose
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fclose(stream)
+ */
+static int
+luab_fclose(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = fclose(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
 
 /***
  * feof(3) - check and reset stream status
@@ -134,6 +162,16 @@ luab_ferror(lua_State *L)
     }
     return (luab_pusherr(L, status));
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -312,6 +350,89 @@ luab_fileno_unlocked(lua_State *L)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if __BSD_VISIBLE
+/***
+ * fcloseall(3) - check and reset stream status
+ *
+ * @function fcloseall
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fcloseall()
+ */
+static int
+luab_fcloseall(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
+
+    fcloseall();
+
+    return (luab_pusherr(L, 0));
+}
+
+/***
+ * fdclose(3) - close a stream
+ *
+ * @function fdclose
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ * @param fdp               File descriptor, optional result argument, either an
+ *                          instance of (LUA_TUSERDATA(PRIMITIVE)) or (LUA_TNIL).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fdclose(stream, fdp)
+ */
+static int
+luab_fdclose(lua_State *L)
+{
+    FILE *stream;
+    luab_primitive_u *xp;
+    int *fdp, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+    xp = luab_udataisnil(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+
+    if (xp != NULL)
+        fdp = &(xp->un_int);
+    else
+        fdp = NULL;
+
+    if (stream != NULL)
+        status = fdclose(stream, fdp);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif /* __BSD_VISIBLE */
+
+
+
+
+
+
+
+
+
 /*
  * Generator functions.
  */
@@ -402,6 +523,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 #endif
     LUAB_INT("FILENAME_MAX",            FILENAME_MAX),
     LUAB_FUNC("clearerr",               luab_clearerr),
+    LUAB_FUNC("fclose",                 luab_fclose),
     LUAB_FUNC("feof",                   luab_feof),
     LUAB_FUNC("ferror",                 luab_ferror),
 
@@ -425,6 +547,30 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("ferror_unlocked",        luab_ferror_unlocked),
     LUAB_FUNC("fileno_unlocked",        luab_fileno_unlocked),
 #endif /* __BSD_VISIBLE */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if __BSD_VISIBLE
+    LUAB_FUNC("fcloseall",              luab_fcloseall),
+    LUAB_FUNC("fdclose",                luab_fdclose),
+#endif /* __BSD_VISIBLE */
+
+
+
+
+
+
 
 
     LUAB_FUNC("sbuf_create",            luab_sbuf_create),
