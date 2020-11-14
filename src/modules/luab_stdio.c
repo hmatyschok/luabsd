@@ -42,6 +42,276 @@ extern luab_module_t luab_stdio_lib;
  * Service primitives.
  */
 
+/***
+ * clearerr(3) - check and reset stream status
+ *
+ * @function clearerr
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.clearerr(stream)
+ */
+static int
+luab_clearerr(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL) {
+        clearerr(stream);
+        status = 0;
+    } else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/* fclose(3) */
+
+/***
+ * feof(3) - check and reset stream status
+ *
+ * @function feof
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.feof(stream)
+ */
+static int
+luab_feof(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = feof(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * ferror(3) - check and reset stream status
+ *
+ * @function ferror
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.ferror(stream)
+ */
+static int
+luab_ferror(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = ferror(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+
+
+
+
+#if __POSIX_VISIBLE
+/***
+ * fileno(3) - check and reset stream status
+ *
+ * @function fileno
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fileno(stream)
+ */
+static int
+luab_fileno(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = fileno(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif /* __POSIX_VISIBLE */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if __BSD_VISIBLE
+/***
+ * clearerr_unlocked(3) - check and reset stream status
+ *
+ * @function clearerr_unlocked
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.clearerr_unlocked(stream)
+ */
+static int
+luab_clearerr_unlocked(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL) {
+        clearerr_unlocked(stream);
+        status = 0;
+    } else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * feof_unlocked(3) - check and reset stream status
+ *
+ * @function feof_unlocked
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.feof_unlocked(stream)
+ */
+static int
+luab_feof_unlocked(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = feof_unlocked(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * ferror_unlocked(3) - check and reset stream status
+ *
+ * @function ferror_unlocked
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.ferror_unlocked(stream)
+ */
+static int
+luab_ferror_unlocked(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = ferror_unlocked(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * fileno_unlocked(3) - check and reset stream status
+ *
+ * @function fileno_unlocked
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fileno_unlocked(stream)
+ */
+static int
+luab_fileno_unlocked(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = fileno_unlocked(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif /* __BSD_VISIBLE */
+
+
+
+
+
+
 /*
  * Generator functions.
  */
@@ -131,6 +401,32 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_INT("L_ctermid",               L_ctermid),
 #endif
     LUAB_INT("FILENAME_MAX",            FILENAME_MAX),
+    LUAB_FUNC("clearerr",               luab_clearerr),
+    LUAB_FUNC("feof",                   luab_feof),
+    LUAB_FUNC("ferror",                 luab_ferror),
+
+
+
+
+
+
+#if __POSIX_VISIBLE
+    LUAB_FUNC("fileno",                 luab_fileno),
+#endif /* __POSIX_VISIBLE */
+
+
+
+
+
+
+#if __BSD_VISIBLE
+    LUAB_FUNC("clearerr_unlocked",      luab_clearerr_unlocked),
+    LUAB_FUNC("feof_unlocked",          luab_feof_unlocked),
+    LUAB_FUNC("ferror_unlocked",        luab_ferror_unlocked),
+    LUAB_FUNC("fileno_unlocked",        luab_fileno_unlocked),
+#endif /* __BSD_VISIBLE */
+
+
     LUAB_FUNC("sbuf_create",            luab_sbuf_create),
     LUAB_FUNC("sfile_create",           luab_sfile_create),
     LUAB_MOD_TBL_SENTINEL
