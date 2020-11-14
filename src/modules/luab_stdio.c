@@ -193,6 +193,110 @@ luab_fflush(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * fgetc(3) - get next character or word from input stream
+ *
+ * @function fgetc
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fgetc(stream)
+ */
+static int
+luab_fgetc(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = fgetc(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***
+ * getc(3) - get next character or word from input stream
+ *
+ * @function getc
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.getc(stream)
+ */
+static int
+luab_getc(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = getc(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * getchar(3) - get next character or word from input stream
+ *
+ * @function getchar
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.getchar()
+ */
+static int
+luab_getchar(lua_State *L)
+{
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    status = getchar();
+    return (luab_pusherr(L, status));
+}
+
+
+
+
+
+
+
 
 
 
@@ -250,6 +354,68 @@ luab_fileno(lua_State *L)
 
 
 
+
+
+
+
+
+
+
+
+
+
+#if __POSIX_VISIBLE >= 199506
+/***
+ * getc_unlocked(3) - get next character or word from input stream
+ *
+ * @function getc_unlocked
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.getc_unlocked(stream)
+ */
+static int
+luab_getc_unlocked(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = getc_unlocked(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * getchar_unlocked(3) - get next character or word from input stream
+ *
+ * @function getchar_unlocked
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.getchar_unlocked()
+ */
+static int
+luab_getchar_unlocked(lua_State *L)
+{
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    status = getchar_unlocked();
+    return (luab_pusherr(L, status));
+}
+
+#endif /* __POSIX_VISIBLE >= 199506 */
 #if __BSD_VISIBLE
 /***
  * clearerr_unlocked(3) - check and reset stream status
@@ -372,6 +538,57 @@ luab_fileno_unlocked(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __BSD_VISIBLE */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#if __BSD_VISIBLE || __XSI_VISIBLE > 0 && __XSI_VISIBLE < 600
+/***
+ * getw(3) - get next character or word from input stream
+ *
+ * @function getw
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.getw(stream)
+ */
+static int
+luab_getw(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = getw(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif /* BSD or X/Open before issue 6 */
 
 
 
@@ -585,8 +802,12 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("feof",                   luab_feof),
     LUAB_FUNC("ferror",                 luab_ferror),
     LUAB_FUNC("fflush",                 luab_fflush),
+    LUAB_FUNC("fgetc",                  luab_fgetc),
 
 
+
+    LUAB_FUNC("getc",                   luab_getc),
+    LUAB_FUNC("getchar",                luab_getchar),
 
 
 
@@ -598,7 +819,10 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 
 
 
-
+#if __POSIX_VISIBLE >= 199506
+    LUAB_FUNC("getc_unlocked",          luab_getc_unlocked),
+    LUAB_FUNC("getchar_unlocked",       luab_getchar_unlocked),
+#endif /* __POSIX_VISIBLE >= 199506 */
 #if __BSD_VISIBLE
     LUAB_FUNC("clearerr_unlocked",      luab_clearerr_unlocked),
     LUAB_FUNC("feof_unlocked",          luab_feof_unlocked),
@@ -608,7 +832,9 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 
 
 
-
+#if __BSD_VISIBLE || __XSI_VISIBLE > 0 && __XSI_VISIBLE < 600
+    LUAB_FUNC("getw",                   luab_getw),
+#endif /* BSD or X/Open before issue 6 */
 
 
 
