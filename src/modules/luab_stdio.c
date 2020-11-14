@@ -164,7 +164,7 @@ luab_ferror(lua_State *L)
 }
 
 /***
- * fflush(3) - fluah a stream
+ * fflush(3) - flush a stream
  *
  * @function fflush
  *
