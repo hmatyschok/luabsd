@@ -208,7 +208,7 @@ luab_fhreadlink(lua_State *L)
     bufsize = (size_t)luab_checklinteger(L, 3);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_nmax) &&
+        (buf->iov_max_len <= luab_buf_nmax) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 

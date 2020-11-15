@@ -36,6 +36,8 @@
 #define LUAB_STDIO_LIB_ID    1605194991
 #define LUAB_STDIO_LIB_KEY    "stdio"
 
+#define LUAB_STDIO_MODE_MAXLEN  3
+
 /*
  * XXX
  *
@@ -302,7 +304,7 @@ luab_fgets(lua_State *L)
     stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_nmax) &&
+        (buf->iov_max_len <= luab_buf_nmax) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -333,6 +335,38 @@ luab_fgets(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * fopen(3) - stream open functions
+ *
+ * @function fopen
+ *
+ * @param path              Specifies file name pointed by its path.
+ * @param mode              Specifies mode subset of L(X) over X = {'r','w','x'}.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fopen(path, mode)
+ */
+static int
+luab_fopen(lua_State *L)
+{
+    const char *path;
+    const char *mode;
+    FILE *stream;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
+
+    if ((stream = fopen(path, mode)) != NULL)
+        m = luab_mx(SFILE);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, stream));
+}
 
 
 
@@ -340,6 +374,60 @@ luab_fgets(lua_State *L)
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***
+ * freopen(3) - stream open functions
+ *
+ * @function freopen
+ *
+ * @param path              Specifies file name pointed by its path.
+ * @param mode              Specifies mode subset of L(X) over X = {'r','w','x'}.
+ * @param stream
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.freopen(path, mode, stream)
+ */
+static int
+luab_freopen(lua_State *L)
+{
+    const char *path;
+    const char *mode;
+    FILE *stream, *ret;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    path = luab_checklstringisnil(L, 1, MAXPATHLEN);
+    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
+    stream = luab_udata(L, 3, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL) {
+
+        if ((ret = freopen(path, mode, stream)) != NULL)
+            m = luab_mx(SFILE);
+        else
+            m = NULL;
+
+    } else {
+        errno = ENOENT;
+        ret = NULL;
+        m = NULL;
+    }
+    return (luab_pushudata(L, m, ret));
+}
 
 
 
@@ -582,14 +670,14 @@ luab_gets(lua_State *L)
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_nmax) &&
+        (buf->iov_max_len <= luab_buf_nmax) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
 
             if (gets(bp) != NULL) {
-                buf->iov.iov_len = strnlen(bp, luab_nmax);
+                buf->iov.iov_len = strnlen(bp, luab_buf_nmax);
                 status = 0;
             } else
                 status = -1;
@@ -597,11 +685,11 @@ luab_gets(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = 0;
+            status = -1;
         }
     } else {
         errno = ERANGE;
-        status = 0;
+        status = -1;
     }
     return (luab_pusherr(L, status));
 }
@@ -632,7 +720,7 @@ luab_gets_s(lua_State *L)
     size = (rsize_t)luab_checklinteger(L, 2);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_nmax) &&
+        (buf->iov_max_len <= luab_buf_nmax) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -648,15 +736,15 @@ luab_gets_s(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = 0;
+            status = -1;
         }
     } else {
         errno = ERANGE;
-        status = 0;
+        status = -1;
     }
     return (luab_pusherr(L, status));
 }
-#endif
+#endif /* __EXT1_VISIBLE */
 
 
 
@@ -715,6 +803,39 @@ luab_rewind(lua_State *L)
 
 #if __POSIX_VISIBLE
 /***
+ * fdopen(3) - stream open functions
+ *
+ * @function fdopen
+ *
+ * @param fildes            Specifies open file descriptor.
+ * @param mode              Specifies mode subset of L(X) over X = {'r','w','x'}.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fdopen(path, mode)
+ */
+static int
+luab_fdopen(lua_State *L)
+{
+    int fildes;
+    const char *mode;
+    FILE *stream;
+    luab_module_t *m;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    fildes = (int)luab_checkinteger(L, 1, INT_MAX);
+    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
+
+    if ((stream = fdopen(fildes, mode)) != NULL)
+        m = luab_mx(SFILE);
+    else
+        m = NULL;
+
+    return (luab_pushudata(L, m, stream));
+}
+
+/***
  * fileno(3) - check and reset stream status
  *
  * @function fileno
@@ -744,11 +865,6 @@ luab_fileno(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __POSIX_VISIBLE */
-
-
-
-
-
 
 
 
@@ -1079,7 +1195,63 @@ luab_getw(lua_State *L)
 
 
 
+#if __POSIX_VISIBLE >= 200809
+/***
+ * fmemopen(3) - stream open functions
+ *
+ * @function fmemopen
+ *
+ * @param str               Buffer, instance of (LUA_TUSERDATA(IOVEC)).
+ * @param size              Constraint, size of mapped data region.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fmemopen(str, size)
+ */
+static int
+luab_fmemopen(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t size;
+    const char *mode;
+    caddr_t bp;
+    FILE *stream;
+    luab_module_t *m;
 
+    (void)luab_core_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    size = (size_t)luab_checklinteger(L, 2);
+    mode = luab_checklstring(L, 3, LUAB_STDIO_MODE_MAXLEN);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= luab_buf_nmax) &&
+        (size <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((stream = fmemopen(bp, size, mode)) != NULL) {
+                buf->iov.iov_len = size;
+                m = luab_mx(SFILE);
+            } else
+                m = NULL;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            stream = NULL;
+            m = NULL;
+        }
+    } else {
+        errno = ERANGE;
+        stream = NULL;
+        m = NULL;
+    }
+    return (luab_pushudata(L, m, stream));
+}
+#endif /* __POSIX_VISIBLE >= 200809 */
 
 
 
@@ -1283,9 +1455,9 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fgetc",                  luab_fgetc),
     LUAB_FUNC("fgetpos",                luab_fgetpos),
     LUAB_FUNC("fgets",                  luab_fgets),
+    LUAB_FUNC("fopen",                  luab_fopen),
 
-
-
+    LUAB_FUNC("freopen",                luab_freopen),
 
     LUAB_FUNC("fseek",                  luab_fseek),
     LUAB_FUNC("fsetpos",                luab_fsetpos),
@@ -1307,6 +1479,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 
 
 #if __POSIX_VISIBLE
+    LUAB_FUNC("fdopen",                 luab_fdopen),
     LUAB_FUNC("fileno",                 luab_fileno),
 #endif /* __POSIX_VISIBLE */
 
@@ -1340,7 +1513,9 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 
 
 
-
+#if __POSIX_VISIBLE >= 200809
+    LUAB_FUNC("fmemopen",               luab_fmemopen),
+#endif /* __POSIX_VISIBLE >= 200809 */
 
 
 

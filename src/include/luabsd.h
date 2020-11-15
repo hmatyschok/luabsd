@@ -37,7 +37,7 @@
 #include <string.h>
 #include <sysexits.h>
 
-extern size_t luab_nmax;
+extern size_t luab_buf_nmax;
 extern size_t luab_tty_nmax;
 
 /*
@@ -230,6 +230,7 @@ lua_Integer  luab_checklinteger(lua_State *, int);
 const char   *luab_islstring(lua_State *, int, size_t);
 const char   *luab_tolstring(lua_State *, int, size_t);
 const char   *luab_checklstring(lua_State *, int, size_t);
+const char   *luab_checklstringisnil(lua_State *, int, size_t);
 
 /*
  * Access functions, [C -> stack].

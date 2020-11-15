@@ -43,7 +43,7 @@
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"
 
-size_t luab_nmax = LUAL_BUFFERSIZE;
+size_t luab_buf_nmax;
 size_t luab_tty_nmax;
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
@@ -69,7 +69,7 @@ void
 luab_core_freestr(caddr_t dp)
 {
     if (dp != NULL)
-        luab_core_free(dp, strnlen(dp, luab_nmax));
+        luab_core_free(dp, strnlen(dp, luab_buf_nmax));
 }
 
 void
@@ -197,6 +197,15 @@ luab_checklstring(lua_State *L, int narg, size_t max_len)
     return (dp);
 }
 
+const char *
+luab_checklstringisnil(lua_State *L, int narg, size_t max_len)
+{
+    if (lua_isnil(L, narg) != 0)
+        return (NULL);
+
+    return (luab_checklstring(L, narg, max_len));
+}
+
 /*
  * Access functions, [C -> stack].
  */
@@ -226,10 +235,10 @@ void
 luab_rawsetfstring(lua_State *L, int narg, lua_Integer k, const char *fmt, ...)
 {
     va_list ap;
-    char buf[luab_nmax];
+    char buf[luab_buf_nmax];
 
     va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_nmax, fmt, ap);
+    (void)vsnprintf(buf, luab_buf_nmax, fmt, ap);
     va_end(ap);
 
     lua_pushstring(L, buf);
@@ -244,7 +253,7 @@ luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_nmax)) {
+        (len < luab_buf_nmax)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -282,10 +291,10 @@ void
 luab_setfstring(lua_State *L, int narg, const char *k, const char *fmt, ...)
 {
     va_list ap;
-    char buf[luab_nmax];
+    char buf[luab_buf_nmax];
 
     va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_nmax, fmt, ap);
+    (void)vsnprintf(buf, luab_buf_nmax, fmt, ap);
     va_end(ap);
 
     lua_pushstring(L, buf);
@@ -300,7 +309,7 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_nmax)) {
+        (len < luab_buf_nmax)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -395,7 +404,7 @@ luab_pushstring(lua_State *L, const char *dp)
     up_call = errno;
 
     if (dp != NULL) {
-        len = strnlen(dp, luab_nmax);
+        len = strnlen(dp, luab_buf_nmax);
         lua_pushlstring(L, dp, len);
 
         if (up_call != 0) {
@@ -415,11 +424,11 @@ luab_pushstring(lua_State *L, const char *dp)
 int
 luab_pushfstring(lua_State *L, const char *fmt, ...)
 {
-    char buf[luab_nmax];
+    char buf[luab_buf_nmax];
     va_list ap;
 
     va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_nmax, fmt, ap);
+    (void)vsnprintf(buf, luab_buf_nmax, fmt, ap);
     va_end(ap);
 
     return (luab_pushstring(L, buf));
@@ -437,7 +446,7 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_nmax)) {
+        (len < luab_buf_nmax)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -1045,6 +1054,7 @@ luaopen_bsd(lua_State *L)
     luab_registertype(L, -2, luab_typevec);
 
     /* setup constraints */
+    luab_buf_nmax = LUAL_BUFFERSIZE;
     luab_tty_nmax = sysconf(_SC_TTY_NAME_MAX);
 
     return (1);
