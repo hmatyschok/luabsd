@@ -36,6 +36,20 @@
 #define LUAB_STDIO_LIB_ID    1605194991
 #define LUAB_STDIO_LIB_KEY    "stdio"
 
+/*
+ * XXX
+ *
+ *  extern FILE *__stdinp;
+ *  extern FILE *__stdoutp;
+ *  extern FILE *__stderrp;
+ *
+ *  #define stdin   __stdinp
+ *  #define stdout  __stdoutp
+ *  #define stderr  __stderrp
+ *
+ * Implementation of initializer is pending.
+ */
+
 extern luab_module_t luab_stdio_lib;
 
 /*
@@ -223,6 +237,181 @@ luab_fgetc(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * fgetpos(3) - reposition a stream
+ *
+ * @function fgetpos
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ * @param pos               Result argument, tracks current position by
+ *                          an instance of (LUA_TUSERDATA(PRIMITIVE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fgetpos(stream, pos)
+ */
+static int
+luab_fgetpos(lua_State *L)
+{
+    FILE *stream;
+    luab_primitive_u *xp;
+    fpos_t *pos;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+    xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+    pos = &(xp->un_fpos);
+
+    if (stream != NULL)
+        status = fgetpos(stream, pos);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/***
+ * fseek(3) - reposition a stream
+ *
+ * @function fseek
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ * @param offset            Specifies the new position in bytes.
+ * @param whence            Specifies by values from
+ *
+ *                              bsd.unistd.SEEK_{
+ *                                  SET,
+ *                                  CUR,
+ *                                  END
+ *                              }
+ *
+ *                          the position indicator.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fseek(stream, offset, whence)
+ */
+static int
+luab_fseek(lua_State *L)
+{
+    FILE *stream;
+    long offset;
+    int whence;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+    offset = (long)luab_checkinteger(L, 2, LONG_MAX);
+    whence = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (stream != NULL)
+        status = fseek(stream, offset, whence);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * fsetpos(3) - reposition a stream
+ *
+ * @function fsetpos
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ * @param pos               Value argument, specifies the current position
+ *                          by an instance of (LUA_TUSERDATA(PRIMITIVE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fsetpos(stream, pos)
+ */
+static int
+luab_fsetpos(lua_State *L)
+{
+    FILE *stream;
+    luab_primitive_u *xp;
+    fpos_t *pos;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+    xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+    pos = &(xp->un_fpos);
+
+    if (stream != NULL)
+        status = fsetpos(stream, pos);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+
+
+
+
+
+
+
+
+
+/***
+ * ftell(3) - reposition a stream
+ *
+ * @function ftell
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.ftell(stream)
+ */
+static int
+luab_ftell(lua_State *L)
+{
+    FILE *stream;
+    long status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = ftell(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+
+
 
 
 
@@ -295,6 +484,46 @@ luab_getchar(lua_State *L)
 
 
 
+
+
+
+
+
+
+
+
+
+
+/***
+ * rewind(3) - reposition a stream
+ *
+ * @function rewind
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.rewind(stream)
+ */
+static int
+luab_rewind(lua_State *L)
+{
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL) {
+        rewind(stream);
+        status = 0;
+    } else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
 
 
 
@@ -538,7 +767,81 @@ luab_fileno_unlocked(lua_State *L)
     return (luab_pusherr(L, status));
 }
 #endif /* __BSD_VISIBLE */
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 500
+/***
+ * fseeko(3) - reposition a stream
+ *
+ * @function fseeko
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ * @param offset            Specifies the new position in bytes.
+ * @param whence            Specifies by values from
+ *
+ *                              bsd.unistd.SEEK_{
+ *                                  SET,
+ *                                  CUR,
+ *                                  END
+ *                              }
+ *
+ *                          the position indicator.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fseeko(stream, offset, whence)
+ */
+static int
+luab_fseeko(lua_State *L)
+{
+    FILE *stream;
+    long offset;
+    int whence;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 3);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+    offset = (long)luab_checkinteger(L, 2, LONG_MAX);
+    whence = (int)luab_checkinteger(L, 3, INT_MAX);
+
+    if (stream != NULL)
+        status = fseeko(stream, offset, whence);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+
+/***
+ * ftello(3) - reposition a stream
+ *
+ * @function ftello
+ *
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.ftello(stream)
+ */
+static int
+luab_ftello(lua_State *L)
+{
+    FILE *stream;
+    __off_t status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = ftello(stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif
 
 
 
@@ -803,12 +1106,25 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("ferror",                 luab_ferror),
     LUAB_FUNC("fflush",                 luab_fflush),
     LUAB_FUNC("fgetc",                  luab_fgetc),
+    LUAB_FUNC("fgetpos",                luab_fgetpos),
 
+
+
+
+    LUAB_FUNC("fseek",                  luab_fseek),
+    LUAB_FUNC("fsetpos",                luab_fsetpos),
+
+
+
+    LUAB_FUNC("ftell",                  luab_ftell),
 
 
     LUAB_FUNC("getc",                   luab_getc),
     LUAB_FUNC("getchar",                luab_getchar),
 
+
+
+    LUAB_FUNC("rewind",                 luab_rewind),
 
 
 #if __POSIX_VISIBLE
@@ -820,8 +1136,10 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 
 
 #if __POSIX_VISIBLE >= 199506
+
     LUAB_FUNC("getc_unlocked",          luab_getc_unlocked),
     LUAB_FUNC("getchar_unlocked",       luab_getchar_unlocked),
+
 #endif /* __POSIX_VISIBLE >= 199506 */
 #if __BSD_VISIBLE
     LUAB_FUNC("clearerr_unlocked",      luab_clearerr_unlocked),
@@ -829,7 +1147,10 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("ferror_unlocked",        luab_ferror_unlocked),
     LUAB_FUNC("fileno_unlocked",        luab_fileno_unlocked),
 #endif /* __BSD_VISIBLE */
-
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 500
+    LUAB_FUNC("fseeko",                 luab_fseeko),
+    LUAB_FUNC("ftello",                 luab_ftello),
+#endif
 
 
 #if __BSD_VISIBLE || __XSI_VISIBLE > 0 && __XSI_VISIBLE < 600

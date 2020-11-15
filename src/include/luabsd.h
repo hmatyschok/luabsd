@@ -59,6 +59,7 @@ typedef union primitive {
     uint64_t    un_uint64;
     u_int       un_u_int;
     u_long      un_u_long;
+    fpos_t      un_fpos;
     gid_t       un_gid;
     off_t       un_off;
     size_t      un_size;
