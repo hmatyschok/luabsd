@@ -273,6 +273,85 @@ luab_fgetpos(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * fgets(3) - get a line from a stream
+ *
+ * @function fgets
+ *
+ * @param str               Buffer, instance of (LUA_TUSERDATA(IOVEC)).
+ * @param size              Specifies the amount of data about to read.
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fgets(str, size, stream)
+ */
+static int
+luab_fgets(lua_State *L)
+{
+    luab_iovec_t *buf;
+    size_t size;
+    FILE *stream;
+    caddr_t bp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    size = (size_t)luab_checkinteger(L, 2, INT_MAX);
+    stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= luab_nmax) &&
+        (size <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (stream != NULL) {
+
+                if (fgets(bp, size, stream) != NULL) {
+                    buf->iov.iov_len = size;
+                    status = 0;
+                } else
+                    status = -1;
+
+            } else {
+                errno = ENOENT;
+                status = -1;
+            }
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = 0;
+        }
+    } else {
+        errno = ERANGE;
+        status = 0;
+    }
+    return (luab_pusherr(L, status));
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -480,8 +559,104 @@ luab_getchar(lua_State *L)
     return (luab_pusherr(L, status));
 }
 
+/***
+ * gets(3) - get a line from a stream
+ *
+ * @function gets
+ *
+ * @param str               Buffer, instance of (LUA_TUSERDATA(IOVEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.gets(str)
+ */
+static int
+luab_gets(lua_State *L)
+{
+    luab_iovec_t *buf;
+    caddr_t bp;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
 
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= luab_nmax) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (gets(bp) != NULL) {
+                buf->iov.iov_len = strnlen(bp, luab_nmax);
+                status = 0;
+            } else
+                status = -1;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = 0;
+        }
+    } else {
+        errno = ERANGE;
+        status = 0;
+    }
+    return (luab_pusherr(L, status));
+}
+#if __EXT1_VISIBLE
+/***
+ * gets_s(3) - get a line from a stream
+ *
+ * @function gets_s
+ *
+ * @param str               Buffer, instance of (LUA_TUSERDATA(IOVEC)).
+ * @param size              Specifies the amount of data about to read.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.gets_s(str, size)
+ */
+static int
+luab_gets_s(lua_State *L)
+{
+    luab_iovec_t *buf;
+    rsize_t size;
+    caddr_t bp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    size = (rsize_t)luab_checklinteger(L, 2);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= luab_nmax) &&
+        (size <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if (gets_s(bp, size) != NULL) {
+                buf->iov.iov_len = size;
+                status = 0;
+            } else
+                status = -1;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = 0;
+        }
+    } else {
+        errno = ERANGE;
+        status = 0;
+    }
+    return (luab_pusherr(L, status));
+}
+#endif
 
 
 
@@ -1107,6 +1282,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fflush",                 luab_fflush),
     LUAB_FUNC("fgetc",                  luab_fgetc),
     LUAB_FUNC("fgetpos",                luab_fgetpos),
+    LUAB_FUNC("fgets",                  luab_fgets),
 
 
 
@@ -1121,7 +1297,10 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 
     LUAB_FUNC("getc",                   luab_getc),
     LUAB_FUNC("getchar",                luab_getchar),
-
+    LUAB_FUNC("gets",                   luab_gets),
+#if __EXT1_VISIBLE
+    LUAB_FUNC("gets_s",                 luab_gets_s),
+#endif
 
 
     LUAB_FUNC("rewind",                 luab_rewind),
