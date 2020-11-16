@@ -98,7 +98,7 @@ luab_fhlink(lua_State *L)
 
     status = fhlink(fhp, to);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -143,7 +143,7 @@ luab_fhlinkat(lua_State *L)
 
     status = fhlinkat(fhp, tofd, to);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -176,7 +176,7 @@ luab_fhopen(lua_State *L)
 
     status = fhopen(fhp, flags);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -227,7 +227,7 @@ luab_fhreadlink(lua_State *L)
         errno = ERANGE;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 /***
@@ -256,7 +256,7 @@ luab_fhstat(lua_State *L)
 
     status = fhstat(fhp, sb);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -285,7 +285,7 @@ luab_fhstatfs(lua_State *L)
 
     status = fhstatfs(fhp, buf);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -315,7 +315,7 @@ luab_fstatfs(lua_State *L)
 
     status = fstatfs(fd, buf);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -345,7 +345,7 @@ luab_getfh(lua_State *L)
 
     status = getfh(path, fhp);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -400,7 +400,7 @@ luab_getfhat(lua_State *L)
 
     status = getfhat(fd, (void *)(intptr_t)path, fhp, flag);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -475,7 +475,7 @@ luab_getfsstat(lua_State *L)
         errno = ERANGE;
         card = -1;
     }
-    return (luab_pusherr(L, card));
+    return (luab_pushxinteger(L, card));
 }
 
 /***
@@ -528,7 +528,7 @@ luab_getmntinfo(lua_State *L)
     } else
         nmts = -1;
 
-    return (luab_pusherr(L, nmts));
+    return (luab_pushxinteger(L, nmts));
 }
 
 /***
@@ -560,7 +560,7 @@ luab_lgetfh(lua_State *L)
 
     status = lgetfh(path, fhp);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -616,7 +616,7 @@ luab_mount(lua_State *L)
         errno = EINVAL;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -678,7 +678,7 @@ luab_nmount(lua_State *L)
     } else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -708,7 +708,7 @@ luab_statfs(lua_State *L)
 
     status = statfs(path, buf);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -753,7 +753,7 @@ luab_unmount(lua_State *L)
 
     status = unmount(dir, flags);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -781,7 +781,7 @@ luab_getvfsbyname(lua_State *L)
     vfc = luab_udata(L, 2, luab_mx(XVFSCONF), struct xvfsconf *);
 
     status = getvfsbyname(name, vfc);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

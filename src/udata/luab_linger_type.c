@@ -136,7 +136,7 @@ LINGER_set_l_onoff(lua_State *L)
 
     l->l_onoff = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -159,7 +159,7 @@ LINGER_get_l_onoff(lua_State *L)
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
     data = l->l_onoff;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -186,7 +186,7 @@ LINGER_set_l_linger(lua_State *L)
 
     l->l_linger = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -209,7 +209,7 @@ LINGER_get_l_linger(lua_State *L)
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
     data = l->l_linger;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

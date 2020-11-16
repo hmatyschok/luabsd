@@ -137,7 +137,7 @@ FID_fid_len(lua_State *L)
     fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
     data = fid->fid_len;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -160,7 +160,7 @@ FID_fid_data0(lua_State *L)
     fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
     data = fid->fid_data0;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

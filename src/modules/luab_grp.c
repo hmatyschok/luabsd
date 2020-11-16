@@ -69,7 +69,7 @@ luab_endgrent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     endgrent();
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***
@@ -217,7 +217,7 @@ luab_gid_from_group(lua_State *L)
     gid = &(xp->un_gid);
 
     status = gid_from_group(name, gid);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
 
@@ -237,7 +237,7 @@ luab_setgrent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     setgrent();
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 #endif
 
@@ -300,7 +300,7 @@ luab_getgrgid_r(lua_State *L)
         errno = ERANGE;
         status = 0;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -361,7 +361,7 @@ luab_getgrnam_r(lua_State *L)
         errno = ERANGE;
         status = 0;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
 
@@ -421,7 +421,7 @@ luab_getgrent_r(lua_State *L)
         errno = ERANGE;
         status = 0;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -446,7 +446,7 @@ luab_setgroupent(lua_State *L)
 
     stayopen = luab_checkinteger(L, 1, INT_MAX);
     status = setgroupent(stayopen);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
 

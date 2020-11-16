@@ -92,7 +92,7 @@ luab_if_indextoname(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -131,7 +131,7 @@ luab_if_nameindex(lua_State *L)
     } else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -156,7 +156,7 @@ luab_if_nametoindex(lua_State *L)
     ifname = luab_checklstring(L, 1, IFNAMSIZ);
     index = if_nametoindex(ifname);
 
-    return (luab_pusherr(L, index));
+    return (luab_pushxinteger(L, index));
 }
 
 /*

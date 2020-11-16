@@ -134,7 +134,7 @@ IN_ADDR_set_s_addr(lua_State *L)
 
     ia->s_addr = id;
 
-    return (luab_pusherr(L, id));
+    return (luab_pushxinteger(L, id));
 }
 
 /***
@@ -157,7 +157,7 @@ IN_ADDR_get_s_addr(lua_State *L)
     ia = luab_udata(L, 1, &luab_in_addr_type, struct in_addr *);
     id = ia->s_addr;
 
-    return (luab_pusherr(L, id));
+    return (luab_pushxinteger(L, id));
 }
 
 /*

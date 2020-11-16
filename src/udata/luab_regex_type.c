@@ -145,7 +145,7 @@ REGEX_re_magic(lua_State *L)
     re = luab_udata(L, 1, &luab_regex_type, regex_t *);
     data = re->re_magic;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -168,7 +168,7 @@ REGEX_re_nsub(lua_State *L)
     re = luab_udata(L, 1, &luab_regex_type, regex_t *);
     data = re->re_nsub;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

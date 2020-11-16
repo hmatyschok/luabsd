@@ -148,7 +148,7 @@ LINK_set_ptr(lua_State *L)
     else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -203,7 +203,7 @@ LINK_set_sockaddr(lua_State *L)
     else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***

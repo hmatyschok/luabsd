@@ -319,7 +319,7 @@ luab_iov_pushlen(lua_State *L, struct iovec *iov)
         errno = EINVAL;
         len = -1;
     }
-    return (luab_pusherr(L, len));
+    return (luab_pushxinteger(L, len));
 }
 
 int

@@ -152,7 +152,7 @@ DIRENT_d_fileno(lua_State *L)
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
     data = dp->d_fileno;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -175,7 +175,7 @@ DIRENT_d_off(lua_State *L)
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
     data = dp->d_off;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -198,7 +198,7 @@ DIRENT_d_reclen(lua_State *L)
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
     data = dp->d_reclen;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -221,7 +221,7 @@ DIRENT_d_type(lua_State *L)
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
     data = dp->d_type;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -244,7 +244,7 @@ DIRENT_d_namlen(lua_State *L)
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
     data = dp->d_namlen;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

@@ -137,7 +137,7 @@ BINTIME_set_sec(lua_State *L)
 
     bt->sec = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -160,7 +160,7 @@ BINTIME_get_sec(lua_State *L)
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
     data = bt->sec;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -187,7 +187,7 @@ BINTIME_set_frac(lua_State *L)
 
     bt->frac = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -210,7 +210,7 @@ BINTIME_get_frac(lua_State *L)
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
     data = bt->frac;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

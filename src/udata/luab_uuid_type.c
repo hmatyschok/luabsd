@@ -153,7 +153,7 @@ UUID_set_time_low(lua_State *L)
 
     uuid->time_low = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -176,7 +176,7 @@ UUID_get_time_low(lua_State *L)
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
     data = uuid->time_low;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -203,7 +203,7 @@ UUID_set_time_mid(lua_State *L)
 
     uuid->time_mid = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -226,7 +226,7 @@ UUID_get_time_mid(lua_State *L)
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
     data = uuid->time_mid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -254,7 +254,7 @@ UUID_set_time_hi_and_version(lua_State *L)
 
     uuid->time_hi_and_version = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -278,7 +278,7 @@ UUID_get_time_hi_and_version(lua_State *L)
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
     data = uuid->time_hi_and_version;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -306,7 +306,7 @@ UUID_set_clock_seq_hi_and_reserved(lua_State *L)
 
     uuid->clock_seq_hi_and_reserved = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -330,7 +330,7 @@ UUID_get_clock_seq_hi_and_reserved(lua_State *L)
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
     data = uuid->clock_seq_hi_and_reserved;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -357,7 +357,7 @@ UUID_set_clock_seq_low(lua_State *L)
 
     uuid->clock_seq_low = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -380,7 +380,7 @@ UUID_get_clock_seq_low(lua_State *L)
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
     data = uuid->clock_seq_low;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

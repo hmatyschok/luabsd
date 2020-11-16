@@ -223,7 +223,7 @@ TTYENT_ty_status(lua_State *L)
     typ = luab_udata(L, 1, &luab_ttyent_type, struct ttyent *);
     data = typ->ty_status;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

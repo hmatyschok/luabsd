@@ -206,7 +206,7 @@ STAT_set_st_dev(lua_State *L)
 
     st->st_dev = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -220,7 +220,7 @@ STAT_get_st_dev(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_dev;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* inode's number */
@@ -237,7 +237,7 @@ STAT_set_st_ino(lua_State *L)
 
     st->st_ino = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -251,7 +251,7 @@ STAT_get_st_ino(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_ino;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* number of hard links */
@@ -268,7 +268,7 @@ STAT_set_st_nlink(lua_State *L)
 
     st->st_nlink = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -282,7 +282,7 @@ STAT_get_st_nlink(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_nlink;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* inode protection mode */
@@ -299,7 +299,7 @@ STAT_set_st_mode(lua_State *L)
 
     st->st_mode = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -313,7 +313,7 @@ STAT_get_st_mode(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_mode;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* user ID of the file's owner */
@@ -330,7 +330,7 @@ STAT_set_st_uid(lua_State *L)
 
     st->st_uid = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -344,7 +344,7 @@ STAT_get_st_uid(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_uid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* user ID of the file's owner */
@@ -361,7 +361,7 @@ STAT_set_st_gid(lua_State *L)
 
     st->st_gid = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -375,7 +375,7 @@ STAT_get_st_gid(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_gid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* device type */
@@ -392,7 +392,7 @@ STAT_set_st_rdev(lua_State *L)
 
     st->st_rdev = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -406,7 +406,7 @@ STAT_get_st_rdev(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_rdev;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* time of last access */
@@ -424,7 +424,7 @@ STAT_set_st_atim_ext(lua_State *L)
 
     st->st_atim_ext = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -438,7 +438,7 @@ STAT_get_st_atim_ext(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_atim_ext;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 #endif
 
@@ -487,7 +487,7 @@ STAT_set_st_mtim_ext(lua_State *L)
 
     st->st_mtim_ext = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -501,7 +501,7 @@ STAT_get_st_mtim_ext(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_mtim_ext;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 #endif
 
@@ -550,7 +550,7 @@ STAT_set_st_ctim_ext(lua_State *L)
 
     st->st_ctim_ext = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -564,7 +564,7 @@ STAT_get_st_ctim_ext(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_ctim_ext;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 #endif
 
@@ -613,7 +613,7 @@ STAT_set_st_btim_ext(lua_State *L)
 
     st->st_btim_ext = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -627,7 +627,7 @@ STAT_get_st_btim_ext(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_btim_ext;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 #endif
 
@@ -675,7 +675,7 @@ STAT_set_st_size(lua_State *L)
 
     st->st_size = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -689,7 +689,7 @@ STAT_get_st_size(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_size;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* blocks allocated for file */
@@ -706,7 +706,7 @@ STAT_set_st_blocks(lua_State *L)
 
     st->st_blocks = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -720,7 +720,7 @@ STAT_get_st_blocks(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_blocks;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* optimal blocksize for I/O */
@@ -737,7 +737,7 @@ STAT_set_st_blksize(lua_State *L)
 
     st->st_blksize = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -751,7 +751,7 @@ STAT_get_st_blksize(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_blksize;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* user defined flags for file */
@@ -768,7 +768,7 @@ STAT_set_st_flags(lua_State *L)
 
     st->st_flags = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -782,7 +782,7 @@ STAT_get_st_flags(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_flags;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* file generation number */
@@ -799,7 +799,7 @@ STAT_set_st_gen(lua_State *L)
 
     st->st_gen = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -813,7 +813,7 @@ STAT_get_st_gen(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     data = st->st_gen;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

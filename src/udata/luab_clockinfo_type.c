@@ -146,7 +146,7 @@ CLOCKINFO_set_hz(lua_State *L)
 
     ci->hz = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -169,7 +169,7 @@ CLOCKINFO_get_hz(lua_State *L)
     ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->hz;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -196,7 +196,7 @@ CLOCKINFO_set_tick(lua_State *L)
 
     ci->tick = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -219,7 +219,7 @@ CLOCKINFO_get_tick(lua_State *L)
     ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->tick;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -246,7 +246,7 @@ CLOCKINFO_set_stathz(lua_State *L)
 
     ci->stathz = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -269,7 +269,7 @@ CLOCKINFO_get_stathz(lua_State *L)
     ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->stathz;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -296,7 +296,7 @@ CLOCKINFO_set_profhz(lua_State *L)
 
     ci->profhz = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -319,7 +319,7 @@ CLOCKINFO_get_profhz(lua_State *L)
     ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
     data = ci->profhz;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

@@ -145,7 +145,7 @@ luab_setfsent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     status = setfsent();
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -163,7 +163,7 @@ luab_endfsent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     endfsent();
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***
@@ -187,7 +187,7 @@ luab_setfstab(lua_State *L)
     file = luab_checklstring(L, 1, MAXPATHLEN);
 
     setfstab(file);
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***

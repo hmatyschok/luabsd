@@ -151,7 +151,7 @@ luab_dirfd(lua_State *L)
     dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
     fd = dirfd(dirp);
 
-    return (luab_pusherr(L, fd));
+    return (luab_pushxinteger(L, fd));
 }
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE >= 700 */
 
@@ -251,7 +251,7 @@ luab_getdents(lua_State *L)
         errno = ERANGE;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 /***
@@ -316,7 +316,7 @@ luab_getdirentries(lua_State *L)
         errno = ERANGE;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 /***
@@ -341,7 +341,7 @@ luab_fdclosedir(lua_State *L)
     dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
     status = fdclosedir(dirp);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
 
@@ -468,7 +468,7 @@ luab_readdir_r(lua_State *L)
         if (result != NULL)
             (void)memmove(ret, result, sizeof(struct dirent));
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 500 */
 
@@ -492,7 +492,7 @@ luab_rewinddir(lua_State *L)
 
     dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
     rewinddir(dirp);
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 #if __XSI_VISIBLE
@@ -520,7 +520,7 @@ luab_seekdir(lua_State *L)
     loc = (long)luab_checkinteger(L, 2, LONG_MAX);
 
     seekdir(dirp, loc);
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***
@@ -545,7 +545,7 @@ luab_telldir(lua_State *L)
     dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
 
     tok = telldir(dirp);
-    return (luab_pusherr(L, tok));
+    return (luab_pushxinteger(L, tok));
 }
 #endif /* __XSI_VISIBLE */
 
@@ -570,7 +570,7 @@ luab_closedir(lua_State *L)
 
     dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
     status = closedir(dirp);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

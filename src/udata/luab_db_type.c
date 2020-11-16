@@ -130,7 +130,7 @@ DB_close(lua_State *L)
     if ((status = db_close(self->ud_db)) == 0)
         self->ud_db = NULL;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -167,7 +167,7 @@ DB_del(lua_State *L)
     } else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -192,7 +192,7 @@ DB_fd(lua_State *L)
     else
         fd = -1;
 
-    return (luab_pusherr(L, fd));
+    return (luab_pushxinteger(L, fd));
 }
 
 /***
@@ -227,7 +227,7 @@ DB_get(lua_State *L)
     } else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -267,7 +267,7 @@ DB_put(lua_State *L)
     } else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -306,7 +306,7 @@ DB_seq(lua_State *L)
     } else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -340,7 +340,7 @@ DB_sync(lua_State *L)
     } else
         status = -1;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

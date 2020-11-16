@@ -136,7 +136,7 @@ TIMEZONE_set_tz_minuteswest(lua_State *L)
 
     tz->tz_minuteswest = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -159,7 +159,7 @@ TIMEZONE_get_tz_minuteswest(lua_State *L)
     tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
     data = tz->tz_minuteswest;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -186,7 +186,7 @@ TIMEZONE_set_tz_dsttime(lua_State *L)
 
     tz->tz_dsttime = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -209,7 +209,7 @@ TIMEZONE_get_tz_dsttime(lua_State *L)
     tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
     data = tz->tz_dsttime;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

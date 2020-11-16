@@ -205,7 +205,7 @@ PASSWD_pw_uid(lua_State *L)
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_uid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -228,7 +228,7 @@ PASSWD_pw_gid(lua_State *L)
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_gid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -251,7 +251,7 @@ PASSWD_pw_change(lua_State *L)
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_change;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -366,7 +366,7 @@ PASSWD_pw_expire(lua_State *L)
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_expire;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -389,7 +389,7 @@ PASSWD_pw_fields(lua_State *L)
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
     data = pwd->pw_fields;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

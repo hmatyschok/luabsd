@@ -160,7 +160,7 @@ SBUF_size(lua_State *L)
     sb = luab_udata(L, 1, &luab___sbuf_type, struct __sbuf *);
     sz = sb->_size;
 
-    return (luab_pusherr(L, sz));
+    return (luab_pushxinteger(L, sz));
 }
 
 /*

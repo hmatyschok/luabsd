@@ -140,7 +140,7 @@ FLOCK_set_l_start(lua_State *L)
 
     l->l_start = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -154,7 +154,7 @@ FLOCK_get_l_start(lua_State *L)
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_start;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* len = 0 means until end of file */
@@ -171,7 +171,7 @@ FLOCK_set_l_len(lua_State *L)
 
     l->l_len = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -185,7 +185,7 @@ FLOCK_get_l_len(lua_State *L)
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_len;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* lock owner */
@@ -202,7 +202,7 @@ FLOCK_set_l_pid(lua_State *L)
 
     l->l_pid = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -216,7 +216,7 @@ FLOCK_get_l_pid(lua_State *L)
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_pid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* lock type: read/write, etc. */
@@ -233,7 +233,7 @@ FLOCK_set_l_type(lua_State *L)
 
     l->l_type = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -247,7 +247,7 @@ FLOCK_get_l_type(lua_State *L)
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_type;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* type of l_start */
@@ -264,7 +264,7 @@ FLOCK_set_l_whence(lua_State *L)
 
     l->l_whence = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -278,7 +278,7 @@ FLOCK_get_l_whence(lua_State *L)
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_whence;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /* remote system id or zero for local */
@@ -295,7 +295,7 @@ FLOCK_set_l_sysid(lua_State *L)
 
     l->l_sysid = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 static int
@@ -309,7 +309,7 @@ FLOCK_get_l_sysid(lua_State *L)
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
     data = l->l_sysid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

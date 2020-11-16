@@ -192,7 +192,7 @@ STATFS_f_version(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_version;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -215,7 +215,7 @@ STATFS_f_type(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_type;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -238,7 +238,7 @@ STATFS_f_flags(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_flags;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -261,7 +261,7 @@ STATFS_f_bsize(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_bsize;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -284,7 +284,7 @@ STATFS_f_iosize(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_iosize;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -307,7 +307,7 @@ STATFS_f_blocks(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_blocks;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -330,7 +330,7 @@ STATFS_f_bfree(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_bfree;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -353,7 +353,7 @@ STATFS_f_bavail(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_bavail;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -376,7 +376,7 @@ STATFS_f_files(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_files;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -399,7 +399,7 @@ STATFS_f_ffree(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_ffree;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -422,7 +422,7 @@ STATFS_f_syncwrites(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_syncwrites;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -445,7 +445,7 @@ STATFS_f_asyncwrites(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_asyncwrites;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -468,7 +468,7 @@ STATFS_f_syncreads(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_syncreads;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -491,7 +491,7 @@ STATFS_f_asyncreads(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_asyncreads;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -514,7 +514,7 @@ STATFS_f_namemax(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_namemax;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -537,7 +537,7 @@ STATFS_f_owner(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     data = f->f_owner;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

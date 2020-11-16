@@ -86,7 +86,7 @@ luab_clearerr(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -116,7 +116,7 @@ luab_fclose(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -146,7 +146,7 @@ luab_feof(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -176,7 +176,7 @@ luab_ferror(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -206,7 +206,7 @@ luab_fflush(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -236,7 +236,7 @@ luab_fgetc(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -272,7 +272,7 @@ luab_fgetpos(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -332,7 +332,7 @@ luab_fgets(lua_State *L)
         errno = ERANGE;
         status = 0;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -499,7 +499,7 @@ luab_fseek(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -535,7 +535,7 @@ luab_fsetpos(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 
@@ -574,7 +574,7 @@ luab_ftell(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 
@@ -624,7 +624,7 @@ luab_getc(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -644,7 +644,7 @@ luab_getchar(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     status = getchar();
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -691,7 +691,7 @@ luab_gets(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #if __EXT1_VISIBLE
 /***
@@ -742,7 +742,7 @@ luab_gets_s(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __EXT1_VISIBLE */
 
@@ -785,7 +785,7 @@ luab_rewind(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 
@@ -862,7 +862,7 @@ luab_fileno(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __POSIX_VISIBLE */
 
@@ -912,7 +912,7 @@ luab_getc_unlocked(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -932,7 +932,7 @@ luab_getchar_unlocked(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     status = getchar_unlocked();
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 #endif /* __POSIX_VISIBLE >= 199506 */
@@ -965,7 +965,7 @@ luab_clearerr_unlocked(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -995,7 +995,7 @@ luab_feof_unlocked(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1025,7 +1025,7 @@ luab_ferror_unlocked(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1055,7 +1055,7 @@ luab_fileno_unlocked(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 500
@@ -1100,7 +1100,7 @@ luab_fseeko(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1130,7 +1130,7 @@ luab_ftello(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif
 
@@ -1180,7 +1180,7 @@ luab_getw(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* BSD or X/Open before issue 6 */
 
@@ -1277,7 +1277,7 @@ luab_fcloseall(lua_State *L)
 
     fcloseall();
 
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***
@@ -1316,7 +1316,7 @@ luab_fdclose(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1346,7 +1346,7 @@ luab_fpurge(lua_State *L)
         errno = ENOENT;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
 

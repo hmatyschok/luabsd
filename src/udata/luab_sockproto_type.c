@@ -136,7 +136,7 @@ SOCKPROTO_set_sp_family(lua_State *L)
     data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
     sp->sp_family = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -159,7 +159,7 @@ SOCKPROTO_get_sp_family(lua_State *L)
     sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
     data = sp->sp_family;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -185,7 +185,7 @@ SOCKPROTO_set_sp_protocol(lua_State *L)
     data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
     sp->sp_protocol = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -208,7 +208,7 @@ SOCKPROTO_get_sp_protocol(lua_State *L)
     sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
     data = sp->sp_protocol;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

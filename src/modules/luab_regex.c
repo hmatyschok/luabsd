@@ -149,7 +149,7 @@ luab_regcomp(lua_State *L)
 
     status = regcomp(preg, pattern, cflags);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -212,7 +212,7 @@ luab_regexec(lua_State *L)
     } else
         status = REG_ESPACE;
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -289,7 +289,7 @@ luab_regerror(lua_State *L)
         errno = ERANGE;
         len = 0;
     }
-    return (luab_pusherr(L, len));
+    return (luab_pushxinteger(L, len));
 }
 
 /***
@@ -314,7 +314,7 @@ luab_regfree(lua_State *L)
     preg = luab_udata(L, 1, luab_mx(REGEX), regex_t *);
     regfree(preg);
 
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /*

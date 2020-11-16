@@ -203,7 +203,7 @@ XVFSCONF_vfc_typenum(lua_State *L)
     vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     data = vfc->vfc_typenum;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -226,7 +226,7 @@ XVFSCONF_vfc_refcount(lua_State *L)
     vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     data = vfc->vfc_refcount;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -249,7 +249,7 @@ XVFSCONF_vfc_flags(lua_State *L)
     vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
     data = vfc->vfc_flags;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

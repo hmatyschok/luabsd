@@ -153,7 +153,7 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 
         lua_pop(L, 1);
     }
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***

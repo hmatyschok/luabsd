@@ -136,7 +136,7 @@ TIMESPEC_set_tv_sec(lua_State *L)
 
     tv->tv_sec = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -159,7 +159,7 @@ TIMESPEC_get_tv_sec(lua_State *L)
     tv = luab_udata(L, 1, &luab_timespec_type, struct timespec *);
     data = tv->tv_sec;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -186,7 +186,7 @@ TIMESPEC_set_tv_nsec(lua_State *L)
 
     tv->tv_nsec = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -209,7 +209,7 @@ TIMESPEC_get_tv_nsec(lua_State *L)
     tv = luab_udata(L, 1, &luab_timespec_type, struct timespec *);
     data = tv->tv_nsec;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

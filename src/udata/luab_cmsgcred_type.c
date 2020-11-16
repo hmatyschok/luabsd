@@ -145,7 +145,7 @@ CMSGCRED_cmcred_pid(lua_State *L)
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_pid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -168,7 +168,7 @@ CMSGCRED_cmcred_uid(lua_State *L)
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_uid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -191,7 +191,7 @@ CMSGCRED_cmcred_euid(lua_State *L)
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_euid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -214,7 +214,7 @@ CMSGCRED_cmcred_gid(lua_State *L)
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_gid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -237,7 +237,7 @@ CMSGCRED_cmcred_ngroups(lua_State *L)
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_ngroups;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

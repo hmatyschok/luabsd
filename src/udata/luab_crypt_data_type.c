@@ -141,7 +141,7 @@ CRYPT_DATA_set_initialized(lua_State *L)
 
     cd->initialized = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -164,7 +164,7 @@ CRYPT_DATA_get_initialized(lua_State *L)
     cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
     data = cd->initialized;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -194,7 +194,7 @@ CRYPT_DATA_set_buf(lua_State *L)
 
     (void)memmove(cd->__buf, buf, len);
 
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***

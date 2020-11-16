@@ -123,7 +123,7 @@ DBT_get_size(lua_State *L)
     dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
     len = dbt->size;
 
-    return (luab_pusherr(L, len));
+    return (luab_pushxinteger(L, len));
 }
 
 /*
@@ -171,7 +171,7 @@ DBT_set_data(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 static int
@@ -186,7 +186,7 @@ DBT_get_data(lua_State *L)
     dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
     status = luab_iovec_copyin(buf, dbt->data, dbt->size);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

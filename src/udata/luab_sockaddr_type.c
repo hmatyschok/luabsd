@@ -343,7 +343,7 @@ SOCKADDR_sa_len(lua_State *L)
     sa = luab_udata(L, 2, &luab_sockaddr_type, struct sockaddr *);
     sa_len = sa->sa_len;
 
-    return (luab_pusherr(L, sa_len));
+    return (luab_pushxinteger(L, sa_len));
 }
 
 /***
@@ -366,7 +366,7 @@ SOCKADDR_sa_family(lua_State *L)
     sa = luab_udata(L, 1, &luab_sockaddr_type, struct sockaddr *);
     sa_family = sa->sa_family;
 
-    return (luab_pusherr(L, sa_family));
+    return (luab_pushxinteger(L, sa_family));
 }
 
 /*
@@ -414,7 +414,7 @@ SOCKADDR_set_sdl_index(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -442,7 +442,7 @@ SOCKADDR_get_sdl_index(lua_State *L)
         errno = EPERM;
         sdl_index = -1;
     }
-    return (luab_pusherr(L, sdl_index));
+    return (luab_pushxinteger(L, sdl_index));
 }
 
 /***
@@ -475,7 +475,7 @@ SOCKADDR_set_sdl_type(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -503,7 +503,7 @@ SOCKADDR_get_sdl_type(lua_State *L)
         errno = EPERM;
         sdl_type = -1;
     }
-    return (luab_pusherr(L, sdl_type));
+    return (luab_pushxinteger(L, sdl_type));
 }
 
 /***
@@ -536,7 +536,7 @@ SOCKADDR_set_sdl_nlen(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -564,7 +564,7 @@ SOCKADDR_get_sdl_nlen(lua_State *L)
         errno = EPERM;
         sdl_nlen = -1;
     }
-    return (luab_pusherr(L, sdl_nlen));
+    return (luab_pushxinteger(L, sdl_nlen));
 }
 
 /***
@@ -597,7 +597,7 @@ SOCKADDR_set_sdl_alen(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -625,7 +625,7 @@ SOCKADDR_get_sdl_alen(lua_State *L)
         errno = EPERM;
         sdl_alen = -1;
     }
-    return (luab_pusherr(L, sdl_alen));
+    return (luab_pushxinteger(L, sdl_alen));
 }
 
 /***
@@ -653,7 +653,7 @@ SOCKADDR_sdl_slen(lua_State *L)
         errno = EPERM;
         sdl_slen = -1;
     }
-    return (luab_pusherr(L, sdl_slen));
+    return (luab_pushxinteger(L, sdl_slen));
 }
 
 /*
@@ -700,7 +700,7 @@ SOCKADDR_set_sin_port(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -728,7 +728,7 @@ SOCKADDR_get_sin_port(lua_State *L)
         errno = EPERM;
         sin_port = -1;
     }
-    return (luab_pusherr(L, sin_port));
+    return (luab_pushxinteger(L, sin_port));
 }
 
 /***
@@ -763,7 +763,7 @@ SOCKADDR_set_sin_addr(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -842,7 +842,7 @@ SOCKADDR_set_sin6_port(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -870,7 +870,7 @@ SOCKADDR_get_sin6_port(lua_State *L)
         errno = EPERM;
         sin6_port = -1;
     }
-    return (luab_pusherr(L, sin6_port));
+    return (luab_pushxinteger(L, sin6_port));
 }
 
 /***
@@ -903,7 +903,7 @@ SOCKADDR_set_sin6_flowinfo(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -931,7 +931,7 @@ SOCKADDR_get_sin6_flowinfo(lua_State *L)
         errno = EPERM;
         sin6_flowinfo = -1;
     }
-    return (luab_pusherr(L, sin6_flowinfo));
+    return (luab_pushxinteger(L, sin6_flowinfo));
 }
 
 /***
@@ -965,7 +965,7 @@ SOCKADDR_set_sin6_addr(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1028,7 +1028,7 @@ SOCKADDR_set_sin6_scope_id(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1056,7 +1056,7 @@ SOCKADDR_get_sin6_scope_id(lua_State *L)
         errno = EPERM;
         sin6_scope_id = -1;
     }
-    return (luab_pusherr(L, sin6_scope_id));
+    return (luab_pushxinteger(L, sin6_scope_id));
 }
 
 /*
@@ -1099,7 +1099,7 @@ SOCKADDR_set_sun_path(lua_State *L)
         errno = EPERM;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1151,7 +1151,7 @@ SOCKADDR_len(lua_State *L)
 
     sa = luab_udata(L, 1, &luab_sockaddr_type, struct sockaddr *);
 
-    return (luab_pusherr(L, sa->sa_len));
+    return (luab_pushxinteger(L, sa->sa_len));
 }
 
 static int

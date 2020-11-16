@@ -129,7 +129,7 @@ luab_accept(lua_State *L)
 
     as = accept(s, addr, addrlen);
 
-    return (luab_pusherr(L, as));
+    return (luab_pushxinteger(L, as));
 }
 
 /***
@@ -161,7 +161,7 @@ luab_bind(lua_State *L)
 
     status = bind(s, addr, addrlen);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -193,7 +193,7 @@ luab_connect(lua_State *L)
 
     status = connect(s, name, namelen);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 #if __BSD_VISIBLE
@@ -236,7 +236,7 @@ luab_accept4(lua_State *L)
 
     as = accept4(s, addr, addrlen, flags);
 
-    return (luab_pusherr(L, as));
+    return (luab_pushxinteger(L, as));
 }
 
 /***
@@ -274,7 +274,7 @@ luab_bindat(lua_State *L)
 
     status = bindat(fd, s, addr, addrlen);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -312,7 +312,7 @@ luab_connectat(lua_State *L)
 
     status = connectat(fd, s, name, namelen);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif  /* __BSD_VISIBLE */
 
@@ -347,7 +347,7 @@ luab_getpeername(lua_State *L)
 
     status = getpeername(s, name, namelen);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -381,7 +381,7 @@ luab_getsockname(lua_State *L)
 
     status = getsockname(s, name, namelen);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -414,7 +414,7 @@ luab_getsockopt(lua_State *L)
     status = getsockopt(sopt.sopt_sock, sopt.sopt_level,
         sopt.sopt_name, sopt.sopt_val, sopt.sopt_x);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -442,7 +442,7 @@ luab_listen(lua_State *L)
 
     status = listen(s, backlog);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -581,7 +581,7 @@ luab_recvmsg(lua_State *L)
         errno = ERANGE;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 #if __BSD_VISIBLE
@@ -637,7 +637,7 @@ luab_recvmmsg(lua_State *L)
     } else
         count = -1;
 
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 #endif
 
@@ -778,7 +778,7 @@ luab_sendmsg(lua_State *L)
         errno = ERANGE;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 #if __BSD_VISIBLE
@@ -840,7 +840,7 @@ luab_sendfile(lua_State *L)
 
     status = sendfile(fd, s, offset, nbytes, hdtr, sbytes, flags);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -892,7 +892,7 @@ luab_sendmmsg(lua_State *L)
     } else
         count = -1;
 
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 /***
@@ -917,7 +917,7 @@ luab_setfib(lua_State *L)
     fib = (int)luab_checkinteger(L, 1, INT_MAX);
     status = setfib(fib);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif
 
@@ -951,7 +951,7 @@ luab_setsockopt(lua_State *L)
     status = setsockopt(sopt.sopt_sock, sopt.sopt_level,
         sopt.sopt_name, sopt.sopt_val, sopt.sopt_len);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -984,7 +984,7 @@ luab_shutdown(lua_State *L)
     how = (int)luab_checkinteger(L, 2, INT_MAX);
     status = shutdown(s, how);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1008,7 +1008,7 @@ luab_sockatmark(lua_State *L)
     s = (int)luab_checkinteger(L, 1, INT_MAX);
     status = sockatmark(s);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -1042,7 +1042,7 @@ luab_socket(lua_State *L)
 
     s = socket(domain, type, protocol);
 
-    return (luab_pusherr(L, s));
+    return (luab_pushxinteger(L, s));
 }
 
 /***
@@ -1087,7 +1087,7 @@ luab_socketpair(lua_State *L)
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
         luab_table_pushint(L, 4, tbl, 0, 1);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

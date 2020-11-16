@@ -200,7 +200,7 @@ MSGHDR_msg_namelen(lua_State *L)
     msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
     namelen = msg->msg_namelen;
 
-    return (luab_pusherr(L, namelen));
+    return (luab_pushxinteger(L, namelen));
 }
 
 /***
@@ -223,7 +223,7 @@ MSGHDR_msg_iovlen(lua_State *L)
     msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
     iovlen = msg->msg_iovlen;
 
-    return (luab_pusherr(L, iovlen));
+    return (luab_pushxinteger(L, iovlen));
 }
 
 /***
@@ -246,7 +246,7 @@ MSGHDR_msg_flags(lua_State *L)
     msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
     flags = msg->msg_flags;
 
-    return (luab_pusherr(L, flags));
+    return (luab_pushxinteger(L, flags));
 }
 
 /***
@@ -269,7 +269,7 @@ MSGHDR_msg_len(lua_State *L)
     msg = luab_udata(L, 1, &luab_msghdr_type, struct mmsghdr *);
     len = msg->msg_len;
 
-    return (luab_pusherr(L, len));
+    return (luab_pushxinteger(L, len));
 }
 
 /*
@@ -310,7 +310,7 @@ MSGHDR_set_msg_name(lua_State *L)
 
     namelen = msg->msg_namelen;
 
-    return (luab_pusherr(L, namelen));
+    return (luab_pushxinteger(L, namelen));
 }
 
 /***
@@ -378,7 +378,7 @@ MSGHDR_set_msg_iov(lua_State *L)
     } else
         iovlen = -1;
 
-    return (luab_pusherr(L, iovlen));
+    return (luab_pushxinteger(L, iovlen));
 }
 
 /***

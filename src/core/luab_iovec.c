@@ -287,7 +287,7 @@ luab_iovec_read(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -320,7 +320,7 @@ luab_iovec_readv(lua_State *L, int fd, luab_iovec_t *buf, size_t n)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -360,7 +360,7 @@ luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -393,7 +393,7 @@ luab_iovec_writev(lua_State *L, int fd, luab_iovec_t *buf, size_t n)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 /* 1003.1-2001 */
@@ -437,7 +437,7 @@ luab_iovec_readlink(lua_State *L, const char *path, luab_iovec_t *buf, size_t *n
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE */
 
@@ -482,7 +482,7 @@ luab_iovec_pread(lua_State *L, int fd, luab_iovec_t *buf, size_t *n, off_t off)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -522,7 +522,7 @@ luab_iovec_pwrite(lua_State *L, int fd, luab_iovec_t *buf, size_t *n, off_t off)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 #endif /* __POSIX_VISIBLE >= 200809 || __XSI_VISIBLE */
 
@@ -567,7 +567,7 @@ luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
 
@@ -602,7 +602,7 @@ luab_iovec_preadv(lua_State *L, int fd, luab_iovec_t *buf, size_t n, off_t off)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -635,7 +635,7 @@ luab_iovec_pwritev(lua_State *L, int fd, luab_iovec_t *buf, size_t n, off_t off)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 #endif /* __BSD_VISIBLE */
 
@@ -685,7 +685,7 @@ luab_iovec_recv(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -731,7 +731,7 @@ luab_iovec_recvfrom(lua_State *L, int s, luab_iovec_t *buf, size_t *n,
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -774,7 +774,7 @@ luab_iovec_send(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }
 
 int
@@ -818,5 +818,5 @@ luab_iovec_sendto(lua_State *L, int s, luab_iovec_t *buf, size_t *n,
         errno = EINVAL;
         count = -1;
     }
-    return (luab_pusherr(L, count));
+    return (luab_pushxinteger(L, count));
 }

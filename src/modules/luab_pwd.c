@@ -129,7 +129,7 @@ luab_endpwent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     endpwent();
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***
@@ -172,7 +172,7 @@ luab_setpwent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     setpwent();
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 #endif /* __XSI_VISIBLE */
 
@@ -235,7 +235,7 @@ luab_getpwnam_r(lua_State *L)
         errno = ERANGE;
         status = 0;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -296,7 +296,7 @@ luab_getpwuid_r(lua_State *L)
         errno = ERANGE;
         status = 0;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 500 */
 
@@ -323,7 +323,7 @@ luab_setpassent(lua_State *L)
 
     stayopen = luab_checkinteger(L, 1, INT_MAX);
     status = setpassent(stayopen);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -381,7 +381,7 @@ luab_getpwent_r(lua_State *L)
         errno = ERANGE;
         status = 0;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -442,7 +442,7 @@ luab_uid_from_user(lua_State *L)
     uid = &(xp->un_uid);
 
     status = uid_from_user(name, uid);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
 

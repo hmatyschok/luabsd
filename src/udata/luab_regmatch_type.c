@@ -135,7 +135,7 @@ REGMATCH_rm_so(lua_State *L)
     rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
     data = rm->rm_so;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -158,7 +158,7 @@ REGMATCH_rm_eo(lua_State *L)
     rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
     data = rm->rm_eo;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

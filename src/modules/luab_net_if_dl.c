@@ -65,7 +65,7 @@ luab_link_addr(lua_State *L)
 
     link_addr(addr, sdl);
 
-    return (luab_pusherr(L, 0));
+    return (luab_pushxinteger(L, 0));
 }
 
 /***
@@ -122,7 +122,7 @@ luab_link_ntoa(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***

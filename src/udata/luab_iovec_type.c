@@ -183,7 +183,7 @@ IOVEC_max_len(lua_State *L)
         errno = EBUSY;
         nbytes = -1;
     }
-    return (luab_pusherr(L, nbytes));
+    return (luab_pushxinteger(L, nbytes));
 }
 
 /*
@@ -239,7 +239,7 @@ IOVEC_set_len(lua_State *L)
         errno = ERANGE;
         len = -1;
     }
-    return (luab_pusherr(L, len));
+    return (luab_pushxinteger(L, len));
 }
 
 /***
@@ -271,7 +271,7 @@ IOVEC_get_len(lua_State *L)
         self->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
-        status = luab_pusherr(L, -1);
+        status = luab_pushxinteger(L, -1);
     }
     return (status);
 }
@@ -315,7 +315,7 @@ IOVEC_clear(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -344,7 +344,7 @@ IOVEC_copy_in(lua_State *L)
 
     dp = luab_iovec_checklstring(L, 2, len);
     status = luab_iovec_copyin(self, dp, len);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -432,7 +432,7 @@ IOVEC_resize(lua_State *L)
         errno = EBUSY;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

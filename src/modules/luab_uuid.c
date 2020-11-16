@@ -88,7 +88,7 @@ luab_uuid_compare(lua_State *L)
 
     ret = uuid_compare(uuid1, uuid2, status);
 
-    return (luab_pusherr(L, ret));
+    return (luab_pushxinteger(L, ret));
 }
 
 /***
@@ -130,7 +130,7 @@ luab_uuid_equal(lua_State *L)
 
     ret = uuid_equal(uuid1, uuid2, status);
 
-    return (luab_pusherr(L, ret));
+    return (luab_pushxinteger(L, ret));
 }
 
 /***
@@ -172,7 +172,7 @@ luab_uuid_from_string(lua_State *L)
 
     uuid_from_string(str, uuid, status);
 
-    return (luab_pusherr(L, *status));
+    return (luab_pushxinteger(L, *status));
 }
 
 /***
@@ -212,7 +212,7 @@ luab_uuid_hash(lua_State *L)
 
     hash = uuid_hash(uuid, status);
 
-    return (luab_pusherr(L, hash));
+    return (luab_pushxinteger(L, hash));
 }
 
 /***
@@ -262,7 +262,7 @@ luab_uuid_enc_le(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -312,7 +312,7 @@ luab_uuid_dec_le(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -362,7 +362,7 @@ luab_uuid_enc_be(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -412,7 +412,7 @@ luab_uuid_dec_be(lua_State *L)
         errno = ERANGE;
         status = -1;
     }
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

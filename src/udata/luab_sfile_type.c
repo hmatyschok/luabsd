@@ -210,7 +210,7 @@ SFILE_r(lua_State *L)
         errno = ENOENT;
         data = -1;
     }
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -238,7 +238,7 @@ SFILE_w(lua_State *L)
         errno = ENOENT;
         data = -1;
     }
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -266,7 +266,7 @@ SFILE_flags(lua_State *L)
         errno = ENOENT;
         data = -1;
     }
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -294,7 +294,7 @@ SFILE_file(lua_State *L)
         errno = ENOENT;
         data = -1;
     }
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

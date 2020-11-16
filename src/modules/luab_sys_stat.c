@@ -80,7 +80,7 @@ luab_chflags(lua_State *L)
 
     status = chflags(path, flags);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -138,7 +138,7 @@ luab_chflagsat(lua_State *L)
 
     status = chflagsat(fd, path, flags, atflag);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif
 
@@ -188,7 +188,7 @@ luab_chmod(lua_State *L)
 
     status = chmod(path, mode);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 #if __BSD_VISIBLE
@@ -227,7 +227,7 @@ luab_fchflags(lua_State *L)
 
     status = fchflags(fd, flags);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif
 #if __POSIX_VISIBLE >= 200112
@@ -277,7 +277,7 @@ luab_fchmod(lua_State *L)
 
     status = fchmod(fd, mode);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif
 #if __POSIX_VISIBLE >= 200809
@@ -347,7 +347,7 @@ luab_fchmodat(lua_State *L)
 
     status = fchmodat(fd, path, mode, flag);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -396,7 +396,7 @@ luab_futimens(lua_State *L)
     if (times != NULL)
         luab_table_pushtimespec(L, 2, tbl, 0, 1);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -465,7 +465,7 @@ luab_utimensat(lua_State *L)
     if (times != NULL)
         luab_table_pushtimespec(L, 2, tbl, 0, 1);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 #endif /* __POSIX_VISIBLE >= 200809 */
@@ -496,7 +496,7 @@ luab_fstat(lua_State *L)
 
     status = fstat(fd, sb);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 #if __BSD_VISIBLE
@@ -535,7 +535,7 @@ luab_lchflags(lua_State *L)
 
     status = lchflags(path, flags);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -584,7 +584,7 @@ luab_lchmod(lua_State *L)
 
     status = lchmod(path, mode);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif
 #if __POSIX_VISIBLE >= 200112
@@ -614,7 +614,7 @@ luab_lstat(lua_State *L)
 
     status = lstat(path, sb);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif
 
@@ -645,7 +645,7 @@ luab_mkdir(lua_State *L)
 
     status = mkdir(path, mode);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -675,7 +675,7 @@ luab_mkfifo(lua_State *L)
 
     status = mkfifo(path, mode);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 #if !defined(_MKNOD_DECLARED) && __XSI_VISIBLE
@@ -709,7 +709,7 @@ luab_mknod(lua_State *L)
 
     status = mknod(path, mode, dev);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #define _MKNOD_DECLARED
 #endif
@@ -740,7 +740,7 @@ luab_stat(lua_State *L)
 
     status = stat(path, sb);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -765,7 +765,7 @@ luab_umask(lua_State *L)
     numask = (mode_t)luab_checkinteger(L, 1, ALLPERMS);
     oumask = umask(numask);
 
-    return (luab_pusherr(L, oumask));
+    return (luab_pushxinteger(L, oumask));
 }
 
 #if __POSIX_VISIBLE >= 200809
@@ -815,7 +815,7 @@ luab_fstatat(lua_State *L)
 
     status = fstatat(fd, path, sb, flag);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -860,7 +860,7 @@ luab_mkdirat(lua_State *L)
 
     status = mkdirat(fd, path, mode);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -905,7 +905,7 @@ luab_mkfifoat(lua_State *L)
 
     status = mkfifoat(fd, path, mode);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -953,7 +953,7 @@ luab_mknodat(lua_State *L)
 
     status = mknodat(fd, path, mode, dev);
 
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
 

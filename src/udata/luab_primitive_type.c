@@ -108,7 +108,7 @@ PRIMITIVE_set_char(lua_State *L)
 
     xp->un_char = (char)value;
 
-    return (luab_pusherr(L, xp->un_char));
+    return (luab_pushxinteger(L, xp->un_char));
 }
 
 static int
@@ -123,7 +123,7 @@ PRIMITIVE_get_char(lua_State *L)
 
     value = (xp->un_intx & UCHAR_MAX);
 
-    return (luab_pusherr(L, value));
+    return (luab_pushxinteger(L, value));
 }
 
 static int
@@ -139,7 +139,7 @@ PRIMITIVE_set_short(lua_State *L)
 
     xp->un_short = (short)value;
 
-    return (luab_pusherr(L, xp->un_short));
+    return (luab_pushxinteger(L, xp->un_short));
 }
 
 static int
@@ -154,7 +154,7 @@ PRIMITIVE_get_short(lua_State *L)
 
     value = (xp->un_intx & USHRT_MAX);
 
-    return (luab_pusherr(L, value));
+    return (luab_pushxinteger(L, value));
 }
 
 
@@ -171,7 +171,7 @@ PRIMITIVE_set_int(lua_State *L)
 
     xp->un_int = (int)value;
 
-    return (luab_pusherr(L, xp->un_int));
+    return (luab_pushxinteger(L, xp->un_int));
 }
 
 static int
@@ -186,7 +186,7 @@ PRIMITIVE_get_int(lua_State *L)
 
     value = (xp->un_intx & UINT_MAX);
 
-    return (luab_pusherr(L, value));
+    return (luab_pushxinteger(L, value));
 }
 
 static int
@@ -202,7 +202,7 @@ PRIMITIVE_set_long(lua_State *L)
 
     xp->un_long = (long)value;
 
-    return (luab_pusherr(L, xp->un_long));
+    return (luab_pushxinteger(L, xp->un_long));
 }
 
 static int
@@ -217,7 +217,7 @@ PRIMITIVE_get_long(lua_State *L)
 
     value = (xp->un_intx & ULONG_MAX);
 
-    return (luab_pusherr(L, value));
+    return (luab_pushxinteger(L, value));
 }
 
 static int
@@ -233,7 +233,7 @@ PRIMITIVE_set_socklen(lua_State *L)
 
     xp->un_socklen = (socklen_t)value;
 
-    return (luab_pusherr(L, xp->un_socklen));
+    return (luab_pushxinteger(L, xp->un_socklen));
 }
 
 static int
@@ -248,7 +248,7 @@ PRIMITIVE_get_socklen(lua_State *L)
 
     value = (xp->un_intx & INT_MAX);
 
-    return (luab_pusherr(L, value));
+    return (luab_pushxinteger(L, value));
 }
 
 /*

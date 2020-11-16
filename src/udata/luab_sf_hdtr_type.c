@@ -259,7 +259,7 @@ SF_HDTR_hdr_cnt(lua_State *L)
     hdtr = luab_udata(L, 1, &luab_sf_hdtr_type, struct sf_hdtr *);
     card = hdtr->hdr_cnt;
 
-    return (luab_pusherr(L, card));
+    return (luab_pushxinteger(L, card));
 }
 
 /***
@@ -282,7 +282,7 @@ SF_HDTR_trl_cnt(lua_State *L)
     hdtr = luab_udata(L, 1, &luab_sf_hdtr_type, struct sf_hdtr *);
     card = hdtr->trl_cnt;
 
-    return (luab_pusherr(L, card));
+    return (luab_pushxinteger(L, card));
 }
 
 /***
@@ -316,7 +316,7 @@ SF_HDTR_set_headers(lua_State *L)
 
     ud = luab_to_sf_hdtr(L, 1);
     card = sf_hdtr_checkiovec(L, 2, ud, SF_HDTR_CH_HDR);
-    return (luab_pusherr(L, card));
+    return (luab_pushxinteger(L, card));
 }
 
 /***
@@ -370,7 +370,7 @@ SF_HDTR_set_trailers(lua_State *L)
 
     ud = luab_to_sf_hdtr(L, 1);
     card = sf_hdtr_checkiovec(L, 2, ud, SF_HDTR_CH_TRL);
-    return (luab_pusherr(L, card));
+    return (luab_pushxinteger(L, card));
 }
 
 /***

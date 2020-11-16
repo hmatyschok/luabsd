@@ -134,7 +134,7 @@ LDIV_set_quot(lua_State *L)
 
     ldiv->quot = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -157,7 +157,7 @@ LDIV_get_quot(lua_State *L)
     ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
     data = ldiv->quot;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -184,7 +184,7 @@ LDIV_set_rem(lua_State *L)
 
     ldiv->rem = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -207,7 +207,7 @@ LDIV_get_rem(lua_State *L)
     ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
     data = ldiv->rem;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

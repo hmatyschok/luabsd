@@ -136,7 +136,7 @@ TIMEVAL_set_tv_sec(lua_State *L)
 
     tv->tv_sec = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -159,7 +159,7 @@ TIMEVAL_get_tv_sec(lua_State *L)
     tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
     data = tv->tv_sec;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -186,7 +186,7 @@ TIMEVAL_set_tv_usec(lua_State *L)
 
     tv->tv_usec = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -209,7 +209,7 @@ TIMEVAL_get_tv_usec(lua_State *L)
     tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
     data = tv->tv_usec;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

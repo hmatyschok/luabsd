@@ -114,7 +114,7 @@ luab_setttyent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     status = setttyent();
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -134,7 +134,7 @@ luab_endttyent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     status = endttyent();
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -158,7 +158,7 @@ luab_isdialuptty(lua_State *L)
 
     name = luab_checklstring(L, 1, luab_tty_nmax);
     status = isdialuptty(name);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /***
@@ -182,7 +182,7 @@ luab_isnettty(lua_State *L)
 
     name = luab_checklstring(L, 1, luab_tty_nmax);
     status = isnettty(name);
-    return (luab_pusherr(L, status));
+    return (luab_pushxinteger(L, status));
 }
 
 /*

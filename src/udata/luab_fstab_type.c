@@ -263,7 +263,7 @@ FSTAB_fs_freq(lua_State *L)
     fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
     data = fs->fs_freq;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -286,7 +286,7 @@ FSTAB_fs_passno(lua_State *L)
     fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
     data = fs->fs_passno;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /*

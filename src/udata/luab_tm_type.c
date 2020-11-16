@@ -167,7 +167,7 @@ TM_set_tm_sec(lua_State *L)
 
     tm->tm_sec = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -190,7 +190,7 @@ TM_get_tm_sec(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_sec;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -217,7 +217,7 @@ TM_set_tm_min(lua_State *L)
 
     tm->tm_min = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -240,7 +240,7 @@ TM_get_tm_min(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_min;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -267,7 +267,7 @@ TM_set_tm_hour(lua_State *L)
 
     tm->tm_hour = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -290,7 +290,7 @@ TM_get_tm_hour(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_hour;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -317,7 +317,7 @@ TM_set_tm_mday(lua_State *L)
 
     tm->tm_mday = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -340,7 +340,7 @@ TM_get_tm_mday(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_mday;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -367,7 +367,7 @@ TM_set_tm_mon(lua_State *L)
 
     tm->tm_mon = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -390,7 +390,7 @@ TM_get_tm_mon(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_mon;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -417,7 +417,7 @@ TM_set_tm_year(lua_State *L)
 
     tm->tm_year = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -440,7 +440,7 @@ TM_get_tm_year(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_year;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -467,7 +467,7 @@ TM_set_tm_wday(lua_State *L)
 
     tm->tm_wday = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -490,7 +490,7 @@ TM_get_tm_wday(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_wday;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -517,7 +517,7 @@ TM_set_tm_yday(lua_State *L)
 
     tm->tm_yday = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -540,7 +540,7 @@ TM_get_tm_yday(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_yday;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -567,7 +567,7 @@ TM_set_tm_isdst(lua_State *L)
 
     tm->tm_isdst = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -590,7 +590,7 @@ TM_get_tm_isdst(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_isdst;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -617,7 +617,7 @@ TM_set_tm_gmtoff(lua_State *L)
 
     tm->tm_gmtoff = data;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
@@ -640,7 +640,7 @@ TM_get_tm_gmtoff(lua_State *L)
     tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
     data = tm->tm_gmtoff;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***

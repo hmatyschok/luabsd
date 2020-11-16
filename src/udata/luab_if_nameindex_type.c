@@ -133,7 +133,7 @@ IF_NAMEINDEX_if_index(lua_State *L)
     ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
     if_index = ifni->if_index;
 
-    return (luab_pusherr(L, if_index));
+    return (luab_pushxinteger(L, if_index));
 }
 
 /***

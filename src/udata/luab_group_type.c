@@ -226,7 +226,7 @@ GROUP_gr_gid(lua_State *L)
     grp = luab_udata(L, 1, &luab_group_type, struct group *);
     data = grp->gr_gid;
 
-    return (luab_pusherr(L, data));
+    return (luab_pushxinteger(L, data));
 }
 
 /***
