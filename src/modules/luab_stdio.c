@@ -822,6 +822,31 @@ luab_puts(lua_State *L)
 }
 
 /***
+ * remove(3) - remove directory entry
+ *
+ * @function remove
+ *
+ * @param path              Specifies directory or file by path.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.remove(path)
+ */
+static int
+luab_remove(lua_State *L)
+{
+    const char *path;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    path = luab_checklstring(L, 1, MAXPATHLEN);
+    status = remove(path);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
  * rewind(3) - reposition a stream
  *
  * @function rewind
@@ -1148,6 +1173,7 @@ luab_fileno_unlocked(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
+
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE >= 500
 /***
  * fseeko(3) - reposition a stream
@@ -1550,6 +1576,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("putc",                   luab_putc),
     LUAB_FUNC("putchar",                luab_putchar),
     LUAB_FUNC("puts",                   luab_puts),
+    LUAB_FUNC("remove",                 luab_remove),
     LUAB_FUNC("rewind",                 luab_rewind),
 #if __POSIX_VISIBLE
     LUAB_FUNC("fdopen",                 luab_fdopen),
