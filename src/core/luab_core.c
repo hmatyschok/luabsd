@@ -106,7 +106,6 @@ luab_core_argerror(lua_State *L, int narg, void *v, size_t n, size_t sz, int up_
     if ((len = n * sz) != 0)
         luab_core_free(v, len);
 
-    errno = up_call;
     luaL_argerror(L, narg, strerror(up_call));
 }
 
@@ -115,7 +114,7 @@ luab_core_checkmaxargs(lua_State *L, int nmax)
 {
     int narg;
 
-    if ((narg = lua_gettop(L)) > nmax)  /* XXX */
+    if ((narg = lua_gettop(L)) > nmax)
         luaL_error(L, "#%d args, but #%d expected", narg, nmax);
 
     return (narg);

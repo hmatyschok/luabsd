@@ -41,15 +41,19 @@
 /*
  * XXX
  *
- *  extern FILE *__stdinp;
- *  extern FILE *__stdoutp;
- *  extern FILE *__stderrp;
+ * #1: Implementation of initializer for
  *
- *  #define stdin   __stdinp
- *  #define stdout  __stdoutp
- *  #define stderr  __stderrp
+ *      extern FILE *__stdinp;
+ *      extern FILE *__stdoutp;
+ *      extern FILE *__stderrp;
  *
- * Implementation of initializer is pending.
+ *      #define stdin   __stdinp
+ *      #define stdout  __stdoutp
+ *      #define stderr  __stderrp
+ *
+ *    is pending.
+ *
+ * #2: Subset of primitives shall implemented.
  */
 
 extern luab_module_t luab_stdio_lib;
@@ -368,24 +372,38 @@ luab_fopen(lua_State *L)
     return (luab_pushudata(L, m, stream));
 }
 
+/***
+ * fputc(3) - output a character or word to a stream
+ *
+ * @function fputc
+ *
+ * @param c                 Specifies character about to write on stream.
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fputc(c, stream)
+ */
+static int
+luab_fputc(lua_State *L)
+{
+    int c;
+    FILE *stream;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    if (stream != NULL)
+        status = fputc(c, stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * freopen(3) - stream open functions
@@ -428,35 +446,6 @@ luab_freopen(lua_State *L)
     }
     return (luab_pushudata(L, m, ret));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /***
  * fseek(3) - reposition a stream
@@ -538,15 +527,6 @@ luab_fsetpos(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-
-
-
-
-
-
-
-
-
 /***
  * ftell(3) - reposition a stream
  *
@@ -576,26 +556,6 @@ luab_ftell(lua_State *L)
     }
     return (luab_pushxinteger(L, status));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /***
  * getc(3) - get next character or word from input stream
@@ -746,16 +706,62 @@ luab_gets_s(lua_State *L)
 }
 #endif /* __EXT1_VISIBLE */
 
+/***
+ * putc(3) - output a character or word to a stream
+ *
+ * @function putc
+ *
+ * @param c                 Specifies character about to write on stream.
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.putc(c, stream)
+ */
+static int
+luab_putc(lua_State *L)
+{
+    int c;
+    FILE *stream;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
 
+    if (stream != NULL)
+        status = putc(c, stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pushxinteger(L, status));
+}
 
+/***
+ * putchar(3) - output a character or word to a stream
+ *
+ * @function putchar
+ *
+ * @param c                 Specifies character about to write on stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.putchar(c)
+ */
+static int
+luab_putchar(lua_State *L)
+{
+    int c, status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    status = putchar(c);
 
-
-
-
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * rewind(3) - reposition a stream
@@ -787,19 +793,6 @@ luab_rewind(lua_State *L)
     }
     return (luab_pushxinteger(L, status));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 #if __POSIX_VISIBLE
 /***
@@ -866,24 +859,6 @@ luab_fileno(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE */
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if __POSIX_VISIBLE >= 199506
 /***
  * getc_unlocked(3) - get next character or word from input stream
@@ -935,7 +910,64 @@ luab_getchar_unlocked(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * putc_unlocked(3) - output a character or word to a stream
+ *
+ * @function putc_unlocked
+ *
+ * @param c                 Specifies character about to write on stream.
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.putc_unlocked(c, stream)
+ */
+static int
+luab_putc_unlocked(lua_State *L)
+{
+    int c;
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = putc_unlocked(c, stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * putchar_unlocked(3) - output a character or word to a stream
+ *
+ * @function putchar_unlocked
+ *
+ * @param c                 Specifies character about to write on stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.putchar_unlocked(c)
+ */
+static int
+luab_putchar_unlocked(lua_State *L)
+{
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    status = putchar_unlocked(c);
+
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __POSIX_VISIBLE >= 199506 */
+
 #if __BSD_VISIBLE
 /***
  * clearerr_unlocked(3) - check and reset stream status
@@ -1134,24 +1166,6 @@ luab_ftello(lua_State *L)
 }
 #endif
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 #if __BSD_VISIBLE || __XSI_VISIBLE > 0 && __XSI_VISIBLE < 600
 /***
  * getw(3) - get next character or word from input stream
@@ -1182,18 +1196,40 @@ luab_getw(lua_State *L)
     }
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * putw(3) - output a character or word to a stream
+ *
+ * @function putw
+ *
+ * @param w                 Specifies word about to write on stream.
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.putw(w, stream)
+ */
+static int
+luab_putw(lua_State *L)
+{
+    int w;
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    w = luab_checkinteger(L, 1, UINT_MAX);
+    stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = putw(w, stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pushxinteger(L, status));
+}
 #endif /* BSD or X/Open before issue 6 */
-
-
-
-
-
-
-
-
-
-
-
 
 #if __POSIX_VISIBLE >= 200809
 /***
@@ -1252,13 +1288,6 @@ luab_fmemopen(lua_State *L)
     return (luab_pushudata(L, m, stream));
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
-
-
-
-
-
-
-
 
 #if __BSD_VISIBLE
 /***
@@ -1349,14 +1378,6 @@ luab_fpurge(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
-
-
-
-
-
-
-
-
 
 /*
  * Generator functions.
@@ -1456,42 +1477,29 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fgetpos",                luab_fgetpos),
     LUAB_FUNC("fgets",                  luab_fgets),
     LUAB_FUNC("fopen",                  luab_fopen),
-
+    LUAB_FUNC("fputc",                  luab_fputc),
     LUAB_FUNC("freopen",                luab_freopen),
-
     LUAB_FUNC("fseek",                  luab_fseek),
     LUAB_FUNC("fsetpos",                luab_fsetpos),
-
-
-
     LUAB_FUNC("ftell",                  luab_ftell),
-
-
     LUAB_FUNC("getc",                   luab_getc),
     LUAB_FUNC("getchar",                luab_getchar),
     LUAB_FUNC("gets",                   luab_gets),
 #if __EXT1_VISIBLE
     LUAB_FUNC("gets_s",                 luab_gets_s),
 #endif
-
-
+    LUAB_FUNC("putc",                   luab_putc),
+    LUAB_FUNC("putchar",                luab_putchar),
     LUAB_FUNC("rewind",                 luab_rewind),
-
-
 #if __POSIX_VISIBLE
     LUAB_FUNC("fdopen",                 luab_fdopen),
     LUAB_FUNC("fileno",                 luab_fileno),
 #endif /* __POSIX_VISIBLE */
-
-
-
-
-
 #if __POSIX_VISIBLE >= 199506
-
     LUAB_FUNC("getc_unlocked",          luab_getc_unlocked),
     LUAB_FUNC("getchar_unlocked",       luab_getchar_unlocked),
-
+    LUAB_FUNC("putc_unlocked",          luab_putc_unlocked),
+    LUAB_FUNC("putchar_unlocked",       luab_putchar_unlocked),
 #endif /* __POSIX_VISIBLE >= 199506 */
 #if __BSD_VISIBLE
     LUAB_FUNC("clearerr_unlocked",      luab_clearerr_unlocked),
@@ -1503,39 +1511,18 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fseeko",                 luab_fseeko),
     LUAB_FUNC("ftello",                 luab_ftello),
 #endif
-
-
 #if __BSD_VISIBLE || __XSI_VISIBLE > 0 && __XSI_VISIBLE < 600
     LUAB_FUNC("getw",                   luab_getw),
+    LUAB_FUNC("putw",                   luab_putw),
 #endif /* BSD or X/Open before issue 6 */
-
-
-
-
-
 #if __POSIX_VISIBLE >= 200809
     LUAB_FUNC("fmemopen",               luab_fmemopen),
 #endif /* __POSIX_VISIBLE >= 200809 */
-
-
-
-
 #if __BSD_VISIBLE
     LUAB_FUNC("fcloseall",              luab_fcloseall),
     LUAB_FUNC("fdclose",                luab_fdclose),
-
-
     LUAB_FUNC("fpurge",                 luab_fpurge),
-
 #endif /* __BSD_VISIBLE */
-
-
-
-
-
-
-
-
     LUAB_FUNC("sbuf_create",            luab_sbuf_create),
     LUAB_FUNC("sfile_create",           luab_sfile_create),
     LUAB_MOD_TBL_SENTINEL
