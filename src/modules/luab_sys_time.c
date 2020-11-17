@@ -120,7 +120,7 @@ luab_setitimer(lua_State *L)
 
     narg = luab_core_checkmaxargs(L, 4);
 
-    which = (int)luab_checkinteger(L, 1, INT_MAX);
+    which = (int)luab_checkinteger(L, 1, luab_int_max);
     value = luab_udataisnil(L, 2, luab_mx(ITIMERVAL), struct itimerval *);
     ovalue = luab_udataisnil(L, 3, luab_mx(ITIMERVAL), struct itimerval *);
 
@@ -157,7 +157,7 @@ luab_getitimer(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    which = (int)luab_checkinteger(L, 1, INT_MAX);
+    which = (int)luab_checkinteger(L, 1, luab_int_max);
     value = luab_udata(L, 2, luab_mx(ITIMERVAL), struct itimerval *);
 
     status = getitimer(which, value);

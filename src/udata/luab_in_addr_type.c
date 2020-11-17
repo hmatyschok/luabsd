@@ -130,7 +130,7 @@ IN_ADDR_set_s_addr(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     ia = luab_udata(L, 1, &luab_in_addr_type, struct in_addr *);
-    id = (in_addr_t)luab_checkinteger(L, 2, UINT_MAX);
+    id = (in_addr_t)luab_checkinteger(L, 2, luab_uint_max);
 
     ia->s_addr = id;
 

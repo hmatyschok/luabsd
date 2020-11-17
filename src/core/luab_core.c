@@ -43,8 +43,113 @@
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"
 
-size_t luab_buf_nmax;
-size_t luab_tty_nmax;
+const lua_Integer luab_char_bit = CHAR_BIT;
+
+const lua_Integer luab_schar_max = SCHAR_MAX;
+const lua_Integer luab_schar_min = SCHAR_MIN;
+const lua_Integer luab_uchar_max = UCHAR_MAX;
+
+const lua_Integer luab_char_max = CHAR_MAX;
+const lua_Integer luab_char_min = CHAR_MIN;
+
+const lua_Integer luab_ushrt_max = USHRT_MAX;
+
+const lua_Integer luab_shrt_max = SHRT_MAX;
+const lua_Integer luab_shrt_min = SHRT_MIN;
+
+const lua_Integer luab_uint_max = UINT_MAX;
+const lua_Integer luab_int_max = INT_MAX;
+const lua_Integer luab_int_min = INT_MIN;
+
+const lua_Integer luab_ulong_max = ULONG_MAX;
+const lua_Integer luab_long_max = LONG_MAX;
+const lua_Integer luab_long_min = LONG_MIN;
+
+#ifdef __LONG_LONG_SUPPORTED
+const lua_Integer luab_ullong_max = ULLONG_MAX;
+const lua_Integer luab_llong_max = LLONG_MAX;
+const lua_Integer luab_llong_min = LLONG_MIN;
+#else
+const lua_Integer luab_ullong_max = 0;
+const lua_Integer luab_llong_max = 0;
+const lua_Integer luab_llong_min = 0;
+#endif
+
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+const lua_Integer luab_ssize_max = SSIZE_MAX;
+#else
+const lua_Integer luab_ssize_max = 0;
+#endif
+
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+const lua_Integer luab_size_t_max = SIZE_T_MAX;
+const lua_Integer luab_off_max = OFF_MAX;
+const lua_Integer luab_off_min = OFF_MIN;
+#else
+const lua_Integer luab_size_t_max = 0;
+const lua_Integer luab_off_max = 0;
+const lua_Integer luab_off_min = 0;
+#endif
+
+#if __BSD_VISIBLE
+const lua_Integer luab_gid_max = GID_MAX;
+const lua_Integer luab_uid_max = UID_MAX;
+const lua_Integer luab_uquad_max = UQUAD_MAX;
+const lua_Integer luab_quad_max = QUAD_MAX;
+const lua_Integer luab_quad_min = QUAD_MIN;
+#else
+const lua_Integer luab_gid_max = 0;
+const lua_Integer luab_uid_max = 0;
+const lua_Integer luab_uquad_max = 0;
+const lua_Integer luab_quad_max = 0;
+const lua_Integer luab_quad_min = 0;
+#endif
+
+#if __XSI_VISIBLE || __POSIX_VISIBLE >= 200809
+const lua_Integer luab_long_bit = LONG_BIT;
+const lua_Integer luab_word_bit = WORD_BIT;
+#else
+const lua_Integer luab_long_bit = 0;
+const lua_Integer luab_word_bit = 0;
+#endif
+
+#if __POSIX_VISIBLE
+const lua_Integer luab_mq_prio_max = MQ_PRIO_MAX;
+#else
+const lua_Integer luab_mq_prio_max = 0;
+#endif
+
+/*
+ * XXX
+ *  Constraints shall set by sysconf(3), if any.
+ */
+
+typedef struct luab_sysconf_vec {
+    int             scv_name;
+    size_t          scv_x;
+    size_t          *scv_value;
+} luab_sysconf_vec_t;
+
+#define LUAB_SC_VEC_SENTINEL \
+    { .scv_name = -1, .scv_x = 0, .scv_value = NULL, }
+
+size_t luab_buf_max;
+size_t luab_path_max;
+
+size_t luab_comlen_max;
+size_t luab_interp_max;
+size_t luab_logname_max;
+size_t luab_uprc_max;
+
+size_t luab_ncargs;
+size_t luab_ngroups;
+size_t luab_nofile;
+size_t luab_nogroup;
+
+size_t luab_hostname_max;
+size_t luab_specname_max;
+
+size_t luab_tty_max;
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
@@ -69,7 +174,7 @@ void
 luab_core_freestr(caddr_t dp)
 {
     if (dp != NULL)
-        luab_core_free(dp, strnlen(dp, luab_buf_nmax));
+        luab_core_free(dp, strnlen(dp, luab_buf_max));
 }
 
 void
@@ -120,6 +225,20 @@ luab_core_checkmaxargs(lua_State *L, int nmax)
     return (narg);
 }
 
+size_t
+luab_core_sysconf(int name, size_t x)
+{
+    ssize_t sc;
+    size_t value;
+
+    if ((sc = sysconf(name)) < 0)
+        value = x;
+    else
+        value = (size_t)sc;
+
+    return (value);
+}
+
 /*
  * Access functions, n-th arg over argv, [stack -> C].
  *
@@ -146,7 +265,7 @@ luab_checklinteger(lua_State *L, int narg)
 {
     lua_Integer b_msk;
 
-    b_msk = (
+    b_msk = (lua_Integer)(
 #if defined(__LP64__) || defined(__mips_n64)
     LONG_MAX
 #else
@@ -234,10 +353,10 @@ void
 luab_rawsetfstring(lua_State *L, int narg, lua_Integer k, const char *fmt, ...)
 {
     va_list ap;
-    char buf[luab_buf_nmax];
+    char buf[luab_buf_max];
 
     va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_buf_nmax, fmt, ap);
+    (void)vsnprintf(buf, luab_buf_max, fmt, ap);
     va_end(ap);
 
     lua_pushstring(L, buf);
@@ -252,7 +371,7 @@ luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_buf_nmax)) {
+        (len < luab_buf_max)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -290,10 +409,10 @@ void
 luab_setfstring(lua_State *L, int narg, const char *k, const char *fmt, ...)
 {
     va_list ap;
-    char buf[luab_buf_nmax];
+    char buf[luab_buf_max];
 
     va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_buf_nmax, fmt, ap);
+    (void)vsnprintf(buf, luab_buf_max, fmt, ap);
     va_end(ap);
 
     lua_pushstring(L, buf);
@@ -308,7 +427,7 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_buf_nmax)) {
+        (len < luab_buf_max)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -403,7 +522,7 @@ luab_pushstring(lua_State *L, const char *dp)
     up_call = errno;
 
     if (dp != NULL) {
-        len = strnlen(dp, luab_buf_nmax);
+        len = strnlen(dp, luab_buf_max);
         lua_pushlstring(L, dp, len);
 
         if (up_call != 0) {
@@ -423,11 +542,11 @@ luab_pushstring(lua_State *L, const char *dp)
 int
 luab_pushfstring(lua_State *L, const char *fmt, ...)
 {
-    char buf[luab_buf_nmax];
+    char buf[luab_buf_max];
     va_list ap;
 
     va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_buf_nmax, fmt, ap);
+    (void)vsnprintf(buf, luab_buf_max, fmt, ap);
     va_end(ap);
 
     return (luab_pushstring(L, buf));
@@ -445,7 +564,7 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_buf_nmax)) {
+        (len < luab_buf_max)) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -1008,7 +1127,7 @@ luab_module_vec_t luab_typevec[] = {
  */
 
 static void
-luab_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
+luab_core_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
     const char *name, int new)
 {
     luab_module_vec_t *mv;
@@ -1024,15 +1143,15 @@ luab_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
 }
 
 static void
-luab_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
+luab_core_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
 {
-    luab_initmodule(L, narg, vec, name, 1);
+    luab_core_initmodule(L, narg, vec, name, 1);
 }
 
 static void
-luab_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
+luab_core_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
 {
-    luab_initmodule(L, narg, vec, NULL, 0);
+    luab_core_initmodule(L, narg, vec, NULL, 0);
 }
 
 LUAMOD_API int
@@ -1042,19 +1161,35 @@ luaopen_bsd(lua_State *L)
 
     lua_newtable(L);
 
-    luab_registerlib(L, -2, luab_arpa_vec,  "arpa");
-    luab_registerlib(L, -2, luab_net_vec,   "net");
-    luab_registerlib(L, -2, luab_sys_vec,   "sys");
-    luab_registerlib(L, -2, luab_core_vec,  NULL);
+    luab_core_registerlib(L, -2, luab_arpa_vec,  "arpa");
+    luab_core_registerlib(L, -2, luab_net_vec,   "net");
+    luab_core_registerlib(L, -2, luab_sys_vec,   "sys");
+    luab_core_registerlib(L, -2, luab_core_vec,  NULL);
 
     lua_pushvalue(L, -1);
 
     /* register complex data-types. */
-    luab_registertype(L, -2, luab_typevec);
+    luab_core_registertype(L, -2, luab_typevec);
 
     /* setup constraints */
-    luab_buf_nmax = LUAL_BUFFERSIZE;
-    luab_tty_nmax = sysconf(_SC_TTY_NAME_MAX);
+    luab_buf_max = LUAL_BUFFERSIZE;
+    luab_path_max = MAXPATHLEN;
+
+    luab_comlen_max = MAXCOMLEN;
+    luab_interp_max = MAXINTERP;
+    luab_logname_max = MAXLOGNAME;
+    luab_uprc_max = MAXUPRC;
+
+    luab_nofile = NOFILE;
+    luab_nogroup = NOGROUP;
+
+    luab_hostname_max = MAXHOSTNAMELEN;
+    luab_specname_max = SPECNAMELEN;
+
+    luab_ncargs = luab_core_sysconf(_SC_ARG_MAX, NCARGS);
+    luab_ngroups = luab_core_sysconf(_SC_NGROUPS_MAX, NGROUPS);
+    
+    luab_tty_max = luab_core_sysconf(_SC_TTY_NAME_MAX, SPECNAMELEN);
 
     return (1);
 }

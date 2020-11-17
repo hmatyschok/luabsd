@@ -130,7 +130,7 @@ LDIV_set_quot(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
-    data = (long)luab_checkinteger(L, 2, INT_MAX);
+    data = (long)luab_checkinteger(L, 2, luab_int_max);
 
     ldiv->quot = data;
 
@@ -180,7 +180,7 @@ LDIV_set_rem(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
-    data = (long)luab_checkinteger(L, 2, INT_MAX);
+    data = (long)luab_checkinteger(L, 2, luab_int_max);
 
     ldiv->rem = data;
 

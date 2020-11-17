@@ -187,8 +187,8 @@ luab_opendir2(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    name = luab_checklstring(L, 1, MAXPATHLEN);
-    flags = (int)luab_checkinteger(L, 2, INT_MAX);
+    name = luab_checklstring(L, 1, luab_path_max);
+    flags = (int)luab_checkinteger(L, 2, luab_int_max);
 
     if ((dirp = __opendir2(name, flags)) != NULL)
         m = luab_mx(DIR);
@@ -231,7 +231,7 @@ luab_getdents(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    fd = (int)luab_checkinteger(L, 1, luab_int_max);
     tbl = luab_table_checkdirent(L, 2);
     nbytes = (size_t)luab_checklinteger(L, 3);
 
@@ -290,7 +290,7 @@ luab_getdirentries(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    fd = (int)luab_checkinteger(L, 1, luab_int_max);
     tbl = luab_table_checkdirent(L, 2);
     nbytes = (size_t)luab_checklinteger(L, 3);
     xp = luab_udataisnil(L, 4, luab_mx(PRIMITIVE), luab_primitive_u *);
@@ -365,7 +365,7 @@ luab_opendir(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    filename = luab_checklstring(L, 1, MAXPATHLEN);
+    filename = luab_checklstring(L, 1, luab_path_max);
 
     if ((dirp = opendir(filename)) != NULL)
         m = luab_mx(DIR);
@@ -395,7 +395,7 @@ luab_fdopendir(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fd = (int)luab_checkinteger(L, 1, INT_MAX);
+    fd = (int)luab_checkinteger(L, 1, luab_int_max);
 
     if ((dirp = fdopendir(fd)) != NULL)
         m = luab_mx(DIR);
@@ -517,7 +517,7 @@ luab_seekdir(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     dirp = luab_udata(L, 1, luab_mx(DIR), DIR *);
-    loc = (long)luab_checkinteger(L, 2, LONG_MAX);
+    loc = (long)luab_checkinteger(L, 2, luab_long_max);
 
     seekdir(dirp, loc);
     return (luab_pushxinteger(L, 0));

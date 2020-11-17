@@ -202,7 +202,7 @@ STAT_set_st_dev(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (dev_t)luab_checkinteger(L, 2, LONG_MAX);
+    data = (dev_t)luab_checkinteger(L, 2, luab_long_max);
 
     st->st_dev = data;
 
@@ -233,7 +233,7 @@ STAT_set_st_ino(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (ino_t)luab_checkinteger(L, 2, LONG_MAX);
+    data = (ino_t)luab_checkinteger(L, 2, luab_long_max);
 
     st->st_ino = data;
 
@@ -264,7 +264,7 @@ STAT_set_st_nlink(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (nlink_t)luab_checkinteger(L, 2, LONG_MAX);
+    data = (nlink_t)luab_checkinteger(L, 2, luab_long_max);
 
     st->st_nlink = data;
 
@@ -295,7 +295,7 @@ STAT_set_st_mode(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (mode_t)luab_checkinteger(L, 2, USHRT_MAX);
+    data = (mode_t)luab_checkinteger(L, 2, luab_ushrt_max);
 
     st->st_mode = data;
 
@@ -326,7 +326,7 @@ STAT_set_st_uid(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (uid_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (uid_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_uid = data;
 
@@ -357,7 +357,7 @@ STAT_set_st_gid(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (gid_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (gid_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_gid = data;
 
@@ -388,7 +388,7 @@ STAT_set_st_rdev(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (dev_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (dev_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_rdev = data;
 
@@ -420,7 +420,7 @@ STAT_set_st_atim_ext(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (__int32_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (__int32_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_atim_ext = data;
 
@@ -483,7 +483,7 @@ STAT_set_st_mtim_ext(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (__int32_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (__int32_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_mtim_ext = data;
 
@@ -546,7 +546,7 @@ STAT_set_st_ctim_ext(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (__int32_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (__int32_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_ctim_ext = data;
 
@@ -609,7 +609,7 @@ STAT_set_st_btim_ext(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (__int32_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (__int32_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_btim_ext = data;
 
@@ -671,7 +671,7 @@ STAT_set_st_size(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (off_t)luab_checkinteger(L, 2, LONG_MAX);
+    data = (off_t)luab_checkinteger(L, 2, luab_long_max);
 
     st->st_size = data;
 
@@ -702,7 +702,7 @@ STAT_set_st_blocks(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (blkcnt_t)luab_checkinteger(L, 2, LONG_MAX);
+    data = (blkcnt_t)luab_checkinteger(L, 2, luab_long_max);
 
     st->st_blocks = data;
 
@@ -733,7 +733,7 @@ STAT_set_st_blksize(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (blksize_t)luab_checkinteger(L, 2, INT_MAX);
+    data = (blksize_t)luab_checkinteger(L, 2, luab_int_max);
 
     st->st_blksize = data;
 
@@ -764,7 +764,7 @@ STAT_set_st_flags(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (fflags_t)luab_checkinteger(L, 2, UINT_MAX);
+    data = (fflags_t)luab_checkinteger(L, 2, luab_uint_max);
 
     st->st_flags = data;
 
@@ -795,7 +795,7 @@ STAT_set_st_gen(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    data = (__uint64_t)luab_checkinteger(L, 2, LONG_MAX);
+    data = (__uint64_t)luab_checkinteger(L, 2, luab_long_max);
 
     st->st_gen = data;
 

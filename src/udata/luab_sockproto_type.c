@@ -133,7 +133,7 @@ SOCKPROTO_set_sp_family(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
-    data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
+    data = (u_short)luab_checkinteger(L, 2, luab_shrt_max);
     sp->sp_family = data;
 
     return (luab_pushxinteger(L, data));
@@ -182,7 +182,7 @@ SOCKPROTO_set_sp_protocol(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
-    data = (u_short)luab_checkinteger(L, 2, SHRT_MAX);
+    data = (u_short)luab_checkinteger(L, 2, luab_shrt_max);
     sp->sp_protocol = data;
 
     return (luab_pushxinteger(L, data));

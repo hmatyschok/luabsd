@@ -41,7 +41,7 @@ typedef struct luab_iovec {
     size_t  iov_max_len;
     u_int   iov_flags;
 } luab_iovec_t;
-#if UINT_MAX > 65535
+#if luab_uint_max > 65535
 #define IOV_LOCK    0x00000001
 #define IOV_PROXY   0x00000002
 #define IOV_BUFF    0x00000004

@@ -82,7 +82,7 @@ sf_hdtr_cnt(luab_sf_hdtr_t *ud, enum sf_hdtr_cache idx)
     if (ud != NULL) {
 
         if ((tbl = (ud->ud_cache[idx % SF_HDTR_CH_MAX])) != NULL)
-            card = ((tbl->tbl_card - 1) & INT_MAX);
+            card = ((tbl->tbl_card - 1) & luab_int_max);
         else
             errno = ENOENT;
     } else

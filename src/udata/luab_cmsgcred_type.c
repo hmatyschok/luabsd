@@ -260,8 +260,10 @@ CMSGCRED_cmcred_groups(lua_State *L)
 
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     data = cmcred->cmcred_groups;
-    len = NGROUPS_MAX * sizeof(gid_t);
+    len = (luab_ngroups * sizeof(gid_t));
+    
         /* XXX (LUA_TTABLE) */
+
     return (luab_pushldata(L, data, len));
 }
 

@@ -402,7 +402,7 @@ luab_table_checkgid(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        v = (gid_t)luab_tointeger(L, -1, INT_MAX);
+                        v = (gid_t)luab_tointeger(L, -1, luab_int_max);
                         x[m] = (gid_t)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -436,7 +436,7 @@ luab_table_checkint(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        v = (int)luab_tointeger(L, -1, UINT_MAX);
+                        v = (int)luab_tointeger(L, -1, luab_uint_max);
                         x[m] = (int)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -470,7 +470,7 @@ luab_table_checku_short(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        v = (u_short)luab_tointeger(L, -1, USHRT_MAX);
+                        v = (u_short)luab_tointeger(L, -1, luab_ushrt_max);
                         x[m] = (u_short)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

@@ -73,7 +73,7 @@ luab_getpwnam(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    login = luab_checklstring(L, 1, MAXLOGNAME);
+    login = luab_checklstring(L, 1, luab_logname_max);
 
     if ((pwd = getpwnam(login)) != NULL)
         status = luab_pushudata(L, luab_mx(PASSWD), pwd);
@@ -103,7 +103,7 @@ luab_getpwuid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    uid = luab_checkinteger(L, 1, INT_MAX);
+    uid = luab_checkinteger(L, 1, luab_int_max);
 
     if ((pwd = getpwuid(uid)) != NULL)
         status = luab_pushudata(L, luab_mx(PASSWD), pwd);
@@ -209,14 +209,14 @@ luab_getpwnam_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    name = luab_checklstring(L, 1, MAXLOGNAME);
+    name = luab_checklstring(L, 1, luab_logname_max);
     pwd = luab_udata(L, 2, luab_mx(PASSWD), struct passwd *);
     buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4);
     ret = luab_udata(L, 5, luab_mx(PASSWD), struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -270,14 +270,14 @@ luab_getpwuid_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    uid = luab_checkinteger(L, 1, INT_MAX);
+    uid = luab_checkinteger(L, 1, luab_int_max);
     pwd = luab_udata(L, 2, luab_mx(PASSWD), struct passwd *);
     buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4);
     ret = luab_udata(L, 5, luab_mx(PASSWD), struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -321,7 +321,7 @@ luab_setpassent(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stayopen = luab_checkinteger(L, 1, INT_MAX);
+    stayopen = luab_checkinteger(L, 1, luab_int_max);
     status = setpassent(stayopen);
     return (luab_pushxinteger(L, status));
 }
@@ -362,7 +362,7 @@ luab_getpwent_r(lua_State *L)
     ret = luab_udata(L, 4, luab_mx(PASSWD), struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -407,8 +407,8 @@ luab_user_from_uid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    uid = luab_checkinteger(L, 1, INT_MAX);
-    nouser = luab_checkinteger(L, 2, INT_MAX);
+    uid = luab_checkinteger(L, 1, luab_int_max);
+    nouser = luab_checkinteger(L, 2, luab_int_max);
 
     name = user_from_uid(uid, nouser);
     return (luab_pushstring(L, name));
@@ -437,7 +437,7 @@ luab_uid_from_user(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    name = luab_checklstring(L, 1, MAXLOGNAME);
+    name = luab_checklstring(L, 1, luab_logname_max);
     xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
     uid = &(xp->un_uid);
 

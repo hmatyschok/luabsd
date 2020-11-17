@@ -146,7 +146,7 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isnumber(L, -1) != 0)) {
-            v = (uint32_t)luab_tointeger(L, -1, UINT_MAX);
+            v = (uint32_t)luab_tointeger(L, -1, luab_uint_max);
             ia->s6_addr32[k] = v;
         } else
             luaL_argerror(L, 2, "Invalid argument");

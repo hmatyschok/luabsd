@@ -304,11 +304,11 @@ luab_fgets(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
-    size = (size_t)luab_checkinteger(L, 2, INT_MAX);
+    size = (size_t)luab_checkinteger(L, 2, luab_int_max);
     stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -361,7 +361,7 @@ luab_fopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, MAXPATHLEN);
+    path = luab_checklstring(L, 1, luab_path_max);
     mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
 
     if ((stream = fopen(path, mode)) != NULL)
@@ -393,7 +393,7 @@ luab_fputc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    c = luab_checkinteger(L, 1, luab_uchar_max);
     stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
 
     if (stream != NULL)
@@ -426,7 +426,7 @@ luab_fputs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    str = luab_checklstring(L, 1, luab_buf_nmax);
+    str = luab_checklstring(L, 1, luab_buf_max);
     stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
 
     if (stream != NULL)
@@ -461,7 +461,7 @@ luab_freopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstringisnil(L, 1, MAXPATHLEN);
+    path = luab_checklstringisnil(L, 1, luab_path_max);
     mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
     stream = luab_udata(L, 3, luab_mx(SFILE), FILE *);
 
@@ -512,8 +512,8 @@ luab_fseek(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
-    offset = (long)luab_checkinteger(L, 2, LONG_MAX);
-    whence = (int)luab_checkinteger(L, 3, INT_MAX);
+    offset = (long)luab_checkinteger(L, 2, luab_long_max);
+    whence = (int)luab_checkinteger(L, 3, luab_int_max);
 
     if (stream != NULL)
         status = fseek(stream, offset, whence);
@@ -663,14 +663,14 @@ luab_gets(lua_State *L)
     buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (buf->iov_flags & IOV_BUFF)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
 
             if (gets(bp) != NULL) {
-                buf->iov.iov_len = strnlen(bp, luab_buf_nmax);
+                buf->iov.iov_len = strnlen(bp, luab_buf_max);
                 status = 0;
             } else
                 status = -1;
@@ -713,7 +713,7 @@ luab_gets_s(lua_State *L)
     size = (rsize_t)luab_checklinteger(L, 2);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -760,7 +760,7 @@ luab_putc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    c = luab_checkinteger(L, 1, luab_uchar_max);
     stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
 
     if (stream != NULL)
@@ -790,7 +790,7 @@ luab_putchar(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    c = luab_checkinteger(L, 1, luab_uchar_max);
     status = putchar(c);
 
     return (luab_pushxinteger(L, status));
@@ -815,7 +815,7 @@ luab_puts(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    str = luab_checklstring(L, 1, luab_buf_nmax);
+    str = luab_checklstring(L, 1, luab_buf_max);
     status = puts(str);
 
     return (luab_pushxinteger(L, status));
@@ -840,7 +840,7 @@ luab_remove(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, MAXPATHLEN);
+    path = luab_checklstring(L, 1, luab_path_max);
     status = remove(path);
 
     return (luab_pushxinteger(L, status));
@@ -900,7 +900,7 @@ luab_fdopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    fildes = (int)luab_checkinteger(L, 1, INT_MAX);
+    fildes = (int)luab_checkinteger(L, 1, luab_int_max);
     mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
 
     if ((stream = fdopen(fildes, mode)) != NULL)
@@ -1014,7 +1014,7 @@ luab_putc_unlocked(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    c = luab_checkinteger(L, 1, luab_uchar_max);
     stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
 
     if (stream != NULL)
@@ -1044,7 +1044,7 @@ luab_putchar_unlocked(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    c = luab_checkinteger(L, 1, UCHAR_MAX);
+    c = luab_checkinteger(L, 1, luab_uchar_max);
     status = putchar_unlocked(c);
 
     return (luab_pushxinteger(L, status));
@@ -1207,8 +1207,8 @@ luab_fseeko(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     stream = luab_udata(L, 1, luab_mx(SFILE), FILE *);
-    offset = (long)luab_checkinteger(L, 2, LONG_MAX);
-    whence = (int)luab_checkinteger(L, 3, INT_MAX);
+    offset = (long)luab_checkinteger(L, 2, luab_long_max);
+    whence = (int)luab_checkinteger(L, 3, luab_int_max);
 
     if (stream != NULL)
         status = fseeko(stream, offset, whence);
@@ -1302,7 +1302,7 @@ luab_putw(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    w = luab_checkinteger(L, 1, UINT_MAX);
+    w = luab_checkinteger(L, 1, luab_uint_max);
     stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
 
     if (stream != NULL)
@@ -1345,7 +1345,7 @@ luab_fmemopen(lua_State *L)
     mode = luab_checklstring(L, 3, LUAB_STDIO_MODE_MAXLEN);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 

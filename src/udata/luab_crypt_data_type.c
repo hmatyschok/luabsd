@@ -137,7 +137,7 @@ CRYPT_DATA_set_initialized(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
-    data = (int)luab_checkinteger(L, 2, INT_MAX);
+    data = (int)luab_checkinteger(L, 2, luab_int_max);
 
     cd->initialized = data;
 

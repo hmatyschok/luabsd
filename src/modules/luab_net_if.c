@@ -66,11 +66,11 @@ luab_if_indextoname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ifindex = (u_int)luab_checkinteger(L, 1, INT_MAX);
+    ifindex = (u_int)luab_checkinteger(L, 1, luab_int_max);
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (IFNAMSIZ <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 

@@ -118,7 +118,7 @@ luab_getgrgid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    gid = luab_checkinteger(L, 1, INT_MAX);
+    gid = luab_checkinteger(L, 1, luab_int_max);
 
     if ((grp = getgrgid(gid)) != NULL)
         status = luab_pushudata(L, luab_mx(GROUP), grp);
@@ -148,7 +148,7 @@ luab_getgrnam(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    name = luab_checklstring(L, 1, MAXLOGNAME);
+    name = luab_checklstring(L, 1, luab_logname_max);
 
     if ((grp = getgrnam(name)) != NULL)
         status = luab_pushudata(L, luab_mx(GROUP), grp);
@@ -182,8 +182,8 @@ luab_group_from_gid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    gid = luab_checkinteger(L, 1, INT_MAX);
-    nouser = luab_checkinteger(L, 2, INT_MAX);
+    gid = luab_checkinteger(L, 1, luab_int_max);
+    nouser = luab_checkinteger(L, 2, luab_int_max);
 
     name = group_from_gid(gid, nouser);
     return (luab_pushstring(L, name));
@@ -212,7 +212,7 @@ luab_gid_from_group(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    name = luab_checklstring(L, 1, MAXLOGNAME);
+    name = luab_checklstring(L, 1, luab_logname_max);
     xp = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
     gid = &(xp->un_gid);
 
@@ -274,14 +274,14 @@ luab_getgrgid_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    gid = luab_checkinteger(L, 1, INT_MAX);
+    gid = luab_checkinteger(L, 1, luab_int_max);
     grp = luab_udata(L, 2, luab_mx(GROUP), struct group *);
     buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4);
     ret = luab_udata(L, 5, luab_mx(GROUP), struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -335,14 +335,14 @@ luab_getgrnam_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    name = luab_checklstring(L, 1, MAXLOGNAME);
+    name = luab_checklstring(L, 1, luab_logname_max);
     grp = luab_udata(L, 2, luab_mx(GROUP), struct group *);
     buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4);
     ret = luab_udata(L, 5, luab_mx(GROUP), struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -402,7 +402,7 @@ luab_getgrent_r(lua_State *L)
     ret = luab_udata(L, 4, luab_mx(GROUP), struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -444,7 +444,7 @@ luab_setgroupent(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stayopen = luab_checkinteger(L, 1, INT_MAX);
+    stayopen = luab_checkinteger(L, 1, luab_int_max);
     status = setgroupent(stayopen);
     return (luab_pushxinteger(L, status));
 }

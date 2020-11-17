@@ -144,8 +144,8 @@ luab_regcomp(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     preg = luab_udata(L, 1, luab_mx(REGEX), regex_t *);
-    pattern = luab_checklstring(L, 2, luab_buf_nmax);
-    cflags = (int)luab_checkinteger(L, 3, INT_MAX);
+    pattern = luab_checklstring(L, 2, luab_buf_max);
+    cflags = (int)luab_checkinteger(L, 3, luab_int_max);
 
     status = regcomp(preg, pattern, cflags);
 
@@ -200,10 +200,10 @@ luab_regexec(lua_State *L)
     (void)luab_core_checkmaxargs(L, 5);
 
     preg = luab_udata(L, 1, luab_mx(REGEX), regex_t *);
-    string = luab_checklstring(L, 2, luab_buf_nmax);
+    string = luab_checklstring(L, 2, luab_buf_max);
     nmatch = (size_t)luab_checklinteger(L, 3);
     tbl = luab_table_checkregmatch(L, 4);
-    eflags = (int)luab_checkinteger(L, 5, INT_MAX);
+    eflags = (int)luab_checkinteger(L, 5, luab_int_max);
 
     if (tbl != NULL) {
         pmatch = (regmatch_t *)(tbl->tbl_vec);
@@ -264,13 +264,13 @@ luab_regerror(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    errcode = (int)luab_checkinteger(L, 1, INT_MAX);
+    errcode = (int)luab_checkinteger(L, 1, luab_int_max);
     preg = luab_udata(L, 2, luab_mx(REGEX), regex_t *);
     buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
     errbuf_size = (size_t)luab_checklinteger(L, 4);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_buf_nmax) &&
+        (buf->iov_max_len <= luab_buf_max) &&
         (errbuf_size <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
