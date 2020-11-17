@@ -406,6 +406,39 @@ luab_fputc(lua_State *L)
 }
 
 /***
+ * fputs(3) - output a line to a stream
+ *
+ * @function fputs
+ *
+ * @param str               Specifies string about to write on stream.
+ * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.fputs(str, stream)
+ */
+static int
+luab_fputs(lua_State *L)
+{
+    const char *str;
+    FILE *stream;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    str = luab_checklstring(L, 1, luab_buf_nmax);
+    stream = luab_udata(L, 2, luab_mx(SFILE), FILE *);
+
+    if (stream != NULL)
+        status = fputs(str, stream);
+    else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pushxinteger(L, status));
+}
+
+/***
  * freopen(3) - stream open functions
  *
  * @function freopen
@@ -759,6 +792,31 @@ luab_putchar(lua_State *L)
 
     c = luab_checkinteger(L, 1, UCHAR_MAX);
     status = putchar(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * puts(3) - output a line to a stream
+ *
+ * @function puts
+ *
+ * @param str               Specifies string about to write on stream.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.stdio.puts(str)
+ */
+static int
+luab_puts(lua_State *L)
+{
+    const char *str;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    str = luab_checklstring(L, 1, luab_buf_nmax);
+    status = puts(str);
 
     return (luab_pushxinteger(L, status));
 }
@@ -1478,6 +1536,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fgets",                  luab_fgets),
     LUAB_FUNC("fopen",                  luab_fopen),
     LUAB_FUNC("fputc",                  luab_fputc),
+    LUAB_FUNC("fputs",                  luab_fputs),
     LUAB_FUNC("freopen",                luab_freopen),
     LUAB_FUNC("fseek",                  luab_fseek),
     LUAB_FUNC("fsetpos",                luab_fsetpos),
@@ -1490,6 +1549,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
 #endif
     LUAB_FUNC("putc",                   luab_putc),
     LUAB_FUNC("putchar",                luab_putchar),
+    LUAB_FUNC("puts",                   luab_puts),
     LUAB_FUNC("rewind",                 luab_rewind),
 #if __POSIX_VISIBLE
     LUAB_FUNC("fdopen",                 luab_fdopen),
