@@ -36,6 +36,520 @@
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
+static luab_sysconf_vec_t luab_param[] = {
+    {                                               /* <core> */
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = LUAL_BUFFERSIZE,
+        .scv_val = &luab_param_buf_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = MAXPATHLEN,
+        .scv_val = &luab_param_path_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = LUAL_BUFFERSIZE,
+        .scv_val = &luab_param_logname_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = MAXPATHLEN,
+        .scv_val = &luab_param_path_max,
+    },{                                             /* <unistd.h> */
+        .scv_key = LUAB_SC_ARG_MAX,
+        .scv_dflt = ARG_MAX,
+        .scv_val = &luab_param_arg_max,
+    },{
+        .scv_key = LUAB_SC_CHILD_MAX,
+        .scv_dflt = CHILD_MAX,
+        .scv_val = &luab_param_child_max,
+    },{
+        .scv_key = LUAB_SC_CLK_TCK,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_clk_tck,
+    },{
+        .scv_key = LUAB_SC_NGROUPS_MAX,
+        .scv_dflt = NGROUPS_MAX,
+        .scv_val = &luab_param_ngroups_max,
+    },{
+        .scv_key = LUAB_SC_OPEN_MAX,
+        .scv_dflt = OPEN_MAX,
+        .scv_val = &luab_param_open_max,
+    },{
+        .scv_key = LUAB_SC_JOB_CONTROL,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_job_control,
+    },{
+        .scv_key = LUAB_SC_SAVED_IDS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_saved_ids,
+    },{
+        .scv_key = LUAB_SC_VERSION,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_version,
+    },{
+        .scv_key = LUAB_SC_BC_BASE_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_bc_base_max,
+    },{
+        .scv_key = LUAB_SC_BC_DIM_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_bc_dim_max,
+    },{
+        .scv_key = LUAB_SC_BC_SCALE_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_bc_scale_max,
+    },{
+        .scv_key = LUAB_SC_BC_STRING_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_bc_string_max,
+    },{
+        .scv_key = LUAB_SC_COLL_WEIGHTS_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_coll_weights_max,
+    },{
+        .scv_key = LUAB_SC_EXPR_NEST_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_expr_nest_max,
+    },{
+        .scv_key = LUAB_SC_LINE_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_line_max,
+    },{
+        .scv_key = LUAB_SC_RE_DUP_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_re_dup_max,
+    },{
+        .scv_key = LUAB_SC_2_VERSION,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_version,
+    },{
+        .scv_key = LUAB_SC_2_C_BIND,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_c_bind,
+    },{
+        .scv_key = LUAB_SC_2_C_DEV,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_c_dev,
+    },{
+        .scv_key = LUAB_SC_2_CHAR_TERM,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_char_term,
+    },{
+        .scv_key = LUAB_SC_2_FORT_DEV,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_fort_dev,
+    },{
+        .scv_key = LUAB_SC_2_FORT_RUN,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_fort_run,
+    },{
+        .scv_key = LUAB_SC_2_LOCALEDEF,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_localedef,
+    },{
+        .scv_key = LUAB_SC_2_SW_DEV,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_sw_dev,
+    },{
+        .scv_key = LUAB_SC_2_UPE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_upe,
+    },{
+        .scv_key = LUAB_SC_STREAM_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_stream_max,
+    },{
+        .scv_key = LUAB_SC_TZNAME_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_tzname_max,
+    },{
+        .scv_key = LUAB_SC_ASYNCHRONOUS_IO,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_asynchronous_io,
+    },{
+        .scv_key = LUAB_SC_MAPPED_FILES,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_mapped_files,
+    },{
+        .scv_key = LUAB_SC_MEMLOCK,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_memlock,
+    },{
+        .scv_key = LUAB_SC_MEMLOCK_RANGE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_memlock_range,
+    },{
+        .scv_key = LUAB_SC_MEMORY_PROTECTION,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_memory_protection,
+    },{
+        .scv_key = LUAB_SC_MESSAGE_PASSING,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_message_passing,
+    },{
+        .scv_key = LUAB_SC_PRIORITIZED_IO,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_prioritized_io,
+    },{
+        .scv_key = LUAB_SC_PRIORITY_SCHEDULING,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_priority_scheduling,
+    },{
+        .scv_key = LUAB_SC_REALTIME_SIGNALS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_realtime_signals,
+    },{
+        .scv_key = LUAB_SC_SEMAPHORES,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_semaphores,
+    },{
+        .scv_key = LUAB_SC_FSYNC,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_fsync,
+    },{
+        .scv_key = LUAB_SC_SHARED_MEMORY_OBJECTS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_shared_memory_objects,
+    },{
+        .scv_key = LUAB_SC_SYNCHRONIZED_IO,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_synchronized_io,
+    },{
+        .scv_key = LUAB_SC_TIMERS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_timers,
+    },{
+        .scv_key = LUAB_SC_AIO_LISTIO_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_aio_listio_max,
+    },{
+        .scv_key = LUAB_SC_AIO_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_aio_max,
+    },{
+        .scv_key = LUAB_SC_AIO_PRIO_DELTA_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_aio_prio_delta_max,
+    },{
+        .scv_key = LUAB_SC_DELAYTIMER_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_delaytimer_max,
+    },{
+        .scv_key = LUAB_SC_MQ_OPEN_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_mq_open_max,
+    },{
+        .scv_key = LUAB_SC_PAGESIZE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_pagesize,
+    },{
+        .scv_key = LUAB_SC_RTSIG_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_rtsig_max,
+    },{
+        .scv_key = LUAB_SC_SEM_NSEMS_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_sem_nsems_max,
+    },{
+        .scv_key = LUAB_SC_SEM_VALUE_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_sem_value_max,
+    },{
+        .scv_key = LUAB_SC_SIGQUEUE_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_sigqueue_max,
+    },{
+        .scv_key = LUAB_SC_TIMER_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_timer_max,
+    },{
+        .scv_key = LUAB_SC_2_PBS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_pbs,
+    },{
+        .scv_key = LUAB_SC_2_PBS_ACCOUNTING,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_pbs_accounting,
+    },{
+        .scv_key = LUAB_SC_2_PBS_CHECKPOINT,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_pbs_checkpoint,
+    },{
+        .scv_key = LUAB_SC_2_PBS_LOCATE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_pbs_locate,
+    },{
+        .scv_key = LUAB_SC_2_PBS_MESSAGE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_pbs_message,
+    },{
+        .scv_key = LUAB_SC_2_PBS_TRACK,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_2_pbs_track,
+    },{
+        .scv_key = LUAB_SC_ADVISORY_INFO,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_advisory_info,
+    },{
+        .scv_key = LUAB_SC_BARRIERS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_barriers,
+    },{
+        .scv_key = LUAB_SC_CLOCK_SELECTION,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_clock_selection,
+    },{
+        .scv_key = LUAB_SC_CPUTIME,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_cputime,
+    },{
+        .scv_key = LUAB_SC_FILE_LOCKING,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_file_locking,
+    },{
+        .scv_key = LUAB_SC_GETGR_R_SIZE_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_getgr_r_size_max,
+    },{
+        .scv_key = LUAB_SC_GETPW_R_SIZE_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_getpw_r_size_max,
+    },{
+        .scv_key = LUAB_SC_HOST_NAME_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_host_name_max,
+    },{
+        .scv_key = LUAB_SC_LOGIN_NAME_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_login_name_max,
+    },{
+        .scv_key = LUAB_SC_MONOTONIC_CLOCK,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_monotonic_clock,
+    },{
+        .scv_key = LUAB_SC_MQ_PRIO_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_mq_prio_max,
+    },{
+        .scv_key = LUAB_SC_READER_WRITER_LOCKS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_reader_writer_locks,
+    },{
+        .scv_key = LUAB_SC_REGEXP,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_regexp,
+    },{
+        .scv_key = LUAB_SC_SHELL,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_shell,
+    },{
+        .scv_key = LUAB_SC_SPAWN,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_spawn,
+    },{
+        .scv_key = LUAB_SC_SPIN_LOCKS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_spin_locks,
+    },{
+        .scv_key = LUAB_SC_SPORADIC_SERVER,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_sporadic_server,
+    },{
+        .scv_key = LUAB_SC_THREAD_ATTR_STACKADDR,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_attr_stackaddr,
+    },{
+        .scv_key = LUAB_SC_THREAD_ATTR_STACKSIZE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_attr_stacksize,
+    },{
+        .scv_key = LUAB_SC_THREAD_CPUTIME,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_cputime,
+    },{
+        .scv_key = LUAB_SC_THREAD_DESTRUCTOR_ITERATIONS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_destructor_iterations,
+    },{
+        .scv_key = LUAB_SC_THREAD_KEYS_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_keys_max,
+    },{
+        .scv_key = LUAB_SC_THREAD_PRIO_INHERIT,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_prio_inherit,
+    },{
+        .scv_key = LUAB_SC_THREAD_PRIO_PROTECT,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_prio_protect,
+    },{
+        .scv_key = LUAB_SC_THREAD_PRIORITY_SCHEDULING,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_priority_scheduling,
+    },{
+        .scv_key = LUAB_SC_THREAD_PROCESS_SHARED,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_process_shared,
+    },{
+        .scv_key = LUAB_SC_THREAD_SAFE_FUNCTIONS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_safe_functions,
+    },{
+        .scv_key = LUAB_SC_THREAD_SPORADIC_SERVER,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_sporadic_server,
+    },{
+        .scv_key = LUAB_SC_THREAD_STACK_MIN,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_stack_min,
+    },{
+        .scv_key = LUAB_SC_THREAD_THREADS_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_thread_threads_max,
+    },{
+        .scv_key = LUAB_SC_TIMEOUTS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_timeouts,
+    },{
+        .scv_key = LUAB_SC_THREADS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_threads,
+    },{
+        .scv_key = LUAB_SC_TRACE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_trace,
+    },{
+        .scv_key = LUAB_SC_TRACE_EVENT_FILTER,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_trace_event_filter,
+    },{
+        .scv_key = LUAB_SC_TRACE_INHERIT,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_trace_inherit,
+    },{
+        .scv_key = LUAB_SC_TRACE_LOG,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_trace_log,
+    },{
+        .scv_key = LUAB_SC_TTY_NAME_MAX,
+        .scv_dflt = SPECNAMELEN,
+        .scv_val = &luab_param_tty_name_max,
+    },{
+        .scv_key = LUAB_SC_TYPED_MEMORY_OBJECTS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_typed_memory_objects,
+    },{
+        .scv_key = LUAB_SC_V6_ILP32_OFF32,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_v6_ilp32_off32,
+    },{
+        .scv_key = LUAB_SC_V6_ILP32_OFFBIG,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_v6_ilp32_offbig,
+    },{
+        .scv_key = LUAB_SC_V6_LP64_OFF64,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_v6_lp64_off64,
+    },{
+        .scv_key = LUAB_SC_V6_LPBIG_OFFBIG,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_v6_lpbig_offbig,
+    },{
+        .scv_key = LUAB_SC_IPV6,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_ipv6,
+    },{
+        .scv_key = LUAB_SC_RAW_SOCKETS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_raw_sockets,
+    },{
+        .scv_key = LUAB_SC_SYMLOOP_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_symloop_max,
+    },{
+        .scv_key = LUAB_SC_ATEXIT_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_atexit_max,
+    },{
+        .scv_key = LUAB_SC_IOV_MAX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_iov_max,
+    },{
+        .scv_key = LUAB_SC_PAGE_SIZE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_page_size,
+    },{
+        .scv_key = LUAB_SC_XOPEN_CRYPT,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_crypt,
+    },{
+        .scv_key = LUAB_SC_XOPEN_ENH_I18N,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_enh_i18n,
+    },{
+        .scv_key = LUAB_SC_XOPEN_LEGACY,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_legacy,
+    },{
+        .scv_key = LUAB_SC_XOPEN_REALTIME,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_realtime,
+    },{
+        .scv_key = LUAB_SC_XOPEN_REALTIME_THREADS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_realtime_threads,
+    },{
+        .scv_key = LUAB_SC_XOPEN_SHM,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_shm,
+    },{
+        .scv_key = LUAB_SC_XOPEN_STREAMS,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_streams,
+    },{
+        .scv_key = LUAB_SC_XOPEN_UNIX,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_unix,
+    },{
+        .scv_key = LUAB_SC_XOPEN_VERSION,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_version,
+    },{
+        .scv_key = LUAB_SC_XOPEN_XCU_VERSION,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_xopen_xcu_version,
+    },{
+        .scv_key = LUAB_SC_NPROCESSORS_CONF,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_nprocessors_conf,
+    },{
+        .scv_key = LUAB_SC_NPROCESSORS_ONLN,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_nprocessors_onln,
+    },{
+        .scv_key = LUAB_SC_CPUSET_SIZE,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_cpuset_size,
+    },{
+        .scv_key = LUAB_SC_PHYS_PAGES,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_phys_pages,
+    },{
+        .scv_key = LUAB_SC_PHYS_PAGES,
+        .scv_dflt = 0,
+        .scv_val = &luab_param_phys_pages,
+    },
+    LUAB_SC_VEC_SENTINEL
+};
+
+static void
+luab_core_param_init(luab_sysconf_vec_t *vec)
+{
+    luab_sysconf_vec_t *tok;        /* XXX */
+
+    for (tok = vec; tok->scv_val != NULL; tok++)
+        *(tok->scv_val) = luab_core_sysconf(tok->scv_key, tok->scv_dflt);
+}
+
 /*
  * Common subr. for initializiation, those are
  * called during runtime of package.loadlib().
@@ -99,7 +613,7 @@ static luab_module_vec_t luab_net_vec[] = {
 };
 
 /* Interface against <sys/xxx.h>. */
-static luab_module_vec_t luab_sys_vec[] = {
+static luab_module_vec_t luab_param_vec[] = {
     {
         .mv_mod = &luab_sys_dirent_lib,
         .mv_init = luab_core_newtable,
@@ -424,37 +938,21 @@ luaopen_bsd(lua_State *L)
 {
     (void)printf("%s", copyright);
 
+    /* initialize constraints */
+    luab_core_param_init(luab_param);
+
+    /* register modules */
     lua_newtable(L);
 
     luab_core_registerlib(L, -2, luab_arpa_vec,  "arpa");
     luab_core_registerlib(L, -2, luab_net_vec,   "net");
-    luab_core_registerlib(L, -2, luab_sys_vec,   "sys");
+    luab_core_registerlib(L, -2, luab_param_vec,   "sys");
     luab_core_registerlib(L, -2, luab_core_vec,  NULL);
 
     lua_pushvalue(L, -1);
 
     /* register complex data-types. */
     luab_core_registertype(L, -2, luab_typevec);
-
-    /* setup constraints */
-    luab_buf_max = LUAL_BUFFERSIZE;
-    luab_path_max = MAXPATHLEN;
-
-    luab_comlen_max = MAXCOMLEN;
-    luab_interp_max = MAXINTERP;
-    luab_logname_max = MAXLOGNAME;
-    luab_uprc_max = MAXUPRC;
-
-    luab_nofile = NOFILE;
-    luab_nogroup = NOGROUP;
-
-    luab_hostname_max = MAXHOSTNAMELEN;
-    luab_specname_max = SPECNAMELEN;
-
-    luab_ncargs = luab_core_sysconf(_SC_ARG_MAX, NCARGS);
-    luab_ngroups = luab_core_sysconf(_SC_NGROUPS_MAX, NGROUPS);
-    
-    luab_tty_max = luab_core_sysconf(_SC_TTY_NAME_MAX, SPECNAMELEN);
 
     return (1);
 }

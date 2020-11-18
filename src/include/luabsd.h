@@ -37,7 +37,7 @@
 #include <string.h>
 #include <sysexits.h>
 
-#include "luab_limits.h"
+#include "luab_param.h"
 
 /*
  * Definitions for API method table.

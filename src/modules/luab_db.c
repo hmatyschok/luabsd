@@ -69,7 +69,7 @@ luab_dbopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    file = luab_islstring(L, 1, luab_path_max);
+    file = luab_islstring(L, 1, luab_param_path_max);
     flags = luab_checkinteger(L, 2, luab_int_max);
     mode = luab_checkinteger(L, 3, luab_int_max);
     type = luab_checkinteger(L, 4, luab_int_max);

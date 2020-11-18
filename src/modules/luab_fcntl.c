@@ -76,7 +76,7 @@ luab_open(lua_State *L)
 
     narg = luab_core_checkmaxargs(L, 3);
 
-    path = luab_checklstring(L, 1, luab_path_max);
+    path = luab_checklstring(L, 1, luab_param_path_max);
     flags = (int)luab_checkinteger(L, 2, luab_int_max);
     mode = 0;
 
@@ -113,7 +113,7 @@ luab_creat(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_path_max);
+    path = luab_checklstring(L, 1, luab_param_path_max);
     mode = (mode_t)luab_checkinteger(L, 2, ALLPERMS);
 
     fd = creat(path, mode);
@@ -246,7 +246,7 @@ luab_openat(lua_State *L)
     narg = luab_core_checkmaxargs(L, 4);
 
     dirfd = (int)luab_checkinteger(L, 1, luab_int_max);
-    path = luab_checklstring(L, 2, luab_path_max);
+    path = luab_checklstring(L, 2, luab_param_path_max);
     flags = (int)luab_checkinteger(L, 3, luab_int_max);
     mode = 0;
 
