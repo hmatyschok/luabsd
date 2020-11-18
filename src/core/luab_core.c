@@ -125,13 +125,13 @@ const lua_Integer luab_mq_prio_max = 0;
  */
 
 typedef struct luab_sysconf_vec {
-    int             scv_name;
+    int             scv_key;
     size_t          scv_x;
-    size_t          *scv_value;
+    size_t          *scv_val;
 } luab_sysconf_vec_t;
 
 #define LUAB_SC_VEC_SENTINEL \
-    { .scv_name = -1, .scv_x = 0, .scv_value = NULL, }
+    { .scv_key = -1, .scv_x = 0, .scv_val = NULL, }
 
 size_t luab_buf_max;
 size_t luab_path_max;
@@ -789,7 +789,7 @@ static const char *copyright =
  */
 
 static void
-luab_populate(lua_State *L, int narg, luab_module_t *m)
+luab_core_populate(lua_State *L, int narg, luab_module_t *m)
 {
     luab_module_table_t *tok;
 
@@ -801,21 +801,21 @@ luab_populate(lua_State *L, int narg, luab_module_t *m)
 }
 
 static void
-luab_newtable(lua_State *L, int narg, luab_module_t *m)
+luab_core_newtable(lua_State *L, int narg, luab_module_t *m)
 {
     lua_newtable(L);
-    luab_populate(L, narg, m);
+    luab_core_populate(L, narg, m);
     lua_setfield(L, narg, m->m_name);
 }
 
 static void
-luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
+luab_core_newmetatable(lua_State *L, int narg, luab_module_t *m)
 {
     luaL_newmetatable(L, m->m_name);
     lua_pushvalue(L, -1);
     lua_setfield(L, -2, "__index");
 
-    luab_populate(L, narg, m);
+    luab_core_populate(L, narg, m);
 
     lua_pop(L, 1);
 }
@@ -828,7 +828,7 @@ luab_newmetatable(lua_State *L, int narg, luab_module_t *m)
 static luab_module_vec_t luab_arpa_vec[] = {
     {
         .mv_mod = &luab_arpa_inet_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },
     LUAB_MOD_VEC_SENTINEL
 };
@@ -837,10 +837,10 @@ static luab_module_vec_t luab_arpa_vec[] = {
 static luab_module_vec_t luab_net_vec[] = {
     {
         .mv_mod = &luab_net_if_dl_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_net_if_lib,
-        .mv_init = luab_populate,
+        .mv_init = luab_core_populate,
     },
     LUAB_MOD_VEC_SENTINEL
 };
@@ -849,34 +849,34 @@ static luab_module_vec_t luab_net_vec[] = {
 static luab_module_vec_t luab_sys_vec[] = {
     {
         .mv_mod = &luab_sys_dirent_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_file_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_mount_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_stat_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_time_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_uio_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_un_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_unistd_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_reboot_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_socket_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },
     LUAB_MOD_VEC_SENTINEL
 };
@@ -885,47 +885,46 @@ static luab_module_vec_t luab_sys_vec[] = {
 static luab_module_vec_t luab_core_vec[] = {
     {
         .mv_mod = &luab_core_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_db_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_dirent_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_fcntl_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_fstab_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_grp_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_pwd_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_regex_lib,
-        .mv_init = luab_newtable,
-    },
-    {
+        .mv_init = luab_core_newtable,
+    },{
         .mv_mod = &luab_stdio_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_stdlib_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_time_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_ttyent_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_unistd_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_uuid_lib,
-        .mv_init = luab_newtable,
+        .mv_init = luab_core_newtable,
     },
     LUAB_MOD_VEC_SENTINEL
 };
@@ -935,187 +934,187 @@ luab_module_vec_t luab_typevec[] = {
 #if LUAB_DEBUG
     {
         .mv_mod = &luab_link_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LINK_IDX,
     },
 #endif /* LUAB_DEBUG */
     {
         .mv_mod = &luab_clockinfo_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CLOCKINFO_IDX,
     },{
         .mv_mod = &luab_div_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DIV_IDX,
     },{
         .mv_mod = &luab_flock_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FLOCK_IDX,
     },{
         .mv_mod = &luab_primitive_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PRIMITIVE_IDX,
     },{
         .mv_mod = &luab_if_nameindex_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_IF_NAMEINDEX_IDX,
     },{
         .mv_mod = &luab_in_addr_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_IN_ADDR_IDX,
     },{
         .mv_mod = &luab_in6_addr_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_IN6_ADDR_IDX,
     },{
         .mv_mod = &luab_itimerval_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_ITIMERVAL_IDX,
     },{
         .mv_mod = &luab_ldiv_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LDIV_IDX,
     },{
         .mv_mod = &luab_lldiv_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LLDIV_IDX,
     },{
         .mv_mod = &luab_linger_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LINGER_IDX,
     },{
         .mv_mod = &luab_msghdr_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_MSGHDR_IDX,
     },{
         .mv_mod = &luab_sockaddr_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_SOCKADDR_IDX,
     },{
         .mv_mod = &luab_stat_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_STAT_IDX,
     },{
         .mv_mod = &luab_timespec_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_TIMESPEC_IDX,
     },{
         .mv_mod = &luab_timeval_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_TIMEVAL_IDX,
     },{
         .mv_mod = &luab_timezone_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_TIMEZONE_IDX,
     },{
         .mv_mod = &luab_tm_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_TM_IDX,
     },{
         .mv_mod = &luab_uuid_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_UUID_IDX,
     },{
         .mv_mod = &luab_iovec_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_IOVEC_IDX,
     },{
         .mv_mod = &luab_passwd_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PASSWD_IDX,
     },{
         .mv_mod = &luab_group_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_GROUP_IDX,
     },{
         .mv_mod = &luab_regex_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_REGEX_IDX,
     },{
         .mv_mod = &luab_regmatch_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_REGMATCH_IDX,
     },{
         .mv_mod = &luab_fsid_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FSID_IDX,
     },{
         .mv_mod = &luab_fid_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FID_IDX,
     },{
         .mv_mod = &luab_statfs_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_STATFS_IDX,
     },{
         .mv_mod = &luab_fhandle_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FHANDLE_IDX,
     },{
         .mv_mod = &luab_xvfsconf_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_XVFSCONF_IDX,
     },{
         .mv_mod = &luab_ttyent_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_TTYENT_IDX,
     },{
         .mv_mod = &luab_dir_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DIR_IDX,
     },{
         .mv_mod = &luab_dirent_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DIRENT_IDX,
     },{
         .mv_mod = &luab_fstab_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FSTAB_IDX,
     },{
         .mv_mod = &luab___sbuf_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB___SBUF_IDX,
     },{
         .mv_mod = &luab_sfile_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_SFILE_IDX,
     },
 #if __BSD_VISIBLE
     {
         .mv_mod = &luab_dbt_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DBT_IDX,
     },{
         .mv_mod = &luab_db_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DB_IDX,
     },{
         .mv_mod = &luab_bintime_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_BINTIME_IDX,
     },{
         .mv_mod = &luab_crypt_data_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CRYPT_DATA_IDX,
     },{
         .mv_mod = &luab_cap_rbuf_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CAP_RBUF_IDX,
     },{
         .mv_mod = &luab_accept_filter_arg_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_ACCEPT_FILTER_ARG_IDX,
     },{
         .mv_mod = &luab_sockproto_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_SOCKPROTO_IDX,
     },{
         .mv_mod = &luab_cmsgcred_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CMSGCRED_IDX,
     },{
         .mv_mod = &luab_sf_hdtr_type,
-        .mv_init = luab_newmetatable,
+        .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_SF_HDTR_IDX,
     },
 #endif  /* __BSD_VISIBLE */
