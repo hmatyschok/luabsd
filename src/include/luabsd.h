@@ -24,8 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef _LUAB_H_
-#define _LUAB_H_
+#ifndef _LUABSD_H_
+#define _LUABSD_H_
 
 #include <sys/param.h>
 #include <sys/mbuf.h>   /* XXX */
@@ -37,63 +37,7 @@
 #include <string.h>
 #include <sysexits.h>
 
-extern const lua_Integer luab_char_bit;
-
-extern const lua_Integer luab_schar_max;
-extern const lua_Integer luab_schar_min;
-extern const lua_Integer luab_uchar_max;
-extern const lua_Integer luab_char_max;
-extern const lua_Integer luab_char_min;
-
-extern const lua_Integer luab_ushrt_max;
-extern const lua_Integer luab_shrt_max;
-extern const lua_Integer luab_shrt_min;
-
-extern const lua_Integer luab_uint_max;
-extern const lua_Integer luab_int_max;
-extern const lua_Integer luab_int_min;
-
-extern const lua_Integer luab_ulong_max;
-extern const lua_Integer luab_long_max;
-extern const lua_Integer luab_long_min;
-
-extern const lua_Integer luab_ullong_max;
-extern const lua_Integer luab_llong_max;
-extern const lua_Integer luab_llong_min;
-
-extern const lua_Integer luab_ssize_max;
-
-extern const lua_Integer luab_size_t_max;
-extern const lua_Integer luab_off_max;
-extern const lua_Integer luab_off_min;
-
-extern const lua_Integer luab_gid_max;
-extern const lua_Integer luab_uid_max;
-extern const lua_Integer luab_uquad_max;
-extern const lua_Integer luab_quad_max;
-extern const lua_Integer luab_quad_min;
-
-extern const lua_Integer luab_long_bit;
-extern const lua_Integer luab_word_bit;
- 
-extern const lua_Integer luab_mq_prio_max;
-                                            /* XXX */
-extern size_t luab_buf_max;
-extern size_t luab_path_max;
-extern size_t luab_tty_max;
-
-extern size_t luab_comlen_max;
-extern size_t luab_interp_max;
-extern size_t luab_logname_max;
-extern size_t luab_uprc_max;
-
-extern size_t luab_ncargs;
-extern size_t luab_ngroups;
-extern size_t luab_nofile;
-extern size_t luab_nogroup;
-
-extern size_t luab_hostname_max;
-extern size_t luab_specname_max;
+#include "luab_limits.h"
 
 /*
  * Definitions for API method table.
@@ -329,4 +273,4 @@ int  luab_core_dump(lua_State *, int, luab_module_t *, size_t);
 int  luab_core_gc(lua_State *, int, luab_module_t *);
 int  luab_core_len(lua_State *, int, luab_module_t *);
 int  luab_core_tostring(lua_State *, int, luab_module_t *);
-#endif /* _LUAB_H_ */
+#endif /* _LUABSD_H_ */
