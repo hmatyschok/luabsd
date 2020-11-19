@@ -94,7 +94,7 @@ luab_fhlink(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
-    to = luab_checklstring(L, 2, luab_param_path_max);
+    to = luab_checklstring(L, 2, luab_env_path_max);
 
     status = fhlink(fhp, to);
 
@@ -139,7 +139,7 @@ luab_fhlinkat(lua_State *L)
 
     fhp = luab_udata(L, 1, luab_mx(FHANDLE), fhandle_t *);
     tofd = (int)luab_checkinteger(L, 2, luab_int_max);
-    to = luab_checklstring(L, 3, luab_param_path_max);
+    to = luab_checklstring(L, 3, luab_env_path_max);
 
     status = fhlinkat(fhp, tofd, to);
 
@@ -208,7 +208,7 @@ luab_fhreadlink(lua_State *L)
     bufsize = (size_t)luab_checklinteger(L, 3);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_param_buf_max) &&
+        (buf->iov_max_len <= luab_env_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
@@ -340,7 +340,7 @@ luab_getfh(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_param_path_max);
+    path = luab_checklstring(L, 1, luab_env_path_max);
     fhp = luab_udata(L, 2, luab_mx(FHANDLE), fhandle_t *);
 
     status = getfh(path, fhp);
@@ -394,7 +394,7 @@ luab_getfhat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, luab_int_max);
-    path = luab_checklstring(L, 2, luab_param_path_max);
+    path = luab_checklstring(L, 2, luab_env_path_max);
     fhp = luab_udata(L, 3, luab_mx(FHANDLE), fhandle_t *);
     flag = (int)luab_checkinteger(L, 4, luab_int_max);
 
@@ -555,7 +555,7 @@ luab_lgetfh(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_param_path_max);
+    path = luab_checklstring(L, 1, luab_env_path_max);
     fhp = luab_udata(L, 2, luab_mx(FHANDLE), fhandle_t *);
 
     status = lgetfh(path, fhp);
@@ -606,8 +606,8 @@ luab_mount(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    type = luab_checklstring(L, 1, luab_param_path_max);
-    dir = luab_checklstring(L, 2, luab_param_path_max);
+    type = luab_checklstring(L, 1, luab_env_path_max);
+    dir = luab_checklstring(L, 2, luab_env_path_max);
     flags = (int)luab_checkinteger(L, 3, luab_int_max);
 
     if ((data = luab_toxdata(L, 4, NULL)) != NULL)
@@ -703,7 +703,7 @@ luab_statfs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_param_path_max);
+    path = luab_checklstring(L, 1, luab_env_path_max);
     buf = luab_udata(L, 2, luab_mx(STATFS), struct statfs *);
 
     status = statfs(path, buf);
@@ -748,7 +748,7 @@ luab_unmount(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    dir = luab_checklstring(L, 1, luab_param_path_max);
+    dir = luab_checklstring(L, 1, luab_env_path_max);
     flags = (int)luab_checkinteger(L, 2, luab_int_max);
 
     status = unmount(dir, flags);

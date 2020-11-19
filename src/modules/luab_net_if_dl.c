@@ -97,7 +97,7 @@ luab_link_ntoa(lua_State *L)
     buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
-        (buf->iov_max_len <= luab_param_buf_max) &&
+        (buf->iov_max_len <= luab_env_buf_max) &&
         (LUAB_SDL_MAXDATALEN <= buf->iov_max_len) &&
         (buf->iov_flags & IOV_BUFF)) {
 
