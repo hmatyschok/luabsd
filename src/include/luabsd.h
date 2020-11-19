@@ -217,7 +217,7 @@ void     luab_core_argerror(lua_State *, int, void *, size_t, size_t, int);
 
 int  luab_core_checkmaxargs(lua_State *, int);
 
-size_t   luab_core_sysconf(int, size_t);
+u_long   luab_core_sysconf(int, u_long);
 
 /*
  * Access functions, n-th arg over argv, [stack -> C].

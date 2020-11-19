@@ -115,16 +115,16 @@ luab_core_checkmaxargs(lua_State *L, int nmax)
     return (narg);
 }
 
-size_t
-luab_core_sysconf(int name, size_t x)
+u_long
+luab_core_sysconf(int name, u_long x)
 {
-    ssize_t sc;
-    size_t value;
+    long sc;
+    u_long value;
 
     if ((sc = sysconf(name)) < 0)
         value = x;
     else
-        value = (size_t)sc;
+        value = (u_long)sc;
 
     return (value);
 }

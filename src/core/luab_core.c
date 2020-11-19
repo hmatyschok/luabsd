@@ -542,7 +542,7 @@ static luab_sysconf_vec_t luab_param[] = {
 };
 
 static void
-luab_core_param_init(luab_sysconf_vec_t *vec)
+luab_core_envinit(luab_sysconf_vec_t *vec)
 {
     luab_sysconf_vec_t *tok;        /* XXX */
 
@@ -939,7 +939,7 @@ luaopen_bsd(lua_State *L)
     (void)printf("%s", copyright);
 
     /* initialize constraints */
-    luab_core_param_init(luab_param);
+    luab_core_envinit(luab_param);
 
     /* register modules */
     lua_newtable(L);
