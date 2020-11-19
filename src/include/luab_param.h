@@ -27,6 +27,115 @@
 #ifndef _LUAB_PARAM_H_
 #define _LUAB_PARAM_H_
 
+#define LUAB_CHAR_BIT                           CHAR_BIT;
+
+#define LUAB_SCHAR_MAX                          SCHAR_MAX
+#define LUAB_SCHAR_MIN                          SCHAR_MIN
+#define LUAB_UCHAR_MAX                          UCHAR_MAX
+
+#define LUAB_CHAR_MAX                           CHAR_MAX
+#define LUAB_CHAR_MIN                           CHAR_MIN
+
+#define LUAB_USHRT_MAX                          USHRT_MAX
+#define LUAB_SHRT_MAX                           SHRT_MAX
+#define LUAB_SHRT_MIN                           SHRT_MIN
+
+#define LUAB_UINT_MAX                           UINT_MAX
+#define LUAB_INT_MAX                            INT_MAX
+#define LUAB_INT_MIN                            INT_MIN
+
+#define LUAB_ULONG_MAX                          ULONG_MAX
+#define LUAB_LONG_MAX                           LONG_MAX
+#define LUAB_LONG_MIN                           LONG_MIN
+
+#ifdef __LONG_LONG_SUPPORTED
+#define LUAB_ULLONG_MAX                         ULLONG_MAX
+#define LUAB_LLONG_MAX                          LLONG_MAX
+#define LUAB_LLONG_MIN                          LLONG_MIN
+#else
+#define LUAB_ULLONG_MAX                         0
+#define LUAB_LLONG_MAX                          0
+#define LUAB_LLONG_MIN                          0
+#endif
+
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+#define LUAB_SSIZE_MAX                          SSIZE_MAX
+#else
+#define LUAB_SSIZE_MAX                          0
+#endif
+
+#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
+#define LUAB_SIZE_T_MAX                         SIZE_T_MAX
+#define LUAB_OFF_MAX                            OFF_MAX
+#define LUAB_OFF_MIN                            OFF_MIN
+#else
+#define LUAB_SIZE_T_MAX                         0
+#define LUAB_OFF_MAX                            0
+#define LUAB_OFF_MIN                            0
+#endif
+
+#if __BSD_VISIBLE
+#define LUAB_GID_MAX                            GID_MAX
+#define LUAB_UID_MAX                            UID_MAX
+#define LUAB_UQUAD_MAX                          UQUAD_MAX
+#define LUAB_QUAD_MAX                           QUAD_MAX
+#define LUAB_QUAD_MIN                           QUAD_MIN
+#else
+#define LUAB_GID_MAX                            0
+#define LUAB_UID_MAX                            0
+#define LUAB_UQUAD_MAX                          0
+#define LUAB_QUAD_MAX                           0
+#define LUAB_QUAD_MIN                           0
+#endif
+
+#if __XSI_VISIBLE || __POSIX_VISIBLE >= 200809
+#define LUAB_LONG_BIT                           LONG_BIT
+#define LUAB_WORD_BIT                           WORD_BIT
+#else
+#define LUAB_LONG_BIT                           0
+#define LUAB_WORD_BIT                           0
+#endif
+
+extern const lua_Integer luab_char_bit;
+
+extern const lua_Integer luab_schar_max;
+extern const lua_Integer luab_schar_min;
+extern const lua_Integer luab_uchar_max;
+extern const lua_Integer luab_char_max;
+extern const lua_Integer luab_char_min;
+
+extern const lua_Integer luab_ushrt_max;
+extern const lua_Integer luab_shrt_max;
+extern const lua_Integer luab_shrt_min;
+
+extern const lua_Integer luab_uint_max;
+extern const lua_Integer luab_int_max;
+extern const lua_Integer luab_int_min;
+
+extern const lua_Integer luab_ulong_max;
+extern const lua_Integer luab_long_max;
+extern const lua_Integer luab_long_min;
+
+extern const lua_Integer luab_ullong_max;
+extern const lua_Integer luab_llong_max;
+extern const lua_Integer luab_llong_min;
+
+extern const lua_Integer luab_ssize_max;
+
+extern const lua_Integer luab_size_t_max;
+extern const lua_Integer luab_off_max;
+extern const lua_Integer luab_off_min;
+
+extern const lua_Integer luab_gid_max;
+extern const lua_Integer luab_uid_max;
+extern const lua_Integer luab_uquad_max;
+extern const lua_Integer luab_quad_max;
+extern const lua_Integer luab_quad_min;
+
+extern const lua_Integer luab_long_bit;
+extern const lua_Integer luab_word_bit;
+
+
 /*
  * XXX
  *  Constraints shall initialized by sysconf(3), if any.
@@ -273,45 +382,6 @@ typedef struct luab_sysconf_vec {
 
 #define LUAB_SC_PHYS_PAGES                      _SC_PHYS_PAGES
 #define LUAB_SC_PHYS_PAGES                      _SC_PHYS_PAGES
-
-extern const lua_Integer luab_char_bit;
-
-extern const lua_Integer luab_schar_max;
-extern const lua_Integer luab_schar_min;
-extern const lua_Integer luab_uchar_max;
-extern const lua_Integer luab_char_max;
-extern const lua_Integer luab_char_min;
-
-extern const lua_Integer luab_ushrt_max;
-extern const lua_Integer luab_shrt_max;
-extern const lua_Integer luab_shrt_min;
-
-extern const lua_Integer luab_uint_max;
-extern const lua_Integer luab_int_max;
-extern const lua_Integer luab_int_min;
-
-extern const lua_Integer luab_ulong_max;
-extern const lua_Integer luab_long_max;
-extern const lua_Integer luab_long_min;
-
-extern const lua_Integer luab_ullong_max;
-extern const lua_Integer luab_llong_max;
-extern const lua_Integer luab_llong_min;
-
-extern const lua_Integer luab_ssize_max;
-
-extern const lua_Integer luab_size_t_max;
-extern const lua_Integer luab_off_max;
-extern const lua_Integer luab_off_min;
-
-extern const lua_Integer luab_gid_max;
-extern const lua_Integer luab_uid_max;
-extern const lua_Integer luab_uquad_max;
-extern const lua_Integer luab_quad_max;
-extern const lua_Integer luab_quad_min;
-
-extern const lua_Integer luab_long_bit;
-extern const lua_Integer luab_word_bit;
 
 extern size_t luab_param_buf_max;
 extern size_t luab_param_path_max;

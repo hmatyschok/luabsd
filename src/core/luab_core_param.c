@@ -30,75 +30,46 @@
 
 #include "luabsd.h"
 
-const lua_Integer luab_char_bit = CHAR_BIT;
+const lua_Integer luab_char_bit = LUAB_CHAR_BIT;
 
-const lua_Integer luab_schar_max = SCHAR_MAX;
-const lua_Integer luab_schar_min = SCHAR_MIN;
-const lua_Integer luab_uchar_max = UCHAR_MAX;
+const lua_Integer luab_schar_max = LUAB_SCHAR_MAX;
+const lua_Integer luab_schar_min = LUAB_SCHAR_MIN;
+const lua_Integer luab_uchar_max = LUAB_UCHAR_MAX;
 
-const lua_Integer luab_char_max = CHAR_MAX;
+const lua_Integer luab_char_max = LUAB_CHAR_MAX;
 const lua_Integer luab_char_min = CHAR_MIN;
 
-const lua_Integer luab_ushrt_max = USHRT_MAX;
+const lua_Integer luab_ushrt_max = LUAB_USHRT_MAX;
 
-const lua_Integer luab_shrt_max = SHRT_MAX;
-const lua_Integer luab_shrt_min = SHRT_MIN;
+const lua_Integer luab_shrt_max = LUAB_SHRT_MAX;
+const lua_Integer luab_shrt_min = LUAB_SHRT_MIN;
 
-const lua_Integer luab_uint_max = UINT_MAX;
-const lua_Integer luab_int_max = INT_MAX;
-const lua_Integer luab_int_min = INT_MIN;
+const lua_Integer luab_uint_max = LUAB_UINT_MAX;
+const lua_Integer luab_int_max = LUAB_INT_MAX;
+const lua_Integer luab_int_min = LUAB_INT_MIN;
 
-const lua_Integer luab_ulong_max = ULONG_MAX;
-const lua_Integer luab_long_max = LONG_MAX;
-const lua_Integer luab_long_min = LONG_MIN;
+const lua_Integer luab_ulong_max = LUAB_ULONG_MAX;
+const lua_Integer luab_long_max = LUAB_LONG_MAX;
+const lua_Integer luab_long_min = LUAB_LONG_MIN;
 
-#ifdef __LONG_LONG_SUPPORTED
-const lua_Integer luab_ullong_max = ULLONG_MAX;
-const lua_Integer luab_llong_max = LLONG_MAX;
-const lua_Integer luab_llong_min = LLONG_MIN;
-#else
-const lua_Integer luab_ullong_max = 0;
-const lua_Integer luab_llong_max = 0;
-const lua_Integer luab_llong_min = 0;
-#endif
+const lua_Integer luab_ullong_max = LUAB_ULLONG_MAX;
+const lua_Integer luab_llong_max = LUAB_LLONG_MAX;
+const lua_Integer luab_llong_min = LUAB_LLONG_MIN;
 
-#if __POSIX_VISIBLE || __XSI_VISIBLE
-const lua_Integer luab_ssize_max = SSIZE_MAX;
-#else
-const lua_Integer luab_ssize_max = 0;
-#endif
+const lua_Integer luab_ssize_max = LUAB_SSIZE_MAX;
 
-#if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
-const lua_Integer luab_size_t_max = SIZE_T_MAX;
-const lua_Integer luab_off_max = OFF_MAX;
-const lua_Integer luab_off_min = OFF_MIN;
-#else
-const lua_Integer luab_size_t_max = 0;
-const lua_Integer luab_off_max = 0;
-const lua_Integer luab_off_min = 0;
-#endif
+const lua_Integer luab_size_t_max = LUAB_SIZE_T_MAX;
+const lua_Integer luab_off_max = LUAB_OFF_MAX;
+const lua_Integer luab_off_min = LUAB_OFF_MIN;
 
-#if __BSD_VISIBLE
-const lua_Integer luab_gid_max = GID_MAX;
-const lua_Integer luab_uid_max = UID_MAX;
-const lua_Integer luab_uquad_max = UQUAD_MAX;
-const lua_Integer luab_quad_max = QUAD_MAX;
-const lua_Integer luab_quad_min = QUAD_MIN;
-#else
-const lua_Integer luab_gid_max = 0;
-const lua_Integer luab_uid_max = 0;
-const lua_Integer luab_uquad_max = 0;
-const lua_Integer luab_quad_max = 0;
-const lua_Integer luab_quad_min = 0;
-#endif
+const lua_Integer luab_gid_max = LUAB_GID_MAX;
+const lua_Integer luab_uid_max = LUAB_UID_MAX;
+const lua_Integer luab_uquad_max = LUAB_UQUAD_MAX;
+const lua_Integer luab_quad_max = LUAB_QUAD_MAX;
+const lua_Integer luab_quad_min = LUAB_QUAD_MIN;
 
-#if __XSI_VISIBLE || __POSIX_VISIBLE >= 200809
-const lua_Integer luab_long_bit = LONG_BIT;
-const lua_Integer luab_word_bit = WORD_BIT;
-#else
-const lua_Integer luab_long_bit = 0;
-const lua_Integer luab_word_bit = 0;
-#endif
+const lua_Integer luab_long_bit = LUAB_LONG_BIT;
+const lua_Integer luab_word_bit = LUAB_WORD_BIT;
 
 /*
  * XXX
