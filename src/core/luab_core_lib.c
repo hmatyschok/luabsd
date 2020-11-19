@@ -631,7 +631,7 @@ luab_link_create(lua_State *L)
 }
 #endif /* LUAB_DEBUG */
 
-static luab_module_table_t luab_core_util_vec[] = {
+static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
     LUAB_FUNC("primitive_create",   luab_primitive_create),
 #if LUAB_DEBUG
@@ -643,5 +643,5 @@ static luab_module_table_t luab_core_util_vec[] = {
 luab_module_t luab_core_lib = {
     .m_cookie   = LUAB_CORE_LIB_ID,
     .m_name     = LUAB_CORE_LIB_KEY,
-    .m_vec      = luab_core_util_vec,
+    .m_vec      = luab_core_vec,
 };
