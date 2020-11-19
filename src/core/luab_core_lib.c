@@ -157,9 +157,9 @@ luab_checklinteger(lua_State *L, int narg)
 
     b_msk = (lua_Integer)(
 #if defined(__LP64__) || defined(__mips_n64)
-    LONG_MAX
+    luab_env_long_max
 #else
-    INT_MAX
+    luab_env_int_max
 #endif
     );
     return (luab_checkinteger(L, narg, b_msk));
