@@ -88,8 +88,8 @@ FHANDLE_get(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
 
     lua_newtable(L);
-    luab_setudata(L, -2, luab_mx(FSID), "fh_fsid",  &(fh->fh_fsid));
-    luab_setudata(L, -2, luab_mx(FID), "fh_fid",    &(fh->fh_fid));
+    luab_setudata(L, -2, luab_xm(FSID), "fh_fsid",  &(fh->fh_fsid));
+    luab_setudata(L, -2, luab_xm(FID), "fh_fid",    &(fh->fh_fid));
     lua_pushvalue(L, -1);
 
     return (1);
@@ -134,7 +134,7 @@ FHANDLE_fh_fsid(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     fsid = &(fh->fh_fsid);
 
-    return (luab_pushudata(L, luab_mx(FSID), fsid));
+    return (luab_pushudata(L, luab_xm(FSID), fsid));
 }
 
 /***
@@ -157,7 +157,7 @@ FHANDLE_fh_fid(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     fid = &(fh->fh_fid);
 
-    return (luab_pushudata(L, luab_mx(FID), fid));
+    return (luab_pushudata(L, luab_xm(FID), fid));
 }
 
 /*

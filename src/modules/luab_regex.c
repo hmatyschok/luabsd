@@ -64,7 +64,7 @@ luab_table_checkregmatch(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        rm = luab_udata(L, -1, luab_mx(REGMATCH), regmatch_t *);
+                        rm = luab_udata(L, -1, luab_xm(REGMATCH), regmatch_t *);
                         (void)memmove(&(x[m]), rm, sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -92,7 +92,7 @@ luab_table_pushregmatch(lua_State *L, int narg, luab_table_t *tbl, int new, int 
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, luab_mx(REGMATCH), k, &(x[m]));
+                luab_rawsetudata(L, narg, luab_xm(REGMATCH), k, &(x[m]));
 
             errno = ENOENT;
         } else
@@ -143,9 +143,9 @@ luab_regcomp(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    preg = luab_udata(L, 1, luab_mx(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xm(REGEX), regex_t *);
     pattern = luab_checklstring(L, 2, luab_env_buf_max);
-    cflags = (int)luab_checkinteger(L, 3, luab_int_max);
+    cflags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     status = regcomp(preg, pattern, cflags);
 
@@ -199,11 +199,11 @@ luab_regexec(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    preg = luab_udata(L, 1, luab_mx(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xm(REGEX), regex_t *);
     string = luab_checklstring(L, 2, luab_env_buf_max);
     nmatch = (size_t)luab_checklinteger(L, 3);
     tbl = luab_table_checkregmatch(L, 4);
-    eflags = (int)luab_checkinteger(L, 5, luab_int_max);
+    eflags = (int)luab_checkinteger(L, 5, luab_env_int_max);
 
     if (tbl != NULL) {
         pmatch = (regmatch_t *)(tbl->tbl_vec);
@@ -264,9 +264,9 @@ luab_regerror(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    errcode = (int)luab_checkinteger(L, 1, luab_int_max);
-    preg = luab_udata(L, 2, luab_mx(REGEX), regex_t *);
-    buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+    errcode = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    preg = luab_udata(L, 2, luab_xm(REGEX), regex_t *);
+    buf = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
     errbuf_size = (size_t)luab_checklinteger(L, 4);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -311,7 +311,7 @@ luab_regfree(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    preg = luab_udata(L, 1, luab_mx(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xm(REGEX), regex_t *);
     regfree(preg);
 
     return (luab_pushxinteger(L, 0));
@@ -335,7 +335,7 @@ luab_regfree(lua_State *L)
 static int
 luab_regex_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_mx(REGEX), NULL));
+    return (luab_core_create(L, 1, luab_xm(REGEX), NULL));
 }
 
 /***
@@ -352,7 +352,7 @@ luab_regex_create(lua_State *L)
 static int
 luab_regmatch_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_mx(REGMATCH), NULL));
+    return (luab_core_create(L, 1, luab_xm(REGMATCH), NULL));
 }
 
 /*

@@ -71,7 +71,7 @@ luab_sockaddr_un_create(lua_State *L)
     default:
         break;
     }
-    return (luab_pushudata(L, luab_mx(SOCKADDR), data));
+    return (luab_pushudata(L, luab_xm(SOCKADDR), data));
 }
 
 /*

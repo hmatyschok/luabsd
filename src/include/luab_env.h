@@ -102,44 +102,44 @@
 #define	LUAB_MQ_PRIO_MAX                        0
 #endif
 
-extern const lua_Integer luab_char_bit;
+extern const lua_Integer luab_env_char_bit;
 
-extern const lua_Integer luab_schar_max;
-extern const lua_Integer luab_schar_min;
-extern const lua_Integer luab_uchar_max;
-extern const lua_Integer luab_char_max;
-extern const lua_Integer luab_char_min;
+extern const lua_Integer luab_env_schar_max;
+extern const lua_Integer luab_env_schar_min;
+extern const lua_Integer luab_env_uchar_max;
+extern const lua_Integer luab_env_char_max;
+extern const lua_Integer luab_env_char_min;
 
-extern const lua_Integer luab_ushrt_max;
-extern const lua_Integer luab_shrt_max;
-extern const lua_Integer luab_shrt_min;
+extern const lua_Integer luab_env_ushrt_max;
+extern const lua_Integer luab_env_shrt_max;
+extern const lua_Integer luab_env_shrt_min;
 
-extern const lua_Integer luab_uint_max;
-extern const lua_Integer luab_int_max;
-extern const lua_Integer luab_int_min;
+extern const lua_Integer luab_env_uint_max;
+extern const lua_Integer luab_env_int_max;
+extern const lua_Integer luab_env_int_min;
 
-extern const lua_Integer luab_ulong_max;
-extern const lua_Integer luab_long_max;
-extern const lua_Integer luab_long_min;
+extern const lua_Integer luab_env_ulong_max;
+extern const lua_Integer luab_env_long_max;
+extern const lua_Integer luab_env_long_min;
 
-extern const lua_Integer luab_ullong_max;
-extern const lua_Integer luab_llong_max;
-extern const lua_Integer luab_llong_min;
+extern const lua_Integer luab_env_ullong_max;
+extern const lua_Integer luab_env_llong_max;
+extern const lua_Integer luab_env_llong_min;
 
-extern const lua_Integer luab_ssize_max;
+extern const lua_Integer luab_env_ssize_max;
 
-extern const lua_Integer luab_u_long_max;
-extern const lua_Integer luab_off_max;
-extern const lua_Integer luab_off_min;
+extern const lua_Integer luab_env_u_long_max;
+extern const lua_Integer luab_env_off_max;
+extern const lua_Integer luab_env_off_min;
 
-extern const lua_Integer luab_gid_max;
-extern const lua_Integer luab_uid_max;
-extern const lua_Integer luab_uquad_max;
-extern const lua_Integer luab_quad_max;
-extern const lua_Integer luab_quad_min;
+extern const lua_Integer luab_env_gid_max;
+extern const lua_Integer luab_env_uid_max;
+extern const lua_Integer luab_env_uquad_max;
+extern const lua_Integer luab_env_quad_max;
+extern const lua_Integer luab_env_quad_min;
 
-extern const lua_Integer luab_long_bit;
-extern const lua_Integer luab_word_bit;
+extern const lua_Integer luab_env_long_bit;
+extern const lua_Integer luab_env_word_bit;
 
 #define LUAB_SC_NOTSUPP                         (-1)
 

@@ -133,7 +133,7 @@ BINTIME_set_sec(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
-    data = (time_t)luab_checkinteger(L, 2, luab_int_max);
+    data = (time_t)luab_checkinteger(L, 2, luab_env_int_max);
 
     bt->sec = data;
 
@@ -183,7 +183,7 @@ BINTIME_set_frac(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
-    data = (uint64_t)luab_checkinteger(L, 2, luab_long_max);
+    data = (uint64_t)luab_checkinteger(L, 2, luab_env_long_max);
 
     bt->frac = data;
 

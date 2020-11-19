@@ -80,7 +80,7 @@ luab_abs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    j = (int)luab_checkinteger(L, 1, luab_int_max);
+    j = (int)luab_checkinteger(L, 1, luab_env_int_max);
     n = abs(j);
 
     return (luab_pushxinteger(L, n));
@@ -184,12 +184,12 @@ luab_div(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    num = (int)luab_checkinteger(L, 1, luab_int_max);
-    denom = (int)luab_checkinteger(L, 2, luab_int_max);
+    num = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    denom = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     data = div(num, denom);
 
-    return (luab_pushudata(L, luab_mx(DIV), &data));
+    return (luab_pushudata(L, luab_xm(DIV), &data));
 }
 
 /***
@@ -214,7 +214,7 @@ luab_exit(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    status = (int)luab_checkinteger(L, 1, luab_int_max);
+    status = (int)luab_checkinteger(L, 1, luab_env_int_max);
     exit(status);
                         /* NOTREACHED */
     return (luab_pushxinteger(L, 0));
@@ -263,7 +263,7 @@ luab_labs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    j = luab_checkinteger(L, 1, luab_long_max);
+    j = luab_checkinteger(L, 1, luab_env_long_max);
     n = labs(j);
 
     return (luab_pushxinteger(L, n));
@@ -289,12 +289,12 @@ luab_ldiv(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    num = (int)luab_checkinteger(L, 1, luab_int_max);
-    denom = (int)luab_checkinteger(L, 2, luab_int_max);
+    num = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    denom = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     data = ldiv(num, denom);
 
-    return (luab_pushudata(L, luab_mx(LDIV), &data));
+    return (luab_pushudata(L, luab_xm(LDIV), &data));
 }
 
 /***
@@ -319,7 +319,7 @@ luab_mblen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
     nbytes = (size_t)luab_checklinteger(L, 2);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -368,7 +368,7 @@ luab_mbstowcs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
     mbstring = luab_checklstring(L, 2, luab_env_buf_max);
     nbytes = (size_t)luab_checklinteger(L, 3);
 
@@ -419,8 +419,8 @@ luab_mbtowc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
-    h1 = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
+    h1 = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
     nbytes = (size_t)luab_checklinteger(L, 3);
     
     wcharp = &(xp->un_wc);
@@ -470,7 +470,7 @@ luab_srand(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    seed = (u_int)luab_checkinteger(L, 1, luab_int_max);
+    seed = (u_int)luab_checkinteger(L, 1, luab_env_int_max);
     srand(seed);
 
     return (luab_pushxinteger(L, 0));
@@ -576,7 +576,7 @@ luab_strtoul(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     nptr = luab_checklstring(L, 1, luab_env_buf_max);
-    base = luab_checkinteger(L, 2, luab_int_max);
+    base = luab_checkinteger(L, 2, luab_env_int_max);
 
     n = strtoul(nptr, NULL, base);
 
@@ -630,8 +630,8 @@ luab_wctomb(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
-    wchar = (wchar_t)luab_checkinteger(L, 2, luab_long_max);
+    xp = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
+    wchar = (wchar_t)luab_checkinteger(L, 2, luab_env_long_max);
 
     mbchar = &(xp->un_char);
     status = wctomb(mbchar, wchar);
@@ -663,8 +663,8 @@ luab_wcstombs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf1 = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
-    buf2 = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    buf1 = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
+    buf2 = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
     nbytes = (size_t)luab_checklinteger(L, 3);
 
     if (((dst = buf1->iov.iov_base) != NULL) &&
@@ -740,7 +740,7 @@ luab_llabs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    j = (long)luab_checkinteger(L, 1, luab_long_max);
+    j = (long)luab_checkinteger(L, 1, luab_env_long_max);
     n = llabs(j);
 
     return (luab_pushxinteger(L, n));
@@ -766,12 +766,12 @@ luab_lldiv(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    num = (int)luab_checkinteger(L, 1, luab_int_max);
-    denom = (int)luab_checkinteger(L, 2, luab_int_max);
+    num = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    denom = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     data = lldiv(num, denom);
 
-    return (luab_pushudata(L, luab_mx(LLDIV), &data));
+    return (luab_pushudata(L, luab_xm(LLDIV), &data));
 }
 
 /***
@@ -796,7 +796,7 @@ luab_strtoll(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     nptr = luab_checklstring(L, 1, luab_env_buf_max);
-    base = (int)luab_checkinteger(L, 2, luab_int_max);
+    base = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     n = strtoll(nptr, NULL, base);
 
@@ -825,7 +825,7 @@ luab_strtoull(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     nptr = luab_checklstring(L, 1, luab_env_buf_max);
-    base = (int)luab_checkinteger(L, 2, luab_int_max);
+    base = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     n = strtoull(nptr, NULL, base);
 
@@ -854,7 +854,7 @@ luab_Exit(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    status = (int)luab_checkinteger(L, 1, luab_int_max);
+    status = (int)luab_checkinteger(L, 1, luab_env_int_max);
     _Exit(status);
                         /* NOTREACHED */
     return (luab_pushxinteger(L, 0));
@@ -887,7 +887,7 @@ luab_quick_exit(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    status = (int)luab_checkinteger(L, 1, luab_int_max);
+    status = (int)luab_checkinteger(L, 1, luab_env_int_max);
     quick_exit(status);
 
     return (luab_pushxinteger(L, 0));
@@ -918,7 +918,7 @@ luab_realpath(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     pathname = luab_checklstring(L, 1, luab_env_path_max);
-    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -968,7 +968,7 @@ luab_rand_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
     ctx = &(xp->un_u_int);
 
     n = rand_r(ctx);
@@ -1003,7 +1003,7 @@ luab_setenv(lua_State *L)
 
     name = luab_checklstring(L, 1, NAME_MAX);
     value = luab_checklstring(L, 2, NAME_MAX);
-    overwrite = (int)luab_checkinteger(L, 3, luab_int_max);
+    overwrite = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     status = setenv(name, value, overwrite);
 
@@ -1138,7 +1138,7 @@ luab_grantpt(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fildes = (int)luab_checkinteger(L, 1, luab_int_max);
+    fildes = (int)luab_checkinteger(L, 1, luab_env_int_max);
     status = grantpt(fildes);
 
     return (luab_pushxinteger(L, status));
@@ -1168,8 +1168,8 @@ luab_initstate(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    seed = (u_int)luab_checkinteger(L, 1, luab_int_max);
-    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
+    seed = (u_int)luab_checkinteger(L, 1, luab_env_int_max);
+    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
     n = (size_t)luab_checklinteger(L, 3);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -1254,7 +1254,7 @@ luab_l64a(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_checkinteger(L, 1, luab_long_max);
+    l = luab_checkinteger(L, 1, luab_env_long_max);
     s = l64a(l);    /* value points to a static buffer, see l64a(3) */
 
     return (luab_pushstring(L, s));
@@ -1400,7 +1400,7 @@ luab_posix_openpt(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    oflag = (int)luab_checkinteger(L, 1, luab_int_max);
+    oflag = (int)luab_checkinteger(L, 1, luab_env_int_max);
     fd = posix_openpt(oflag);
 
     return (luab_pushxinteger(L, fd));
@@ -1425,7 +1425,7 @@ luab_ptsname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fildes = (int)luab_checkinteger(L, 1, luab_int_max);
+    fildes = (int)luab_checkinteger(L, 1, luab_env_int_max);
     pts = ptsname(fildes);
 
     return (luab_pushstring(L, pts));
@@ -1451,7 +1451,7 @@ luab_putenv(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
@@ -1553,7 +1553,7 @@ luab_setstate(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -1599,7 +1599,7 @@ luab_srand48(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    seed = (long)luab_checkinteger(L, 1, luab_long_max);
+    seed = (long)luab_checkinteger(L, 1, luab_env_long_max);
     srand48(seed);
 
     return (luab_pushxinteger(L, 0));
@@ -1623,7 +1623,7 @@ luab_srandom(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    seed = (u_int)luab_checkinteger(L, 1, luab_int_max);
+    seed = (u_int)luab_checkinteger(L, 1, luab_env_int_max);
     srandom(seed);
 
     return (luab_pushxinteger(L, 0));
@@ -1648,7 +1648,7 @@ luab_unlockpt(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fildes = (int)luab_checkinteger(L, 1, luab_int_max);
+    fildes = (int)luab_checkinteger(L, 1, luab_env_int_max);
     status = unlockpt(fildes);
 
     return (luab_pushxinteger(L, status));
@@ -1679,7 +1679,7 @@ luab_abort2(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     why = luab_checklstring(L, 1, LUAB_ABORT2_MAXBUFLEN);
-    nargs = luab_checkinteger(L, 2, luab_int_max);
+    nargs = luab_checkinteger(L, 2, luab_env_int_max);
 
     if ((tbl = luab_table_tolxargp(L, 3, nargs)) != NULL)
         args = (const void **)(tbl->tbl_vec);
@@ -1734,7 +1734,7 @@ luab_arc4random_buf(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
     nbytes = (size_t)luab_checklinteger(L, 2);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -1778,7 +1778,7 @@ luab_arc4random_uniform(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ub = luab_checkinteger(L, 1, luab_int_max);
+    ub = luab_checkinteger(L, 1, luab_env_int_max);
     n = arc4random_uniform(ub);
 
     return (luab_pushxinteger(L, n));
@@ -1807,8 +1807,8 @@ luab_getbsize(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    h1 = luab_udata(L, 1, luab_mx(PRIMITIVE), luab_primitive_u *);
-    h2 = luab_udata(L, 2, luab_mx(PRIMITIVE), luab_primitive_u *);
+    h1 = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
+    h2 = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
 
     headerlenp = &(h1->un_int);
     blocksizep = &(h2->un_long);
@@ -1842,9 +1842,9 @@ luab_cgetcap(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     cap = luab_checklstring(L, 2, luab_env_buf_max);
-    type = (int)luab_checkinteger(L, 3, luab_int_max);
+    type = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     if ((bp = buf->iov_base) != NULL)
         str = cgetcap(bp, cap, type);
@@ -1907,7 +1907,7 @@ luab_cgetent(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     db_array = (void *)(intptr_t *)luab_table_checkargv(L, 2);
     name = luab_checklstring(L, 3, luab_env_buf_max);
 
@@ -1949,7 +1949,7 @@ luab_cgetfirst(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     db_array = (void *)(intptr_t *)luab_table_checkargv(L, 2);
 
     if ((bp = buf->iov_base) != NULL) {
@@ -1984,7 +1984,7 @@ luab_cgetmatch(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     name = luab_checklstring(L, 2, luab_env_buf_max);
 
     if ((bp = buf->iov_base) != NULL)
@@ -2024,7 +2024,7 @@ luab_cgetnext(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     db_array = (void *)(intptr_t *)luab_table_checkargv(L, 2);
 
     if ((bp = buf->iov_base) != NULL)
@@ -2061,9 +2061,9 @@ luab_cgetnum(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     cap = luab_checklstring(L, 2, luab_env_buf_max);
-    xp = luab_udata(L, 3, luab_mx(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
     num = &(xp->un_long);
 
     if ((bp = buf->iov_base) != NULL)
@@ -2125,9 +2125,9 @@ luab_cgetstr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     cap = luab_checklstring(L, 1, luab_env_buf_max);
-    res = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+    res = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
 
     if ((bp = buf->iov_base) != NULL) {
         if ((len = cgetstr(bp, cap, &dp)) < 0)
@@ -2165,9 +2165,9 @@ luab_cgetustr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, luab_mx(CAP_RBUF), struct iovec *);
+    buf = luab_udata(L, 1, luab_xm(CAP_RBUF), struct iovec *);
     cap = luab_checklstring(L, 1, luab_env_buf_max);
-    res = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
+    res = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
 
     if ((bp = buf->iov_base) != NULL) {
         if ((len = cgetustr(bp, cap, &dp)) < 0)
@@ -2203,8 +2203,8 @@ luab_daemon(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    nochdir = (int)luab_checkinteger(L, 1, luab_int_max);
-    noclose = (int)luab_checkinteger(L, 2, luab_int_max);
+    nochdir = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    noclose = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     status = daemon(nochdir, noclose);
 
@@ -2233,8 +2233,8 @@ luab_daemonfd(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    chdirfd = (int)luab_checkinteger(L, 1, luab_int_max);
-    nullfd = (int)luab_checkinteger(L, 2, luab_int_max);
+    chdirfd = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    nullfd = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     status = daemon(chdirfd, nullfd);
 
@@ -2264,8 +2264,8 @@ luab_devname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    dev = (dev_t)luab_checkinteger(L, 1, luab_long_max);
-    type = (mode_t)luab_checkinteger(L, 2, luab_shrt_max);
+    dev = (dev_t)luab_checkinteger(L, 1, luab_env_long_max);
+    type = (mode_t)luab_checkinteger(L, 2, luab_env_shrt_max);
 
     dp = devname(dev, type);
 
@@ -2302,10 +2302,10 @@ luab_devname_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    dev = (dev_t)luab_checkinteger(L, 1, luab_long_max);
-    type = (mode_t)luab_checkinteger(L, 2, luab_shrt_max);
-    buf = luab_udata(L, 3, luab_mx(IOVEC), luab_iovec_t *);
-    len = (int)luab_checkinteger(L, 4, luab_int_max);
+    dev = (dev_t)luab_checkinteger(L, 1, luab_env_long_max);
+    type = (mode_t)luab_checkinteger(L, 2, luab_env_shrt_max);
+    buf = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
+    len = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -2348,7 +2348,7 @@ luab_fdevname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fd = (int)luab_checkinteger(L, 1, luab_int_max);
+    fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     dp = fdevname(fd);
 
     return (luab_pushstring(L, dp));
@@ -2379,9 +2379,9 @@ luab_fdevname_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    fd = (int)luab_checkinteger(L, 1, luab_int_max);
-    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    len = (int)luab_checkinteger(L, 3, luab_int_max);
+    fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    len = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -2436,7 +2436,7 @@ luab_getloadavg(lua_State *L)
     else
         loadavg = NULL;
 
-    nelem = (int)luab_checkinteger(L, 2, luab_int_max);
+    nelem = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     if (tbl != NULL) {
         nmax = (tbl->tbl_card - 1);
@@ -2500,9 +2500,9 @@ luab_l64a_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_checkinteger(L, 1, luab_long_max);
-    buf = luab_udata(L, 2, luab_mx(IOVEC), luab_iovec_t *);
-    buflen = (int)luab_checkinteger(L, 3, luab_int_max);
+    l = luab_checkinteger(L, 1, luab_env_long_max);
+    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    buflen = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -2558,8 +2558,8 @@ luab_mkostemp(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
-    oflags = (int)luab_checkinteger(L, 2, luab_int_max);
+    buf = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
+    oflags = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     if (((bp = buf->iov.iov_base) != 0) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -2617,9 +2617,9 @@ luab_mkostemps(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, luab_mx(IOVEC), luab_iovec_t *);
-    suffixlen = (int)luab_checkinteger(L, 2, luab_int_max);
-    oflags = (int)luab_checkinteger(L, 3, luab_int_max);
+    buf = luab_udata(L, 1, luab_xm(IOVEC), luab_iovec_t *);
+    suffixlen = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    oflags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     if (((bp = buf->iov.iov_base) != 0) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -2733,9 +2733,9 @@ luab_strtonum(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     nptr = luab_checklstring(L, 1, luab_env_buf_max);
-    minval = (long long)luab_checkinteger(L, 2, luab_llong_max);
-    maxval = (long long)luab_checkinteger(L, 3, luab_llong_max);
-    buf = luab_udata(L, 4, luab_mx(IOVEC), luab_iovec_t *);
+    minval = (long long)luab_checkinteger(L, 2, luab_env_llong_max);
+    maxval = (long long)luab_checkinteger(L, 3, luab_env_llong_max);
+    buf = luab_udata(L, 4, luab_xm(IOVEC), luab_iovec_t *);
 
     if ((n = strtonum(nptr, minval, maxval, &dp)) == 0)
         (void)luab_iovec_copyin(buf, dp, strlen(dp));
@@ -2762,7 +2762,7 @@ luab_strtonum(lua_State *L)
 static int
 luab_div_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_mx(DIV), NULL));
+    return (luab_core_create(L, 1, luab_xm(DIV), NULL));
 }
 
 /***
@@ -2779,7 +2779,7 @@ luab_div_create(lua_State *L)
 static int
 luab_ldiv_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_mx(LDIV), NULL));
+    return (luab_core_create(L, 1, luab_xm(LDIV), NULL));
 }
 
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
@@ -2798,7 +2798,7 @@ luab_ldiv_create(lua_State *L)
 static int
 luab_lldiv_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_mx(LLDIV), NULL));
+    return (luab_core_create(L, 1, luab_xm(LLDIV), NULL));
 }
 #endif /* __LONG_LONG_SUPPORTED */
 #endif /* __ISO_C_VISIBLE >= 1999 */

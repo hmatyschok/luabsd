@@ -622,7 +622,7 @@ luab_uuid(lua_State *L)
 static int
 luab_primitive_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_mx(PRIMITIVE), NULL));
+    return (luab_core_create(L, 1, luab_xm(PRIMITIVE), NULL));
 }
 
 #if LUAB_DEBUG
@@ -641,7 +641,7 @@ luab_primitive_create(lua_State *L)
 static int
 luab_link_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_mx(LINK), NULL));
+    return (luab_core_create(L, 0, luab_xm(LINK), NULL));
 }
 #endif /* LUAB_DEBUG */
 

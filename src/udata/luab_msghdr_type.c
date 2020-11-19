@@ -150,7 +150,7 @@ MSGHDR_get(lua_State *L)
     luab_setinteger(L, -2, "msg_namelen", msg->msg_namelen);
 
     if (msg->msg_name != NULL)
-        luab_setudata(L, -2, luab_mx(SOCKADDR), "msg_name", msg->msg_name);
+        luab_setudata(L, -2, luab_xm(SOCKADDR), "msg_name", msg->msg_name);
 
     if (msg->msg_iov != NULL)
         (void)msghdr_pushiovec(L, -2, "msg_iov", ud->msg_buf);
@@ -301,7 +301,7 @@ MSGHDR_set_msg_name(lua_State *L)
     msg = (struct msghdr *)luab_checkxdata(L, 1, &luab_msghdr_type, &udx);
     dp = luab_dptox(msg->msg_name);
 
-    sa = luab_udata_checkxlink(L, 2, luab_mx(SOCKADDR), udx, dp);
+    sa = luab_udata_checkxlink(L, 2, luab_xm(SOCKADDR), udx, dp);
 
     if (sa != NULL)
         msg->msg_namelen = sa->sa_len;
@@ -334,7 +334,7 @@ MSGHDR_get_msg_name(lua_State *L)
     msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
 
     if ((sa = msg->msg_name) != NULL)
-        status = luab_pushudata(L, luab_mx(SOCKADDR), sa);
+        status = luab_pushudata(L, luab_xm(SOCKADDR), sa);
     else {
         errno = EADDRNOTAVAIL;
         status = luab_pushnil(L);

@@ -142,7 +142,7 @@ STATFS_get(lua_State *L)
     luab_setinteger(L, -2, "f_namemax",     f->f_namemax);
     luab_setinteger(L, -2, "f_owner",       f->f_owner);
 
-    luab_setudata(L, -2, luab_mx(FSID), "f_fsid", (void *)&(f->f_fsid));
+    luab_setudata(L, -2, luab_xm(FSID), "f_fsid", (void *)&(f->f_fsid));
 
     luab_setldata(L, -2, "f_fstypename",    f->f_fstypename, MFSNAMELEN);
     luab_setldata(L, -2, "f_mntfromname",   f->f_mntfromname, MNAMELEN);
@@ -560,7 +560,7 @@ STATFS_f_fsid(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     dp = (void *)&(f->f_fsid);
 
-    return (luab_pushudata(L, luab_mx(FSID), dp));
+    return (luab_pushudata(L, luab_xm(FSID), dp));
 }
 
 /***

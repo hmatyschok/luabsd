@@ -402,7 +402,7 @@ luab_table_checkgid(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        v = (gid_t)luab_tointeger(L, -1, luab_int_max);
+                        v = (gid_t)luab_tointeger(L, -1, luab_env_int_max);
                         x[m] = (gid_t)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -436,7 +436,7 @@ luab_table_checkint(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        v = (int)luab_tointeger(L, -1, luab_uint_max);
+                        v = (int)luab_tointeger(L, -1, luab_env_uint_max);
                         x[m] = (int)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -470,7 +470,7 @@ luab_table_checku_short(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        v = (u_short)luab_tointeger(L, -1, luab_ushrt_max);
+                        v = (u_short)luab_tointeger(L, -1, luab_env_ushrt_max);
                         x[m] = (u_short)v;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -540,7 +540,7 @@ luab_table_checkmmsghdr(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        msg = luab_udata(L, -1, luab_mx(MSGHDR), struct msghdr *);
+                        msg = luab_udata(L, -1, luab_xm(MSGHDR), struct msghdr *);
                         (void)memmove(&(x[m].msg_hdr), msg, sizeof(struct msghdr));
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -576,7 +576,7 @@ luab_table_checktimespec(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        ts = luab_udata(L, -1, luab_mx(TIMESPEC), struct timespec *);
+                        ts = luab_udata(L, -1, luab_xm(TIMESPEC), struct timespec *);
                         (void)memmove(&(x[m]), ts, sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -853,7 +853,7 @@ luab_table_pushtimespec(lua_State *L, int narg, luab_table_t *tbl, int new, int 
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, luab_mx(TIMESPEC), k, &(x[m]));
+                luab_rawsetudata(L, narg, luab_xm(TIMESPEC), k, &(x[m]));
 
             errno = ENOENT;
         } else

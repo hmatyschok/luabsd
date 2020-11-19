@@ -189,7 +189,7 @@ typedef enum luab_type {
     (LUAB_##name##_IDX)
 #define luab_vx(idx) \
     (luab_typevec[((idx) % (LUAB_TYPE_SENTINEL))])
-#define luab_mx(name) \
+#define luab_xm(name) \
     ((luab_vx(luab_idx(name))).mv_mod)
 
 typedef struct luab_module_vec {

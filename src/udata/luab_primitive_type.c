@@ -104,7 +104,7 @@ PRIMITIVE_set_char(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
-    value = luab_checkinteger(L, 2, luab_uchar_max);
+    value = luab_checkinteger(L, 2, luab_env_uchar_max);
 
     xp->un_char = (char)value;
 
@@ -121,7 +121,7 @@ PRIMITIVE_get_char(lua_State *L)
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
-    value = (xp->un_intx & luab_uchar_max);
+    value = (xp->un_intx & luab_env_uchar_max);
 
     return (luab_pushxinteger(L, value));
 }
@@ -135,7 +135,7 @@ PRIMITIVE_set_short(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
-    value = luab_checkinteger(L, 2, luab_ushrt_max);
+    value = luab_checkinteger(L, 2, luab_env_ushrt_max);
 
     xp->un_short = (short)value;
 
@@ -152,7 +152,7 @@ PRIMITIVE_get_short(lua_State *L)
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
-    value = (xp->un_intx & luab_ushrt_max);
+    value = (xp->un_intx & luab_env_ushrt_max);
 
     return (luab_pushxinteger(L, value));
 }
@@ -167,7 +167,7 @@ PRIMITIVE_set_int(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
-    value = luab_checkinteger(L, 2, luab_uint_max);
+    value = luab_checkinteger(L, 2, luab_env_uint_max);
 
     xp->un_int = (int)value;
 
@@ -184,7 +184,7 @@ PRIMITIVE_get_int(lua_State *L)
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
-    value = (xp->un_intx & luab_uint_max);
+    value = (xp->un_intx & luab_env_uint_max);
 
     return (luab_pushxinteger(L, value));
 }
@@ -198,7 +198,7 @@ PRIMITIVE_set_long(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
-    value = luab_checkinteger(L, 2, luab_ulong_max);
+    value = luab_checkinteger(L, 2, luab_env_ulong_max);
 
     xp->un_long = (long)value;
 
@@ -215,7 +215,7 @@ PRIMITIVE_get_long(lua_State *L)
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
-    value = (xp->un_intx & luab_ulong_max);
+    value = (xp->un_intx & luab_env_ulong_max);
 
     return (luab_pushxinteger(L, value));
 }
@@ -229,7 +229,7 @@ PRIMITIVE_set_socklen(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
-    value = luab_checkinteger(L, 2, luab_int_max);
+    value = luab_checkinteger(L, 2, luab_env_int_max);
 
     xp->un_socklen = (socklen_t)value;
 
@@ -246,7 +246,7 @@ PRIMITIVE_get_socklen(lua_State *L)
 
     xp = luab_udata(L, 1, &luab_primitive_type, luab_primitive_u *);
 
-    value = (xp->un_intx & luab_int_max);
+    value = (xp->un_intx & luab_env_int_max);
 
     return (luab_pushxinteger(L, value));
 }

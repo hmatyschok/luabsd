@@ -132,7 +132,7 @@ LINGER_set_l_onoff(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    data = (int)luab_checkinteger(L, 2, luab_int_max);
+    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     l->l_onoff = data;
 
@@ -182,7 +182,7 @@ LINGER_set_l_linger(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    data = (int)luab_checkinteger(L, 2, luab_int_max);
+    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     l->l_linger = data;
 

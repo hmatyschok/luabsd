@@ -41,7 +41,7 @@ typedef struct luab_iovec {
     size_t  iov_max_len;
     u_int   iov_flags;
 } luab_iovec_t;
-#if luab_uint_max > 65535
+#if luab_env_uint_max > 65535
 #define IOV_LOCK    0x00000001
 #define IOV_PROXY   0x00000002
 #define IOV_BUFF    0x00000004
@@ -65,7 +65,7 @@ luab_module_t    *luab_iovec_param_init(luab_iovec_param_t *, void *, size_t,
  */
 
 #define luab_isiovec(L, narg) \
-    (luab_isdata((L), (narg), luab_mx(IOVEC), luab_iovec_t *))
+    (luab_isdata((L), (narg), luab_xm(IOVEC), luab_iovec_t *))
 
 caddr_t  luab_iovec_toldata(lua_State *, int, size_t);
 const char   *luab_iovec_islstring(lua_State *, int, size_t);

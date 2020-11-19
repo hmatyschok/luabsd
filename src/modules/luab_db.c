@@ -70,13 +70,13 @@ luab_dbopen(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     file = luab_islstring(L, 1, luab_env_path_max);
-    flags = luab_checkinteger(L, 2, luab_int_max);
-    mode = luab_checkinteger(L, 3, luab_int_max);
-    type = luab_checkinteger(L, 4, luab_int_max);
+    flags = luab_checkinteger(L, 2, luab_env_int_max);
+    mode = luab_checkinteger(L, 3, luab_env_int_max);
+    type = luab_checkinteger(L, 4, luab_env_int_max);
 
     db = dbopen(file, flags, mode, type, NULL);
 
-    return (luab_pushudata(L, luab_mx(DB), db));
+    return (luab_pushudata(L, luab_xm(DB), db));
 }
 
 /*
@@ -97,7 +97,7 @@ luab_dbopen(lua_State *L)
 static int
 luab_dbt_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_mx(DBT), luab_mx(IOVEC)));
+    return (luab_core_create(L, 1, luab_xm(DBT), luab_xm(IOVEC)));
 }
 #endif /* __BSD_VISIBLE */
 

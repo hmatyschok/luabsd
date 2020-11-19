@@ -94,7 +94,7 @@ LINK_get(lua_State *L)
 
     lua_newtable(L);
     luab_setfstring(L, -2, "link_dp", "(%p)", link->link_dp);
-    luab_setudata(L, -2, luab_mx(SOCKADDR), "link_sa", link->link_sa);
+    luab_setudata(L, -2, luab_xm(SOCKADDR), "link_sa", link->link_sa);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -198,7 +198,7 @@ LINK_set_sockaddr(lua_State *L)
     link = (link_t *)luab_checkxdata(L, 1, &luab_link_type, &udx);
     dp = luab_dptox(link->link_sa);
 
-    if (luab_udata_checkxlink(L, 2, luab_mx(SOCKADDR), udx, dp) != NULL)
+    if (luab_udata_checkxlink(L, 2, luab_xm(SOCKADDR), udx, dp) != NULL)
         status = 0;
     else
         status = -1;
