@@ -96,6 +96,12 @@
 #define LUAB_WORD_BIT                           0
 #endif
 
+#if __POSIX_VISIBLE
+#define	LUAB_MQ_PRIO_MAX                        MQ_PRIO_MAX
+#else
+#define	LUAB_MQ_PRIO_MAX                        0
+#endif
+
 extern const lua_Integer luab_char_bit;
 
 extern const lua_Integer luab_schar_max;

@@ -613,7 +613,7 @@ static luab_module_vec_t luab_net_vec[] = {
 };
 
 /* Interface against <sys/xxx.h>. */
-static luab_module_vec_t luab_env_vec[] = {
+static luab_module_vec_t luab_sys_vec[] = {
     {
         .mv_mod = &luab_sys_dirent_lib,
         .mv_init = luab_core_newtable,
@@ -946,7 +946,7 @@ luaopen_bsd(lua_State *L)
 
     luab_core_registerlib(L, -2, luab_arpa_vec,  "arpa");
     luab_core_registerlib(L, -2, luab_net_vec,   "net");
-    luab_core_registerlib(L, -2, luab_env_vec,   "sys");
+    luab_core_registerlib(L, -2, luab_sys_vec,   "sys");
     luab_core_registerlib(L, -2, luab_core_vec,  NULL);
 
     lua_pushvalue(L, -1);
