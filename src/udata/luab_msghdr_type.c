@@ -90,7 +90,7 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
     int up_call, status;
 
     if (tbl != NULL) {
-        luab_table_pushiovec(L, narg, tbl, 1, 0);
+        luab_table_pushxdata(L, narg, luab_xm(IOVEC), tbl, 1, 0);
 
         /* set field k and/or push on top of Lua stack */
         if (k != NULL)
@@ -367,7 +367,7 @@ MSGHDR_set_msg_iov(lua_State *L)
     ud = luab_to_msghdr(L, 1);
     msg = &(ud->msg_hdr);
 
-    if ((iov = luab_table_checkiovec(L, 2)) != NULL) {
+    if ((iov = luab_table_checkxdata(L, 2, luab_xm(IOVEC))) != NULL) {
         luab_table_iovec_free(ud->msg_buf);
         ud->msg_buf = iov;
 

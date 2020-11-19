@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 extern luab_module_t luab_dirent_type;
 
@@ -331,6 +332,67 @@ dirent_udata(lua_State *L, int narg)
     return (luab_to_dirent(L, narg));
 }
 
+static luab_table_t *
+dirent_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct dirent *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(struct dirent);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct dirent *)(tbl->tbl_vec)) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_dirent_type, struct dirent *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+dirent_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct dirent *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_dirent_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_dirent_type = {
     .m_cookie   = LUAB_DIRENT_TYPE_ID,
     .m_name     = LUAB_DIRENT_TYPE,
@@ -338,5 +400,7 @@ luab_module_t luab_dirent_type = {
     .m_create   = dirent_create,
     .m_init     = dirent_init,
     .m_get      = dirent_udata,
+    .m_get_tbl  = dirent_checktable,
+    .m_set_tbl  = dirent_pushtable,
     .m_sz       = sizeof(luab_dirent_t),
 };

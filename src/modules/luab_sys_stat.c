@@ -394,7 +394,7 @@ luab_futimens(lua_State *L)
     status = futimens(fd, times);
 
     if (times != NULL)
-        luab_table_pushtimespec(L, 2, tbl, 0, 1);
+        luab_table_pushxdata(L, 2, luab_xm(TIMESPEC), tbl, 0, 1);
 
     return (luab_pushxinteger(L, status));
 }
@@ -463,7 +463,7 @@ luab_utimensat(lua_State *L)
     status = utimensat(fd, path, times, flag);
 
     if (times != NULL)
-        luab_table_pushtimespec(L, 2, tbl, 0, 1);
+        luab_table_pushxdata(L, 2, luab_xm(TIMESPEC), tbl, 0, 1);
 
     return (luab_pushxinteger(L, status));
 }

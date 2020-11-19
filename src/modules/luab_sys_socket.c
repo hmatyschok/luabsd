@@ -38,6 +38,47 @@
 extern luab_module_t luab_sys_socket_lib;
 
 /*
+ * Subr.
+ */
+
+static luab_table_t *
+luab_table_checkmmsghdr(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct mmsghdr *x;
+    struct msghdr *msg;
+    size_t m, n, sz;
+
+    sz = sizeof(struct mmsghdr);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct mmsghdr *)(tbl->tbl_vec)) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        msg = luab_udata(L, -1, luab_xm(MSGHDR), struct msghdr *);
+                        (void)memmove(&(x[m].msg_hdr), msg, sizeof(struct msghdr));
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+/*
  * Tuple (name,level,optval,optlen,x) for {g,s}etsockopt(2).
  */
 

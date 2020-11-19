@@ -40,35 +40,6 @@
 extern luab_module_t luab_sys_mount_lib;
 
 /*
- * Subr.
- */
-
-static void
-luab_table_pushstatfs(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
-{
-    struct statfs *x;
-    size_t m, n, k;
-
-    if (tbl != NULL) {
-
-        if (((x = tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
-            luab_table_init(L, new);
-
-            for (m = 0, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, luab_xm(STATFS), k, &(x[m]));
-
-            errno = ENOENT;
-        } else
-            errno = ERANGE;
-
-        if (clr != 0)
-            luab_table_free(tbl);
-    } else
-        errno = EINVAL;
-}
-
-/*
  * Service primitives.
  */
 
@@ -461,13 +432,14 @@ luab_getfsstat(lua_State *L)
                 buf = (struct statfs *)(tbl->tbl_vec);
             else
                 buf = NULL;
+
         } else {
             tbl = NULL;
             buf = NULL;
         }
 
         if ((card = getfsstat(buf, bufsize, mode)) > 0)
-            luab_table_pushstatfs(L, 1, tbl, 0, 1);
+            luab_xm_pushtable(STATFS, L, 1, tbl, 0, 1);
         else
             luab_table_free(tbl);
 
@@ -522,7 +494,7 @@ luab_getmntinfo(lua_State *L)
             if ((tbl->tbl_vec = realloc(vec, sz)) == NULL)
                 luab_core_err(EX_DATAERR, __func__, errno);
 
-            luab_table_pushstatfs(L, 1, tbl, 0, 1);
+            luab_xm_pushtable(STATFS, L, 1, tbl, 0, 1);
         } else
             luab_table_free(tbl);
     } else
@@ -660,7 +632,7 @@ luab_nmount(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    tbl = luab_table_checkiovec(L, 1);
+    tbl = luab_table_checkxdata(L, 1, luab_xm(IOVEC));
     niov = (u_int)luab_checkinteger(L, 2, luab_env_int_max);
     flags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
@@ -669,7 +641,7 @@ luab_nmount(lua_State *L)
         if ((tbl->tbl_card - 1) == (size_t)niov) {
             iov = (struct iovec *)(tbl->tbl_vec);
             status = nmount(iov, niov, flags);
-            luab_table_pushiovec(L, 1, tbl, 0, 1);
+            luab_table_pushxdata(L, 1, luab_xm(IOVEC), tbl, 0, 1);
         } else {
             luab_table_iovec_free(tbl);
             errno = ERANGE;

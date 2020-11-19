@@ -116,6 +116,16 @@ typedef void *  (*luab_ctor_fn)(lua_State *, void *);
 typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
 
+typedef struct luab_table {
+    uint32_t    tbl_cookie;
+    void        *tbl_vec;
+    size_t      tbl_card;
+    size_t      tbl_sz;
+} luab_table_t;
+
+typedef luab_table_t *   (*luab_get_tbl_fn)(lua_State *, int);
+typedef void     (*luab_set_tbl_fn)(lua_State *, int, luab_table_t *, int, int);
+
 typedef struct luab_module {
     uint32_t        m_cookie;        /*  date -u +'%s' */
     size_t          m_sz;
@@ -123,7 +133,9 @@ typedef struct luab_module {
     luab_module_table_t *m_vec;
     luab_ctor_fn    m_create;
     luab_init_fn    m_init;
-    luab_get_fn    m_get;
+    luab_get_fn     m_get;
+    luab_get_tbl_fn m_get_tbl;
+    luab_set_tbl_fn m_set_tbl;
 } luab_module_t;
 
 typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
@@ -191,7 +203,7 @@ typedef enum luab_type {
     (luab_typevec[((idx) % (LUAB_TYPE_SENTINEL))])
 #define luab_xm(name) \
     ((luab_vx(luab_idx(name))).mv_mod)
-
+    
 typedef struct luab_module_vec {
     luab_module_t       *mv_mod;
     luab_module_fn      mv_init;

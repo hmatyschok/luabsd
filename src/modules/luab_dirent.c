@@ -60,71 +60,6 @@
 extern luab_module_t luab_dirent_lib;
 
 /*
- * Subr.
- */
-
-static luab_table_t *
-luab_table_checkdirent(lua_State *L, int narg)
-{
-    luab_table_t *tbl;
-    struct dirent *x, *dp;
-    size_t m, n, sz;
-
-    sz = sizeof(struct dirent);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
-
-        if (((x = (struct dirent *)(tbl->tbl_vec)) != NULL) &&
-            (tbl->tbl_card > 1)) {
-            luab_table_init(L, 0);
-
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
-
-                if (lua_next(L, narg) != 0) {
-
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isuserdata(L, -1) != 0)) {
-                        dp = luab_udata(L, -1, luab_xm(DIRENT), struct dirent *);
-                        (void)memmove(&(x[m]), dp, sz);
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
-            }
-        }
-    }
-    return (tbl);
-}
-
-static void
-luab_table_pushdirent(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
-{
-    struct dirent *x;
-    size_t m, n, k;
-
-    if (tbl != NULL) {
-
-        if (((x = tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
-            luab_table_init(L, new);
-
-            for (m = 0, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, luab_xm(DIRENT), k, &(x[m]));
-
-            errno = ENOENT;
-        } else
-            errno = ERANGE;
-
-        if (clr != 0)
-            luab_table_free(tbl);
-    } else
-        errno = EINVAL;
-}
-
-/*
  * Service primitives.
  */
 
@@ -232,7 +167,7 @@ luab_getdents(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    tbl = luab_table_checkdirent(L, 2);
+    tbl = luab_table_checkxdata(L, 2, luab_xm(DIRENT));
     nbytes = (size_t)luab_checklinteger(L, 3);
 
     if (tbl != NULL && nbytes > 0) {
@@ -241,7 +176,7 @@ luab_getdents(lua_State *L)
             nbytes *= tbl->tbl_sz;
 
             count = getdents(fd, tbl->tbl_vec, nbytes);
-            luab_table_pushdirent(L, 2, tbl, 0, 1);
+            luab_table_pushxdata(L, 2, luab_xm(DIRENT), tbl, 0, 1);
         } else {
             luab_table_free(tbl);
             errno = ERANGE;
@@ -291,7 +226,7 @@ luab_getdirentries(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    tbl = luab_table_checkdirent(L, 2);
+    tbl = luab_table_checkxdata(L, 2, luab_xm(DIRENT));
     nbytes = (size_t)luab_checklinteger(L, 3);
     xp = luab_udataisnil(L, 4, luab_xm(PRIMITIVE), luab_primitive_u *);
 
@@ -306,7 +241,7 @@ luab_getdirentries(lua_State *L)
             nbytes *= tbl->tbl_sz;
 
             count = getdirentries(fd, tbl->tbl_vec, nbytes, basep);
-            luab_table_pushdirent(L, 2, tbl, 0, 1);
+            luab_table_pushxdata(L, 2, luab_xm(DIRENT), tbl, 0, 1);
         } else {
             luab_table_free(tbl);
             errno = ERANGE;

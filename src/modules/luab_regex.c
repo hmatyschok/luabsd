@@ -40,71 +40,6 @@
 extern luab_module_t luab_regex_lib;
 
 /*
- * Subr.
- */
-
-static luab_table_t *
-luab_table_checkregmatch(lua_State *L, int narg)
-{
-    luab_table_t *tbl;
-    regmatch_t *x, *rm;
-    size_t m, n, sz;
-
-    sz = sizeof(regmatch_t);
-
-    if ((tbl = luab_newvector(L, narg, sz)) != NULL) {
-
-        if (((x = (regmatch_t *)(tbl->tbl_vec)) != NULL) &&
-            (tbl->tbl_card > 1)) {
-            luab_table_init(L, 0);
-
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
-
-                if (lua_next(L, narg) != 0) {
-
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isuserdata(L, -1) != 0)) {
-                        rm = luab_udata(L, -1, luab_xm(REGMATCH), regmatch_t *);
-                        (void)memmove(&(x[m]), rm, sz);
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
-            }
-        }
-    }
-    return (tbl);
-}
-
-static void
-luab_table_pushregmatch(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
-{
-    regmatch_t *x;
-    size_t m, n, k;
-
-    if (tbl != NULL) {
-
-        if (((x = tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
-            luab_table_init(L, new);
-
-            for (m = 0, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, luab_xm(REGMATCH), k, &(x[m]));
-
-            errno = ENOENT;
-        } else
-            errno = ERANGE;
-
-        if (clr != 0)
-            luab_table_free(tbl);
-    } else
-        errno = EINVAL;
-}
-
-/*
  * Service primitives.
  */
 
@@ -202,13 +137,13 @@ luab_regexec(lua_State *L)
     preg = luab_udata(L, 1, luab_xm(REGEX), regex_t *);
     string = luab_checklstring(L, 2, luab_env_buf_max);
     nmatch = (size_t)luab_checklinteger(L, 3);
-    tbl = luab_table_checkregmatch(L, 4);
+    tbl = luab_table_checkxdata(L, 4, luab_xm(REGMATCH));
     eflags = (int)luab_checkinteger(L, 5, luab_env_int_max);
 
     if (tbl != NULL) {
         pmatch = (regmatch_t *)(tbl->tbl_vec);
         status = regexec(preg, string, nmatch, pmatch, eflags);
-        luab_table_pushregmatch(L, 4, tbl, 0, 1);
+        luab_table_pushxdata(L, 4, luab_xm(REGMATCH), tbl, 0, 1);
     } else
         status = REG_ESPACE;
 
