@@ -115,20 +115,6 @@ luab_core_checkmaxargs(lua_State *L, int nmax)
     return (narg);
 }
 
-u_long
-luab_core_sysconf(int name, u_long x)
-{
-    long sc;
-    u_long value;
-
-    if ((sc = sysconf(name)) < 0)
-        value = x;
-    else
-        value = (u_long)sc;
-
-    return (value);
-}
-
 /*
  * Access functions, n-th arg over argv, [stack -> C].
  *

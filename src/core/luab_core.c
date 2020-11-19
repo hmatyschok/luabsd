@@ -544,10 +544,16 @@ static luab_sysconf_vec_t luab_param[] = {
 static void
 luab_core_envinit(luab_sysconf_vec_t *vec)
 {
-    luab_sysconf_vec_t *tok;        /* XXX */
+    luab_sysconf_vec_t *tok;
+    long scx;
 
-    for (tok = vec; tok->scv_val != NULL; tok++)
-        *(tok->scv_val) = luab_core_sysconf(tok->scv_key, tok->scv_dflt);
+    for (tok = vec; tok->scv_val != NULL; tok++) {
+
+        if ((scx = sysconf(tok->scv_key)) < 0)
+            *(tok->scv_val) = tok->scv_dflt;
+        else
+            *(tok->scv_val) = (u_long)scx;
+    }
 }
 
 /*
