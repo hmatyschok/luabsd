@@ -686,7 +686,30 @@ luab_gid_create(lua_State *L)
 }
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(USHRT)).
+ * Generator function, creates an instance of (LUA_TUSERDATA(OFF)).
+ *
+ * @function off_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage off [, err, msg ] = bsd.core.off_create(x)
+ */
+static int
+luab_off_create(lua_State *L)
+{
+    off_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (off_t)luab_checkinteger(L, 1, luab_env_long_max);
+
+    return (luab_pushudata(L, luab_xtype(OFF), &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UID)).
  *
  * @function uid_create
  *
@@ -705,7 +728,7 @@ luab_uid_create(lua_State *L)
 
     x = (uid_t)luab_checkinteger(L, 1, luab_env_uid_max);
 
-    return (luab_pushudata(L, luab_xtype(USHRT), &x));
+    return (luab_pushudata(L, luab_xtype(UID), &x));
 }
 
 /***
@@ -797,6 +820,7 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("int_create",         luab_int_create),
     LUAB_FUNC("ushrt_create",       luab_ushrt_create),
     LUAB_FUNC("gid_create",         luab_gid_create),
+    LUAB_FUNC("off_create",         luab_off_create),
     LUAB_FUNC("uid_create",         luab_uid_create),
     LUAB_FUNC("double_create",      luab_double_create),
     LUAB_FUNC("float_create",       luab_float_create),

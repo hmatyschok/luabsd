@@ -717,6 +717,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_GID_IDX,
     },{
+        .mv_mod = &luab_off_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_OFF_IDX,
+    },{
         .mv_mod = &luab_uid_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_UID_IDX,
