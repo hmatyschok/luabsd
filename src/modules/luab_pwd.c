@@ -421,7 +421,7 @@ luab_user_from_uid(lua_State *L)
  *
  * @param name              Specifies user name.
  * @param uid               Result argument, with name linked UID,
- *                          instance of (LUA_TUSERDATA(PRIMITIVE)).
+ *                          instance of (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -431,14 +431,14 @@ static int
 luab_uid_from_user(lua_State *L)
 {
     const char *name;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     uid_t *uid;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     name = luab_checklstring(L, 1, luab_env_logname_max);
-    xp = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
     uid = &(xp->un_uid);
 
     status = uid_from_user(name, uid);

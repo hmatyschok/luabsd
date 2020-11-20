@@ -143,9 +143,9 @@ luab_checklinteger(lua_State *L, int narg)
 
     b_msk = (lua_Integer)(
 #if defined(__LP64__) || defined(__mips_n64)
-    luab_env_long_max
+    luab_env_ulong_max
 #else
-    luab_env_int_max
+    luab_env_uint_max
 #endif
     );
     return (luab_checkinteger(L, narg, b_msk));
@@ -592,23 +592,20 @@ luab_uuid(lua_State *L)
 }
 
 /***
- * Generator function - create an instance of (LUA_TUSERDATA(PRIMITIVE)).
+ * Generator function - create an instance of (LUA_TUSERDATA(INTEGER)).
  *
- * @function primitive_create
+ * @function integer_create
  *
- * @param data          Instance of (LUA_TUSERDATA(PRIMITIVE)).
+ * @param integer           Instance of (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- *          (primitive [, nil, nil]) on success or
- *          (nil, (errno, strerror(errno)))
- *
- * @usage primitive [, err, msg ] = bsd.core.primitive_create([ data ])
+ * @usage integer [, err, msg ] = bsd.core.integer_create([ integer ])
  */
 static int
-luab_primitive_create(lua_State *L)
+luab_integer_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(PRIMITIVE), NULL));
+    return (luab_core_create(L, 1, luab_xm(INTEGER), NULL));
 }
 
 #if LUAB_DEBUG
@@ -633,7 +630,7 @@ luab_link_create(lua_State *L)
 
 static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
-    LUAB_FUNC("primitive_create",   luab_primitive_create),
+    LUAB_FUNC("integer_create",     luab_integer_create),
 #if LUAB_DEBUG
     LUAB_FUNC("link_create",        luab_link_create),
 #endif

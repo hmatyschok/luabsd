@@ -3088,7 +3088,7 @@ luab_getentropy(lua_State *L)
  *
  *                          if query by (name, basegid) was successfull.
  *
- * @param ngroups           Size, instance of (LUA_TUSERDATA(PRIMITIVE)).
+ * @param ngroups           Size, instance of (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3101,7 +3101,7 @@ luab_getgrouplist(lua_State *L)
     gid_t basegid;
     luab_table_t *tbl;
     gid_t *gidset;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     size_t *ngroups;
     int status;
 
@@ -3112,7 +3112,7 @@ luab_getgrouplist(lua_State *L)
 
     (void)luab_checkltable(L, 3, 0);  /* only empty tables are accepted */
 
-    xp = luab_udata(L, 4, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 4, luab_xm(INTEGER), luab_primitive_t *);
     ngroups = &(xp->un_size);
 
     if (*ngroups != 0) {
@@ -3255,8 +3255,8 @@ luab_getosreldate(lua_State *L)
  * @function getpeereid
  *
  * @param s                 Open socket(9), unix(4) domain(9).
- * @param euid              Effective user ID, (LUA_TUSERDATA(PRIMITIVE)).
- * @param egid              Effective group ID, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param euid              Effective user ID, (LUA_TUSERDATA(INTEGER)).
+ * @param egid              Effective group ID, (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3266,8 +3266,8 @@ static int
 luab_getpeereid(lua_State *L)
 {
     int s;
-    luab_primitive_u *h1;
-    luab_primitive_u *h2;
+    luab_primitive_t *h1;
+    luab_primitive_t *h2;
     uid_t *euid;
     gid_t *egid;
     int status;
@@ -3275,8 +3275,8 @@ luab_getpeereid(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    h1 = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
-    h2 = luab_udata(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
+    h1 = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
+    h2 = luab_udata(L, 3, luab_xm(INTEGER), luab_primitive_t *);
 
     euid = &(h1->un_uint32);
     egid = &(h2->un_uint32);
@@ -3291,9 +3291,9 @@ luab_getpeereid(lua_State *L)
  *
  * @function getresgid
  *
- * @param rgid              Real group ID, (LUA_TUSERDATA(PRIMITIVE)).
- * @param egid              Effective group ID, (LUA_TUSERDATA(PRIMITIVE)).
- * @param sgid              Saved group ID, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param rgid              Real group ID, (LUA_TUSERDATA(INTEGER)).
+ * @param egid              Effective group ID, (LUA_TUSERDATA(INTEGER)).
+ * @param sgid              Saved group ID, (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3302,9 +3302,9 @@ luab_getpeereid(lua_State *L)
 static int
 luab_getresgid(lua_State *L)
 {
-    luab_primitive_u *h1;
-    luab_primitive_u *h2;
-    luab_primitive_u *h3;
+    luab_primitive_t *h1;
+    luab_primitive_t *h2;
+    luab_primitive_t *h3;
     gid_t *rgid;
     gid_t *egid;
     gid_t *sgid;
@@ -3312,9 +3312,9 @@ luab_getresgid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    h1 = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
-    h2 = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
-    h3 = luab_udata(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
+    h1 = luab_udata(L, 1, luab_xm(INTEGER), luab_primitive_t *);
+    h2 = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
+    h3 = luab_udata(L, 3, luab_xm(INTEGER), luab_primitive_t *);
 
     rgid = &(h1->un_uint32);
     egid = &(h2->un_uint32);
@@ -3330,9 +3330,9 @@ luab_getresgid(lua_State *L)
  *
  * @function getresuid
  *
- * @param ruid              Real user ID, (LUA_TUSERDATA(PRIMITIVE)).
- * @param euid              Effective user ID, (LUA_TUSERDATA(PRIMITIVE)).
- * @param suid              Saved user ID, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param ruid              Real user ID, (LUA_TUSERDATA(INTEGER)).
+ * @param euid              Effective user ID, (LUA_TUSERDATA(INTEGER)).
+ * @param suid              Saved user ID, (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -3341,9 +3341,9 @@ luab_getresgid(lua_State *L)
 static int
 luab_getresuid(lua_State *L)
 {
-    luab_primitive_u *h1;
-    luab_primitive_u *h2;
-    luab_primitive_u *h3;
+    luab_primitive_t *h1;
+    luab_primitive_t *h2;
+    luab_primitive_t *h3;
     uid_t *ruid;
     uid_t *euid;
     uid_t *suid;
@@ -3351,9 +3351,9 @@ luab_getresuid(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    h1 = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
-    h2 = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
-    h3 = luab_udata(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
+    h1 = luab_udata(L, 1, luab_xm(INTEGER), luab_primitive_t *);
+    h2 = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
+    h3 = luab_udata(L, 3, luab_xm(INTEGER), luab_primitive_t *);
 
     ruid = &(h1->un_uint32);
     euid = &(h2->un_uint32);
@@ -3876,7 +3876,7 @@ luab_rcmd(lua_State *L)
     const char *locuser;
     const char *remuser;
     const char *cmd;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     caddr_t bp;
     int *fd2p;
     int s;
@@ -3888,7 +3888,7 @@ luab_rcmd(lua_State *L)
     locuser = luab_checklstring(L, 3, luab_env_logname_max);
     remuser = luab_checklstring(L, 4, luab_env_logname_max);
     cmd = luab_checklstring(L, 5, ARG_MAX);
-    xp = luab_udataisnil(L, 6, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udataisnil(L, 6, luab_xm(INTEGER), luab_primitive_t *);
 
     if (((bp = buf->iov.iov_base) != 0) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -3944,7 +3944,7 @@ luab_rcmd_af(lua_State *L)
     const char *locuser;
     const char *remuser;
     const char *cmd;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     int af;
     caddr_t bp;
     int *fd2p;
@@ -3957,7 +3957,7 @@ luab_rcmd_af(lua_State *L)
     locuser = luab_checklstring(L, 3, luab_env_logname_max);
     remuser = luab_checklstring(L, 4, luab_env_logname_max);
     cmd = luab_checklstring(L, 5, ARG_MAX);
-    xp = luab_udataisnil(L, 6, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udataisnil(L, 6, luab_xm(INTEGER), luab_primitive_t *);
     af = (int)luab_checkinteger(L, 7, luab_env_int_max);
 
     if (((bp = buf->iov.iov_base) != 0) &&
@@ -4136,7 +4136,7 @@ luab_rfork(lua_State *L)
  *
  * @function rresvport
  *
- * @param port              Port, SAP OSI-L4, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param port              Port, SAP OSI-L4, (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -4145,12 +4145,12 @@ luab_rfork(lua_State *L)
 static int
 luab_rresvport(lua_State *L)
 {
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     int *port, s;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 1, luab_xm(INTEGER), luab_primitive_t *);
     port = &(xp->un_int);
     s = rresvport(port);
 
@@ -4162,7 +4162,7 @@ luab_rresvport(lua_State *L)
  *
  * @function rresvport_af
  *
- * @param port              Port, SAP OSI-L4, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param port              Port, SAP OSI-L4, (LUA_TUSERDATA(INTEGER)).
  * @param af                Protocol domain(9), OSI-L3.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -4172,12 +4172,12 @@ luab_rresvport(lua_State *L)
 static int
 luab_rresvport_af(lua_State *L)
 {
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     int af, *port, s;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 1, luab_xm(INTEGER), luab_primitive_t *);
     af = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     port = &(xp->un_int);

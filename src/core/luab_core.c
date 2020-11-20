@@ -724,9 +724,9 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FLOCK_IDX,
     },{
-        .mv_mod = &luab_primitive_type,
+        .mv_mod = &luab_integer_type,
         .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_PRIMITIVE_IDX,
+        .mv_idx = LUAB_INTEGER_IDX,
     },{
         .mv_mod = &luab_if_nameindex_type,
         .mv_init = luab_core_newmetatable,

@@ -43,7 +43,7 @@
  * Definitions for API method table.
  */
 
-typedef union primitive {
+typedef union luab_primitive_u {
     char        un_char;
     short       un_short;
     int         un_int;
@@ -69,14 +69,14 @@ typedef union primitive {
     lua_CFunction   un_fn;
     const char  *un_cp;
     wchar_t     un_wc;
-} luab_primitive_u;
+} luab_primitive_t;
 
-typedef void    (*luab_module_table_fn)(lua_State *, luab_primitive_u *);
+typedef void    (*luab_module_table_fn)(lua_State *, luab_primitive_t *);
 
 typedef struct luab_module_table {
     luab_module_table_fn    mt_init;
     const char              *mt_key;
-    luab_primitive_u        mt_val;
+    luab_primitive_t        mt_val;
 } luab_module_table_t;
 
 #define LUAB_TYPE(fn, k, v) \
@@ -91,19 +91,19 @@ typedef struct luab_module_table {
     LUAB_TYPE(NULL, NULL, .mt_val.un_fn = NULL)
 
 static __inline void
-luab_initinteger(lua_State *L, luab_primitive_u *un)
+luab_initinteger(lua_State *L, luab_primitive_t *un)
 {
     lua_pushinteger(L, un->un_intx);
 }
 
 static __inline void
-luab_initcfunction(lua_State *L, luab_primitive_u *un)
+luab_initcfunction(lua_State *L, luab_primitive_t *un)
 {
     lua_pushcfunction(L, un->un_fn);
 }
 
 static __inline void
-luab_initstring(lua_State *L, luab_primitive_u *un)
+luab_initstring(lua_State *L, luab_primitive_t *un)
 {
     lua_pushstring(L, un->un_cp);
 }
@@ -151,7 +151,7 @@ typedef enum luab_type {
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
     LUAB_FLOCK_IDX,
-    LUAB_PRIMITIVE_IDX,
+    LUAB_INTEGER_IDX,
     LUAB_IF_NAMEINDEX_IDX,
     LUAB_IN_ADDR_IDX,
     LUAB_IN6_ADDR_IDX,

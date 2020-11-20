@@ -196,7 +196,7 @@ luab_group_from_gid(lua_State *L)
  *
  * @param name              Specifies group name.
  * @param gid               Result argument, with name linked GID,
- *                          instance of (LUA_TUSERDATA(PRIMITIVE)).
+ *                          instance of (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -206,14 +206,14 @@ static int
 luab_gid_from_group(lua_State *L)
 {
     const char *name;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     gid_t *gid;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     name = luab_checklstring(L, 1, luab_env_logname_max);
-    xp = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
     gid = &(xp->un_gid);
 
     status = gid_from_group(name, gid);

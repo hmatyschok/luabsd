@@ -96,7 +96,7 @@ static void
 luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
 {
     luab_xarg_t *pci;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
 
     (void)luab_core_checkmaxargs(L, 5);
 #if 0
@@ -113,13 +113,13 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
 
     if ((sopt->sopt_val = luab_toxdata(L, 4, pci)) != NULL) {
 
-        if (pci->xarg_idx == LUAB_PRIMITIVE_IDX) {   /* XXX macro, anyone ??? */
-            sopt->sopt_val = &(((luab_primitive_u *)sopt->sopt_val)->un_int);
+        if (pci->xarg_idx == LUAB_INTEGER_IDX) {   /* XXX macro, anyone ??? */
+            sopt->sopt_val = &(((luab_primitive_t *)sopt->sopt_val)->un_int);
             pci->xarg_len = sizeof(*(int *)(sopt->sopt_val));
         }
     }
 
-    if ((xp = luab_isudata(L, 5, luab_xm(PRIMITIVE))) != NULL)
+    if ((xp = luab_isudata(L, 5, luab_xm(INTEGER))) != NULL)
         sopt->sopt_x = &(xp->un_socklen);
     else {
         sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, luab_env_int_max);
@@ -153,7 +153,7 @@ luab_accept(lua_State *L)
 {
     int s;
     struct sockaddr *addr;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     socklen_t *addrlen;
     int as;
 
@@ -161,7 +161,7 @@ luab_accept(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     addr = luab_udataisnil(L, 2, luab_xm(SOCKADDR), struct sockaddr *);
-    xp = luab_udataisnil(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udataisnil(L, 3, luab_xm(INTEGER), luab_primitive_t *);
 
     if (xp != NULL)
         addrlen = &(xp->un_socklen);
@@ -259,7 +259,7 @@ luab_accept4(lua_State *L)
 {
     int s;
     struct sockaddr *addr;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     socklen_t *addrlen;
     int flags, as;
 
@@ -267,7 +267,7 @@ luab_accept4(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     addr = luab_udataisnil(L, 2, luab_xm(SOCKADDR), struct sockaddr *);
-    xp = luab_udataisnil(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udataisnil(L, 3, luab_xm(INTEGER), luab_primitive_t *);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     if (xp != NULL)
@@ -364,7 +364,7 @@ luab_connectat(lua_State *L)
  *
  * @param s                 Socket bound to an adress by bind(2).
  * @param name              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param namelen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -375,7 +375,7 @@ luab_getpeername(lua_State *L)
 {
     int s;
     struct sockaddr *name;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     socklen_t *namelen;
     int status;
 
@@ -383,7 +383,7 @@ luab_getpeername(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     name = luab_udata(L, 2, luab_xm(SOCKADDR), struct sockaddr *);
-    xp = luab_udata(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 3, luab_xm(INTEGER), luab_primitive_t *);
     namelen = &(xp->un_socklen);
 
     status = getpeername(s, name, namelen);
@@ -398,7 +398,7 @@ luab_getpeername(lua_State *L)
  *
  * @param s                 Socket bound to an adress by bind(2).
  * @param name              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param namelen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -409,7 +409,7 @@ luab_getsockname(lua_State *L)
 {
     int s;
     struct sockaddr *name;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     socklen_t *namelen;
     int status;
 
@@ -417,7 +417,7 @@ luab_getsockname(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     name = luab_udata(L, 2, luab_xm(SOCKADDR), struct sockaddr *);
-    xp = luab_udata(L, 3, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 3, luab_xm(INTEGER), luab_primitive_t *);
     namelen = &(xp->un_socklen);
 
     status = getsockname(s, name, namelen);
@@ -548,7 +548,7 @@ luab_recv(lua_State *L)
  *
  *                          may combined by inclusive or.
  * @param from              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param fromlen           Value-result argument, (LUA_TUSERDATA(PRIMITIVE)).
+ * @param fromlen           Value-result argument, (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -562,7 +562,7 @@ luab_recvfrom(lua_State *L)
     size_t len;
     int flags;
     struct sockaddr *from;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     socklen_t *fromlen;
 
     (void)luab_core_checkmaxargs(L, 6);
@@ -572,7 +572,7 @@ luab_recvfrom(lua_State *L)
     len = (size_t)luab_checklinteger(L, 3);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
     from = luab_udataisnil(L, 5, luab_xm(SOCKADDR), struct sockaddr *);
-    xp = luab_udata(L, 6, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 6, luab_xm(INTEGER), luab_primitive_t *);
     fromlen = &(xp->un_socklen);
 
     return (luab_iovec_recvfrom(L, s, buf, &len, flags, from, fromlen));
@@ -835,7 +835,7 @@ luab_sendmsg(lua_State *L)
  * @param hdtr              Specifies optional HDR/TRL, by an instance
  *                          of (LUA_TUSERDATA(SF_HDTR)).
  * @param sbytes            Result argument, how many bytes are sent, instance
- *                          of (LUA_TUSERDATA(PRIMITIVE)).
+ *                          of (LUA_TUSERDATA(INTEGER)).
  * @param flags             Flags argument over
  *
  *                              bsd.sys.socket.SF_{
@@ -858,7 +858,7 @@ luab_sendfile(lua_State *L)
     off_t offset;
     size_t nbytes;
     struct sf_hdtr *hdtr;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     off_t *sbytes;
     int flags;
     int status;
@@ -870,7 +870,7 @@ luab_sendfile(lua_State *L)
     offset = luab_checkinteger(L, 3, luab_env_long_max);
     nbytes = (size_t)luab_checklinteger(L, 4);
     hdtr = luab_udataisnil(L, 5, luab_xm(SF_HDTR), struct sf_hdtr *);
-    xp = luab_udataisnil(L, 6, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udataisnil(L, 6, luab_xm(INTEGER), luab_primitive_t *);
 
     if (xp != NULL)
         sbytes = &(xp->un_off);

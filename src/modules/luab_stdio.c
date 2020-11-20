@@ -250,7 +250,7 @@ luab_fgetc(lua_State *L)
  *
  * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
  * @param pos               Result argument, tracks current position by
- *                          an instance of (LUA_TUSERDATA(PRIMITIVE)).
+ *                          an instance of (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -260,14 +260,14 @@ static int
 luab_fgetpos(lua_State *L)
 {
     FILE *stream;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     fpos_t *pos;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     stream = luab_udata(L, 1, luab_xm(SFILE), FILE *);
-    xp = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
     pos = &(xp->un_fpos);
 
     if (stream != NULL)
@@ -531,7 +531,7 @@ luab_fseek(lua_State *L)
  *
  * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
  * @param pos               Value argument, specifies the current position
- *                          by an instance of (LUA_TUSERDATA(PRIMITIVE)).
+ *                          by an instance of (LUA_TUSERDATA(INTEGER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -541,14 +541,14 @@ static int
 luab_fsetpos(lua_State *L)
 {
     FILE *stream;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     fpos_t *pos;
     int status;
 
     (void)luab_core_checkmaxargs(L, 3);
 
     stream = luab_udata(L, 1, luab_xm(SFILE), FILE *);
-    xp = luab_udata(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
     pos = &(xp->un_fpos);
 
     if (stream != NULL)
@@ -1400,7 +1400,7 @@ luab_fcloseall(lua_State *L)
  *
  * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
  * @param fdp               File descriptor, optional result argument, either an
- *                          instance of (LUA_TUSERDATA(PRIMITIVE)) or (LUA_TNIL).
+ *                          instance of (LUA_TUSERDATA(INTEGER)) or (LUA_TNIL).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1410,13 +1410,13 @@ static int
 luab_fdclose(lua_State *L)
 {
     FILE *stream;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     int *fdp, status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     stream = luab_udata(L, 1, luab_xm(SFILE), FILE *);
-    xp = luab_udataisnil(L, 2, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udataisnil(L, 2, luab_xm(INTEGER), luab_primitive_t *);
 
     if (xp != NULL)
         fdp = &(xp->un_int);

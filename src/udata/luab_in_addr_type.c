@@ -119,7 +119,7 @@ IN_ADDR_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage id [, err, mag ] = in_addr:set_s_addr(id)
+ * @usage id [, err, msg ] = in_addr:set_s_addr(id)
  */
 static int
 IN_ADDR_set_s_addr(lua_State *L)

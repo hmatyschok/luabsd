@@ -219,7 +219,7 @@ luab_getdirentries(lua_State *L)
     int fd;
     luab_table_t *tbl;
     size_t nbytes;
-    luab_primitive_u *xp;
+    luab_primitive_t *xp;
     off_t *basep;
     ssize_t count;
 
@@ -228,7 +228,7 @@ luab_getdirentries(lua_State *L)
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     tbl = luab_table_checkxdata(L, 2, luab_xm(DIRENT));
     nbytes = (size_t)luab_checklinteger(L, 3);
-    xp = luab_udataisnil(L, 4, luab_xm(PRIMITIVE), luab_primitive_u *);
+    xp = luab_udataisnil(L, 4, luab_xm(INTEGER), luab_primitive_t *);
 
     if (xp != NULL)
         basep = &(xp->un_off);
