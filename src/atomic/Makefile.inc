@@ -1,5 +1,5 @@
 
-.PATH: ${LUAB_SRCTOP}/atoms
+.PATH: ${LUAB_SRCTOP}/atomic
 
 SRCS+=  luab_int_type.c
 SRCS+=  luab_double_type.c

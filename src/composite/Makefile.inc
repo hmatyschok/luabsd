@@ -1,5 +1,5 @@
 
-.PATH: ${LUAB_SRCTOP}/udata
+.PATH: ${LUAB_SRCTOP}/composite
 
 SRCS+=  luab_bintime_type.c
 SRCS+=  luab_cap_rbuf_type.c
