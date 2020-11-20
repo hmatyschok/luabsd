@@ -36,6 +36,10 @@
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
+/*
+ * Vector table - constraints, etc.
+ */
+ 
 static luab_sysconf_vec_t luab_param[] = {
     {                                               /* <core> */
         .scv_key = LUAB_SC_NOTSUPP,
@@ -537,6 +541,11 @@ static luab_sysconf_vec_t luab_param[] = {
     LUAB_SC_VEC_SENTINEL
 };
 
+/*
+ * Common subr. for initializiation, those are
+ * called during runtime of package.loadlib().
+ */
+
 static void
 luab_core_envinit(luab_sysconf_vec_t *vec)
 {
@@ -551,11 +560,6 @@ luab_core_envinit(luab_sysconf_vec_t *vec)
             *(tok->scv_val) = (u_long)scx;
     }
 }
-
-/*
- * Common subr. for initializiation, those are
- * called during runtime of package.loadlib().
- */
 
 static void
 luab_core_populate(lua_State *L, int narg, luab_module_t *m)
@@ -708,6 +712,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_double_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DOUBLE_IDX,
+    },{
+        .mv_mod = &luab_float_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_FLOAT_IDX,
     },
 #if LUAB_DEBUG
     {

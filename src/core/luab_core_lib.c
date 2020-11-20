@@ -662,7 +662,30 @@ luab_double_create(lua_State *L)
     return (luab_pushudata(L, luab_xtype(DOUBLE), &x));
 }
 
-/* complex data types */
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(FLOAT)).
+ *
+ * @function float_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage float [, err, msg ] = bsd.core.float_create(x)
+ */
+static int
+luab_float_create(lua_State *L)
+{
+    float x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (float)luaL_checknumber(L, 1); /* XXX */
+
+    return (luab_pushudata(L, luab_xtype(FLOAT), &x));
+}
+
+/* composite data types */
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(INTEGER)).
  *
@@ -704,6 +727,7 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
     LUAB_FUNC("int_create",         luab_int_create),
     LUAB_FUNC("double_create",      luab_double_create),
+    LUAB_FUNC("float_create",       luab_float_create),
     LUAB_FUNC("integer_create",     luab_integer_create),
 #if LUAB_DEBUG
     LUAB_FUNC("link_create",        luab_link_create),
