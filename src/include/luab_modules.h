@@ -28,6 +28,12 @@
 #define _LUAB_MODULES_H_
 
 /*
+ * Set of atomic data types.
+ */
+
+extern luab_module_t luab_int_type;
+
+/*
  * Set of complex data types.
  */
 

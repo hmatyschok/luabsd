@@ -73,14 +73,12 @@ luab_table_t     *luab_table_toxargp(lua_State *, int);
 
 luab_table_t     *luab_table_checkdouble(lua_State *, int);
 luab_table_t     *luab_table_checkgid(lua_State *, int);
-luab_table_t     *luab_table_checkint(lua_State *, int);
 luab_table_t     *luab_table_checku_short(lua_State *, int);
 
 luab_table_t     *luab_table_tolxargp(lua_State *, int, size_t);
 
 luab_table_t     *luab_table_checkldouble(lua_State *, int, size_t);
 luab_table_t     *luab_table_checklgid(lua_State *, int, size_t);
-luab_table_t     *luab_table_checklint(lua_State *, int, size_t);
 luab_table_t     *luab_table_checklu_short(lua_State *, int, size_t);
 
 luab_table_t     *luab_table_checkliovec(lua_State *, int, size_t);
@@ -98,7 +96,6 @@ luab_table_t     *luab_table_checklxdata(lua_State *, int, luab_module_t *, size
 
 void     luab_table_pushdouble(lua_State *, int, luab_table_t *, int, int);
 void     luab_table_pushgid(lua_State *, int, luab_table_t *, int, int);
-void     luab_table_pushint(lua_State *, int, luab_table_t *, int, int);
 
 void     luab_table_pushxdata(lua_State *, int, luab_module_t *,
     luab_table_t *, int, int);

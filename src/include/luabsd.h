@@ -145,10 +145,11 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
  */
 
 typedef enum luab_type {
+    LUAB_INT_IDX,
 #if LUAB_DEBUG
     LUAB_LINK_IDX,
 #endif /* LUAB_DEBUG */
-    LUAB_CLOCKINFO_IDX,
+    LUAB_CLOCKINFO_IDX,                   
     LUAB_DIV_IDX,
     LUAB_FLOCK_IDX,
     LUAB_INTEGER_IDX,
@@ -203,7 +204,7 @@ typedef enum luab_type {
     (luab_typevec[((idx) % (LUAB_TYPE_SENTINEL))])
 #define luab_xm(name) \
     ((luab_vx(luab_idx(name))).mv_mod)
-    
+
 typedef struct luab_module_vec {
     luab_module_t       *mv_mod;
     luab_module_fn      mv_init;

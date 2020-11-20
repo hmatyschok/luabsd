@@ -948,7 +948,7 @@ luab_pipe(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((tbl = luab_table_checklint(L, 1, 2)) != NULL) {
+    if ((tbl = luab_table_checklxdata(L, 1, luab_xm(INT), 2)) != NULL) {
         fildes = (int *)(tbl->tbl_vec);
         status = pipe(fildes);
         luab_table_free(tbl);
@@ -3776,7 +3776,7 @@ luab_pipe2(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    if ((tbl = luab_table_checklint(L, 1, 2)))
+    if ((tbl = luab_table_checklxdata(L, 1, luab_xm(INT), 2)) != NULL)
         fildes = (int *)(tbl->tbl_vec);
     else
         fildes = NULL;

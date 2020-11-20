@@ -704,6 +704,11 @@ static luab_module_vec_t luab_core_vec[] = {
 
 /* Bindings against complex data types. */
 luab_module_vec_t luab_typevec[] = {
+    {
+        .mv_mod = &luab_int_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT_IDX,
+    },
 #if LUAB_DEBUG
     {
         .mv_mod = &luab_link_type,

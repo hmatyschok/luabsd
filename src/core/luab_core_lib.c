@@ -591,6 +591,31 @@ luab_uuid(lua_State *L)
     return (status);
 }
 
+/* atomic data types */
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(INT)).
+ *
+ * @function int_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage int [, err, msg ] = bsd.core.int_create(x)
+ */
+static int
+luab_int_create(lua_State *L)
+{
+    int x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (int)luab_checkinteger(L, 1, luab_env_uint_max);
+
+    return (luab_pushudata(L, luab_xm(INT), &x));
+}
+
+/* complex data types */
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(INTEGER)).
  *
@@ -630,6 +655,7 @@ luab_link_create(lua_State *L)
 
 static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
+    LUAB_FUNC("int_create",         luab_int_create),
     LUAB_FUNC("integer_create",     luab_integer_create),
 #if LUAB_DEBUG
     LUAB_FUNC("link_create",        luab_link_create),

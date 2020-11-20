@@ -1126,7 +1126,7 @@ luab_socketpair(lua_State *L)
         socks = NULL;
 
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
-        luab_table_pushint(L, 4, tbl, 0, 1);
+        luab_xm_pushtable(INT, L, 4, tbl, 0, 1);
 
     return (luab_pushxinteger(L, status));
 }
