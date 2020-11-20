@@ -65,24 +65,16 @@ luab_table_t     *luab_newlvectornil(lua_State *, int, size_t, size_t);
  * Access functions, [stack -> C]
  */
 
-#define luab_xm_checktable(name, L, narg) \
-    ((*(luab_xm(name))->m_get_tbl)((L), (narg))
-
 luab_table_t     *luab_table_checkargv(lua_State *, int);
 luab_table_t     *luab_table_toxargp(lua_State *, int);
 
-luab_table_t     *luab_table_checkdouble(lua_State *, int);
 luab_table_t     *luab_table_checkgid(lua_State *, int);
 luab_table_t     *luab_table_checku_short(lua_State *, int);
 
 luab_table_t     *luab_table_tolxargp(lua_State *, int, size_t);
 
-luab_table_t     *luab_table_checkldouble(lua_State *, int, size_t);
 luab_table_t     *luab_table_checklgid(lua_State *, int, size_t);
 luab_table_t     *luab_table_checklu_short(lua_State *, int, size_t);
-
-luab_table_t     *luab_table_checkliovec(lua_State *, int, size_t);
-luab_table_t     *luab_table_checkltimespec(lua_State *, int, size_t);
 
 luab_table_t     *luab_table_checkxdata(lua_State *, int, luab_module_t *);
 luab_table_t     *luab_table_checklxdata(lua_State *, int, luab_module_t *, size_t);
@@ -91,10 +83,6 @@ luab_table_t     *luab_table_checklxdata(lua_State *, int, luab_module_t *, size
  * Access functions, [C -> stack].
  */
 
-#define luab_xm_pushtable(name, L, narg, tbl, new, clr) \
-    ((*(luab_xm(name))->m_set_tbl)((L), (narg), (tbl), (new), (clr)))
-
-void     luab_table_pushdouble(lua_State *, int, luab_table_t *, int, int);
 void     luab_table_pushgid(lua_State *, int, luab_table_t *, int, int);
 
 void     luab_table_pushxdata(lua_State *, int, luab_module_t *,

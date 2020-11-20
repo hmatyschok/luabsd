@@ -160,7 +160,7 @@ DB_del(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xm(DBT), DBT *);
+        k = luab_udata(L, 2, luab_xtype(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 3, luab_env_int_max);
 
         status = (*db->del)(db, k, flags);
@@ -219,8 +219,8 @@ DB_get(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xm(DBT), DBT *);
-        v = luab_udata(L, 3, luab_xm(DBT), DBT *);
+        k = luab_udata(L, 2, luab_xtype(DBT), DBT *);
+        v = luab_udata(L, 3, luab_xtype(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, luab_env_int_max);
 
         status = (*db->get)(db, k, v, flags);
@@ -259,8 +259,8 @@ DB_put(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xm(DBT), DBT *);
-        v = luab_udata(L, 3, luab_xm(DBT), DBT *);
+        k = luab_udata(L, 2, luab_xtype(DBT), DBT *);
+        v = luab_udata(L, 3, luab_xtype(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, luab_env_int_max);
 
         status = (*db->put)(db, k, v, flags);
@@ -298,8 +298,8 @@ DB_seq(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xm(DBT), DBT *);
-        v = luab_udata(L, 3, luab_xm(DBT), DBT *);
+        k = luab_udata(L, 2, luab_xtype(DBT), DBT *);
+        v = luab_udata(L, 3, luab_xtype(DBT), DBT *);
         flags = (u_int)luab_checkinteger(L, 4, luab_env_int_max);
 
         status = (*db->seq)(db, k, v, flags);

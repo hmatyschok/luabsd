@@ -64,7 +64,7 @@ luab_fhlink(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    fhp = luab_udata(L, 1, luab_xm(FHANDLE), fhandle_t *);
+    fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
     to = luab_checklstring(L, 2, luab_env_path_max);
 
     status = fhlink(fhp, to);
@@ -108,7 +108,7 @@ luab_fhlinkat(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    fhp = luab_udata(L, 1, luab_xm(FHANDLE), fhandle_t *);
+    fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
     tofd = (int)luab_checkinteger(L, 2, luab_env_int_max);
     to = luab_checklstring(L, 3, luab_env_path_max);
 
@@ -142,7 +142,7 @@ luab_fhopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    fhp = luab_udata(L, 1, luab_xm(FHANDLE), fhandle_t *);
+    fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
     flags = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     status = fhopen(fhp, flags);
@@ -174,8 +174,8 @@ luab_fhreadlink(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    fhp = luab_udata(L, 1, luab_xm(FHANDLE), fhandle_t *);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 3);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -222,8 +222,8 @@ luab_fhstat(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    fhp = luab_udata(L, 1, luab_xm(FHANDLE), fhandle_t *);
-    sb = luab_udata(L, 2, luab_xm(STAT), struct stat *);
+    fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
+    sb = luab_udata(L, 2, luab_xtype(STAT), struct stat *);
 
     status = fhstat(fhp, sb);
 
@@ -251,8 +251,8 @@ luab_fhstatfs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    fhp = luab_udata(L, 1, luab_xm(FHANDLE), fhandle_t *);
-    buf = luab_udata(L, 2, luab_xm(STATFS), struct statfs *);
+    fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
+    buf = luab_udata(L, 2, luab_xtype(STATFS), struct statfs *);
 
     status = fhstatfs(fhp, buf);
 
@@ -282,7 +282,7 @@ luab_fstatfs(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xm(STATFS), struct statfs *);
+    buf = luab_udata(L, 2, luab_xtype(STATFS), struct statfs *);
 
     status = fstatfs(fd, buf);
 
@@ -312,7 +312,7 @@ luab_getfh(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max);
-    fhp = luab_udata(L, 2, luab_xm(FHANDLE), fhandle_t *);
+    fhp = luab_udata(L, 2, luab_xtype(FHANDLE), fhandle_t *);
 
     status = getfh(path, fhp);
 
@@ -366,7 +366,7 @@ luab_getfhat(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     path = luab_checklstring(L, 2, luab_env_path_max);
-    fhp = luab_udata(L, 3, luab_xm(FHANDLE), fhandle_t *);
+    fhp = luab_udata(L, 3, luab_xtype(FHANDLE), fhandle_t *);
     flag = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     status = getfhat(fd, (void *)(intptr_t)path, fhp, flag);
@@ -403,13 +403,16 @@ luab_getfhat(lua_State *L)
 static int
 luab_getfsstat(lua_State *L)
 {
-    long m, bufsize;
+    luab_module_t *m;
+    long n, bufsize;
     int mode, card;
     size_t sz;
     luab_table_t *tbl;
     struct statfs *buf;
 
     (void)luab_core_checkmaxargs(L, 3);
+
+    luab_core_checkxtype(m, STATFS, __func__);
 
     /*
      * First arg of argv is either
@@ -419,18 +422,19 @@ luab_getfsstat(lua_State *L)
      *  b) (LUA_TTABLE) over (LUA_TUSERDATA(STATFS)).
      */
 
-    m = (long)luab_checktableisnil(L, 1);
+    n = (long)luab_checktableisnil(L, 1);
     bufsize = (long)luab_checkinteger(L, 2, luab_env_long_max);
     mode = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
-    if (m == bufsize) {
+    if (n == bufsize) {
         sz = sizeof(struct statfs);
 
-        if ((bufsize = (m * sz)) != 0) {
+        if ((bufsize = (n * sz)) != 0) {
 
-            if ((tbl = luab_table_allocnil(m, sz)) != NULL)
+            if ((tbl = luab_table_allocnil(n, sz)) != NULL) {
+                tbl->tbl_cookie = m->m_cookie;
                 buf = (struct statfs *)(tbl->tbl_vec);
-            else
+            } else
                 buf = NULL;
 
         } else {
@@ -439,7 +443,7 @@ luab_getfsstat(lua_State *L)
         }
 
         if ((card = getfsstat(buf, bufsize, mode)) > 0)
-            luab_xm_pushtable(STATFS, L, 1, tbl, 0, 1);
+            luab_table_pushxdata(L, 1, m, tbl, 0, 1);
         else
             luab_table_free(tbl);
 
@@ -473,12 +477,16 @@ luab_getfsstat(lua_State *L)
 static int
 luab_getmntinfo(lua_State *L)
 {
+    luab_module_t *m;
     int mode;
     ssize_t nmts, sz;
     struct statfs *vec;
     luab_table_t *tbl;
 
     (void)luab_core_checkmaxargs(L, 2);
+
+    luab_core_checkxtype(m, STATFS, __func__);
+
     (void)luab_checkltable(L, 1, 0);
 
     mode = (int)luab_checkinteger(L, 2, luab_env_int_max);
@@ -486,6 +494,7 @@ luab_getmntinfo(lua_State *L)
     if ((tbl = luab_table_allocnil(0, 0)) != NULL) {
 
         if ((nmts = getmntinfo(&vec, mode)) > 0) {
+            tbl->tbl_cookie = m->m_cookie;
             tbl->tbl_sz = sizeof(struct statfs);
             tbl->tbl_card = (nmts + 1);     /* XXX externalize it */
 
@@ -494,7 +503,7 @@ luab_getmntinfo(lua_State *L)
             if ((tbl->tbl_vec = realloc(vec, sz)) == NULL)
                 luab_core_err(EX_DATAERR, __func__, errno);
 
-            luab_xm_pushtable(STATFS, L, 1, tbl, 0, 1);
+            luab_table_pushxdata(L, 1, m, tbl, 0, 1);
         } else
             luab_table_free(tbl);
     } else
@@ -528,7 +537,7 @@ luab_lgetfh(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max);
-    fhp = luab_udata(L, 2, luab_xm(FHANDLE), fhandle_t *);
+    fhp = luab_udata(L, 2, luab_xtype(FHANDLE), fhandle_t *);
 
     status = lgetfh(path, fhp);
 
@@ -624,6 +633,7 @@ luab_mount(lua_State *L)
 static int
 luab_nmount(lua_State *L)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct iovec *iov;
     u_int niov;
@@ -632,7 +642,9 @@ luab_nmount(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    tbl = luab_table_checkxdata(L, 1, luab_xm(IOVEC));
+    luab_core_checkxtype(m, IOVEC, __func__);
+
+    tbl = luab_table_checkxdata(L, 1, m);
     niov = (u_int)luab_checkinteger(L, 2, luab_env_int_max);
     flags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
@@ -641,7 +653,7 @@ luab_nmount(lua_State *L)
         if ((tbl->tbl_card - 1) == (size_t)niov) {
             iov = (struct iovec *)(tbl->tbl_vec);
             status = nmount(iov, niov, flags);
-            luab_table_pushxdata(L, 1, luab_xm(IOVEC), tbl, 0, 1);
+            luab_table_pushxdata(L, 1, m, tbl, 0, 1);
         } else {
             luab_table_iovec_free(tbl);
             errno = ERANGE;
@@ -676,7 +688,7 @@ luab_statfs(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max);
-    buf = luab_udata(L, 2, luab_xm(STATFS), struct statfs *);
+    buf = luab_udata(L, 2, luab_xtype(STATFS), struct statfs *);
 
     status = statfs(path, buf);
 
@@ -750,7 +762,7 @@ luab_getvfsbyname(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     name = luab_checklstring(L, 1, MFSNAMELEN);
-    vfc = luab_udata(L, 2, luab_xm(XVFSCONF), struct xvfsconf *);
+    vfc = luab_udata(L, 2, luab_xtype(XVFSCONF), struct xvfsconf *);
 
     status = getvfsbyname(name, vfc);
     return (luab_pushxinteger(L, status));
@@ -774,7 +786,7 @@ luab_getvfsbyname(lua_State *L)
 static int
 luab_fsid_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(FSID), NULL));
+    return (luab_core_create(L, 1, luab_xtype(FSID), NULL));
 }
 
 /***
@@ -791,7 +803,7 @@ luab_fsid_create(lua_State *L)
 static int
 luab_fid_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(FID), NULL));
+    return (luab_core_create(L, 1, luab_xtype(FID), NULL));
 }
 
 /***
@@ -808,7 +820,7 @@ luab_fid_create(lua_State *L)
 static int
 luab_statfs_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(STATFS), NULL));
+    return (luab_core_create(L, 1, luab_xtype(STATFS), NULL));
 }
 
 /***
@@ -825,7 +837,7 @@ luab_statfs_create(lua_State *L)
 static int
 luab_fhandle_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(FHANDLE), NULL));
+    return (luab_core_create(L, 1, luab_xtype(FHANDLE), NULL));
 }
 
 /***
@@ -842,7 +854,7 @@ luab_fhandle_create(lua_State *L)
 static int
 luab_xvfsconf_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(XVFSCONF), NULL));
+    return (luab_core_create(L, 1, luab_xtype(XVFSCONF), NULL));
 }
 
 /*

@@ -67,7 +67,7 @@ luab_if_indextoname(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     ifindex = (u_int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -122,7 +122,7 @@ luab_if_nameindex(lua_State *L)
         lua_pushnil(L);
 
         for (ifni = vec; ifni->if_name != NULL; ifni++)
-            luab_rawsetudata(L, 1, luab_xm(IF_NAMEINDEX), ifni->if_index, ifni);
+            luab_rawsetudata(L, 1, luab_xtype(IF_NAMEINDEX), ifni->if_index, ifni);
 
         lua_pop(L, 0);
 
@@ -177,7 +177,7 @@ luab_if_nametoindex(lua_State *L)
 static int
 luab_if_nameindex_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(IF_NAMEINDEX), NULL));
+    return (luab_core_create(L, 1, luab_xtype(IF_NAMEINDEX), NULL));
 }
 
 /*

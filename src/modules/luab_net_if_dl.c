@@ -61,7 +61,7 @@ luab_link_addr(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     addr = luab_checklstring(L, 1, LUAB_SDL_MAXDATALEN); /* XXX */
-    sdl = luab_udata(L, 2, luab_xm(SOCKADDR), struct sockaddr_dl *);
+    sdl = luab_udata(L, 2, luab_xtype(SOCKADDR), struct sockaddr_dl *);
 
     link_addr(addr, sdl);
 
@@ -93,8 +93,8 @@ luab_link_ntoa(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    sdl = luab_udata(L, 1, luab_xm(SOCKADDR), struct sockaddr_dl *);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    sdl = luab_udata(L, 1, luab_xtype(SOCKADDR), struct sockaddr_dl *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -147,7 +147,7 @@ luab_sockaddr_dl_create(lua_State *L)
     data = (struct sockaddr *)&sdl;
     luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));
 
-    return (luab_pushudata(L, luab_xm(SOCKADDR), data));
+    return (luab_pushudata(L, luab_xtype(SOCKADDR), data));
 }
 
 /*

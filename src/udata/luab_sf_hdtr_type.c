@@ -147,7 +147,7 @@ sf_hdtr_checkiovec(lua_State *L, int narg, luab_sf_hdtr_t *ud,
 
     if (ud != NULL) {
 
-        if ((cur = luab_table_checkxdata(L, narg, luab_xm(IOVEC))) != NULL)
+        if ((cur = luab_table_checkxdata(L, narg, luab_xtype(IOVEC))) != NULL)
             (void)sf_hdtr_iovec(ud, idx, cur);
 
         card = sf_hdtr_cnt(ud, idx);
@@ -161,11 +161,14 @@ static int
 sf_hdtr_pushiovec(lua_State *L, int narg, const char *k, luab_sf_hdtr_t *ud,
     enum sf_hdtr_cache idx)
 {
+    luab_module_t *m;
     luab_table_t *cur;
     int up_call, status;
 
+    luab_core_checkxtype(m, IOVEC, __func__);
+
     if ((cur = sf_hdtr_iovec(ud, idx, NULL)) != NULL) {
-        luab_table_pushxdata(L, narg, luab_xm(IOVEC), cur, 1, 0);
+        luab_table_pushxdata(L, narg, m, cur, 1, 0);
 
         /* set field k and/or push on top of Lua stack */
         if (k != NULL)

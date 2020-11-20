@@ -87,8 +87,8 @@ ITIMERVAL_get(lua_State *L)
     it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
 
     lua_newtable(L);
-    luab_setudata(L, -2, luab_xm(TIMEVAL), "it_interval",   &it->it_interval);
-    luab_setudata(L, -2, luab_xm(TIMEVAL), "it_value",      &it->it_value);
+    luab_setudata(L, -2, luab_xtype(TIMEVAL), "it_interval",   &it->it_interval);
+    luab_setudata(L, -2, luab_xtype(TIMEVAL), "it_value",      &it->it_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -133,7 +133,7 @@ ITIMERVAL_set_it_interval(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
-    tv = luab_udata(L, 2, luab_xm(TIMEVAL), struct timeval *);
+    tv = luab_udata(L, 2, luab_xtype(TIMEVAL), struct timeval *);
 
     (void)memmove(&it->it_interval, tv, sizeof(*tv));
 
@@ -160,7 +160,7 @@ ITIMERVAL_get_it_interval(lua_State *L)
     it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
     tv = &(it->it_interval);
 
-    return (luab_pushudata(L, luab_xm(TIMEVAL), tv));
+    return (luab_pushudata(L, luab_xtype(TIMEVAL), tv));
 }
 
 /* current value */
@@ -184,7 +184,7 @@ ITIMERVAL_set_it_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
-    tv = luab_udata(L, 2, luab_xm(TIMEVAL), struct timeval *);
+    tv = luab_udata(L, 2, luab_xtype(TIMEVAL), struct timeval *);
 
     (void)memmove(&it->it_value, tv, sizeof(*tv));
 
@@ -211,7 +211,7 @@ ITIMERVAL_get_it_value(lua_State *L)
     it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
     tv = &(it->it_value);
 
-    return (luab_pushudata(L, luab_xm(TIMEVAL), tv));
+    return (luab_pushudata(L, luab_xtype(TIMEVAL), tv));
 }
 
 /*

@@ -32,6 +32,7 @@
  */
 
 extern luab_module_t luab_int_type;
+extern luab_module_t luab_double_type;
 
 /*
  * Set of complex data types.

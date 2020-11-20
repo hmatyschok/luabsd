@@ -90,7 +90,7 @@ luab_getgrent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     if ((grp = getgrent()) != NULL)
-        status = luab_pushudata(L, luab_xm(GROUP), grp);
+        status = luab_pushudata(L, luab_xtype(GROUP), grp);
     else
         status = luab_pushnil(L);
 
@@ -121,7 +121,7 @@ luab_getgrgid(lua_State *L)
     gid = luab_checkinteger(L, 1, luab_env_int_max);
 
     if ((grp = getgrgid(gid)) != NULL)
-        status = luab_pushudata(L, luab_xm(GROUP), grp);
+        status = luab_pushudata(L, luab_xtype(GROUP), grp);
     else
         status = luab_pushnil(L);
 
@@ -151,7 +151,7 @@ luab_getgrnam(lua_State *L)
     name = luab_checklstring(L, 1, luab_env_logname_max);
 
     if ((grp = getgrnam(name)) != NULL)
-        status = luab_pushudata(L, luab_xm(GROUP), grp);
+        status = luab_pushudata(L, luab_xtype(GROUP), grp);
     else
         status = luab_pushnil(L);
 
@@ -213,7 +213,7 @@ luab_gid_from_group(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     name = luab_checklstring(L, 1, luab_env_logname_max);
-    xp = luab_udata(L, 2, luab_xm(INTEGER), luab_primitive_t *);
+    xp = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
     gid = &(xp->un_gid);
 
     status = gid_from_group(name, gid);
@@ -275,10 +275,10 @@ luab_getgrgid_r(lua_State *L)
     (void)luab_core_checkmaxargs(L, 5);
 
     gid = luab_checkinteger(L, 1, luab_env_int_max);
-    grp = luab_udata(L, 2, luab_xm(GROUP), struct group *);
-    buf = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
+    grp = luab_udata(L, 2, luab_xtype(GROUP), struct group *);
+    buf = luab_udata(L, 3, luab_xtype(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4);
-    ret = luab_udata(L, 5, luab_xm(GROUP), struct group *);
+    ret = luab_udata(L, 5, luab_xtype(GROUP), struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -336,10 +336,10 @@ luab_getgrnam_r(lua_State *L)
     (void)luab_core_checkmaxargs(L, 5);
 
     name = luab_checklstring(L, 1, luab_env_logname_max);
-    grp = luab_udata(L, 2, luab_xm(GROUP), struct group *);
-    buf = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
+    grp = luab_udata(L, 2, luab_xtype(GROUP), struct group *);
+    buf = luab_udata(L, 3, luab_xtype(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4);
-    ret = luab_udata(L, 5, luab_xm(GROUP), struct group *);
+    ret = luab_udata(L, 5, luab_xtype(GROUP), struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -396,10 +396,10 @@ luab_getgrent_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    grp = luab_udata(L, 1, luab_xm(GROUP), struct group *);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    grp = luab_udata(L, 1, luab_xtype(GROUP), struct group *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 3);
-    ret = luab_udata(L, 4, luab_xm(GROUP), struct group *);
+    ret = luab_udata(L, 4, luab_xtype(GROUP), struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -468,7 +468,7 @@ luab_setgroupent(lua_State *L)
 static int
 luab_group_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(GROUP), NULL));
+    return (luab_core_create(L, 1, luab_xtype(GROUP), NULL));
 }
 
 /*

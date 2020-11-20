@@ -372,6 +372,7 @@ luab_fchmodat(lua_State *L)
 static int
 luab_futimens(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     luab_table_t *tbl;
     struct timespec *times;
@@ -379,10 +380,12 @@ luab_futimens(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    luab_core_checkxtype(m, TIMESPEC, __func__);
+
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
 
     if (lua_isnil(L, 2) != 0)
-        tbl = luab_table_checkltimespec(L, 2, 2);
+        tbl = luab_table_checklxdata(L, 2, m, 2);
     else
         tbl = NULL;
 
@@ -394,7 +397,7 @@ luab_futimens(lua_State *L)
     status = futimens(fd, times);
 
     if (times != NULL)
-        luab_table_pushxdata(L, 2, luab_xm(TIMESPEC), tbl, 0, 1);
+        luab_table_pushxdata(L, 2, m, tbl, 0, 1);
 
     return (luab_pushxinteger(L, status));
 }
@@ -437,6 +440,7 @@ luab_futimens(lua_State *L)
 static int
 luab_utimensat(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     const char *path;
     luab_table_t *tbl;
@@ -445,11 +449,13 @@ luab_utimensat(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
+    luab_core_checkxtype(m, TIMESPEC, __func__);
+
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     path = luab_checklstring(L, 2, luab_env_path_max);
 
     if (lua_isnil(L, 3) != 0)
-        tbl = luab_table_checkltimespec(L, 2, 2);
+        tbl = luab_table_checklxdata(L, 2, m, 2);
     else
         tbl = NULL;
 
@@ -463,7 +469,7 @@ luab_utimensat(lua_State *L)
     status = utimensat(fd, path, times, flag);
 
     if (times != NULL)
-        luab_table_pushxdata(L, 2, luab_xm(TIMESPEC), tbl, 0, 1);
+        luab_table_pushxdata(L, 2, m, tbl, 0, 1);
 
     return (luab_pushxinteger(L, status));
 }
@@ -492,7 +498,7 @@ luab_fstat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    sb = luab_udata(L, 2, luab_xm(STAT), struct stat *);
+    sb = luab_udata(L, 2, luab_xtype(STAT), struct stat *);
 
     status = fstat(fd, sb);
 
@@ -610,7 +616,7 @@ luab_lstat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max);
-    sb = luab_udata(L, 2, luab_xm(STAT), struct stat *);
+    sb = luab_udata(L, 2, luab_xtype(STAT), struct stat *);
 
     status = lstat(path, sb);
 
@@ -736,7 +742,7 @@ luab_stat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max);
-    sb = luab_udata(L, 2, luab_xm(STAT), struct stat *);
+    sb = luab_udata(L, 2, luab_xtype(STAT), struct stat *);
 
     status = stat(path, sb);
 
@@ -810,7 +816,7 @@ luab_fstatat(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     path = luab_checklstring(L, 2, luab_env_path_max);
-    sb = luab_udata(L, 3, luab_xm(STAT), struct stat *);
+    sb = luab_udata(L, 3, luab_xtype(STAT), struct stat *);
     flag = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     status = fstatat(fd, path, sb, flag);
@@ -975,7 +981,7 @@ luab_mknodat(lua_State *L)
 static int
 luab_stat_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(STAT), NULL));
+    return (luab_core_create(L, 1, luab_xtype(STAT), NULL));
 }
 
 /*

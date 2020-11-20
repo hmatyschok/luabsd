@@ -146,10 +146,11 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
 
 typedef enum luab_type {
     LUAB_INT_IDX,
+    LUAB_DOUBLE_IDX,
 #if LUAB_DEBUG
     LUAB_LINK_IDX,
 #endif /* LUAB_DEBUG */
-    LUAB_CLOCKINFO_IDX,                   
+    LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
     LUAB_FLOCK_IDX,
     LUAB_INTEGER_IDX,
@@ -200,10 +201,10 @@ typedef enum luab_type {
 
 #define luab_idx(name) \
     (LUAB_##name##_IDX)
-#define luab_vx(idx) \
+#define luab_xmv(idx) \
     (luab_typevec[((idx) % (LUAB_TYPE_SENTINEL))])
-#define luab_xm(name) \
-    ((luab_vx(luab_idx(name))).mv_mod)
+#define luab_xtype(name) \
+    ((luab_xmv(luab_idx(name))).mv_mod)
 
 typedef struct luab_module_vec {
     luab_module_t       *mv_mod;
@@ -229,6 +230,13 @@ void     luab_core_warn(const char *, ...);
 void     luab_core_argerror(lua_State *, int, void *, size_t, size_t, int);
 
 int  luab_core_checkmaxargs(lua_State *, int);
+
+luab_module_t    *luab_core_checktype(luab_type_t, const char *);
+
+#define luab_core_checkxtype(m, name, fname)                    \
+    do {                                                        \
+        (m) = luab_core_checktype(luab_idx(name), (fname));   \
+    } while (0)
 
 /*
  * Access functions, n-th arg over argv, [stack -> C].
@@ -256,6 +264,7 @@ void     luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 
 void     luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
 void     luab_setinteger(lua_State *, int, const char *, lua_Integer);
+void     luab_setnumber(lua_State *, int, const char *, lua_Number);
 
 void     luab_setstring(lua_State *, int, const char *, const char *);
 void     luab_setfstring(lua_State *, int, const char *, const char *, ...);

@@ -78,7 +78,7 @@ luab_regcomp(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    preg = luab_udata(L, 1, luab_xm(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
     pattern = luab_checklstring(L, 2, luab_env_buf_max);
     cflags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
@@ -124,6 +124,7 @@ luab_regcomp(lua_State *L)
 static int
 luab_regexec(lua_State *L)
 {
+    luab_module_t *m;
     regex_t *preg;
     const char *string;
     size_t nmatch;
@@ -134,16 +135,18 @@ luab_regexec(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    preg = luab_udata(L, 1, luab_xm(REGEX), regex_t *);
+    luab_core_checkxtype(m, REGMATCH, __func__);
+
+    preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
     string = luab_checklstring(L, 2, luab_env_buf_max);
     nmatch = (size_t)luab_checklinteger(L, 3);
-    tbl = luab_table_checkxdata(L, 4, luab_xm(REGMATCH));
+    tbl = luab_table_checkxdata(L, 4, m);
     eflags = (int)luab_checkinteger(L, 5, luab_env_int_max);
 
     if (tbl != NULL) {
         pmatch = (regmatch_t *)(tbl->tbl_vec);
         status = regexec(preg, string, nmatch, pmatch, eflags);
-        luab_table_pushxdata(L, 4, luab_xm(REGMATCH), tbl, 0, 1);
+        luab_table_pushxdata(L, 4, m, tbl, 0, 1);
     } else
         status = REG_ESPACE;
 
@@ -200,8 +203,8 @@ luab_regerror(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     errcode = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    preg = luab_udata(L, 2, luab_xm(REGEX), regex_t *);
-    buf = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
+    preg = luab_udata(L, 2, luab_xtype(REGEX), regex_t *);
+    buf = luab_udata(L, 3, luab_xtype(IOVEC), luab_iovec_t *);
     errbuf_size = (size_t)luab_checklinteger(L, 4);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -246,7 +249,7 @@ luab_regfree(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    preg = luab_udata(L, 1, luab_xm(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
     regfree(preg);
 
     return (luab_pushxinteger(L, 0));
@@ -270,7 +273,7 @@ luab_regfree(lua_State *L)
 static int
 luab_regex_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(REGEX), NULL));
+    return (luab_core_create(L, 1, luab_xtype(REGEX), NULL));
 }
 
 /***
@@ -287,7 +290,7 @@ luab_regex_create(lua_State *L)
 static int
 luab_regmatch_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(REGMATCH), NULL));
+    return (luab_core_create(L, 1, luab_xtype(REGMATCH), NULL));
 }
 
 /*

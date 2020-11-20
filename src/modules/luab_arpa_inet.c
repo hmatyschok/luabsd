@@ -52,11 +52,11 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
 
     switch (af) {
     case AF_INET:
-        type = luab_xm(IN_ADDR);
+        type = luab_xtype(IN_ADDR);
         *len = INET_ADDRSTRLEN;
         break;
     case AF_INET6:
-        type = luab_xm(IN6_ADDR);
+        type = luab_xtype(IN6_ADDR);
         *len = INET6_ADDRSTRLEN;
         break;
     default:
@@ -92,7 +92,7 @@ luab_inet_addr(lua_State *L)
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
     ia.s_addr = inet_addr(cp);
 
-    return (luab_pushudata(L, luab_xm(IN_ADDR), &ia));
+    return (luab_pushudata(L, luab_xtype(IN_ADDR), &ia));
 }
 
 /***
@@ -114,7 +114,7 @@ luab_inet_ntoa(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, luab_xm(IN_ADDR), struct in_addr *);
+    ia = luab_udata(L, 1, luab_xtype(IN_ADDR), struct in_addr *);
     cp = inet_ntoa(*ia);
 
     return (luab_pushstring(L, cp));
@@ -152,7 +152,7 @@ luab_inet_ntop(lua_State *L)
 
     af = (int)luab_checkinteger(L, 1, luab_env_int_max);
     src = luab_checkxaddr(L, 2, af, &size);
-    buf = luab_udata(L, 3, luab_xm(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 3, luab_xtype(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 4);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
@@ -210,7 +210,7 @@ luab_inet_pton(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     af = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
 
     if (((src = buf->iov.iov_base) != NULL) &&
@@ -259,7 +259,7 @@ luab_inet_aton(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
-    pin = luab_udata(L, 2, luab_xm(IN_ADDR), struct in_addr *);
+    pin = luab_udata(L, 2, luab_xtype(IN_ADDR), struct in_addr *);
 
     status = inet_aton(cp, pin);
 
@@ -286,10 +286,10 @@ luab_inet_lnaof(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, luab_xm(IN_ADDR), struct in_addr *);
+    ia = luab_udata(L, 1, luab_xtype(IN_ADDR), struct in_addr *);
     lna.s_addr = inet_lnaof(*ia);
 
-    return (luab_pushudata(L, luab_xm(IN_ADDR), &lna));
+    return (luab_pushudata(L, luab_xtype(IN_ADDR), &lna));
 }
 
 /***
@@ -315,12 +315,12 @@ luab_inet_makeaddr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    net = luab_udata(L, 1, luab_xm(IN_ADDR), struct in_addr *);
-    lna = luab_udata(L, 2, luab_xm(IN_ADDR), struct in_addr *);
+    net = luab_udata(L, 1, luab_xtype(IN_ADDR), struct in_addr *);
+    lna = luab_udata(L, 2, luab_xtype(IN_ADDR), struct in_addr *);
 
     ia = inet_makeaddr(net->s_addr, lna->s_addr);
 
-    return (luab_pushudata(L, luab_xm(IN_ADDR), &ia));
+    return (luab_pushudata(L, luab_xtype(IN_ADDR), &ia));
 }
 
 /***
@@ -348,8 +348,8 @@ luab_inet_neta(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    src = luab_udata(L, 1, luab_xm(IN_ADDR), struct in_addr *);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    src = luab_udata(L, 1, luab_xtype(IN_ADDR), struct in_addr *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 3);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
@@ -397,10 +397,10 @@ luab_inet_netof(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, luab_xm(IN_ADDR), struct in_addr *);
+    ia = luab_udata(L, 1, luab_xtype(IN_ADDR), struct in_addr *);
     net.s_addr = inet_netof(*ia);
 
-    return (luab_pushudata(L, luab_xm(IN_ADDR), &net));
+    return (luab_pushudata(L, luab_xtype(IN_ADDR), &net));
 }
 
 /***
@@ -425,7 +425,7 @@ luab_inet_network(lua_State *L)
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
     ia.s_addr = inet_network(cp);
 
-    return (luab_pushudata(L, luab_xm(IN_ADDR), &ia));
+    return (luab_pushudata(L, luab_xtype(IN_ADDR), &ia));
 }
 
 /***
@@ -463,7 +463,7 @@ luab_inet_net_ntop(lua_State *L)
     af = (int)luab_checkinteger(L, 1, luab_env_int_max);
     src = luab_checkxaddr(L, 2, af, &size);
     bits = (int)luab_checkinteger(L, 3, luab_env_uint_max);
-    buf = luab_udata(L, 4, luab_xm(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 4, luab_xtype(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 5);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
@@ -522,7 +522,7 @@ luab_inet_net_pton(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     af = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
     size = (size_t)luab_checklinteger(L, 4);
 
@@ -574,8 +574,8 @@ luab_inet_ntoa_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    in = luab_udata(L, 1, luab_xm(IN_ADDR), struct in_addr *);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    in = luab_udata(L, 1, luab_xtype(IN_ADDR), struct in_addr *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 3);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -639,7 +639,7 @@ luab_inet_cidr_ntop(lua_State *L)
     af = (int)luab_checkinteger(L, 1, luab_env_int_max);
     src = luab_checkxaddr(L, 2, af, &size);
     bits = (int)luab_checkinteger(L, 3, luab_env_uint_max);
-    buf = luab_udata(L, 4, luab_xm(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 4, luab_xtype(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 5);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
@@ -701,9 +701,9 @@ luab_inet_cidr_pton(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     af = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xm(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
-    un = luab_udata(L, 4, luab_xm(INTEGER), luab_primitive_t *);
+    un = luab_udata(L, 4, luab_xtype(INTEGER), luab_primitive_t *);
     bits = &(un->un_int);
 
     if (((src = buf->iov.iov_base) != NULL) &&
@@ -748,7 +748,7 @@ luab_inet_cidr_pton(lua_State *L)
 static int
 luab_in_addr_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(IN_ADDR), NULL));
+    return (luab_core_create(L, 1, luab_xtype(IN_ADDR), NULL));
 }
 
 /***
@@ -765,7 +765,7 @@ luab_in_addr_create(lua_State *L)
 static int
 luab_in6_addr_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xm(IN6_ADDR), NULL));
+    return (luab_core_create(L, 1, luab_xtype(IN6_ADDR), NULL));
 }
 
 /*
@@ -797,7 +797,7 @@ luab_sockaddr_in_create(lua_State *L)
 
     switch (luab_core_checkmaxargs(L, 2)) {     /* FALLTHROUGH */
     case 2:
-        addr = luab_udata(L, 2, luab_xm(IN_ADDR), struct in_addr *);
+        addr = luab_udata(L, 2, luab_xtype(IN_ADDR), struct in_addr *);
         (void)memmove(&sin.sin_addr, addr, sizeof(sin.sin_addr));
     case 1:
         sin.sin_port = (in_port_t)luab_checkinteger(L, 1, luab_env_shrt_max);
@@ -806,7 +806,7 @@ luab_sockaddr_in_create(lua_State *L)
         sin.sin_port = htons(sin.sin_port);
         break;
     }
-    return (luab_pushudata(L, luab_xm(SOCKADDR), data));
+    return (luab_pushudata(L, luab_xtype(SOCKADDR), data));
 }
 
 /***
@@ -838,7 +838,7 @@ luab_sockaddr_in6_create(lua_State *L)
     case 4:
         sin6.sin6_scope_id = (uint32_t)luab_checkinteger(L, 4, luab_env_int_max);
     case 3:
-        addr = luab_udata(L, 3, luab_xm(IN6_ADDR), struct in6_addr *);
+        addr = luab_udata(L, 3, luab_xtype(IN6_ADDR), struct in6_addr *);
         (void)memmove(&sin6.sin6_addr, addr, sizeof(sin6.sin6_addr));
     case 2:
         sin6.sin6_flowinfo = (uint32_t)luab_checkinteger(L, 2, luab_env_int_max);
@@ -850,7 +850,7 @@ luab_sockaddr_in6_create(lua_State *L)
         sin6.sin6_port = htons(sin6.sin6_port);
         break;
     }
-    return (luab_pushudata(L, luab_xm(SOCKADDR), data));
+    return (luab_pushudata(L, luab_xtype(SOCKADDR), data));
 }
 
 /*
