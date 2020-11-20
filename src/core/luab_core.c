@@ -702,7 +702,7 @@ static luab_module_vec_t luab_core_vec[] = {
     LUAB_MOD_VEC_SENTINEL
 };
 
-/* Bindings against complex data types. */
+/* Bindings against atomic / composite data types. */
 luab_module_vec_t luab_typevec[] = {
     {
         .mv_mod = &luab_int_type,
@@ -716,6 +716,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_gid_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_GID_IDX,
+    },{
+        .mv_mod = &luab_uid_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_UID_IDX,
     },{
         .mv_mod = &luab_double_type,
         .mv_init = luab_core_newmetatable,

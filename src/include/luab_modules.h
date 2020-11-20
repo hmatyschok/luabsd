@@ -34,6 +34,7 @@
 extern luab_module_t luab_int_type;
 extern luab_module_t luab_ushrt_type;
 extern luab_module_t luab_gid_type;
+extern luab_module_t luab_uid_type;
 extern luab_module_t luab_double_type;
 extern luab_module_t luab_float_type;
 
