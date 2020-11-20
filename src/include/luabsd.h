@@ -245,7 +245,7 @@ luab_module_t    *luab_core_checktype(luab_type_t, const char *);
 lua_Integer  luab_checkinteger(lua_State *, int, lua_Integer);
 lua_Integer  luab_tointeger(lua_State *, int, lua_Integer);
 
-lua_Integer  luab_checklinteger(lua_State *, int);
+lua_Integer  luab_checklinteger(lua_State *, int, int);
 
 const char   *luab_islstring(lua_State *, int, size_t);
 const char   *luab_tolstring(lua_State *, int, size_t);

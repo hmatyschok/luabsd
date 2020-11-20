@@ -126,7 +126,7 @@ INT_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_int(L, 1);
-    x = (int)luab_checklinteger(L, 2);
+    x = (int)luab_checklinteger(L, 2, 1);
 
     self->ud_x = x;
 

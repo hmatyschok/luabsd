@@ -148,15 +148,21 @@ luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
 }
 
 lua_Integer
-luab_checklinteger(lua_State *L, int narg)
+luab_checklinteger(lua_State *L, int narg, int s)
 {
     lua_Integer b_msk;
 
-    b_msk = (lua_Integer)(
+    b_msk = (s != 0) ? (
 #if defined(__LP64__) || defined(__mips_n64)
     luab_env_ulong_max
 #else
     luab_env_uint_max
+#endif
+    ) : (
+#if defined(__LP64__) || defined(__mips_n64)
+    luab_env_long_max
+#else
+    luab_env_int_max
 #endif
     );
     return (luab_checkinteger(L, narg, b_msk));

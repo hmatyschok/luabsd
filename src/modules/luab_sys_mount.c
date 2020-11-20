@@ -176,7 +176,7 @@ luab_fhreadlink(lua_State *L)
 
     fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
     buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
-    bufsize = (size_t)luab_checklinteger(L, 3);
+    bufsize = (size_t)luab_checklinteger(L, 3, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&

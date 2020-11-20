@@ -710,7 +710,7 @@ luab_gets_s(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
-    size = (rsize_t)luab_checklinteger(L, 2);
+    size = (rsize_t)luab_checklinteger(L, 2, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -1341,7 +1341,7 @@ luab_fmemopen(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
-    size = (size_t)luab_checklinteger(L, 2);
+    size = (size_t)luab_checklinteger(L, 2, 0);
     mode = luab_checklstring(L, 3, LUAB_STDIO_MODE_MAXLEN);
 
     if (((bp = buf->iov.iov_base) != NULL) &&

@@ -171,7 +171,7 @@ luab_getdents(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     tbl = luab_table_checkxdata(L, 2, m);
-    nbytes = (size_t)luab_checklinteger(L, 3);
+    nbytes = (size_t)luab_checklinteger(L, 3, 0);
 
     if (tbl != NULL && nbytes > 0) {
 
@@ -233,7 +233,7 @@ luab_getdirentries(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     tbl = luab_table_checkxdata(L, 2, m);
-    nbytes = (size_t)luab_checklinteger(L, 3);
+    nbytes = (size_t)luab_checklinteger(L, 3, 0);
     xp = luab_udataisnil(L, 4, luab_xtype(INTEGER), luab_primitive_t *);
 
     if (xp != NULL)

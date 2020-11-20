@@ -151,7 +151,7 @@ INTEGER_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     xp = luab_udata(L, 1, &luab_integer_type, luab_primitive_t *);
-    data = luab_checklinteger(L, 2);
+    data = luab_checklinteger(L, 2, 1);
 
     xp->un_intx = data;
 

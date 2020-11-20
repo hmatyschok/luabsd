@@ -320,7 +320,7 @@ luab_mblen(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
-    nbytes = (size_t)luab_checklinteger(L, 2);
+    nbytes = (size_t)luab_checklinteger(L, 2, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -370,7 +370,7 @@ luab_mbstowcs(lua_State *L)
 
     buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
     mbstring = luab_checklstring(L, 2, luab_env_buf_max);
-    nbytes = (size_t)luab_checklinteger(L, 3);
+    nbytes = (size_t)luab_checklinteger(L, 3, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -421,7 +421,7 @@ luab_mbtowc(lua_State *L)
 
     xp = luab_udata(L, 1, luab_xtype(INTEGER), luab_primitive_t *);
     h1 = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-    nbytes = (size_t)luab_checklinteger(L, 3);
+    nbytes = (size_t)luab_checklinteger(L, 3, 0);
 
     wcharp = &(xp->un_wc);
     mbchar = &(h1->un_char);
@@ -665,7 +665,7 @@ luab_wcstombs(lua_State *L)
 
     buf1 = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
     buf2 = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
-    nbytes = (size_t)luab_checklinteger(L, 3);
+    nbytes = (size_t)luab_checklinteger(L, 3, 0);
 
     if (((dst = buf1->iov.iov_base) != NULL) &&
         ((src = (wchar_t *)buf2->iov.iov_base) != NULL) &&
@@ -1170,7 +1170,7 @@ luab_initstate(lua_State *L)
 
     seed = (u_int)luab_checkinteger(L, 1, luab_env_int_max);
     buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
-    n = (size_t)luab_checklinteger(L, 3);
+    n = (size_t)luab_checklinteger(L, 3, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -1735,7 +1735,7 @@ luab_arc4random_buf(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
-    nbytes = (size_t)luab_checklinteger(L, 2);
+    nbytes = (size_t)luab_checklinteger(L, 2, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&

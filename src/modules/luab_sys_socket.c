@@ -522,7 +522,7 @@ luab_recv(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checklinteger(L, 3);
+    len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     return (luab_iovec_recv(L, s, buf, &len, flags));
@@ -569,7 +569,7 @@ luab_recvfrom(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checklinteger(L, 3);
+    len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
     from = luab_udataisnil(L, 5, luab_xtype(SOCKADDR), struct sockaddr *);
     xp = luab_udata(L, 6, luab_xtype(INTEGER), luab_primitive_t *);
@@ -667,7 +667,7 @@ luab_recvmmsg(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     tbl = luab_table_checkmmsghdr(L, 2);
-    vlen = (size_t)luab_checklinteger(L, 3);
+    vlen = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
     timeout = luab_udataisnil(L, 5, luab_xtype(TIMESPEC), struct timespec *);
 
@@ -719,7 +719,7 @@ luab_send(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     msg = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checklinteger(L, 3);
+    len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     return (luab_iovec_send(L, s, msg, &len, flags));
@@ -766,7 +766,7 @@ luab_sendto(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
-    len = (size_t)luab_checklinteger(L, 3);
+    len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
     to = luab_udataisnil(L, 5, luab_xtype(SOCKADDR), struct sockaddr *);
     tolen = (socklen_t)luab_checkinteger(L, 4, luab_env_int_max);
@@ -868,7 +868,7 @@ luab_sendfile(lua_State *L)
     fd = luab_checkinteger(L, 1, luab_env_int_max);
     s = luab_checkinteger(L, 2, luab_env_int_max);
     offset = luab_checkinteger(L, 3, luab_env_long_max);
-    nbytes = (size_t)luab_checklinteger(L, 4);
+    nbytes = (size_t)luab_checklinteger(L, 4, 0);
     hdtr = luab_udataisnil(L, 5, luab_xtype(SF_HDTR), struct sf_hdtr *);
     xp = luab_udataisnil(L, 6, luab_xtype(INTEGER), luab_primitive_t *);
 
@@ -923,7 +923,7 @@ luab_sendmmsg(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     tbl = luab_table_checkmmsghdr(L, 2);
-    vlen = (size_t)luab_checklinteger(L, 3);
+    vlen = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     if (tbl != NULL) {
