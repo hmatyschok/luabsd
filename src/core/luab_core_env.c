@@ -205,4 +205,3 @@ u_long luab_env_nprocessors_onln;
 u_long luab_env_cpuset_size;
 
 u_long luab_env_phys_pages;
-u_long luab_env_phys_pages;

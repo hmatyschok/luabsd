@@ -381,7 +381,6 @@ typedef struct luab_sysconf_vec {
 #endif /* __BSD_VISIBLE */
 
 #define LUAB_SC_PHYS_PAGES                      _SC_PHYS_PAGES
-#define LUAB_SC_PHYS_PAGES                      _SC_PHYS_PAGES
 
 extern u_long luab_env_buf_max;
 extern u_long luab_env_path_max;
@@ -512,7 +511,6 @@ extern u_long luab_env_nprocessors_conf;
 extern u_long luab_env_nprocessors_onln;
 extern u_long luab_env_cpuset_size;
 
-extern u_long luab_env_phys_pages;
 extern u_long luab_env_phys_pages;
 
 #endif /* _LUAB_ENV_H_ */

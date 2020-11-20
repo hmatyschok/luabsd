@@ -533,10 +533,6 @@ static luab_sysconf_vec_t luab_param[] = {
         .scv_key = LUAB_SC_PHYS_PAGES,
         .scv_dflt = 0,
         .scv_val = &luab_env_phys_pages,
-    },{
-        .scv_key = LUAB_SC_PHYS_PAGES,
-        .scv_dflt = 0,
-        .scv_val = &luab_env_phys_pages,
     },
     LUAB_SC_VEC_SENTINEL
 };
