@@ -210,7 +210,7 @@ float_udata(lua_State *L, int narg)
 {
     luab_float_t *self;
     self = luab_to_float(L, narg);
-    return (&(self->ud_x));
+    return ((void *)&(self->ud_x));
 }
 
 static luab_table_t *
@@ -222,7 +222,7 @@ float_checktable(lua_State *L, int narg)
 
     if ((tbl = luab_newvectornil(L, narg, sizeof(float))) != NULL) {
 
-        if (((x = (float *)(tbl->tbl_vec)) != NULL) &&
+        if (((x = (float *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
             luab_table_init(L, 0);
 
@@ -255,7 +255,7 @@ float_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 
     if (tbl != NULL) {
 
-        if (((x = tbl->tbl_vec) != NULL) &&
+        if (((x = (float *)tbl->tbl_vec) != NULL) &&
             ((n = (tbl->tbl_card - 1)) != 0)) {
             luab_table_init(L, new);
 

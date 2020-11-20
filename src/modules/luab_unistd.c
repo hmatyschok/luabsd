@@ -3097,6 +3097,7 @@ luab_getentropy(lua_State *L)
 static int
 luab_getgrouplist(lua_State *L)
 {
+    luab_module_t *m;
     const char *name;
     gid_t basegid;
     luab_table_t *tbl;
@@ -3106,6 +3107,8 @@ luab_getgrouplist(lua_State *L)
     int status;
 
     (void)luab_core_checkmaxargs(L, 4);
+
+    luab_core_checkxtype(m, GID, __func__);
 
     name = luab_checklstring(L, 1, NAME_MAX);
     basegid = (gid_t)luab_checkinteger(L, 2, luab_env_int_max);
@@ -3118,10 +3121,11 @@ luab_getgrouplist(lua_State *L)
     if (*ngroups != 0) {
 
         if ((tbl = luab_table_alloc(L, 3, *ngroups, sizeof(gid_t))) != NULL) {
+            tbl->tbl_cookie = m->m_cookie;
             gidset = (gid_t *)(tbl->tbl_vec);
 
             if ((status = getgrouplist(name, basegid, gidset, (int *)ngroups)) == 0)
-                luab_table_pushgid(L, 3, tbl, 0, 1);
+                luab_table_pushxdata(L, 3, m, tbl, 0, 1);
         } else
             status = -1;
     } else {
@@ -4287,6 +4291,7 @@ luab_setdomainname(lua_State *L)
 static int
 luab_setgroups(lua_State *L)
 {
+    luab_module_t *m;
     int ngroups;
     luab_table_t *tbl;
     gid_t *gidset;
@@ -4294,9 +4299,11 @@ luab_setgroups(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    luab_core_checkxtype(m, GID, __func__);
+
     ngroups = (int)luab_checkinteger(L, 1, luab_env_int_max);
 
-    if ((tbl = luab_table_checklgid(L, 2, ngroups)) != NULL) {
+    if ((tbl = luab_table_checklxdata(L, 2, m, ngroups)) != NULL) {
         gidset = (gid_t *)(tbl->tbl_vec);
         status = setgroups(ngroups, gidset);
         luab_table_free(tbl);

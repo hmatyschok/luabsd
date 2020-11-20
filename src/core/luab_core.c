@@ -709,6 +709,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INT_IDX,
     },{
+        .mv_mod = &luab_gid_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_GID_IDX,
+    },{
         .mv_mod = &luab_double_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DOUBLE_IDX,
