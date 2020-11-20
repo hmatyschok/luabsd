@@ -1101,6 +1101,7 @@ luab_drand48(lua_State *L)
 static int
 luab_erand48(lua_State *L)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     u_short *xseed;
     double n;
@@ -1108,7 +1109,9 @@ luab_erand48(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((tbl = luab_table_checklu_short(L, 1, 3)) != NULL) {
+    luab_core_checkxtype(m, USHRT, __func__);
+
+    if ((tbl = luab_table_checklxdata(L, 1, m, 3)) != NULL) {
         xseed = (u_short *)(tbl->tbl_vec);
         n = erand48(xseed);
         luab_table_free(tbl);
@@ -1217,6 +1220,7 @@ luab_initstate(lua_State *L)
 static int
 luab_jrand48(lua_State *L)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     u_short *xseed;
     double n;
@@ -1224,7 +1228,9 @@ luab_jrand48(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((tbl = luab_table_checklu_short(L, 1, 3)) != NULL) {
+    luab_core_checkxtype(m, USHRT, __func__);
+
+    if ((tbl = luab_table_checklxdata(L, 1, m, 3)) != NULL) {
         xseed = (u_short *)(tbl->tbl_vec);
         n = jrand48(xseed);
         luab_table_free(tbl);
@@ -1286,12 +1292,15 @@ luab_l64a(lua_State *L)
 static int
 luab_lcong48(lua_State *L)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     u_short *p;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((tbl = luab_table_checklu_short(L, 1, 7)) != NULL) {
+    luab_core_checkxtype(m, USHRT, __func__);
+
+    if ((tbl = luab_table_checklxdata(L, 1, m, 7)) != NULL) {
         p = (u_short *)(tbl->tbl_vec);
         lcong48(p);
         luab_table_free(tbl);
@@ -1359,6 +1368,7 @@ luab_mrand48(lua_State *L)
 static int
 luab_nrand48(lua_State *L)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     u_short *xseed;
     double n;
@@ -1366,7 +1376,9 @@ luab_nrand48(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((tbl = luab_table_checklu_short(L, 1, 3)) != NULL) {
+    luab_core_checkxtype(m, USHRT, __func__);
+
+    if ((tbl = luab_table_checklxdata(L, 1, m, 3)) != NULL) {
         xseed = (u_short *)(tbl->tbl_vec);
         n = nrand48(xseed);
         luab_table_free(tbl);
@@ -1514,13 +1526,16 @@ luab_random(lua_State *L)
 static int
 luab_seed48(lua_State *L)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     u_short *xseed;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((tbl = luab_table_checklu_short(L, 1, 3)) != NULL) {
+    luab_core_checkxtype(m, USHRT, __func__);
+
+    if ((tbl = luab_table_checklxdata(L, 1, m, 3)) != NULL) {
         xseed = (u_short *)(tbl->tbl_vec);
         if (seed48(xseed) == NULL) {
             errno = EINVAL;

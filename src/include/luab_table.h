@@ -58,6 +58,7 @@ luab_table_t     *luab_table_alloc(lua_State *, int, size_t, size_t);
 
 luab_table_t     *luab_newvector(lua_State *, int, size_t);
 luab_table_t     *luab_newvectornil(lua_State *, int, size_t);
+
 luab_table_t     *luab_newlvector(lua_State *, int, size_t, size_t);
 luab_table_t     *luab_newlvectornil(lua_State *, int, size_t, size_t);
 
@@ -68,9 +69,6 @@ luab_table_t     *luab_newlvectornil(lua_State *, int, size_t, size_t);
 luab_table_t     *luab_table_checkargv(lua_State *, int);
 luab_table_t     *luab_table_toxargp(lua_State *, int);
 luab_table_t     *luab_table_tolxargp(lua_State *, int, size_t);
-
-luab_table_t     *luab_table_checku_short(lua_State *, int);
-luab_table_t     *luab_table_checklu_short(lua_State *, int, size_t);
 
 luab_table_t     *luab_table_checkxdata(lua_State *, int, luab_module_t *);
 luab_table_t     *luab_table_checklxdata(lua_State *, int, luab_module_t *, size_t);

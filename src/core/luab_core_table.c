@@ -330,41 +330,6 @@ luab_table_toxargp(lua_State *L, int narg)
     return (tbl);
 }
 
-
-luab_table_t *
-luab_table_checku_short(lua_State *L, int narg)
-{
-    luab_table_t *tbl;
-    u_short *x, y;
-    size_t m, n;
-
-    if ((tbl = luab_newvectornil(L, narg, sizeof(double))) != NULL) {
-
-        if (((x = (u_short *)(tbl->tbl_vec)) != NULL) &&
-            (tbl->tbl_card > 1)) {
-            luab_table_init(L, 0);
-
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
-
-                if (lua_next(L, narg) != 0) {
-
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isnumber(L, -1) != 0)) {
-                        y = (u_short)luab_tointeger(L, -1, luab_env_ushrt_max);
-                        x[m] = (u_short)y;
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
-            }
-        }
-    }
-    return (tbl);
-}
-
 luab_table_t *
 luab_table_checkxdata(lua_State *L, int narg, luab_module_t *m)
 {
@@ -399,30 +364,6 @@ luab_table_checklxdata(lua_State *L, int narg, luab_module_t *m, size_t nmax)
             luab_table_argerror(L, narg, tbl, ERANGE);
 
         if ((tbl->tbl_card - 1) != nmax)
-            luab_table_argerror(L, narg, tbl, ERANGE);
-    }
-    return (tbl);
-}
-
-/*
- * XXX DRY this set of primitives shall merged into one by callback.
- */
-
-luab_table_t *
-luab_table_checklu_short(lua_State *L, int narg, size_t nmax)
-{
-    luab_table_t *tbl;
-    size_t n, sz;
-
-    sz = sizeof(int);
-
-    if ((tbl = luab_table_checku_short(L, narg)) != NULL) {
-        if ((tbl->tbl_vec == NULL) ||
-            (tbl->tbl_card == 0) ||
-            (tbl->tbl_sz != sz))
-            luab_table_argerror(L, narg, tbl, ERANGE);
-
-        if ((n = (tbl->tbl_card - 1)) != nmax)
             luab_table_argerror(L, narg, tbl, ERANGE);
     }
     return (tbl);
