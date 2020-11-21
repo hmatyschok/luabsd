@@ -485,6 +485,67 @@ msghdr_udata(lua_State *L, int narg)
     return (&(ud->msg_hdr));
 }
 
+static luab_table_t *
+msghdr_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct msghdr *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(struct msghdr);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct msghdr *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_msghdr_type, struct msghdr *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct msghdr *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (struct msghdr *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_msghdr_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_msghdr_type = {
     .m_cookie   = LUAB_MSGHDR_TYPE_ID,
     .m_name     = LUAB_MSGHDR_TYPE,
@@ -492,6 +553,8 @@ luab_module_t luab_msghdr_type = {
     .m_create   = msghdr_create,
     .m_init     = msghdr_init,
     .m_get      = msghdr_udata,
+    .m_get_tbl  = msghdr_checktable,
+    .m_set_tbl  = msghdr_pushtable,
     .m_sz       = sizeof(luab_msghdr_t),
 };
 #endif /* __BSD_VISIBLE */

@@ -274,6 +274,67 @@ regex_udata(lua_State *L, int narg)
     return (luab_to_regex(L, narg));
 }
 
+static luab_table_t *
+regex_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    regex_t *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(regex_t);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (regex_t *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_regex_type, regex_t *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+regex_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    regex_t *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (regex_t *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_regex_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_regex_type = {
     .m_cookie   = LUAB_REGEX_TYPE_ID,
     .m_name     = LUAB_REGEX_TYPE,
@@ -281,5 +342,7 @@ luab_module_t luab_regex_type = {
     .m_create   = regex_create,
     .m_init     = regex_init,
     .m_get      = regex_udata,
+    .m_get_tbl  = regex_checktable,
+    .m_set_tbl  = regex_pushtable,
     .m_sz       = sizeof(luab_regex_t),
 };

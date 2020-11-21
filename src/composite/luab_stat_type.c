@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 extern luab_module_t luab_stat_type;
 
@@ -925,6 +926,67 @@ stat_udata(lua_State *L, int narg)
     return (luab_to_stat(L, narg));
 }
 
+static luab_table_t *
+stat_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct stat *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(struct stat);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct stat *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_stat_type, struct stat *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+stat_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct stat *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (struct stat *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_stat_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_stat_type = {
     .m_cookie   = LUAB_STAT_TYPE_ID,
     .m_name     = LUAB_STAT_TYPE,
@@ -932,5 +994,7 @@ luab_module_t luab_stat_type = {
     .m_create   = stat_create,
     .m_init     = stat_init,
     .m_get      = stat_udata,
+    .m_get_tbl  = stat_checktable,
+    .m_set_tbl  = stat_pushtable,
     .m_sz       = sizeof(luab_stat_t),
 };
