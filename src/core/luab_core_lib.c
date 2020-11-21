@@ -849,6 +849,29 @@ luab_int8_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(INT16)).
+ *
+ * @function int16_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage int16 [, err, msg ] = bsd.core.int16_create(x)
+ */
+static int
+luab_int16_create(lua_State *L)
+{
+    int16_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (int16_t)luab_checkinteger(L, 1, luab_env_ushrt_max);
+
+    return (luab_pushudata(L, luab_xtype(INT16), &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(FPOS)).
  *
  * @function fpos_create
@@ -1072,6 +1095,8 @@ luab_link_create(lua_State *L)
 
 static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
+
+    /* integer types */
 #if __BSD_VISIBLE    
     LUAB_FUNC("ushrt_create",       luab_ushrt_create),
     LUAB_FUNC("uint_create",        luab_uint_create),
@@ -1080,9 +1105,16 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("short_create",       luab_short_create),
     LUAB_FUNC("int_create",         luab_int_create),
     LUAB_FUNC("long_create",        luab_long_create),
+
+    /* floating point number types */
     LUAB_FUNC("double_create",      luab_double_create),
     LUAB_FUNC("float_create",       luab_float_create),
+
+    /* POSIX sized integrals */
     LUAB_FUNC("int8_create",        luab_int8_create),
+    LUAB_FUNC("int16_create",       luab_int16_create),
+
+    /* stadard types */
     LUAB_FUNC("fpos_type",          luab_fpos_create),
     LUAB_FUNC("gid_create",         luab_gid_create),
     LUAB_FUNC("off_create",         luab_off_create),
@@ -1091,6 +1123,8 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("ssize_create",       luab_ssize_create),
     LUAB_FUNC("uid_create",         luab_uid_create),
     LUAB_FUNC("wchar_create",       luab_wchar_create),
+
+    /* composite data types */
     LUAB_FUNC("integer_create",     luab_integer_create),
 #if LUAB_DEBUG
     LUAB_FUNC("link_create",        luab_link_create),

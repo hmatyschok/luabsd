@@ -46,8 +46,9 @@ extern luab_module_t luab_float_type;
 
 /* POSIX sized integrals */
 extern luab_module_t luab_int8_type;
+extern luab_module_t luab_int16_type;
 
-/* standard type definitions */
+/* standard types */
 extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_gid_type;
 extern luab_module_t luab_off_type;
@@ -61,10 +62,6 @@ extern luab_module_t luab_wchar_type;
 /*
  * Set of composite data types.
  */
-
-#if LUAB_DEBUG
-extern luab_module_t luab_link_type;
-#endif
 
 extern luab_module_t luab_clockinfo_type;
 extern luab_module_t luab_div_type;
@@ -112,6 +109,10 @@ extern luab_module_t luab_accept_filter_arg_type;
 extern luab_module_t luab_sockproto_type;
 extern luab_module_t luab_cmsgcred_type;
 extern luab_module_t luab_sf_hdtr_type;
+#endif
+
+#if LUAB_DEBUG
+extern luab_module_t luab_link_type;
 #endif
 
 /*
