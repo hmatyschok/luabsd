@@ -33,6 +33,7 @@
 
 extern luab_module_t luab_int_type;
 extern luab_module_t luab_ushrt_type;
+extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_gid_type;
 extern luab_module_t luab_off_type;
 extern luab_module_t luab_uid_type;

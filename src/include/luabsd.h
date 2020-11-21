@@ -147,6 +147,7 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
 typedef enum luab_type {
     LUAB_INT_IDX,
     LUAB_USHRT_IDX,
+    LUAB_FPOS_IDX,
     LUAB_GID_IDX,
     LUAB_OFF_IDX,
     LUAB_UID_IDX,
