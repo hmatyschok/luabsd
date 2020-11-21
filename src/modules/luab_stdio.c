@@ -250,7 +250,7 @@ luab_fgetc(lua_State *L)
  *
  * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
  * @param pos               Result argument, tracks current position by
- *                          an instance of (LUA_TUSERDATA(INTEGER)).
+ *                          an instance of (LUA_TUSERDATA(OFF)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -529,7 +529,7 @@ luab_fseek(lua_State *L)
  *
  * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
  * @param pos               Value argument, specifies the current position
- *                          by an instance of (LUA_TUSERDATA(INTEGER)).
+ *                          by an instance of (LUA_TUSERDATA(OFF)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1396,7 +1396,7 @@ luab_fcloseall(lua_State *L)
  *
  * @param stream            Open file stream, (LUA_TUSERDATA(SFILE)).
  * @param fdp               File descriptor, optional result argument, either an
- *                          instance of (LUA_TUSERDATA(INTEGER)) or (LUA_TNIL).
+ *                          instance of (LUA_TUSERDATA(INT)) or (LUA_TNIL).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

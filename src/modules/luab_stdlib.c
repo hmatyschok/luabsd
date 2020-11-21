@@ -349,8 +349,8 @@ luab_mblen(lua_State *L)
  *
  * @function mbstowcs
  *
- * @param wcharp            Multy-byte character, (LUA_TUSERDATA(INTEGER)).
- * @param mbchar            Single-byte character, (LUA_TUSERDATA(INTEGER)).
+ * @param wcharp            Multy-byte character, (LUA_TUSERDATA(WCHAR)).
+ * @param mbchar            Single-byte character, (LUA_TUSERDATA(CHAR)).
  * @param nbytes            Specifies number of bytes for examination.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -400,8 +400,8 @@ luab_mbstowcs(lua_State *L)
  *
  * @function mbtowc
  *
- * @param wcharp            Multy-byte character, (LUA_TUSERDATA(INTEGER)).
- * @param mbchar            Single-byte character, (LUA_TUSERDATA(INTEGER)).
+ * @param wcharp            Multy-byte character, (LUA_TUSERDATA(WCHAR)).
+ * @param mbchar            Single-byte character, (LUA_TUSERDATA(CHAR)).
  * @param nbytes            Specifies number of bytes for examination.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -609,8 +609,8 @@ luab_system(lua_State *L)
  *
  * @function wctomb
  *
- * @param mbchar           Character, (LUA_TUSERDATA(INTEGER)).
- * @param wchar            Wide-character, (LUA_TUSERDATA(INTEGER)).
+ * @param mbchar           Character, (LUA_TUSERDATA(CHAR)).
+ * @param wchar            Wide-character, (LUA_TUSERDATA(WCHAR)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -947,7 +947,7 @@ luab_realpath(lua_State *L)
  *
  * @function rand_r
  *
- * @param ctx               Result argument, (LUA_TUSERDATA(INTEGER)).
+ * @param ctx               Result argument, (LUA_TUSERDATA(UINT)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1796,9 +1796,9 @@ luab_arc4random_uniform(lua_State *L)
  *
  * @function getbsize
  *
- * @param headerlenp        Specifies length of bytes by (LUA_TUSERDATA(INTEGER))
+ * @param headerlenp        Specifies length of bytes by (LUA_TUSERDATA(INT))
  *                          filled in region referred by result argument.
- * @param blocksizep        Result argument, (LUA_TUSERDATA(INTEGER)).
+ * @param blocksizep        Result argument, (LUA_TUSERDATA(LONG)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2046,7 +2046,7 @@ luab_cgetnext(lua_State *L)
  *
  * @param buf               Capability record buffer, (LUA_TUSERDATA(CAP_RBUF)).
  * @param cap               Capability string, (LUA_TSTRING).
- * @param num               Numeric capability, (LUA_TUSERDATA(INTEGER)).
+ * @param num               Numeric capability, (LUA_TUSERDATA(LONG)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

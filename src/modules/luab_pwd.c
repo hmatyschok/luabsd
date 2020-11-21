@@ -421,7 +421,7 @@ luab_user_from_uid(lua_State *L)
  *
  * @param name              Specifies user name.
  * @param uid               Result argument, with name linked UID,
- *                          instance of (LUA_TUSERDATA(INTEGER)).
+ *                          instance of (LUA_TUSERDATA(UID)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

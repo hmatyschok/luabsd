@@ -352,7 +352,7 @@ luab_connectat(lua_State *L)
  *
  * @param s                 Socket bound to an adress by bind(2).
  * @param name              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param namelen           Value-result argument, (LUA_TUSERDATA(INTEGER)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(SOCKLEN)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -384,7 +384,7 @@ luab_getpeername(lua_State *L)
  *
  * @param s                 Socket bound to an adress by bind(2).
  * @param name              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param namelen           Value-result argument, (LUA_TUSERDATA(INTEGER)).
+ * @param namelen           Value-result argument, (LUA_TUSERDATA(SOCKLEN)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -532,7 +532,7 @@ luab_recv(lua_State *L)
  *
  *                          may combined by inclusive or.
  * @param from              Result argument, (LUA_TUSERDATA(SOCKADDR)).
- * @param fromlen           Value-result argument, (LUA_TUSERDATA(INTEGER)).
+ * @param fromlen           Value-result argument, (LUA_TUSERDATA(SOCKLEN)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -817,7 +817,7 @@ luab_sendmsg(lua_State *L)
  * @param hdtr              Specifies optional HDR/TRL, by an instance
  *                          of (LUA_TUSERDATA(SF_HDTR)).
  * @param sbytes            Result argument, how many bytes are sent, instance
- *                          of (LUA_TUSERDATA(INTEGER)).
+ *                          of (LUA_TUSERDATA(OFF)).
  * @param flags             Flags argument over
  *
  *                              bsd.sys.socket.SF_{
