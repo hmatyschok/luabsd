@@ -232,7 +232,7 @@ ushrt_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (u_short)lua_tonumber(L, -1);
+                        y = (u_short)luab_checkinteger(L, -1, luab_env_ushrt_max);
                         x[m] = (u_short)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -260,7 +260,7 @@ ushrt_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
-                luab_rawsetnumber(L, narg, k, x[m]);
+                luab_rawsetinteger(L, narg, k, x[m]);
 
             errno = ENOENT;
         } else

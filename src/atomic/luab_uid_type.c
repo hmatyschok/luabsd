@@ -232,7 +232,7 @@ uid_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (uid_t)lua_tonumber(L, -1);
+                        y = (uid_t)luab_checkinteger(L, -1, luab_env_int_max);
                         x[m] = (uid_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

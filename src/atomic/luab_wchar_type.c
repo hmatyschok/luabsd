@@ -232,7 +232,7 @@ wchar_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (wchar_t)lua_tonumber(L, -1);
+                        y = (wchar_t)luab_checkinteger(L, -1, luab_env_uint_max);
                         x[m] = (wchar_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
