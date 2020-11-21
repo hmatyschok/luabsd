@@ -61,7 +61,7 @@ typedef struct luab_fsid {
  */
 
 static int
-fsid_pushtable(lua_State *L, int narg, const char *k, int32_t *vec)
+fsid_pushtable_internal(lua_State *L, int narg, const char *k, int32_t *vec)
 {
     int up_call, status;
     size_t m, n;
@@ -120,7 +120,7 @@ FSID_get(lua_State *L)
     fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
 
     lua_newtable(L);
-    (void)fsid_pushtable(L, -2, "val", fsid->val);
+    (void)fsid_pushtable_internal(L, -2, "val", fsid->val);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -165,7 +165,7 @@ FSID_val(lua_State *L)
     fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
     dp = fsid->val;
 
-    return (fsid_pushtable(L, -2, NULL, dp));
+    return (fsid_pushtable_internal(L, -2, NULL, dp));
 }
 
 /*
@@ -222,6 +222,67 @@ fsid_udata(lua_State *L, int narg)
     return (luab_to_fsid(L, narg));
 }
 
+static luab_table_t *
+fsid_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    fsid_t *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(fsid_t);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (fsid_t *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_fsid_type, fsid_t *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    fsid_t *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (fsid_t *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_fsid_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_fsid_type = {
     .m_cookie   = LUAB_FSID_TYPE_ID,
     .m_name     = LUAB_FSID_TYPE,
@@ -229,5 +290,7 @@ luab_module_t luab_fsid_type = {
     .m_create   = fsid_create,
     .m_init     = fsid_init,
     .m_get      = fsid_udata,
+    .m_get_tbl  = fsid_checktable,
+    .m_set_tbl  = fsid_pushtable,
     .m_sz       = sizeof(luab_fsid_t),
 };
