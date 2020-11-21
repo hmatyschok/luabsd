@@ -206,15 +206,13 @@ static int
 luab_gid_from_group(lua_State *L)
 {
     const char *name;
-    luab_primitive_t *xp;
     gid_t *gid;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     name = luab_checklstring(L, 1, luab_env_logname_max);
-    xp = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-    gid = &(xp->un_gid);
+    gid = luab_udata(L, 2, luab_xtype(GID), gid_t *);
 
     status = gid_from_group(name, gid);
     return (luab_pushxinteger(L, status));

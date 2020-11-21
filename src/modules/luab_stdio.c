@@ -260,16 +260,14 @@ static int
 luab_fgetpos(lua_State *L)
 {
     FILE *stream;
-    luab_primitive_t *xp;
     fpos_t *pos;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
-    xp = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-    pos = &(xp->un_fpos);
-
+    pos = luab_udata(L, 2, luab_xtype(FPOS), fpos_t *);
+    
     if (stream != NULL)
         status = fgetpos(stream, pos);
     else {
@@ -541,16 +539,14 @@ static int
 luab_fsetpos(lua_State *L)
 {
     FILE *stream;
-    luab_primitive_t *xp;
     fpos_t *pos;
     int status;
 
     (void)luab_core_checkmaxargs(L, 3);
 
     stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
-    xp = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-    pos = &(xp->un_fpos);
-
+    pos = luab_udata(L, 2, luab_xtype(FPOS), fpos_t *);
+    
     if (stream != NULL)
         status = fsetpos(stream, pos);
     else {
@@ -1410,18 +1406,13 @@ static int
 luab_fdclose(lua_State *L)
 {
     FILE *stream;
-    luab_primitive_t *xp;
-    int *fdp, status;
+    int *fdp;
+    int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
-    xp = luab_udataisnil(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-
-    if (xp != NULL)
-        fdp = &(xp->un_int);
-    else
-        fdp = NULL;
+    fdp = luab_udataisnil(L, 2, luab_xtype(INT), int *);
 
     if (stream != NULL)
         status = fdclose(stream, fdp);

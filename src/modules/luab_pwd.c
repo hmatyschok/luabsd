@@ -431,15 +431,13 @@ static int
 luab_uid_from_user(lua_State *L)
 {
     const char *name;
-    luab_primitive_t *xp;
     uid_t *uid;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     name = luab_checklstring(L, 1, luab_env_logname_max);
-    xp = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-    uid = &(xp->un_uid);
+    uid = luab_udata(L, 2, luab_xtype(UID), uid_t *);
 
     status = uid_from_user(name, uid);
     return (luab_pushxinteger(L, status));
