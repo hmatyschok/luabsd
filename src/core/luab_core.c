@@ -731,14 +731,18 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_long_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LONG_IDX,
-    },{
-        .mv_mod = &luab_float_type,         /* floating point numbers */
+    },{                                     /* floating point numbers */
+        .mv_mod = &luab_float_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FLOAT_IDX,
     },{
         .mv_mod = &luab_double_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DOUBLE_IDX,
+    },{                                     /* POSIX sized integrals */
+        .mv_mod = &luab_int8_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT8_IDX,
     },{                                     /* standard type definitions */
         .mv_mod = &luab_fpos_type,
         .mv_init = luab_core_newmetatable,

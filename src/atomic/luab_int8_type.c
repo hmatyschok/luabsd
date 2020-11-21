@@ -17,7 +17,7 @@
  * DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS OFFERRUPTION)
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INT8ERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -32,34 +32,34 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t luab_off_type;
+extern luab_module_t luab_int8_type;
 
 /*
  * Interface against
  *
- *  off_t
+ *  int8_t
  *
  */
 
-typedef struct luab_off {
+typedef struct luab_int8 {
     luab_udata_t    ud_softc;
-    off_t          ud_value;
-} luab_off_t;
+    int8_t          ud_value;
+} luab_int8_t;
 
-#define luab_new_off(L, arg) \
-    ((luab_off_t *)luab_newudata(L, &luab_off_type, (arg)))
-#define luab_to_off(L, narg) \
-    (luab_todata((L), (narg), &luab_off_type, luab_off_t *))
+#define luab_new_int8(L, arg) \
+    ((luab_int8_t *)luab_newudata(L, &luab_int8_type, (arg)))
+#define luab_to_int8(L, narg) \
+    (luab_todata((L), (narg), &luab_int8_type, luab_int8_t *))
 
-#define LUAB_OFF_TYPE_ID    1605914553
-#define LUAB_OFF_TYPE   "OFF*"
+#define LUAB_INT8_TYPE_ID    1606001349
+#define LUAB_INT8_TYPE   "INT8*"
 
 /*
  * Generator functions.
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(OFF)) offo (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(INT8)) int8o (LUA_TTABLE).
  *
  * @function get
  *
@@ -69,16 +69,16 @@ typedef struct luab_off {
  *              value = (LUA_TNUMBER),
  *          }
  *
- * @usage t = off:get()
+ * @usage t = int8:get()
  */
 static int
-OFF_get(lua_State *L)
+INT8_get(lua_State *L)
 {
-    luab_off_t *self;
+    luab_int8_t *self;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_off(L, 1);
+    self = luab_to_int8(L, 1);
 
     lua_newtable(L);
     luab_setinteger(L, -2, "value", self->ud_value);
@@ -94,10 +94,10 @@ OFF_get(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage iovec [, err, msg ] = off:dump()
+ * @usage iovec [, err, msg ] = int8:dump()
  */
 static int
-OFF_dump(lua_State *L)
+INT8_dump(lua_State *L)
 {
     return (luab_core_dump(L, 1, NULL, 0));
 }
@@ -107,7 +107,7 @@ OFF_dump(lua_State *L)
  */
 
 /***
- * Set off.
+ * Set int8.
  *
  * @function set_value
  *
@@ -115,18 +115,18 @@ OFF_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = off:set_value(data)
+ * @usage data [, err, msg ] = int8:set_value(data)
  */
 static int
-OFF_set_value(lua_State *L)
+INT8_set_value(lua_State *L)
 {
-    luab_off_t *self;
-    off_t x;
+    luab_int8_t *self;
+    int8_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_off(L, 1);
-    x = (off_t)luab_checkinteger(L, 2, luab_env_ulong_max);
+    self = luab_to_int8(L, 1);
+    x = (int8_t)luab_checkinteger(L, 2, luab_env_uchar_max);
 
     self->ud_value = x;
 
@@ -134,23 +134,23 @@ OFF_set_value(lua_State *L)
 }
 
 /***
- * Get off.
+ * Get int8.
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = off:get_value()
+ * @usage data [, err, msg ] = int8:get_value()
  */
 static int
-OFF_get_value(lua_State *L)
+INT8_get_value(lua_State *L)
 {
-    luab_off_t *self;
-    off_t x;
+    luab_int8_t *self;
+    int8_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_off(L, 1);
+    self = luab_to_int8(L, 1);
     x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
@@ -161,68 +161,68 @@ OFF_get_value(lua_State *L)
  */
 
 static int
-OFF_gc(lua_State *L)
+INT8_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_off_type));
+    return (luab_core_gc(L, 1, &luab_int8_type));
 }
 
 static int
-OFF_len(lua_State *L)
+INT8_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_off_type));
+    return (luab_core_len(L, 2, &luab_int8_type));
 }
 
 static int
-OFF_tostring(lua_State *L)
+INT8_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_off_type));
+    return (luab_core_tostring(L, 1, &luab_int8_type));
 }
 
 /*
- * Internal offerface.
+ * Internal int8erface.
  */
 
-static luab_module_table_t off_methods[] = {
-    LUAB_FUNC("set_value",      OFF_set_value),
-    LUAB_FUNC("get",            OFF_get),
-    LUAB_FUNC("get_value",      OFF_get_value),
-    LUAB_FUNC("dump",           OFF_dump),
-    LUAB_FUNC("__gc",           OFF_gc),
-    LUAB_FUNC("__len",          OFF_len),
-    LUAB_FUNC("__tostring",     OFF_tostring),
+static luab_module_table_t int8_methods[] = {
+    LUAB_FUNC("set_value",      INT8_set_value),
+    LUAB_FUNC("get",            INT8_get),
+    LUAB_FUNC("get_value",      INT8_get_value),
+    LUAB_FUNC("dump",           INT8_dump),
+    LUAB_FUNC("__gc",           INT8_gc),
+    LUAB_FUNC("__len",          INT8_len),
+    LUAB_FUNC("__tostring",     INT8_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 
 static void *
-off_create(lua_State *L, void *arg)
+int8_create(lua_State *L, void *arg)
 {
-    return (luab_new_off(L, arg));
+    return (luab_new_int8(L, arg));
 }
 
 static void
-off_init(void *ud, void *arg)
+int8_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_off_type, ud, arg);
+    luab_udata_init(&luab_int8_type, ud, arg);
 }
 
 static void *
-off_udata(lua_State *L, int narg)
+int8_udata(lua_State *L, int narg)
 {
-    luab_off_t *self;
-    self = luab_to_off(L, narg);
+    luab_int8_t *self;
+    self = luab_to_int8(L, narg);
     return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
-off_checktable(lua_State *L, int narg)
+int8_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
-    off_t *x, y;
+    int8_t *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(off_t))) != NULL) {
+    if ((tbl = luab_newvectornil(L, narg, sizeof(int8_t))) != NULL) {
 
-        if (((x = (off_t *)tbl->tbl_vec) != NULL) &&
+        if (((x = (int8_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
             luab_table_init(L, 0);
 
@@ -232,8 +232,8 @@ off_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (off_t)luab_tointeger(L, -1, luab_env_ulong_max);
-                        x[m] = (off_t)y;
+                        y = (int8_t)luab_tointeger(L, -1, luab_env_uchar_max);
+                        x[m] = (int8_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -248,14 +248,14 @@ off_checktable(lua_State *L, int narg)
 }
 
 static void
-off_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+int8_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
-    off_t *x;
+    int8_t *x;
     size_t m, n, k;
 
     if (tbl != NULL) {
 
-        if (((x = (off_t *)tbl->tbl_vec) != NULL) &&
+        if (((x = (int8_t *)tbl->tbl_vec) != NULL) &&
             ((n = (tbl->tbl_card - 1)) != 0)) {
             luab_table_init(L, new);
 
@@ -272,14 +272,14 @@ off_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
-luab_module_t luab_off_type = {
-    .m_cookie   = LUAB_OFF_TYPE_ID,
-    .m_name     = LUAB_OFF_TYPE,
-    .m_vec      = off_methods,
-    .m_create   = off_create,
-    .m_init     = off_init,
-    .m_get      = off_udata,
-    .m_get_tbl  = off_checktable,
-    .m_set_tbl  = off_pushtable,
-    .m_sz       = sizeof(luab_off_t),
+luab_module_t luab_int8_type = {
+    .m_cookie   = LUAB_INT8_TYPE_ID,
+    .m_name     = LUAB_INT8_TYPE,
+    .m_vec      = int8_methods,
+    .m_create   = int8_create,
+    .m_init     = int8_init,
+    .m_get      = int8_udata,
+    .m_get_tbl  = int8_checktable,
+    .m_set_tbl  = int8_pushtable,
+    .m_sz       = sizeof(luab_int8_t),
 };

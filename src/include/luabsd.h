@@ -149,7 +149,7 @@ typedef enum luab_type {
     LUAB_USHRT_IDX,
     LUAB_UINT_IDX,
 #endif /* __BSD_VISIBLE */
-    LUAB_CHAR_IDX,                  /* integers */
+    LUAB_CHAR_IDX,
     LUAB_SHORT_IDX,
     LUAB_INT_IDX,
     LUAB_LONG_IDX,
@@ -157,7 +157,11 @@ typedef enum luab_type {
     /* floating point numbers */
     LUAB_DOUBLE_IDX,
     LUAB_FLOAT_IDX,
-                                    /* standard type definitions */
+
+    /* POSIX sized integrals */
+    LUAB_INT8_IDX,
+
+    /* standard type definitions */
     LUAB_FPOS_IDX,
     LUAB_GID_IDX,
     LUAB_OFF_IDX,
@@ -166,7 +170,8 @@ typedef enum luab_type {
     LUAB_SSIZE_IDX,
     LUAB_UID_IDX,
     LUAB_WCHAR_IDX,
-                                    /* composite data types */
+
+    /* composite data types */
 #if LUAB_DEBUG
     LUAB_LINK_IDX,
 #endif /* LUAB_DEBUG */
