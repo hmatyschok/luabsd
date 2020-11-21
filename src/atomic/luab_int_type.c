@@ -43,7 +43,7 @@ extern luab_module_t luab_int_type;
 
 typedef struct luab_int {
     luab_udata_t    ud_softc;
-    int             ud_x;
+    int             ud_value;
 } luab_int_t;
 
 #define luab_new_int(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_int {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = int:get()
@@ -81,7 +81,7 @@ INT_get(lua_State *L)
     self = luab_to_int(L, 1);
 
     lua_newtable(L);
-    luab_setinteger(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ INT_dump(lua_State *L)
 /***
  * Set int.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = int:set_x(data)
+ * @usage data [, err, msg ] = int:set_value(data)
  */
 static int
-INT_set_x(lua_State *L)
+INT_set_value(lua_State *L)
 {
     luab_int_t *self;
     int x;
@@ -126,9 +126,9 @@ INT_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_int(L, 1);
-    x = (int)luab_checklinteger(L, 2, 1);
+    x = (int)luab_checkinteger(L, 2, luab_env_uint_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ INT_set_x(lua_State *L)
 /***
  * Get int.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = int:get_x()
+ * @usage data [, err, msg ] = int:get_value()
  */
 static int
-INT_get_x(lua_State *L)
+INT_get_value(lua_State *L)
 {
     luab_int_t *self;
     int x;
@@ -151,7 +151,7 @@ INT_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_int(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ INT_tostring(lua_State *L)
  */
 
 static luab_module_table_t int_methods[] = {
-    LUAB_FUNC("set_x",          INT_set_x),
+    LUAB_FUNC("set_value",      INT_set_value),
     LUAB_FUNC("get",            INT_get),
-    LUAB_FUNC("get_x",          INT_get_x),
+    LUAB_FUNC("get_value",      INT_get_value),
     LUAB_FUNC("dump",           INT_dump),
     LUAB_FUNC("__gc",           INT_gc),
     LUAB_FUNC("__len",          INT_len),
@@ -210,7 +210,7 @@ int_udata(lua_State *L, int narg)
 {
     luab_int_t *self;
     self = luab_to_int(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *

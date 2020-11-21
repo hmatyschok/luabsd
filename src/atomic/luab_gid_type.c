@@ -37,13 +37,13 @@ extern luab_module_t luab_gid_type;
 /*
  * Interface against
  *
- *  gid
+ *  gid_t
  *
  */
 
 typedef struct luab_gid {
     luab_udata_t    ud_softc;
-    gid_t             ud_x;
+    gid_t           ud_value;
 } luab_gid_t;
 
 #define luab_new_gid(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_gid {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = gid:get()
@@ -81,7 +81,7 @@ GID_get(lua_State *L)
     self = luab_to_gid(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ GID_dump(lua_State *L)
 /***
  * Set gid.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = gid:set_x(data)
+ * @usage data [, err, msg ] = gid:set_value(data)
  */
 static int
-GID_set_x(lua_State *L)
+GID_set_value(lua_State *L)
 {
     luab_gid_t *self;
     gid_t x;
@@ -128,7 +128,7 @@ GID_set_x(lua_State *L)
     self = luab_to_gid(L, 1);
     x = (gid_t)luab_checkinteger(L, 2, luab_env_int_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ GID_set_x(lua_State *L)
 /***
  * Get gid.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = gid:get_x()
+ * @usage data [, err, msg ] = gid:get_value()
  */
 static int
-GID_get_x(lua_State *L)
+GID_get_value(lua_State *L)
 {
     luab_gid_t *self;
     gid_t x;
@@ -151,7 +151,7 @@ GID_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_gid(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ GID_tostring(lua_State *L)
  */
 
 static luab_module_table_t gid_methods[] = {
-    LUAB_FUNC("set_x",          GID_set_x),
+    LUAB_FUNC("set_value",      GID_set_value),
     LUAB_FUNC("get",            GID_get),
-    LUAB_FUNC("get_x",          GID_get_x),
+    LUAB_FUNC("get_value",      GID_get_value),
     LUAB_FUNC("dump",           GID_dump),
     LUAB_FUNC("__gc",           GID_gc),
     LUAB_FUNC("__len",          GID_len),
@@ -210,7 +210,7 @@ gid_udata(lua_State *L, int narg)
 {
     luab_gid_t *self;
     self = luab_to_gid(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ gid_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (gid_t)luab_checkinteger(L, -1, luab_env_int_max);
+                        y = (gid_t)luab_tointeger(L, -1, luab_env_int_max);
                         x[m] = (gid_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

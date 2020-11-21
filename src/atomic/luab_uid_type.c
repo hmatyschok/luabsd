@@ -37,13 +37,13 @@ extern luab_module_t luab_uid_type;
 /*
  * Interface against
  *
- *  uid
+ *  uid_t
  *
  */
 
 typedef struct luab_uid {
     luab_udata_t    ud_softc;
-    uid_t             ud_x;
+    uid_t           ud_value;
 } luab_uid_t;
 
 #define luab_new_uid(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_uid {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = uid:get()
@@ -81,7 +81,7 @@ UID_get(lua_State *L)
     self = luab_to_uid(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ UID_dump(lua_State *L)
 /***
  * Set uid.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uid:set_x(data)
+ * @usage data [, err, msg ] = uid:set_value(data)
  */
 static int
-UID_set_x(lua_State *L)
+UID_set_value(lua_State *L)
 {
     luab_uid_t *self;
     uid_t x;
@@ -128,7 +128,7 @@ UID_set_x(lua_State *L)
     self = luab_to_uid(L, 1);
     x = (uid_t)luab_checkinteger(L, 2, luab_env_int_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ UID_set_x(lua_State *L)
 /***
  * Get uid.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uid:get_x()
+ * @usage data [, err, msg ] = uid:get_value()
  */
 static int
-UID_get_x(lua_State *L)
+UID_get_value(lua_State *L)
 {
     luab_uid_t *self;
     uid_t x;
@@ -151,7 +151,7 @@ UID_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_uid(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ UID_tostring(lua_State *L)
  */
 
 static luab_module_table_t uid_methods[] = {
-    LUAB_FUNC("set_x",          UID_set_x),
+    LUAB_FUNC("set_value",      UID_set_value),
     LUAB_FUNC("get",            UID_get),
-    LUAB_FUNC("get_x",          UID_get_x),
+    LUAB_FUNC("get_value",      UID_get_value),
     LUAB_FUNC("dump",           UID_dump),
     LUAB_FUNC("__gc",           UID_gc),
     LUAB_FUNC("__len",          UID_len),
@@ -210,7 +210,7 @@ uid_udata(lua_State *L, int narg)
 {
     luab_uid_t *self;
     self = luab_to_uid(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ uid_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (uid_t)luab_checkinteger(L, -1, luab_env_int_max);
+                        y = (uid_t)luab_tointeger(L, -1, luab_env_int_max);
                         x[m] = (uid_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

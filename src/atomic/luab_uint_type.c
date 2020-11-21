@@ -43,7 +43,7 @@ extern luab_module_t luab_uint_type;
 
 typedef struct luab_uint {
     luab_udata_t    ud_softc;
-    u_int           ud_x;
+    u_int           ud_value;
 } luab_uint_t;
 
 #define luab_new_uint(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_uint {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = uint:get()
@@ -81,7 +81,7 @@ UINT_get(lua_State *L)
     self = luab_to_uint(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ UINT_dump(lua_State *L)
 /***
  * Set uint.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uint:set_x(data)
+ * @usage data [, err, msg ] = uint:set_value(data)
  */
 static int
-UINT_set_x(lua_State *L)
+UINT_set_value(lua_State *L)
 {
     luab_uint_t *self;
     u_int x;
@@ -126,24 +126,24 @@ UINT_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_uint(L, 1);
-    x = (u_int)luaL_checknumber(L, 2);
+    x = (u_int)luab_checkinteger(L, 2, luab_env_uint_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
-    return (luab_pushxnumber(L, x));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
  * Get uint.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uint:get_x()
+ * @usage data [, err, msg ] = uint:get_value()
  */
 static int
-UINT_get_x(lua_State *L)
+UINT_get_value(lua_State *L)
 {
     luab_uint_t *self;
     u_int x;
@@ -151,9 +151,9 @@ UINT_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_uint(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
-    return (luab_pushxnumber(L, x));
+    return (luab_pushxinteger(L, x));
 }
 
 /*
@@ -183,9 +183,9 @@ UINT_tostring(lua_State *L)
  */
 
 static luab_module_table_t uint_methods[] = {
-    LUAB_FUNC("set_x",          UINT_set_x),
+    LUAB_FUNC("set_value",      UINT_set_value),
     LUAB_FUNC("get",            UINT_get),
-    LUAB_FUNC("get_x",          UINT_get_x),
+    LUAB_FUNC("get_value",      UINT_get_value),
     LUAB_FUNC("dump",           UINT_dump),
     LUAB_FUNC("__gc",           UINT_gc),
     LUAB_FUNC("__len",          UINT_len),
@@ -210,7 +210,7 @@ uint_udata(lua_State *L, int narg)
 {
     luab_uint_t *self;
     self = luab_to_uint(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ uint_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (u_int)luab_checkinteger(L, -1, luab_env_uint_max);
+                        y = (u_int)luab_tointeger(L, -1, luab_env_uint_max);
                         x[m] = (u_int)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

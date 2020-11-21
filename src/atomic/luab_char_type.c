@@ -43,7 +43,7 @@ extern luab_module_t luab_char_type;
 
 typedef struct luab_char {
     luab_udata_t    ud_softc;
-    char             ud_x;
+    char            ud_value;
 } luab_char_t;
 
 #define luab_new_char(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_char {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value   = (LUA_TNUMBER),
  *          }
  *
  * @usage t = char:get()
@@ -81,7 +81,7 @@ CHAR_get(lua_State *L)
     self = luab_to_char(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ CHAR_dump(lua_State *L)
 /***
  * Set char.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = char:set_x(data)
+ * @usage data [, err, msg ] = char:set_value(data)
  */
 static int
-CHAR_set_x(lua_State *L)
+CHAR_set_value(lua_State *L)
 {
     luab_char_t *self;
     char x;
@@ -126,9 +126,9 @@ CHAR_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_char(L, 1);
-    x = (char)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (char)luab_checkinteger(L, 2, luab_env_uchar_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ CHAR_set_x(lua_State *L)
 /***
  * Get char.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = char:get_x()
+ * @usage data [, err, msg ] = char:get_value()
  */
 static int
-CHAR_get_x(lua_State *L)
+CHAR_get_value(lua_State *L)
 {
     luab_char_t *self;
     char x;
@@ -151,7 +151,7 @@ CHAR_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_char(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ CHAR_tostring(lua_State *L)
  */
 
 static luab_module_table_t char_methods[] = {
-    LUAB_FUNC("set_x",          CHAR_set_x),
+    LUAB_FUNC("set_value",      CHAR_set_value),
     LUAB_FUNC("get",            CHAR_get),
-    LUAB_FUNC("get_x",          CHAR_get_x),
+    LUAB_FUNC("get_value",      CHAR_get_value),
     LUAB_FUNC("dump",           CHAR_dump),
     LUAB_FUNC("__gc",           CHAR_gc),
     LUAB_FUNC("__len",          CHAR_len),
@@ -210,7 +210,7 @@ char_udata(lua_State *L, int narg)
 {
     luab_char_t *self;
     self = luab_to_char(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ char_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (char)luab_checkinteger(L, -1, luab_env_uchar_max);
+                        y = (char)luab_tointeger(L, -1, luab_env_uchar_max);
                         x[m] = (char)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

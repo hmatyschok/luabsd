@@ -37,13 +37,13 @@ extern luab_module_t luab_fpos_type;
 /*
  * Interface against
  *
- *  fpos
+ *  fpos_t
  *
  */
 
 typedef struct luab_fpos {
     luab_udata_t    ud_softc;
-    fpos_t             ud_x;
+    fpos_t             ud_value;
 } luab_fpos_t;
 
 #define luab_new_fpos(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_fpos {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = fpos:get()
@@ -81,7 +81,7 @@ FPOS_get(lua_State *L)
     self = luab_to_fpos(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ FPOS_dump(lua_State *L)
 /***
  * Set fpos.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fpos:set_x(data)
+ * @usage data [, err, msg ] = fpos:set_value(data)
  */
 static int
-FPOS_set_x(lua_State *L)
+FPOS_set_value(lua_State *L)
 {
     luab_fpos_t *self;
     fpos_t x;
@@ -126,9 +126,9 @@ FPOS_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_fpos(L, 1);
-    x = (fpos_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (fpos_t)luab_checkinteger(L, 2, luab_env_ulong_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ FPOS_set_x(lua_State *L)
 /***
  * Get fpos.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fpos:get_x()
+ * @usage data [, err, msg ] = fpos:get_value()
  */
 static int
-FPOS_get_x(lua_State *L)
+FPOS_get_value(lua_State *L)
 {
     luab_fpos_t *self;
     fpos_t x;
@@ -151,7 +151,7 @@ FPOS_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_fpos(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ FPOS_tostring(lua_State *L)
  */
 
 static luab_module_table_t fpos_methods[] = {
-    LUAB_FUNC("set_x",          FPOS_set_x),
+    LUAB_FUNC("set_value",      FPOS_set_value),
     LUAB_FUNC("get",            FPOS_get),
-    LUAB_FUNC("get_x",          FPOS_get_x),
+    LUAB_FUNC("get_value",      FPOS_get_value),
     LUAB_FUNC("dump",           FPOS_dump),
     LUAB_FUNC("__gc",           FPOS_gc),
     LUAB_FUNC("__len",          FPOS_len),
@@ -210,7 +210,7 @@ fpos_udata(lua_State *L, int narg)
 {
     luab_fpos_t *self;
     self = luab_to_fpos(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ fpos_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (fpos_t)luab_checkinteger(L, -1, luab_env_ulong_max);
+                        y = (fpos_t)luab_tointeger(L, -1, luab_env_ulong_max);
                         x[m] = (fpos_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

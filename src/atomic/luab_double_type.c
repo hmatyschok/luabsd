@@ -43,7 +43,7 @@ extern luab_module_t luab_double_type;
 
 typedef struct luab_double {
     luab_udata_t    ud_softc;
-    double             ud_x;
+    double          ud_value;
 } luab_double_t;
 
 #define luab_new_double(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_double {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = double:get()
@@ -81,7 +81,7 @@ DOUBLE_get(lua_State *L)
     self = luab_to_double(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setnumber(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ DOUBLE_dump(lua_State *L)
 /***
  * Set double.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = double:set_x(data)
+ * @usage data [, err, msg ] = double:set_value(data)
  */
 static int
-DOUBLE_set_x(lua_State *L)
+DOUBLE_set_value(lua_State *L)
 {
     luab_double_t *self;
     double x;
@@ -128,7 +128,7 @@ DOUBLE_set_x(lua_State *L)
     self = luab_to_double(L, 1);
     x = (double)luaL_checknumber(L, 2);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxnumber(L, x));
 }
@@ -136,14 +136,14 @@ DOUBLE_set_x(lua_State *L)
 /***
  * Get double.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = double:get_x()
+ * @usage data [, err, msg ] = double:get_value()
  */
 static int
-DOUBLE_get_x(lua_State *L)
+DOUBLE_get_value(lua_State *L)
 {
     luab_double_t *self;
     double x;
@@ -151,7 +151,7 @@ DOUBLE_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_double(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxnumber(L, x));
 }
@@ -183,9 +183,9 @@ DOUBLE_tostring(lua_State *L)
  */
 
 static luab_module_table_t double_methods[] = {
-    LUAB_FUNC("set_x",          DOUBLE_set_x),
+    LUAB_FUNC("set_value",      DOUBLE_set_value),
     LUAB_FUNC("get",            DOUBLE_get),
-    LUAB_FUNC("get_x",          DOUBLE_get_x),
+    LUAB_FUNC("get_value",      DOUBLE_get_value),
     LUAB_FUNC("dump",           DOUBLE_dump),
     LUAB_FUNC("__gc",           DOUBLE_gc),
     LUAB_FUNC("__len",          DOUBLE_len),
@@ -210,7 +210,7 @@ double_udata(lua_State *L, int narg)
 {
     luab_double_t *self;
     self = luab_to_double(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *

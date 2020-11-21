@@ -37,13 +37,13 @@ extern luab_module_t luab_ushrt_type;
 /*
  * Interface against
  *
- *  ushrt
+ *  u_short
  *
  */
 
 typedef struct luab_ushrt {
     luab_udata_t    ud_softc;
-    u_short         ud_x;
+    u_short         ud_value;
 } luab_ushrt_t;
 
 #define luab_new_ushrt(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_ushrt {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = ushrt:get()
@@ -81,7 +81,7 @@ USHRT_get(lua_State *L)
     self = luab_to_ushrt(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ USHRT_dump(lua_State *L)
 /***
  * Set ushrt.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ushrt:set_x(data)
+ * @usage data [, err, msg ] = ushrt:set_value(data)
  */
 static int
-USHRT_set_x(lua_State *L)
+USHRT_set_value(lua_State *L)
 {
     luab_ushrt_t *self;
     u_short x;
@@ -126,24 +126,24 @@ USHRT_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_ushrt(L, 1);
-    x = (u_short)luaL_checknumber(L, 2);
+    x = (u_short)luab_checkinteger(L, 2, luab_env_ushrt_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
-    return (luab_pushxnumber(L, x));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
  * Get ushrt.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ushrt:get_x()
+ * @usage data [, err, msg ] = ushrt:get_value()
  */
 static int
-USHRT_get_x(lua_State *L)
+USHRT_get_value(lua_State *L)
 {
     luab_ushrt_t *self;
     u_short x;
@@ -151,9 +151,9 @@ USHRT_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_ushrt(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
-    return (luab_pushxnumber(L, x));
+    return (luab_pushxinteger(L, x));
 }
 
 /*
@@ -183,9 +183,9 @@ USHRT_tostring(lua_State *L)
  */
 
 static luab_module_table_t ushrt_methods[] = {
-    LUAB_FUNC("set_x",          USHRT_set_x),
+    LUAB_FUNC("set_value",      USHRT_set_value),
     LUAB_FUNC("get",            USHRT_get),
-    LUAB_FUNC("get_x",          USHRT_get_x),
+    LUAB_FUNC("get_value",      USHRT_get_value),
     LUAB_FUNC("dump",           USHRT_dump),
     LUAB_FUNC("__gc",           USHRT_gc),
     LUAB_FUNC("__len",          USHRT_len),
@@ -210,7 +210,7 @@ ushrt_udata(lua_State *L, int narg)
 {
     luab_ushrt_t *self;
     self = luab_to_ushrt(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ ushrt_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (u_short)luab_checkinteger(L, -1, luab_env_ushrt_max);
+                        y = (u_short)luab_tointeger(L, -1, luab_env_ushrt_max);
                         x[m] = (u_short)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

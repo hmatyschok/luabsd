@@ -37,13 +37,13 @@ extern luab_module_t luab_off_type;
 /*
  * Interface against
  *
- *  off
+ *  off_t
  *
  */
 
 typedef struct luab_off {
     luab_udata_t    ud_softc;
-    off_t             ud_x;
+    off_t           ud_value;
 } luab_off_t;
 
 #define luab_new_off(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_off {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = off:get()
@@ -81,7 +81,7 @@ OFF_get(lua_State *L)
     self = luab_to_off(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ OFF_dump(lua_State *L)
 /***
  * Set off.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = off:set_x(data)
+ * @usage data [, err, msg ] = off:set_value(data)
  */
 static int
-OFF_set_x(lua_State *L)
+OFF_set_value(lua_State *L)
 {
     luab_off_t *self;
     off_t x;
@@ -126,9 +126,9 @@ OFF_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_off(L, 1);
-    x = (off_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (off_t)luab_checkinteger(L, 2, luab_env_ulong_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ OFF_set_x(lua_State *L)
 /***
  * Get off.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = off:get_x()
+ * @usage data [, err, msg ] = off:get_value()
  */
 static int
-OFF_get_x(lua_State *L)
+OFF_get_value(lua_State *L)
 {
     luab_off_t *self;
     off_t x;
@@ -151,7 +151,7 @@ OFF_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_off(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ OFF_tostring(lua_State *L)
  */
 
 static luab_module_table_t off_methods[] = {
-    LUAB_FUNC("set_x",          OFF_set_x),
+    LUAB_FUNC("set_value",      OFF_set_value),
     LUAB_FUNC("get",            OFF_get),
-    LUAB_FUNC("get_x",          OFF_get_x),
+    LUAB_FUNC("get_value",      OFF_get_value),
     LUAB_FUNC("dump",           OFF_dump),
     LUAB_FUNC("__gc",           OFF_gc),
     LUAB_FUNC("__len",          OFF_len),
@@ -210,7 +210,7 @@ off_udata(lua_State *L, int narg)
 {
     luab_off_t *self;
     self = luab_to_off(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ off_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (off_t)luab_checkinteger(L, -1, luab_env_ulong_max);
+                        y = (off_t)luab_tointeger(L, -1, luab_env_ulong_max);
                         x[m] = (off_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

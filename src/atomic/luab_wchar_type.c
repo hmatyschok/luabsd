@@ -37,13 +37,13 @@ extern luab_module_t luab_wchar_type;
 /*
  * Interface against
  *
- *  wchar
+ *  wchar_t
  *
  */
 
 typedef struct luab_wchar {
     luab_udata_t    ud_softc;
-    wchar_t             ud_x;
+    wchar_t         ud_value;
 } luab_wchar_t;
 
 #define luab_new_wchar(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_wchar {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value   = (LUA_TNUMBER),
  *          }
  *
  * @usage t = wchar:get()
@@ -81,7 +81,7 @@ WCHAR_get(lua_State *L)
     self = luab_to_wchar(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ WCHAR_dump(lua_State *L)
 /***
  * Set wchar.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = wchar:set_x(data)
+ * @usage data [, err, msg ] = wchar:set_value(data)
  */
 static int
-WCHAR_set_x(lua_State *L)
+WCHAR_set_value(lua_State *L)
 {
     luab_wchar_t *self;
     wchar_t x;
@@ -126,9 +126,9 @@ WCHAR_set_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_wchar(L, 1);
-    x = (wchar_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (wchar_t)luab_checkinteger(L, 2, luab_env_uint_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ WCHAR_set_x(lua_State *L)
 /***
  * Get wchar.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = wchar:get_x()
+ * @usage data [, err, msg ] = wchar:get_value()
  */
 static int
-WCHAR_get_x(lua_State *L)
+WCHAR_get_value(lua_State *L)
 {
     luab_wchar_t *self;
     wchar_t x;
@@ -151,7 +151,7 @@ WCHAR_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_wchar(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ WCHAR_tostring(lua_State *L)
  */
 
 static luab_module_table_t wchar_methods[] = {
-    LUAB_FUNC("set_x",          WCHAR_set_x),
+    LUAB_FUNC("set_value",      WCHAR_set_value),
     LUAB_FUNC("get",            WCHAR_get),
-    LUAB_FUNC("get_x",          WCHAR_get_x),
+    LUAB_FUNC("get_value",      WCHAR_get_value),
     LUAB_FUNC("dump",           WCHAR_dump),
     LUAB_FUNC("__gc",           WCHAR_gc),
     LUAB_FUNC("__len",          WCHAR_len),
@@ -210,7 +210,7 @@ wchar_udata(lua_State *L, int narg)
 {
     luab_wchar_t *self;
     self = luab_to_wchar(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ wchar_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (wchar_t)luab_checkinteger(L, -1, luab_env_uint_max);
+                        y = (wchar_t)luab_tointeger(L, -1, luab_env_uint_max);
                         x[m] = (wchar_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

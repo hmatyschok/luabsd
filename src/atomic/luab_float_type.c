@@ -43,7 +43,7 @@ extern luab_module_t luab_float_type;
 
 typedef struct luab_float {
     luab_udata_t    ud_softc;
-    float             ud_x;
+    float           ud_value;
 } luab_float_t;
 
 #define luab_new_float(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_float {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = float:get()
@@ -81,7 +81,7 @@ FLOAT_get(lua_State *L)
     self = luab_to_float(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setnumber(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ FLOAT_dump(lua_State *L)
 /***
  * Set float.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = float:set_x(data)
+ * @usage data [, err, msg ] = float:set_value(data)
  */
 static int
-FLOAT_set_x(lua_State *L)
+FLOAT_set_value(lua_State *L)
 {
     luab_float_t *self;
     float x;
@@ -128,7 +128,7 @@ FLOAT_set_x(lua_State *L)
     self = luab_to_float(L, 1);
     x = (float)luaL_checknumber(L, 2);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxnumber(L, x));
 }
@@ -136,14 +136,14 @@ FLOAT_set_x(lua_State *L)
 /***
  * Get float.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = float:get_x()
+ * @usage data [, err, msg ] = float:get_value()
  */
 static int
-FLOAT_get_x(lua_State *L)
+FLOAT_get_value(lua_State *L)
 {
     luab_float_t *self;
     float x;
@@ -151,7 +151,7 @@ FLOAT_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_float(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxnumber(L, x));
 }
@@ -183,9 +183,9 @@ FLOAT_tostring(lua_State *L)
  */
 
 static luab_module_table_t float_methods[] = {
-    LUAB_FUNC("set_x",          FLOAT_set_x),
+    LUAB_FUNC("set_value",      FLOAT_set_value),
     LUAB_FUNC("get",            FLOAT_get),
-    LUAB_FUNC("get_x",          FLOAT_get_x),
+    LUAB_FUNC("get_value",      FLOAT_get_value),
     LUAB_FUNC("dump",           FLOAT_dump),
     LUAB_FUNC("__gc",           FLOAT_gc),
     LUAB_FUNC("__len",          FLOAT_len),
@@ -210,7 +210,7 @@ float_udata(lua_State *L, int narg)
 {
     luab_float_t *self;
     self = luab_to_float(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *

@@ -37,13 +37,13 @@ extern luab_module_t luab_socklen_type;
 /*
  * Interface against
  *
- *  socklen
+ *  socklen_t
  *
  */
 
 typedef struct luab_socklen {
     luab_udata_t    ud_softc;
-    socklen_t             ud_x;
+    socklen_t       ud_value;
 } luab_socklen_t;
 
 #define luab_new_socklen(L, arg) \
@@ -66,7 +66,7 @@ typedef struct luab_socklen {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              x   = (LUA_TNUMBER),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t = socklen:get()
@@ -81,7 +81,7 @@ SOCKLEN_get(lua_State *L)
     self = luab_to_socklen(L, 1);
 
     lua_newtable(L);
-    luab_setnumber(L, -2, "x", self->ud_x);
+    luab_setinteger(L, -2, "value", self->ud_value);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -109,16 +109,16 @@ SOCKLEN_dump(lua_State *L)
 /***
  * Set socklen.
  *
- * @function set_x
+ * @function set_value
  *
  * @param data              Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = socklen:set_x(data)
+ * @usage data [, err, msg ] = socklen:set_value(data)
  */
 static int
-SOCKLEN_set_x(lua_State *L)
+SOCKLEN_set_value(lua_State *L)
 {
     luab_socklen_t *self;
     socklen_t x;
@@ -128,7 +128,7 @@ SOCKLEN_set_x(lua_State *L)
     self = luab_to_socklen(L, 1);
     x = (socklen_t)luab_checkinteger(L, 2, luab_env_int_max);
 
-    self->ud_x = x;
+    self->ud_value = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -136,14 +136,14 @@ SOCKLEN_set_x(lua_State *L)
 /***
  * Get socklen.
  *
- * @function get_x
+ * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = socklen:get_x()
+ * @usage data [, err, msg ] = socklen:get_value()
  */
 static int
-SOCKLEN_get_x(lua_State *L)
+SOCKLEN_get_value(lua_State *L)
 {
     luab_socklen_t *self;
     socklen_t x;
@@ -151,7 +151,7 @@ SOCKLEN_get_x(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_socklen(L, 1);
-    x = self->ud_x;
+    x = self->ud_value;
 
     return (luab_pushxinteger(L, x));
 }
@@ -183,9 +183,9 @@ SOCKLEN_tostring(lua_State *L)
  */
 
 static luab_module_table_t socklen_methods[] = {
-    LUAB_FUNC("set_x",          SOCKLEN_set_x),
+    LUAB_FUNC("set_value",      SOCKLEN_set_value),
     LUAB_FUNC("get",            SOCKLEN_get),
-    LUAB_FUNC("get_x",          SOCKLEN_get_x),
+    LUAB_FUNC("get_value",      SOCKLEN_get_value),
     LUAB_FUNC("dump",           SOCKLEN_dump),
     LUAB_FUNC("__gc",           SOCKLEN_gc),
     LUAB_FUNC("__len",          SOCKLEN_len),
@@ -210,7 +210,7 @@ socklen_udata(lua_State *L, int narg)
 {
     luab_socklen_t *self;
     self = luab_to_socklen(L, narg);
-    return ((void *)&(self->ud_x));
+    return ((void *)&(self->ud_value));
 }
 
 static luab_table_t *
@@ -232,7 +232,7 @@ socklen_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (socklen_t)luab_checkinteger(L, -1, luab_env_int_max);
+                        y = (socklen_t)luab_tointeger(L, -1, luab_env_int_max);
                         x[m] = (socklen_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
