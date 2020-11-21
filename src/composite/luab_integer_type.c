@@ -30,6 +30,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 extern luab_module_t luab_integer_type;
 
@@ -236,6 +237,67 @@ integer_udata(lua_State *L, int narg)
     return (luab_to_integer(L, narg));
 }
 
+static luab_table_t *
+integer_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    luab_primitive_t *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(luab_primitive_t);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (luab_primitive_t *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_integer_type, luab_primitive_t *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+integer_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    luab_primitive_t *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (luab_primitive_t *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_integer_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_integer_type = {
     .m_cookie   = LUAB_INTEGER_TYPE_ID,
     .m_name     = LUAB_INTEGER_TYPE,
@@ -243,5 +305,7 @@ luab_module_t luab_integer_type = {
     .m_create   = integer_create,
     .m_init     = integer_init,
     .m_get      = integer_udata,
+    .m_get_tbl  = integer_checktable,
+    .m_set_tbl  = integer_pushtable,
     .m_sz       = sizeof(luab_integer_t),
 };
