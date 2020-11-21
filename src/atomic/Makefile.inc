@@ -5,6 +5,7 @@ SRCS+=  luab_char_type.c
 SRCS+=  luab_ushrt_type.c
 SRCS+=  luab_uint_type.c
 SRCS+=  luab_int_type.c
+SRCS+=  luab_long_type.c
 SRCS+=  luab_wchar_type.c
 
 SRCS+=  luab_fpos_type.c

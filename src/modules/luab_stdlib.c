@@ -956,14 +956,12 @@ luab_realpath(lua_State *L)
 static int
 luab_rand_r(lua_State *L)
 {
-    luab_primitive_t *xp;
     u_int *ctx;
     int n;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, luab_xtype(INTEGER), luab_primitive_t *);
-    ctx = &(xp->un_u_int);
+    ctx = luab_udata(L, 1, luab_xtype(UINT), u_int *);
 
     n = rand_r(ctx);
 
@@ -1809,19 +1807,15 @@ luab_arc4random_uniform(lua_State *L)
 static int
 luab_getbsize(lua_State *L)
 {
-    luab_primitive_t *h1, *h2;
     int *headerlenp;
     long *blocksizep;
     const char *str;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    h1 = luab_udata(L, 1, luab_xtype(INTEGER), luab_primitive_t *);
-    h2 = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-
-    headerlenp = &(h1->un_int);
-    blocksizep = &(h2->un_long);
-
+    headerlenp = luab_udata(L, 1, luab_xtype(INT), int *);
+    blocksizep = luab_udata(L, 2, luab_xtype(LONG), long *);
+    
     str = getbsize(headerlenp, blocksizep);
 
     return (luab_pushstring(L, str));
@@ -2063,7 +2057,6 @@ luab_cgetnum(lua_State *L)
 {
     struct iovec *buf;
     const char *cap;
-    luab_primitive_t *xp;
     long *num;
     caddr_t bp;
     int status;
@@ -2072,8 +2065,7 @@ luab_cgetnum(lua_State *L)
 
     buf = luab_udata(L, 1, luab_xtype(CAP_RBUF), struct iovec *);
     cap = luab_checklstring(L, 2, luab_env_buf_max);
-    xp = luab_udata(L, 3, luab_xtype(INTEGER), luab_primitive_t *);
-    num = &(xp->un_long);
+    num = luab_udata(L, 3, luab_xtype(LONG), long *);
 
     if ((bp = buf->iov_base) != NULL)
         status = cgetnum(bp, cap, num);

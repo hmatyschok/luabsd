@@ -149,6 +149,7 @@ typedef enum luab_type {
     LUAB_USHRT_IDX,
     LUAB_UINT_IDX,
     LUAB_INT_IDX,
+    LUAB_LONG_IDX,
     LUAB_WCHAR_IDX,
     LUAB_FPOS_IDX,
     LUAB_GID_IDX,

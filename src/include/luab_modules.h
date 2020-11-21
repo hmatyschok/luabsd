@@ -35,6 +35,7 @@ extern luab_module_t luab_char_type;
 extern luab_module_t luab_ushrt_type;
 extern luab_module_t luab_uint_type;
 extern luab_module_t luab_int_type;
+extern luab_module_t luab_long_type;
 extern luab_module_t luab_wchar_type;
 
 extern luab_module_t luab_fpos_type;

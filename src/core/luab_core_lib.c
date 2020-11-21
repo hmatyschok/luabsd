@@ -711,6 +711,29 @@ luab_int_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(LONG)).
+ *
+ * @function long_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage long [, err, msg ] = bsd.core.long_create(x)
+ */
+static int
+luab_long_create(lua_State *L)
+{
+    long x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (long)luab_checkinteger(L, 1, luab_env_long_max);
+
+    return (luab_pushudata(L, luab_xtype(LONG), &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(WCHAR)).
  *
  * @function wchar_create
@@ -938,6 +961,7 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("ushrt_create",       luab_ushrt_create),
     LUAB_FUNC("uint_create",        luab_uint_create),
     LUAB_FUNC("int_create",         luab_int_create),
+    LUAB_FUNC("long_create",        luab_long_create),
     LUAB_FUNC("wchar_create",       luab_wchar_create),
     LUAB_FUNC("fpos_type",          luab_fpos_create),
     LUAB_FUNC("gid_create",         luab_gid_create),
