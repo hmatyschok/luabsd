@@ -872,6 +872,29 @@ luab_socklen_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SSIZE)).
+ *
+ * @function ssize_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ssize [, err, msg ] = bsd.core.ssize_create(x)
+ */
+static int
+luab_ssize_create(lua_State *L)
+{
+    ssize_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (ssize_t)luab_checklinteger(L, 1, 1);
+
+    return (luab_pushudata(L, luab_xtype(SSIZE), &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(UID)).
  *
  * @function uid_create
@@ -991,6 +1014,7 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("off_create",         luab_off_create),
     LUAB_FUNC("size_create",        luab_size_create),
     LUAB_FUNC("socklen_create",     luab_socklen_create),
+    LUAB_FUNC("ssize_create",       luab_ssize_create),
     LUAB_FUNC("uid_create",         luab_uid_create),
     LUAB_FUNC("double_create",      luab_double_create),
     LUAB_FUNC("float_create",       luab_float_create),

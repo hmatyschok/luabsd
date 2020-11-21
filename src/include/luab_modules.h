@@ -43,6 +43,7 @@ extern luab_module_t luab_gid_type;
 extern luab_module_t luab_off_type;
 extern luab_module_t luab_size_type;
 extern luab_module_t luab_socklen_type;
+extern luab_module_t luab_ssize_type;
 extern luab_module_t luab_uid_type;
 
 extern luab_module_t luab_double_type;
