@@ -3102,7 +3102,6 @@ luab_getgrouplist(lua_State *L)
     gid_t basegid;
     luab_table_t *tbl;
     gid_t *gidset;
-    luab_primitive_t *xp;
     size_t *ngroups;
     int status;
 
@@ -3115,8 +3114,7 @@ luab_getgrouplist(lua_State *L)
 
     (void)luab_checkltable(L, 3, 0);  /* only empty tables are accepted */
 
-    xp = luab_udata(L, 4, luab_xtype(INTEGER), luab_primitive_t *);
-    ngroups = &(xp->un_size);
+    ngroups = luab_udata(L, 4, luab_xtype(SIZE), size_t *);
 
     if (*ngroups != 0) {
 
@@ -3270,8 +3268,6 @@ static int
 luab_getpeereid(lua_State *L)
 {
     int s;
-    luab_primitive_t *h1;
-    luab_primitive_t *h2;
     uid_t *euid;
     gid_t *egid;
     int status;
@@ -3279,11 +3275,8 @@ luab_getpeereid(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    h1 = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
-    h2 = luab_udata(L, 3, luab_xtype(INTEGER), luab_primitive_t *);
-
-    euid = &(h1->un_uint32);
-    egid = &(h2->un_uint32);
+    euid = luab_udata(L, 2, luab_xtype(UID), uid_t *);
+    egid = luab_udata(L, 3, luab_xtype(GID), gid_t *);
 
     status = getpeereid(s, egid, euid);
 

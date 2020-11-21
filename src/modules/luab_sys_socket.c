@@ -363,7 +363,6 @@ luab_getpeername(lua_State *L)
 {
     int s;
     struct sockaddr *name;
-    luab_primitive_t *xp;
     socklen_t *namelen;
     int status;
 
@@ -371,9 +370,8 @@ luab_getpeername(lua_State *L)
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     name = luab_udata(L, 2, luab_xtype(SOCKADDR), struct sockaddr *);
-    xp = luab_udata(L, 3, luab_xtype(INTEGER), luab_primitive_t *);
-    namelen = &(xp->un_socklen);
-
+    namelen = luab_udata(L, 3, luab_xtype(SOCKLEN), socklen_t *);
+    
     status = getpeername(s, name, namelen);
 
     return (luab_pushxinteger(L, status));

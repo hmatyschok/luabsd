@@ -11,6 +11,7 @@ SRCS+=  luab_wchar_type.c
 SRCS+=  luab_fpos_type.c
 SRCS+=  luab_gid_type.c
 SRCS+=  luab_off_type.c
+SRCS+=  luab_size_type.c
 SRCS+=  luab_socklen_type.c
 SRCS+=  luab_uid_type.c
 
