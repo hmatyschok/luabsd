@@ -617,6 +617,30 @@ luab_uuid(lua_State *L)
 }
 
 /* atomic data types */
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CHAR)).
+ *
+ * @function char_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage char [, err, msg ] = bsd.core.char_create(x)
+ */
+static int
+luab_char_create(lua_State *L)
+{
+    char x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (char)luab_checkinteger(L, 1, luab_env_uchar_max);
+
+    return (luab_pushudata(L, luab_xtype(CHAR), &x));
+}
+
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(USHRT)).
  *
@@ -638,6 +662,29 @@ luab_ushrt_create(lua_State *L)
     x = (u_short)luab_checkinteger(L, 1, luab_env_ushrt_max);
 
     return (luab_pushudata(L, luab_xtype(USHRT), &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UINT)).
+ *
+ * @function uint_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uint [, err, msg ] = bsd.core.uint_create(x)
+ */
+static int
+luab_uint_create(lua_State *L)
+{
+    u_int x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (u_int)luab_checkinteger(L, 1, luab_env_uint_max);
+
+    return (luab_pushudata(L, luab_xtype(UINT), &x));
 }
 
 /***
@@ -681,7 +728,7 @@ luab_wchar_create(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    x = (wchar_t)luab_checkinteger(L, 1, luab_env_long_max);
+    x = (wchar_t)luab_checkinteger(L, 1, luab_env_uint_max);
 
     return (luab_pushudata(L, luab_xtype(WCHAR), &x));
 }
@@ -773,7 +820,7 @@ luab_socklen_create(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    x = (socklen_t)luab_checkinteger(L, 1, luab_env_long_max);
+    x = (socklen_t)luab_checkinteger(L, 1, luab_env_int_max);
 
     return (luab_pushudata(L, luab_xtype(SOCKLEN), &x));
 }
@@ -887,7 +934,9 @@ luab_link_create(lua_State *L)
 
 static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
+    LUAB_FUNC("char_create",        luab_char_create),
     LUAB_FUNC("ushrt_create",       luab_ushrt_create),
+    LUAB_FUNC("uint_create",        luab_uint_create),
     LUAB_FUNC("int_create",         luab_int_create),
     LUAB_FUNC("wchar_create",       luab_wchar_create),
     LUAB_FUNC("fpos_type",          luab_fpos_create),

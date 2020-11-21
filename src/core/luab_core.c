@@ -705,9 +705,17 @@ static luab_module_vec_t luab_core_vec[] = {
 /* Bindings against atomic / composite data types. */
 luab_module_vec_t luab_typevec[] = {
     {
+        .mv_mod = &luab_char_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_CHAR_IDX,
+    },{
         .mv_mod = &luab_ushrt_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_USHRT_IDX,
+    },{
+        .mv_mod = &luab_uint_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_UINT_IDX,
     },{
         .mv_mod = &luab_int_type,
         .mv_init = luab_core_newmetatable,

@@ -1,8 +1,9 @@
 
 .PATH: ${LUAB_SRCTOP}/atomic
 
+SRCS+=  luab_char_type.c
 SRCS+=  luab_ushrt_type.c
-
+SRCS+=  luab_uint_type.c
 SRCS+=  luab_int_type.c
 SRCS+=  luab_wchar_type.c
 

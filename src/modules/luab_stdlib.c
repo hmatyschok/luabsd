@@ -411,20 +411,16 @@ luab_mbstowcs(lua_State *L)
 static int
 luab_mbtowc(lua_State *L)
 {
-    luab_primitive_t *xp, *h1;
-    size_t nbytes;
     wchar_t *wcharp;
     const char *mbchar;
+    size_t nbytes;
     int status;
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    xp = luab_udata(L, 1, luab_xtype(INTEGER), luab_primitive_t *);
-    h1 = luab_udata(L, 2, luab_xtype(INTEGER), luab_primitive_t *);
+    wcharp = luab_udata(L, 1, luab_xtype(WCHAR), wchar_t *);
+    mbchar = luab_udata(L, 2, luab_xtype(CHAR), const char *);
     nbytes = (size_t)luab_checklinteger(L, 3, 0);
-
-    wcharp = &(xp->un_wc);
-    mbchar = &(h1->un_char);
 
     status = mbtowc(wcharp, mbchar, nbytes);
 
@@ -623,17 +619,15 @@ luab_system(lua_State *L)
 static int
 luab_wctomb(lua_State *L)
 {
-    luab_primitive_t *xp;
-    wchar_t wchar;
     char *mbchar;
+    wchar_t wchar;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, luab_xtype(INTEGER), luab_primitive_t *);
+    mbchar = luab_udata(L, 1, luab_xtype(CHAR), char *);
     wchar = (wchar_t)luab_checkinteger(L, 2, luab_env_long_max);
 
-    mbchar = &(xp->un_char);
     status = wctomb(mbchar, wchar);
 
     return (luab_pushxinteger(L, status));
