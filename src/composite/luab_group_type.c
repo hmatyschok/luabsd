@@ -66,7 +66,7 @@ typedef struct luab_group {
  */
 
 static int
-group_pushtable(lua_State *L, int narg, const char *k, caddr_t *vec)
+group_pushtable_internal(lua_State *L, int narg, const char *k, caddr_t *vec)
 {
     int up_call, status;
     size_t m, n;
@@ -134,7 +134,7 @@ GROUP_get(lua_State *L)
     luab_setinteger(L, -2, "gr_gid",    grp->gr_gid);
 
     if (grp->gr_mem != NULL)
-        (void)group_pushtable(L, -2, "gr_mem", grp->gr_mem);
+        (void)group_pushtable_internal(L, -2, "gr_mem", grp->gr_mem);
 
     lua_pushvalue(L, -1);
 
@@ -249,7 +249,7 @@ GROUP_gr_mem(lua_State *L)
     grp = luab_udata(L, 1, &luab_group_type, struct group *);
     vec = grp->gr_mem;
 
-    return (group_pushtable(L, -2, NULL, vec));
+    return (group_pushtable_internal(L, -2, NULL, vec));
 }
 
 /*
@@ -326,6 +326,67 @@ group_udata(lua_State *L, int narg)
     return (luab_to_group(L, narg));
 }
 
+static luab_table_t *
+group_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct group *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(struct group);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct group *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_group_type, struct group *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+group_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct group *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (struct group *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_group_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_group_type = {
     .m_cookie   = LUAB_GROUP_TYPE_ID,
     .m_name     = LUAB_GROUP_TYPE,
@@ -333,5 +394,7 @@ luab_module_t luab_group_type = {
     .m_create   = group_create,
     .m_init     = group_init,
     .m_get      = group_udata,
+    .m_get_tbl  = group_checktable,
+    .m_set_tbl  = group_pushtable,
     .m_sz       = sizeof(luab_group_t),
 };
