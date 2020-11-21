@@ -39,7 +39,7 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
 /*
  * Vector table - constraints, etc.
  */
- 
+
 static luab_sysconf_vec_t luab_param[] = {
     {                                               /* <core> */
         .scv_key = LUAB_SC_NOTSUPP,
@@ -704,11 +704,8 @@ static luab_module_vec_t luab_core_vec[] = {
 
 /* Bindings against atomic / composite data types. */
 luab_module_vec_t luab_typevec[] = {
+#if __BSD_VISIBLE
     {
-        .mv_mod = &luab_char_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_CHAR_IDX,
-    },{
         .mv_mod = &luab_ushrt_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_USHRT_IDX,
@@ -716,6 +713,16 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_uint_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_UINT_IDX,
+    },
+#endif /* __BSD_VISIBLE */
+    {                                       /* integers */
+        .mv_mod = &luab_char_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_CHAR_IDX,
+    },{
+        .mv_mod = &luab_short_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_SHORT_IDX,
     },{
         .mv_mod = &luab_int_type,
         .mv_init = luab_core_newmetatable,
@@ -725,10 +732,14 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LONG_IDX,
     },{
-        .mv_mod = &luab_wchar_type,
+        .mv_mod = &luab_float_type,         /* floating point numbers */
         .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_WCHAR_IDX,
+        .mv_idx = LUAB_FLOAT_IDX,
     },{
+        .mv_mod = &luab_double_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_DOUBLE_IDX,
+    },{                                     /* standard type definitions */
         .mv_mod = &luab_fpos_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FPOS_IDX,
@@ -757,13 +768,9 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_UID_IDX,
     },{
-        .mv_mod = &luab_double_type,
+        .mv_mod = &luab_wchar_type,
         .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_DOUBLE_IDX,
-    },{
-        .mv_mod = &luab_float_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_FLOAT_IDX,
+        .mv_idx = LUAB_WCHAR_IDX,
     },
 #if LUAB_DEBUG
     {
@@ -772,7 +779,7 @@ luab_module_vec_t luab_typevec[] = {
         .mv_idx = LUAB_LINK_IDX,
     },
 #endif /* LUAB_DEBUG */
-    {
+    {                                       /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CLOCKINFO_IDX,

@@ -32,6 +32,7 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
+#if __BSD_VISIBLE
 extern luab_module_t luab_uint_type;
 
 /*
@@ -283,3 +284,4 @@ luab_module_t luab_uint_type = {
     .m_set_tbl  = uint_pushtable,
     .m_sz       = sizeof(luab_uint_t),
 };
+#endif /* __BSD_VISIBLE */

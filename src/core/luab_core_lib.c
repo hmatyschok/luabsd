@@ -639,29 +639,7 @@ luab_uuid(lua_State *L)
 
 /* atomic data types */
 
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(CHAR)).
- *
- * @function char_create
- *
- * @param x                 Specifies initial value.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage char [, err, msg ] = bsd.core.char_create(x)
- */
-static int
-luab_char_create(lua_State *L)
-{
-    char x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    x = (char)luab_checkinteger(L, 1, luab_env_uchar_max);
-
-    return (luab_pushudata(L, luab_xtype(CHAR), &x));
-}
-
+#if __BSD_VISIBLE
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(USHRT)).
  *
@@ -706,6 +684,53 @@ luab_uint_create(lua_State *L)
     x = (u_int)luab_checkinteger(L, 1, luab_env_uint_max);
 
     return (luab_pushudata(L, luab_xtype(UINT), &x));
+}
+#endif /* __BSD_VISIBLE */
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CHAR)).
+ *
+ * @function char_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage char [, err, msg ] = bsd.core.char_create(x)
+ */
+static int
+luab_char_create(lua_State *L)
+{
+    char x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (char)luab_checkinteger(L, 1, luab_env_uchar_max);
+
+    return (luab_pushudata(L, luab_xtype(CHAR), &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SHORT)).
+ *
+ * @function short_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage short [, err, msg ] = bsd.core.short_create(x)
+ */
+static int
+luab_short_create(lua_State *L)
+{
+    short x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (short)luab_checkinteger(L, 1, luab_env_uchar_max);
+
+    return (luab_pushudata(L, luab_xtype(SHORT), &x));
 }
 
 /***
@@ -755,26 +780,49 @@ luab_long_create(lua_State *L)
 }
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(WCHAR)).
+ * Generator function, creates an instance of (LUA_TUSERDATA(DOUBLE)).
  *
- * @function wchar_create
+ * @function double_create
  *
  * @param x                 Specifies initial value.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage wchar [, err, msg ] = bsd.core.wchar_create(x)
+ * @usage double [, err, msg ] = bsd.core.double_create(x)
  */
 static int
-luab_wchar_create(lua_State *L)
+luab_double_create(lua_State *L)
 {
-    wchar_t x;
+    double x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    x = (wchar_t)luab_checkinteger(L, 1, luab_env_uint_max);
+    x = (double)luaL_checknumber(L, 1); /* XXX */
 
-    return (luab_pushudata(L, luab_xtype(WCHAR), &x));
+    return (luab_pushudata(L, luab_xtype(DOUBLE), &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(FLOAT)).
+ *
+ * @function float_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage float [, err, msg ] = bsd.core.float_create(x)
+ */
+static int
+luab_float_create(lua_State *L)
+{
+    float x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (float)luaL_checknumber(L, 1); /* XXX */
+
+    return (luab_pushudata(L, luab_xtype(FLOAT), &x));
 }
 
 /***
@@ -939,49 +987,26 @@ luab_uid_create(lua_State *L)
 }
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(DOUBLE)).
+ * Generator function, creates an instance of (LUA_TUSERDATA(WCHAR)).
  *
- * @function double_create
- *
- * @param x                 Specifies initial value.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage double [, err, msg ] = bsd.core.double_create(x)
- */
-static int
-luab_double_create(lua_State *L)
-{
-    double x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    x = (double)luaL_checknumber(L, 1); /* XXX */
-
-    return (luab_pushudata(L, luab_xtype(DOUBLE), &x));
-}
-
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(FLOAT)).
- *
- * @function float_create
+ * @function wchar_create
  *
  * @param x                 Specifies initial value.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage float [, err, msg ] = bsd.core.float_create(x)
+ * @usage wchar [, err, msg ] = bsd.core.wchar_create(x)
  */
 static int
-luab_float_create(lua_State *L)
+luab_wchar_create(lua_State *L)
 {
-    float x;
+    wchar_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    x = (float)luaL_checknumber(L, 1); /* XXX */
+    x = (wchar_t)luab_checkinteger(L, 1, luab_env_uint_max);
 
-    return (luab_pushudata(L, luab_xtype(FLOAT), &x));
+    return (luab_pushudata(L, luab_xtype(WCHAR), &x));
 }
 
 /* composite data types */
@@ -1024,12 +1049,16 @@ luab_link_create(lua_State *L)
 
 static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
-    LUAB_FUNC("char_create",        luab_char_create),
+#if __BSD_VISIBLE    
     LUAB_FUNC("ushrt_create",       luab_ushrt_create),
     LUAB_FUNC("uint_create",        luab_uint_create),
+#endif /* __BSD_VISIBLE */
+    LUAB_FUNC("char_create",        luab_char_create),
+    LUAB_FUNC("short_create",       luab_short_create),
     LUAB_FUNC("int_create",         luab_int_create),
     LUAB_FUNC("long_create",        luab_long_create),
-    LUAB_FUNC("wchar_create",       luab_wchar_create),
+    LUAB_FUNC("double_create",      luab_double_create),
+    LUAB_FUNC("float_create",       luab_float_create),
     LUAB_FUNC("fpos_type",          luab_fpos_create),
     LUAB_FUNC("gid_create",         luab_gid_create),
     LUAB_FUNC("off_create",         luab_off_create),
@@ -1037,8 +1066,7 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("socklen_create",     luab_socklen_create),
     LUAB_FUNC("ssize_create",       luab_ssize_create),
     LUAB_FUNC("uid_create",         luab_uid_create),
-    LUAB_FUNC("double_create",      luab_double_create),
-    LUAB_FUNC("float_create",       luab_float_create),
+    LUAB_FUNC("wchar_create",       luab_wchar_create),
     LUAB_FUNC("integer_create",     luab_integer_create),
 #if LUAB_DEBUG
     LUAB_FUNC("link_create",        luab_link_create),

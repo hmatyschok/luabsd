@@ -31,12 +31,18 @@
  * Set of atomic data types.
  */
 
-extern luab_module_t luab_char_type;
+#if __BSD_VISIBLE
 extern luab_module_t luab_ushrt_type;
 extern luab_module_t luab_uint_type;
+#endif /* __BSD_VISIBLE */
+
+extern luab_module_t luab_char_type;
+extern luab_module_t luab_short_type;
 extern luab_module_t luab_int_type;
 extern luab_module_t luab_long_type;
-extern luab_module_t luab_wchar_type;
+
+extern luab_module_t luab_double_type;
+extern luab_module_t luab_float_type;
 
 extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_gid_type;
@@ -46,8 +52,7 @@ extern luab_module_t luab_socklen_type;
 extern luab_module_t luab_ssize_type;
 extern luab_module_t luab_uid_type;
 
-extern luab_module_t luab_double_type;
-extern luab_module_t luab_float_type;
+extern luab_module_t luab_wchar_type;
 
 /*
  * Set of composite data types.
@@ -56,6 +61,7 @@ extern luab_module_t luab_float_type;
 #if LUAB_DEBUG
 extern luab_module_t luab_link_type;
 #endif
+
 extern luab_module_t luab_clockinfo_type;
 extern luab_module_t luab_div_type;
 extern luab_module_t luab_flock_type;
@@ -91,6 +97,7 @@ extern luab_module_t luab_dirent_type;
 extern luab_module_t luab_fstab_type;
 extern luab_module_t luab___sbuf_type;
 extern luab_module_t luab_sfile_type;
+
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;
 extern luab_module_t luab_db_type;
