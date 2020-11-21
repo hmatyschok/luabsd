@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 #if __BSD_VISIBLE
 extern luab_module_t luab_crypt_data_type;
@@ -279,6 +280,67 @@ crypt_data_udata(lua_State *L, int narg)
     return (luab_to_crypt_data(L, narg));
 }
 
+static luab_table_t *
+crypt_data_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct crypt_data *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(struct crypt_data);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (struct crypt_data *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_crypt_data_type, struct crypt_data *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        }
+    }
+    return (tbl);
+}
+
+static void
+crypt_data_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct crypt_data *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (struct crypt_data *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_crypt_data_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = EINVAL;
+}
+
 luab_module_t luab_crypt_data_type = {
     .m_cookie   = LUAB_CRYPT_DATA_TYPE_ID,
     .m_name     = LUAB_CRYPT_DATA_TYPE,
@@ -286,6 +348,8 @@ luab_module_t luab_crypt_data_type = {
     .m_create   = crypt_data_create,
     .m_init     = crypt_data_init,
     .m_get      = crypt_data_udata,
+    .m_get_tbl  = crypt_data_checktable,
+    .m_set_tbl  = crypt_data_pushtable,
     .m_sz       = sizeof(luab_crypt_data_t),
 };
 #endif /* __BSD_VISIBLE */
