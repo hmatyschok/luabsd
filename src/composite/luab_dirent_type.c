@@ -343,7 +343,7 @@ dirent_checktable(lua_State *L, int narg)
 
     if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
 
-        if (((x = (struct dirent *)(tbl->tbl_vec)) != NULL) &&
+        if (((x = (struct dirent *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
             luab_table_init(L, 0);
 
@@ -376,7 +376,7 @@ dirent_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 
     if (tbl != NULL) {
 
-        if (((x = tbl->tbl_vec) != NULL) &&
+        if (((x = (struct dirent *)tbl->tbl_vec) != NULL) &&
             ((n = (tbl->tbl_card - 1)) != 0)) {
             luab_table_init(L, new);
 
