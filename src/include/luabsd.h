@@ -161,6 +161,7 @@ typedef enum luab_type {
     /* POSIX sized integrals */
     LUAB_INT8_IDX,
     LUAB_INT16_IDX,
+    LUAB_INT32_IDX,
 
     /* standard types */
     LUAB_FPOS_IDX,

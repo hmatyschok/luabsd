@@ -702,7 +702,12 @@ static luab_module_vec_t luab_core_vec[] = {
     LUAB_MOD_VEC_SENTINEL
 };
 
-/* Bindings against atomic / composite data types. */
+/*
+ * Bindings against atomic / composite data types.
+ *
+ * XXX
+ *  We should split this vector table into subsets by category.
+ */
 luab_module_vec_t luab_typevec[] = {
 #if __BSD_VISIBLE
     {                                       /* integer types */
@@ -747,6 +752,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_int16_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INT16_IDX,
+    },{
+        .mv_mod = &luab_int32_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT32_IDX,
     },{                                     /* standard types */
         .mv_mod = &luab_fpos_type,
         .mv_init = luab_core_newmetatable,

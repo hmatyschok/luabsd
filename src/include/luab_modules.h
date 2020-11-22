@@ -47,6 +47,7 @@ extern luab_module_t luab_float_type;
 /* POSIX sized integrals */
 extern luab_module_t luab_int8_type;
 extern luab_module_t luab_int16_type;
+extern luab_module_t luab_int32_type;
 
 /* standard types */
 extern luab_module_t luab_fpos_type;
