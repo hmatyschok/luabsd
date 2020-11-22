@@ -545,7 +545,7 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 
 /*
  * XXX
- *  Generic service primitives, should moved to <luab_core_udata>
+ *  Generic service primitives, we should move those to <luab_core_udata>
  */
 
 int
