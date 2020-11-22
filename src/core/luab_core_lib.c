@@ -170,7 +170,7 @@ luab_tolinteger(lua_State *L, int narg, int s)
     luab_env_int_max
 #endif
     );
-    return (luab_checkinteger(L, narg, b_msk));
+    return (luab_tointeger(L, narg, b_msk));
 }
 
 lua_Integer
@@ -243,13 +243,14 @@ luab_checklstring(lua_State *L, int narg, size_t nmax, size_t *np)
 const char *
 luab_checklstringisnil(lua_State *L, int narg, size_t nmax, size_t *np)
 {
-    if (lua_isnil(L, narg) == 0)
-        return (luab_checklstring(L, narg, nmax, np));
+    if (lua_isnil(L, narg) != 0) {
 
-    if (np != NULL)
-        *np = 0;
-        
-    return (NULL);
+        if (np != NULL)
+            *np = 0;
+
+        return (NULL);
+    }
+    return (luab_checklstring(L, narg, nmax, np));
 }
 
 char *
@@ -261,9 +262,9 @@ luab_checklstringalloc(lua_State *L, int narg, size_t nmax)
 
     dp = luab_checklstring(L, narg, nmax, &len);
 
-    if ((bp = malloc(len)) != NULL) {
+    if ((bp = malloc(len + 1)) != NULL) {
         (void)memset_s(bp, len, 0, len);
-        (void)snprintf(bp, len, "%s", dp);
+        (void)snprintf(bp, len + 1, "%s", dp);
     } else
         luab_core_argerror(L, narg, NULL, 0, 0, errno);
 
