@@ -53,9 +53,9 @@
 #define LUAB_LLONG_MAX                          LLONG_MAX
 #define LUAB_LLONG_MIN                          LLONG_MIN
 #else
-#define LUAB_ULLONG_MAX                         0
-#define LUAB_LLONG_MAX                          0
-#define LUAB_LLONG_MIN                          0
+#define LUAB_ULLONG_MAX                         ULONG_MAX
+#define LUAB_LLONG_MAX                          LONG_MAX
+#define LUAB_LLONG_MIN                          LONG_MIN
 #endif
 
 #if __POSIX_VISIBLE || __XSI_VISIBLE

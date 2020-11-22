@@ -895,6 +895,29 @@ luab_int32_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(INT64)).
+ *
+ * @function int64_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage int64 [, err, msg ] = bsd.core.int64_create(x)
+ */
+static int
+luab_int64_create(lua_State *L)
+{
+    int64_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (int64_t)luab_checkinteger(L, 1, luab_env_ullong_max);
+
+    return (luab_pushudata(L, luab_xtype(INT64), &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(FPOS)).
  *
  * @function fpos_create
@@ -1137,6 +1160,7 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("int8_create",        luab_int8_create),
     LUAB_FUNC("int16_create",       luab_int16_create),
     LUAB_FUNC("int32_create",       luab_int32_create),
+    LUAB_FUNC("int64_create",       luab_int64_create),
 
     /* stadard types */
     LUAB_FUNC("fpos_type",          luab_fpos_create),

@@ -756,6 +756,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_int32_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INT32_IDX,
+    },{
+        .mv_mod = &luab_int64_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT64_IDX,
     },{                                     /* standard types */
         .mv_mod = &luab_fpos_type,
         .mv_init = luab_core_newmetatable,

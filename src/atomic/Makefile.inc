@@ -18,6 +18,7 @@ SRCS+=  luab_float_type.c
 SRCS+=  luab_int8_type.c
 SRCS+=  luab_int16_type.c
 SRCS+=  luab_int32_type.c
+SRCS+=  luab_int64_type.c
 
 # standard types
 SRCS+=  luab_fpos_type.c
