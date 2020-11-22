@@ -65,7 +65,7 @@ luab_fhlink(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
-    to = luab_checklstring(L, 2, luab_env_path_max);
+    to = luab_checklstring(L, 2, luab_env_path_max, NULL);
 
     status = fhlink(fhp, to);
 
@@ -110,7 +110,7 @@ luab_fhlinkat(lua_State *L)
 
     fhp = luab_udata(L, 1, luab_xtype(FHANDLE), fhandle_t *);
     tofd = (int)luab_checkinteger(L, 2, luab_env_int_max);
-    to = luab_checklstring(L, 3, luab_env_path_max);
+    to = luab_checklstring(L, 3, luab_env_path_max, NULL);
 
     status = fhlinkat(fhp, tofd, to);
 
@@ -311,7 +311,7 @@ luab_getfh(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_env_path_max);
+    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
     fhp = luab_udata(L, 2, luab_xtype(FHANDLE), fhandle_t *);
 
     status = getfh(path, fhp);
@@ -365,7 +365,7 @@ luab_getfhat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    path = luab_checklstring(L, 2, luab_env_path_max);
+    path = luab_checklstring(L, 2, luab_env_path_max, NULL);
     fhp = luab_udata(L, 3, luab_xtype(FHANDLE), fhandle_t *);
     flag = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
@@ -536,7 +536,7 @@ luab_lgetfh(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_env_path_max);
+    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
     fhp = luab_udata(L, 2, luab_xtype(FHANDLE), fhandle_t *);
 
     status = lgetfh(path, fhp);
@@ -587,8 +587,8 @@ luab_mount(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    type = luab_checklstring(L, 1, luab_env_path_max);
-    dir = luab_checklstring(L, 2, luab_env_path_max);
+    type = luab_checklstring(L, 1, luab_env_path_max, NULL);
+    dir = luab_checklstring(L, 2, luab_env_path_max, NULL);
     flags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     if ((data = luab_toxdata(L, 4, NULL)) != NULL)
@@ -687,7 +687,7 @@ luab_statfs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_env_path_max);
+    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
     buf = luab_udata(L, 2, luab_xtype(STATFS), struct statfs *);
 
     status = statfs(path, buf);
@@ -732,7 +732,7 @@ luab_unmount(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    dir = luab_checklstring(L, 1, luab_env_path_max);
+    dir = luab_checklstring(L, 1, luab_env_path_max, NULL);
     flags = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     status = unmount(dir, flags);
@@ -761,7 +761,7 @@ luab_getvfsbyname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    name = luab_checklstring(L, 1, MFSNAMELEN);
+    name = luab_checklstring(L, 1, MFSNAMELEN, NULL);   /* XXX */
     vfc = luab_udata(L, 2, luab_xtype(XVFSCONF), struct xvfsconf *);
 
     status = getvfsbyname(name, vfc);

@@ -63,8 +63,13 @@ luab_core_free(void *v, size_t sz)
 void
 luab_core_freestr(caddr_t dp)
 {
-    if (dp != NULL)
-        luab_core_free(dp, strnlen(dp, luab_env_buf_max));
+    size_t n;
+
+    if (dp != NULL) {
+        n = strnlen(dp, luab_env_buf_max);
+        luab_core_free(dp, n);
+    } else
+        errno = ENOENT;
 }
 
 void
@@ -190,52 +195,79 @@ luab_checklinteger(lua_State *L, int narg, int s)
 }
 
 const char *
-luab_islstring(lua_State *L, int narg, size_t len)
+luab_islstring(lua_State *L, int narg, size_t nmax)
 {
     const char *dp;
     size_t n;
 
     if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n <= len)
+        if (n <= nmax && nmax <= luab_env_buf_max)
             return (dp);
     }
     return (NULL);
 }
 
 const char *
-luab_tolstring(lua_State *L, int narg, size_t len)
+luab_tolstring(lua_State *L, int narg, size_t nmax)
 {
     const char *dp;
     size_t n;
 
     if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n == len)
+        if (n == nmax && nmax <= luab_env_buf_max)
             return (dp);
     }
     return (NULL);
 }
 
 const char *
-luab_checklstring(lua_State *L, int narg, size_t max_len)
+luab_checklstring(lua_State *L, int narg, size_t nmax, size_t *np)
+{
+    const char *dp;
+    size_t n;
+
+    dp = luaL_checklstring(L, narg, &n);
+
+    if (n <= nmax && nmax <= luab_env_buf_max) {
+
+        if (np != NULL)
+            *np = n;
+
+        return (dp);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
+
+    return (NULL);
+}
+
+const char *
+luab_checklstringisnil(lua_State *L, int narg, size_t nmax, size_t *np)
+{
+    if (lua_isnil(L, narg) == 0)
+        return (luab_checklstring(L, narg, nmax, np));
+
+    if (np != NULL)
+        *np = 0;
+        
+    return (NULL);
+}
+
+char *
+luab_checklstringalloc(lua_State *L, int narg, size_t nmax)
 {
     const char *dp;
     size_t len;
+    caddr_t bp;
 
-    dp = luaL_checklstring(L, narg, &len);
+    dp = luab_checklstring(L, narg, nmax, &len);
 
-    if (len > max_len)
-        luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
+    if ((bp = malloc(len)) != NULL) {
+        (void)memset_s(bp, len, 0, len);
+        (void)snprintf(bp, len, "%s", dp);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, errno);
 
-    return (dp);
-}
-
-const char *
-luab_checklstringisnil(lua_State *L, int narg, size_t max_len)
-{
-    if (lua_isnil(L, narg) != 0)
-        return (NULL);
-
-    return (luab_checklstring(L, narg, max_len));
+    return (bp);
 }
 
 /*
@@ -436,15 +468,15 @@ int
 luab_pushstring(lua_State *L, const char *dp)
 {
     int up_call;
+    size_t n;
     caddr_t msg;
-    size_t len;
     int status;
 
     up_call = errno;
 
     if (dp != NULL) {
-        len = strnlen(dp, luab_env_buf_max);
-        lua_pushlstring(L, dp, len);
+        n = strnlen(dp, luab_env_buf_max);
+        lua_pushlstring(L, dp, n);
 
         if (up_call != 0) {
             lua_pushinteger(L, up_call);
@@ -1143,7 +1175,7 @@ static luab_module_table_t luab_core_vec[] = {
     LUAB_FUNC("uuid",               luab_uuid),
 
     /* integer types */
-#if __BSD_VISIBLE    
+#if __BSD_VISIBLE
     LUAB_FUNC("ushrt_create",       luab_ushrt_create),
     LUAB_FUNC("uint_create",        luab_uint_create),
 #endif /* __BSD_VISIBLE */

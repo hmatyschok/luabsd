@@ -89,7 +89,7 @@ luab_inet_addr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
+    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN, NULL);
     ia.s_addr = inet_addr(cp);
 
     return (luab_pushudata(L, luab_xtype(IN_ADDR), &ia));
@@ -258,7 +258,7 @@ luab_inet_aton(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
+    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN, NULL);
     pin = luab_udata(L, 2, luab_xtype(IN_ADDR), struct in_addr *);
 
     status = inet_aton(cp, pin);
@@ -422,7 +422,7 @@ luab_inet_network(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN);
+    cp = luab_checklstring(L, 1, INET_ADDRSTRLEN, NULL);
     ia.s_addr = inet_network(cp);
 
     return (luab_pushudata(L, luab_xtype(IN_ADDR), &ia));

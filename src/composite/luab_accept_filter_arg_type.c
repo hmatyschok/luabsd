@@ -138,7 +138,7 @@ ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-    data = luab_checklstring(L, 2, LUAB_AF_NAMEMAXLEN);
+    data = luab_checklstring(L, 2, LUAB_AF_NAMEMAXLEN, NULL);
     len = strlen(data);
     (void)memmove(af->af_name, data, len);
     return (luab_pushldata(L, af->af_name, len));
@@ -190,7 +190,7 @@ ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-    data = luab_checklstring(L, 2, LUAB_AF_ARGMAXLEN);
+    data = luab_checklstring(L, 2, LUAB_AF_ARGMAXLEN, NULL);
     len = strlen(data);
     (void)memmove(af->af_arg, data, len);
     return (luab_pushldata(L, af->af_arg, len));

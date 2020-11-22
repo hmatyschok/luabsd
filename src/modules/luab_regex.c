@@ -79,7 +79,7 @@ luab_regcomp(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
-    pattern = luab_checklstring(L, 2, luab_env_buf_max);
+    pattern = luab_checklstring(L, 2, luab_env_buf_max, NULL);
     cflags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     status = regcomp(preg, pattern, cflags);
@@ -138,7 +138,7 @@ luab_regexec(lua_State *L)
     luab_core_checkxtype(m, REGMATCH, __func__);
 
     preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
-    string = luab_checklstring(L, 2, luab_env_buf_max);
+    string = luab_checklstring(L, 2, luab_env_buf_max, NULL);
     nmatch = (size_t)luab_checklinteger(L, 3, 0);
     tbl = luab_table_checkxdata(L, 4, m);
     eflags = (int)luab_checkinteger(L, 5, luab_env_int_max);

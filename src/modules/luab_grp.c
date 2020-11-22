@@ -148,7 +148,7 @@ luab_getgrnam(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    name = luab_checklstring(L, 1, luab_env_logname_max);
+    name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
 
     if ((grp = getgrnam(name)) != NULL)
         status = luab_pushudata(L, luab_xtype(GROUP), grp);
@@ -211,7 +211,7 @@ luab_gid_from_group(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    name = luab_checklstring(L, 1, luab_env_logname_max);
+    name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
     gid = luab_udata(L, 2, luab_xtype(GID), gid_t *);
 
     status = gid_from_group(name, gid);
@@ -333,7 +333,7 @@ luab_getgrnam_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    name = luab_checklstring(L, 1, luab_env_logname_max);
+    name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
     grp = luab_udata(L, 2, luab_xtype(GROUP), struct group *);
     buf = luab_udata(L, 3, luab_xtype(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4, 0);

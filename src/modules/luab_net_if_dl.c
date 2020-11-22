@@ -60,7 +60,7 @@ luab_link_addr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    addr = luab_checklstring(L, 1, LUAB_SDL_MAXDATALEN); /* XXX */
+    addr = luab_checklstring(L, 1, LUAB_SDL_MAXDATALEN, NULL); /* XXX */
     sdl = luab_udata(L, 2, luab_xtype(SOCKADDR), struct sockaddr_dl *);
 
     link_addr(addr, sdl);

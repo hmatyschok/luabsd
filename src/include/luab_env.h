@@ -97,9 +97,9 @@
 #endif
 
 #if __POSIX_VISIBLE
-#define	LUAB_MQ_PRIO_MAX                        MQ_PRIO_MAX
+#define LUAB_MQ_PRIO_MAX                        MQ_PRIO_MAX
 #else
-#define	LUAB_MQ_PRIO_MAX                        0
+#define LUAB_MQ_PRIO_MAX                        0
 #endif
 
 extern const lua_Integer luab_env_char_bit;
@@ -151,6 +151,13 @@ typedef struct luab_sysconf_vec {
 
 #define LUAB_SC_VEC_SENTINEL \
     { .scv_key = LUAB_SC_NOTSUPP, .scv_dflt = 0, .scv_val = NULL, }
+
+extern u_long luab_env_buf_max;
+extern u_long luab_env_path_max;
+extern u_long luab_env_logname_max;
+extern u_long luab_env_specname_max;
+extern u_long luab_env_ifname_max;
+extern u_long luab_env_name_max;
 
 #define LUAB_SC_ARG_MAX                         _SC_ARG_MAX
 #define LUAB_SC_CHILD_MAX                       _SC_CHILD_MAX
@@ -381,10 +388,6 @@ typedef struct luab_sysconf_vec {
 #endif /* __BSD_VISIBLE */
 
 #define LUAB_SC_PHYS_PAGES                      _SC_PHYS_PAGES
-
-extern u_long luab_env_buf_max;
-extern u_long luab_env_path_max;
-extern u_long luab_env_logname_max;
 
 extern u_long luab_env_arg_max;
 extern u_long luab_env_child_max;

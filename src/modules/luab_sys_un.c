@@ -66,7 +66,7 @@ luab_sockaddr_un_create(lua_State *L)
 
     switch (luab_core_checkmaxargs(L, 1)) {     /* FALLTHROUGH */
     case 1:
-        sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN);
+        sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN, NULL);
         (void)memmove(sun.sun_path, sun_path, strlen(sun_path));
     default:
         break;

@@ -189,7 +189,7 @@ CRYPT_DATA_set_buf(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
-    buf = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN);
+    buf = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN, NULL);
 
     len = strnlen(buf, LUAB_CRYPT_DATAMAXLEN);
 

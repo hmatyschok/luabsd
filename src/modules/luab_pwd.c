@@ -73,7 +73,7 @@ luab_getpwnam(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    login = luab_checklstring(L, 1, luab_env_logname_max);
+    login = luab_checklstring(L, 1, luab_env_logname_max, NULL);
 
     if ((pwd = getpwnam(login)) != NULL)
         status = luab_pushudata(L, luab_xtype(PASSWD), pwd);
@@ -209,7 +209,7 @@ luab_getpwnam_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    name = luab_checklstring(L, 1, luab_env_logname_max);
+    name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
     pwd = luab_udata(L, 2, luab_xtype(PASSWD), struct passwd *);
     buf = luab_udata(L, 3, luab_xtype(IOVEC), luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4, 0);
@@ -436,7 +436,7 @@ luab_uid_from_user(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    name = luab_checklstring(L, 1, luab_env_logname_max);
+    name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
     uid = luab_udata(L, 2, luab_xtype(UID), uid_t *);
 
     status = uid_from_user(name, uid);

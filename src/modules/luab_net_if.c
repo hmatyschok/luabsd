@@ -153,7 +153,7 @@ luab_if_nametoindex(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ifname = luab_checklstring(L, 1, IFNAMSIZ);
+    ifname = luab_checklstring(L, 1, luab_env_ifname_max, NULL);
     index = if_nametoindex(ifname);
 
     return (luab_pushxinteger(L, index));

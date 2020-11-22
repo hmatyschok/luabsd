@@ -122,7 +122,7 @@ luab_opendir2(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    name = luab_checklstring(L, 1, luab_env_path_max);
+    name = luab_checklstring(L, 1, luab_env_path_max, NULL);
     flags = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
     if ((dirp = __opendir2(name, flags)) != NULL)
@@ -300,7 +300,7 @@ luab_opendir(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    filename = luab_checklstring(L, 1, luab_env_path_max);
+    filename = luab_checklstring(L, 1, luab_env_path_max, NULL);
 
     if ((dirp = opendir(filename)) != NULL)
         m = luab_xtype(DIR);

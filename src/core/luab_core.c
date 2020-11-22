@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <net/if.h> /* XXX */
 #include <unistd.h>
 
 #include <lua.h>
@@ -57,6 +58,18 @@ static luab_sysconf_vec_t luab_param[] = {
         .scv_key = LUAB_SC_NOTSUPP,
         .scv_dflt = MAXPATHLEN,
         .scv_val = &luab_env_path_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = SPECNAMELEN,
+        .scv_val = &luab_env_specname_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = IF_NAMESIZE,
+        .scv_val = &luab_env_ifname_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = NAME_MAX,
+        .scv_val = &luab_env_name_max,
     },{                                             /* <unistd.h> */
         .scv_key = LUAB_SC_ARG_MAX,
         .scv_dflt = ARG_MAX,
@@ -319,7 +332,7 @@ static luab_sysconf_vec_t luab_param[] = {
         .scv_val = &luab_env_getpw_r_size_max,
     },{
         .scv_key = LUAB_SC_HOST_NAME_MAX,
-        .scv_dflt = 0,
+        .scv_dflt = MAXHOSTNAMELEN,
         .scv_val = &luab_env_host_name_max,
     },{
         .scv_key = LUAB_SC_LOGIN_NAME_MAX,

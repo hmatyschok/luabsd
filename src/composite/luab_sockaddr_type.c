@@ -1090,7 +1090,7 @@ SOCKADDR_set_sun_path(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     sun = luab_udata(L, 1, &luab_sockaddr_type, struct sockaddr_un *);
-    sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN);
+    sun_path = luab_checklstring(L, 1, LUAB_SUN_MAXPATHLEN, NULL);
 
     if (sun->sun_family == AF_UNIX) {
         (void)memmove(sun->sun_path, sun_path, strlen(sun_path));

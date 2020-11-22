@@ -87,7 +87,7 @@ luab_getttynam(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    name = luab_checklstring(L, 1, luab_env_tty_name_max);
+    name = luab_checklstring(L, 1, luab_env_tty_name_max, NULL);
 
     if ((typ = getttynam(name)) != NULL)
         m = luab_xtype(TTYENT);
@@ -156,7 +156,7 @@ luab_isdialuptty(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    name = luab_checklstring(L, 1, luab_env_tty_name_max);
+    name = luab_checklstring(L, 1, luab_env_tty_name_max, NULL);
     status = isdialuptty(name);
     return (luab_pushxinteger(L, status));
 }
@@ -180,7 +180,7 @@ luab_isnettty(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    name = luab_checklstring(L, 1, luab_env_tty_name_max);
+    name = luab_checklstring(L, 1, luab_env_tty_name_max, NULL);
     status = isnettty(name);
     return (luab_pushxinteger(L, status));
 }

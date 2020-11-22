@@ -160,7 +160,7 @@ luab_uuid_from_string(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    str = luab_checklstring(L, 1, LUAB_UUID_STR_LEN);
+    str = luab_checklstring(L, 1, LUAB_UUID_STR_LEN, NULL);
     uuid = luab_udata(L, 2, luab_xtype(UUID), uuid_t *);
     status = luab_udata(L, 3, luab_xtype(UINT), uint32_t *);
 

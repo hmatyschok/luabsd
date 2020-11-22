@@ -77,8 +77,11 @@ const lua_Integer luab_env_word_bit = LUAB_WORD_BIT;
  */
 
 u_long luab_env_buf_max;
-u_long luab_env_path_max;   /* XXX */
+u_long luab_env_path_max;       /* XXX */
 u_long luab_env_logname_max;
+u_long luab_env_specname_max;
+u_long luab_env_ifname_max;
+u_long luab_env_name_max;
 
 u_long luab_env_arg_max;
 u_long luab_env_child_max;

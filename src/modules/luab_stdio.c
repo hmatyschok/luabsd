@@ -359,8 +359,8 @@ luab_fopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_env_path_max);
-    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
+    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
+    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);
 
     if ((stream = fopen(path, mode)) != NULL)
         m = luab_xtype(SFILE);
@@ -424,7 +424,7 @@ luab_fputs(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    str = luab_checklstring(L, 1, luab_env_buf_max);
+    str = luab_checklstring(L, 1, luab_env_buf_max, NULL);
     stream = luab_udata(L, 2, luab_xtype(SFILE), FILE *);
 
     if (stream != NULL)
@@ -459,8 +459,8 @@ luab_freopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstringisnil(L, 1, luab_env_path_max);
-    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
+    path = luab_checklstringisnil(L, 1, luab_env_path_max, NULL);
+    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);
     stream = luab_udata(L, 3, luab_xtype(SFILE), FILE *);
 
     if (stream != NULL) {
@@ -811,7 +811,7 @@ luab_puts(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    str = luab_checklstring(L, 1, luab_env_buf_max);
+    str = luab_checklstring(L, 1, luab_env_buf_max, NULL);
     status = puts(str);
 
     return (luab_pushxinteger(L, status));
@@ -836,7 +836,7 @@ luab_remove(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_env_path_max);
+    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
     status = remove(path);
 
     return (luab_pushxinteger(L, status));
@@ -897,7 +897,7 @@ luab_fdopen(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     fildes = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN);
+    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);
 
     if ((stream = fdopen(fildes, mode)) != NULL)
         m = luab_xtype(SFILE);
@@ -1338,7 +1338,7 @@ luab_fmemopen(lua_State *L)
 
     buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 2, 0);
-    mode = luab_checklstring(L, 3, LUAB_STDIO_MODE_MAXLEN);
+    mode = luab_checklstring(L, 3, LUAB_STDIO_MODE_MAXLEN, NULL);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
