@@ -63,7 +63,7 @@ luab_table_checkmmsghdr(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        msg = luab_udata(L, -1, luab_xtype(MSGHDR), struct msghdr *);
+                        msg = luab_udata(L, -1, luab_xmod(MSGHDR, TYPE, __func__), struct msghdr *);
                         (void)memmove(&(x[m].msg_hdr), msg, sizeof(struct msghdr));
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -119,7 +119,7 @@ luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
         }
     }
 
-    if ((xp = luab_isudata(L, 5, luab_xtype(INTEGER))) != NULL)
+    if ((xp = luab_isudata(L, 5, luab_xmod(INTEGER, TYPE, __func__))) != NULL)
         sopt->sopt_x = &(xp->un_socklen);
     else {
         sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, luab_env_int_max);
@@ -159,8 +159,8 @@ luab_accept(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    addr = luab_udataisnil(L, 2, luab_xtype(SOCKADDR), struct sockaddr *);
-    addrlen = luab_udataisnil(L, 3, luab_xtype(SOCKLEN), socklen_t *);
+    addr = luab_udataisnil(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
+    addrlen = luab_udataisnil(L, 3, luab_xmod(SOCKLEN, TYPE, __func__), socklen_t *);
 
     as = accept(s, addr, addrlen);
 
@@ -191,7 +191,7 @@ luab_bind(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    addr = luab_udata(L, 2, luab_xtype(SOCKADDR), struct sockaddr *);
+    addr = luab_udata(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
     addrlen = (socklen_t)luab_checkinteger(L, 3, luab_env_int_max);
 
     status = bind(s, addr, addrlen);
@@ -223,7 +223,7 @@ luab_connect(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    name = luab_udata(L, 2, luab_xtype(SOCKADDR), struct sockaddr *);
+    name = luab_udata(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
     namelen = (socklen_t)luab_checkinteger(L, 3, luab_env_int_max);
 
     status = connect(s, name, namelen);
@@ -259,8 +259,8 @@ luab_accept4(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    addr = luab_udataisnil(L, 2, luab_xtype(SOCKADDR), struct sockaddr *);
-    addrlen = luab_udataisnil(L, 3, luab_xtype(SOCKLEN), socklen_t *);
+    addr = luab_udataisnil(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
+    addrlen = luab_udataisnil(L, 3, luab_xmod(SOCKLEN, TYPE, __func__), socklen_t *);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
     
     as = accept4(s, addr, addrlen, flags);
@@ -298,7 +298,7 @@ luab_bindat(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     s = (int)luab_checkinteger(L, 2, luab_env_int_max);
-    addr = luab_udata(L, 3, luab_xtype(SOCKADDR), struct sockaddr *);
+    addr = luab_udata(L, 3, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
     addrlen = (socklen_t)luab_checkinteger(L, 4, luab_env_int_max);
 
     status = bindat(fd, s, addr, addrlen);
@@ -336,7 +336,7 @@ luab_connectat(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     s = (int)luab_checkinteger(L, 2, luab_env_int_max);
-    name = luab_udata(L, 3, luab_xtype(SOCKADDR), struct sockaddr *);
+    name = luab_udata(L, 3, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
     namelen = (socklen_t)luab_checkinteger(L, 4, luab_env_int_max);
 
     status = connectat(fd, s, name, namelen);
@@ -369,8 +369,8 @@ luab_getpeername(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    name = luab_udata(L, 2, luab_xtype(SOCKADDR), struct sockaddr *);
-    namelen = luab_udata(L, 3, luab_xtype(SOCKLEN), socklen_t *);
+    name = luab_udata(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
+    namelen = luab_udata(L, 3, luab_xmod(SOCKLEN, TYPE, __func__), socklen_t *);
     
     status = getpeername(s, name, namelen);
 
@@ -401,8 +401,8 @@ luab_getsockname(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    name = luab_udata(L, 2, luab_xtype(SOCKADDR), struct sockaddr *);
-    namelen = luab_udata(L, 3, luab_xtype(SOCKLEN), socklen_t *);
+    name = luab_udata(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
+    namelen = luab_udata(L, 3, luab_xmod(SOCKLEN, TYPE, __func__), socklen_t *);
 
     status = getsockname(s, name, namelen);
 
@@ -505,7 +505,7 @@ luab_recv(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
@@ -551,11 +551,11 @@ luab_recvfrom(lua_State *L)
     (void)luab_core_checkmaxargs(L, 6);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
-    from = luab_udataisnil(L, 5, luab_xtype(SOCKADDR), struct sockaddr *);
-    fromlen = luab_udata(L, 6, luab_xtype(SOCKLEN), socklen_t *);
+    from = luab_udataisnil(L, 5, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
+    fromlen = luab_udata(L, 6, luab_xmod(SOCKLEN, TYPE, __func__), socklen_t *);
 
     return (luab_iovec_recvfrom(L, s, buf, &len, flags, from, fromlen));
 }
@@ -594,7 +594,7 @@ luab_recvmsg(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    msg = luab_udata(L, 2, luab_xtype(MSGHDR), struct msghdr *);
+    msg = luab_udata(L, 2, luab_xmod(MSGHDR, TYPE, __func__), struct msghdr *);
     flags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     if ((msg->msg_iov != NULL) &&
@@ -651,7 +651,7 @@ luab_recvmmsg(lua_State *L)
     tbl = luab_table_checkmmsghdr(L, 2);
     vlen = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
-    timeout = luab_udataisnil(L, 5, luab_xtype(TIMESPEC), struct timespec *);
+    timeout = luab_udataisnil(L, 5, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
 
     if (tbl != NULL) {
         msgvec = (struct mmsghdr *)(tbl->tbl_vec);
@@ -700,7 +700,7 @@ luab_send(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    msg = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
+    msg = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
@@ -747,10 +747,10 @@ luab_sendto(lua_State *L)
     (void)luab_core_checkmaxargs(L, 6);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     len = (size_t)luab_checklinteger(L, 3, 0);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
-    to = luab_udataisnil(L, 5, luab_xtype(SOCKADDR), struct sockaddr *);
+    to = luab_udataisnil(L, 5, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
     tolen = (socklen_t)luab_checkinteger(L, 4, luab_env_int_max);
 
     return (luab_iovec_sendto(L, s, buf, &len, flags, to, tolen));
@@ -791,7 +791,7 @@ luab_sendmsg(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    msg = luab_udata(L, 2, luab_xtype(MSGHDR), struct msghdr *);
+    msg = luab_udata(L, 2, luab_xmod(MSGHDR, TYPE, __func__), struct msghdr *);
     flags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
     if ((msg->msg_iov != NULL) &&
@@ -850,8 +850,8 @@ luab_sendfile(lua_State *L)
     s = luab_checkinteger(L, 2, luab_env_int_max);
     offset = luab_checkinteger(L, 3, luab_env_long_max);
     nbytes = (size_t)luab_checklinteger(L, 4, 0);
-    hdtr = luab_udataisnil(L, 5, luab_xtype(SF_HDTR), struct sf_hdtr *);
-    sbytes = luab_udataisnil(L, 6, luab_xtype(OFF), off_t *);
+    hdtr = luab_udataisnil(L, 5, luab_xmod(SF_HDTR, TYPE, __func__), struct sf_hdtr *);
+    sbytes = luab_udataisnil(L, 6, luab_xmod(OFF, TYPE, __func__), off_t *);
 
     flags = luab_checkinteger(L, 7, luab_env_int_max);
 
@@ -1091,7 +1091,7 @@ luab_socketpair(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    luab_core_checkxtype(m, INT, __func__);
+    m = luab_xmod(INT, TYPE, __func__);
 
     domain = (int)luab_checkinteger(L, 1, luab_env_int_max);
     type = (int)luab_checkinteger(L, 2, luab_env_int_max);
@@ -1129,7 +1129,7 @@ luab_socketpair(lua_State *L)
 static int
 luab_linger_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(LINGER), NULL));
+    return (luab_core_create(L, 1, luab_xmod(LINGER, TYPE, __func__), NULL));
 }
 
 /***
@@ -1146,7 +1146,7 @@ luab_linger_create(lua_State *L)
 static int
 luab_sockaddr_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(SOCKADDR), NULL));
+    return (luab_core_create(L, 1, luab_xmod(SOCKADDR, TYPE, __func__), NULL));
 }
 
 /***
@@ -1161,7 +1161,7 @@ luab_sockaddr_create(lua_State *L)
 static int
 luab_msghdr_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_xtype(MSGHDR), NULL));
+    return (luab_core_create(L, 0, luab_xmod(MSGHDR, TYPE, __func__), NULL));
 }
 
 #if __BSD_VISIBLE
@@ -1179,7 +1179,7 @@ luab_msghdr_create(lua_State *L)
 static int
 luab_accept_filter_arg_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(ACCEPT_FILTER_ARG), NULL));
+    return (luab_core_create(L, 1, luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__), NULL));
 }
 
 /***
@@ -1194,7 +1194,7 @@ luab_accept_filter_arg_create(lua_State *L)
 static int
 luab_cmsgcred_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_xtype(CMSGCRED), NULL));
+    return (luab_core_create(L, 0, luab_xmod(CMSGCRED, TYPE, __func__), NULL));
 }
 
 /***
@@ -1211,7 +1211,7 @@ luab_cmsgcred_create(lua_State *L)
 static int
 luab_sockproto_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(SOCKPROTO), NULL));
+    return (luab_core_create(L, 1, luab_xmod(SOCKPROTO, TYPE, __func__), NULL));
 }
 
 /***
@@ -1226,7 +1226,7 @@ luab_sockproto_create(lua_State *L)
 static int
 luab_sf_hdtr_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_xtype(SF_HDTR), NULL));
+    return (luab_core_create(L, 0, luab_xmod(SF_HDTR, TYPE, __func__), NULL));
 }
 #endif
 

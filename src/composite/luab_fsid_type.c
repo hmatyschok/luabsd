@@ -53,9 +53,6 @@ typedef struct luab_fsid {
     (luab_toldata((L), (narg), &luab_fsid_type, \
         fsid_t *, sizeof(fsid_t)))
 
-#define LUAB_FSID_TYPE_ID    1604426384
-#define LUAB_FSID_TYPE    "FSID*"
-
 /*
  * Subr.
  */

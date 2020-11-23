@@ -56,9 +56,6 @@ typedef struct luab_regmatch {
     (luab_toldata((L), (narg), &luab_regmatch_type, \
         regmatch_t *, sizeof(regmatch_t)))
 
-#define LUAB_REGMATCH_TYPE_ID    1604371586
-#define LUAB_REGMATCH_TYPE    "REGMATCH*"
-
 /*
  * Generator functions.
  */

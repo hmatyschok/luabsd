@@ -66,9 +66,6 @@ typedef struct luab_sf_hdtr {
 #define luab_to_sf_hdtr(L, narg) \
     (luab_todata((L), (narg), &luab_sf_hdtr_type, luab_sf_hdtr_t *))
 
-#define LUAB_SF_HDTR_TYPE_ID    1602287699
-#define LUAB_SF_HDTR_TYPE    "SF_HDTR*"
-
 /*
  * Subr.
  */
@@ -147,7 +144,7 @@ sf_hdtr_checkiovec(lua_State *L, int narg, luab_sf_hdtr_t *self,
 
     if (self != NULL) {
 
-        if ((cur = luab_table_checkxdata(L, narg, luab_xtype(IOVEC))) != NULL)
+        if ((cur = luab_table_checkxdata(L, narg, luab_xmod(IOVEC, TYPE, __func__))) != NULL)
             (void)sf_hdtr_iovec(self, idx, cur);
 
         card = sf_hdtr_cnt(self, idx);
@@ -165,7 +162,7 @@ sf_hdtr_pushiovec(lua_State *L, int narg, const char *k, luab_sf_hdtr_t *self,
     luab_table_t *cur;
     int up_call, status;
 
-    luab_core_checkxtype(m, IOVEC, __func__);
+    m = luab_xmod(IOVEC, TYPE, __func__);
 
     if ((cur = sf_hdtr_iovec(self, idx, NULL)) != NULL) {
         luab_table_pushxdata(L, narg, m, cur, 1, 0);

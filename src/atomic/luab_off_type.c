@@ -51,9 +51,6 @@ typedef struct luab_off {
 #define luab_to_off(L, narg) \
     (luab_todata((L), (narg), &luab_off_type, luab_off_t *))
 
-#define LUAB_OFF_TYPE_ID    1605914553
-#define LUAB_OFF_TYPE   "OFF*"
-
 /*
  * Generator functions.
  */

@@ -59,9 +59,6 @@ typedef struct luab_clockinfo {
     (luab_toldata((L), (narg), &luab_clockinfo_type, \
         struct clockinfo *, sizeof(struct clockinfo)))
 
-#define LUAB_CLOCKINFO_TYPE_ID    1594164272
-#define LUAB_CLOCKINFO_TYPE    "CLOCKINFO*"
-
 /*
  * Generator functions.
  */

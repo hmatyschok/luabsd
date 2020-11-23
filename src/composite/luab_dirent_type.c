@@ -68,9 +68,6 @@ typedef struct luab_dirent {
     (luab_toldata((L), (narg), &luab_dirent_type, \
         struct dirent *, sizeof(struct dirent)))
 
-#define LUAB_DIRENT_TYPE_ID    1604795865
-#define LUAB_DIRENT_TYPE    "DIRENT*"
-
 /*
  * Generator functions.
  */

@@ -60,7 +60,7 @@ luab_getttyent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     if ((typ = getttyent()) != NULL)
-        m = luab_xtype(TTYENT);
+        m = luab_xmod(TTYENT, TYPE, __func__);
     else
         m = NULL;
 
@@ -90,7 +90,7 @@ luab_getttynam(lua_State *L)
     name = luab_checklstring(L, 1, luab_env_tty_name_max, NULL);
 
     if ((typ = getttynam(name)) != NULL)
-        m = luab_xtype(TTYENT);
+        m = luab_xmod(TTYENT, TYPE, __func__);
     else
         m = NULL;
 
@@ -203,7 +203,7 @@ luab_isnettty(lua_State *L)
 static int
 luab_ttyent_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(TTYENT), NULL));
+    return (luab_core_create(L, 1, luab_xmod(TTYENT, TYPE, __func__), NULL));
 }
 
 /*

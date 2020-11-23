@@ -51,9 +51,6 @@ typedef struct luab_double {
 #define luab_to_double(L, narg) \
     (luab_todata((L), (narg), &luab_double_type, luab_double_t *))
 
-#define LUAB_DOUBLE_TYPE_ID    1605894356
-#define LUAB_DOUBLE_TYPE   "DOUBLE*"
-
 /*
  * Generator functions.
  */

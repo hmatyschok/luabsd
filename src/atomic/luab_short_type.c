@@ -51,9 +51,6 @@ typedef struct luab_short {
 #define luab_to_short(L, narg) \
     (luab_todata((L), (narg), &luab_short_type, luab_short_t *))
 
-#define LUAB_SHORT_TYPE_ID    1605997500
-#define LUAB_SHORT_TYPE   "SHORT*"
-
 /*
  * Generator functions.
  */

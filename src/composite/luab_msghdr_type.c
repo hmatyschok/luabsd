@@ -77,9 +77,6 @@ typedef struct luab_msghdr {
 #define luab_to_msghdr(L, narg) \
     (luab_todata((L), (narg), &luab_msghdr_type, luab_msghdr_t *))
 
-#define LUAB_MSGHDR_TYPE_ID    1597320239
-#define LUAB_MSGHDR_TYPE    "MSGHDR*"
-
 /*
  * Subr.
  */
@@ -90,7 +87,7 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
     luab_module_t *m;
     int up_call, status;
 
-    luab_core_checkxtype(m, IOVEC, __func__);
+    m = luab_xmod(IOVEC, TYPE, __func__);
 
     if (tbl != NULL) {
         luab_table_pushxdata(L, narg, m, tbl, 1, 0);
@@ -153,7 +150,7 @@ MSGHDR_get(lua_State *L)
     luab_setinteger(L, -2, "msg_namelen", msg->msg_namelen);
 
     if (msg->msg_name != NULL)
-        luab_setudata(L, -2, luab_xtype(SOCKADDR), "msg_name", msg->msg_name);
+        luab_setudata(L, -2, luab_xmod(SOCKADDR, TYPE, __func__), "msg_name", msg->msg_name);
 
     if (msg->msg_iov != NULL)
         (void)msghdr_pushiovec(L, -2, "msg_iov", ud->msg_buf);
@@ -304,7 +301,7 @@ MSGHDR_set_msg_name(lua_State *L)
     msg = (struct msghdr *)luab_checkxdata(L, 1, &luab_msghdr_type, &udx);
     dp = luab_dptox(msg->msg_name);
 
-    sa = luab_udata_checkxlink(L, 2, luab_xtype(SOCKADDR), udx, dp);
+    sa = luab_udata_checkxlink(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), udx, dp);
 
     if (sa != NULL)
         msg->msg_namelen = sa->sa_len;
@@ -337,7 +334,7 @@ MSGHDR_get_msg_name(lua_State *L)
     msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
 
     if ((sa = msg->msg_name) != NULL)
-        status = luab_pushudata(L, luab_xtype(SOCKADDR), sa);
+        status = luab_pushudata(L, luab_xmod(SOCKADDR, TYPE, __func__), sa);
     else {
         errno = EADDRNOTAVAIL;
         status = luab_pushnil(L);
@@ -370,7 +367,7 @@ MSGHDR_set_msg_iov(lua_State *L)
     ud = luab_to_msghdr(L, 1);
     msg = &(ud->msg_hdr);
 
-    if ((iov = luab_table_checkxdata(L, 2, luab_xtype(IOVEC))) != NULL) {
+    if ((iov = luab_table_checkxdata(L, 2, luab_xmod(IOVEC, TYPE, __func__))) != NULL) {
         luab_table_iovec_free(ud->msg_buf);
         ud->msg_buf = iov;
 

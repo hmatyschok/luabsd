@@ -62,9 +62,6 @@ typedef struct luab_cap_rbuf {
 #define luab_to_cap(L, narg) \
     ((luab_cap_rbuf_t *)luab_toudata((L), (narg), &luab_cap_rbuf_type))
 
-#define LUAB_CAP_RBUF_TYPE_ID    1601143331
-#define LUAB_CAP_RBUF_TYPE    "CAP_RBUF*"
-
 /*
  * Generator functions.
  */

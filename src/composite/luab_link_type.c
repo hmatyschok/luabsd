@@ -62,9 +62,6 @@ typedef struct luab_link {
 #define luab_to_link(L, narg) \
     ((link_t *)luab_toudata((L), (narg), &luab_link_type))
 
-#define LUAB_LINK_TYPE_ID    1601843279
-#define LUAB_LINK_TYPE    "LINK*"
-
 /*
  * Generator functions.
  */
@@ -94,7 +91,7 @@ LINK_get(lua_State *L)
 
     lua_newtable(L);
     luab_setfstring(L, -2, "link_dp", "(%p)", link->link_dp);
-    luab_setudata(L, -2, luab_xtype(SOCKADDR), "link_sa", link->link_sa);
+    luab_setudata(L, -2, luab_xmod(SOCKADDR, TYPE, __func__), "link_sa", link->link_sa);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -198,7 +195,7 @@ LINK_set_sockaddr(lua_State *L)
     link = (link_t *)luab_checkxdata(L, 1, &luab_link_type, &udx);
     dp = luab_dptox(link->link_sa);
 
-    if (luab_udata_checkxlink(L, 2, luab_xtype(SOCKADDR), udx, dp) != NULL)
+    if (luab_udata_checkxlink(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), udx, dp) != NULL)
         status = 0;
     else
         status = -1;

@@ -85,9 +85,6 @@ typedef struct luab_stat {
     (luab_toldata((L), (narg), &luab_stat_type, \
         struct stat *, sizeof(struct stat)))
 
-#define LUAB_STAT_TYPE_ID    1594028586
-#define LUAB_STAT_TYPE    "STAT*"
-
 /*
  * Generator functions.
  */
@@ -146,22 +143,22 @@ STAT_get(lua_State *L)
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_atim_ext",                   st->st_atim_ext);
 #endif
-    luab_setudata(L, -2, luab_xtype(TIMESPEC), "st_atim",      &st->st_atim);
+    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_atim",      &st->st_atim);
 
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_mtim_ext",                   st->st_mtim_ext);
 #endif
-    luab_setudata(L, -2, luab_xtype(TIMESPEC), "st_mtim",      &st->st_mtim);
+    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_mtim",      &st->st_mtim);
 
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_ctim_ext",                   st->st_ctim_ext);
 #endif
-    luab_setudata(L, -2, luab_xtype(TIMESPEC), "st_ctim",      &st->st_ctim);
+    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_ctim",      &st->st_ctim);
 
 #ifdef  __STAT_TIME_T_EXT
     luab_setinteger(L, -2, "st_btim_ext",                   st->st_btim_ext);
 #endif
-    luab_setudata(L, -2, luab_xtype(TIMESPEC), "st_birthtim",  &st->st_birthtim);
+    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_birthtim",  &st->st_birthtim);
 
     luab_setinteger(L, -2, "st_size",                       st->st_size);
     luab_setinteger(L, -2, "st_blocks",                     st->st_blocks);
@@ -452,7 +449,7 @@ STAT_set_st_atim(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    tv = luab_udata(L, 2, luab_xtype(TIMESPEC), struct timespec *);
+    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
 
     (void)memmove(&st->st_atim, tv, sizeof(*tv));
 
@@ -470,7 +467,7 @@ STAT_get_st_atim(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     tv = &st->st_atim;
 
-    return (luab_pushudata(L, luab_xtype(TIMESPEC), tv));
+    return (luab_pushudata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
 }
 
 /* time of last data modification */
@@ -515,7 +512,7 @@ STAT_set_st_mtim(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    tv = luab_udata(L, 2, luab_xtype(TIMESPEC), struct timespec *);
+    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
 
     (void)memmove(&st->st_mtim, tv, sizeof(*tv));
 
@@ -533,7 +530,7 @@ STAT_get_st_mtim(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     tv = &st->st_mtim;
 
-    return (luab_pushudata(L, luab_xtype(TIMESPEC), tv));
+    return (luab_pushudata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
 }
 
 /* time of last file status change */
@@ -578,7 +575,7 @@ STAT_set_st_ctim(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    tv = luab_udata(L, 2, luab_xtype(TIMESPEC), struct timespec *);
+    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
 
     (void)memmove(&st->st_ctim, tv, sizeof(*tv));
 
@@ -596,7 +593,7 @@ STAT_get_st_ctim(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     tv = &st->st_ctim;
 
-    return (luab_pushudata(L, luab_xtype(TIMESPEC), tv));
+    return (luab_pushudata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
 }
 
 /* time of file creation */
@@ -641,7 +638,7 @@ STAT_set_st_birthtim(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
-    tv = luab_udata(L, 2, luab_xtype(TIMESPEC), struct timespec *);
+    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
 
     (void)memmove(&st->st_birthtim, tv, sizeof(*tv));
 
@@ -659,7 +656,7 @@ STAT_get_st_birthtim(lua_State *L)
     st = luab_udata(L, 1, &luab_stat_type, struct stat *);
     tv = &st->st_birthtim;
 
-    return (luab_pushudata(L, luab_xtype(TIMESPEC), tv));
+    return (luab_pushudata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
 }
 
 /* file size, in bytes */

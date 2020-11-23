@@ -55,9 +55,6 @@ typedef struct luab_in_addr {
     (luab_toldata((L), (narg), &luab_in_addr_type, \
         struct in_addr *, sizeof(struct in_addr)))
 
-#define LUAB_IN_ADDR_TYPE_ID    1595799233
-#define LUAB_IN_ADDR_TYPE    "IN_ADDR*"
-
 /*
  * Generator functions.
  */

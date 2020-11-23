@@ -62,9 +62,6 @@ typedef struct luab_fstab {
     (luab_toldata((L), (narg), &luab_fstab_type, \
         struct fstab *, sizeof(struct fstab)))
 
-#define LUAB_FSTAB_TYPE_ID    1604964419
-#define LUAB_FSTAB_TYPE    "FSTAB*"
-
 /*
  * Generator functions.
  */

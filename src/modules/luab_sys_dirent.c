@@ -60,7 +60,7 @@ extern luab_module_t luab_sys_dirent_lib;
 static int
 luab_dirent_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(DIRENT), NULL));
+    return (luab_core_create(L, 1, luab_xmod(DIRENT, TYPE, __func__), NULL));
 }
 
 /*

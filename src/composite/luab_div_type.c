@@ -54,9 +54,6 @@ typedef struct luab_div {
     (luab_toldata((L), (narg), &luab_div_type, \
         div_t *, sizeof(div_t)))
 
-#define LUAB_DIV_TYPE_ID    1600388163
-#define LUAB_DIV_TYPE    "DIV*"
-
 /*
  * Generator functions.
  */

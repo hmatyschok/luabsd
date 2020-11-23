@@ -57,10 +57,6 @@ typedef struct luab___sbuf {
     (luab_toldata((L), (narg), &luab___sbuf_type, \
         struct __sbuf *, sizeof(struct __sbuf)))
 
-#define LUAB___SBUF_TYPE_ID    1605302940
-#define LUAB___SBUF_TYPE    "__SBUF*"
-
-
 /*
  * Generator functions.
  */

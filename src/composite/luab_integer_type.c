@@ -77,9 +77,6 @@ typedef struct luab_integer {
 #define luab_to_integer(L, narg) \
     ((luab_integer_t *)luab_toudata((L), (narg), &luab_integer_type))
 
-#define LUAB_INTEGER_TYPE_ID    1595975665
-#define LUAB_INTEGER_TYPE   "INTEGER*"
-
 /*
  * Generator functions.
  */

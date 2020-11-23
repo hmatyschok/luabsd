@@ -89,9 +89,6 @@ typedef struct luab_sfile {
 #define luab_to_file(L, narg) \
     (luab_todata((L), (narg), &luab_sfile_type, luab_sfile_t *))
 
-#define LUAB_SFILE_TYPE_ID    1605120444
-#define LUAB_SFILE_TYPE    "SFILE*"
-
 /*
  * Generator functions.
  */
@@ -131,7 +128,7 @@ SFILE_get(lua_State *L)
         luab_setinteger(L, -2, "_w",                    fp->_w);
         luab_setinteger(L, -2, "_flags",                fp->_flags);
         luab_setinteger(L, -2, "_file",                 fp->_file);
-        luab_setudata(L, -2, luab_xtype(__SBUF), "_bf",    &(fp->_bf));
+        luab_setudata(L, -2, luab_xmod(__SBUF, TYPE, __func__), "_bf",    &(fp->_bf));
         luab_setfstring(L, -2, "_cookie", "(%p)",       fp->_cookie);
         lua_pushvalue(L, -1);
     }
@@ -319,12 +316,12 @@ SFILE_bf(lua_State *L)
 
     if (fp != NULL) {
         dp = &(fp->_bf);
-        m = luab_xtype(__SBUF);
+        m = luab_xmod(__SBUF, TYPE, __func__);
     } else {
         dp = NULL;
         m = NULL;
     }
-    return (luab_pushudata(L, luab_xtype(__SBUF), dp));
+    return (luab_pushudata(L, luab_xmod(__SBUF, TYPE, __func__), dp));
 }
 
 /***

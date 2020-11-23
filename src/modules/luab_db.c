@@ -76,7 +76,7 @@ luab_dbopen(lua_State *L)
 
     db = dbopen(file, flags, mode, type, NULL);
 
-    return (luab_pushudata(L, luab_xtype(DB), db));
+    return (luab_pushudata(L, luab_xmod(DB, TYPE, __func__), db));
 }
 
 /*
@@ -97,7 +97,7 @@ luab_dbopen(lua_State *L)
 static int
 luab_dbt_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(DBT), luab_xtype(IOVEC)));
+    return (luab_core_create(L, 1, luab_xmod(DBT, TYPE, __func__), luab_xmod(IOVEC, TYPE, __func__)));
 }
 #endif /* __BSD_VISIBLE */
 

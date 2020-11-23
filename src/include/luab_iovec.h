@@ -65,7 +65,7 @@ luab_module_t    *luab_iovec_param_init(luab_iovec_param_t *, void *, size_t,
  */
 
 #define luab_isiovec(L, narg) \
-    (luab_isdata((L), (narg), luab_xtype(IOVEC), luab_iovec_t *))
+    (luab_isdata((L), (narg), luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *))
 
 caddr_t  luab_iovec_toldata(lua_State *, int, size_t);
 const char   *luab_iovec_islstring(lua_State *, int, size_t);

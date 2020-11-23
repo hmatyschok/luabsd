@@ -54,9 +54,6 @@ typedef struct luab_ldiv {
     (luab_toldata((L), (narg), &luab_ldiv_type, \
         ldiv_t *, sizeof(ldiv_t)))
 
-#define LUAB_LDIV_TYPE_ID    1600394297
-#define LUAB_LDIV_TYPE    "LDIV*"
-
 /*
  * Generator functions.
  */

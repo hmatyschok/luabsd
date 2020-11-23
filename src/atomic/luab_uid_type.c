@@ -51,9 +51,6 @@ typedef struct luab_uid {
 #define luab_to_uid(L, narg) \
     (luab_todata((L), (narg), &luab_uid_type, luab_uid_t *))
 
-#define LUAB_UID_TYPE_ID    1605913920
-#define LUAB_UID_TYPE   "UID*"
-
 /*
  * Generator functions.
  */

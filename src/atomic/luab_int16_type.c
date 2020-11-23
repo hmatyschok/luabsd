@@ -51,9 +51,6 @@ typedef struct luab_int16 {
 #define luab_to_int16(L, narg) \
     (luab_todata((L), (narg), &luab_int16_type, luab_int16_t *))
 
-#define LUAB_INT16_TYPE_ID    1606002046
-#define LUAB_INT16_TYPE   "INT16*"
-
 /*
  * Generator functions.
  */

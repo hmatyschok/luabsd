@@ -51,9 +51,6 @@ typedef struct luab_fpos {
 #define luab_to_fpos(L, narg) \
     (luab_todata((L), (narg), &luab_fpos_type, luab_fpos_t *))
 
-#define LUAB_FPOS_TYPE_ID    1605960373
-#define LUAB_FPOS_TYPE   "FPOS*"
-
 /*
  * Generator functions.
  */

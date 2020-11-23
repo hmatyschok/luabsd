@@ -74,9 +74,6 @@ typedef struct luab_xvfsconf {
     (luab_toldata((L), (narg), &luab_xvfsconf_type, \
         struct xvfsconf *, sizeof(struct xvfsconf)))
 
-#define LUAB_XVFSCONF_TYPE_ID    1604736441
-#define LUAB_XVFSCONF_TYPE    "XVFSCONF*"
-
 /*
  * Generator functions.
  */

@@ -65,9 +65,6 @@ typedef struct luab_tm {
     (luab_toldata((L), (narg), &luab_tm_type, \
         struct tm *, sizeof(struct tm)))
 
-#define LUAB_TM_TYPE_ID    1594168426
-#define LUAB_TM_TYPE    "TM*"
-
 /*
  * Generator functions.
  */

@@ -59,9 +59,6 @@ extern luab_module_t luab_iovec_type;
 #define luab_to_iovec(L, narg) \
     (luab_todata((L), (narg), &luab_iovec_type, luab_iovec_t *))
 
-#define LUAB_IOVEC_TYPE_ID    1594559731
-#define LUAB_IOVEC_TYPE   "IOVEC*"
-
 /*
  * Subr.
  */

@@ -51,9 +51,6 @@ typedef struct luab_gid {
 #define luab_to_gid(L, narg) \
     (luab_todata((L), (narg), &luab_gid_type, luab_gid_t *))
 
-#define LUAB_GID_TYPE_ID    1605908910
-#define LUAB_GID_TYPE   "GID*"
-
 /*
  * Generator functions.
  */

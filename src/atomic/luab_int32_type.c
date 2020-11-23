@@ -51,9 +51,6 @@ typedef struct luab_int32 {
 #define luab_to_int32(L, narg) \
     (luab_todata((L), (narg), &luab_int32_type, luab_int32_t *))
 
-#define LUAB_INT32_TYPE_ID    1606004102
-#define LUAB_INT32_TYPE   "INT32*"
-
 /*
  * Generator functions.
  */

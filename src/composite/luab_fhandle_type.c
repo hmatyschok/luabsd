@@ -57,9 +57,6 @@ typedef struct luab_fhandle {
     (luab_toldata((L), (narg), &luab_fhandle_type, \
         fhandle_t *, sizeof(fhandle_t)))
 
-#define LUAB_FHANDLE_TYPE_ID    1604445207
-#define LUAB_FHANDLE_TYPE    "FHANDLE*"
-
 /*
  * Generator functions.
  */
@@ -88,8 +85,8 @@ FHANDLE_get(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
 
     lua_newtable(L);
-    luab_setudata(L, -2, luab_xtype(FSID), "fh_fsid",  &(fh->fh_fsid));
-    luab_setudata(L, -2, luab_xtype(FID), "fh_fid",    &(fh->fh_fid));
+    luab_setudata(L, -2, luab_xmod(FSID, TYPE, __func__), "fh_fsid",  &(fh->fh_fsid));
+    luab_setudata(L, -2, luab_xmod(FID, TYPE, __func__), "fh_fid",    &(fh->fh_fid));
     lua_pushvalue(L, -1);
 
     return (1);
@@ -134,7 +131,7 @@ FHANDLE_fh_fsid(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     fsid = &(fh->fh_fsid);
 
-    return (luab_pushudata(L, luab_xtype(FSID), fsid));
+    return (luab_pushudata(L, luab_xmod(FSID, TYPE, __func__), fsid));
 }
 
 /***
@@ -157,7 +154,7 @@ FHANDLE_fh_fid(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     fid = &(fh->fh_fid);
 
-    return (luab_pushudata(L, luab_xtype(FID), fid));
+    return (luab_pushudata(L, luab_xmod(FID, TYPE, __func__), fid));
 }
 
 /*

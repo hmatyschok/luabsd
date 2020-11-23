@@ -60,9 +60,6 @@ typedef struct luab_flock {
     (luab_toldata((L), (narg), &luab_flock_type, \
         struct flock *, sizeof(struct flock)))
 
-#define LUAB_FLOCK_TYPE_ID    1593623399
-#define LUAB_FLOCK_TYPE    "FLOCK*"
-
 /*
  * Generator functions.
  */

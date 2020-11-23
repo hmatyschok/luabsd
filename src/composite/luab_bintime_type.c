@@ -57,9 +57,6 @@ typedef struct luab_bintime {
     (luab_toldata((L), (narg), &luab_bintime_type, \
         struct bintime *, sizeof(struct bintime)))
 
-#define LUAB_BINTIME_TYPE_ID    1594161740
-#define LUAB_BINTIME_TYPE    "BINTIME*"
-
 /*
  * Generator functions.
  */

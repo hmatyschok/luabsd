@@ -52,9 +52,6 @@ typedef struct luab_uint {
 #define luab_to_uint(L, narg) \
     (luab_todata((L), (narg), &luab_uint_type, luab_uint_t *))
 
-#define LUAB_UINT_TYPE_ID    1605965347
-#define LUAB_UINT_TYPE   "UINT*"
-
 /*
  * Generator functions.
  */

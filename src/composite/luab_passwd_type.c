@@ -65,9 +65,6 @@ typedef struct luab_passwd {
     (luab_toldata((L), (narg), &luab_passwd_type, \
         struct passwd *, sizeof(struct passwd)))
 
-#define LUAB_PASSWD_TYPE_ID    1604262109
-#define LUAB_PASSWD_TYPE    "PASSWD*"
-
 /*
  * Generator functions.
  */

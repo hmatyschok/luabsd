@@ -55,9 +55,6 @@ typedef struct luab_dbt {
 #define luab_to_dbt(L, narg) \
     ((DBT *)luab_toudata((L), (narg), &luab_dbt_type))
 
-#define LUAB_DBT_TYPE_ID    1596025036
-#define LUAB_DBT_TYPE   "DBT*"
-
 /*
  * Generator functions.
  */
@@ -151,7 +148,7 @@ DBT_set_data(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
-    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
@@ -184,7 +181,7 @@ DBT_get_data(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
-    buf = luab_udata(L, 2, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     status = luab_iovec_copyin(buf, dbt->data, dbt->size);
     return (luab_pushxinteger(L, status));
 }

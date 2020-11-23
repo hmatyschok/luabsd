@@ -61,7 +61,7 @@ luab_getfsent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     if ((fs = getfsent()) != NULL)
-        m = luab_xtype(FSTAB);
+        m = luab_xmod(FSTAB, TYPE, __func__);
     else
         m = NULL;
 
@@ -91,7 +91,7 @@ luab_getfsspec(lua_State *L)
     spec = luab_checklstring(L, 1, luab_env_specname_max, NULL);
 
     if ((fs = getfsspec(spec)) != NULL)
-        m = luab_xtype(FSTAB);
+        m = luab_xmod(FSTAB, TYPE, __func__);
     else
         m = NULL;
 
@@ -121,7 +121,7 @@ luab_getfsfile(lua_State *L)
     file = luab_checklstring(L, 1, luab_env_path_max, NULL);
 
     if ((fs = getfsfile(file)) != NULL)
-        m = luab_xtype(FSTAB);
+        m = luab_xmod(FSTAB, TYPE, __func__);
     else
         m = NULL;
 
@@ -228,7 +228,7 @@ luab_getfstab(lua_State *L)
 static int
 luab_fstab_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(FSTAB), NULL));
+    return (luab_core_create(L, 1, luab_xmod(FSTAB, TYPE, __func__), NULL));
 }
 
 /*

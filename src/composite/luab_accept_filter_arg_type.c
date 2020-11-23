@@ -60,9 +60,6 @@ typedef struct luab_accept_filter_arg {
     (luab_toldata((L), (narg), &luab_accept_filter_arg_type, \
         struct accept_filter_arg *, sizeof(struct accept_filter_arg)))
 
-#define LUAB_ACCEPT_FILTER_ARG_TYPE_ID    1601330449
-#define LUAB_ACCEPT_FILTER_ARG_TYPE    "ACCEPT_FILTER_ARG*"
-
 /*
  * Generator functions.
  */

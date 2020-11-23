@@ -51,9 +51,6 @@ typedef struct luab_long {
 #define luab_to_long(L, narg) \
     (luab_todata((L), (narg), &luab_long_type, luab_long_t *))
 
-#define LUAB_LONG_TYPE_ID    1605965914
-#define LUAB_LONG_TYPE   "LONG*"
-
 /*
  * Generator functions.
  */

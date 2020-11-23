@@ -57,9 +57,6 @@ typedef struct luab_if_nameindex {
 #define luab_to_if_nameindex(L, narg) \
     ((struct if_nameindex *)luab_toudata((L), (narg), &luab_if_nameindex_type))
 
-#define LUAB_IF_NAMEINDEX_TYPE_ID    1596840702
-#define LUAB_IF_NAMEINDEX_TYPE    "IF_NAMEINDEX*"
-
 /*
  * Generator functions.
  */

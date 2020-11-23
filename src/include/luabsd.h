@@ -38,6 +38,7 @@
 #include <sysexits.h>
 
 #include "luab_env.h"
+#include "luab_types.h"
 
 /*
  * Definitions for API method table.
@@ -229,10 +230,10 @@ typedef enum luab_type {
 
 #define luab_idx(name) \
     (LUAB_##name##_IDX)
+#define luab_xcookie(name, type) \
+    ((LUAB_##name##_##type##_ID))
 #define luab_xmv(idx) \
     (luab_typevec[((idx) % (LUAB_TYPE_SENTINEL))])
-#define luab_xtype(name) \
-    ((luab_xmv(luab_idx(name))).mv_mod)
 
 typedef struct luab_module_vec {
     luab_module_t       *mv_mod;
@@ -259,12 +260,11 @@ void     luab_core_argerror(lua_State *, int, void *, size_t, size_t, int);
 
 int  luab_core_checkmaxargs(lua_State *, int);
 
-luab_module_t    *luab_core_checktype(luab_type_t, const char *);
+luab_module_t    *luab_core_checkmodule(luab_type_t, uint32_t, const char *);
 
-#define luab_core_checkxtype(m, name, fname)                    \
-    do {                                                        \
-        (m) = luab_core_checktype(luab_idx(name), (fname));   \
-    } while (0)
+#define luab_xmod(name, type, fname)                                \
+    (luab_core_checkmodule(luab_idx(name),                          \
+        luab_xcookie(name, type), (fname)))
 
 /*
  * Access functions, n-th arg over argv, [stack -> C].

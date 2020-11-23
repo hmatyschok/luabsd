@@ -52,9 +52,6 @@ typedef struct luab_dir {
 #define luab_to_dir(L, narg) \
     (luab_toldata((L), (narg), &luab_dir_type, void *, sizeof(void *)))
 
-#define LUAB_DIR_TYPE_ID    1604794619
-#define LUAB_DIR_TYPE    "DIR*"
-
 /*
  * Generator functions.
  */

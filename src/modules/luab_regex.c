@@ -78,7 +78,7 @@ luab_regcomp(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xmod(REGEX, TYPE, __func__), regex_t *);
     pattern = luab_checklstring(L, 2, luab_env_buf_max, NULL);
     cflags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
@@ -135,9 +135,9 @@ luab_regexec(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    luab_core_checkxtype(m, REGMATCH, __func__);
+    m = luab_xmod(REGMATCH, TYPE, __func__);
 
-    preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xmod(REGEX, TYPE, __func__), regex_t *);
     string = luab_checklstring(L, 2, luab_env_buf_max, NULL);
     nmatch = (size_t)luab_checklinteger(L, 3, 0);
     tbl = luab_table_checkxdata(L, 4, m);
@@ -203,8 +203,8 @@ luab_regerror(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     errcode = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    preg = luab_udata(L, 2, luab_xtype(REGEX), regex_t *);
-    buf = luab_udata(L, 3, luab_xtype(IOVEC), luab_iovec_t *);
+    preg = luab_udata(L, 2, luab_xmod(REGEX, TYPE, __func__), regex_t *);
+    buf = luab_udata(L, 3, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     errbuf_size = (size_t)luab_checklinteger(L, 4, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -249,7 +249,7 @@ luab_regfree(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    preg = luab_udata(L, 1, luab_xtype(REGEX), regex_t *);
+    preg = luab_udata(L, 1, luab_xmod(REGEX, TYPE, __func__), regex_t *);
     regfree(preg);
 
     return (luab_pushxinteger(L, 0));
@@ -273,7 +273,7 @@ luab_regfree(lua_State *L)
 static int
 luab_regex_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(REGEX), NULL));
+    return (luab_core_create(L, 1, luab_xmod(REGEX, TYPE, __func__), NULL));
 }
 
 /***
@@ -290,7 +290,7 @@ luab_regex_create(lua_State *L)
 static int
 luab_regmatch_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(REGMATCH), NULL));
+    return (luab_core_create(L, 1, luab_xmod(REGMATCH, TYPE, __func__), NULL));
 }
 
 /*

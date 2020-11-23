@@ -51,9 +51,6 @@ typedef struct luab_char {
 #define luab_to_char(L, narg) \
     (luab_todata((L), (narg), &luab_char_type, luab_char_t *))
 
-#define LUAB_CHAR_TYPE_ID    1605964271
-#define LUAB_CHAR_TYPE   "CHAR*"
-
 /*
  * Generator functions.
  */

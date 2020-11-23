@@ -51,9 +51,6 @@ typedef struct luab_wchar {
 #define luab_to_wchar(L, narg) \
     (luab_todata((L), (narg), &luab_wchar_type, luab_wchar_t *))
 
-#define LUAB_WCHAR_TYPE_ID    1605963183
-#define LUAB_WCHAR_TYPE   "WCHAR*"
-
 /*
  * Generator functions.
  */

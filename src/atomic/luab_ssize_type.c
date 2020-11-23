@@ -51,9 +51,6 @@ typedef struct luab_ssize {
 #define luab_to_ssize(L, narg) \
     (luab_todata((L), (narg), &luab_ssize_type, luab_ssize_t *))
 
-#define LUAB_SSIZE_TYPE_ID    1605991182
-#define LUAB_SSIZE_TYPE   "SSIZE*"
-
 /*
  * Generator functions.
  */

@@ -56,9 +56,6 @@ typedef struct luab_linger {
     (luab_toldata((L), (narg), &luab_linger_type, \
         struct linger *, sizeof(struct linger)))
 
-#define LUAB_LINGER_TYPE_ID    1597012436
-#define LUAB_LINGER_TYPE    "LINGER*"
-
 /*
  * Generator functions.
  */

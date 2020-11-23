@@ -51,9 +51,6 @@ typedef struct luab_socklen {
 #define luab_to_socklen(L, narg) \
     (luab_todata((L), (narg), &luab_socklen_type, luab_socklen_t *))
 
-#define LUAB_SOCKLEN_TYPE_ID    1605960373
-#define LUAB_SOCKLEN_TYPE   "SOCKLEN*"
-
 /*
  * Generator functions.
  */

@@ -56,9 +56,6 @@ typedef struct luab_timespec {
     (luab_toldata((L), (narg), &luab_timespec_type, \
         struct timespec *, sizeof(struct timespec)))
 
-#define LUAB_TIMESPEC_TYPE_ID    1594034844
-#define LUAB_TIMESPEC_TYPE    "TIMESPEC*"
-
 /*
  * Generator functions.
  */

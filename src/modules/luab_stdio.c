@@ -81,7 +81,7 @@ luab_clearerr(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL) {
         clearerr(stream);
@@ -112,7 +112,7 @@ luab_fclose(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fclose(stream);
@@ -142,7 +142,7 @@ luab_feof(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = feof(stream);
@@ -172,7 +172,7 @@ luab_ferror(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = ferror(stream);
@@ -202,7 +202,7 @@ luab_fflush(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fflush(stream);
@@ -232,7 +232,7 @@ luab_fgetc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fgetc(stream);
@@ -265,8 +265,8 @@ luab_fgetpos(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
-    pos = luab_udata(L, 2, luab_xtype(FPOS), fpos_t *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
+    pos = luab_udata(L, 2, luab_xmod(INT64, TYPE, __func__), fpos_t *);
     
     if (stream != NULL)
         status = fgetpos(stream, pos);
@@ -301,9 +301,9 @@ luab_fgets(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     size = (size_t)luab_checkinteger(L, 2, luab_env_int_max);
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -363,7 +363,7 @@ luab_fopen(lua_State *L)
     mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);
 
     if ((stream = fopen(path, mode)) != NULL)
-        m = luab_xtype(SFILE);
+        m = luab_xmod(SFILE, TYPE, __func__);
     else
         m = NULL;
 
@@ -392,7 +392,7 @@ luab_fputc(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     c = luab_checkinteger(L, 1, luab_env_uchar_max);
-    stream = luab_udata(L, 2, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 2, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fputc(c, stream);
@@ -425,7 +425,7 @@ luab_fputs(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     str = luab_checklstring(L, 1, luab_env_buf_max, NULL);
-    stream = luab_udata(L, 2, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 2, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fputs(str, stream);
@@ -461,12 +461,12 @@ luab_freopen(lua_State *L)
 
     path = luab_checklstringisnil(L, 1, luab_env_path_max, NULL);
     mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);
-    stream = luab_udata(L, 3, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 3, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL) {
 
         if ((ret = freopen(path, mode, stream)) != NULL)
-            m = luab_xtype(SFILE);
+            m = luab_xmod(SFILE, TYPE, __func__);
         else
             m = NULL;
 
@@ -509,7 +509,7 @@ luab_fseek(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
     offset = (long)luab_checkinteger(L, 2, luab_env_long_max);
     whence = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
@@ -544,8 +544,8 @@ luab_fsetpos(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
-    pos = luab_udata(L, 2, luab_xtype(FPOS), fpos_t *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
+    pos = luab_udata(L, 2, luab_xmod(INT64, TYPE, __func__), fpos_t *);
     
     if (stream != NULL)
         status = fsetpos(stream, pos);
@@ -575,7 +575,7 @@ luab_ftell(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = ftell(stream);
@@ -605,7 +605,7 @@ luab_getc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = getc(stream);
@@ -656,7 +656,7 @@ luab_gets(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -705,7 +705,7 @@ luab_gets_s(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     size = (rsize_t)luab_checklinteger(L, 2, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -757,7 +757,7 @@ luab_putc(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     c = luab_checkinteger(L, 1, luab_env_uchar_max);
-    stream = luab_udata(L, 2, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 2, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = putc(c, stream);
@@ -861,7 +861,7 @@ luab_rewind(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL) {
         rewind(stream);
@@ -900,7 +900,7 @@ luab_fdopen(lua_State *L)
     mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);
 
     if ((stream = fdopen(fildes, mode)) != NULL)
-        m = luab_xtype(SFILE);
+        m = luab_xmod(SFILE, TYPE, __func__);
     else
         m = NULL;
 
@@ -926,7 +926,7 @@ luab_fileno(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fileno(stream);
@@ -958,7 +958,7 @@ luab_getc_unlocked(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = getc_unlocked(stream);
@@ -1011,7 +1011,7 @@ luab_putc_unlocked(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     c = luab_checkinteger(L, 1, luab_env_uchar_max);
-    stream = luab_udata(L, 2, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 2, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = putc_unlocked(c, stream);
@@ -1067,7 +1067,7 @@ luab_clearerr_unlocked(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL) {
         clearerr_unlocked(stream);
@@ -1098,7 +1098,7 @@ luab_feof_unlocked(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = feof_unlocked(stream);
@@ -1128,7 +1128,7 @@ luab_ferror_unlocked(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = ferror_unlocked(stream);
@@ -1158,7 +1158,7 @@ luab_fileno_unlocked(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fileno_unlocked(stream);
@@ -1202,7 +1202,7 @@ luab_fseeko(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
     offset = (long)luab_checkinteger(L, 2, luab_env_long_max);
     whence = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
@@ -1234,7 +1234,7 @@ luab_ftello(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = ftello(stream);
@@ -1266,7 +1266,7 @@ luab_getw(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = getw(stream);
@@ -1299,7 +1299,7 @@ luab_putw(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     w = luab_checkinteger(L, 1, luab_env_uint_max);
-    stream = luab_udata(L, 2, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 2, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = putw(w, stream);
@@ -1336,7 +1336,7 @@ luab_fmemopen(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_xtype(IOVEC), luab_iovec_t *);
+    buf = luab_udata(L, 1, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 2, 0);
     mode = luab_checklstring(L, 3, LUAB_STDIO_MODE_MAXLEN, NULL);
 
@@ -1350,7 +1350,7 @@ luab_fmemopen(lua_State *L)
 
             if ((stream = fmemopen(bp, size, mode)) != NULL) {
                 buf->iov.iov_len = size;
-                m = luab_xtype(SFILE);
+                m = luab_xmod(SFILE, TYPE, __func__);
             } else
                 m = NULL;
 
@@ -1411,8 +1411,8 @@ luab_fdclose(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
-    fdp = luab_udataisnil(L, 2, luab_xtype(INT), int *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
+    fdp = luab_udataisnil(L, 2, luab_xmod(INT, TYPE, __func__), int *);
 
     if (stream != NULL)
         status = fdclose(stream, fdp);
@@ -1442,7 +1442,7 @@ luab_fpurge(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    stream = luab_udata(L, 1, luab_xtype(SFILE), FILE *);
+    stream = luab_udata(L, 1, luab_xmod(SFILE, TYPE, __func__), FILE *);
 
     if (stream != NULL)
         status = fpurge(stream);
@@ -1472,7 +1472,7 @@ luab_fpurge(lua_State *L)
 static int
 luab_sbuf_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(__SBUF), NULL));
+    return (luab_core_create(L, 1, luab_xmod(__SBUF, TYPE, __func__), NULL));
 }
 
 /***
@@ -1489,7 +1489,7 @@ luab_sbuf_create(lua_State *L)
 static int
 luab_sfile_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(SFILE), NULL));
+    return (luab_core_create(L, 1, luab_xmod(SFILE, TYPE, __func__), NULL));
 }
 
 /*

@@ -68,9 +68,6 @@ typedef struct luab_ttyent {
     (luab_toldata((L), (narg), &luab_ttyent_type, \
         struct ttyent *, sizeof(struct ttyent)))
 
-#define LUAB_TTYENT_TYPE_ID    1604759728
-#define LUAB_TTYENT_TYPE    "TTYENT*"
-
 /*
  * Generator functions.
  */

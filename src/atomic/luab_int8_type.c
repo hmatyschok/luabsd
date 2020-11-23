@@ -51,9 +51,6 @@ typedef struct luab_int8 {
 #define luab_to_int8(L, narg) \
     (luab_todata((L), (narg), &luab_int8_type, luab_int8_t *))
 
-#define LUAB_INT8_TYPE_ID    1606001349
-#define LUAB_INT8_TYPE   "INT8*"
-
 /*
  * Generator functions.
  */

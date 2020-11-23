@@ -57,9 +57,6 @@ typedef struct luab_sockproto {
     (luab_toldata((L), (narg), &luab_sockproto_type, \
         struct sockproto *, sizeof(struct sockproto)))
 
-#define LUAB_SOCKPROTO_TYPE_ID    1601383780
-#define LUAB_SOCKPROTO_TYPE    "SOCKPROTO*"
-
 /*
  * Generator functions.
  */

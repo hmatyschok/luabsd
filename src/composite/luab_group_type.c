@@ -58,9 +58,6 @@ typedef struct luab_group {
     (luab_toldata((L), (narg), &luab_group_type, \
         struct group *, sizeof(struct group)))
 
-#define LUAB_GROUP_TYPE_ID    1604324396
-#define LUAB_GROUP_TYPE    "GROUP*"
-
 /*
  * Subr.
  */

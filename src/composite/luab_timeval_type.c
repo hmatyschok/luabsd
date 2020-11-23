@@ -56,9 +56,6 @@ typedef struct luab_timeval {
     (luab_toldata((L), (narg), &luab_timeval_type, \
         struct timeval *, sizeof(struct timeval)))
 
-#define LUAB_TIMEVAL_TYPE_ID    1599788349
-#define LUAB_TIMEVAL_TYPE    "TIMEVAL*"
-
 /*
  * Generator functions.
  */

@@ -59,9 +59,6 @@ typedef struct luab_cmsgcred {
     (luab_toldata((L), (narg), &luab_cmsgcred_type, \
         struct cmsgcred *, sizeof(struct cmsgcred)))
 
-#define LUAB_CMSGCRED_TYPE_ID    1601557495
-#define LUAB_CMSGCRED_TYPE    "CMSGCRED*"
-
 /*
  * Generator functions.
  */

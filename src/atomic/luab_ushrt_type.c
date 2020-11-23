@@ -52,9 +52,6 @@ typedef struct luab_ushrt {
 #define luab_to_ushrt(L, narg) \
     (luab_todata((L), (narg), &luab_ushrt_type, luab_ushrt_t *))
 
-#define LUAB_USHRT_TYPE_ID    1605911568
-#define LUAB_USHRT_TYPE   "USHRT*"
-
 /*
  * Generator functions.
  */

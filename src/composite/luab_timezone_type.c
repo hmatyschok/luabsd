@@ -56,9 +56,6 @@ typedef struct luab_timezone {
     (luab_toldata((L), (narg), &luab_timezone_type, \
         struct timezone *, sizeof(struct timezone)))
 
-#define LUAB_TIMEZONE_TYPE_ID    1594159943
-#define LUAB_TIMEZONE_TYPE    "TIMEZONE*"
-
 /*
  * Generator functions.
  */

@@ -61,9 +61,6 @@ typedef struct luab_uuid {
     (luab_toldata((L), (narg), &luab_uuid_type, \
         struct uuid *, sizeof(struct uuid)))
 
-#define LUAB_UUID_TYPE_ID    1599304529
-#define LUAB_UUID_TYPE    "UUID*"
-
 /*
  * Generator functions.
  */

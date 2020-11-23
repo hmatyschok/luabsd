@@ -380,7 +380,7 @@ luab_futimens(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    luab_core_checkxtype(m, TIMESPEC, __func__);
+    m = luab_xmod(TIMESPEC, TYPE, __func__);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
 
@@ -449,7 +449,7 @@ luab_utimensat(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    luab_core_checkxtype(m, TIMESPEC, __func__);
+    m = luab_xmod(TIMESPEC, TYPE, __func__);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     path = luab_checklstring(L, 2, luab_env_path_max, NULL);
@@ -498,7 +498,7 @@ luab_fstat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    sb = luab_udata(L, 2, luab_xtype(STAT), struct stat *);
+    sb = luab_udata(L, 2, luab_xmod(STAT, TYPE, __func__), struct stat *);
 
     status = fstat(fd, sb);
 
@@ -616,7 +616,7 @@ luab_lstat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max, NULL);
-    sb = luab_udata(L, 2, luab_xtype(STAT), struct stat *);
+    sb = luab_udata(L, 2, luab_xmod(STAT, TYPE, __func__), struct stat *);
 
     status = lstat(path, sb);
 
@@ -742,7 +742,7 @@ luab_stat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max, NULL);
-    sb = luab_udata(L, 2, luab_xtype(STAT), struct stat *);
+    sb = luab_udata(L, 2, luab_xmod(STAT, TYPE, __func__), struct stat *);
 
     status = stat(path, sb);
 
@@ -816,7 +816,7 @@ luab_fstatat(lua_State *L)
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     path = luab_checklstring(L, 2, luab_env_path_max, NULL);
-    sb = luab_udata(L, 3, luab_xtype(STAT), struct stat *);
+    sb = luab_udata(L, 3, luab_xmod(STAT, TYPE, __func__), struct stat *);
     flag = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     status = fstatat(fd, path, sb, flag);
@@ -981,7 +981,7 @@ luab_mknodat(lua_State *L)
 static int
 luab_stat_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xtype(STAT), NULL));
+    return (luab_core_create(L, 1, luab_xmod(STAT, TYPE, __func__), NULL));
 }
 
 /*

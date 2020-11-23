@@ -57,9 +57,6 @@ typedef struct luab_fid {
     (luab_toldata((L), (narg), &luab_fid_type, \
         struct fid *, sizeof(struct fid)))
 
-#define LUAB_FID_TYPE_ID    1604423994
-#define LUAB_FID_TYPE    "FID*"
-
 /*
  * Generator functions.
  */

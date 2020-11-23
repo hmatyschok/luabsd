@@ -58,9 +58,6 @@ typedef struct luab_regex {
     (luab_toldata((L), (narg), &luab_regex_type, \
         regex_t *, sizeof(regex_t)))
 
-#define LUAB_REGEX_TYPE_ID    1604367435
-#define LUAB_REGEX_TYPE    "REGEX*"
-
 /*
  * Generator functions.
  */

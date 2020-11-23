@@ -51,9 +51,6 @@ typedef struct luab_float {
 #define luab_to_float(L, narg) \
     (luab_todata((L), (narg), &luab_float_type, luab_float_t *))
 
-#define LUAB_FLOAT_TYPE_ID    1605908147
-#define LUAB_FLOAT_TYPE   "FLOAT*"
-
 /*
  * Generator functions.
  */
