@@ -60,7 +60,6 @@ typedef struct luab_fsid {
 static int
 fsid_pushtable_internal(lua_State *L, int narg, const char *k, int32_t *vec)
 {
-    int up_call, status;
     size_t m, n;
 
     if (vec != NULL) {
@@ -78,16 +77,10 @@ fsid_pushtable_internal(lua_State *L, int narg, const char *k, int32_t *vec)
             else
                 lua_pushvalue(L, narg);
         }
-        up_call = 0;
     } else
-        up_call = ENOENT;
+        errno = ERANGE;
 
-    if ((errno = up_call) != 0)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_table_pusherr(L, errno, 1));
 }
 
 /*
@@ -277,7 +270,7 @@ fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         if (clr != 0)
             luab_table_free(tbl);
     } else
-        errno = EINVAL;
+        errno = ERANGE;
 }
 
 luab_module_t luab_fsid_type = {

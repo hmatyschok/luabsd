@@ -85,7 +85,6 @@ static int
 msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
 {
     luab_module_t *m;
-    int up_call, status;
 
     m = luab_xmod(IOVEC, TYPE, __func__);
 
@@ -101,16 +100,10 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
             else
                 lua_pushvalue(L, narg);
         }
-        up_call = 0;
     } else
-        up_call = ENOENT;
+        errno = ERANGE;
 
-    if ((errno = up_call) != 0)
-        status = luab_pushnil(L);
-    else
-        status = 1;
-
-    return (status);
+    return (luab_table_pusherr(L, errno, 1));
 }
 
 /*
@@ -540,7 +533,7 @@ msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         if (clr != 0)
             luab_table_free(tbl);
     } else
-        errno = EINVAL;
+        errno = ERANGE;
 }
 
 luab_module_t luab_msghdr_type = {

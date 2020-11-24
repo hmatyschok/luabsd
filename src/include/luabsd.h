@@ -301,12 +301,14 @@ void     luab_setstring(lua_State *, int, const char *, const char *);
 void     luab_setfstring(lua_State *, int, const char *, const char *, ...);
 void     luab_setldata(lua_State *, int, const char *, void *, size_t);
 
+int  luab_pusherr(lua_State *, int, int);
+
 #define luab_pushxinteger(L, x) \
-    (luab_pusherr((L), (lua_Integer)(x)))
+    (luab_pushinteger((L), (lua_Integer)(x)))
 #define luab_pushxnumber(L, x) \
     (luab_pushnumber((L), (lua_Number)(x)))
 
-int  luab_pusherr(lua_State *, lua_Integer);
+int  luab_pushinteger(lua_State *, lua_Integer);
 int  luab_pushnumber(lua_State *, lua_Number);
 int  luab_pushnil(lua_State *);
 

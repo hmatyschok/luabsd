@@ -560,7 +560,7 @@ uuid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         if (clr != 0)
             luab_table_free(tbl);
     } else
-        errno = EINVAL;
+        errno = ERANGE;
 }
 
 luab_module_t luab_uuid_type = {

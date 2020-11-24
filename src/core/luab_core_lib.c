@@ -398,74 +398,53 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 }
 
 int
-luab_pusherr(lua_State *L, lua_Integer res)
+luab_pusherr(lua_State *L, int up_call, int ret)
 {
-    int up_call;
     caddr_t msg;
     int status;
+
+    if (up_call != 0) {
+        lua_pushinteger(L, up_call);
+        msg = strerror(up_call);
+        lua_pushstring(L, msg);
+        status = 2 + ret;
+    } else
+        status = ret;
+
+    return (status);
+}
+
+int
+luab_pushinteger(lua_State *L, lua_Integer res)
+{
+    int up_call;
 
     up_call = errno;
     lua_pushinteger(L, res);
 
-    if (up_call != 0 && res < 0) {
-        lua_pushinteger(L, up_call);
-        msg = strerror(up_call);
-        lua_pushstring(L, msg);
-        status = 3;
-    } else if (up_call == res) {
-        msg = strerror(up_call);
-        lua_pushstring(L, msg);
-        status = 2;
-    } else
-        status = 1;
-
-    return (status);
+    return (luab_pusherr(L, up_call, 1));
 }
 
 int
 luab_pushnumber(lua_State *L, lua_Number res)
 {
     int up_call;
-    caddr_t msg;
-    int status;
 
     up_call = errno;
     lua_pushnumber(L, res);
 
-    if (up_call != 0 && res < 0) {
-        lua_pushinteger(L, up_call);
-        msg = strerror(up_call);
-        lua_pushstring(L, msg);
-        status = 3;
-    } else if (up_call == res) {
-        msg = strerror(up_call);
-        lua_pushstring(L, msg);
-        status = 2;
-    } else
-        status = 1;
-
-    return (status);
+    return (luab_pusherr(L, up_call, 1));
 }
 
 int
 luab_pushnil(lua_State *L)
 {
     int up_call;
-    caddr_t msg;
-    int status;
 
     up_call = errno;
     lua_pushnil(L);
 
-    if (up_call != 0) {
-        lua_pushinteger(L, up_call);
-        msg = strerror(up_call);
-        lua_pushstring(L, msg);
-        status = 3;
-    } else
-        status = 1;
-
-    return (status);
+    return (luab_pusherr(L, up_call, 1));
 }
 
 int
@@ -473,7 +452,6 @@ luab_pushstring(lua_State *L, const char *dp)
 {
     int up_call;
     size_t n;
-    caddr_t msg;
     int status;
 
     up_call = errno;
@@ -482,15 +460,9 @@ luab_pushstring(lua_State *L, const char *dp)
         n = strnlen(dp, luab_env_buf_max);
         lua_pushlstring(L, dp, n);
 
-        if (up_call != 0) {
-            lua_pushinteger(L, up_call);
-            msg = strerror(up_call);
-            lua_pushstring(L, msg);
-            status = 3;
-        } else
-            status = 1;
+        status = luab_pusherr(L, up_call, 1);
     } else {
-        errno = ENOENT;
+        errno = (up_call != 0) ? up_call : ENOENT;
         status = luab_pushnil(L);
     }
     return (status);
@@ -514,7 +486,7 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 {
     int up_call;
     luaL_Buffer b;
-    caddr_t dp, msg;
+    caddr_t dp;
     int status;
 
     up_call = errno;
@@ -530,17 +502,9 @@ luab_pushldata(lua_State *L, void *v, size_t len)
         luaL_addsize(&b, len);
         luaL_pushresult(&b);
 
-        if (up_call != 0) {
-            lua_pushinteger(L, up_call);
-            msg = strerror(up_call);
-            lua_pushstring(L, msg);
-            status = 3;
-        } else {
-            msg = NULL;
-            status = 1;
-        }
+        status = luab_pusherr(L, up_call, 1);
     } else {
-        errno = EINVAL;
+        errno = (up_call != 0) ? up_call : EINVAL;
         status = luab_pushnil(L);
     }
     return (status);
@@ -616,7 +580,7 @@ luab_core_len(lua_State *L, int narg, luab_module_t *m)
     else
         len = -1;
 
-    return (luab_pusherr(L, len));
+    return (luab_pushxinteger(L, len));
 }
 
 int
@@ -666,7 +630,7 @@ luab_uuid(lua_State *L)
             status = luab_pushldata(L, buf, strlen(buf));
             free(buf);
         } else {
-            errno = ENOMEM;
+            errno = (up_call != 0) ? up_call : ENOMEM;
             status = luab_pushnil(L);
         }
     }

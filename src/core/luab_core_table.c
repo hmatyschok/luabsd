@@ -393,6 +393,19 @@ luab_table_tolxargp(lua_State *L, int narg, size_t nmax)
  * Access functions, [C -> stack].
  */
 
+int
+luab_table_pusherr(lua_State *L, int up_call, int ret)
+{
+    int status;
+
+    if (up_call == ERANGE)
+        status = luab_pushnil(L);
+    else
+        status = luab_pusherr(L, errno, ret);
+
+    return (status);
+}
+
 void
 luab_table_pushxdata(lua_State *L, int narg, luab_module_t *m,
     luab_table_t *tbl, int new, int clr)

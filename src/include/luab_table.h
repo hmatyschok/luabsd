@@ -77,6 +77,7 @@ luab_table_t     *luab_table_checklxdata(lua_State *, int, luab_module_t *, size
  * Access functions, [C -> stack].
  */
 
+int  luab_table_pusherr(lua_State *, int, int);
 void     luab_table_pushxdata(lua_State *, int, luab_module_t *,
     luab_table_t *, int, int);
 

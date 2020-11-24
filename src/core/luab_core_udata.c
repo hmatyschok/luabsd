@@ -300,7 +300,6 @@ int
 luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
 {
     int up_call;
-    caddr_t msg;
     int status;
 
     up_call = errno;
@@ -309,18 +308,9 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
         
         if (m->m_create != NULL) {
 
-            if ((*m->m_create)(L, arg) != NULL) {
-
-                if (up_call != 0) {
-                    lua_pushinteger(L, up_call);
-                    msg = strerror(up_call);
-                    lua_pushstring(L, msg);
-                    status = 3;
-                } else {
-                    msg = NULL;
-                    status = 1;
-                }
-            } else
+            if ((*m->m_create)(L, arg) != NULL)
+                status = luab_pusherr(L, up_call, 1);
+            else
                 status = luab_pushnil(L);
         } else {
             errno = (up_call != 0) ? up_call : ENXIO;
