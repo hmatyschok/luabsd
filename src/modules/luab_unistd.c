@@ -627,17 +627,13 @@ luab_getgid(lua_State *L)
  *
  * @param gidsetlen         Number of entries that may be placed on
  *                          gidset, of successfull.
- * @param gidset            Empty instance of
+ * @param gidset            Either an empty or with #gidsetlen populated
+ *                          
+ *                              { "gid0" , "gid1" , ..., "gidN" }
  *
- *                              (LUA_TTABLE(LUA_TNUMBER,LUA_TNUMBER)),
- *
- *                          but still populated
- *
- *                              { "gid0" , "gid1" , ..., "gidN" },
- *
- *                          iff (if and only if)
- *
- *                              gidsetlen > 0.
+ *                          instance of (LUA_TTABLE), but its elements are
+ *                          updated with values over (gid_t), iff (if and
+ *                          only if) gidsetlen is greater then 0.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -646,36 +642,48 @@ luab_getgid(lua_State *L)
 static int
 luab_getgroups(lua_State *L)
 {
-    int gidsetlen;
+    luab_module_t *m;
+    luab_table_t *tbl;
+    int gidsetlen, n;
     gid_t *gidset;
     int ngroups;
-    int i, j;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(GID, TYPE, __func__);
+    tbl = NULL;
+
     gidsetlen = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    n = luab_checktableisnil(L, 2);
 
-    (void)luab_checktable(L, 2);
+    if (gidsetlen == n) {
 
-    if (gidsetlen != 0) {
-        if ((gidset = alloca(gidsetlen * sizeof(gid_t))) == NULL)
-            ngroups = -1;
-        else
+        if (gidsetlen != 0) {
+
+            if ((tbl = luab_table_allocnil(n, sizeof(gid_t))) != NULL) {
+                tbl->tbl_cookie = m->m_cookie;
+                gidset = (gid_t *)(tbl->tbl_vec);
+                ngroups = 0;
+            } else {
+                gidset = NULL;
+                ngroups = -1;
+            }
+        } else {
+            gidset = NULL;
             ngroups = 0;
+        }
     } else {
+        errno = ERANGE;
         gidset = NULL;
-        ngroups = 0;
+        ngroups = -1;
     }
 
     if (ngroups == 0) {
-        if ((ngroups = getgroups(gidsetlen, gidset)) > 0) {
-            lua_pushnil(L); /* populate table, if any */
 
-            for (i = 0, j = 1; i < gidsetlen; i++, j++)
-                luab_rawsetinteger(L, 2, j, gidset[i]);
-
-            lua_pop(L, 0);
-        }
+        if ((ngroups = getgroups(gidsetlen, gidset)) > 0)
+            luab_table_pushxdata(L, 2, m, tbl, 0, 1);
+        else
+            luab_table_free(tbl);
     }
     return (luab_pushxinteger(L, ngroups));
 }

@@ -118,21 +118,27 @@ luab_table_init(lua_State *L, int new)
 void
 luab_table_free(luab_table_t *tbl)
 {
+    int up_call;
     size_t nbytes;
+
+    up_call = errno;
 
     if (tbl != NULL) {
         nbytes = (tbl->tbl_card * tbl->tbl_sz);
         luab_core_free(tbl->tbl_vec, nbytes);
         luab_core_free(tbl, sizeof(*tbl));
     } else
-        errno = ERANGE;
+        errno = (up_call != 0) ? up_call : ERANGE;
 }
 
 void
 luab_table_iovec_free(luab_table_t *tbl)
 {
+    int up_call;
     struct iovec *x;
     size_t m, n;
+
+    up_call = errno;
 
     if (tbl != NULL) {
 
@@ -144,12 +150,10 @@ luab_table_iovec_free(luab_table_t *tbl)
                 (void)luab_iov_free(&(x[m]));
 
             errno = ENOENT;
-        } else
-            errno = ERANGE;
-
+        }
         luab_table_free(tbl);
     } else
-        errno = EINVAL;
+        errno = ERANGE;
 }
 
 /*
