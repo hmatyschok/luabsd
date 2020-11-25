@@ -26,8 +26,6 @@
 
 #include <sys/file.h>
 
-#include <db.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -405,13 +403,16 @@ static luab_module_table_t db_methods[] = {
 static void *
 db_create(lua_State *L, void *arg)
 {
+    luab_db_param_t *dbp;
     luab_db_t *self;
-    DB* db;
 
-    if ((db = (DB *)arg) != NULL) {
+    if ((dbp = (luab_db_param_t *)arg) != NULL) {
 
-        if ((self = luab_new_db(L, db)) == NULL)
-            (void)(*db->close)(db);
+        if ((self = luab_new_db(L, dbp->dbp_db)) == NULL) {
+
+            if (dbp->dbp_db != NULL)
+                (void)(*dbp->dbp_db->close)(dbp->dbp_db);
+        }
     } else
         self = NULL;
 

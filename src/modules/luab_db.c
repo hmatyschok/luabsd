@@ -26,8 +26,6 @@
 
 #include <sys/file.h>
 
-#include <db.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -63,20 +61,19 @@ extern luab_module_t luab_db_lib;
 static int
 luab_dbopen(lua_State *L)
 {
-    const char *file;
-    int flags, mode, type;
-    DB *db;
+    luab_db_param_t dbp;
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    file = luab_islstring(L, 1, luab_env_path_max);
-    flags = luab_checkinteger(L, 2, luab_env_int_max);
-    mode = luab_checkinteger(L, 3, luab_env_int_max);
-    type = luab_checkinteger(L, 4, luab_env_int_max);
+    dbp.dbp_file = luab_islstring(L, 1, luab_env_path_max);
+    dbp.dbp_flags = luab_checkinteger(L, 2, luab_env_int_max);
+    dbp.dbp_mode = luab_checkinteger(L, 3, luab_env_int_max);
+    dbp.dbp_type = luab_checkinteger(L, 4, luab_env_int_max);
 
-    db = dbopen(file, flags, mode, type, NULL);
+    dbp.dbp_db = dbopen(dbp.dbp_file, dbp.dbp_flags, dbp.dbp_mode,
+        dbp.dbp_type, NULL);
 
-    return (luab_pushudata(L, luab_xmod(DB, TYPE, __func__), db));
+    return (luab_pushudata(L, luab_xmod(DB, TYPE, __func__), &dbp));
 }
 
 /*

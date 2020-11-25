@@ -109,5 +109,6 @@ void     luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
 
 #include "luab_buf.h"
 #include "luab_iovec.h"
+#include "luab_db.h"
 
 #endif /* _LUAB_UDATA_H_ */
