@@ -44,11 +44,11 @@
 #define LUAB_CORE_LIB_KEY   "core"
 
 static lua_Integer
-luab_core_Integer_max(int s)
+luab_core_Integer_promotion_msk(int s)
 {
     lua_Integer b_msk;
 
-    b_msk = (s != 0) ? (
+    b_msk = (s != 0) ? (lua_Integer)(
 #if defined(__LP64__) || defined(__mips_n64)
     luab_env_ulong_max
 #else
@@ -181,7 +181,7 @@ luab_tolinteger(lua_State *L, int narg, int s)
 {
     lua_Integer b_msk;
 
-    b_msk = luab_core_Integer_max(s);
+    b_msk = luab_core_Integer_promotion_msk(s);
     return (luab_tointeger(L, narg, b_msk));
 }
 
@@ -190,7 +190,7 @@ luab_checklinteger(lua_State *L, int narg, int s)
 {
     lua_Integer b_msk;
 
-    b_msk = luab_core_Integer_max(s);
+    b_msk = luab_core_Integer_promotion_msk(s);
     return (luab_checkinteger(L, narg, b_msk));
 }
 
@@ -574,9 +574,10 @@ luab_core_len(lua_State *L, int narg, luab_module_t *m)
 
     if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
         len = luab_xlen(m);
-    else
+    else {
+        errno = ERANGE;
         len = -1;
-
+    }
     return (luab_pushxinteger(L, len));
 }
 
@@ -584,13 +585,16 @@ int
 luab_core_tostring(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *ud;
+    int status;
 
     (void)luab_core_checkmaxargs(L, narg);
 
     if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
-        lua_pushfstring(L, "%s (%p,%d)", m->m_name, ud, ud->ud_ts);
+        status = luab_pushfstring(L, "%s (%p,%d)", m->m_name, ud, ud->ud_ts);
+    else
+        status = luab_pushfstring(L, "%s (%p,%d)", "nil", NULL, 0);   /* XXX */
 
-    return (1);
+    return (status);
 }
 
 /*
