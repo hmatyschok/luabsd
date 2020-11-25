@@ -142,16 +142,16 @@ static int
 UUID_set_time_low(lua_State *L)
 {
     struct uuid *uuid;
-    uint32_t data;
+    uint32_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = (uint32_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (uint32_t)luab_checkinteger(L, 2, luab_env_int_max);
 
-    uuid->time_low = data;
+    uuid->time_low = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -167,14 +167,14 @@ static int
 UUID_get_time_low(lua_State *L)
 {
     struct uuid *uuid;
-    uint32_t data;
+    uint32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = uuid->time_low;
+    x = uuid->time_low;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -192,16 +192,16 @@ static int
 UUID_set_time_mid(lua_State *L)
 {
     struct uuid *uuid;
-    uint16_t data;
+    uint16_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = (uint16_t)luab_checkinteger(L, 2, luab_env_shrt_max);
+    x = (uint16_t)luab_checkinteger(L, 2, luab_env_shrt_max);
 
-    uuid->time_mid = data;
+    uuid->time_mid = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -217,14 +217,14 @@ static int
 UUID_get_time_mid(lua_State *L)
 {
     struct uuid *uuid;
-    uint16_t data;
+    uint16_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = uuid->time_mid;
+    x = uuid->time_mid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -243,16 +243,16 @@ static int
 UUID_set_time_hi_and_version(lua_State *L)
 {
     struct uuid *uuid;
-    uint16_t data;
+    uint16_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = (uint16_t)luab_checkinteger(L, 2, luab_env_shrt_max);
+    x = (uint16_t)luab_checkinteger(L, 2, luab_env_shrt_max);
 
-    uuid->time_hi_and_version = data;
+    uuid->time_hi_and_version = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -269,14 +269,14 @@ static int
 UUID_get_time_hi_and_version(lua_State *L)
 {
     struct uuid *uuid;
-    uint16_t data;
+    uint16_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = uuid->time_hi_and_version;
+    x = uuid->time_hi_and_version;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -295,16 +295,16 @@ static int
 UUID_set_clock_seq_hi_and_reserved(lua_State *L)
 {
     struct uuid *uuid;
-    uint8_t data;
+    uint8_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = (uint8_t)luab_checkinteger(L, 2, luab_env_char_max);
+    x = (uint8_t)luab_checkinteger(L, 2, luab_env_char_max);
 
-    uuid->clock_seq_hi_and_reserved = data;
+    uuid->clock_seq_hi_and_reserved = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -321,14 +321,14 @@ static int
 UUID_get_clock_seq_hi_and_reserved(lua_State *L)
 {
     struct uuid *uuid;
-    uint8_t data;
+    uint8_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = uuid->clock_seq_hi_and_reserved;
+    x = uuid->clock_seq_hi_and_reserved;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -346,16 +346,16 @@ static int
 UUID_set_clock_seq_low(lua_State *L)
 {
     struct uuid *uuid;
-    uint8_t data;
+    uint8_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = (uint8_t)luab_checkinteger(L, 2, luab_env_char_max);
+    x = (uint8_t)luab_checkinteger(L, 2, luab_env_char_max);
 
-    uuid->clock_seq_low = data;
+    uuid->clock_seq_low = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -371,14 +371,14 @@ static int
 UUID_get_clock_seq_low(lua_State *L)
 {
     struct uuid *uuid;
-    uint8_t data;
+    uint8_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = uuid->clock_seq_low;
+    x = uuid->clock_seq_low;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -396,14 +396,14 @@ static int
 UUID_set_node(lua_State *L)
 {
     struct uuid *uuid;
-    const void *data;
+    const void *dp;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = luab_iovec_checklstring(L, 2, _UUID_NODE_LEN);
+    dp = luab_iovec_checklstring(L, 2, _UUID_NODE_LEN);
 
-    (void)memmove(uuid->node, data, _UUID_NODE_LEN);
+    (void)memmove(uuid->node, dp, _UUID_NODE_LEN);  /* XXX */
 
     return (luab_pushldata(L, uuid->node, _UUID_NODE_LEN));
 }
@@ -421,14 +421,14 @@ static int
 UUID_get_node(lua_State *L)
 {
     struct uuid *uuid;
-    caddr_t data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
-    data = uuid->node;
+    dp = uuid->node;
 
-    return (luab_pushldata(L, data, _UUID_NODE_LEN));
+    return (luab_pushldata(L, dp, _UUID_NODE_LEN));
 }
 
 /*

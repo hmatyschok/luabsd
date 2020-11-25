@@ -144,16 +144,16 @@ static int
 INTEGER_set_x(lua_State *L)
 {
     luab_primitive_t *xp;
-    lua_Integer data;
+    lua_Integer x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     xp = luab_udata(L, 1, &luab_integer_type, luab_primitive_t *);
-    data = luab_checklinteger(L, 2, 1);
+    x = luab_checklinteger(L, 2, 1);
 
-    xp->un_intx = data;
+    xp->un_intx = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -169,14 +169,14 @@ static int
 INTEGER_get_x(lua_State *L)
 {
     luab_primitive_t *xp;
-    lua_Integer data;
+    lua_Integer x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     xp = luab_udata(L, 1, &luab_integer_type, luab_primitive_t *);
-    data = xp->un_intx;
+    x = xp->un_intx;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*

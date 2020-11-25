@@ -63,7 +63,7 @@ typedef struct luab_group {
  */
 
 static int
-group_pushtable_internal(lua_State *L, int narg, const char *k, caddr_t *vec)
+luab_table_pushgroup(lua_State *L, int narg, const char *k, caddr_t *vec)
 {
     size_t m, n;
 
@@ -124,7 +124,7 @@ GROUP_get(lua_State *L)
     luab_setinteger(L, -2, "gr_gid",    grp->gr_gid);
 
     if (grp->gr_mem != NULL)
-        (void)group_pushtable_internal(L, -2, "gr_mem", grp->gr_mem);
+        (void)luab_table_pushgroup(L, -2, "gr_mem", grp->gr_mem);
 
     lua_pushvalue(L, -1);
 
@@ -163,14 +163,14 @@ static int
 GROUP_gr_name(lua_State *L)
 {
     struct group *grp;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &luab_group_type, struct group *);
-    data = grp->gr_name;
+    dp = grp->gr_name;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -186,14 +186,14 @@ static int
 GROUP_gr_passwd(lua_State *L)
 {
     struct group *grp;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &luab_group_type, struct group *);
-    data = grp->gr_passwd;
+    dp = grp->gr_passwd;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -209,14 +209,14 @@ static int
 GROUP_gr_gid(lua_State *L)
 {
     struct group *grp;
-    gid_t data;
+    gid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     grp = luab_udata(L, 1, &luab_group_type, struct group *);
-    data = grp->gr_gid;
+    x = grp->gr_gid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -239,7 +239,7 @@ GROUP_gr_mem(lua_State *L)
     grp = luab_udata(L, 1, &luab_group_type, struct group *);
     vec = grp->gr_mem;
 
-    return (group_pushtable_internal(L, -2, NULL, vec));
+    return (luab_table_pushgroup(L, -2, NULL, vec));
 }
 
 /*

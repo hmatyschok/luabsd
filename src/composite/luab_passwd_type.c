@@ -150,14 +150,14 @@ static int
 PASSWD_pw_name(lua_State *L)
 {
     struct passwd *pwd;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_name;
+    dp = pwd->pw_name;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -173,14 +173,14 @@ static int
 PASSWD_pw_passwd(lua_State *L)
 {
     struct passwd *pwd;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_passwd;
+    dp = pwd->pw_passwd;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -196,14 +196,14 @@ static int
 PASSWD_pw_uid(lua_State *L)
 {
     struct passwd *pwd;
-    uid_t data;
+    uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_uid;
+    x = pwd->pw_uid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -219,14 +219,14 @@ static int
 PASSWD_pw_gid(lua_State *L)
 {
     struct passwd *pwd;
-    gid_t data;
+    gid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_gid;
+    x = pwd->pw_gid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -242,14 +242,14 @@ static int
 PASSWD_pw_change(lua_State *L)
 {
     struct passwd *pwd;
-    time_t data;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_change;
+    x = pwd->pw_change;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -265,14 +265,14 @@ static int
 PASSWD_pw_class(lua_State *L)
 {
     struct passwd *pwd;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_class;
+    dp = pwd->pw_class;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -288,14 +288,14 @@ static int
 PASSWD_pw_gecos(lua_State *L)
 {
     struct passwd *pwd;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_gecos;
+    dp = pwd->pw_gecos;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -311,14 +311,14 @@ static int
 PASSWD_pw_dir(lua_State *L)
 {
     struct passwd *pwd;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_dir;
+    dp = pwd->pw_dir;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -334,14 +334,14 @@ static int
 PASSWD_pw_shell(lua_State *L)
 {
     struct passwd *pwd;
-    char *data;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_shell;
+    dp = pwd->pw_shell;
 
-    return (luab_pushstring(L, data));
+    return (luab_pushstring(L, dp));
 }
 
 /***
@@ -357,14 +357,14 @@ static int
 PASSWD_pw_expire(lua_State *L)
 {
     struct passwd *pwd;
-    time_t data;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_expire;
+    x = pwd->pw_expire;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -380,14 +380,14 @@ static int
 PASSWD_pw_fields(lua_State *L)
 {
     struct passwd *pwd;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
-    data = pwd->pw_fields;
+    x = pwd->pw_fields;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*

@@ -125,16 +125,16 @@ static int
 TIMEZONE_set_tz_minuteswest(lua_State *L)
 {
     struct timezone *tz;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
-    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    tz->tz_minuteswest = data;
+    tz->tz_minuteswest = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -150,14 +150,14 @@ static int
 TIMEZONE_get_tz_minuteswest(lua_State *L)
 {
     struct timezone *tz;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
-    data = tz->tz_minuteswest;
+    x = tz->tz_minuteswest;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -175,16 +175,16 @@ static int
 TIMEZONE_set_tz_dsttime(lua_State *L)
 {
     struct timezone *tz;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
-    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    tz->tz_dsttime = data;
+    tz->tz_dsttime = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -200,14 +200,14 @@ static int
 TIMEZONE_get_tz_dsttime(lua_State *L)
 {
     struct timezone *tz;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
-    data = tz->tz_dsttime;
+    x = tz->tz_dsttime;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*

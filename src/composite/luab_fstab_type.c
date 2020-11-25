@@ -254,14 +254,14 @@ static int
 FSTAB_fs_freq(lua_State *L)
 {
     struct fstab *fs;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
-    data = fs->fs_freq;
+    x = fs->fs_freq;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -277,14 +277,14 @@ static int
 FSTAB_fs_passno(lua_State *L)
 {
     struct fstab *fs;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
-    data = fs->fs_passno;
+    x = fs->fs_passno;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*

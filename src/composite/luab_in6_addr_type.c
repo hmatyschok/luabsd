@@ -137,20 +137,20 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 
     (void)luab_checkltable(L, 2, 4);
 
-    lua_pushnil(L); /* Traverse through whole table. */
+    luab_table_init(L, 0); /* Traverse through whole table. */
 
-    for (k = 0; lua_next(L, 2) != 0; k++) {
+    for (k = 0; lua_next(L, 2) != 0; k++) {         /* XXX DRY */
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isnumber(L, -1) != 0)) {
             v = (uint32_t)luab_tointeger(L, -1, luab_env_uint_max);
-            ia->s6_addr32[k] = v;
+            ia->s6_addr32[k] = (uint32_t)v;
         } else
-            luaL_argerror(L, 2, "Invalid argument");
+            luab_core_argerror(L, 2, NULL, 0, 0, EINVAL);
 
         lua_pop(L, 1);
     }
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, 0));   /* XXX */
 }
 
 /***
@@ -172,14 +172,14 @@ IN6_ADDR_get_s6_addr(lua_State *L)
 
     ia = luab_udata(L, 1, &luab_in6_addr_type, struct in6_addr *);
 
-    lua_newtable(L);
-
+    luab_table_init(L, 1);
+                                                /* XXX DRY */
     for (i = 0, j = 1; i < 4; i++, j++)
         luab_rawsetinteger(L, -2, j, ia->s6_addr32[i]);
 
     lua_pushvalue(L, -1);
 
-    return (1);
+    return (luab_table_pusherr(L, errno, 1));
 }
 
 /*

@@ -124,14 +124,14 @@ static int
 FHANDLE_fh_fsid(lua_State *L)
 {
     fhandle_t *fh;
-    fsid_t *fsid;
+    fsid_t *x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
-    fsid = &(fh->fh_fsid);
+    x = &(fh->fh_fsid);
 
-    return (luab_pushudata(L, luab_xmod(FSID, TYPE, __func__), fsid));
+    return (luab_pushudata(L, luab_xmod(FSID, TYPE, __func__), x));
 }
 
 /***

@@ -125,16 +125,16 @@ static int
 TIMEVAL_set_tv_sec(lua_State *L)
 {
     struct timeval *tv;
-    time_t data;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
-    data = (time_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (time_t)luab_checkinteger(L, 2, luab_env_int_max);
 
-    tv->tv_sec = data;
+    tv->tv_sec = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -150,14 +150,14 @@ static int
 TIMEVAL_get_tv_sec(lua_State *L)
 {
     struct timeval *tv;
-    time_t data;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
-    data = tv->tv_sec;
+    x = tv->tv_sec;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -175,16 +175,16 @@ static int
 TIMEVAL_set_tv_usec(lua_State *L)
 {
     struct timeval *tv;
-    long data;
+    long x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
-    data = (long)luab_checkinteger(L, 2, luab_env_long_max);
+    x = (long)luab_checkinteger(L, 2, luab_env_long_max);
 
-    tv->tv_usec = data;
+    tv->tv_usec = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -200,14 +200,14 @@ static int
 TIMEVAL_get_tv_usec(lua_State *L)
 {
     struct timeval *tv;
-    long data;
+    long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
-    data = tv->tv_usec;
+    x = tv->tv_usec;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*

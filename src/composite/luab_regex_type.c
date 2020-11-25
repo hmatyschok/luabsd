@@ -135,14 +135,14 @@ static int
 REGEX_re_magic(lua_State *L)
 {
     regex_t *re;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     re = luab_udata(L, 1, &luab_regex_type, regex_t *);
-    data = re->re_magic;
+    x = re->re_magic;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -158,14 +158,14 @@ static int
 REGEX_re_nsub(lua_State *L)
 {
     regex_t *re;
-    size_t data;
+    size_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     re = luab_udata(L, 1, &luab_regex_type, regex_t *);
-    data = re->re_nsub;
+    x = re->re_nsub;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***

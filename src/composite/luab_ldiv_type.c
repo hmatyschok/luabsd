@@ -105,107 +105,53 @@ LDIV_dump(lua_State *L)
 }
 
 /*
- * Access functions.
+ * Access functions, immutable properties.
  */
-
-/***
- * Set quotient for integral ldivision operations.
- *
- * @function set_quot
- *
- * @param data              Quotient.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage data [, err, msg ] = ldiv:set_quot(data)
- */
-static int
-LDIV_set_quot(lua_State *L)
-{
-    ldiv_t *ldiv;
-    long data;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
-    data = (long)luab_checkinteger(L, 2, luab_env_int_max);
-
-    ldiv->quot = data;
-
-    return (luab_pushxinteger(L, data));
-}
 
 /***
  * Get quotient for integral ldivision operations.
  *
- * @function get_quot
+ * @function quot
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ldiv:get_quot()
+ * @usage data [, err, msg ] = ldiv:quot()
  */
 static int
-LDIV_get_quot(lua_State *L)
+LDIV_quot(lua_State *L)
 {
     ldiv_t *ldiv;
-    long data;
+    long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
-    data = ldiv->quot;
+    x = ldiv->quot;
 
-    return (luab_pushxinteger(L, data));
-}
-
-/***
- * Set reminder of integal devision operations.
- *
- * @function set_rem
- *
- * @param data              Reminder.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage data [, err, msg ] = ldiv:set_rem(data)
- */
-static int
-LDIV_set_rem(lua_State *L)
-{
-    ldiv_t *ldiv;
-    long data;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
-    data = (long)luab_checkinteger(L, 2, luab_env_int_max);
-
-    ldiv->rem = data;
-
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
  * Get reminder of integal devision operations.
  *
- * @function get_rem
+ * @function rem
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ldiv:get_rem()
+ * @usage data [, err, msg ] = ldiv:rem()
  */
 static int
-LDIV_get_rem(lua_State *L)
+LDIV_rem(lua_State *L)
 {
     ldiv_t *ldiv;
-    long data;
+    long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
-    data = ldiv->rem;
+    x = ldiv->rem;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*
@@ -235,15 +181,13 @@ LDIV_tostring(lua_State *L)
  */
 
 static luab_module_table_t ldiv_methods[] = {
-    LUAB_FUNC("set_quot",     LDIV_set_quot),
-    LUAB_FUNC("set_rem",      LDIV_set_rem),
-    LUAB_FUNC("get",          LDIV_get),
-    LUAB_FUNC("get_quot",     LDIV_get_quot),
-    LUAB_FUNC("get_rem",      LDIV_get_rem),
-    LUAB_FUNC("dump",         LDIV_dump),
-    LUAB_FUNC("__gc",         LDIV_gc),
-    LUAB_FUNC("__len",        LDIV_len),
-    LUAB_FUNC("__tostring",   LDIV_tostring),
+    LUAB_FUNC("quot",           LDIV_quot),
+    LUAB_FUNC("rem",            LDIV_rem),
+    LUAB_FUNC("get",            LDIV_get),
+    LUAB_FUNC("dump",           LDIV_dump),
+    LUAB_FUNC("__gc",           LDIV_gc),
+    LUAB_FUNC("__len",          LDIV_len),
+    LUAB_FUNC("__tostring",     LDIV_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

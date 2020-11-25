@@ -109,103 +109,49 @@ LLDIV_dump(lua_State *L)
  */
 
 /***
- * Set quotient for integral lldivision operations.
- *
- * @function set_quot
- *
- * @param data              Quotient.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage data [, err, msg ] = lldiv:set_quot(data)
- */
-static int
-LLDIV_set_quot(lua_State *L)
-{
-    lldiv_t *lldiv;
-    long data;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
-    data = (long)luab_checkinteger(L, 2, luab_env_int_max);
-
-    lldiv->quot = data;
-
-    return (luab_pushxinteger(L, data));
-}
-
-/***
  * Get quotient for integral lldivision operations.
  *
- * @function get_quot
+ * @function quot
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = lldiv:get_quot()
+ * @usage data [, err, msg ] = lldiv:quot()
  */
 static int
-LLDIV_get_quot(lua_State *L)
+LLDIV_quot(lua_State *L)
 {
     lldiv_t *lldiv;
-    long data;
+    long long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
-    data = lldiv->quot;
+    x = lldiv->quot;
 
-    return (luab_pushxinteger(L, data));
-}
-
-/***
- * Set reminder of integal devision operations.
- *
- * @function set_rem
- *
- * @param data              Reminder.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage data [, err, msg ] = lldiv:set_rem(data)
- */
-static int
-LLDIV_set_rem(lua_State *L)
-{
-    lldiv_t *lldiv;
-    long data;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
-    data = (long)luab_checkinteger(L, 2, luab_env_int_max);
-
-    lldiv->rem = data;
-
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
  * Get reminder of integal devision operations.
  *
- * @function get_rem
+ * @function rem
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = lldiv:get_rem()
+ * @usage data [, err, msg ] = lldiv:rem()
  */
 static int
-LLDIV_get_rem(lua_State *L)
+LLDIV_rem(lua_State *L)
 {
     lldiv_t *lldiv;
-    long data;
+    long long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     lldiv = luab_udata(L, 1, &luab_lldiv_type, lldiv_t *);
-    data = lldiv->rem;
+    x = lldiv->rem;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*
@@ -235,15 +181,13 @@ LLDIV_tostring(lua_State *L)
  */
 
 static luab_module_table_t lldiv_methods[] = {
-    LUAB_FUNC("set_quot",     LLDIV_set_quot),
-    LUAB_FUNC("set_rem",      LLDIV_set_rem),
-    LUAB_FUNC("get",          LLDIV_get),
-    LUAB_FUNC("get_quot",     LLDIV_get_quot),
-    LUAB_FUNC("get_rem",      LLDIV_get_rem),
-    LUAB_FUNC("dump",         LLDIV_dump),
-    LUAB_FUNC("__gc",         LLDIV_gc),
-    LUAB_FUNC("__len",        LLDIV_len),
-    LUAB_FUNC("__tostring",   LLDIV_tostring),
+    LUAB_FUNC("quot",           LLDIV_quot),
+    LUAB_FUNC("rem",            LLDIV_rem),
+    LUAB_FUNC("get",            LLDIV_get),
+    LUAB_FUNC("dump",           LLDIV_dump),
+    LUAB_FUNC("__gc",           LLDIV_gc),
+    LUAB_FUNC("__len",          LLDIV_len),
+    LUAB_FUNC("__tostring",     LLDIV_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

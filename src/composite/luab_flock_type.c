@@ -129,30 +129,30 @@ static int
 FLOCK_set_l_start(lua_State *L)
 {
     struct flock *l;
-    off_t data;
+    off_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = (off_t)luab_checkinteger(L, 2, luab_env_ulong_max);
+    x = (off_t)luab_checkinteger(L, 2, luab_env_ulong_max);
 
-    l->l_start = data;
+    l->l_start = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 static int
 FLOCK_get_l_start(lua_State *L)
 {
     struct flock *l;
-    off_t data;
+    off_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = l->l_start;
+    x = l->l_start;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /* len = 0 means until end of file */
@@ -160,30 +160,30 @@ static int
 FLOCK_set_l_len(lua_State *L)
 {
     struct flock *l;
-    off_t data;
+    off_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = (off_t)luab_checkinteger(L, 2, luab_env_long_max);
+    x = (off_t)luab_checkinteger(L, 2, luab_env_long_max);
 
-    l->l_len = data;
+    l->l_len = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 static int
 FLOCK_get_l_len(lua_State *L)
 {
     struct flock *l;
-    off_t data;
+    off_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = l->l_len;
+    x = l->l_len;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /* lock owner */
@@ -191,30 +191,30 @@ static int
 FLOCK_set_l_pid(lua_State *L)
 {
     struct flock *l;
-    pid_t data;
+    pid_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = (pid_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (pid_t)luab_checkinteger(L, 2, luab_env_int_max);
 
-    l->l_pid = data;
+    l->l_pid = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 static int
 FLOCK_get_l_pid(lua_State *L)
 {
     struct flock *l;
-    pid_t data;
+    pid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = l->l_pid;
+    x = l->l_pid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /* lock type: read/write, etc. */
@@ -222,30 +222,30 @@ static int
 FLOCK_set_l_type(lua_State *L)
 {
     struct flock *l;
-    short data;
+    short x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = (short)luab_checkinteger(L, 2, luab_env_shrt_max);
+    x = (short)luab_checkinteger(L, 2, luab_env_shrt_max);
 
-    l->l_type = data;
+    l->l_type = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 static int
 FLOCK_get_l_type(lua_State *L)
 {
     struct flock *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = l->l_type;
+    x = l->l_type;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /* type of l_start */
@@ -253,30 +253,30 @@ static int
 FLOCK_set_l_whence(lua_State *L)
 {
     struct flock *l;
-    short data;
+    short x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = (short)luab_checkinteger(L, 2, luab_env_shrt_max);
+    x = (short)luab_checkinteger(L, 2, luab_env_shrt_max);
 
-    l->l_whence = data;
+    l->l_whence = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 static int
 FLOCK_get_l_whence(lua_State *L)
 {
     struct flock *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = l->l_whence;
+    x = l->l_whence;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /* remote system id or zero for local */
@@ -284,30 +284,30 @@ static int
 FLOCK_set_l_sysid(lua_State *L)
 {
     struct flock *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    l->l_sysid = data;
+    l->l_sysid = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 static int
 FLOCK_get_l_sysid(lua_State *L)
 {
     struct flock *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_flock_type, struct flock *);
-    data = l->l_sysid;
+    x = l->l_sysid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*

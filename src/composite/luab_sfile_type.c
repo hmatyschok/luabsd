@@ -167,19 +167,19 @@ static int
 SFILE_p(lua_State *L)
 {
     FILE *fp;
-    void *dp;
+    void *v;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fp = luab_udata(L, 1, &luab_sfile_type, FILE *);
 
     if (fp != NULL)
-        dp = fp->_p;
+        v = fp->_p;
     else {
         errno = ENOENT;
-        dp = NULL;
+        v = NULL;
     }
-    return (luab_pushfstring(L, "(%p)", dp));
+    return (luab_pushfstring(L, "(%p)", v));
 }
 
 /***
@@ -195,19 +195,19 @@ static int
 SFILE_r(lua_State *L)
 {
     FILE *fp;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fp = luab_udata(L, 1, &luab_sfile_type, FILE *);
 
     if (fp != NULL)
-        data = fp->_r;
+        x = fp->_r;
     else {
         errno = ENOENT;
-        data = -1;
+        x = -1;
     }
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -223,19 +223,19 @@ static int
 SFILE_w(lua_State *L)
 {
     FILE *fp;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fp = luab_udata(L, 1, &luab_sfile_type, FILE *);
 
     if (fp != NULL)
-        data = fp->_w;
+        x = fp->_w;
     else {
         errno = ENOENT;
-        data = -1;
+        x = -1;
     }
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -251,19 +251,19 @@ static int
 SFILE_flags(lua_State *L)
 {
     FILE *fp;
-    short data;
+    short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fp = luab_udata(L, 1, &luab_sfile_type, FILE *);
 
     if (fp != NULL)
-        data = fp->_flags;
+        x = fp->_flags;
     else {
         errno = ENOENT;
-        data = -1;
+        x = -1;
     }
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -279,19 +279,19 @@ static int
 SFILE_file(lua_State *L)
 {
     FILE *fp;
-    short data;
+    short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fp = luab_udata(L, 1, &luab_sfile_type, FILE *);
 
     if (fp != NULL)
-        data = fp->_file;
+        x = fp->_file;
     else {
         errno = ENOENT;
-        data = -1;
+        x = -1;
     }
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -307,7 +307,7 @@ static int
 SFILE_bf(lua_State *L)
 {
     FILE *fp;
-    void *dp;
+    void *v;
     luab_module_t *m;
 
     (void)luab_core_checkmaxargs(L, 1);
@@ -315,13 +315,13 @@ SFILE_bf(lua_State *L)
     fp = luab_udata(L, 1, &luab_sfile_type, FILE *);
 
     if (fp != NULL) {
-        dp = &(fp->_bf);
+        v = &(fp->_bf);
         m = luab_xmod(__SBUF, TYPE, __func__);
     } else {
-        dp = NULL;
+        v = NULL;
         m = NULL;
     }
-    return (luab_pushudata(L, luab_xmod(__SBUF, TYPE, __func__), dp));
+    return (luab_pushudata(L, luab_xmod(__SBUF, TYPE, __func__), v));
 }
 
 /***
@@ -337,19 +337,19 @@ static int
 SFILE_cookie(lua_State *L)
 {
     FILE *fp;
-    void *dp;
+    void *v;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     fp = luab_udata(L, 1, &luab_sfile_type, FILE *);
 
     if (fp != NULL)
-        dp = fp->_cookie;
+        v = fp->_cookie;
     else {
         errno = ENOENT;
-        dp = NULL;
+        v = NULL;
     }
-    return (luab_pushfstring(L, "(%p)", dp));
+    return (luab_pushfstring(L, "(%p)", v));
 }
 
 /*

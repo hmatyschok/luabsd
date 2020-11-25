@@ -34,6 +34,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 #if __BSD_VISIBLE
 extern luab_module_t luab_db_type;
@@ -99,7 +100,7 @@ static int
 DB_dump(lua_State *L)
 {
     return (luab_core_dump(L, 1, NULL, 0));
-} 
+}
 
 /*
  * Database access methods.
@@ -437,6 +438,68 @@ db_udata(lua_State *L, int narg)
     return (self->ud_db);
 }
 
+static luab_table_t *
+db_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    DB *x, *y;
+    size_t m, n, sz;
+
+    sz = sizeof(DB *);
+
+    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+
+        if (((x = (DB *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, &luab_db_type, DB *);
+                        (void)memmove(&(x[m]), y, sz);
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        } else
+            errno = ERANGE;
+    }
+    return (tbl);
+}
+
+static void
+db_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    DB *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (DB *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_rawsetudata(L, narg, &luab_db_type, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_table_free(tbl);
+    } else
+        errno = ERANGE;
+}
+
 luab_module_t luab_db_type = {
     .m_cookie   = LUAB_DB_TYPE_ID,
     .m_name     = LUAB_DB_TYPE,
@@ -444,6 +507,8 @@ luab_module_t luab_db_type = {
     .m_create   = db_create,
     .m_init     = db_init,
     .m_get      = db_udata,
+    .m_get_tbl  = db_checktable,
+    .m_set_tbl  = db_pushtable,
     .m_sz       = sizeof(luab_db_t),
 };
 #endif /* __BSD_VISIBLE */

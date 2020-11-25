@@ -125,14 +125,14 @@ static int
 REGMATCH_rm_so(lua_State *L)
 {
     regmatch_t *rm;
-    regoff_t data;
+    regoff_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
-    data = rm->rm_so;
+    x = rm->rm_so;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -148,14 +148,14 @@ static int
 REGMATCH_rm_eo(lua_State *L)
 {
     regmatch_t *rm;
-    regoff_t data;
+    regoff_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
-    data = rm->rm_eo;
+    x = rm->rm_eo;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*

@@ -124,14 +124,14 @@ static int
 IF_NAMEINDEX_if_index(lua_State *L)
 {
     struct if_nameindex *ifni;
-    u_int if_index;
+    u_int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
-    if_index = ifni->if_index;
+    x = ifni->if_index;
 
-    return (luab_pushxinteger(L, if_index));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -147,14 +147,14 @@ static int
 IF_NAMEINDEX_if_name(lua_State *L)
 {
     struct if_nameindex *ifni;
-    char *if_name;
+    caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
-    if_name = ifni->if_name;
+    dp = ifni->if_name;
 
-    return (luab_pushstring(L, ifni->if_name));
+    return (luab_pushstring(L, dp));
 }
 
 /*

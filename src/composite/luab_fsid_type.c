@@ -58,7 +58,7 @@ typedef struct luab_fsid {
  */
 
 static int
-fsid_pushtable_internal(lua_State *L, int narg, const char *k, int32_t *vec)
+luab_table_pushfsid(lua_State *L, int narg, const char *k, int32_t *vec)
 {
     size_t m, n;
 
@@ -110,7 +110,7 @@ FSID_get(lua_State *L)
     fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
 
     lua_newtable(L);
-    (void)fsid_pushtable_internal(L, -2, "val", fsid->val);
+    (void)luab_table_pushfsid(L, -2, "val", fsid->val);
     lua_pushvalue(L, -1);
 
     return (1);
@@ -155,7 +155,7 @@ FSID_val(lua_State *L)
     fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
     dp = fsid->val;
 
-    return (fsid_pushtable_internal(L, -2, NULL, dp));
+    return (luab_table_pushfsid(L, -2, NULL, dp));
 }
 
 /*

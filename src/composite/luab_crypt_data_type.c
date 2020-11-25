@@ -130,16 +130,16 @@ static int
 CRYPT_DATA_set_initialized(lua_State *L)
 {
     struct crypt_data *cd;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
-    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    cd->initialized = data;
+    cd->initialized = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -155,14 +155,14 @@ static int
 CRYPT_DATA_get_initialized(lua_State *L)
 {
     struct crypt_data *cd;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
-    data = cd->initialized;
+    x = cd->initialized;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -180,19 +180,18 @@ static int
 CRYPT_DATA_set_buf(lua_State *L)
 {
     struct crypt_data *cd;
-    const char *buf;
+    const char *dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
-    buf = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN, NULL);
+    dp = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN, NULL);
 
-    len = strnlen(buf, LUAB_CRYPT_DATAMAXLEN);
+    if ((len = strnlen(dp, LUAB_CRYPT_DATAMAXLEN)) > 0)
+        (void)memmove(cd->__buf, dp, len);
 
-    (void)memmove(cd->__buf, buf, len);
-
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, len));
 }
 
 /***
@@ -208,16 +207,17 @@ static int
 CRYPT_DATA_get_buf(lua_State *L)
 {
     struct crypt_data *cd;
-    caddr_t buf;
+    caddr_t dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
-    buf = cd->__buf;
-    len = strnlen(buf, LUAB_CRYPT_DATAMAXLEN);
 
-    return (luab_pushldata(L, buf, len));
+    dp = cd->__buf;
+    len = strnlen(dp, LUAB_CRYPT_DATAMAXLEN);
+
+    return (luab_pushldata(L, dp, len));
 }
 
 /*

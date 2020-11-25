@@ -47,6 +47,8 @@ extern luab_module_t luab_sf_hdtr_type;
  *      int trl_cnt;
  *  };
  *
+ * XXX
+ *  We shell refactor this implementation.
  */
 
 typedef enum sf_hdtr_cache {

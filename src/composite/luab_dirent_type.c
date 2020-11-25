@@ -143,14 +143,14 @@ static int
 DIRENT_d_fileno(lua_State *L)
 {
     struct dirent *dp;
-    ino_t data;
+    ino_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
-    data = dp->d_fileno;
+    x = dp->d_fileno;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -166,14 +166,14 @@ static int
 DIRENT_d_off(lua_State *L)
 {
     struct dirent *dp;
-    off_t data;
+    off_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
-    data = dp->d_off;
+    x = dp->d_off;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -189,14 +189,14 @@ static int
 DIRENT_d_reclen(lua_State *L)
 {
     struct dirent *dp;
-    uint16_t data;
+    uint16_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
-    data = dp->d_reclen;
+    x = dp->d_reclen;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -212,14 +212,14 @@ static int
 DIRENT_d_type(lua_State *L)
 {
     struct dirent *dp;
-    uint8_t data;
+    uint8_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
-    data = dp->d_type;
+    x = dp->d_type;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -235,14 +235,14 @@ static int
 DIRENT_d_namlen(lua_State *L)
 {
     struct dirent *dp;
-    uint16_t data;
+    uint16_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
-    data = dp->d_namlen;
+    x = dp->d_namlen;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***

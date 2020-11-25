@@ -214,14 +214,14 @@ static int
 TTYENT_ty_status(lua_State *L)
 {
     struct ttyent *typ;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     typ = luab_udata(L, 1, &luab_ttyent_type, struct ttyent *);
-    data = typ->ty_status;
+    x = typ->ty_status;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***

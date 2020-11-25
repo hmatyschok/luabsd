@@ -136,14 +136,14 @@ static int
 CMSGCRED_cmcred_pid(lua_State *L)
 {
     struct cmsgcred *cmcred;
-    pid_t data;
+    pid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
-    data = cmcred->cmcred_pid;
+    x = cmcred->cmcred_pid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -159,14 +159,14 @@ static int
 CMSGCRED_cmcred_uid(lua_State *L)
 {
     struct cmsgcred *cmcred;
-    uid_t data;
+    uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
-    data = cmcred->cmcred_uid;
+    x = cmcred->cmcred_uid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -182,14 +182,14 @@ static int
 CMSGCRED_cmcred_euid(lua_State *L)
 {
     struct cmsgcred *cmcred;
-    uid_t data;
+    uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
-    data = cmcred->cmcred_euid;
+    x = cmcred->cmcred_euid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -205,14 +205,14 @@ static int
 CMSGCRED_cmcred_gid(lua_State *L)
 {
     struct cmsgcred *cmcred;
-    gid_t data;
+    gid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
-    data = cmcred->cmcred_gid;
+    x = cmcred->cmcred_gid;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -228,14 +228,14 @@ static int
 CMSGCRED_cmcred_ngroups(lua_State *L)
 {
     struct cmsgcred *cmcred;
-    short data;
+    short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
-    data = cmcred->cmcred_ngroups;
+    x = cmcred->cmcred_ngroups;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -251,18 +251,18 @@ static int
 CMSGCRED_cmcred_groups(lua_State *L)
 {
     struct cmsgcred *cmcred;
-    void *data;
+    void *dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
-    data = cmcred->cmcred_groups;
+    dp = cmcred->cmcred_groups;
     len = (luab_env_ngroups_max * sizeof(gid_t));
     
-        /* XXX (LUA_TTABLE) */
+        /* XXX (LUA_TTABLE), pending.. */
 
-    return (luab_pushldata(L, data, len));
+    return (luab_pushldata(L, dp, len));
 }
 
 /*

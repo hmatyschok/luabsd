@@ -125,16 +125,16 @@ static int
 LINGER_set_l_onoff(lua_State *L)
 {
     struct linger *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    l->l_onoff = data;
+    l->l_onoff = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -150,14 +150,14 @@ static int
 LINGER_get_l_onoff(lua_State *L)
 {
     struct linger *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    data = l->l_onoff;
+    x = l->l_onoff;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -175,16 +175,16 @@ static int
 LINGER_set_l_linger(lua_State *L)
 {
     struct linger *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    data = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    l->l_linger = data;
+    l->l_linger = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -200,14 +200,14 @@ static int
 LINGER_get_l_linger(lua_State *L)
 {
     struct linger *l;
-    int data;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    data = l->l_linger;
+    x = l->l_linger;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*
