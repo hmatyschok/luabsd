@@ -129,15 +129,15 @@ static int
 ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
 {
     struct accept_filter_arg *af;
-    const char *data;
+    const char *dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-    data = luab_checklstring(L, 2, LUAB_AF_NAMEMAXLEN, NULL);
-    len = strlen(data);
-    (void)memmove(af->af_name, data, len);
+    dp = luab_checklstring(L, 2, LUAB_AF_NAMEMAXLEN, NULL);
+    len = strlen(dp);
+    (void)memmove(af->af_name, dp, len);
     return (luab_pushldata(L, af->af_name, len));
 }
 
@@ -154,16 +154,16 @@ static int
 ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
 {
     struct accept_filter_arg *af;
-    caddr_t data;
+    caddr_t dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-    data = af->af_name;
-    len = strlen(data);
+    dp = af->af_name;
+    len = strlen(dp);
 
-    return (luab_pushldata(L, data, len));
+    return (luab_pushldata(L, dp, len));
 }
 
 /***
@@ -181,15 +181,15 @@ static int
 ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
 {
     struct accept_filter_arg *af;
-    const char *data;
+    const char *dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-    data = luab_checklstring(L, 2, LUAB_AF_ARGMAXLEN, NULL);
-    len = strlen(data);
-    (void)memmove(af->af_arg, data, len);
+    dp = luab_checklstring(L, 2, LUAB_AF_ARGMAXLEN, NULL);
+    len = strlen(dp);
+    (void)memmove(af->af_arg, dp, len);
     return (luab_pushldata(L, af->af_arg, len));
 }
 
@@ -206,16 +206,16 @@ static int
 ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
 {
     struct accept_filter_arg *af;
-    caddr_t data;
+    caddr_t dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-    data = af->af_arg;
-    len = strlen(data);
+    dp = af->af_arg;
+    len = strlen(dp);
 
-    return (luab_pushldata(L, data, len));
+    return (luab_pushldata(L, dp, len));
 }
 
 /*
@@ -306,7 +306,8 @@ accept_filter_arg_checktable(lua_State *L, int narg)
                 }
                 lua_pop(L, 1);
             }
-        }
+        } else
+            errno = ERANGE;
     }
     return (tbl);
 }

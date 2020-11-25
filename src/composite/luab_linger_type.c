@@ -298,7 +298,8 @@ linger_checktable(lua_State *L, int narg)
                 }
                 lua_pop(L, 1);
             }
-        }
+        } else
+            errno = ERANGE;
     }
     return (tbl);
 }

@@ -126,16 +126,16 @@ static int
 BINTIME_set_sec(lua_State *L)
 {
     struct bintime *bt;
-    time_t data;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
-    data = (time_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (time_t)luab_checkinteger(L, 2, luab_env_int_max);
 
-    bt->sec = data;
+    bt->sec = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -151,14 +151,14 @@ static int
 BINTIME_get_sec(lua_State *L)
 {
     struct bintime *bt;
-    time_t data;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
-    data = bt->sec;
+    x = bt->sec;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -176,16 +176,16 @@ static int
 BINTIME_set_frac(lua_State *L)
 {
     struct bintime *bt;
-    uint64_t data;
+    uint64_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
-    data = (uint64_t)luab_checkinteger(L, 2, luab_env_long_max);
+    x = (uint64_t)luab_checkinteger(L, 2, luab_env_long_max);
 
-    bt->frac = data;
+    bt->frac = x;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -201,14 +201,14 @@ static int
 BINTIME_get_frac(lua_State *L)
 {
     struct bintime *bt;
-    uint64_t data;
+    uint64_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
-    data = bt->frac;
+    x = bt->frac;
 
-    return (luab_pushxinteger(L, data));
+    return (luab_pushxinteger(L, x));
 }
 
 /*
@@ -299,7 +299,8 @@ bintime_checktable(lua_State *L, int narg)
                 }
                 lua_pop(L, 1);
             }
-        }
+        } else
+            errno = ERANGE;
     }
     return (tbl);
 }
