@@ -43,27 +43,6 @@
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"
 
-static lua_Integer
-luab_core_Integer_promotion_msk(int s)
-{
-    lua_Integer b_msk;
-
-    b_msk = (s != 0) ? (lua_Integer)(
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_ulong_max
-#else
-    luab_env_uint_max
-#endif
-    ) : (
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_long_max
-#else
-    luab_env_int_max
-#endif
-    );
-    return (b_msk);
-}
-
 /*
  * Generic service primitives, subset of <core>.
  */
@@ -153,6 +132,27 @@ luab_core_checkmodule(luab_type_t idx, uint32_t id, const char *fname)
         luab_core_err(EX_UNAVAILABLE, fname, ENOENT);
 
     return (m);
+}
+
+lua_Integer
+luab_core_Integer_promotion_msk(int s)
+{
+    lua_Integer b_msk;
+
+    b_msk = (s != 0) ? (lua_Integer)(
+#if defined(__LP64__) || defined(__mips_n64)
+    luab_env_ulong_max
+#else
+    luab_env_uint_max
+#endif
+    ) : (
+#if defined(__LP64__) || defined(__mips_n64)
+    luab_env_long_max
+#else
+    luab_env_int_max
+#endif
+    );
+    return (b_msk);
 }
 
 /*

@@ -266,6 +266,8 @@ luab_module_t    *luab_core_checkmodule(luab_type_t, uint32_t, const char *);
     (luab_core_checkmodule(luab_idx(name),                          \
         luab_xcookie(name, type), (fname)))
 
+lua_Integer  luab_core_Integer_promotion_msk(int);
+
 /*
  * Access functions, n-th arg over argv, [stack -> C].
  */
