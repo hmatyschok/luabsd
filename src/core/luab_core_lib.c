@@ -43,6 +43,27 @@
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"
 
+static lua_Integer
+luab_core_Integer_max(int s)
+{
+    lua_Integer b_msk;
+
+    b_msk = (s != 0) ? (
+#if defined(__LP64__) || defined(__mips_n64)
+    luab_env_ulong_max
+#else
+    luab_env_uint_max
+#endif
+    ) : (
+#if defined(__LP64__) || defined(__mips_n64)
+    luab_env_long_max
+#else
+    luab_env_int_max
+#endif
+    );
+    return (b_msk);
+}
+
 /*
  * Generic service primitives, subset of <core>.
  */
@@ -160,19 +181,7 @@ luab_tolinteger(lua_State *L, int narg, int s)
 {
     lua_Integer b_msk;
 
-    b_msk = (s != 0) ? (
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_ulong_max
-#else
-    luab_env_uint_max
-#endif
-    ) : (
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_long_max
-#else
-    luab_env_int_max
-#endif
-    );
+    b_msk = luab_core_Integer_max(s);
     return (luab_tointeger(L, narg, b_msk));
 }
 
@@ -181,19 +190,7 @@ luab_checklinteger(lua_State *L, int narg, int s)
 {
     lua_Integer b_msk;
 
-    b_msk = (s != 0) ? (
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_ulong_max
-#else
-    luab_env_uint_max
-#endif
-    ) : (
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_long_max
-#else
-    luab_env_int_max
-#endif
-    );
+    b_msk = luab_core_Integer_max(s);
     return (luab_checkinteger(L, narg, b_msk));
 }
 
@@ -630,7 +627,7 @@ luab_uuid(lua_State *L)
             status = luab_pushldata(L, buf, strlen(buf));
             free(buf);
         } else {
-            errno = (up_call != 0) ? up_call : ENOMEM;
+            errno = ENOMEM;
             status = luab_pushnil(L);
         }
     }
