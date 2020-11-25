@@ -654,9 +654,8 @@ luab_getgroups(lua_State *L)
     tbl = NULL;
 
     gidsetlen = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    n = luab_checktableisnil(L, 2);
 
-    if (gidsetlen == n) {
+    if ((n = luab_checktableisnil(L, 2)) == gidsetlen) {
 
         if (gidsetlen != 0) {
 
