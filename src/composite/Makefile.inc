@@ -46,3 +46,4 @@ SRCS+=  luab_dirent_type.c
 SRCS+=  luab_fstab_type.c
 SRCS+=  luab___sbuf_type.c
 SRCS+=  luab_sfile_type.c
+SRCS+=  luab_jail_type.c

@@ -265,13 +265,15 @@ luab_checklstringalloc(lua_State *L, int narg, size_t nmax)
     size_t len;
     caddr_t bp;
 
-    dp = luab_checklstring(L, narg, nmax, &len);
+    if ((dp = luab_checklstringisnil(L, narg, nmax, &len)) != NULL) {
 
-    if ((bp = malloc(len + 1)) != NULL) {
-        (void)memset_s(bp, len, 0, len);
-        (void)snprintf(bp, len + 1, "%s", dp);
+        if ((bp = malloc(len + 1)) != NULL) {
+            (void)memset_s(bp, len, 0, len);
+            (void)snprintf(bp, len + 1, "%s", dp);
+        } else
+            luab_core_argerror(L, narg, NULL, 0, 0, errno);
     } else
-        luab_core_argerror(L, narg, NULL, 0, 0, errno);
+        bp = NULL;
 
     return (bp);
 }

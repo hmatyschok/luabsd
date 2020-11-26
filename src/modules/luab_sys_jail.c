@@ -32,6 +32,7 @@
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_udata.h"
 
 #define LUAB_SYS_JAIL_LIB_ID    1606009660
 #define LUAB_SYS_JAIL_LIB_KEY   "jail"
@@ -45,6 +46,23 @@ extern luab_module_t luab_sys_jail_lib;
 /*
  * Generator functions.
  */
+
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(JAIL)).
+ *
+ * @function jail_create
+ *
+ * @param jail              Instance of (LUA_TUSERDATA(JAIL)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage jail [, err, msg ] = bsd.sys.jail.jail_create()
+ */
+static int
+luab_jail_create(lua_State *L)
+{
+    return (luab_core_create(L, 0, luab_xmod(JAIL, TYPE, __func__), NULL));
+}
 
 /*
  * Interface against <sys/jail.h>
@@ -65,6 +83,7 @@ static luab_module_table_t luab_sys_jail_vec[] = {
     LUAB_INT("JAIL_SYS_DISABLE",        JAIL_SYS_DISABLE),
     LUAB_INT("JAIL_SYS_NEW",            JAIL_SYS_NEW),
     LUAB_INT("JAIL_SYS_INHERIT",        JAIL_SYS_INHERIT),
+    LUAB_FUNC("jail_create",            luab_jail_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

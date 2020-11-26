@@ -100,6 +100,7 @@ extern luab_module_t luab_dirent_type;
 extern luab_module_t luab_fstab_type;
 extern luab_module_t luab___sbuf_type;
 extern luab_module_t luab_sfile_type;
+extern luab_module_t luab_jail_type;
 
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;

@@ -948,6 +948,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_sfile_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_SFILE_IDX,
+    },{
+        .mv_mod = &luab_jail_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_JAIL_IDX,
     },
 #if __BSD_VISIBLE
     {
