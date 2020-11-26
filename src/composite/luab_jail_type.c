@@ -662,22 +662,26 @@ static void *
 jail_create(lua_State *L, void *arg __unused)
 {
     luab_jail_t *self;
+    int api;
 
-    if (JAIL_API_VERSION == 2)
-        self = luab_new_jail(L, NULL);
-    else
+    if (JAIL_API_VERSION == 2) {
+        api = JAIL_API_VERSION;
+        self = luab_new_jail(L, &api);
+    } else
         self = NULL;
 
     return (self);
 }
 
 static void
-jail_init(void *ud, void *arg __unused)
+jail_init(void *ud, void *arg)
 {
     luab_jail_t *self;
+    int *xp;
 
-    if ((self = (luab_jail_t *)ud) != NULL)
-        self->ud_jail.version = JAIL_API_VERSION;
+    if (((self = (luab_jail_t *)ud) != NULL) &&
+        ((xp = (int *)arg) != NULL))
+        self->ud_jail.version = *xp;
 }
 
 static void *
