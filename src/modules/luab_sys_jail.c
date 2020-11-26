@@ -33,6 +33,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 #define LUAB_SYS_JAIL_LIB_ID    1606009660
 #define LUAB_SYS_JAIL_LIB_KEY   "jail"
@@ -42,6 +43,210 @@ extern luab_module_t luab_sys_jail_lib;
 /*
  * Service primitives.
  */
+
+/***
+ * jail(2) - create and manage system jails
+ *
+ * @function jail
+ *
+ * @param jail              Specifies the jail about to be setup, by
+ *                          an instance of (LUA_TUSERDATA(JAIL)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg] = bsd.sys.jail.jail(jail)
+ */
+static int
+luab_jail(lua_State *L)
+{
+    struct jail *jp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    jp = luab_udata(L, 1, luab_xmod(JAIL, TYPE, __func__), struct jail *);
+    status = jail(jp);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * jail_set(2) - create and manage system jails
+ *
+ * @function jail_set
+ *
+ * @param iov               Specifies parametrical data over a set of
+ *
+ *                              (name,value)
+ *
+ *                          pairs by an instance of (LUA_TABLE)
+ *
+ *                              { iov0, iov1, ... , iovN }
+ *
+ *                          over (LUA_TUSERDATA(JAIL)).
+ * @param niov              Specifies the cardinality.
+ * @param flags             The flags argument are constructed with values over
+ *
+ *                              bsd.sys.jail.JAIL_{
+ *                                  CREATE,
+ *                                  UPDATE,
+ *                                  ATTACH,
+ *                                  DYING
+ *                              }
+ *
+ *                          by combining those with inclusive-OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg] = bsd.sys.jail.jail_set(iov, niov, flags)
+ */
+static int
+luab_jail_set(lua_State *L)
+{
+    luab_module_t *m;
+    luab_table_t *tbl;
+    struct iovec *iov;
+    u_int niov;
+    int flags;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
+    tbl = luab_table_checkxdata(L, 1, m);
+    niov = luab_checkinteger(L, 2, luab_env_int_max);
+    flags = luab_checkinteger(L, 3, luab_env_int_max);
+
+    if (tbl != NULL) {
+        iov = (struct iovec *)(tbl->tbl_vec);
+
+        if ((tbl->tbl_card - 1) == niov && niov > 0) {
+            status = jail_set(iov, niov, flags);
+            luab_table_pushxdata(L, 1, m, tbl, 0, 1);
+        } else {
+            luab_table_free(tbl);
+            errno = ERANGE;
+            status = -1;
+        }
+    } else
+        status = -1;
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * jail_get(2) - create and manage system jails
+ *
+ * @function jail_get
+ *
+ * @param iov               Specifies parametrical data over a set of
+ *
+ *                              (name,value)
+ *
+ *                          pairs by an instance of (LUA_TABLE)
+ *
+ *                              { iov0, iov1, ... , iovN }
+ *
+ *                          over (LUA_TUSERDATA(JAIL)).
+ * @param niov              Specifies the cardinality.
+ * @param flags             The flags argument are constructed with values over
+ *
+ *                              bsd.sys.jail.JAIL_{
+ *                                  CREATE,
+ *                                  UPDATE,
+ *                                  ATTACH,
+ *                                  DYING
+ *                              }
+ *
+ *                          by combining those with inclusive-OR.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg] = bsd.sys.jail.jail_get(iov, niov, flags)
+ */
+static int
+luab_jail_get(lua_State *L)
+{
+    luab_module_t *m;
+    luab_table_t *tbl;
+    struct iovec *iov;
+    u_int niov;
+    int flags;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
+    tbl = luab_table_checkxdata(L, 1, m);
+    niov = luab_checkinteger(L, 2, luab_env_int_max);
+    flags = luab_checkinteger(L, 3, luab_env_int_max);
+
+    if (tbl != NULL) {
+        iov = (struct iovec *)(tbl->tbl_vec);
+
+        if ((tbl->tbl_card - 1) == niov && niov > 0) {
+            status = jail_get(iov, niov, flags);
+            luab_table_pushxdata(L, 1, m, tbl, 0, 1);
+        } else {
+            luab_table_free(tbl);
+            errno = ERANGE;
+            status = -1;
+        }
+    } else
+        status = -1;
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * jail_attach(2) - create and manage system jails
+ *
+ * @function jail_attach
+ *
+ * @param jail              Specifies jail ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg] = bsd.sys.jail.jail_attach(jls)
+ */
+static int
+luab_jail_attach(lua_State *L)
+{
+    int jls, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    jls = luab_checkinteger(L, 1, luab_env_int_max);
+    status = jail_attach(jls);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * jail_remove(2) - create and manage system jails
+ *
+ * @function jail_remove
+ *
+ * @param jail              Specifies jail ID.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg] = bsd.sys.jail.jail_remove(jls)
+ */
+static int
+luab_jail_remove(lua_State *L)
+{
+    int jls, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    jls = luab_checkinteger(L, 1, luab_env_int_max);
+    status = jail_remove(jls);
+
+    return (luab_pushxinteger(L, status));
+}
 
 /*
  * Generator functions.
@@ -83,6 +288,11 @@ static luab_module_table_t luab_sys_jail_vec[] = {
     LUAB_INT("JAIL_SYS_DISABLE",        JAIL_SYS_DISABLE),
     LUAB_INT("JAIL_SYS_NEW",            JAIL_SYS_NEW),
     LUAB_INT("JAIL_SYS_INHERIT",        JAIL_SYS_INHERIT),
+    LUAB_FUNC("jail",                   luab_jail),
+    LUAB_FUNC("jail_set",               luab_jail_set),
+    LUAB_FUNC("jail_get",               luab_jail_get),
+    LUAB_FUNC("jail_attach",            luab_jail_attach),
+    LUAB_FUNC("jail_remove",            luab_jail_remove),
     LUAB_FUNC("jail_create",            luab_jail_create),
     LUAB_MOD_TBL_SENTINEL
 };
