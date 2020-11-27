@@ -402,7 +402,7 @@ luab_table_pusherr(lua_State *L, int up_call, int ret)
 {
     int status;
 
-    if (up_call == ERANGE)
+    if (up_call != 0 && up_call != ENOENT)
         status = luab_pushnil(L);
     else
         status = luab_pusherr(L, errno, ret);
@@ -425,7 +425,7 @@ luab_table_pushxdata(lua_State *L, int narg, luab_module_t *m,
         } else
             luab_core_err(EX_DATAERR, __func__, ENXIO);
     } else
-        errno = ENOENT;
+        errno = EINVAL;
 }
 
 int
