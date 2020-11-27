@@ -202,6 +202,33 @@ jail_pushxaddrtable(lua_State *L, int narg, const char *k, luab_jail_t *self,
     return (luab_table_pusherr(L, errno, 1));
 }
 
+static void
+jail_xtable_init(lua_State *L, int narg, void *arg)
+{
+    luab_jail_t *self;
+    struct jail *jp;
+
+
+    if ((self = (luab_jail_t *)arg) != NULL) {
+        jp = &(self->ud_jail);
+
+        luab_setinteger(L, narg, "version",   jp->version);
+        luab_setstring(L, narg, "path",       jp->path);
+        luab_setstring(L, narg, "hostname",   jp->hostname);
+        luab_setstring(L, narg, "jailname",   jp->jailname);
+        luab_setinteger(L, narg, "ip4s",      jp->ip4s);
+        luab_setinteger(L, narg, "ip6s",      jp->ip6s);
+
+        if (jp->ip4 != NULL)
+            (void)jail_pushxaddrtable(L, narg, "ip4", self, LUAB_XADDR_IP4);
+
+        if (jp->ip6 != NULL)
+            (void)jail_pushxaddrtable(L, narg, "ip6", self, LUAB_XADDR_IP6);
+
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
 /*
  * Generator functions.
  */
@@ -230,31 +257,18 @@ static int
 JAIL_get(lua_State *L)
 {
     luab_jail_t *self;
-    struct jail *jp;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_jail(L, 1);
-    jp = &(self->ud_jail);
 
-    luab_table_init(L, 1);
+    xtp.xtp_init = jail_xtable_init;
+    xtp.xtp_arg = (void *)self;
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    luab_setinteger(L, -2, "version",   jp->version);
-    luab_setstring(L, -2, "path",       jp->path);
-    luab_setstring(L, -2, "hostname",   jp->hostname);
-    luab_setstring(L, -2, "jailname",   jp->jailname);
-    luab_setinteger(L, -2, "ip4s",      jp->ip4s);
-    luab_setinteger(L, -2, "ip6s",      jp->ip6s);
-
-    if (jp->ip4 != NULL)
-        (void)jail_pushxaddrtable(L, -2, "ip4", self, LUAB_XADDR_IP4);
-
-    if (jp->ip6 != NULL)
-        (void)jail_pushxaddrtable(L, -2, "ip6", self, LUAB_XADDR_IP6);
-
-    lua_pushvalue(L, -1);
-
-    return (luab_table_pusherr(L, 0, 1));
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

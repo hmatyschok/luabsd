@@ -427,3 +427,30 @@ luab_table_pushxdata(lua_State *L, int narg, luab_module_t *m,
     } else
         errno = ENOENT;
 }
+
+int
+luab_table_pushxtable(lua_State *L, int narg, luab_xtable_param_t *xtp)
+{
+    if (xtp != NULL) {
+
+        if (xtp->xtp_init != NULL) {
+            luab_table_init(L, xtp->xtp_new);
+
+            (*xtp->xtp_init)(L, narg, xtp->xtp_arg);
+
+            if (xtp->xtp_k != NULL)
+                lua_setfield(L, narg, xtp->xtp_k);
+            else {
+                if (narg < 0)
+                    lua_pushvalue(L, narg + 1);
+                else
+                    lua_pushvalue(L, narg);
+            }
+            errno = 0;
+        } else
+            errno = ENXIO;
+    } else
+        errno = ERANGE;
+
+    return (luab_table_pusherr(L, errno, 1));
+}

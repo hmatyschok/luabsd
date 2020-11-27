@@ -29,6 +29,15 @@
 
 #define LUAB_TABLE_XS_FLAG  0x7e
 
+typedef void    (*luab_xtable_fn)(lua_State *, int, void *);
+
+typedef struct luab_xtable_param {
+    luab_xtable_fn      xtp_init;       /* initializer */
+    void                *xtp_arg;       /* data set */
+    int                 xtp_new;
+    const char          *xtp_k;         /* field */
+} luab_xtable_param_t;
+
 /*
  * Service primitives.
  */
@@ -80,5 +89,5 @@ luab_table_t     *luab_table_checklxdata(lua_State *, int, luab_module_t *, size
 int  luab_table_pusherr(lua_State *, int, int);
 void     luab_table_pushxdata(lua_State *, int, luab_module_t *,
     luab_table_t *, int, int);
-
+int  luab_table_pushxtable(lua_State *, int, luab_xtable_param_t *);
 #endif /* _LUAB_TABLE_H_ */

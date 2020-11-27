@@ -86,8 +86,8 @@ typedef struct luab_xvfsconf {
  * @return (LUA_TTABLE)
  *
  *          t = {
- *              vfc_vfsops      = (LUA_TSTRING),
- *              vfc_name        = (LUA_TSTRING),
+ *              vfc_vfsops      = (LUA_T{NIL,STRING}),
+ *              vfc_name        = (LUA_T{NIL,STRING}),
  *              vfc_typenum     = (LUA_TNUMBER),
  *              vfc_refcount    = (LUA_TNUMBER),
  *              vfc_flags       = (LUA_TNUMBER),
@@ -104,7 +104,7 @@ XVFSCONF_get(lua_State *L)
 
     vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
 
-    lua_newtable(L);
+    luab_table_init(L, 1);
     luab_setfstring(L, -2, "vfc_vfsops", "(%p)",    vfc->vfc_vfsops);
     luab_setstring(L, -2, "vfc_name",               vfc->vfc_name);
     luab_setinteger(L, -2, "vfc_typenum",           vfc->vfc_typenum);
