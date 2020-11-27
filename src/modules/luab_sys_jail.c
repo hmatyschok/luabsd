@@ -83,7 +83,7 @@ luab_jail(lua_State *L)
  *
  *                              { iov0, iov1, ... , iovN }
  *
- *                          over (LUA_TUSERDATA(JAIL)).
+ *                          over (LUA_TUSERDATA(IOVEC)).
  * @param niov              Specifies the cardinality.
  * @param flags             The flags argument are constructed with values over
  *
@@ -148,7 +148,7 @@ luab_jail_set(lua_State *L)
  *
  *                              { iov0, iov1, ... , iovN }
  *
- *                          over (LUA_TUSERDATA(JAIL)).
+ *                          over (LUA_TUSERDATA(IOVEC)).
  * @param niov              Specifies the cardinality.
  * @param flags             The flags argument are constructed with values over
  *
