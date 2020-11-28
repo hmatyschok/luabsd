@@ -59,7 +59,7 @@ typedef struct luab_div {
  */
 
 static void
-div_initxtable(lua_State *L, int narg, void *arg)
+div_fillxtable(lua_State *L, int narg, void *arg)
 {
     div_t *div;
 
@@ -78,7 +78,7 @@ div_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(DIV)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -87,16 +87,16 @@ div_initxtable(lua_State *L, int narg, void *arg)
  *              rem    = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = div:get()
+ * @usage t [, err, msg ] = div:get_table()
  */
 static int
-DIV_get(lua_State *L)
+DIV_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = div_initxtable;
+    xtp.xtp_fill = div_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_div_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -198,7 +198,7 @@ DIV_tostring(lua_State *L)
 static luab_module_table_t div_methods[] = {
     LUAB_FUNC("quot",           DIV_quot),
     LUAB_FUNC("rem",            DIV_rem),
-    LUAB_FUNC("get",            DIV_get),
+    LUAB_FUNC("get_table",      DIV_get_table),
     LUAB_FUNC("dump",           DIV_dump),
     LUAB_FUNC("__gc",           DIV_gc),
     LUAB_FUNC("__len",          DIV_len),

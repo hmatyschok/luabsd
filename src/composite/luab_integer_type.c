@@ -82,7 +82,7 @@ typedef struct luab_integer {
  */
 
 static void
-in_addr_initxtable(lua_State *L, int narg, void *arg)
+in_addr_fillxtable(lua_State *L, int narg, void *arg)
 {
     luab_primitive_t *xp;
 
@@ -100,7 +100,7 @@ in_addr_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(INTEGER)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -108,16 +108,16 @@ in_addr_initxtable(lua_State *L, int narg, void *arg)
  *              x   = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = integer:get()
+ * @usage t [, err, msg ] = integer:get_table()
  */
 static int
-INTEGER_get(lua_State *L)
+INTEGER_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = in_addr_initxtable;
+    xtp.xtp_fill = in_addr_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_integer_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -222,7 +222,7 @@ INTEGER_tostring(lua_State *L)
 
 static luab_module_table_t integer_methods[] = {
     LUAB_FUNC("set_x",          INTEGER_set_x),
-    LUAB_FUNC("get",            INTEGER_get),
+    LUAB_FUNC("get_table",      INTEGER_get_table),
     LUAB_FUNC("get_x",          INTEGER_get_x),
     LUAB_FUNC("dump",           INTEGER_dump),
     LUAB_FUNC("__gc",           INTEGER_gc),

@@ -142,7 +142,7 @@ As mentioned before, C Structures are e. g. accessible
         local k = nil
 
         if type(j) == "userdata" then
-            k = j:get()
+            k = j:get_table()
         else
             k = j
         end

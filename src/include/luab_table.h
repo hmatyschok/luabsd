@@ -32,7 +32,7 @@
 typedef void    (*luab_xtable_fn)(lua_State *, int, void *);
 
 typedef struct luab_xtable_param {
-    luab_xtable_fn      xtp_init;       /* initializer */
+    luab_xtable_fn      xtp_fill;       /* initializer */
     void                *xtp_arg;       /* data set */
     int                 xtp_new;
     const char          *xtp_k;         /* field */
@@ -49,8 +49,6 @@ size_t   luab_checkltableisnil(lua_State *, int, size_t);
 
 void     luab_table_init(lua_State *, int);
 void     luab_table_free(luab_table_t *);
-
-void     luab_table_iovec_free(luab_table_t *);
 
 /*
  * Error handler.

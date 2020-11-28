@@ -36,6 +36,56 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
+
+/*
+ * Subr.
+ */
+
+static void
+luab_iovec_init(lua_State *L, int narg, struct iovec *iov)
+{
+    luab_iovec_t *buf;
+    struct iovec *src;
+
+    if (((buf = luab_isiovec(L, narg)) != NULL) &&
+        ((buf->iov_flags & IOV_LOCK) == 0)) {
+        buf->iov_flags |= IOV_LOCK;
+
+        src = &(buf->iov);
+
+        if ((luab_iov_alloc(iov, src->iov_len)) == 0)
+            (void)luab_iov_copyin(iov, src->iov_base, src->iov_len);
+                /* XXX */
+        buf->iov_flags &= ~IOV_LOCK;
+    }
+}
+
+/*
+ * Generic service primitives.
+ */
+
+void
+luab_iovec_freetable(luab_table_t *tbl)
+{
+    struct iovec *x;
+    size_t m, n;
+
+    if (tbl != NULL) {
+
+        if (((x = tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0) &&
+            (tbl->tbl_sz == sizeof(struct iovec))) {
+
+            for (m = 0; m < n; m++)
+                (void)luab_iov_free(&(x[m]));
+
+            errno = ENOENT;
+        }
+        luab_table_free(tbl);
+    } else
+        errno = ERANGE;
+}
 
 /*
  * Message primitive for instantiation of (LUA_TUSERDATA(IOVEC)) are initialized
@@ -142,7 +192,7 @@ luab_iovec_pushudata(lua_State *L, void *v, size_t len, size_t max_len)
 }
 
 /*
- * Operations on (LUA_TTABLE).
+ * Table operations.
  */
 
 void
@@ -163,6 +213,65 @@ luab_iovec_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 
     m = luab_iovec_param_init(&mpi, v, len, len);
     luab_setudata(L, narg, m, k, &mpi);
+}
+
+luab_table_t *
+luab_iovec_checktable(lua_State *L, int narg)
+{
+    luab_table_t *tbl;
+    struct iovec *x;
+    size_t m, n;
+
+    if ((tbl = luab_newvectornil(L, narg, sizeof(struct iovec))) != NULL) {
+
+        if (((x = (struct iovec *)tbl->tbl_vec) != NULL) &&
+            (tbl->tbl_card > 1)) {
+            luab_table_init(L, 0);
+
+            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+                if (lua_next(L, narg) != 0) {
+
+                    if ((lua_isnumber(L, -2) != 0) &&
+                        (lua_isuserdata(L, -1) != 0)) {
+                        luab_iovec_init(L, -1, &(x[m]));
+                    } else
+                        luab_core_err(EX_DATAERR, __func__, EINVAL);
+                } else {
+                    errno = ENOENT;
+                    break;
+                }
+                lua_pop(L, 1);
+            }
+        } else
+            errno = ERANGE;
+    }
+    return (tbl);
+}
+
+void
+luab_iovec_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+{
+    struct iovec *x;
+    size_t m, n, k;
+
+    if (tbl != NULL) {
+
+        if (((x = (struct iovec *)tbl->tbl_vec) != NULL) &&
+            ((n = (tbl->tbl_card - 1)) != 0)) {
+            luab_table_init(L, new);
+
+            for (m = 0, k = 1; m < n; m++, k++)
+                luab_iov_rawsetxdata(L, narg, k, &(x[m]));
+
+            errno = ENOENT;
+        } else
+            errno = ERANGE;
+
+        if (clr != 0)
+            luab_iovec_freetable(tbl);
+    } else
+        errno = ERANGE;
 }
 
 /*

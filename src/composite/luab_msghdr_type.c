@@ -111,7 +111,7 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
 }
 
 static void
-msghdr_initxtable(lua_State *L, int narg, void *arg)
+msghdr_fillxtable(lua_State *L, int narg, void *arg)
 {
     luab_msghdr_t *self;
     struct msghdr *msg;
@@ -138,7 +138,7 @@ msghdr_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(MSGHDR)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -149,16 +149,16 @@ msghdr_initxtable(lua_State *L, int narg, void *arg)
  *              msg_iovlen  = (LUA_TNUMBER),
  *          }
  *
- * @usage t = msghdr:get()
+ * @usage t = msghdr:get_table()
  */
 static int
-MSGHDR_get(lua_State *L)
+MSGHDR_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = msghdr_initxtable;
+    xtp.xtp_fill = msghdr_fillxtable;
     xtp.xtp_arg = luab_to_msghdr(L, 1);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -374,7 +374,7 @@ MSGHDR_set_msg_iov(lua_State *L)
     msg = &(ud->msg_hdr);
 
     if ((iov = luab_table_checkxdata(L, 2, luab_xmod(IOVEC, TYPE, __func__))) != NULL) {
-        luab_table_iovec_free(ud->msg_buf);
+        luab_iovec_freetable(ud->msg_buf);
         ud->msg_buf = iov;
 
         msg->msg_iov = iov->tbl_vec;
@@ -425,7 +425,7 @@ MSGHDR_gc(lua_State *L)
     ud = luab_to_msghdr(L, 1);
     iov = ud->msg_buf;
 
-    luab_table_iovec_free(iov);
+    luab_iovec_freetable(iov);
 
     return (luab_core_gc(L, 1, &luab_msghdr_type));
 }
@@ -456,7 +456,7 @@ static luab_module_table_t msghdr_methods[] = {
     LUAB_FUNC("set_msg_iov",        MSGHDR_set_msg_iov),
 /*  LUAB_FUNC("set_msg_control",    MSGHDR_set_msg_control), */
     LUAB_FUNC("set_msg_flags",      MSGHDR_set_msg_iov),
-    LUAB_FUNC("get",                MSGHDR_get),
+    LUAB_FUNC("get_table",          MSGHDR_get_table),
     LUAB_FUNC("get_msg_name",       MSGHDR_get_msg_name),
     LUAB_FUNC("get_msg_iov",        MSGHDR_get_msg_iov),
 /*  LUAB_FUNC("get_msg_control",    MSGHDR_get_msg_control), */

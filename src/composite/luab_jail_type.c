@@ -203,7 +203,7 @@ jail_pushxaddrtable(lua_State *L, int narg, const char *k, luab_jail_t *self,
 }
 
 static void
-jail_initxtable(lua_State *L, int narg, void *arg)
+jail_fillxtable(lua_State *L, int narg, void *arg)
 {
     luab_jail_t *self;
     struct jail *jp;
@@ -235,7 +235,7 @@ jail_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(JAIL)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -250,16 +250,16 @@ jail_initxtable(lua_State *L, int narg, void *arg)
  *              ip6         = (LUA_T{NIL,TABLE}),
  *          }
  *
- * @usage t [, err, msg ] = jail:get()
+ * @usage t [, err, msg ] = jail:get_table()
  */
 static int
-JAIL_get(lua_State *L)
+JAIL_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = jail_initxtable;
+    xtp.xtp_fill = jail_fillxtable;
     xtp.xtp_arg = (void *)luab_to_jail(L, 1);   /* XXX */
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -655,7 +655,7 @@ static luab_module_table_t jail_methods[] = {
     LUAB_FUNC("set_jailname",   JAIL_set_jailname),
     LUAB_FUNC("set_ip4",        JAIL_set_ip4),
     LUAB_FUNC("set_ip6",        JAIL_set_ip6),
-    LUAB_FUNC("get",            JAIL_get),
+    LUAB_FUNC("get_table",      JAIL_get_table),
     LUAB_FUNC("get_path",       JAIL_get_path),
     LUAB_FUNC("get_hostname",   JAIL_get_hostname),
     LUAB_FUNC("get_jailname",   JAIL_get_jailname),

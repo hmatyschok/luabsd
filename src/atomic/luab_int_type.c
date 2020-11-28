@@ -52,36 +52,51 @@ typedef struct luab_int {
     (luab_todata((L), (narg), &luab_int_type, luab_int_t *))
 
 /*
+ * Subr.
+ */
+
+static void
+int_fillxtable(lua_State *L, int narg, void *arg)
+{
+    luab_int_t *self;
+
+    if ((self = (luab_int_t *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "value", self->ud_value);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
 /***
  * Generator function - translate (LUA_TUSERDATA(INT)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              value = (LUA_TNUMBER),
  *          }
  *
- * @usage t = int:get()
+ * @usage t [, err, msg ] = int:get_table()
  */
 static int
-INT_get(lua_State *L)
+INT_get_table(lua_State *L)
 {
-    luab_int_t *self;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_int(L, 1);
+    xtp.xtp_fill = int_fillxtable;
+    xtp.xtp_arg = (void *)luab_to_int(L, 1);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "value", self->ud_value);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***
@@ -181,7 +196,7 @@ INT_tostring(lua_State *L)
 
 static luab_module_table_t int_methods[] = {
     LUAB_FUNC("set_value",      INT_set_value),
-    LUAB_FUNC("get",            INT_get),
+    LUAB_FUNC("get_table",      INT_get_table),
     LUAB_FUNC("get_value",      INT_get_value),
     LUAB_FUNC("dump",           INT_dump),
     LUAB_FUNC("__gc",           INT_gc),

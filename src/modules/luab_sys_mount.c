@@ -655,7 +655,7 @@ luab_nmount(lua_State *L)
             status = nmount(iov, niov, flags);
             luab_table_pushxdata(L, 1, m, tbl, 0, 1);
         } else {
-            luab_table_iovec_free(tbl);
+            luab_iovec_freetable(tbl);
             errno = ERANGE;
             status = -1;
         }

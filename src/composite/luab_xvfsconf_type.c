@@ -79,7 +79,7 @@ typedef struct luab_xvfsconf {
  */
 
 static void
-xvfsconf_initxtable(lua_State *L, int narg, void *arg)
+xvfsconf_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct xvfsconf *vfc;
 
@@ -101,7 +101,7 @@ xvfsconf_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(XVFSCONF)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -113,16 +113,16 @@ xvfsconf_initxtable(lua_State *L, int narg, void *arg)
  *              vfc_flags       = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = xvfsconf:get()
+ * @usage t [, err, msg ] = xvfsconf:get_table()
  */
 static int
-XVFSCONF_get(lua_State *L)
+XVFSCONF_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = xvfsconf_initxtable;
+    xtp.xtp_fill = xvfsconf_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_xvfsconf_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -296,7 +296,7 @@ static luab_module_table_t xvfsconf_methods[] = {
     LUAB_FUNC("vfc_typenum",    XVFSCONF_vfc_typenum),
     LUAB_FUNC("vfc_refcount",   XVFSCONF_vfc_refcount),
     LUAB_FUNC("vfc_flags",      XVFSCONF_vfc_flags),
-    LUAB_FUNC("get",            XVFSCONF_get),
+    LUAB_FUNC("get_table",      XVFSCONF_get_table),
     LUAB_FUNC("dump",           XVFSCONF_dump),
     LUAB_FUNC("__gc",           XVFSCONF_gc),
     LUAB_FUNC("__len",          XVFSCONF_len),

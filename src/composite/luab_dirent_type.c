@@ -73,7 +73,7 @@ typedef struct luab_dirent {
  */
 
 static void
-dirent_initxtable(lua_State *L, int narg, void *arg)
+dirent_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct dirent *dp;
 
@@ -96,7 +96,7 @@ dirent_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(DIRENT)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -109,16 +109,16 @@ dirent_initxtable(lua_State *L, int narg, void *arg)
  *              d_name      = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t [, err, msg ]= dirent:get()
+ * @usage t [, err, msg ]= dirent:get_table()
  */
 static int
-DIRENT_get(lua_State *L)
+DIRENT_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = dirent_initxtable;
+    xtp.xtp_fill = dirent_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_dirent_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -318,7 +318,7 @@ static luab_module_table_t dirent_methods[] = {
     LUAB_FUNC("d_type",         DIRENT_d_type),
     LUAB_FUNC("d_namlen",       DIRENT_d_namlen),
     LUAB_FUNC("d_name",         DIRENT_d_name),
-    LUAB_FUNC("get",            DIRENT_get),
+    LUAB_FUNC("get_table",      DIRENT_get_table),
     LUAB_FUNC("dump",           DIRENT_dump),
     LUAB_FUNC("__gc",           DIRENT_gc),
     LUAB_FUNC("__len",          DIRENT_len),

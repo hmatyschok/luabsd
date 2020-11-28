@@ -190,7 +190,7 @@ sf_hdtr_pushiovec(lua_State *L, int narg, const char *k, luab_sf_hdtr_t *self,
 /***
  * Generator function - translate (LUA_TUSERDATA(SF_HDTR)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_TTABLE)
  *
@@ -201,10 +201,10 @@ sf_hdtr_pushiovec(lua_State *L, int narg, const char *k, luab_sf_hdtr_t *self,
  *              trl_cnt     = (LUA_TNUMBER),
  *          }
  *
- * @usage t = sf_hdtr:get()
+ * @usage t = sf_hdtr:get_table()
  */
 static int
-SF_HDTR_get(lua_State *L)
+SF_HDTR_get_table(lua_State *L)
 {
     luab_sf_hdtr_t *self;
     struct sf_hdtr *hdtr;
@@ -429,7 +429,7 @@ static luab_module_table_t sf_hdtr_methods[] = {
     LUAB_FUNC("trl_cnt",        SF_HDTR_trl_cnt),
     LUAB_FUNC("set_headers",    SF_HDTR_set_headers),
     LUAB_FUNC("set_trailers",   SF_HDTR_set_trailers),
-    LUAB_FUNC("get",            SF_HDTR_get),
+    LUAB_FUNC("get_table",      SF_HDTR_get_table),
     LUAB_FUNC("get_headers",    SF_HDTR_get_headers),
     LUAB_FUNC("get_trailers",   SF_HDTR_get_trailers),
     LUAB_FUNC("__gc",           SF_HDTR_gc),

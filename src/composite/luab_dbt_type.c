@@ -61,7 +61,7 @@ typedef struct luab_dbt {
  */
 
 static void
-dbt_initxtable(lua_State *L, int narg, void *arg)
+dbt_fillxtable(lua_State *L, int narg, void *arg)
 {
     DBT *dbt;
 
@@ -80,7 +80,7 @@ dbt_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(DBT)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -89,16 +89,16 @@ dbt_initxtable(lua_State *L, int narg, void *arg)
  *              size    = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = dbt:get()
+ * @usage t [, err, msg ] = dbt:get_table()
  */
 static int
-DBT_get(lua_State *L)
+DBT_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = dbt_initxtable;
+    xtp.xtp_fill = dbt_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_dbt_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -240,7 +240,7 @@ DBT_tostring(lua_State *L)
 
 static luab_module_table_t dbt_methods[] = {
     LUAB_FUNC("set_data",       DBT_set_data),
-    LUAB_FUNC("get",            DBT_get),
+    LUAB_FUNC("get_table",      DBT_get_table),
     LUAB_FUNC("get_data",       DBT_get_data),
     LUAB_FUNC("get_size",       DBT_get_size),
     LUAB_FUNC("dump",           DBT_dump),

@@ -61,7 +61,7 @@ typedef struct luab_timeval {
  */
 
 static void
-timeval_initxtable(lua_State *L, int narg, void *arg)
+timeval_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct timeval *tv;
 
@@ -80,7 +80,7 @@ timeval_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(TIMEVAL)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -89,16 +89,16 @@ timeval_initxtable(lua_State *L, int narg, void *arg)
  *              tv_usec = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = timeval:get()
+ * @usage t [, err, msg ] = timeval:get_table()
  */
 static int
-TIMEVAL_get(lua_State *L)
+TIMEVAL_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = timeval_initxtable;
+    xtp.xtp_fill = timeval_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_timeval_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -252,15 +252,15 @@ TIMEVAL_tostring(lua_State *L)
  */
 
 static luab_module_table_t timeval_methods[] = {
-    LUAB_FUNC("set_tv_sec",   TIMEVAL_set_tv_sec),
-    LUAB_FUNC("set_tv_usec",  TIMEVAL_set_tv_usec),
-    LUAB_FUNC("get",          TIMEVAL_get),
-    LUAB_FUNC("get_tv_sec",   TIMEVAL_get_tv_sec),
-    LUAB_FUNC("get_tv_usec",  TIMEVAL_get_tv_usec),
-    LUAB_FUNC("dump",         TIMEVAL_dump),
-    LUAB_FUNC("__gc",         TIMEVAL_gc),
-    LUAB_FUNC("__len",        TIMEVAL_len),
-    LUAB_FUNC("__tostring",   TIMEVAL_tostring),
+    LUAB_FUNC("set_tv_sec",     TIMEVAL_set_tv_sec),
+    LUAB_FUNC("set_tv_usec",    TIMEVAL_set_tv_usec),
+    LUAB_FUNC("get_table",      TIMEVAL_get_table),
+    LUAB_FUNC("get_tv_sec",     TIMEVAL_get_tv_sec),
+    LUAB_FUNC("get_tv_usec",    TIMEVAL_get_tv_usec),
+    LUAB_FUNC("dump",           TIMEVAL_dump),
+    LUAB_FUNC("__gc",           TIMEVAL_gc),
+    LUAB_FUNC("__len",          TIMEVAL_len),
+    LUAB_FUNC("__tostring",     TIMEVAL_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

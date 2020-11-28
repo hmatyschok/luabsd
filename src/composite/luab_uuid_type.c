@@ -66,7 +66,7 @@ typedef struct luab_uuid {
  */
 
 static void
-uuid_initxtable(lua_State *L, int narg, void *arg)
+uuid_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct uuid *uuid;
 
@@ -91,7 +91,7 @@ uuid_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(UUID)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -104,16 +104,16 @@ uuid_initxtable(lua_State *L, int narg, void *arg)
  *              node                        = (LUA_TUSERDATA(IOVEC)),
  *          }
  *
- * @usage t [, err, msg ] = uuid:get()
+ * @usage t [, err, msg ] = uuid:get_table()
  */
 static int
-UUID_get(lua_State *L)
+UUID_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = uuid_initxtable;
+    xtp.xtp_fill = uuid_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_uuid_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -471,29 +471,29 @@ UUID_tostring(lua_State *L)
  */
 
 static luab_module_table_t uuid_methods[] = {
-    LUAB_FUNC("set_time_low", UUID_set_time_low),
-    LUAB_FUNC("set_time_mid", UUID_set_time_mid),
+    LUAB_FUNC("set_time_low",   UUID_set_time_low),
+    LUAB_FUNC("set_time_mid",   UUID_set_time_mid),
     LUAB_FUNC("set_time_hi_and_version",
         UUID_set_time_hi_and_version),
     LUAB_FUNC("set_clock_seq_hi_and_reserved",
         UUID_set_clock_seq_hi_and_reserved),
     LUAB_FUNC("set_clock_seq_low",
         UUID_set_clock_seq_low),
-    LUAB_FUNC("set_node",     UUID_set_node),
-    LUAB_FUNC("get",          UUID_get),
-    LUAB_FUNC("get_time_low", UUID_get_time_low),
-    LUAB_FUNC("get_time_mid", UUID_get_time_mid),
+    LUAB_FUNC("set_node",       UUID_set_node),
+    LUAB_FUNC("get_table",      UUID_get_table),
+    LUAB_FUNC("get_time_low",   UUID_get_time_low),
+    LUAB_FUNC("get_time_mid",   UUID_get_time_mid),
     LUAB_FUNC("get_time_hi_and_version",
         UUID_get_time_hi_and_version),
     LUAB_FUNC("get_clock_seq_hi_and_reserved",
         UUID_get_clock_seq_hi_and_reserved),
     LUAB_FUNC("get_clock_seq_low",
         UUID_get_clock_seq_low),
-    LUAB_FUNC("get_node",     UUID_get_node),
-    LUAB_FUNC("dump",         UUID_dump),
-    LUAB_FUNC("__gc",         UUID_gc),
-    LUAB_FUNC("__len",        UUID_len),
-    LUAB_FUNC("__tostring",   UUID_tostring),
+    LUAB_FUNC("get_node",       UUID_get_node),
+    LUAB_FUNC("dump",           UUID_dump),
+    LUAB_FUNC("__gc",           UUID_gc),
+    LUAB_FUNC("__len",          UUID_len),
+    LUAB_FUNC("__tostring",     UUID_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

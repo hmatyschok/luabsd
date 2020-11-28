@@ -62,7 +62,7 @@ typedef struct luab_fhandle {
  */
 
 static void
-fhandle_initxtable(lua_State *L, int narg, void *arg)
+fhandle_fillxtable(lua_State *L, int narg, void *arg)
 {
     fhandle_t *fh;
 
@@ -81,6 +81,8 @@ fhandle_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(FHANDLE)) into (LUA_TTABLE).
  *
+ * @function get_table
+ * 
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  * 
  *          t = {
@@ -88,16 +90,16 @@ fhandle_initxtable(lua_State *L, int narg, void *arg)
  *              fh_fid      = (LUA_TUSERDATA(FID)),
  *          }
  *
- * @usage t [, err, msg ] = fhandle:get()
+ * @usage t [, err, msg ] = fhandle:get_table()
  */
 static int
-FHANDLE_get(lua_State *L)
+FHANDLE_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = fhandle_initxtable;
+    xtp.xtp_fill = fhandle_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_fhandle_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -199,7 +201,7 @@ FHANDLE_tostring(lua_State *L)
 static luab_module_table_t fhandle_methods[] = {
     LUAB_FUNC("fh_fsid",        FHANDLE_fh_fsid),
     LUAB_FUNC("fh_fid",         FHANDLE_fh_fid),
-    LUAB_FUNC("get",            FHANDLE_get),
+    LUAB_FUNC("get_table",      FHANDLE_get_table),
     LUAB_FUNC("dump",           FHANDLE_dump),
     LUAB_FUNC("__gc",           FHANDLE_gc),
     LUAB_FUNC("__len",          FHANDLE_len),

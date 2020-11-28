@@ -68,7 +68,7 @@ typedef struct luab_cap_rbuf {
  */
 
 static void
-cap_rbuf_initxtable(lua_State *L, int narg, void *arg)
+cap_rbuf_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct iovec *iov;
 
@@ -87,7 +87,7 @@ cap_rbuf_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(CAP_RBUF)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -96,16 +96,16 @@ cap_rbuf_initxtable(lua_State *L, int narg, void *arg)
  *              iov_len     = (LUA_NUMBER),
  *          }
  *
- * @usage t [, err, msg ]= cap_rbuf:get()
+ * @usage t [, err, msg ] = cap_rbuf:get_table()
  */
 static int
-CAP_RBUF_get(lua_State *L)
+CAP_RBUF_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = cap_rbuf_initxtable;
+    xtp.xtp_fill = cap_rbuf_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_cap_rbuf_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -210,7 +210,7 @@ CAP_RBUF_tostring(lua_State *L)
 static luab_module_table_t cap_rbuf_methods[] = {
     LUAB_FUNC("iov_base",       CAP_RBUF_iov_base),
     LUAB_FUNC("iov_len",        CAP_RBUF_iov_len),
-    LUAB_FUNC("get",            CAP_RBUF_get),
+    LUAB_FUNC("get_table",      CAP_RBUF_get_table),
     LUAB_FUNC("dump",           CAP_RBUF_dump),
     LUAB_FUNC("__gc",           CAP_RBUF_gc),
     LUAB_FUNC("__len",          CAP_RBUF_len),
@@ -243,6 +243,8 @@ luab_module_t luab_cap_rbuf_type = {
     .m_create   = cap_rbuf_create,
     .m_init     = cap_rbuf_init,
     .m_get      = cap_rbuf_udata,
+    .m_get_tbl  = luab_iovec_checktable,
+    .m_set_tbl  = luab_iovec_pushtable,
     .m_sz       = sizeof(luab_cap_rbuf_t),
 };
 #endif /* __BSD_VISIBLE */

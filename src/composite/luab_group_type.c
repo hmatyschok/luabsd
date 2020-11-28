@@ -73,7 +73,11 @@ luab_table_pushgroup(lua_State *L, int narg, const char *k, caddr_t *vec)
         for (m = 0, n = 1; vec[m] != NULL; m++, n++)
             luab_rawsetstring(L, narg, n, vec[m]);
 
-        /* set field k and/or push on top of Lua stack */
+        /*
+         * Set field k and/or push on top of Lua stack.
+         *
+         * XXX DRY
+         */
         if (k != NULL)
             lua_setfield(L, narg, k);
         else {
@@ -89,7 +93,7 @@ luab_table_pushgroup(lua_State *L, int narg, const char *k, caddr_t *vec)
 }
 
 static void
-group_initxtable(lua_State *L, int narg, void *arg)
+group_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct group *grp;
 
@@ -112,7 +116,7 @@ group_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(GROUP)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -123,16 +127,16 @@ group_initxtable(lua_State *L, int narg, void *arg)
  *              gr_mem      = (LUA_T{NIL,TABLE}),
  *          }
  *
- * @usage t [, err, msg ]= group:get()
+ * @usage t [, err, msg ]= group:get_table()
  */
 static int
-GROUP_get(lua_State *L)
+GROUP_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = group_initxtable;
+    xtp.xtp_fill = group_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_group_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -299,7 +303,7 @@ static luab_module_table_t group_methods[] = {
     LUAB_FUNC("gr_passwd",      GROUP_gr_passwd),
     LUAB_FUNC("gr_gid",         GROUP_gr_gid),
     LUAB_FUNC("gr_mem",         GROUP_gr_mem),
-    LUAB_FUNC("get",            GROUP_get),
+    LUAB_FUNC("get_table",      GROUP_get_table),
     LUAB_FUNC("dump",           GROUP_dump),
     LUAB_FUNC("__gc",           GROUP_gc),
     LUAB_FUNC("__len",          GROUP_len),

@@ -131,31 +131,6 @@ luab_table_free(luab_table_t *tbl)
         errno = (up_call != 0) ? up_call : ERANGE;
 }
 
-void
-luab_table_iovec_free(luab_table_t *tbl)
-{
-    int up_call;
-    struct iovec *x;
-    size_t m, n;
-
-    up_call = errno;
-
-    if (tbl != NULL) {
-
-        if (((x = tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0) &&
-            (tbl->tbl_sz == sizeof(struct iovec))) {
-
-            for (m = 0; m < n; m++)
-                (void)luab_iov_free(&(x[m]));
-
-            errno = ENOENT;
-        }
-        luab_table_free(tbl);
-    } else
-        errno = ERANGE;
-}
-
 /*
  * Error handler.
  */
@@ -433,10 +408,10 @@ luab_table_pushxtable(lua_State *L, int narg, luab_xtable_param_t *xtp)
 {
     if (xtp != NULL) {
 
-        if (xtp->xtp_init != NULL) {
+        if (xtp->xtp_fill != NULL) {
             luab_table_init(L, xtp->xtp_new);
 
-            (*xtp->xtp_init)(L, narg, xtp->xtp_arg);
+            (*xtp->xtp_fill)(L, narg, xtp->xtp_arg);
 
             if (xtp->xtp_k != NULL)
                 lua_setfield(L, narg, xtp->xtp_k);

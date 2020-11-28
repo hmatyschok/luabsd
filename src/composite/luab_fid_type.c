@@ -62,7 +62,7 @@ typedef struct luab_fid {
  */
 
 static void
-fid_initxtable(lua_State *L, int narg, void *arg)
+fid_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct fid *fid;
 
@@ -82,7 +82,7 @@ fid_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(FID)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -92,16 +92,16 @@ fid_initxtable(lua_State *L, int narg, void *arg)
  *              fid_data    = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t [, err, msg ]= fid:get()
+ * @usage t [, err, msg ]= fid:get_table()
  */
 static int
-FID_get(lua_State *L)
+FID_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = fid_initxtable;
+    xtp.xtp_fill = fid_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_fid_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -227,7 +227,7 @@ static luab_module_table_t fid_methods[] = {
     LUAB_FUNC("fid_len",        FID_fid_len),
     LUAB_FUNC("fid_data0",      FID_fid_data0),
     LUAB_FUNC("fid_data",       FID_fid_data),
-    LUAB_FUNC("get",            FID_get),
+    LUAB_FUNC("get_table",      FID_get_table),
     LUAB_FUNC("dump",           FID_dump),
     LUAB_FUNC("__gc",           FID_gc),
     LUAB_FUNC("__len",          FID_len),

@@ -61,7 +61,7 @@ typedef struct luab_linger {
  */
 
 static void
-linger_initxtable(lua_State *L, int narg, void *arg)
+linger_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct linger *l;
 
@@ -89,16 +89,16 @@ linger_initxtable(lua_State *L, int narg, void *arg)
  *              l_linger    = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = linger:get()
+ * @usage t [, err, msg ] = linger:gettable()
  */
 static int
-LINGER_get(lua_State *L)
+LINGER_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = linger_initxtable;
+    xtp.xtp_fill = linger_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_linger_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -252,15 +252,15 @@ LINGER_tostring(lua_State *L)
  */
 
 static luab_module_table_t linger_methods[] = {
-    LUAB_FUNC("set_l_onoff",  LINGER_set_l_onoff),
-    LUAB_FUNC("set_l_linger", LINGER_set_l_linger),
-    LUAB_FUNC("get",          LINGER_get),
-    LUAB_FUNC("get_l_onoff",  LINGER_get_l_onoff),
-    LUAB_FUNC("get_l_linger", LINGER_get_l_linger),
-    LUAB_FUNC("dump",         LINGER_dump),
-    LUAB_FUNC("__gc",         LINGER_gc),
-    LUAB_FUNC("__len",        LINGER_len),
-    LUAB_FUNC("__tostring",   LINGER_tostring),
+    LUAB_FUNC("set_l_onoff",    LINGER_set_l_onoff),
+    LUAB_FUNC("set_l_linger",   LINGER_set_l_linger),
+    LUAB_FUNC("get_table",      LINGER_get_table),
+    LUAB_FUNC("get_l_onoff",    LINGER_get_l_onoff),
+    LUAB_FUNC("get_l_linger",   LINGER_get_l_linger),
+    LUAB_FUNC("dump",           LINGER_dump),
+    LUAB_FUNC("__gc",           LINGER_gc),
+    LUAB_FUNC("__len",          LINGER_len),
+    LUAB_FUNC("__tostring",     LINGER_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

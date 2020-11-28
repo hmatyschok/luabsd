@@ -62,7 +62,7 @@ typedef struct luab_sockproto {
  */
 
 static void
-sockproto_initxtable(lua_State *L, int narg, void *arg)
+sockproto_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct sockproto *sp;
 
@@ -81,7 +81,7 @@ sockproto_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(SOCKPROTO)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -90,16 +90,16 @@ sockproto_initxtable(lua_State *L, int narg, void *arg)
  *              sp_protocol = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t [, err, msg ]= sockproto:get()
+ * @usage t [, err, msg ]= sockproto:get_table()
  */
 static int
-SOCKPROTO_get(lua_State *L)
+SOCKPROTO_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = sockproto_initxtable;
+    xtp.xtp_fill = sockproto_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_sockproto_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -251,15 +251,15 @@ SOCKPROTO_tostring(lua_State *L)
  */
 
 static luab_module_table_t sockproto_methods[] = {
-    LUAB_FUNC("set_sp_family",    SOCKPROTO_set_sp_family),
-    LUAB_FUNC("set_sp_protocol",  SOCKPROTO_set_sp_protocol),
-    LUAB_FUNC("get",              SOCKPROTO_get),
-    LUAB_FUNC("get_sp_family",    SOCKPROTO_get_sp_family),
-    LUAB_FUNC("get_sp_protocol",  SOCKPROTO_get_sp_protocol),
-    LUAB_FUNC("dump",             SOCKPROTO_dump),
-    LUAB_FUNC("__gc",             SOCKPROTO_gc),
-    LUAB_FUNC("__len",            SOCKPROTO_len),
-    LUAB_FUNC("__tostring",       SOCKPROTO_tostring),
+    LUAB_FUNC("set_sp_family",      SOCKPROTO_set_sp_family),
+    LUAB_FUNC("set_sp_protocol",    SOCKPROTO_set_sp_protocol),
+    LUAB_FUNC("get_table",          SOCKPROTO_get_table),
+    LUAB_FUNC("get_sp_family",      SOCKPROTO_get_sp_family),
+    LUAB_FUNC("get_sp_protocol",    SOCKPROTO_get_sp_protocol),
+    LUAB_FUNC("dump",               SOCKPROTO_dump),
+    LUAB_FUNC("__gc",               SOCKPROTO_gc),
+    LUAB_FUNC("__len",              SOCKPROTO_len),
+    LUAB_FUNC("__tostring",         SOCKPROTO_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -62,7 +62,7 @@ typedef struct luab_itimerval {
  */
 
 static void
-itimerval_initxtable(lua_State *L, int narg, void *arg)
+itimerval_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct itimerval *it;
 
@@ -81,7 +81,7 @@ itimerval_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(ITIMERVAL)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -90,16 +90,16 @@ itimerval_initxtable(lua_State *L, int narg, void *arg)
  *              it_value    = (LUA_TUSERDATA(TIMEVAL)),
  *          }
  *
- * @usage t [, err, msg ] = itimerval:get()
+ * @usage t [, err, msg ] = itimerval:get_table()
  */
 static int
-ITIMERVAL_get(lua_State *L)
+ITIMERVAL_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = itimerval_initxtable;
+    xtp.xtp_fill = itimerval_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_itimerval_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -254,15 +254,15 @@ ITIMERVAL_tostring(lua_State *L)
  */
 
 static luab_module_table_t itimerval_methods[] = {
-    LUAB_FUNC("set_it_interval",  ITIMERVAL_set_it_interval),
-    LUAB_FUNC("set_it_value",     ITIMERVAL_set_it_value),
-    LUAB_FUNC("get",              ITIMERVAL_get),
-    LUAB_FUNC("get_it_interval",  ITIMERVAL_get_it_interval),
-    LUAB_FUNC("get_it_value",     ITIMERVAL_get_it_value),
-    LUAB_FUNC("dump",             ITIMERVAL_dump),
-    LUAB_FUNC("__gc",             ITIMERVAL_gc),
-    LUAB_FUNC("__len",            ITIMERVAL_len),
-    LUAB_FUNC("__tostring",       ITIMERVAL_tostring),
+    LUAB_FUNC("set_it_interval",    ITIMERVAL_set_it_interval),
+    LUAB_FUNC("set_it_value",       ITIMERVAL_set_it_value),
+    LUAB_FUNC("get_table",          ITIMERVAL_get_table),
+    LUAB_FUNC("get_it_interval",    ITIMERVAL_get_it_interval),
+    LUAB_FUNC("get_it_value",       ITIMERVAL_get_it_value),
+    LUAB_FUNC("dump",               ITIMERVAL_dump),
+    LUAB_FUNC("__gc",               ITIMERVAL_gc),
+    LUAB_FUNC("__len",              ITIMERVAL_len),
+    LUAB_FUNC("__tostring",         ITIMERVAL_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -69,7 +69,7 @@ typedef struct luab_link {
 /***
  * Generator function - translate (LUA_TUSERDATA(LINK)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_TTABLE)
  *
@@ -78,10 +78,10 @@ typedef struct luab_link {
  *              link_sa = (LUA_TSTRING),
  *          }
  *
- * @usage t = link:get()
+ * @usage t = link:get_table()
  */
 static int
-LINK_get(lua_State *L)
+LINK_get_table(lua_State *L)
 {
     link_t *link;
 
@@ -255,7 +255,7 @@ LINK_tostring(lua_State *L)
 static luab_module_table_t link_methods[] = {
     LUAB_FUNC("set_ptr",        LINK_set_ptr),
     LUAB_FUNC("set_sockaddr",   LINK_set_sockaddr),
-    LUAB_FUNC("get",            LINK_get),
+    LUAB_FUNC("get_table",      LINK_get_table),
     LUAB_FUNC("get_ptr",        LINK_get_ptr),
     LUAB_FUNC("get_sockaddr",   LINK_get_sockaddr),
     LUAB_FUNC("dump",           LINK_dump),

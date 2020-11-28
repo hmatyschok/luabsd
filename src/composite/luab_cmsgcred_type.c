@@ -64,7 +64,7 @@ typedef struct luab_cmsgcred {
  */
 
 static void
-cmsgcred_type_initxtable(lua_State *L, int narg, void *arg)
+cmsgcred_type_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct cmsgcred *cmcred;
 
@@ -93,7 +93,7 @@ cmsgcred_type_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(CMSGCRED)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -106,16 +106,16 @@ cmsgcred_type_initxtable(lua_State *L, int narg, void *arg)
  *              cmcred_groups   = (LUA_TSTRING),
  *          }
  *
- * @usage t [, err, msg ] = cmsgcred:get()
+ * @usage t [, err, msg ] = cmsgcred:get_table()
  */
 static int
-CMSGCRED_get(lua_State *L)
+CMSGCRED_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = cmsgcred_type_initxtable;
+    xtp.xtp_fill = cmsgcred_type_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_cmsgcred_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -311,7 +311,7 @@ CMSGCRED_tostring(lua_State *L)
  */
 
 static luab_module_table_t cmsgcred_methods[] = {
-    LUAB_FUNC("get",                    CMSGCRED_get),
+    LUAB_FUNC("get_table",              CMSGCRED_get_table),
     LUAB_FUNC("get_cmcred_pid",         CMSGCRED_cmcred_pid),
     LUAB_FUNC("get_cmcred_uid",         CMSGCRED_cmcred_uid),
     LUAB_FUNC("get_cmcred_euid",        CMSGCRED_cmcred_euid),

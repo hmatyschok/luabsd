@@ -62,7 +62,7 @@ typedef struct luab_if_nameindex {
  */
 
 static void
-if_nameindex_initxtable(lua_State *L, int narg, void *arg)
+if_nameindex_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct if_nameindex *ifni;
 
@@ -81,7 +81,7 @@ if_nameindex_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(IF_NAMEINDEX)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -90,16 +90,16 @@ if_nameindex_initxtable(lua_State *L, int narg, void *arg)
  *              if_name     = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t [, err, msg ] = if_nameindex:get()
+ * @usage t [, err, msg ] = if_nameindex:get_table()
  */
 static int
-IF_NAMEINDEX_get(lua_State *L)
+IF_NAMEINDEX_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = if_nameindex_initxtable;
+    xtp.xtp_fill = if_nameindex_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_if_nameindex_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -201,7 +201,7 @@ IF_NAMEINDEX_tostring(lua_State *L)
 static luab_module_table_t if_nameindex_methods[] = {
     LUAB_FUNC("if_index",       IF_NAMEINDEX_if_index),
     LUAB_FUNC("if_name",        IF_NAMEINDEX_if_name),
-    LUAB_FUNC("get",            IF_NAMEINDEX_get),
+    LUAB_FUNC("get_table",      IF_NAMEINDEX_get_table),
     LUAB_FUNC("dump",           IF_NAMEINDEX_dump),
     LUAB_FUNC("__gc",           IF_NAMEINDEX_gc),
     LUAB_FUNC("__len",          IF_NAMEINDEX_len),

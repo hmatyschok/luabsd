@@ -211,7 +211,7 @@ sockaddr_un_to_table(lua_State *L, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(SOCKADDR)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_TTABLE)
  *
@@ -264,10 +264,10 @@ sockaddr_un_to_table(lua_State *L, void *arg)
  *              sun_path        = (TUA_TSTRING),
  *          }
  *
- * @usage t = sockaddr:get()
+ * @usage t = sockaddr:get_table()
  */
 static int
-SOCKADDR_get(lua_State *L)
+SOCKADDR_get_table(lua_State *L)
 {
     struct sockaddr *sa;
 
@@ -1165,36 +1165,36 @@ SOCKADDR_tostring(lua_State *L)
  */
 
 static luab_module_table_t sockaddr_methods[] = {
-    LUAB_FUNC("sa_len",               SOCKADDR_sa_len),
-    LUAB_FUNC("sa_family",            SOCKADDR_sa_family),
-    LUAB_FUNC("sdl_slen",             SOCKADDR_sdl_slen),
-    LUAB_FUNC("set_sdl_index",        SOCKADDR_set_sdl_index),
-    LUAB_FUNC("set_sdl_type",         SOCKADDR_set_sdl_type),
-    LUAB_FUNC("set_sdl_nlen",         SOCKADDR_set_sdl_nlen),
-    LUAB_FUNC("set_sdl_alen",         SOCKADDR_set_sdl_alen),
-    LUAB_FUNC("set_sin_port",         SOCKADDR_set_sin_port),
-    LUAB_FUNC("set_sin_addr",         SOCKADDR_set_sin_addr),
-    LUAB_FUNC("set_sin6_port",        SOCKADDR_set_sin6_port),
-    LUAB_FUNC("set_sin6_flowinfo",    SOCKADDR_set_sin6_flowinfo),
-    LUAB_FUNC("set_sin6_addr",        SOCKADDR_set_sin6_addr),
-    LUAB_FUNC("set_sin6_scope_id",    SOCKADDR_set_sin6_scope_id),
-    LUAB_FUNC("set_sun_path",         SOCKADDR_set_sun_path),
-    LUAB_FUNC("get",                  SOCKADDR_get),
-    LUAB_FUNC("get_sdl_index",        SOCKADDR_get_sdl_index),
-    LUAB_FUNC("get_sdl_type",         SOCKADDR_get_sdl_type),
-    LUAB_FUNC("get_sdl_nlen",         SOCKADDR_get_sdl_nlen),
-    LUAB_FUNC("get_sdl_alen",         SOCKADDR_get_sdl_alen),
-    LUAB_FUNC("get_sin_port",         SOCKADDR_get_sin_port),
-    LUAB_FUNC("get_sin_addr",         SOCKADDR_get_sin_addr),
-    LUAB_FUNC("get_sin6_port",        SOCKADDR_get_sin6_port),
-    LUAB_FUNC("get_sin6_flowinfo",    SOCKADDR_get_sin6_flowinfo),
-    LUAB_FUNC("get_sin6_addr",        SOCKADDR_get_sin6_addr),
-    LUAB_FUNC("get_sin6_scope_id",    SOCKADDR_get_sin6_scope_id),
-    LUAB_FUNC("get_sun_path",         SOCKADDR_get_sun_path),
-    LUAB_FUNC("dump",                 SOCKADDR_dump),
-    LUAB_FUNC("__gc",                 SOCKADDR_gc),
-    LUAB_FUNC("__len",                SOCKADDR_len),
-    LUAB_FUNC("__tostring",           SOCKADDR_tostring),
+    LUAB_FUNC("sa_len",                 SOCKADDR_sa_len),
+    LUAB_FUNC("sa_family",              SOCKADDR_sa_family),
+    LUAB_FUNC("sdl_slen",               SOCKADDR_sdl_slen),
+    LUAB_FUNC("set_sdl_index",          SOCKADDR_set_sdl_index),
+    LUAB_FUNC("set_sdl_type",           SOCKADDR_set_sdl_type),
+    LUAB_FUNC("set_sdl_nlen",           SOCKADDR_set_sdl_nlen),
+    LUAB_FUNC("set_sdl_alen",           SOCKADDR_set_sdl_alen),
+    LUAB_FUNC("set_sin_port",           SOCKADDR_set_sin_port),
+    LUAB_FUNC("set_sin_addr",           SOCKADDR_set_sin_addr),
+    LUAB_FUNC("set_sin6_port",          SOCKADDR_set_sin6_port),
+    LUAB_FUNC("set_sin6_flowinfo",      SOCKADDR_set_sin6_flowinfo),
+    LUAB_FUNC("set_sin6_addr",          SOCKADDR_set_sin6_addr),
+    LUAB_FUNC("set_sin6_scope_id",      SOCKADDR_set_sin6_scope_id),
+    LUAB_FUNC("set_sun_path",           SOCKADDR_set_sun_path),
+    LUAB_FUNC("get_table",              SOCKADDR_get_table),
+    LUAB_FUNC("get_sdl_index",          SOCKADDR_get_sdl_index),
+    LUAB_FUNC("get_sdl_type",           SOCKADDR_get_sdl_type),
+    LUAB_FUNC("get_sdl_nlen",           SOCKADDR_get_sdl_nlen),
+    LUAB_FUNC("get_sdl_alen",           SOCKADDR_get_sdl_alen),
+    LUAB_FUNC("get_sin_port",           SOCKADDR_get_sin_port),
+    LUAB_FUNC("get_sin_addr",           SOCKADDR_get_sin_addr),
+    LUAB_FUNC("get_sin6_port",          SOCKADDR_get_sin6_port),
+    LUAB_FUNC("get_sin6_flowinfo",      SOCKADDR_get_sin6_flowinfo),
+    LUAB_FUNC("get_sin6_addr",          SOCKADDR_get_sin6_addr),
+    LUAB_FUNC("get_sin6_scope_id",      SOCKADDR_get_sin6_scope_id),
+    LUAB_FUNC("get_sun_path",           SOCKADDR_get_sun_path),
+    LUAB_FUNC("dump",                   SOCKADDR_dump),
+    LUAB_FUNC("__gc",                   SOCKADDR_gc),
+    LUAB_FUNC("__len",                  SOCKADDR_len),
+    LUAB_FUNC("__tostring",             SOCKADDR_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

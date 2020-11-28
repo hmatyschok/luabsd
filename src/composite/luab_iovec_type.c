@@ -64,26 +64,7 @@ extern luab_module_t luab_iovec_type;
  */
 
 static void
-luab_table_iovec_init(lua_State *L, int narg, struct iovec *iov)
-{
-    luab_iovec_t *buf;
-    struct iovec *src;
-
-    if (((buf = luab_isiovec(L, narg)) != NULL) &&
-        ((buf->iov_flags & IOV_LOCK) == 0)) {
-        buf->iov_flags |= IOV_LOCK;
-
-        src = &(buf->iov);
-
-        if ((luab_iov_alloc(iov, src->iov_len)) == 0) /* deep copy */
-            (void)luab_iov_copyin(iov, src->iov_base, src->iov_len);
-                /* XXX */
-        buf->iov_flags &= ~IOV_LOCK;
-    }
-}
-
-static void
-iovec_initxtable(lua_State *L, int narg, void *arg)
+iovec_fillxtable(lua_State *L, int narg, void *arg)
 {
     luab_iovec_t *self;
 
@@ -104,7 +85,7 @@ iovec_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Copy data from attributes of (LUA_TUSERDATA(IOVEC)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -115,16 +96,16 @@ iovec_initxtable(lua_State *L, int narg, void *arg)
  *              iov_flags   = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = iovec:get()
+ * @usage t [, err, msg ] = iovec:get_table()
  */
 static int
-IOVEC_get(lua_State *L)
+IOVEC_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = iovec_initxtable;
+    xtp.xtp_fill = iovec_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_iovec_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -632,7 +613,7 @@ IOVEC_tostring(lua_State *L)
  */
 
 static luab_module_table_t iovec_methods[] = {
-    LUAB_FUNC("get",            IOVEC_get),
+    LUAB_FUNC("get_table",      IOVEC_get_table),
     LUAB_FUNC("set_len",        IOVEC_set_len),
     LUAB_FUNC("get_len",        IOVEC_get_len),
     LUAB_FUNC("max_len",        IOVEC_max_len),
@@ -712,65 +693,6 @@ iovec_udata(lua_State *L, int narg)
     return (luab_to_iovec(L, narg));
 }
 
-static luab_table_t *
-iovec_checktable(lua_State *L, int narg)
-{
-    luab_table_t *tbl;
-    struct iovec *x;
-    size_t m, n;
-
-    if ((tbl = luab_newvectornil(L, narg, sizeof(struct iovec))) != NULL) {
-
-        if (((x = (struct iovec *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
-            luab_table_init(L, 0);
-
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
-
-                if (lua_next(L, narg) != 0) {
-
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isuserdata(L, -1) != 0)) {
-                        luab_table_iovec_init(L, -1, &(x[m]));
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
-            }
-        } else
-            errno = ERANGE;
-    }
-    return (tbl);
-}
-
-static void
-iovec_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
-{
-    struct iovec *x;
-    size_t m, n, k;
-
-    if (tbl != NULL) {
-
-        if (((x = (struct iovec *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
-            luab_table_init(L, new);
-
-            for (m = 0, k = 1; m < n; m++, k++)
-                luab_iov_rawsetxdata(L, narg, k, &(x[m]));
-
-            errno = ENOENT;
-        } else
-            errno = ERANGE;
-
-        if (clr != 0)
-            luab_table_iovec_free(tbl);
-    } else
-        errno = ERANGE;
-}
-
 luab_module_t luab_iovec_type = {
     .m_cookie   = LUAB_IOVEC_TYPE_ID,
     .m_name     = LUAB_IOVEC_TYPE,
@@ -778,7 +700,7 @@ luab_module_t luab_iovec_type = {
     .m_create   = iovec_create,
     .m_init     = iovec_init,
     .m_get      = iovec_udata,
-    .m_get_tbl  = iovec_checktable,
-    .m_set_tbl  = iovec_pushtable,
+    .m_get_tbl  = luab_iovec_checktable,
+    .m_set_tbl  = luab_iovec_pushtable,
     .m_sz       = sizeof(luab_iovec_t),
 };

@@ -64,7 +64,7 @@ typedef struct luab_clockinfo {
  */
 
 static void
-clockinfo_initxtable(lua_State *L, int narg, void *arg)
+clockinfo_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct clockinfo *ci;
 
@@ -85,7 +85,7 @@ clockinfo_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(CLOCKINFO)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -97,16 +97,16 @@ clockinfo_initxtable(lua_State *L, int narg, void *arg)
  *              profhz  = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = clockinfo:get()
+ * @usage t [, err, msg ] = clockinfo:get_table()
  */
 static int
-CLOCKINFO_get(lua_State *L)
+CLOCKINFO_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = clockinfo_initxtable;
+    xtp.xtp_fill = clockinfo_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_clockinfo_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -364,7 +364,7 @@ static luab_module_table_t clockinfo_methods[] = {
     LUAB_FUNC("set_tickc",      CLOCKINFO_set_tick),
     LUAB_FUNC("set_stathz",     CLOCKINFO_set_stathz),
     LUAB_FUNC("set_profhz",     CLOCKINFO_set_profhz),
-    LUAB_FUNC("get",            CLOCKINFO_get),
+    LUAB_FUNC("get_table",      CLOCKINFO_get_table),
     LUAB_FUNC("get_hz",         CLOCKINFO_get_hz),
     LUAB_FUNC("get_tick",       CLOCKINFO_get_tick),
     LUAB_FUNC("get_stathz",     CLOCKINFO_get_stathz),

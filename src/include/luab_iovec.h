@@ -57,6 +57,8 @@ typedef struct luab_iovec {
  * Generic service primitives.
  */
 
+void     luab_iovec_freetable(luab_table_t *);
+
 luab_module_t    *luab_iovec_param_init(luab_iovec_param_t *, void *, size_t,
     size_t);
 
@@ -71,6 +73,8 @@ caddr_t  luab_iovec_toldata(lua_State *, int, size_t);
 const char   *luab_iovec_islstring(lua_State *, int, size_t);
 const char   *luab_iovec_checklstring(lua_State *, int, size_t);
 
+luab_table_t     *luab_iovec_checktable(lua_State *, int);
+
 /*
  * Access functions, [C -> stack].
  */
@@ -80,6 +84,8 @@ int  luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
 
 void     luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 void     luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);
+
+void     luab_iovec_pushtable(lua_State *, int, luab_table_t *, int new, int);
 
 /*
  * Service primitives.

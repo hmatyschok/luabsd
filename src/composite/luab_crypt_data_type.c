@@ -64,7 +64,7 @@ typedef struct luab_crypt_data {
  */
 
 static void
-crypt_data_initxtable(lua_State *L, int narg, void *arg)
+crypt_data_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct crypt_data *cd;
 
@@ -83,7 +83,7 @@ crypt_data_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(CRYPT_DATA)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -92,16 +92,16 @@ crypt_data_initxtable(lua_State *L, int narg, void *arg)
  *              buf         = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t [, err, msg ] = crypt_data:get()
+ * @usage t [, err, msg ] = crypt_data:get_table()
  */
 static int
-CRYPT_DATA_get(lua_State *L)
+CRYPT_DATA_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = crypt_data_initxtable;
+    xtp.xtp_fill = crypt_data_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_crypt_data_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -262,7 +262,7 @@ CRYPT_DATA_tostring(lua_State *L)
 static luab_module_table_t crypt_data_methods[] = {
     LUAB_FUNC("set_initialized",    CRYPT_DATA_set_initialized),
     LUAB_FUNC("set_buf",            CRYPT_DATA_set_buf),
-    LUAB_FUNC("get",                CRYPT_DATA_get),
+    LUAB_FUNC("get_table",          CRYPT_DATA_get_table),
     LUAB_FUNC("get_initialized",    CRYPT_DATA_get_initialized),
     LUAB_FUNC("get_buf",            CRYPT_DATA_get_buf),
     LUAB_FUNC("dump",               CRYPT_DATA_dump),

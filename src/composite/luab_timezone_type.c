@@ -61,7 +61,7 @@ typedef struct luab_timezone {
  */
 
 static void
-timezone_initxtable(lua_State *L, int narg, void *arg)
+timezone_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct timezone *tz;
 
@@ -80,7 +80,7 @@ timezone_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(TIMEZONE)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -89,16 +89,16 @@ timezone_initxtable(lua_State *L, int narg, void *arg)
  *              tz_dsttime      = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = timezone:get()
+ * @usage t [, err, msg ] = timezone:get_table()
  */
 static int
-TIMEZONE_get(lua_State *L)
+TIMEZONE_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = timezone_initxtable;
+    xtp.xtp_fill = timezone_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_timezone_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -252,15 +252,15 @@ TIMEZONE_tostring(lua_State *L)
  */
 
 static luab_module_table_t timezone_methods[] = {
-    LUAB_FUNC("set_tz_minuteswest",   TIMEZONE_set_tz_minuteswest),
-    LUAB_FUNC("set_tz_dsttime",       TIMEZONE_set_tz_dsttime),
-    LUAB_FUNC("get",                  TIMEZONE_get),
-    LUAB_FUNC("get_tz_minuteswest",   TIMEZONE_get_tz_minuteswest),
-    LUAB_FUNC("get_tz_dsttime",       TIMEZONE_get_tz_dsttime),
-    LUAB_FUNC("dump",                 TIMEZONE_dump),
-    LUAB_FUNC("__gc",                 TIMEZONE_gc),
-    LUAB_FUNC("__len",                TIMEZONE_len),
-    LUAB_FUNC("__tostring",           TIMEZONE_tostring),
+    LUAB_FUNC("set_tz_minuteswest",     TIMEZONE_set_tz_minuteswest),
+    LUAB_FUNC("set_tz_dsttime",         TIMEZONE_set_tz_dsttime),
+    LUAB_FUNC("get_table",              TIMEZONE_get_table),
+    LUAB_FUNC("get_tz_minuteswest",     TIMEZONE_get_tz_minuteswest),
+    LUAB_FUNC("get_tz_dsttime",         TIMEZONE_get_tz_dsttime),
+    LUAB_FUNC("dump",                   TIMEZONE_dump),
+    LUAB_FUNC("__gc",                   TIMEZONE_gc),
+    LUAB_FUNC("__len",                  TIMEZONE_len),
+    LUAB_FUNC("__tostring",             TIMEZONE_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

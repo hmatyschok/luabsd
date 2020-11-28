@@ -59,7 +59,7 @@ typedef struct luab_in_addr {
  */
 
 static void
-in_addr_initxtable(lua_State *L, int narg, void *arg)
+in_addr_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct in_addr *ia;
 
@@ -77,7 +77,7 @@ in_addr_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(IN_ADDR)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -85,16 +85,16 @@ in_addr_initxtable(lua_State *L, int narg, void *arg)
  *              s_addr  = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = in_addr:get()
+ * @usage t [, err, msg ] = in_addr:get_table()
  */
 static int
-IN_ADDR_get(lua_State *L)
+IN_ADDR_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = in_addr_initxtable;
+    xtp.xtp_fill = in_addr_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_in_addr_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -198,13 +198,13 @@ IN_ADDR_tostring(lua_State *L)
  */
 
 static luab_module_table_t in_addr_methods[] = {
-    LUAB_FUNC("set_s_addr",   IN_ADDR_set_s_addr),
-    LUAB_FUNC("get",          IN_ADDR_get),
-    LUAB_FUNC("get_s_addr",   IN_ADDR_get_s_addr),
-    LUAB_FUNC("dump",         IN_ADDR_dump),
-    LUAB_FUNC("__gc",         IN_ADDR_gc),
-    LUAB_FUNC("__len",        IN_ADDR_len),
-    LUAB_FUNC("__tostring",   IN_ADDR_tostring),
+    LUAB_FUNC("set_s_addr",     IN_ADDR_set_s_addr),
+    LUAB_FUNC("get_table",      IN_ADDR_get_table),
+    LUAB_FUNC("get_s_addr",     IN_ADDR_get_s_addr),
+    LUAB_FUNC("dump",           IN_ADDR_dump),
+    LUAB_FUNC("__gc",           IN_ADDR_gc),
+    LUAB_FUNC("__len",          IN_ADDR_len),
+    LUAB_FUNC("__tostring",     IN_ADDR_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -62,7 +62,7 @@ typedef struct luab___sbuf {
  */
 
 static void
-sbuf_initxtable(lua_State *L, int narg, void *arg)
+sbuf_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct __sbuf *sb;
 
@@ -81,25 +81,25 @@ sbuf_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(__SBUF)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              _base       = (LUA_TSTRING),
+ *              _base       = (LUA_T{NIL,STRING}),
  *              _size       = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = __sbuf:get()
+ * @usage t [, err, msg ] = __sbuf:get_table()
  */
 static int
-SBUF_get(lua_State *L)
+SBUF_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = sbuf_initxtable;
+    xtp.xtp_fill = sbuf_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab___sbuf_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -203,7 +203,7 @@ SBUF_tostring(lua_State *L)
 static luab_module_table_t sbuf_methods[] = {
     LUAB_FUNC("_base",          SBUF_base),
     LUAB_FUNC("_size",          SBUF_size),
-    LUAB_FUNC("get",            SBUF_get),
+    LUAB_FUNC("get_table",      SBUF_get_table),
     LUAB_FUNC("dump",           SBUF_dump),
     LUAB_FUNC("__gc",           SBUF_gc),
     LUAB_FUNC("__len",          SBUF_len),

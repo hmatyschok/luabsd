@@ -61,7 +61,7 @@ typedef struct luab_regmatch {
  */
 
 static void
-regmatch_initxtable(lua_State *L, int narg, void *arg)
+regmatch_fillxtable(lua_State *L, int narg, void *arg)
 {
     regmatch_t *rm;
 
@@ -80,7 +80,7 @@ regmatch_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(REGMATCH)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -89,16 +89,16 @@ regmatch_initxtable(lua_State *L, int narg, void *arg)
  *              rm_eo   = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = regmatch:get()
+ * @usage t [, err, msg ] = regmatch:get_table()
  */
 static int
-REGMATCH_get(lua_State *L)
+REGMATCH_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = regmatch_initxtable;
+    xtp.xtp_fill = regmatch_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_regmatch_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -200,7 +200,7 @@ REGMATCH_tostring(lua_State *L)
 static luab_module_table_t regmatch_methods[] = {
     LUAB_FUNC("rm_so",          REGMATCH_rm_so),
     LUAB_FUNC("rm_eo",          REGMATCH_rm_eo),
-    LUAB_FUNC("get",            REGMATCH_get),
+    LUAB_FUNC("get_table",      REGMATCH_get_table),
     LUAB_FUNC("dump",           REGMATCH_dump),
     LUAB_FUNC("__gc",           REGMATCH_gc),
     LUAB_FUNC("__len",          REGMATCH_len),

@@ -70,7 +70,7 @@ typedef struct luab_tm {
  */
 
 static void
-tm_initxtable(lua_State *L, int narg, void *arg)
+tm_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct tm *tm;
 
@@ -100,7 +100,7 @@ tm_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(TM)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -118,16 +118,16 @@ tm_initxtable(lua_State *L, int narg, void *arg)
  *              tm_zone     = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = tm:get()
+ * @usage t = tm:get_table()
  */
 static int
-TM_get(lua_State *L)
+TM_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = tm_initxtable;
+    xtp.xtp_fill = tm_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_tm_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -700,32 +700,32 @@ TM_tostring(lua_State *L)
 }
 
 static luab_module_table_t tm_methods[] = {
-    LUAB_FUNC("tm_zone",          TM_tm_zone),
-    LUAB_FUNC("set_tm_sec",       TM_set_tm_sec),
-    LUAB_FUNC("set_tm_min",       TM_set_tm_min),
-    LUAB_FUNC("set_tm_hour",      TM_set_tm_hour),
-    LUAB_FUNC("set_tm_mday",      TM_set_tm_mday),
-    LUAB_FUNC("set_tm_mon",       TM_set_tm_mon),
-    LUAB_FUNC("set_tm_year",      TM_set_tm_year),
-    LUAB_FUNC("set_tm_wday",      TM_set_tm_wday),
-    LUAB_FUNC("set_tm_yday",      TM_set_tm_yday),
-    LUAB_FUNC("set_tm_isdst",     TM_set_tm_isdst),
-    LUAB_FUNC("set_tm_gmtoff",    TM_set_tm_gmtoff),
-    LUAB_FUNC("get",              TM_get),
-    LUAB_FUNC("get_tm_sec",       TM_get_tm_sec),
-    LUAB_FUNC("get_tm_min",       TM_get_tm_min),
-    LUAB_FUNC("get_tm_hour",      TM_get_tm_hour),
-    LUAB_FUNC("get_tm_mday",      TM_get_tm_mday),
-    LUAB_FUNC("get_tm_mon",       TM_get_tm_mon),
-    LUAB_FUNC("get_tm_year",      TM_get_tm_year),
-    LUAB_FUNC("get_tm_wday",      TM_get_tm_wday),
-    LUAB_FUNC("get_tm_yday",      TM_get_tm_yday),
-    LUAB_FUNC("get_tm_isdst",     TM_get_tm_isdst),
-    LUAB_FUNC("get_tm_gmtoff",    TM_get_tm_gmtoff),
-    LUAB_FUNC("dump",             TM_dump),
-    LUAB_FUNC("__gc",             TM_gc),
-    LUAB_FUNC("__len",            TM_len),
-    LUAB_FUNC("__tostring",       TM_tostring),
+    LUAB_FUNC("tm_zone",            TM_tm_zone),
+    LUAB_FUNC("set_tm_sec",         TM_set_tm_sec),
+    LUAB_FUNC("set_tm_min",         TM_set_tm_min),
+    LUAB_FUNC("set_tm_hour",        TM_set_tm_hour),
+    LUAB_FUNC("set_tm_mday",        TM_set_tm_mday),
+    LUAB_FUNC("set_tm_mon",         TM_set_tm_mon),
+    LUAB_FUNC("set_tm_year",        TM_set_tm_year),
+    LUAB_FUNC("set_tm_wday",        TM_set_tm_wday),
+    LUAB_FUNC("set_tm_yday",        TM_set_tm_yday),
+    LUAB_FUNC("set_tm_isdst",       TM_set_tm_isdst),
+    LUAB_FUNC("set_tm_gmtoff",      TM_set_tm_gmtoff),
+    LUAB_FUNC("get_table",          TM_get_table),
+    LUAB_FUNC("get_tm_sec",         TM_get_tm_sec),
+    LUAB_FUNC("get_tm_min",         TM_get_tm_min),
+    LUAB_FUNC("get_tm_hour",        TM_get_tm_hour),
+    LUAB_FUNC("get_tm_mday",        TM_get_tm_mday),
+    LUAB_FUNC("get_tm_mon",         TM_get_tm_mon),
+    LUAB_FUNC("get_tm_year",        TM_get_tm_year),
+    LUAB_FUNC("get_tm_wday",        TM_get_tm_wday),
+    LUAB_FUNC("get_tm_yday",        TM_get_tm_yday),
+    LUAB_FUNC("get_tm_isdst",       TM_get_tm_isdst),
+    LUAB_FUNC("get_tm_gmtoff",      TM_get_tm_gmtoff),
+    LUAB_FUNC("dump",               TM_dump),
+    LUAB_FUNC("__gc",               TM_gc),
+    LUAB_FUNC("__len",              TM_len),
+    LUAB_FUNC("__tostring",         TM_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 

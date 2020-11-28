@@ -67,7 +67,7 @@ typedef struct luab_fstab {
  */
 
 static void
-fstab_initxtable(lua_State *L, int narg, void *arg)
+fstab_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct fstab *fs;
 
@@ -91,7 +91,7 @@ fstab_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(FSTAB)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -105,16 +105,16 @@ fstab_initxtable(lua_State *L, int narg, void *arg)
  *              fs_passno   = (LUA_TNUMBER),
  *          }
  *
- * @usage t [, err, msg ] = fstab:get()
+ * @usage t [, err, msg ] = fstab:get_table()
  */
 static int
-FSTAB_get(lua_State *L)
+FSTAB_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = fstab_initxtable;
+    xtp.xtp_fill = fstab_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_fstab_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -336,7 +336,7 @@ static luab_module_table_t fstab_methods[] = {
     LUAB_FUNC("fs_type",        FSTAB_fs_type),
     LUAB_FUNC("fs_freq",        FSTAB_fs_freq),
     LUAB_FUNC("fs_passno",      FSTAB_fs_passno),
-    LUAB_FUNC("get",            FSTAB_get),
+    LUAB_FUNC("get_table",      FSTAB_get_table),
     LUAB_FUNC("dump",           FSTAB_dump),
     LUAB_FUNC("__gc",           FSTAB_gc),
     LUAB_FUNC("__len",          FSTAB_len),

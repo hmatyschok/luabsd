@@ -73,7 +73,7 @@ typedef struct luab_ttyent {
  */
 
 static void
-ttyent_initxtable(lua_State *L, int narg, void *arg)
+ttyent_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct ttyent *typ;
 
@@ -97,7 +97,7 @@ ttyent_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(TTYENT)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -111,16 +111,16 @@ ttyent_initxtable(lua_State *L, int narg, void *arg)
  *              ty_group    = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = ttyent:get()
+ * @usage t = ttyent:get_table()
  */
 static int
-TTYENT_get(lua_State *L)
+TTYENT_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = ttyent_initxtable;
+    xtp.xtp_fill = ttyent_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_ttyent_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -342,7 +342,7 @@ static luab_module_table_t ttyent_methods[] = {
     LUAB_FUNC("ty_window",      TTYENT_ty_window),
     LUAB_FUNC("ty_comment",     TTYENT_ty_comment),
     LUAB_FUNC("ty_group",       TTYENT_ty_group),
-    LUAB_FUNC("get",            TTYENT_get),
+    LUAB_FUNC("get_table",      TTYENT_get_table),
     LUAB_FUNC("dump",           TTYENT_dump),
     LUAB_FUNC("__gc",           TTYENT_gc),
     LUAB_FUNC("__len",          TTYENT_len),

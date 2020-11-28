@@ -68,7 +68,11 @@ luab_table_pushfsid(lua_State *L, int narg, const char *k, int32_t *vec)
         for (m = 0, n = 1; m < 2; m++, n++)
             luab_rawsetinteger(L, narg, n, vec[m]);
 
-        /* set field k and/or push on top of Lua stack */
+        /*
+         * Set field k and/or push on top of Lua stack.
+         *
+         * XXX DRY
+         */
         if (k != NULL)
             lua_setfield(L, narg, k);
         else {
@@ -84,7 +88,7 @@ luab_table_pushfsid(lua_State *L, int narg, const char *k, int32_t *vec)
 }
 
 static void
-fsid_initxtable(lua_State *L, int narg, void *arg)
+fsid_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct fsid *fsid;
 
@@ -102,24 +106,24 @@ fsid_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(FSID)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
   * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              val     = (LUA_TTABLE),
+ *              val     = (LUA_T{NIL,TABLE}),
  *          }
  *
- * @usage t [, err, msg ] = fsid:get()
+ * @usage t [, err, msg ] = fsid:get_table()
  */
 static int
-FSID_get(lua_State *L)
+FSID_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = fsid_initxtable;
+    xtp.xtp_fill = fsid_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_fsid_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -197,7 +201,7 @@ FSID_tostring(lua_State *L)
 
 static luab_module_table_t fsid_methods[] = {
     LUAB_FUNC("val",            FSID_val),
-    LUAB_FUNC("get",            FSID_get),
+    LUAB_FUNC("get_table",      FSID_get_table),
     LUAB_FUNC("dump",           FSID_dump),
     LUAB_FUNC("__gc",           FSID_gc),
     LUAB_FUNC("__len",          FSID_len),

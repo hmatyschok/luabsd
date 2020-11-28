@@ -53,36 +53,51 @@ typedef struct luab_uint {
     (luab_todata((L), (narg), &luab_uint_type, luab_uint_t *))
 
 /*
+ * Subr.
+ */
+
+static void
+uint_fillxtable(lua_State *L, int narg, void *arg)
+{
+    luab_uint_t *self;
+
+    if ((self = (luab_uint_t *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "value", self->ud_value);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(UINT)) uinto (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(UINT)) to (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              value = (LUA_TNUMBER),
  *          }
  *
- * @usage t = uint:get()
+ * @usage t [, err, msg ] = uint:get_table()
  */
 static int
-UINT_get(lua_State *L)
+UINT_get_table(lua_State *L)
 {
-    luab_uint_t *self;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_uint(L, 1);
+    xtp.xtp_fill = uint_fillxtable;
+    xtp.xtp_arg = (void *)luab_to_uint(L, 1);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "value", self->ud_value);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***
@@ -177,12 +192,12 @@ UINT_tostring(lua_State *L)
 }
 
 /*
- * Internal uinterface.
+ * Internal interface.
  */
 
 static luab_module_table_t uint_methods[] = {
     LUAB_FUNC("set_value",      UINT_set_value),
-    LUAB_FUNC("get",            UINT_get),
+    LUAB_FUNC("get_table",      UINT_get_table),
     LUAB_FUNC("get_value",      UINT_get_value),
     LUAB_FUNC("dump",           UINT_dump),
     LUAB_FUNC("__gc",           UINT_gc),

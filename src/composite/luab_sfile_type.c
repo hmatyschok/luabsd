@@ -96,7 +96,7 @@ typedef struct luab_sfile {
 /***
  * Generator function - translate (LUA_TUSERDATA(FILE)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_TTABLE)
  *
@@ -110,10 +110,10 @@ typedef struct luab_sfile {
  *              _cookie     = (LUA_TSTRING),
  *          }
  *
- * @usage t = file:get()
+ * @usage t = file:get_table()
  */
 static int
-SFILE_get(lua_State *L)
+SFILE_get_table(lua_State *L)
 {
     FILE *fp;
 
@@ -392,7 +392,7 @@ static luab_module_table_t sfile_methods[] = {
     LUAB_FUNC("_file",          SFILE_file),
     LUAB_FUNC("_bf",            SFILE_bf),
     LUAB_FUNC("_cookie",        SFILE_cookie),
-    LUAB_FUNC("get",            SFILE_get),
+    LUAB_FUNC("get_table",      SFILE_get_table),
     LUAB_FUNC("dump",           SFILE_dump),
     LUAB_FUNC("__gc",           SFILE_gc),
     LUAB_FUNC("__len",          SFILE_len),

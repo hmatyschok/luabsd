@@ -81,7 +81,7 @@ typedef struct luab_statfs {
  */
 
 static void
-statfs_initxtable(lua_State *L, int narg, void *arg)
+statfs_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct statfs *f;
 
@@ -120,7 +120,7 @@ statfs_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(STATFS)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -147,16 +147,16 @@ statfs_initxtable(lua_State *L, int narg, void *arg)
  *              f_mntonname     = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = statfs:get()
+ * @usage t = statfs:get_table()
  */
 static int
-STATFS_get(lua_State *L)
+STATFS_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = statfs_initxtable;
+    xtp.xtp_fill = statfs_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_statfs_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -690,7 +690,7 @@ static luab_module_table_t statfs_methods[] = {
     LUAB_FUNC("f_fstypename",   STATFS_f_fstypename),
     LUAB_FUNC("f_mntfromname",  STATFS_f_mntfromname),
     LUAB_FUNC("f_mntonname",    STATFS_f_mntonname),
-    LUAB_FUNC("get",            STATFS_get),
+    LUAB_FUNC("get_table",      STATFS_get_table),
     LUAB_FUNC("dump",           STATFS_dump),
     LUAB_FUNC("__gc",           STATFS_gc),
     LUAB_FUNC("__len",          STATFS_len),

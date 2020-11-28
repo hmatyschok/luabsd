@@ -70,7 +70,7 @@ typedef struct luab_passwd {
  */
 
 static void
-passwd_initxtable(lua_State *L, int narg, void *arg)
+passwd_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct passwd *pwd;
 
@@ -98,7 +98,7 @@ passwd_initxtable(lua_State *L, int narg, void *arg)
 /***
  * Generator function - translate (LUA_TUSERDATA(PASSWD)) into (LUA_TTABLE).
  *
- * @function get
+ * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -116,16 +116,16 @@ passwd_initxtable(lua_State *L, int narg, void *arg)
  *              pw_fields   = (LUA_TNUMBER),
  *          }
  *
- * @usage t = passwd:get()
+ * @usage t = passwd:get_table()
  */
 static int
-PASSWD_get(lua_State *L)
+PASSWD_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_init = passwd_initxtable;
+    xtp.xtp_fill = passwd_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_passwd_type);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -456,7 +456,7 @@ static luab_module_table_t passwd_methods[] = {
     LUAB_FUNC("pw_shell",       PASSWD_pw_shell),
     LUAB_FUNC("pw_expire",      PASSWD_pw_expire),
     LUAB_FUNC("pw_fields",      PASSWD_pw_fields),
-    LUAB_FUNC("get",            PASSWD_get),
+    LUAB_FUNC("get_table",      PASSWD_get_table),
     LUAB_FUNC("dump",           PASSWD_dump),
     LUAB_FUNC("__gc",           PASSWD_gc),
     LUAB_FUNC("__len",          PASSWD_len),
