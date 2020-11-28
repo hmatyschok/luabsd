@@ -82,6 +82,21 @@ luab_table_iovec_init(lua_State *L, int narg, struct iovec *iov)
     }
 }
 
+static void
+iovec_initxtable(lua_State *L, int narg, void *arg)
+{
+    luab_iovec_t *self;
+
+    if ((self = (luab_iovec_t *)arg) != NULL) {
+
+        luab_setldata(L, narg, "iov_base",    self->iov.iov_base, self->iov.iov_len);
+        luab_setinteger(L, narg, "iov_len",       self->iov.iov_len);
+        luab_setinteger(L, narg, "iov_max_len",   self->iov_max_len);
+        luab_setinteger(L, narg, "iov_flags",     self->iov_flags);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
 /*
  * Generator functions.
  */
@@ -91,36 +106,30 @@ luab_table_iovec_init(lua_State *L, int narg, struct iovec *iov)
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              iov_base    = (LUA_TSTRING) or (LUA_TNIL),
+ *              iov_base    = (LUA_T{NIL,STRING}),
  *              iov_len     = (LUA_TNUMBER),
  *              iov_max_len = (LUA_TNUMBER),
  *              iov_flags   = (LUA_TNUMBER),
  *          }
  *
- * @usage t = iovec:get()
+ * @usage t [, err, msg ] = iovec:get()
  */
 static int
 IOVEC_get(lua_State *L)
 {
-    luab_iovec_t *self;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_udata(L, 1, &luab_iovec_type, luab_iovec_t *);
+    xtp.xtp_init = iovec_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_iovec_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setldata(L, -2, "iov_base",    self->iov.iov_base, self->iov.iov_len);
-    luab_setinteger(L, -2, "iov_len",       self->iov.iov_len);
-    luab_setinteger(L, -2, "iov_max_len",   self->iov_max_len);
-    luab_setinteger(L, -2, "iov_flags",     self->iov_flags);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

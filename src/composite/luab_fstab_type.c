@@ -40,13 +40,13 @@ extern luab_module_t luab_fstab_type;
  * Interface against
  *
  *  struct fstab {
- *      char	*fs_spec;
- *      char	*fs_file;
- *      char	*fs_vfstype;
- *      char	*fs_mntops;
- *      char	*fs_type;
- *      int	fs_freq;
- *      int	fs_passno;
+ *      char    *fs_spec;
+ *      char    *fs_file;
+ *      char    *fs_vfstype;
+ *      char    *fs_mntops;
+ *      char    *fs_type;
+ *      int fs_freq;
+ *      int fs_passno;
  *  };
  *
  */
@@ -63,6 +63,28 @@ typedef struct luab_fstab {
         struct fstab *, sizeof(struct fstab)))
 
 /*
+ * Subr.
+ */
+
+static void
+fstab_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct fstab *fs;
+
+    if ((fs = (struct fstab *)arg) != NULL) {
+
+        luab_setstring(L, narg, "fs_spec",        fs->fs_spec);
+        luab_setstring(L, narg, "fs_file",        fs->fs_file);
+        luab_setstring(L, narg, "fs_vfstype",     fs->fs_vfstype);
+        luab_setstring(L, narg, "fs_mntops",      fs->fs_mntops);
+        luab_setstring(L, narg, "fs_type",        fs->fs_type);
+        luab_setinteger(L, narg, "fs_freq",       fs->fs_freq);
+        luab_setinteger(L, narg, "fs_passno",     fs->fs_passno);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -71,40 +93,33 @@ typedef struct luab_fstab {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              fs_spec     = (LUA_TSTRING),
- *              fs_file     = (LUA_TSTRING),
- *              fs_vfstype  = (LUA_TSTRING),
- *              fs_mntops   = (LUA_TSTRING),
- *              fs_type     = (LUA_TSTRING),
+ *              fs_spec     = (LUA_T{NIL,STRING}),
+ *              fs_file     = (LUA_T{NIL,STRING}),
+ *              fs_vfstype  = (LUA_T{NIL,STRING}),
+ *              fs_mntops   = (LUA_T{NIL,STRING}),
+ *              fs_type     = (LUA_T{NIL,STRING}),
  *              fs_freq     = (LUA_TNUMBER),
  *              fs_passno   = (LUA_TNUMBER),
  *          }
  *
- * @usage t = fstab:get()
+ * @usage t [, err, msg ] = fstab:get()
  */
 static int
 FSTAB_get(lua_State *L)
 {
-    struct fstab *fs;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    xtp.xtp_init = fstab_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_fstab_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setstring(L, -2, "fs_spec",        fs->fs_spec);
-    luab_setstring(L, -2, "fs_file",        fs->fs_file);
-    luab_setstring(L, -2, "fs_vfstype",     fs->fs_vfstype);
-    luab_setstring(L, -2, "fs_mntops",      fs->fs_mntops);
-    luab_setstring(L, -2, "fs_type",        fs->fs_type);
-    luab_setinteger(L, -2, "fs_freq",       fs->fs_freq);
-    luab_setinteger(L, -2, "fs_passno",     fs->fs_passno);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

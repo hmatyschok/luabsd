@@ -91,7 +91,11 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
     if (tbl != NULL) {
         luab_table_pushxdata(L, narg, m, tbl, 1, 0);
 
-        /* set field k and/or push on top of Lua stack */
+        /*
+         * Set field k and/or push on top of Lua stack.
+         *
+         * XXX DRY
+         */
         if (k != NULL)
             lua_setfield(L, narg, k);
         else {
@@ -106,6 +110,27 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
     return (luab_table_pusherr(L, errno, 1));
 }
 
+static void
+msghdr_initxtable(lua_State *L, int narg, void *arg)
+{
+    luab_msghdr_t *self;
+    struct msghdr *msg;
+
+    if ((self = (luab_msghdr_t *)arg) != NULL) {
+        msg = &(self->msg_hdr);
+
+        luab_setinteger(L, narg, "msg_iovlen", msg->msg_iovlen);
+        luab_setinteger(L, narg, "msg_namelen", msg->msg_namelen);
+
+        if (msg->msg_name != NULL)
+            luab_setudata(L, narg, luab_xmod(SOCKADDR, TYPE, __func__), "msg_name", msg->msg_name);
+
+        if (msg->msg_iov != NULL)
+            (void)msghdr_pushiovec(L, narg, "msg_iov", self->msg_buf);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
 /*
  * Generator functions.
  */
@@ -115,7 +140,7 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              msg_name    = (LUA_TUSERDATA(SOCKADDR)),
@@ -129,28 +154,16 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
 static int
 MSGHDR_get(lua_State *L)
 {
-    luab_msghdr_t *ud;
-    struct msghdr *msg;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ud = luab_to_msghdr(L, 1);
-    msg = &(ud->msg_hdr);
+    xtp.xtp_init = msghdr_initxtable;
+    xtp.xtp_arg = luab_to_msghdr(L, 1);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "msg_iovlen", msg->msg_iovlen);
-    luab_setinteger(L, -2, "msg_namelen", msg->msg_namelen);
-
-    if (msg->msg_name != NULL)
-        luab_setudata(L, -2, luab_xmod(SOCKADDR, TYPE, __func__), "msg_name", msg->msg_name);
-
-    if (msg->msg_iov != NULL)
-        (void)msghdr_pushiovec(L, -2, "msg_iov", ud->msg_buf);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

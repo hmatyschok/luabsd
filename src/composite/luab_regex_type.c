@@ -59,6 +59,29 @@ typedef struct luab_regex {
         regex_t *, sizeof(regex_t)))
 
 /*
+ * Subr.
+ */
+
+static void
+regex_initxtable(lua_State *L, int narg, void *arg)
+{
+    regex_t *re;
+
+    if ((re = (regex_t *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "re_magic",      re->re_magic);
+        luab_setinteger(L, narg, "re_nsub",       re->re_nsub);
+
+        if (re->re_endp != NULL)
+            luab_setfstring(L, narg, "re_endp", "(%p)", re->re_endp);
+
+        if (re->re_g != NULL)
+            luab_setfstring(L, narg, "re_g", "(%p)", re->re_g);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -67,40 +90,30 @@ typedef struct luab_regex {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              re_magic    = (LUA_TNUMBER),
  *              re_nsub     = (LUA_TNUMBER),
- *              re_endp     = (LUA_TSTRING),
- *              re_g        = (LUA_TSTRING),
+ *              re_endp     = (LUA_T{NIL,STRING}),
+ *              re_g        = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = regex:get()
+ * @usage t [, err, msg ] = regex:get()
  */
 static int
 REGEX_get(lua_State *L)
 {
-    regex_t *re;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    re = luab_udata(L, 1, &luab_regex_type, regex_t *);
+    xtp.xtp_init = regex_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_regex_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "re_magic",      re->re_magic);
-    luab_setinteger(L, -2, "re_nsub",       re->re_nsub);
-
-    if (re->re_endp != NULL)
-        luab_setfstring(L, -2, "re_endp", "(%p)", re->re_endp);
-
-    if (re->re_g != NULL)
-        luab_setfstring(L, -2, "re_g", "(%p)", re->re_g);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

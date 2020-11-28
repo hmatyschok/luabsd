@@ -60,6 +60,25 @@ typedef struct luab_clockinfo {
         struct clockinfo *, sizeof(struct clockinfo)))
 
 /*
+ * Subr.
+ */
+
+static void
+clockinfo_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct clockinfo *ci;
+
+    if ((ci = (struct clockinfo *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "hz",        ci->hz);
+        luab_setinteger(L, narg, "tick",      ci->tick);
+        luab_setinteger(L, narg, "stathz",    ci->stathz);
+        luab_setinteger(L, narg, "profhz",    ci->stathz);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -68,7 +87,7 @@ typedef struct luab_clockinfo {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              hz      = (LUA_TNUMBER),
@@ -78,27 +97,21 @@ typedef struct luab_clockinfo {
  *              profhz  = (LUA_TNUMBER),
  *          }
  *
- * @usage t = clockinfo:get()
+ * @usage t [, err, msg ] = clockinfo:get()
  */
 static int
 CLOCKINFO_get(lua_State *L)
 {
-    struct clockinfo *ci;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ci = luab_udata(L, 1, &luab_clockinfo_type, struct clockinfo *);
+    xtp.xtp_init = clockinfo_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_clockinfo_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "hz",        ci->hz);
-    luab_setinteger(L, -2, "tick",      ci->tick);
-    luab_setinteger(L, -2, "stathz",    ci->stathz);
-    luab_setinteger(L, -2, "profhz",    ci->stathz);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

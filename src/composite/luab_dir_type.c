@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 extern luab_module_t luab_dir_type;
 
@@ -53,6 +54,22 @@ typedef struct luab_dir {
     (luab_toldata((L), (narg), &luab_dir_type, void *, sizeof(void *)))
 
 /*
+ * Subr.
+ */
+
+static void
+dir_initxtable(lua_State *L, int narg, void *arg)
+{
+    void *dirp;
+
+    if ((dirp = arg) != NULL) {
+
+        luab_setfstring(L, narg, "dirp", "(%p)", dirp);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -61,28 +78,27 @@ typedef struct luab_dir {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              dirp     = (LUA_TSTRING),
+ *              dirp     = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = dir:get()
+ * @usage t [, err, msg ] = dir:get()
  */
 static int
 DIR_get(lua_State *L)
 {
-    void *dirp;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dirp = luab_udata(L, 1, &luab_dir_type, void *);
+    xtp.xtp_init = dir_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_dir_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setfstring(L, -2, "dirp", "(%p)", dirp);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

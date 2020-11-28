@@ -83,6 +83,18 @@ luab_table_pushfsid(lua_State *L, int narg, const char *k, int32_t *vec)
     return (luab_table_pusherr(L, errno, 1));
 }
 
+static void
+fsid_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct fsid *fsid;
+
+    if ((fsid = (struct fsid *)arg) != NULL) {
+
+        (void)luab_table_pushfsid(L, narg, "val", fsid->val);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
 /*
  * Generator functions.
  */
@@ -92,28 +104,27 @@ luab_table_pushfsid(lua_State *L, int narg, const char *k, int32_t *vec)
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              val     = (LUA_TTABLE),
  *          }
  *
- * @usage t = fsid:get()
+ * @usage t [, err, msg ] = fsid:get()
  */
 static int
 FSID_get(lua_State *L)
 {
-    fsid_t *fsid;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
+    xtp.xtp_init = fsid_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_fsid_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    (void)luab_table_pushfsid(L, -2, "val", fsid->val);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

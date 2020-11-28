@@ -88,6 +88,23 @@ luab_table_pushgroup(lua_State *L, int narg, const char *k, caddr_t *vec)
     return (luab_table_pusherr(L, errno, 1));
 }
 
+static void
+group_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct group *grp;
+
+    if ((grp = (struct group *)arg) != NULL) {
+
+        luab_setstring(L, narg, "gr_name",    grp->gr_name);
+        luab_setstring(L, narg, "gr_passwd",   grp->gr_passwd);
+        luab_setinteger(L, narg, "gr_gid",    grp->gr_gid);
+
+        if (grp->gr_mem != NULL)
+            (void)luab_table_pushgroup(L, narg, "gr_mem", grp->gr_mem);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
 /*
  * Generator functions.
  */
@@ -97,38 +114,30 @@ luab_table_pushgroup(lua_State *L, int narg, const char *k, caddr_t *vec)
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              gr_name     = (LUA_TSTRING),
- *              gr_passwd    = (LUA_TSTRING),
+ *              gr_name     = (LUA_T{NIL,STRING}),
+ *              gr_passwd    = (LUA_T{NIL,STRING}),
  *              gr_gid      = (LUA_TNUMBER),
- *              gr_mem      = (LUA_TTABLE),
+ *              gr_mem      = (LUA_T{NIL,TABLE}),
  *          }
  *
- * @usage t = group:get()
+ * @usage t [, err, msg ]= group:get()
  */
 static int
 GROUP_get(lua_State *L)
 {
-    struct group *grp;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    grp = luab_udata(L, 1, &luab_group_type, struct group *);
+    xtp.xtp_init = group_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_group_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setstring(L, -2, "gr_name",    grp->gr_name);
-    luab_setstring(L, -2, "gr_passwd",   grp->gr_passwd);
-    luab_setinteger(L, -2, "gr_gid",    grp->gr_gid);
-
-    if (grp->gr_mem != NULL)
-        (void)luab_table_pushgroup(L, -2, "gr_mem", grp->gr_mem);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

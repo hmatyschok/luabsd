@@ -54,6 +54,21 @@ typedef struct luab_in_addr {
 #define luab_to_in_addr(L, narg) \
     (luab_toldata((L), (narg), &luab_in_addr_type, \
         struct in_addr *, sizeof(struct in_addr)))
+/*
+ * Subr.
+ */
+
+static void
+in_addr_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct in_addr *ia;
+
+    if ((ia = (struct in_addr *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "s_addr", ia->s_addr);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
 
 /*
  * Generator functions.
@@ -64,28 +79,27 @@ typedef struct luab_in_addr {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              s_addr  = (LUA_TNUMBER),
  *          }
  *
- * @usage t = in_addr:get()
+ * @usage t [, err, msg ] = in_addr:get()
  */
 static int
 IN_ADDR_get(lua_State *L)
 {
-    struct in_addr *ia;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &luab_in_addr_type, struct in_addr *);
+    xtp.xtp_init = in_addr_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_in_addr_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "s_addr", ia->s_addr);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

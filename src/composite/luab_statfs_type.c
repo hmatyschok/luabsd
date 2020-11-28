@@ -77,6 +77,43 @@ typedef struct luab_statfs {
         struct statfs *, sizeof(struct statfs)))
 
 /*
+ * Subr.
+ */
+
+static void
+statfs_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct statfs *f;
+
+    if ((f = (struct statfs *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "f_version",     f->f_version);
+        luab_setinteger(L, narg, "f_type",        f->f_type);
+        luab_setinteger(L, narg, "f_flags",       f->f_flags);
+        luab_setinteger(L, narg, "f_bsize",       f->f_bsize);
+        luab_setinteger(L, narg, "f_iosize",      f->f_iosize);
+        luab_setinteger(L, narg, "f_blocks",      f->f_blocks);
+        luab_setinteger(L, narg, "f_bfree",       f->f_bfree);
+        luab_setinteger(L, narg, "f_bavail",      f->f_bavail);
+        luab_setinteger(L, narg, "f_files",       f->f_files);
+        luab_setinteger(L, narg, "f_ffree",       f->f_ffree);
+        luab_setinteger(L, narg, "f_syncwrites",  f->f_syncwrites);
+        luab_setinteger(L, narg, "f_asyncwrites", f->f_asyncwrites);
+        luab_setinteger(L, narg, "f_syncreads",   f->f_syncreads);
+        luab_setinteger(L, narg, "f_asyncreads",  f->f_asyncreads);
+        luab_setinteger(L, narg, "f_namemax",     f->f_namemax);
+        luab_setinteger(L, narg, "f_owner",       f->f_owner);
+
+        luab_setudata(L, -2, luab_xmod(FSID, TYPE, __func__), "f_fsid", (void *)&(f->f_fsid));
+
+        luab_setldata(L, narg, "f_fstypename",    f->f_fstypename, MFSNAMELEN);
+        luab_setldata(L, narg, "f_mntfromname",   f->f_mntfromname, MNAMELEN);
+        luab_setldata(L, narg, "f_mntonname",     f->f_mntonname, MNAMELEN);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -85,7 +122,7 @@ typedef struct luab_statfs {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              f_version       = (LUA_TNUMBER),
@@ -105,9 +142,9 @@ typedef struct luab_statfs {
  *              f_namemax       = (LUA_TNUMBER),
  *              f_owner         = (LUA_TNUMBER),
  *              f_fsid          = (LUA_TUSERDATA(FSID)),
- *              f_fstypename    = (LUA_TSTRING),
- *              f_mntfromname   = (LUA_TSTRING),
- *              f_mntonname     = (LUA_TSTRING),
+ *              f_fstypename    = (LUA_T{NIL,STRING}),
+ *              f_mntfromname   = (LUA_T{NIL,STRING}),
+ *              f_mntonname     = (LUA_T{NIL,STRING}),
  *          }
  *
  * @usage t = statfs:get()
@@ -115,40 +152,16 @@ typedef struct luab_statfs {
 static int
 STATFS_get(lua_State *L)
 {
-    struct statfs *f;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
+    xtp.xtp_init = statfs_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_statfs_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "f_version",     f->f_version);
-    luab_setinteger(L, -2, "f_type",        f->f_type);
-    luab_setinteger(L, -2, "f_flags",       f->f_flags);
-    luab_setinteger(L, -2, "f_bsize",       f->f_bsize);
-    luab_setinteger(L, -2, "f_iosize",      f->f_iosize);
-    luab_setinteger(L, -2, "f_blocks",      f->f_blocks);
-    luab_setinteger(L, -2, "f_bfree",       f->f_bfree);
-    luab_setinteger(L, -2, "f_bavail",      f->f_bavail);
-    luab_setinteger(L, -2, "f_files",       f->f_files);
-    luab_setinteger(L, -2, "f_ffree",       f->f_ffree);
-    luab_setinteger(L, -2, "f_syncwrites",  f->f_syncwrites);
-    luab_setinteger(L, -2, "f_asyncwrites", f->f_asyncwrites);
-    luab_setinteger(L, -2, "f_syncreads",   f->f_syncreads);
-    luab_setinteger(L, -2, "f_asyncreads",  f->f_asyncreads);
-    luab_setinteger(L, -2, "f_namemax",     f->f_namemax);
-    luab_setinteger(L, -2, "f_owner",       f->f_owner);
-
-    luab_setudata(L, -2, luab_xmod(FSID, TYPE, __func__), "f_fsid", (void *)&(f->f_fsid));
-
-    luab_setldata(L, -2, "f_fstypename",    f->f_fstypename, MFSNAMELEN);
-    luab_setldata(L, -2, "f_mntfromname",   f->f_mntfromname, MNAMELEN);
-    luab_setldata(L, -2, "f_mntonname",     f->f_mntonname, MNAMELEN);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

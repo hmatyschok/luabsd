@@ -66,6 +66,32 @@ typedef struct luab_passwd {
         struct passwd *, sizeof(struct passwd)))
 
 /*
+ * Subr.
+ */
+
+static void
+passwd_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct passwd *pwd;
+
+    if ((pwd = (struct passwd *)arg) != NULL) {
+
+        luab_setstring(L, narg, "pw_name",    pwd->pw_name);
+        luab_setstring(L, narg, "pw_passwd",  pwd->pw_passwd);
+        luab_setinteger(L, narg, "pw_uid",    pwd->pw_uid);
+        luab_setinteger(L, narg, "pw_gid",    pwd->pw_gid);
+        luab_setinteger(L, narg, "pw_change", pwd->pw_change);
+        luab_setstring(L, narg, "pw_class",   pwd->pw_class);
+        luab_setstring(L, narg, "pw_gecos",   pwd->pw_gecos);
+        luab_setstring(L, narg, "pw_dir",     pwd->pw_dir);
+        luab_setstring(L, narg, "pw_shell",   pwd->pw_shell);
+        luab_setinteger(L, narg, "pw_expire", pwd->pw_expire);
+        luab_setinteger(L, narg, "pw_fields", pwd->pw_fields);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -74,18 +100,18 @@ typedef struct luab_passwd {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              pw_name     = (LUA_TSTRING),
- *              pw_passwd   = (LUA_TSTRING),
+ *              pw_name     = (LUA_T{NIL,STRING}),
+ *              pw_passwd   = (LUA_T{NIL,STRING}),
  *              pw_uid      = (LUA_TNUMBER),
  *              pw_gid      = (LUA_TNUMBER),
  *              pw_change   = (LUA_TNUMBER),
- *              pw_class    = (LUA_TSTRING),
- *              pw_gecos    = (LUA_TSTRING),
- *              pw_dir      = (LUA_TSTRING),
- *              pw_shell    = (LUA_TSTRING),
+ *              pw_class    = (LUA_T{NIL,STRING}),
+ *              pw_gecos    = (LUA_T{NIL,STRING}),
+ *              pw_dir      = (LUA_T{NIL,STRING}),
+ *              pw_shell    = (LUA_T{NIL,STRING}),
  *              pw_expire   = (LUA_TNUMBER),
  *              pw_fields   = (LUA_TNUMBER),
  *          }
@@ -95,27 +121,16 @@ typedef struct luab_passwd {
 static int
 PASSWD_get(lua_State *L)
 {
-    struct passwd *pwd;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    xtp.xtp_init = passwd_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_passwd_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setstring(L, -2, "pw_name",    pwd->pw_name);
-    luab_setstring(L, -2, "pw_passwd",  pwd->pw_passwd);
-    luab_setinteger(L, -2, "pw_uid",    pwd->pw_uid);
-    luab_setinteger(L, -2, "pw_gid",    pwd->pw_gid);
-    luab_setinteger(L, -2, "pw_change", pwd->pw_change);
-    luab_setstring(L, -2, "pw_class",   pwd->pw_class);
-    luab_setstring(L, -2, "pw_gecos",   pwd->pw_gecos);
-    luab_setstring(L, -2, "pw_dir",     pwd->pw_dir);
-    luab_setstring(L, -2, "pw_shell",   pwd->pw_shell);
-    luab_setinteger(L, -2, "pw_expire", pwd->pw_expire);
-    luab_setinteger(L, -2, "pw_fields", pwd->pw_fields);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

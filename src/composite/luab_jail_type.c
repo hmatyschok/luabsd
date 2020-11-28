@@ -203,11 +203,10 @@ jail_pushxaddrtable(lua_State *L, int narg, const char *k, luab_jail_t *self,
 }
 
 static void
-jail_xtable_init(lua_State *L, int narg, void *arg)
+jail_initxtable(lua_State *L, int narg, void *arg)
 {
     luab_jail_t *self;
     struct jail *jp;
-
 
     if ((self = (luab_jail_t *)arg) != NULL) {
         jp = &(self->ud_jail);
@@ -251,20 +250,17 @@ jail_xtable_init(lua_State *L, int narg, void *arg)
  *              ip6         = (LUA_T{NIL,TABLE}),
  *          }
  *
- * @usage t [, err, msg ]= jail:get()
+ * @usage t [, err, msg ] = jail:get()
  */
 static int
 JAIL_get(lua_State *L)
 {
-    luab_jail_t *self;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_jail(L, 1);
-
-    xtp.xtp_init = jail_xtable_init;
-    xtp.xtp_arg = (void *)self;
+    xtp.xtp_init = jail_initxtable;
+    xtp.xtp_arg = (void *)luab_to_jail(L, 1);   /* XXX */
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 

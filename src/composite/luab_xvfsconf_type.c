@@ -75,6 +75,26 @@ typedef struct luab_xvfsconf {
         struct xvfsconf *, sizeof(struct xvfsconf)))
 
 /*
+ * Subr.
+ */
+
+static void
+xvfsconf_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct xvfsconf *vfc;
+
+    if ((vfc = (struct xvfsconf *)arg) != NULL) {
+
+        luab_setfstring(L, narg, "vfc_vfsops", "(%p)",    vfc->vfc_vfsops);
+        luab_setstring(L, narg, "vfc_name",               vfc->vfc_name);
+        luab_setinteger(L, narg, "vfc_typenum",           vfc->vfc_typenum);
+        luab_setinteger(L, narg, "vfc_refcount",          vfc->vfc_refcount);
+        luab_setinteger(L, narg, "vfc_flags",             vfc->vfc_flags);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -83,7 +103,7 @@ typedef struct luab_xvfsconf {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              vfc_vfsops      = (LUA_T{NIL,STRING}),
@@ -93,26 +113,21 @@ typedef struct luab_xvfsconf {
  *              vfc_flags       = (LUA_TNUMBER),
  *          }
  *
- * @usage t = xvfsconf:get()
+ * @usage t [, err, msg ] = xvfsconf:get()
  */
 static int
 XVFSCONF_get(lua_State *L)
 {
-    struct xvfsconf *vfc;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    vfc = luab_udata(L, 1, &luab_xvfsconf_type, struct xvfsconf *);
+    xtp.xtp_init = xvfsconf_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_xvfsconf_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    luab_table_init(L, 1);
-    luab_setfstring(L, -2, "vfc_vfsops", "(%p)",    vfc->vfc_vfsops);
-    luab_setstring(L, -2, "vfc_name",               vfc->vfc_name);
-    luab_setinteger(L, -2, "vfc_typenum",           vfc->vfc_typenum);
-    luab_setinteger(L, -2, "vfc_refcount",          vfc->vfc_refcount);
-    luab_setinteger(L, -2, "vfc_flags",             vfc->vfc_flags);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

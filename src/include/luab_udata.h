@@ -79,8 +79,10 @@ void     *luab_isudata(lua_State *, int, luab_module_t *);
     ((t)luab_checkudata((L), (narg), (m)))
 #define luab_toldata(L, narg, m, t, len) \
     ((t)luab_checkludata((L), (narg), (m), (len)))
+#define luab_xdata(L, narg, m) \
+    ((*(m)->m_get)((L), (narg)))
 #define luab_udata(L, narg, m, t) \
-    ((t)((*(m)->m_get)((L), (narg))))
+    ((t)luab_xdata((L), (narg), (m)))
 #define luab_udataisnil(L, narg, m, t) \
     ((t)(luab_checkudataisnil((L), (narg), (m))))
 

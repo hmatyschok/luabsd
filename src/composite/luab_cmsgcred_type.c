@@ -60,6 +60,33 @@ typedef struct luab_cmsgcred {
         struct cmsgcred *, sizeof(struct cmsgcred)))
 
 /*
+ * Subr.
+ */
+
+static void
+cmsgcred_type_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct cmsgcred *cmcred;
+
+    if ((cmcred = (struct cmsgcred *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "cmcred_pid",        cmcred->cmcred_pid);
+        luab_setinteger(L, narg, "cmcred_uid",        cmcred->cmcred_uid);
+        luab_setinteger(L, narg, "cmcred_euid",       cmcred->cmcred_euid);
+        luab_setinteger(L, narg, "cmcred_gid",        cmcred->cmcred_gid);
+        luab_setinteger(L, narg, "cmcred_ngroups",    cmcred->cmcred_ngroups);
+
+        /*
+         * XXX
+         *  (LUA_TTABLE)
+         */
+
+        luab_setldata(L, narg, "cmcred_groups", cmcred->cmcred_groups, CMGROUP_MAX);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -68,7 +95,7 @@ typedef struct luab_cmsgcred {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              cmcred_pid      = (LUA_TNUMBER),
@@ -79,29 +106,21 @@ typedef struct luab_cmsgcred {
  *              cmcred_groups   = (LUA_TSTRING),
  *          }
  *
- * @usage t = cmsgcred:get()
+ * @usage t [, err, msg ] = cmsgcred:get()
  */
 static int
 CMSGCRED_get(lua_State *L)
 {
-    struct cmsgcred *cmcred;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
+    xtp.xtp_init = cmsgcred_type_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_cmsgcred_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "cmcred_pid",        cmcred->cmcred_pid);
-    luab_setinteger(L, -2, "cmcred_uid",        cmcred->cmcred_uid);
-    luab_setinteger(L, -2, "cmcred_euid",       cmcred->cmcred_euid);
-    luab_setinteger(L, -2, "cmcred_gid",        cmcred->cmcred_gid);
-    luab_setinteger(L, -2, "cmcred_ngroups",    cmcred->cmcred_ngroups);
-
-        /* XXX (LUA_TTABLE) */
-    luab_setldata(L, -2, "cmcred_groups", cmcred->cmcred_groups, CMGROUP_MAX);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***
@@ -259,7 +278,7 @@ CMSGCRED_cmcred_groups(lua_State *L)
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
     dp = cmcred->cmcred_groups;
     len = (luab_env_ngroups_max * sizeof(gid_t));
-    
+
         /* XXX (LUA_TTABLE), pending.. */
 
     return (luab_pushldata(L, dp, len));

@@ -60,6 +60,23 @@ typedef struct luab_crypt_data {
         struct crypt_data *, sizeof(struct crypt_data)))
 
 /*
+ * Subr.
+ */
+
+static void
+crypt_data_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct crypt_data *cd;
+
+    if ((cd = (struct crypt_data *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "initialized", cd->initialized);
+        luab_setldata(L, narg, "buf", cd->__buf, LUAB_CRYPT_DATAMAXLEN);   /* XXX */
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -68,32 +85,28 @@ typedef struct luab_crypt_data {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              initialized = (LUA_TNUMBER),
- *              buf         = (LUA_TSTRING),
+ *              buf         = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = crypt_data:get()
+ * @usage t [, err, msg ] = crypt_data:get()
  */
 static int
 CRYPT_DATA_get(lua_State *L)
 {
-    struct crypt_data *cd;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
+    xtp.xtp_init = crypt_data_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_crypt_data_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "initialized", cd->initialized);
-    luab_setldata(L, -2, "buf", cd->__buf, LUAB_CRYPT_DATAMAXLEN);   /* XXX */
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

@@ -57,6 +57,23 @@ typedef struct luab_timespec {
         struct timespec *, sizeof(struct timespec)))
 
 /*
+ * Subr.
+ */
+
+static void
+timespec_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct timespec *tv;
+
+    if ((tv = (struct timespec *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "tv_sec",    tv->tv_sec);
+        luab_setinteger(L, narg, "tv_nsec",   tv->tv_nsec);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -65,30 +82,28 @@ typedef struct luab_timespec {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              tv_sec  = (LUA_TNUMBER),
  *              tv_nsec = (LUA_TNUMBER),
  *          }
  *
- * @usage t = timespec:get()
+ * @usage t [, err, msg ] = timespec:get()
  */
 static int
 TIMESPEC_get(lua_State *L)
 {
-    struct timespec *tv;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, &luab_timespec_type, struct timespec *);
+    xtp.xtp_init = timespec_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_timespec_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "tv_sec",    tv->tv_sec);
-    luab_setinteger(L, -2, "tv_nsec",   tv->tv_nsec);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

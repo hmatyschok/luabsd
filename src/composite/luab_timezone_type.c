@@ -57,6 +57,23 @@ typedef struct luab_timezone {
         struct timezone *, sizeof(struct timezone)))
 
 /*
+ * Subr.
+ */
+
+static void
+timezone_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct timezone *tz;
+
+    if ((tz = (struct timezone *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "tz_minuteswest",    tz->tz_minuteswest);
+        luab_setinteger(L, narg, "tz_dsttime",        tz->tz_dsttime);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -65,30 +82,28 @@ typedef struct luab_timezone {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              tz_minuteswest  = (LUA_TNUMBER),
  *              tz_dsttime      = (LUA_TNUMBER),
  *          }
  *
- * @usage t = timezone:get()
+ * @usage t [, err, msg ] = timezone:get()
  */
 static int
 TIMEZONE_get(lua_State *L)
 {
-    struct timezone *tz;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
+    xtp.xtp_init = timezone_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_timezone_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "tz_minuteswest",    tz->tz_minuteswest);
-    luab_setinteger(L, -2, "tz_dsttime",        tz->tz_dsttime);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

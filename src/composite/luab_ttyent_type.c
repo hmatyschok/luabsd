@@ -40,19 +40,19 @@ extern luab_module_t luab_ttyent_type;
  * Interface against
  *
  *  struct ttyent {
- *      char	*ty_name;
- *      char	*ty_getty;
- *      char	*ty_type;
- *  #define	TTY_ON		0x01
- *  #define	TTY_SECURE	0x02
- *  #define	TTY_DIALUP	0x04   
- *  #define	TTY_NETWORK	0x08
- *  #define	TTY_IFEXISTS	0x10
- *  #define	TTY_IFCONSOLE	0x20
- *      int	ty_status;
- *      char 	*ty_window;
- *      char	*ty_comment;
- *      char	*ty_group;
+ *      char    *ty_name;
+ *      char    *ty_getty;
+ *      char    *ty_type;
+ *  #define TTY_ON      0x01
+ *  #define TTY_SECURE  0x02
+ *  #define TTY_DIALUP  0x04
+ *  #define TTY_NETWORK 0x08
+ *  #define TTY_IFEXISTS    0x10
+ *  #define TTY_IFCONSOLE   0x20
+ *      int ty_status;
+ *      char    *ty_window;
+ *      char    *ty_comment;
+ *      char    *ty_group;
  *  };
  *
  */
@@ -69,6 +69,28 @@ typedef struct luab_ttyent {
         struct ttyent *, sizeof(struct ttyent)))
 
 /*
+ * Subr.
+ */
+
+static void
+ttyent_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct ttyent *typ;
+
+    if ((typ = (struct ttyent *)arg) != NULL) {
+
+        luab_setstring(L, narg, "ty_name",        typ->ty_name);
+        luab_setstring(L, narg, "ty_getty",       typ->ty_getty);
+        luab_setstring(L, narg, "ty_type",        typ->ty_type);
+        luab_setinteger(L, narg, "ty_status",     typ->ty_status);
+        luab_setstring(L, narg, "ty_window",      typ->ty_window);
+        luab_setstring(L, narg, "ty_comment",     typ->ty_comment);
+        luab_setstring(L, narg, "ty_group",       typ->ty_group);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -77,16 +99,16 @@ typedef struct luab_ttyent {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              ty_name     = (LUA_TSTRING),
- *              ty_getty    = (LUA_TSTRING),
- *              ty_type     = (LUA_TSTRING),
+ *              ty_name     = (LUA_T{NIL,STRING}),
+ *              ty_getty    = (LUA_T{NIL,STRING}),
+ *              ty_type     = (LUA_T{NIL,STRING}),
  *              ty_status   = (LUA_TNUMBER),
- *              ty_window   = (LUA_TSTRING),
- *              ty_comment  = (LUA_TSTRING),
- *              ty_group    = (LUA_TSTRING),
+ *              ty_window   = (LUA_T{NIL,STRING}),
+ *              ty_comment  = (LUA_T{NIL,STRING}),
+ *              ty_group    = (LUA_T{NIL,STRING}),
  *          }
  *
  * @usage t = ttyent:get()
@@ -94,23 +116,16 @@ typedef struct luab_ttyent {
 static int
 TTYENT_get(lua_State *L)
 {
-    struct ttyent *typ;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    typ = luab_udata(L, 1, &luab_ttyent_type, struct ttyent *);
+    xtp.xtp_init = ttyent_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_ttyent_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setstring(L, -2, "ty_name",        typ->ty_name);
-    luab_setstring(L, -2, "ty_getty",       typ->ty_getty);
-    luab_setstring(L, -2, "ty_type",        typ->ty_type);
-    luab_setinteger(L, -2, "ty_status",     typ->ty_status);
-    luab_setstring(L, -2, "ty_window",      typ->ty_window);
-    luab_setstring(L, -2, "ty_comment",     typ->ty_comment);
-    luab_setstring(L, -2, "ty_group",       typ->ty_group);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

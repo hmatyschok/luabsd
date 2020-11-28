@@ -57,6 +57,23 @@ typedef struct luab_regmatch {
         regmatch_t *, sizeof(regmatch_t)))
 
 /*
+ * Subr.
+ */
+
+static void
+regmatch_initxtable(lua_State *L, int narg, void *arg)
+{
+    regmatch_t *rm;
+
+    if ((rm = (regmatch_t *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "rm_so",      rm->rm_so);
+        luab_setinteger(L, narg, "rm_eo",       rm->rm_eo);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -65,32 +82,28 @@ typedef struct luab_regmatch {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              rm_so   = (LUA_TNUMBER),
  *              rm_eo   = (LUA_TNUMBER),
  *          }
  *
- * @usage t = regmatch:get()
+ * @usage t [, err, msg ] = regmatch:get()
  */
 static int
 REGMATCH_get(lua_State *L)
 {
-    regmatch_t *rm;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
+    xtp.xtp_init = regmatch_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_regmatch_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "rm_so",      rm->rm_so);
-    luab_setinteger(L, -2, "rm_eo",       rm->rm_eo);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

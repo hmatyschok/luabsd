@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;
@@ -56,6 +57,23 @@ typedef struct luab_dbt {
     ((DBT *)luab_toudata((L), (narg), &luab_dbt_type))
 
 /*
+ * Subr.
+ */
+
+static void
+dbt_initxtable(lua_State *L, int narg, void *arg)
+{
+    DBT *dbt;
+
+    if ((dbt = (DBT *)arg) != NULL) {
+
+        luab_iovec_setldata(L, narg, "data",    dbt->data, dbt->size);
+        luab_setinteger(L, narg, "size",  dbt->size);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -64,30 +82,28 @@ typedef struct luab_dbt {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              sec     = (LUA_TNUMBER),
- *              frac    = (LUA_TNUMBER),
+ *              data    = (LUA_T{NIL,STRING}),
+ *              size    = (LUA_TNUMBER),
  *          }
  *
- * @usage t = dbt:get()
+ * @usage t [, err, msg ] = dbt:get()
  */
 static int
 DBT_get(lua_State *L)
 {
-    DBT *dbt;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
+    xtp.xtp_init = dbt_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_dbt_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_iovec_setldata(L, -2, "data",    dbt->data, dbt->size);
-    luab_setinteger(L, -2, "size",  dbt->size);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

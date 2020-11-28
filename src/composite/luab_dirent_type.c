@@ -69,6 +69,27 @@ typedef struct luab_dirent {
         struct dirent *, sizeof(struct dirent)))
 
 /*
+ * Subr.
+ */
+
+static void
+dirent_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct dirent *dp;
+
+    if ((dp = (struct dirent *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "d_fileno",  dp->d_fileno);
+        luab_setinteger(L, narg, "d_off",     dp->d_off);
+        luab_setinteger(L, narg, "d_reclen",  dp->d_reclen);
+        luab_setinteger(L, narg, "d_type",    dp->d_type);
+        luab_setinteger(L, narg, "d_namlen",  dp->d_namlen);
+        luab_setldata(L, narg, "d_name",      dp->d_name, dp->d_namlen);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -77,7 +98,7 @@ typedef struct luab_dirent {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              d_fileno    = (LUA_TNUMBER),
@@ -85,30 +106,24 @@ typedef struct luab_dirent {
  *              d_reclen    = (LUA_TNUMBER),
  *              d_type      = (LUA_TNUMBER),
  *              d_namlen    = (LUA_TNUMBER),
- *              d_name      = (LUA_TSTRING),
+ *              d_name      = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = dirent:get()
+ * @usage t [, err, msg ]= dirent:get()
  */
 static int
 DIRENT_get(lua_State *L)
 {
-    struct dirent *dp;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dp = luab_udata(L, 1, &luab_dirent_type, struct dirent *);
+    xtp.xtp_init = dirent_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_dirent_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "d_fileno",  dp->d_fileno);
-    luab_setinteger(L, -2, "d_off",     dp->d_off);
-    luab_setinteger(L, -2, "d_reclen",  dp->d_reclen);
-    luab_setinteger(L, -2, "d_type",    dp->d_type);
-    luab_setinteger(L, -2, "d_namlen",  dp->d_namlen);
-    luab_setldata(L, -2, "d_name",      dp->d_name, dp->d_namlen);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

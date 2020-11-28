@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 #if __BSD_VISIBLE
 extern luab_module_t luab_cap_rbuf_type;
@@ -63,6 +64,23 @@ typedef struct luab_cap_rbuf {
     ((luab_cap_rbuf_t *)luab_toudata((L), (narg), &luab_cap_rbuf_type))
 
 /*
+ * Subr.
+ */
+
+static void
+cap_rbuf_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct iovec *iov;
+
+    if ((iov = (struct iovec *)arg) != NULL) {
+
+        luab_setldata(L, narg, "iov_base",    iov->iov_base, iov->iov_len);
+        luab_setinteger(L, narg, "iov_len",   iov->iov_len);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -71,31 +89,28 @@ typedef struct luab_cap_rbuf {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              iov_base    = (LUA_TSTRING),
+ *              iov_base    = (LUA_T{NIL,STRING}),
  *              iov_len     = (LUA_NUMBER),
  *          }
  *
- * @usage t = cap_rbuf:get()
+ * @usage t [, err, msg ]= cap_rbuf:get()
  */
 static int
 CAP_RBUF_get(lua_State *L)
 {
-    struct iovec *iov;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
+    xtp.xtp_init = cap_rbuf_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_cap_rbuf_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setldata(L, -2, "iov_base",    iov->iov_base, iov->iov_len);
-    luab_setinteger(L, -2, "iov_len",   iov->iov_len);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

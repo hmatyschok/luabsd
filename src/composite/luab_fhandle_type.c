@@ -58,38 +58,51 @@ typedef struct luab_fhandle {
         fhandle_t *, sizeof(fhandle_t)))
 
 /*
+ * Subr.
+ */
+
+static void
+fhandle_initxtable(lua_State *L, int narg, void *arg)
+{
+    fhandle_t *fh;
+
+    if ((fh = (fhandle_t *)arg) != NULL) {
+
+        luab_setudata(L, narg, luab_xmod(FSID, TYPE, __func__), "fh_fsid",  &(fh->fh_fsid));
+        luab_setudata(L, narg, luab_xmod(FID, TYPE, __func__), "fh_fid",    &(fh->fh_fid));
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
 /***
  * Generator function - translate (LUA_TUSERDATA(FHANDLE)) into (LUA_TTABLE).
  *
- * @function get
- *
- * @return (LUA_TTABLE)
- *
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * 
  *          t = {
  *              fh_fsid     = (LUA_TUSERDATA(FSID)),
  *              fh_fid      = (LUA_TUSERDATA(FID)),
  *          }
  *
- * @usage t = fhandle:get()
+ * @usage t [, err, msg ] = fhandle:get()
  */
 static int
 FHANDLE_get(lua_State *L)
 {
-    fhandle_t *fh;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
+    xtp.xtp_init = fhandle_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_fhandle_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setudata(L, -2, luab_xmod(FSID, TYPE, __func__), "fh_fsid",  &(fh->fh_fsid));
-    luab_setudata(L, -2, luab_xmod(FID, TYPE, __func__), "fh_fid",    &(fh->fh_fid));
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

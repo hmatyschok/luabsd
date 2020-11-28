@@ -84,6 +84,53 @@ typedef struct luab_stat {
 #define luab_to_stat(L, narg) \
     (luab_toldata((L), (narg), &luab_stat_type, \
         struct stat *, sizeof(struct stat)))
+/*
+ * Subr.
+ */
+
+static void
+stat_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct stat *st;
+
+    if ((st = (struct stat *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "st_dev",                        st->st_dev);
+        luab_setinteger(L, narg, "st_ino",                        st->st_ino);
+        luab_setinteger(L, narg, "st_nlink",                      st->st_nlink);
+        luab_setinteger(L, narg, "st_mode",                       st->st_mode);
+        luab_setinteger(L, narg, "st_uid",                        st->st_uid);
+        luab_setinteger(L, narg, "st_gid",                        st->st_gid);
+        luab_setinteger(L, narg, "st_rdev",                       st->st_rdev);
+
+#ifdef  __STAT_TIME_T_EXT
+        luab_setinteger(L, narg, "st_atim_ext",                   st->st_atim_ext);
+#endif
+        luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_atim",      &st->st_atim);
+
+#ifdef  __STAT_TIME_T_EXT
+        luab_setinteger(L, narg, "st_mtim_ext",                   st->st_mtim_ext);
+#endif
+        luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_mtim",      &st->st_mtim);
+
+#ifdef  __STAT_TIME_T_EXT
+        luab_setinteger(L, narg, "st_ctim_ext",                   st->st_ctim_ext);
+#endif
+        luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_ctim",      &st->st_ctim);
+
+#ifdef  __STAT_TIME_T_EXT
+        luab_setinteger(L, narg, "st_btim_ext",                   st->st_btim_ext);
+#endif
+        luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_birthtim",  &st->st_birthtim);
+
+        luab_setinteger(L, narg, "st_size",                       st->st_size);
+        luab_setinteger(L, narg, "st_blocks",                     st->st_blocks);
+        luab_setinteger(L, narg, "st_blksize",                    st->st_blksize);
+        luab_setinteger(L, narg, "st_flags",                      st->st_flags);
+        luab_setinteger(L, narg, "st_gen",                        st->st_gen);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
 
 /*
  * Generator functions.
@@ -94,7 +141,7 @@ typedef struct luab_stat {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              st_dev          = (LUA_TNUMBER),
@@ -119,56 +166,21 @@ typedef struct luab_stat {
  *              st_gen          = (LUA_TNUMBER),
  *          }
  *
- * @usage t = stat:get()
+ * @usage t [, err, msg ] = stat:get()
  */
 static int
 STAT_get(lua_State *L)
 {
-    struct stat *st;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    st = luab_udata(L, 1, &luab_stat_type, struct stat *);
+    xtp.xtp_init = stat_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_stat_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "st_dev",                        st->st_dev);
-    luab_setinteger(L, -2, "st_ino",                        st->st_ino);
-    luab_setinteger(L, -2, "st_nlink",                      st->st_nlink);
-    luab_setinteger(L, -2, "st_mode",                       st->st_mode);
-    luab_setinteger(L, -2, "st_uid",                        st->st_uid);
-    luab_setinteger(L, -2, "st_gid",                        st->st_gid);
-    luab_setinteger(L, -2, "st_rdev",                       st->st_rdev);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_atim_ext",                   st->st_atim_ext);
-#endif
-    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_atim",      &st->st_atim);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_mtim_ext",                   st->st_mtim_ext);
-#endif
-    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_mtim",      &st->st_mtim);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_ctim_ext",                   st->st_ctim_ext);
-#endif
-    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_ctim",      &st->st_ctim);
-
-#ifdef  __STAT_TIME_T_EXT
-    luab_setinteger(L, -2, "st_btim_ext",                   st->st_btim_ext);
-#endif
-    luab_setudata(L, -2, luab_xmod(TIMESPEC, TYPE, __func__), "st_birthtim",  &st->st_birthtim);
-
-    luab_setinteger(L, -2, "st_size",                       st->st_size);
-    luab_setinteger(L, -2, "st_blocks",                     st->st_blocks);
-    luab_setinteger(L, -2, "st_blksize",                    st->st_blksize);
-    luab_setinteger(L, -2, "st_flags",                      st->st_flags);
-    luab_setinteger(L, -2, "st_gen",                        st->st_gen);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

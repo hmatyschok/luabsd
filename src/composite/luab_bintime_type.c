@@ -58,6 +58,23 @@ typedef struct luab_bintime {
         struct bintime *, sizeof(struct bintime)))
 
 /*
+ * Subr.
+ */
+
+static void
+bintime_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct bintime *bt;
+
+    if ((bt = (struct bintime *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "sec",   bt->sec);
+        luab_setinteger(L, narg, "frac",  bt->frac);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -66,30 +83,28 @@ typedef struct luab_bintime {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              sec     = (LUA_TNUMBER),
  *              frac    = (LUA_TNUMBER),
  *          }
  *
- * @usage t = bintime:get()
+ * @usage t [, err, msg ] = bintime:get()
  */
 static int
 BINTIME_get(lua_State *L)
 {
-    struct bintime *bt;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    bt = luab_udata(L, 1, &luab_bintime_type, struct bintime *);
+    xtp.xtp_init = bintime_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_bintime_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "sec",   bt->sec);
-    luab_setinteger(L, -2, "frac",  bt->frac);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

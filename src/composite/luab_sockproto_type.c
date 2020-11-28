@@ -58,6 +58,23 @@ typedef struct luab_sockproto {
         struct sockproto *, sizeof(struct sockproto)))
 
 /*
+ * Subr.
+ */
+
+static void
+sockproto_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct sockproto *sp;
+
+    if ((sp = (struct sockproto *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "sp_family",     sp->sp_family);
+        luab_setinteger(L, narg, "sp_protocol",   sp->sp_protocol);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -66,30 +83,28 @@ typedef struct luab_sockproto {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              sp_family   = (LUA_TSTRING),
- *              sp_protocol = (LUA_TSTRING),
+ *              sp_family   = (LUA_T{NIL,STRING}),
+ *              sp_protocol = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = sockproto:get()
+ * @usage t [, err, msg ]= sockproto:get()
  */
 static int
 SOCKPROTO_get(lua_State *L)
 {
-    struct sockproto *sp;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
+    xtp.xtp_init = sockproto_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_sockproto_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "sp_family",     sp->sp_family);
-    luab_setinteger(L, -2, "sp_protocol",   sp->sp_protocol);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

@@ -62,6 +62,29 @@ typedef struct luab_uuid {
         struct uuid *, sizeof(struct uuid)))
 
 /*
+ * Subr.
+ */
+
+static void
+uuid_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct uuid *uuid;
+
+    if ((uuid = (struct uuid *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "time_low",      uuid->time_low);
+        luab_setinteger(L, narg, "time_mid",      uuid->time_mid);
+        luab_setinteger(L, narg, "time_hi_and_version",
+            uuid->time_hi_and_version);
+        luab_setinteger(L, narg, "clock_seq_hi_and_reserved",
+            uuid->clock_seq_hi_and_reserved);
+        luab_setinteger(L, narg, "clock_seq_low", uuid->clock_seq_low);
+        luab_setldata(L, narg, "node",            uuid->node, _UUID_NODE_LEN);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -70,7 +93,7 @@ typedef struct luab_uuid {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              time_low                    = (LUA_TNUMBER),
@@ -81,31 +104,21 @@ typedef struct luab_uuid {
  *              node                        = (LUA_TUSERDATA(IOVEC)),
  *          }
  *
- * @usage t = uuid:get()
+ * @usage t [, err, msg ] = uuid:get()
  */
 static int
 UUID_get(lua_State *L)
 {
-    struct uuid *uuid;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    uuid = luab_udata(L, 1, &luab_uuid_type, struct uuid *);
+    xtp.xtp_init = uuid_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_uuid_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "time_low",      uuid->time_low);
-    luab_setinteger(L, -2, "time_mid",      uuid->time_mid);
-    luab_setinteger(L, -2, "time_hi_and_version",
-        uuid->time_hi_and_version);
-    luab_setinteger(L, -2, "clock_seq_hi_and_reserved",
-        uuid->clock_seq_hi_and_reserved);
-    luab_setinteger(L, -2, "clock_seq_low", uuid->clock_seq_low);
-    luab_setldata(L, -2, "node",            uuid->node, _UUID_NODE_LEN);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

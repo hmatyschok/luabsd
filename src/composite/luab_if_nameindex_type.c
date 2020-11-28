@@ -58,6 +58,23 @@ typedef struct luab_if_nameindex {
     ((struct if_nameindex *)luab_toudata((L), (narg), &luab_if_nameindex_type))
 
 /*
+ * Subr.
+ */
+
+static void
+if_nameindex_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct if_nameindex *ifni;
+
+    if ((ifni = (struct if_nameindex *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "if_index",  ifni->if_index);
+        luab_setstring(L, narg, "if_name",    ifni->if_name);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -66,30 +83,28 @@ typedef struct luab_if_nameindex {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              if_index    = (LUA_TNUMBER),
- *              if_name     = (LUA_TSTRING),
+ *              if_name     = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = if_nameindex:get()
+ * @usage t [, err, msg ] = if_nameindex:get()
  */
 static int
 IF_NAMEINDEX_get(lua_State *L)
 {
-    struct if_nameindex *ifni;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
+    xtp.xtp_init = if_nameindex_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_if_nameindex_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "if_index",  ifni->if_index);
-    luab_setstring(L, -2, "if_name",    ifni->if_name);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

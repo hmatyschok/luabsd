@@ -55,6 +55,23 @@ typedef struct luab_ldiv {
         ldiv_t *, sizeof(ldiv_t)))
 
 /*
+ * Subr.
+ */
+
+static void
+ldiv_initxtable(lua_State *L, int narg, void *arg)
+{
+    ldiv_t *ldiv;
+
+    if ((ldiv = (ldiv_t *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "quot",  ldiv->quot);
+        luab_setinteger(L, narg, "rem",   ldiv->rem);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -63,30 +80,28 @@ typedef struct luab_ldiv {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              quot      = (LUA_TNUMBER),
  *              rem    = (LUA_TNUMBER),
  *          }
  *
- * @usage t = ldiv:get()
+ * @usage t [, err, msg ] = ldiv:get()
  */
 static int
 LDIV_get(lua_State *L)
 {
-    ldiv_t *ldiv;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
+    xtp.xtp_init = ldiv_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_ldiv_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "quot",  ldiv->quot);
-    luab_setinteger(L, -2, "rem",   ldiv->rem);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

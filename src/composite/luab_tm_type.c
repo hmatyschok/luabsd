@@ -66,6 +66,34 @@ typedef struct luab_tm {
         struct tm *, sizeof(struct tm)))
 
 /*
+ * Subr.
+ */
+
+static void
+tm_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct tm *tm;
+
+    if ((tm = (struct tm *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "tm_sec",        tm->tm_sec);
+        luab_setinteger(L, narg, "tm_min",        tm->tm_min);
+        luab_setinteger(L, narg, "tm_hour",       tm->tm_hour);
+        luab_setinteger(L, narg, "tm_mday",       tm->tm_mday);
+        luab_setinteger(L, narg, "tm_mon",        tm->tm_mon);
+        luab_setinteger(L, narg, "tm_year",       tm->tm_year);
+        luab_setinteger(L, narg, "tm_wday",       tm->tm_wday);
+        luab_setinteger(L, narg, "tm_yday",       tm->tm_yday);
+        luab_setinteger(L, narg, "tm_isdst",      tm->tm_isdst);
+        luab_setinteger(L, narg, "tm_gmtoff",     tm->tm_gmtoff);
+
+        if (tm->tm_zone != NULL)    /* XXX */
+            luab_setstring(L, narg, "tm_zone",    tm->tm_zone);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -74,7 +102,7 @@ typedef struct luab_tm {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              tm_sec      = (LUA_TNUMBER),
@@ -95,31 +123,16 @@ typedef struct luab_tm {
 static int
 TM_get(lua_State *L)
 {
-    struct tm *tm;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tm = luab_udata(L, 1, &luab_tm_type, struct tm *);
+    xtp.xtp_init = tm_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_tm_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "tm_sec",        tm->tm_sec);
-    luab_setinteger(L, -2, "tm_min",        tm->tm_min);
-    luab_setinteger(L, -2, "tm_hour",       tm->tm_hour);
-    luab_setinteger(L, -2, "tm_mday",       tm->tm_mday);
-    luab_setinteger(L, -2, "tm_mon",        tm->tm_mon);
-    luab_setinteger(L, -2, "tm_year",       tm->tm_year);
-    luab_setinteger(L, -2, "tm_wday",       tm->tm_wday);
-    luab_setinteger(L, -2, "tm_yday",       tm->tm_yday);
-    luab_setinteger(L, -2, "tm_isdst",      tm->tm_isdst);
-    luab_setinteger(L, -2, "tm_gmtoff",     tm->tm_gmtoff);
-
-    if (tm->tm_zone != NULL)    /* XXX */
-        luab_setstring(L, -2, "tm_zone",    tm->tm_zone);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

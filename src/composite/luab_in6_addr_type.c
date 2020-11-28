@@ -63,6 +63,22 @@ typedef struct luab_in6_addr {
         struct in6_addr *, sizeof(struct in6_addr)))
 
 /*
+ * Subr.
+ */
+
+static void
+in6_addr_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct in6_addr *ia;
+
+    if ((ia = (struct in6_addr *)arg) != NULL) {
+
+        luab_setldata(L, narg, "s6_addr", &ia->s6_addr, sizeof(ia->__u6_addr));
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -71,28 +87,27 @@ typedef struct luab_in6_addr {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              s6_addr = (LUA_TNUMBER),
  *          }
  *
- * @usage t = in6_addr:get()
+ * @usage t [, err, msg ] = in6_addr:get()
  */
 static int
 IN6_ADDR_get(lua_State *L)
 {
-    struct in6_addr *ia;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &luab_in6_addr_type, struct in6_addr *);
+    xtp.xtp_init = in6_addr_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_in6_addr_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setldata(L, -2, "s6_addr", &ia->s6_addr, sizeof(ia->__u6_addr));
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

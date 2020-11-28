@@ -58,6 +58,23 @@ typedef struct luab_itimerval {
         struct itimerval *, sizeof(struct itimerval)))
 
 /*
+ * Subr.
+ */
+
+static void
+itimerval_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct itimerval *it;
+
+    if ((it = (struct itimerval *)arg) != NULL) {
+
+        luab_setudata(L, narg, luab_xmod(TIMEVAL, TYPE, __func__), "it_interval",   &it->it_interval);
+        luab_setudata(L, narg, luab_xmod(TIMEVAL, TYPE, __func__), "it_value",      &it->it_value);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -66,30 +83,28 @@ typedef struct luab_itimerval {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              it_interval = (LUA_TUSERDATA(TIMEVAL)),
  *              it_value    = (LUA_TUSERDATA(TIMEVAL)),
  *          }
  *
- * @usage t = itimerval:get()
+ * @usage t [, err, msg ] = itimerval:get()
  */
 static int
 ITIMERVAL_get(lua_State *L)
 {
-    struct itimerval *it;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
+    xtp.xtp_init = itimerval_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_itimerval_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setudata(L, -2, luab_xmod(TIMEVAL, TYPE, __func__), "it_interval",   &it->it_interval);
-    luab_setudata(L, -2, luab_xmod(TIMEVAL, TYPE, __func__), "it_value",      &it->it_value);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

@@ -57,6 +57,23 @@ typedef struct luab_linger {
         struct linger *, sizeof(struct linger)))
 
 /*
+ * Subr.
+ */
+
+static void
+linger_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct linger *l;
+
+    if ((l = (struct linger *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "l_onoff",   l->l_onoff);
+        luab_setinteger(L, narg, "l_linger",  l->l_linger);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -65,30 +82,28 @@ typedef struct luab_linger {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              l_onoff     = (LUA_TNUMBER),
  *              l_linger    = (LUA_TNUMBER),
  *          }
  *
- * @usage t = linger:get()
+ * @usage t [, err, msg ] = linger:get()
  */
 static int
 LINGER_get(lua_State *L)
 {
-    struct linger *l;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
+    xtp.xtp_init = linger_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_linger_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "l_onoff",   l->l_onoff);
-    luab_setinteger(L, -2, "l_linger",  l->l_linger);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

@@ -61,6 +61,27 @@ typedef struct luab_flock {
         struct flock *, sizeof(struct flock)))
 
 /*
+ * Subr.
+ */
+
+static void
+flock_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct flock *l;
+
+    if ((l = (struct flock *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "l_start",   l->l_start);
+        luab_setinteger(L, narg, "l_len",     l->l_len);
+        luab_setinteger(L, narg, "l_pid",     l->l_pid);
+        luab_setinteger(L, narg, "l_type",    l->l_type);
+        luab_setinteger(L, narg, "l_whence",  l->l_whence);
+        luab_setinteger(L, narg, "l_sysid",   l->l_sysid);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -69,7 +90,7 @@ typedef struct luab_flock {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              l_start     = (LUA_TNUMBER),
@@ -80,29 +101,21 @@ typedef struct luab_flock {
  *              l_sysid     = (LUA_TNUMBER),
  *          }
  *
- * @usage t = flock:get()
+ * @usage t [, err, msg ] = flock:get()
  */
 static int
 FLOCK_get(lua_State *L)
 {
-    struct flock *l;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &luab_flock_type, struct flock *);
+    xtp.xtp_init = flock_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_flock_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "l_start",   l->l_start);
-    luab_setinteger(L, -2, "l_len",     l->l_len);
-    luab_setinteger(L, -2, "l_pid",     l->l_pid);
-    luab_setinteger(L, -2, "l_type",    l->l_type);
-    luab_setinteger(L, -2, "l_whence",  l->l_whence);
-    luab_setinteger(L, -2, "l_sysid",   l->l_sysid);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

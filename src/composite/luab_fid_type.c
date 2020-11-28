@@ -58,6 +58,24 @@ typedef struct luab_fid {
         struct fid *, sizeof(struct fid)))
 
 /*
+ * Subr.
+ */
+
+static void
+fid_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct fid *fid;
+
+    if ((fid = (struct fid *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "fid_len",   fid->fid_len);
+        luab_setinteger(L, narg, "fid_data0", fid->fid_data0);
+        luab_setldata(L, narg, "fid_data", fid->fid_data, MAXFIDSZ);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -66,34 +84,29 @@ typedef struct luab_fid {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              fid_len     = (LUA_TNUMBER),
  *              fid_data0   = (LUA_TNUMBER),
- *              fid_data    = (LUA_TSTRING),
+ *              fid_data    = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = fid:get()
+ * @usage t [, err, msg ]= fid:get()
  */
 static int
 FID_get(lua_State *L)
 {
-    struct fid *fid;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
+    xtp.xtp_init = fid_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_fid_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "fid_len",   fid->fid_len);
-    luab_setinteger(L, -2, "fid_data0", fid->fid_data0);
-    luab_setldata(L, -2, "fid_data", fid->fid_data, MAXFIDSZ);
-
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

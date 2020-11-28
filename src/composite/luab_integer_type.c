@@ -78,6 +78,22 @@ typedef struct luab_integer {
     ((luab_integer_t *)luab_toudata((L), (narg), &luab_integer_type))
 
 /*
+ * Subr.
+ */
+
+static void
+in_addr_initxtable(lua_State *L, int narg, void *arg)
+{
+    luab_primitive_t *xp;
+
+    if ((xp = (luab_primitive_t *)arg) != NULL) {
+
+        luab_setinteger(L, narg, "x", xp->un_intx);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -86,28 +102,27 @@ typedef struct luab_integer {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              x   = (LUA_TNUMBER),
  *          }
  *
- * @usage t = integer:get()
+ * @usage t [, err, msg ] = integer:get()
  */
 static int
 INTEGER_get(lua_State *L)
 {
-    luab_primitive_t *xp;
+    luab_xtable_param_t xtp;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, &luab_integer_type, luab_primitive_t *);
+    xtp.xtp_init = in_addr_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_integer_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setinteger(L, -2, "x", xp->un_intx);
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***

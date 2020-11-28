@@ -61,6 +61,23 @@ typedef struct luab_accept_filter_arg {
         struct accept_filter_arg *, sizeof(struct accept_filter_arg)))
 
 /*
+ * Subr.
+ */
+
+static void
+accept_filter_arg_initxtable(lua_State *L, int narg, void *arg)
+{
+    struct accept_filter_arg *af;
+
+    if ((af = (struct accept_filter_arg *)arg) != NULL) {
+
+        luab_setldata(L, narg, "af_name", af->af_name, strlen(af->af_name));
+        luab_setldata(L, narg, "af_arg",  af->af_arg, strlen(af->af_arg));
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
+/*
  * Generator functions.
  */
 
@@ -69,30 +86,28 @@ typedef struct luab_accept_filter_arg {
  *
  * @function get
  *
- * @return (LUA_TTABLE)
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
  *              af_name    = (LUA_TSTRING),
  *              af_arg     = (LUA_TSTRING),
  *          }
  *
- * @usage t = accept_filter_arg:get()
+ * @usage t [, err, msg ] = accept_filter_arg:get()
  */
 static int
 ACCEPT_FILTER_ARG_get(lua_State *L)
 {
-    struct accept_filter_arg *af;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
+    xtp.xtp_init = accept_filter_arg_initxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, &luab_accept_filter_arg_type);
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
 
-    lua_newtable(L);
-    luab_setldata(L, -2, "af_name", af->af_name, strlen(af->af_name));
-    luab_setldata(L, -2, "af_arg",  af->af_arg, strlen(af->af_arg));
-    lua_pushvalue(L, -1);
-
-    return (1);
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***
