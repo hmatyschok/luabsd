@@ -182,7 +182,7 @@ luab_iovec_checklstring(lua_State *L, int narg, size_t len)
  */
 
 int
-luab_iovec_pushudata(lua_State *L, void *v, size_t len, size_t max_len)
+luab_iovec_pushxdata(lua_State *L, void *v, size_t len, size_t max_len)
 {
     luab_iovec_param_t mpi;
     luab_module_t *m;
