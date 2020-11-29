@@ -565,13 +565,22 @@ luab_core_initenv(luab_sysconf_vec_t *vec)
     luab_sysconf_vec_t *tok;
     long scx;
 
-    for (tok = vec; tok->scv_val != NULL; tok++) {
+    if ((tok = vec) != NULL) {
 
-        if ((scx = sysconf(tok->scv_key)) < 0)
-            *(tok->scv_val) = tok->scv_dflt;
-        else
-            *(tok->scv_val) = (u_long)scx;
-    }
+        do {
+            if (tok->scv_val != NULL) {
+
+                if ((scx = sysconf(tok->scv_key)) < 0)
+                    *(tok->scv_val) = tok->scv_dflt;
+                else
+                    *(tok->scv_val) = (u_long)scx;
+            } else
+                errno = ENOENT;
+
+            tok++;
+        } while (tok->scv_val != NULL);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENXIO);
 }
 
 static void
@@ -579,31 +588,48 @@ luab_core_populate(lua_State *L, int narg, luab_module_t *m)
 {
     luab_module_table_t *tok;
 
-    for (tok = m->m_vec; tok->mt_key != NULL; tok++) {
-        (void)(*tok->mt_init)(L, &tok->mt_val);
-        lua_setfield(L, narg, tok->mt_key);
-    }
-    lua_pop(L, 0);
+    if ((tok = m->m_vec) != NULL) {
+
+        do {
+
+            if (tok->mt_init != NULL) {
+                (void)(*tok->mt_init)(L, &tok->mt_val);
+                lua_setfield(L, narg, tok->mt_key);
+            } else
+                errno = ENOENT;
+
+            tok++;
+        } while (tok->mt_key != NULL);
+
+        lua_pop(L, 0);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENXIO);
 }
 
 static void
 luab_core_newtable(lua_State *L, int narg, luab_module_t *m)
 {
-    lua_newtable(L);
-    luab_core_populate(L, narg, m);
-    lua_setfield(L, narg, m->m_name);
+    if (m != NULL) {
+        lua_newtable(L);
+        luab_core_populate(L, narg, m);
+        lua_setfield(L, narg, m->m_name);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENOEXEC);
 }
 
 static void
 luab_core_newmetatable(lua_State *L, int narg, luab_module_t *m)
 {
-    luaL_newmetatable(L, m->m_name);
-    lua_pushvalue(L, -1);
-    lua_setfield(L, -2, "__index");
+    if (m != NULL) {
+        luaL_newmetatable(L, m->m_name);
+        lua_pushvalue(L, -1);
+        lua_setfield(L, -2, "__index");
 
-    luab_core_populate(L, narg, m);
+        luab_core_populate(L, narg, m);
 
-    lua_pop(L, 1);
+        lua_pop(L, 1);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENOEXEC);
 }
 
 /*
@@ -1015,8 +1041,16 @@ luab_core_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
     if (name != NULL && new != 0)
         lua_newtable(L);
 
-    for (mv = vec; mv->mv_mod != NULL; mv++)
-        (*mv->mv_init)(L, narg, mv->mv_mod);
+    mv = vec;
+
+     do {
+        if (mv->mv_init != NULL)
+            (*mv->mv_init)(L, narg, mv->mv_mod);
+        else
+            errno = ENOENT;
+
+        mv++;
+    } while (mv->mv_mod != NULL);
 
     if (name != NULL && new != 0)
         lua_setfield(L, narg, name);

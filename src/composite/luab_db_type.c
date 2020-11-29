@@ -81,9 +81,68 @@ db_close(DB *db)
     return (status);
 }
 
+static void
+db_fillxtable(lua_State *L, int narg, void *arg)
+{
+    luab_db_t *self;
+    DB *db;
+
+    if ((self = (luab_db_t *)arg) != NULL) {
+
+        if ((db = self->ud_db) != NULL) {
+            luab_setinteger(L, narg, "type",                    db->type);
+            luab_setfstring(L, narg, "close", "(function:%p)",  db->close);
+            luab_setfstring(L, narg, "del", "(function:%p)",    db->del);
+            luab_setfstring(L, narg, "get", "(function:%p)",    db->get);
+            luab_setfstring(L, narg, "put", "(function:%p)",    db->put);
+            luab_setfstring(L, narg, "seq", "(function:%p)",    db->seq);
+            luab_setfstring(L, narg, "sync", "(function:%p)",   db->sync);
+            luab_setfstring(L, narg, "internal", "(ptr:%p)",    db->internal);
+            luab_setfstring(L, narg, "fd", "(function:%p)",     db->fd);
+        }
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
+}
+
 /*
  * Generator functions.
  */
+
+/***
+ * Generator function - translate (LUA_TUSERDATA(DB)) into (LUA_TTABLE).
+ *
+ * @function get_table
+ *
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          t = {
+ *              type        = (LUA_TNUMBER),
+ *              close       = (LUA_T{NIL,STRING}),
+ *              del         = (LUA_T{NIL,STRING}),
+ *              get         = (LUA_T{NIL,STRING}),
+ *              put         = (LUA_T{NIL,STRING}),
+ *              seq         = (LUA_T{NIL,STRING}),
+ *              sync        = (LUA_T{NIL,STRING}),
+ *              internal    = (LUA_T{NIL,STRING}),
+ *              fd          = (LUA_T{NIL,STRING}),
+ *          }
+ *
+ * @usage t [, err, msg ] = jail:get_table()
+ */
+static int
+DB_get_table(lua_State *L)
+{
+    luab_xtable_param_t xtp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    xtp.xtp_fill = db_fillxtable;
+    xtp.xtp_arg = (void *)luab_to_db(L, 1);   /* XXX */
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
+
+    return (luab_table_pushxtable(L, -2, &xtp));
+}
 
 /***
  * Generator function - returns (LUA_TNIL).
@@ -393,6 +452,7 @@ static luab_module_table_t db_methods[] = {
     LUAB_FUNC("put",            DB_put),
     LUAB_FUNC("seq",            DB_seq),
     LUAB_FUNC("sync",           DB_sync),
+    LUAB_FUNC("get_table",      DB_get_table),
     LUAB_FUNC("dump",           DB_dump),
     LUAB_FUNC("__gc",           DB_gc),
     LUAB_FUNC("__len",          DB_len),

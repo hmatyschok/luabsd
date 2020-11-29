@@ -117,15 +117,15 @@ typedef luab_table_t *   (*luab_get_tbl_fn)(lua_State *, int);
 typedef void     (*luab_set_tbl_fn)(lua_State *, int, luab_table_t *, int, int);
 
 typedef struct luab_module {
-    luab_id_t       m_cookie;        /*  date -u +'%s' */
-    size_t          m_sz;
-    const char      *m_name;
+    luab_id_t           m_cookie;        /*  date -u +'%s' */
+    size_t              m_sz;
+    const char          *m_name;
     luab_module_table_t *m_vec;
-    luab_ctor_fn    m_create;
-    luab_init_fn    m_init;
-    luab_get_fn     m_get;
-    luab_get_tbl_fn m_get_tbl;
-    luab_set_tbl_fn m_set_tbl;
+    luab_ctor_fn        m_create;
+    luab_init_fn        m_init;
+    luab_get_fn         m_get;
+    luab_get_tbl_fn     m_get_tbl;
+    luab_set_tbl_fn     m_set_tbl;
 } luab_module_t;
 
 typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);

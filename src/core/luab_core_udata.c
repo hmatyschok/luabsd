@@ -81,6 +81,7 @@ void
 luab_udata_remove(luab_udata_t *ud)
 {
     if (ud != NULL) {
+
         if (ud->ud_x != NULL) {
             *(ud->ud_x) = NULL;
             ud->ud_x = NULL;
@@ -136,29 +137,33 @@ luab_isudata(lua_State *L, int narg, luab_module_t *m)
 {
     luab_udata_t *ud;
 
-    if ((ud = luab_isdata(L, narg, m, luab_udata_t *)) == NULL)
-        return (NULL);
+    if ((ud = luab_isdata(L, narg, m, luab_udata_t *)) != NULL)
+        return (ud + 1);
 
-    return (ud + 1);
+    return (NULL);
 }
 
 void *
 luab_checkudata(lua_State *L, int narg, luab_module_t *m)
 {
-    if (m == NULL)
+    if (m != NULL)
+        return (luaL_checkudata(L, narg, m->m_name));
+    else
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-    return (luaL_checkudata(L, narg, m->m_name));
+    return (NULL);
 }
 
 void *
 luab_checkxdata(lua_State *L, int narg, luab_module_t *m, luab_udata_t **udx)
 {
-    if (udx == NULL)
+    if (udx != NULL) {
+        *udx = luab_todata(L, narg, m, luab_udata_t *);
+        return (*udx + 1);
+    } else
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-    *udx = luab_todata(L, narg, m, luab_udata_t *);
-    return (*udx + 1);
+    return (NULL);
 }
 
 void *
@@ -197,11 +202,15 @@ luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
     luab_module_vec_t *vec;
     luab_udata_t *ud;
 
-    for (vec = luab_typevec; vec->mv_mod != NULL; vec++) {
+    vec = luab_typevec;
+
+    while (vec->mv_mod != NULL) {
+
         if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL) {
             ud = luab_todata(L, narg, vec->mv_mod, luab_udata_t *);
             break;
         }
+        vec++;
     }
 
     if (pci != NULL) {

@@ -223,7 +223,6 @@ jail_fillxtable(lua_State *L, int narg, void *arg)
 
         if (jp->ip6 != NULL)
             (void)jail_pushxaddrtable(L, narg, "ip6", self, LUAB_XADDR_IP6);
-
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -614,6 +613,7 @@ JAIL_gc(lua_State *L)
     luab_jail_t *self;
     struct jail *jp;
     luab_xaddr_t n;
+    luab_table_t *tbl;
 
     (void)luab_core_checkmaxargs(L, 1);
 
@@ -624,8 +624,13 @@ JAIL_gc(lua_State *L)
     luab_core_freestr(jp->hostname);
     luab_core_freestr(jp->jailname);
 
-    for (n = LUAB_XADDR_IP4; n < LUAB_XADDR_MAX; n++)
-        luab_table_free(self->ud_cache[n]);
+    n = LUAB_XADDR_IP4;
+
+    do {
+        tbl = self->ud_cache[n];
+        luab_table_free(tbl);
+        n++;
+    } while (n < LUAB_XADDR_MAX);
 
     return (luab_core_gc(L, 1, &luab_jail_type));
 }

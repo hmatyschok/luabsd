@@ -23,7 +23,7 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
- 
+
 #include <sys/un.h>
 
 #include <net/if.h>
@@ -36,6 +36,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 #include "luab_sockaddr.h"
 
 extern luab_module_t luab_sockaddr_type;
@@ -105,107 +106,96 @@ luab_checksockaddr(lua_State *L, int narg)
  */
 
 static void
-sockaddr_to_table(lua_State *L, void *arg)
+sockaddr_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct sockaddr *sa;
     size_t len;
 
-    sa = (struct sockaddr *)arg;
+    if ((sa = (struct sockaddr *)arg) != NULL) {
 
-    lua_newtable(L);
+        luab_setinteger(L, narg, "sa_len",    sa->sa_len);
+        luab_setinteger(L, narg, "sa_family", sa->sa_family);
 
-    luab_setinteger(L, -2, "sa_len",    sa->sa_len);
-    luab_setinteger(L, -2, "sa_family", sa->sa_family);
-
-    len = sa->sa_len - sizeof(u_char) - sizeof(sa_family_t);
-    luab_setldata(L, -2, "sa_data",     sa->sa_data, len);
-
-    lua_pushvalue(L, -1);
+        len = sa->sa_len - sizeof(u_char) - sizeof(sa_family_t);
+        luab_setldata(L, narg, "sa_data",     sa->sa_data, len);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
 
 static void
-sockaddr_dl_to_table(lua_State *L, void *arg)
+sockaddr_dl_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct sockaddr_dl *sdl;
     size_t len;
 
-    sdl = (struct sockaddr_dl *)arg;
+    if ((sdl = (struct sockaddr_dl *)arg) != NULL) {
 
-    lua_newtable(L);
+        luab_setinteger(L, narg, "sdl_len",       sdl->sdl_len);
+        luab_setinteger(L, narg, "sdl_family",    sdl->sdl_family);
 
-    luab_setinteger(L, -2, "sdl_len",       sdl->sdl_len);
-    luab_setinteger(L, -2, "sdl_family",    sdl->sdl_family);
+        luab_setinteger(L, narg, "sdl_index",     sdl->sdl_index);
+        luab_setinteger(L, narg, "sdl_type",      sdl->sdl_type);
+        luab_setinteger(L, narg, "sdl_nlen",      sdl->sdl_nlen);
+        luab_setinteger(L, narg, "sdl_alen",      sdl->sdl_alen);
+        luab_setinteger(L, narg, "sdl_slen",      sdl->sdl_slen);
 
-    luab_setinteger(L, -2, "sdl_index",     sdl->sdl_index);
-    luab_setinteger(L, -2, "sdl_type",      sdl->sdl_type);
-    luab_setinteger(L, -2, "sdl_nlen",      sdl->sdl_nlen);
-    luab_setinteger(L, -2, "sdl_alen",      sdl->sdl_alen);
-    luab_setinteger(L, -2, "sdl_slen",      sdl->sdl_slen);
-
-    len = sdl->sdl_nlen + sdl->sdl_alen + sdl->sdl_slen;
-    luab_setldata(L, -2, "sdl_data", sdl->sdl_data, len);
-
-    lua_pushvalue(L, -1);
+        len = sdl->sdl_nlen + sdl->sdl_alen + sdl->sdl_slen;
+        luab_setldata(L, narg, "sdl_data", sdl->sdl_data, len);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
 
 static void
-sockaddr_in_to_table(lua_State *L, void *arg)
+sockaddr_in_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct sockaddr_in *sin;
-    struct in_addr sin_addr;
 
-    sin = (struct sockaddr_in *)arg;
+    if ((sin = (struct sockaddr_in *)arg) != NULL) {
 
-    lua_newtable(L);
+        luab_setinteger(L, narg, "sin_len",       sin->sin_len);
+        luab_setinteger(L, narg, "sin_family",    sin->sin_family);
+        luab_setinteger(L, narg, "sin_port",      ntohs(sin->sin_port));
 
-    luab_setinteger(L, -2, "sin_len",       sin->sin_len);
-    luab_setinteger(L, -2, "sin_family",    sin->sin_family);
-    luab_setinteger(L, -2, "sin_port",      ntohs(sin->sin_port));
-
-    (void)memmove(&sin_addr, &sin->sin_addr, sizeof(sin_addr));
-    sin_addr.s_addr = ntohl(sin_addr.s_addr);
-    luab_setudata(L, -2, luab_xmod(IN_ADDR, TYPE, __func__), "sin_addr", &sin_addr);
-
-    lua_pushvalue(L, -1);
+        sin->sin_addr.s_addr = ntohl(sin->sin_addr.s_addr);
+        luab_setudata(L, narg, luab_xmod(IN_ADDR, TYPE, __func__),
+            "sin_addr", &sin->sin_addr);
+        sin->sin_addr.s_addr = htonl(sin->sin_addr.s_addr);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
 
 static void
-sockaddr_in6_to_table(lua_State *L, void *arg)
+sockaddr_in6_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct sockaddr_in6 *sin6;
-    struct in6_addr sin6_addr;
 
-    sin6 = (struct sockaddr_in6 *)arg;
+    if ((sin6 = (struct sockaddr_in6 *)arg) != NULL) {
 
-    lua_newtable(L);
+        luab_setinteger(L, narg, "sin6_len",      sin6->sin6_len);
+        luab_setinteger(L, narg, "sin6_family",   sin6->sin6_family);
+        luab_setinteger(L, narg, "sin6_port",     ntohs(sin6->sin6_port));
+        luab_setinteger(L, narg, "sin6_flowinfo", ntohl(sin6->sin6_flowinfo));
 
-    luab_setinteger(L, -2, "sin6_len",      sin6->sin6_len);
-    luab_setinteger(L, -2, "sin6_family",   sin6->sin6_family);
-    luab_setinteger(L, -2, "sin6_port",     ntohs(sin6->sin6_port));
-    luab_setinteger(L, -2, "sin6_flowinfo", ntohl(sin6->sin6_flowinfo));
+        luab_setudata(L, narg, luab_xmod(IN6_ADDR, TYPE, __func__),
+            "sin6_addr", &sin6->sin6_addr);
 
-    (void)memmove(&sin6_addr, &sin6->sin6_addr, sizeof(sin6_addr));
-    luab_setudata(L, -2, luab_xmod(IN6_ADDR, TYPE, __func__), "sin6_addr", &sin6_addr);
-
-    luab_setinteger(L, -2, "sin6_scope_id", ntohl(sin6->sin6_scope_id));
-
-    lua_pushvalue(L, -1);
+        luab_setinteger(L, narg, "sin6_scope_id", ntohl(sin6->sin6_scope_id));
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
 
 static void
-sockaddr_un_to_table(lua_State *L, void *arg)
+sockaddr_un_fillxtable(lua_State *L, int narg, void *arg)
 {
     struct sockaddr_un *sun;
 
-    sun = (struct sockaddr_un *)arg;
+    if ((sun = (struct sockaddr_un *)arg) != NULL) {
 
-    lua_newtable(L);
-
-    luab_setinteger(L, -2, "sun_len",       sun->sun_len);
-    luab_setinteger(L, -2, "sun_family",    sun->sun_family);
-    luab_setstring(L, -2, "sun_path",       sun->sun_path);
-
-    lua_pushvalue(L, -1);
+        luab_setinteger(L, narg, "sun_len",       sun->sun_len);
+        luab_setinteger(L, narg, "sun_family",    sun->sun_family);
+        luab_setstring(L, narg, "sun_path",       sun->sun_path);
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
 
 /***
@@ -220,7 +210,7 @@ sockaddr_un_to_table(lua_State *L, void *arg)
  *          t = {
  *              sa_len          = (LUA_TNUMBER),
  *              sa_family       = (LUA_TNUMBER),
- *              sa_data         = (TUA_TSTRING),
+ *              sa_data         = (LUA_T{NIL,STRING}),
  *          }
  *
  *      AF_INET:
@@ -253,7 +243,7 @@ sockaddr_un_to_table(lua_State *L, void *arg)
  *              sdl_nlen        = (TUA_TNUMBER),
  *              sdl_alen        = (TUA_TNUMBER),
  *              sdl_slen        = (TUA_TNUMBER),
- *              sdl_data        = (LUA_TSTRING),
+ *              sdl_data        = (LUA_T{NIL,STRING}),
  *          }
  *
  *      AF_UNIX:
@@ -261,41 +251,47 @@ sockaddr_un_to_table(lua_State *L, void *arg)
  *          t = {
  *              sun_len         = (LUA_TNUMBER),
  *              sun_family      = (LUA_TNUMBER),
- *              sun_path        = (TUA_TSTRING),
+ *              sun_path        = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t = sockaddr:get_table()
+ * @usage t [, err, msg ] = sockaddr:get_table()
  */
 static int
 SOCKADDR_get_table(lua_State *L)
 {
     struct sockaddr *sa;
+    luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     sa = luab_udata(L, 1, &luab_sockaddr_type, struct sockaddr *);
 
     /*
-     * XXX replacement by protosw-table.
+     * XXX
+     *  replacement by protosw-table.
      */
     switch (sa->sa_family) {
     case AF_UNIX:
-        sockaddr_un_to_table(L, sa);
+        xtp.xtp_fill = sockaddr_un_fillxtable;
         break;
     case AF_INET:
-        sockaddr_in_to_table(L, sa);
+        xtp.xtp_fill = sockaddr_in_fillxtable;
         break;
     case AF_INET6:
-        sockaddr_in6_to_table(L, sa);
+        xtp.xtp_fill = sockaddr_in6_fillxtable;
         break;
     case AF_LINK:
-        sockaddr_dl_to_table(L, sa);
+        xtp.xtp_fill = sockaddr_dl_fillxtable;
         break;
     default:
-        sockaddr_to_table(L, sa);
+        xtp.xtp_fill = sockaddr_fillxtable;
         break;
     }
-    return (1);
+    xtp.xtp_arg = (void *)sa;
+    xtp.xtp_new = 1;
+    xtp.xtp_k = NULL;
+
+    return (luab_table_pushxtable(L, -2, &xtp));
 }
 
 /***
@@ -393,7 +389,7 @@ SOCKADDR_sa_family(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sdl_index(index)
+ * @usage ret [, err, msg ] = sockaddr:set_sdl_index(index)
  */
 static int
 SOCKADDR_set_sdl_index(lua_State *L)
@@ -454,7 +450,7 @@ SOCKADDR_get_sdl_index(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sdl_type(type)
+ * @usage ret [, err, msg ] = sockaddr:set_sdl_type(type)
  */
 static int
 SOCKADDR_set_sdl_type(lua_State *L)
@@ -515,7 +511,7 @@ SOCKADDR_get_sdl_type(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sdl_nlen(len)
+ * @usage ret [, err, msg ] = sockaddr:set_sdl_nlen(len)
  */
 static int
 SOCKADDR_set_sdl_nlen(lua_State *L)
@@ -576,7 +572,7 @@ SOCKADDR_get_sdl_nlen(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sdl_alen(alen)
+ * @usage ret [, err, msg ] = sockaddr:set_sdl_alen(alen)
  */
 static int
 SOCKADDR_set_sdl_alen(lua_State *L)
@@ -679,7 +675,7 @@ SOCKADDR_sdl_slen(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sin_port(port)
+ * @usage ret [, err, msg ] = sockaddr:set_sin_port(port)
  */
 static int
 SOCKADDR_set_sin_port(lua_State *L)
@@ -736,7 +732,7 @@ SOCKADDR_get_sin_port(lua_State *L)
  *
  * @function set_sin_addr
  *
- * @param addr              Specifies ip(4) address by instance
+ * @param addr              Specifies ip(4) address by an instance
  *                          of (LUA_TUSERDATA(IN_ADDR)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -756,8 +752,7 @@ SOCKADDR_set_sin_addr(lua_State *L)
     ia = luab_udata(L, 2, luab_xmod(IN_ADDR, TYPE, __func__), struct in_addr *);
 
     if (sin->sin_family == AF_INET) {
-        (void)memmove(&sin->sin_addr, ia, sizeof(struct in_addr));
-        sin->sin_addr.s_addr = htonl(sin->sin_addr.s_addr);
+        sin->sin_addr.s_addr = htonl(ia->s_addr);
         status = 0;
     } else {
         errno = EPERM;
@@ -779,7 +774,6 @@ static int
 SOCKADDR_get_sin_addr(lua_State *L)
 {
     struct sockaddr_in *sin;
-    struct in_addr ia;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
@@ -787,9 +781,9 @@ SOCKADDR_get_sin_addr(lua_State *L)
     sin = luab_udata(L, 1, &luab_sockaddr_type, struct sockaddr_in *);
 
     if (sin->sin_family == AF_INET) {
-        (void)memmove(&ia, &sin->sin_addr, sizeof(struct in_addr));
-        ia.s_addr = ntohl(ia.s_addr);
-        status = luab_pushudata(L, luab_xmod(IN_ADDR, TYPE, __func__), &ia);
+        sin->sin_addr.s_addr = ntohl(sin->sin_addr.s_addr);
+        status = luab_pushudata(L, luab_xmod(IN_ADDR, TYPE, __func__), &sin->sin_addr);
+        sin->sin_addr.s_addr = htonl(sin->sin_addr.s_addr);
     } else {
         errno = EPERM;
         status = luab_pushnil(L);
@@ -821,7 +815,7 @@ SOCKADDR_get_sin_addr(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sin6_port(port)
+ * @usage ret [, err, msg ] = sockaddr:set_sin6_port(port)
  */
 static int
 SOCKADDR_set_sin6_port(lua_State *L)
@@ -882,7 +876,7 @@ SOCKADDR_get_sin6_port(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sin6_flowinfo(flowinfo)
+ * @usage ret [, err, msg ] = sockaddr:set_sin6_flowinfo(flowinfo)
  */
 static int
 SOCKADDR_set_sin6_flowinfo(lua_State *L)
@@ -959,7 +953,7 @@ SOCKADDR_set_sin6_addr(lua_State *L)
     ia = luab_udata(L, 2, luab_xmod(IN6_ADDR, TYPE, __func__), struct in6_addr *);
 
     if (sin6->sin6_family == AF_INET6) {
-        (void)memmove(&sin6->sin6_addr, ia, sizeof(struct in6_addr));
+        sin6->sin6_addr = *ia;
         status = 0;
     } else {
         errno = EPERM;
@@ -989,7 +983,7 @@ SOCKADDR_get_sin6_addr(lua_State *L)
     sin6 = luab_udata(L, 1, &luab_sockaddr_type, struct sockaddr_in6 *);
 
     if (sin6->sin6_family == AF_INET6) {
-        (void)memmove(&ia, &sin6->sin6_addr, sizeof(struct in6_addr));
+        ia = sin6->sin6_addr;
         status = luab_pushudata(L, luab_xmod(IN6_ADDR, TYPE, __func__), &ia);
     } else {
         errno = EPERM;
@@ -1007,7 +1001,7 @@ SOCKADDR_get_sin6_addr(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, msg] = sockaddr:set_sin6_scope_id(id)
+ * @usage ret [, err, msg ] = sockaddr:set_sin6_scope_id(id)
  */
 static int
 SOCKADDR_set_sin6_scope_id(lua_State *L)
