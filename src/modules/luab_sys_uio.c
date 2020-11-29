@@ -185,8 +185,9 @@ static int
 luab_iovec_create(lua_State *L)
 {
     size_t max_len;
+    const char *dp;
 
-    (void)luab_core_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 2);
 
     max_len = (size_t)luab_checklinteger(L, 1, 0);
 

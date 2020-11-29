@@ -176,14 +176,14 @@ jail_pushxaddrtable(lua_State *L, int narg, const char *k, luab_jail_t *self,
     luab_module_t *m;
     luab_table_t *tbl;
 
-    xav = &(luab_xdomain((n % LUAB_XADDR_MAX)));
+    xav = &(luab_xdomain(n % LUAB_XADDR_MAX));
     m = luab_core_checkmodule(xav->xav_type, xav->xav_cookie, __func__);
 
     if ((tbl = self->ud_cache[xav->xav_idx]) != NULL) {
         luab_table_pushxdata(L, narg, m, tbl, 1, 0);
 
         /*
-         * set field k and/or push on top of Lua stack
+         * Set field k and/or push on top of Lua stack
          *
          * XXX DRY
          */

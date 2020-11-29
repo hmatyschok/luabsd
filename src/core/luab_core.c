@@ -591,7 +591,6 @@ luab_core_populate(lua_State *L, int narg, luab_module_t *m)
     if ((tok = m->m_vec) != NULL) {
 
         do {
-
             if (tok->mt_init != NULL) {
                 (void)(*tok->mt_init)(L, &tok->mt_val);
                 lua_setfield(L, narg, tok->mt_key);
