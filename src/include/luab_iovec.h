@@ -80,7 +80,7 @@ luab_table_t     *luab_iovec_checktable(lua_State *, int);
  */
 
 
-int  luab_iovec_pushudata(lua_State *, void *, size_t, size_t);
+int  luab_iovec_pushxdata(lua_State *, void *, size_t, size_t);
 
 void     luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 void     luab_iovec_setldata(lua_State *, int, const char *, void *, size_t);

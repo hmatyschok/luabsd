@@ -339,7 +339,7 @@ luab_iov_pushxdata(lua_State *L, struct iovec *iov)
     size_t len;
 
     dp = luab_iov_base(iov, &len);
-    return (luab_iovec_pushudata(L, dp, len, len));
+    return (luab_iovec_pushxdata(L, dp, len, len));
 }
 
 void

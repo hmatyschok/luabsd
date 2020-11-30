@@ -548,7 +548,7 @@ luab_core_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
     else
         dp = NULL;
 
-    return (luab_iovec_pushudata(L, dp, len, len));
+    return (luab_iovec_pushxdata(L, dp, len, len));
 }
 
 int
