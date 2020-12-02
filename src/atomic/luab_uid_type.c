@@ -232,7 +232,7 @@ uid_checktable(lua_State *L, int narg)
     uid_t *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(uid_t))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_uid_type)) != NULL) {
 
         if (((x = (uid_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -268,7 +268,7 @@ uid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (uid_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -284,14 +284,22 @@ uid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+uid_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_uid_type, vec, card));
+}
+
 luab_module_t luab_uid_type = {
-    .m_cookie   = LUAB_UID_TYPE_ID,
-    .m_name     = LUAB_UID_TYPE,
-    .m_vec      = uid_methods,
-    .m_create   = uid_create,
-    .m_init     = uid_init,
-    .m_get      = uid_udata,
-    .m_get_tbl  = uid_checktable,
-    .m_set_tbl  = uid_pushtable,
-    .m_sz       = sizeof(luab_uid_t),
+    .m_id           = LUAB_UID_TYPE_ID,
+    .m_name         = LUAB_UID_TYPE,
+    .m_vec          = uid_methods,
+    .m_create       = uid_create,
+    .m_init         = uid_init,
+    .m_get          = uid_udata,
+    .m_get_tbl      = uid_checktable,
+    .m_set_tbl      = uid_pushtable,
+    .m_alloc_tbl    = uid_alloctable,
+    .m_len          = sizeof(luab_uid_t),
+    .m_sz           = sizeof(uid_t),
 };

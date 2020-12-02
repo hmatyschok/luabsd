@@ -44,6 +44,7 @@ typedef struct luab_xtable_param {
 
 size_t   luab_checktable(lua_State *, int);
 size_t   luab_checktableisnil(lua_State *, int);
+
 size_t   luab_checkltable(lua_State *, int, size_t);
 size_t   luab_checkltableisnil(lua_State *, int, size_t);
 
@@ -60,18 +61,20 @@ void     luab_table_argerror(lua_State *, int, luab_table_t *, int);
  * Generator functions.
  */
 
-luab_table_t     *luab_table_allocnil(size_t, size_t);
-luab_table_t     *luab_table_alloc(lua_State *, int, size_t, size_t);
+luab_table_t     *luab_table_allocnil(size_t, size_t, luab_id_t);
+luab_table_t     *luab_table_alloc(size_t, size_t, luab_id_t);
 
-luab_table_t     *luab_newvector(lua_State *, int, size_t);
-luab_table_t     *luab_newvectornil(lua_State *, int, size_t);
-
-luab_table_t     *luab_newlvector(lua_State *, int, size_t, size_t);
-luab_table_t     *luab_newlvectornil(lua_State *, int, size_t, size_t);
+luab_table_t     *luab_table_create(luab_module_t *, void *, size_t);
 
 /*
  * Access functions, [stack -> C]
  */
+
+luab_table_t     *luab_table_newvector(lua_State *, int, luab_module_t *);
+luab_table_t     *luab_table_newvectornil(lua_State *, int, luab_module_t *);
+
+luab_table_t     *luab_table_newlvector(lua_State *, int, luab_module_t *, size_t);
+luab_table_t     *luab_table_newlvectornil(lua_State *, int, luab_module_t *, size_t);
 
 luab_table_t     *luab_table_checkargv(lua_State *, int);
 luab_table_t     *luab_table_toxargp(lua_State *, int);

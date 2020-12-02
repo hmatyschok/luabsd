@@ -504,11 +504,9 @@ db_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     DB *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(DB *);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_db_type)) != NULL) {
 
         if (((x = (DB *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -521,7 +519,7 @@ db_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_db_type, DB *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_db_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -545,7 +543,7 @@ db_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (DB *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -561,15 +559,23 @@ db_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+db_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_db_type, vec, card));
+}
+
 luab_module_t luab_db_type = {
-    .m_cookie   = LUAB_DB_TYPE_ID,
-    .m_name     = LUAB_DB_TYPE,
-    .m_vec      = db_methods,
-    .m_create   = db_create,
-    .m_init     = db_init,
-    .m_get      = db_udata,
-    .m_get_tbl  = db_checktable,
-    .m_set_tbl  = db_pushtable,
-    .m_sz       = sizeof(luab_db_t),
+    .m_id           = LUAB_DB_TYPE_ID,
+    .m_name         = LUAB_DB_TYPE,
+    .m_vec          = db_methods,
+    .m_create       = db_create,
+    .m_init         = db_init,
+    .m_get          = db_udata,
+    .m_get_tbl      = db_checktable,
+    .m_set_tbl      = db_pushtable,
+    .m_alloc_tbl    = db_alloctable,
+    .m_len          = sizeof(luab_db_t),
+    .m_sz           = sizeof(DB *),
 };
 #endif /* __BSD_VISIBLE */

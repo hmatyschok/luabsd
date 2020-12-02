@@ -59,7 +59,7 @@ typedef struct luab_uuid {
     ((luab_uuid_t *)luab_newudata(L, &luab_uuid_type, (arg)))
 #define luab_to_uuid(L, narg) \
     (luab_toldata((L), (narg), &luab_uuid_type, \
-        struct uuid *, sizeof(struct uuid)))
+        struct uuid *, luab_uuid_type.m_sz))
 
 /*
  * Subr.
@@ -520,11 +520,9 @@ uuid_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct uuid *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct uuid);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_uuid_type)) != NULL) {
 
         if (((x = (struct uuid *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -537,7 +535,7 @@ uuid_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_uuid_type, struct uuid *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_uuid_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -560,7 +558,7 @@ uuid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct uuid *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -576,14 +574,22 @@ uuid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+uuid_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_uuid_type, vec, card));
+}
+
 luab_module_t luab_uuid_type = {
-    .m_cookie   = LUAB_UUID_TYPE_ID,
-    .m_name     = LUAB_UUID_TYPE,
-    .m_vec      = uuid_methods,
-    .m_create   = _uuid_create,
-    .m_init     = uuid_init,
-    .m_get      = uuid_udata,
-    .m_get_tbl  = uuid_checktable,
-    .m_set_tbl  = uuid_pushtable,
-    .m_sz       = sizeof(luab_uuid_t),
+    .m_id           = LUAB_UUID_TYPE_ID,
+    .m_name         = LUAB_UUID_TYPE,
+    .m_vec          = uuid_methods,
+    .m_create       = _uuid_create,
+    .m_init         = uuid_init,
+    .m_get          = uuid_udata,
+    .m_get_tbl      = uuid_checktable,
+    .m_set_tbl      = uuid_pushtable,
+    .m_alloc_tbl    = uuid_alloctable,
+    .m_len          = sizeof(luab_uuid_t),
+    .m_sz           = sizeof(struct uuid),
 };

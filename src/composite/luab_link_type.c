@@ -284,12 +284,13 @@ link_udata(lua_State *L, int narg)
 }
 
 luab_module_t luab_link_type = {
-    .m_cookie   = LUAB_LINK_TYPE_ID,
+    .m_id       = LUAB_LINK_TYPE_ID,
     .m_name     = LUAB_LINK_TYPE,
     .m_vec      = link_methods,
     .m_create   = link_create,
     .m_init     = link_init,
     .m_get      = link_udata,
+    .m_len      = sizeof(luab_link_t),
     .m_sz       = sizeof(luab_link_t),
 };
 #endif /* LUAB_DEBUG */

@@ -63,7 +63,7 @@ typedef struct luab_passwd {
     ((luab_passwd_t *)luab_newudata(L, &luab_passwd_type, (arg)))
 #define luab_to_passwd(L, narg) \
     (luab_toldata((L), (narg), &luab_passwd_type, \
-        struct passwd *, sizeof(struct passwd)))
+        struct passwd *, luab_passwd_type.m_sz))
 
 /*
  * Subr.
@@ -145,7 +145,7 @@ PASSWD_get_table(lua_State *L)
 static int
 PASSWD_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_passwd_type, sizeof(struct passwd)));
+    return (luab_core_dump(L, 1, &luab_passwd_type, luab_passwd_type.m_sz));
 }
 
 /*
@@ -487,11 +487,9 @@ passwd_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct passwd *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct passwd);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_passwd_type)) != NULL) {
 
         if (((x = (struct passwd *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -504,7 +502,7 @@ passwd_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_passwd_type, struct passwd *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_passwd_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -528,7 +526,7 @@ passwd_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct passwd *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -544,14 +542,22 @@ passwd_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+passwd_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_passwd_type, vec, card));
+}
+
 luab_module_t luab_passwd_type = {
-    .m_cookie   = LUAB_PASSWD_TYPE_ID,
-    .m_name     = LUAB_PASSWD_TYPE,
-    .m_vec      = passwd_methods,
-    .m_create   = passwd_create,
-    .m_init     = passwd_init,
-    .m_get      = passwd_udata,
-    .m_get_tbl  = passwd_checktable,
-    .m_set_tbl  = passwd_pushtable,
-    .m_sz       = sizeof(luab_passwd_t),
+    .m_id           = LUAB_PASSWD_TYPE_ID,
+    .m_name         = LUAB_PASSWD_TYPE,
+    .m_vec          = passwd_methods,
+    .m_create       = passwd_create,
+    .m_init         = passwd_init,
+    .m_get          = passwd_udata,
+    .m_get_tbl      = passwd_checktable,
+    .m_set_tbl      = passwd_pushtable,
+    .m_alloc_tbl    = passwd_alloctable,
+    .m_len          = sizeof(luab_passwd_t),
+    .m_sz           = sizeof(struct passwd),
 };

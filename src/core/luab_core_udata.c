@@ -48,8 +48,8 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
 
     if (m != NULL) {
 
-        if ((ud = lua_newuserdata(L, m->m_sz)) != NULL) {
-            (void)memset_s(ud, m->m_sz, 0, m->m_sz);
+        if ((ud = lua_newuserdata(L, m->m_len)) != NULL) {
+            (void)memset_s(ud, m->m_len, 0, m->m_len);
 
             if (m->m_init != NULL && arg != NULL)
                 (*m->m_init)(ud, arg);

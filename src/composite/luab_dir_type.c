@@ -51,7 +51,7 @@ typedef struct luab_dir {
 #define luab_new_dir(L, arg) \
     ((luab_dir_t *)luab_newudata(L, &luab_dir_type, (arg)))
 #define luab_to_dir(L, narg) \
-    (luab_toldata((L), (narg), &luab_dir_type, void *, sizeof(void *)))
+    (luab_toldata((L), (narg), &luab_dir_type, void *, luab_dir_type.m_sz))
 
 /*
  * Subr.
@@ -113,7 +113,7 @@ DIR_get_table(lua_State *L)
 static int
 DIR_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_dir_type, sizeof(void *)));
+    return (luab_core_dump(L, 1, &luab_dir_type, luab_dir_type.m_sz));
 }
 
 /*
@@ -195,12 +195,20 @@ dir_udata(lua_State *L, int narg)
     return (luab_to_dir(L, narg));
 }
 
+static luab_table_t *
+dir_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_dir_type, vec, card));
+}
+
 luab_module_t luab_dir_type = {
-    .m_cookie   = LUAB_DIR_TYPE_ID,
-    .m_name     = LUAB_DIR_TYPE,
-    .m_vec      = dir_methods,
-    .m_create   = dir_create,
-    .m_init     = dir_init,
-    .m_get      = dir_udata,
-    .m_sz       = sizeof(luab_dir_t),
+    .m_id           = LUAB_DIR_TYPE_ID,
+    .m_name         = LUAB_DIR_TYPE,
+    .m_vec          = dir_methods,
+    .m_create       = dir_create,
+    .m_init         = dir_init,
+    .m_get          = dir_udata,
+    .m_alloc_tbl    = dir_alloctable,
+    .m_len          = sizeof(luab_dir_t),
+    .m_sz           = sizeof(void *),
 };

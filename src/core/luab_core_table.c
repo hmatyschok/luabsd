@@ -118,17 +118,14 @@ luab_table_init(lua_State *L, int new)
 void
 luab_table_free(luab_table_t *tbl)
 {
-    int up_call;
     size_t nbytes;
-
-    up_call = errno;
 
     if (tbl != NULL) {
         nbytes = (tbl->tbl_card * tbl->tbl_sz);
         luab_core_free(tbl->tbl_vec, nbytes);
         luab_core_free(tbl, sizeof(*tbl));
     } else
-        errno = (up_call != 0) ? up_call : ERANGE;
+        errno = ERANGE;
 }
 
 /*
@@ -154,21 +151,21 @@ luab_table_argerror(lua_State *L, int narg, luab_table_t *tbl, int up_call)
  */
 
 luab_table_t *
-luab_table_allocnil(size_t m, size_t sz)
+luab_table_allocnil(size_t m, size_t sz, luab_id_t id)
 {
     luab_table_t *tbl;
-    size_t nbytes, n;
+    size_t len, n;
 
     if ((tbl = malloc(sizeof(luab_table_t))) != NULL) {
         (void)memset_s(tbl, sizeof(*tbl), 0, sizeof(*tbl));
 
         if (m > 0 && sz > 0) {
             n = (m + 1);
-            nbytes = (n * sz);
+            len = (n * sz);
 
             /* sentinel, (n + 1) := LUAB_TABLE_XS_FLAG */
-            if ((tbl->tbl_vec = malloc(nbytes)) != NULL) {
-                (void)memset_s(tbl->tbl_vec, nbytes, 0, nbytes);
+            if ((tbl->tbl_vec = malloc(len)) != NULL) {
+                (void)memset_s(tbl->tbl_vec, len, 0, len);
 #if 0
                 luab_table_xsentinel(vec, n, sz);
 #endif
@@ -176,7 +173,10 @@ luab_table_allocnil(size_t m, size_t sz)
                 tbl->tbl_sz = sz;
             } else
                 luab_core_err(EX_OSERR, __func__, errno);
-        }
+        } else
+            errno = ERANGE;
+
+        tbl->tbl_id = id;
     } else
         luab_core_err(EX_OSERR, __func__, errno);
 
@@ -184,58 +184,104 @@ luab_table_allocnil(size_t m, size_t sz)
 }
 
 luab_table_t *
-luab_table_alloc(lua_State *L, int narg, size_t m, size_t sz)
+luab_table_alloc(size_t n, size_t sz, luab_id_t id)
 {
     luab_table_t *tbl = NULL;
 
-    if (m > 0 && sz > 0) {
-        if ((tbl = luab_table_allocnil(m, sz)) != NULL) {
-            if (tbl->tbl_vec == NULL)
-                luab_table_argerror(L, narg, tbl, errno);
-        }
-    } else
-        luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
+    if ((tbl = luab_table_allocnil(n, sz, id)) != NULL) {
 
+        if (tbl->tbl_vec == NULL)
+            luab_core_err(EX_CONFIG, __func__, errno);
+    }
     return (tbl);
 }
 
 luab_table_t *
-luab_newvector(lua_State *L, int narg, size_t sz)
+luab_table_create(luab_module_t *m, void *vec, size_t card)
 {
-    size_t n;
+    luab_table_t *tbl = NULL;
 
-    if ((n = luab_checktable(L, narg)) == 0)
-        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
+    if (m != NULL) {
 
-    return (luab_table_alloc(L, narg, n, sz));
-}
+        if (vec != NULL) {
 
-luab_table_t *
-luab_newvectornil(lua_State *L, int narg, size_t sz)
-{
-    size_t n;
+            if ((tbl = luab_table_alloc(card, m->m_sz, m->m_id)) != NULL)
+                (void)memmove(tbl->tbl_vec, vec, (card * m->m_sz));
+        } else
+            luab_core_err(EX_NOINPUT, __func__, ERANGE);
+    } else
+        luab_core_err(EX_CONFIG, __func__, ENOSYS);
 
-    n = luab_checktable(L, narg);
-    return (luab_table_allocnil(n, sz));
-}
-
-luab_table_t *
-luab_newlvector(lua_State *L, int narg, size_t n, size_t sz)
-{
-    size_t m = luab_checkltable(L, narg, n);
-    return (luab_table_alloc(L, narg, m, sz));
-}
-
-luab_table_t *
-luab_newlvectornil(lua_State *L, int narg, size_t n, size_t sz)
-{
-    size_t m = luab_checkltableisnil(L, narg, n);
-    return (luab_table_allocnil(m, sz));
+    return (tbl);
 }
 
 /*
  * Access functions, [stack -> C].
  */
+
+luab_table_t *
+luab_table_newvector(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_table_t *tbl = NULL;
+    size_t n;
+
+    if (m != NULL) {
+
+        if ((n = luab_checktable(L, narg)) != 0)
+            tbl = luab_table_alloc(n, m->m_sz, m->m_id);
+        else
+            luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
+
+    return (tbl);
+}
+
+luab_table_t *
+luab_table_newvectornil(lua_State *L, int narg, luab_module_t *m)
+{
+    luab_table_t *tbl = NULL;
+    size_t n;
+
+    if (m != NULL) {
+        n = luab_checktable(L, narg);
+        tbl = luab_table_allocnil(n, m->m_sz, m->m_id);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
+
+    return (tbl);
+}
+
+luab_table_t *
+luab_table_newlvector(lua_State *L, int narg, luab_module_t *m, size_t card)
+{
+    luab_table_t *tbl = NULL;
+    size_t n;
+
+    if (m != NULL) {
+        n = luab_checkltable(L, narg, card);
+        tbl = luab_table_alloc(n, m->m_sz, m->m_id);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
+
+    return (tbl);
+}
+
+luab_table_t *
+luab_table_newlvectornil(lua_State *L, int narg, luab_module_t *m, size_t card)
+{
+    luab_table_t *tbl = NULL;
+    size_t n;
+
+    if (m != NULL) {
+
+        n = luab_checkltableisnil(L, narg, card);
+        tbl = luab_table_allocnil(n, m->m_sz, m->m_id);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
+
+    return (tbl);
+}
 
 luab_table_t *
 luab_table_checkargv(lua_State *L, int narg)
@@ -244,30 +290,30 @@ luab_table_checkargv(lua_State *L, int narg)
     intptr_t **argv, *x;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(void *))) != NULL) {
+    n = luab_checktable(L, narg);
 
-        if (((argv = (void *)(tbl->tbl_vec)) != NULL) &&
-            (tbl->tbl_card > 1)){
-            luab_table_init(L, 0);
+    if ((tbl = luab_table_alloc(n, sizeof(void *), 0)) != NULL) {
+        luab_table_init(L, 0);
 
-            x = (void *)(intptr_t)(argv);
+        argv = (void *)(tbl->tbl_vec);
+        x = (void *)(intptr_t)(argv);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
-                if (lua_next(L, narg) != 0) {
-                    /*
-                     * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
-                     */
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isstring(L, -1) != 0)) {
-                        x[m] = (intptr_t)lua_tostring(L, -1);
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
+        for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+            if (lua_next(L, narg) != 0) {
+                /*
+                 * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
+                 */
+                if ((lua_isnumber(L, -2) != 0) &&
+                    (lua_isstring(L, -1) != 0)) {
+                    x[m] = (intptr_t)lua_tostring(L, -1);
+                } else
+                    luab_core_err(EX_DATAERR, __func__, EINVAL);
+            } else {
+                errno = ENOENT;
+                break;
             }
+            lua_pop(L, 1);
         }
     }
     return (tbl);
@@ -280,30 +326,30 @@ luab_table_toxargp(lua_State *L, int narg)
     intptr_t **argv, *x;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(void *))) != NULL) {
+    n = luab_checktable(L, narg);
 
-        if (((argv = (void *)(tbl->tbl_vec)) != NULL) &&
-            (tbl->tbl_card > 1)) {
-            luab_table_init(L, 0);
+    if ((tbl = luab_table_alloc(n, sizeof(void *), 0)) != NULL) {
+        luab_table_init(L, 0);
 
-            x = (void *)(intptr_t)(argv);
+        argv = (void *)(tbl->tbl_vec);
+        x = (void *)(intptr_t)(argv);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
-                if (lua_next(L, narg) != 0) {
-                    /*
-                     * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TXXX)
-                     */
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_type(L, -1) != -1)) {
-                        x[m] = (intptr_t)lua_topointer(L, -1);
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
+        for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+
+            if (lua_next(L, narg) != 0) {
+                /*
+                 * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TXXX)
+                 */
+                if ((lua_isnumber(L, -2) != 0) &&
+                    (lua_type(L, -1) != -1)) {
+                    x[m] = (intptr_t)lua_topointer(L, -1);
+                } else
+                    luab_core_err(EX_DATAERR, __func__, EINVAL);
+            } else {
+                errno = ENOENT;
+                break;
             }
+            lua_pop(L, 1);
         }
     }
     return (tbl);
@@ -315,11 +361,10 @@ luab_table_checkxdata(lua_State *L, int narg, luab_module_t *m)
     luab_table_t *tbl;
 
     if (m != NULL) {
-        if (m->m_get_tbl != NULL) {
 
-            if ((tbl = (*m->m_get_tbl)(L, narg)) != NULL)
-                tbl->tbl_cookie = m->m_cookie;
-        } else {
+        if (m->m_get_tbl != NULL)
+            tbl = (*m->m_get_tbl)(L, narg);
+        else {
             errno = ENOSYS;
             tbl = NULL;
         }
@@ -337,12 +382,11 @@ luab_table_checklxdata(lua_State *L, int narg, luab_module_t *m, size_t nmax)
 
     if ((tbl = luab_table_checkxdata(L, narg, m)) != NULL) {
 
-        if ((tbl->tbl_vec == NULL) ||
-            (tbl->tbl_card == 0) ||
-            (tbl->tbl_sz != luab_xlen(m)))
-            luab_table_argerror(L, narg, tbl, ERANGE);
+        if (tbl->tbl_vec != NULL && tbl->tbl_card > 0) {
 
-        if ((tbl->tbl_card - 1) != nmax)
+            if ((tbl->tbl_card - 1) != nmax)
+                luab_table_argerror(L, narg, tbl, ERANGE);
+        } else
             luab_table_argerror(L, narg, tbl, ERANGE);
     }
     return (tbl);
@@ -352,17 +396,14 @@ luab_table_t *
 luab_table_tolxargp(lua_State *L, int narg, size_t nmax)
 {
     luab_table_t *tbl;
-    size_t n, sz;
-
-    sz = sizeof(void *);
 
     if ((tbl = luab_table_toxargp(L, narg)) != NULL) {
-        if ((tbl->tbl_vec == NULL) ||
-            (tbl->tbl_card == 0) ||
-            (tbl->tbl_sz != sz))
-            luab_table_argerror(L, narg, tbl, ERANGE);
 
-        if ((n = (tbl->tbl_card - 1)) != nmax)
+        if (tbl->tbl_vec != NULL && tbl->tbl_card > 0) {
+
+            if ((tbl->tbl_card - 1) != nmax)
+                luab_table_argerror(L, narg, tbl, ERANGE);
+        } else
             luab_table_argerror(L, narg, tbl, ERANGE);
     }
     return (tbl);
@@ -391,7 +432,7 @@ luab_table_pushxdata(lua_State *L, int narg, luab_module_t *m,
 {
     if (m != NULL && tbl != NULL) {
 
-        if (m->m_cookie == tbl->tbl_cookie) {
+        if (m->m_id == tbl->tbl_id) {
 
             if (m->m_set_tbl != NULL)
                 (*m->m_set_tbl)(L, narg, tbl, new, clr);

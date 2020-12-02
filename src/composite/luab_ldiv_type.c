@@ -52,7 +52,7 @@ typedef struct luab_ldiv {
     ((luab_ldiv_t *)luab_newudata(L, &luab_ldiv_type, (arg)))
 #define luab_to_ldiv(L, narg) \
     (luab_toldata((L), (narg), &luab_ldiv_type, \
-        ldiv_t *, sizeof(ldiv_t)))
+        ldiv_t *, luab_ldiv_type.m_sz))
 
 /*
  * Subr.
@@ -116,7 +116,7 @@ LDIV_get_table(lua_State *L)
 static int
 LDIV_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_ldiv_type, sizeof(ldiv_t)));
+    return (luab_core_dump(L, 1, &luab_ldiv_type, luab_ldiv_type.m_sz));
 }
 
 /*
@@ -229,11 +229,9 @@ ldiv_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     ldiv_t *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(ldiv_t);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_ldiv_type)) != NULL) {
 
         if (((x = (ldiv_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -246,7 +244,7 @@ ldiv_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_ldiv_type, ldiv_t *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_ldiv_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -270,7 +268,7 @@ ldiv_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (ldiv_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -286,14 +284,22 @@ ldiv_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+ldiv_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_ldiv_type, vec, card));
+}
+
 luab_module_t luab_ldiv_type = {
-    .m_cookie   = LUAB_LDIV_TYPE_ID,
-    .m_name     = LUAB_LDIV_TYPE,
-    .m_vec      = ldiv_methods,
-    .m_create   = ldiv_create,
-    .m_init     = ldiv_init,
-    .m_get      = ldiv_udata,
-    .m_get_tbl  = ldiv_checktable,
-    .m_set_tbl  = ldiv_pushtable,
-    .m_sz       = sizeof(luab_ldiv_t),
+    .m_id           = LUAB_LDIV_TYPE_ID,
+    .m_name         = LUAB_LDIV_TYPE,
+    .m_vec          = ldiv_methods,
+    .m_create       = ldiv_create,
+    .m_init         = ldiv_init,
+    .m_get          = ldiv_udata,
+    .m_get_tbl      = ldiv_checktable,
+    .m_set_tbl      = ldiv_pushtable,
+    .m_alloc_tbl    = ldiv_alloctable,
+    .m_len          = sizeof(luab_ldiv_t),
+    .m_sz           = sizeof(ldiv_t),
 };

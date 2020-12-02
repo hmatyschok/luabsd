@@ -501,7 +501,7 @@ static luab_module_table_t luab_grp_vec[] = { /* grp.h */
 };
 
 luab_module_t luab_grp_lib = {
-    .m_cookie   = LUAB_GRP_LIB_ID,
+    .m_id       = LUAB_GRP_LIB_ID,
     .m_name     = LUAB_GRP_LIB_KEY,
     .m_vec      = luab_grp_vec,
 };

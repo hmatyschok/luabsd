@@ -659,8 +659,7 @@ luab_getgroups(lua_State *L)
 
         if (gidsetlen != 0) {
 
-            if ((tbl = luab_table_allocnil(n, sizeof(gid_t))) != NULL) {
-                tbl->tbl_cookie = m->m_cookie;
+            if ((tbl = luab_table_allocnil(n, m->m_sz, m->m_id)) != NULL) {
                 gidset = (gid_t *)(tbl->tbl_vec);
                 ngroups = 0;
             } else {
@@ -3125,8 +3124,7 @@ luab_getgrouplist(lua_State *L)
 
     if (*ngroups != 0) {
 
-        if ((tbl = luab_table_alloc(L, 3, *ngroups, sizeof(gid_t))) != NULL) {
-            tbl->tbl_cookie = m->m_cookie;
+        if ((tbl = luab_table_alloc(*ngroups, m->m_sz, m->m_id)) != NULL) {
             gidset = (gid_t *)(tbl->tbl_vec);
 
             if ((status = getgrouplist(name, basegid, gidset, (int *)ngroups)) == 0)
@@ -5138,7 +5136,7 @@ static luab_module_table_t luab_unistd_vec[] = {
 };
 
 luab_module_t luab_unistd_lib = {
-    .m_cookie   = LUAB_UNISTD_LIB_ID,
+    .m_id       = LUAB_UNISTD_LIB_ID,
     .m_name     = LUAB_UNISTD_LIB_KEY,
     .m_vec      = luab_unistd_vec,
 };

@@ -83,7 +83,7 @@ typedef struct luab_stat {
     ((luab_stat_t *)luab_newudata(L, &luab_stat_type, (arg)))
 #define luab_to_stat(L, narg) \
     (luab_toldata((L), (narg), &luab_stat_type, \
-        struct stat *, sizeof(struct stat)))
+        struct stat *, luab_stat_type.m_sz))
 /*
  * Subr.
  */
@@ -195,7 +195,7 @@ STAT_get_table(lua_State *L)
 static int
 STAT_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_stat_type, sizeof(struct stat)));
+    return (luab_core_dump(L, 1, &luab_stat_type, luab_stat_type.m_sz));
 }
 
 /*
@@ -940,11 +940,9 @@ stat_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct stat *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct stat);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_stat_type)) != NULL) {
 
         if (((x = (struct stat *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -957,7 +955,7 @@ stat_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_stat_type, struct stat *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_stat_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -980,7 +978,7 @@ stat_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct stat *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -996,14 +994,22 @@ stat_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+stat_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_stat_type, vec, card));
+}
+
 luab_module_t luab_stat_type = {
-    .m_cookie   = LUAB_STAT_TYPE_ID,
-    .m_name     = LUAB_STAT_TYPE,
-    .m_vec      = stat_methods,
-    .m_create   = stat_create,
-    .m_init     = stat_init,
-    .m_get      = stat_udata,
-    .m_get_tbl  = stat_checktable,
-    .m_set_tbl  = stat_pushtable,
-    .m_sz       = sizeof(luab_stat_t),
+    .m_id           = LUAB_STAT_TYPE_ID,
+    .m_name         = LUAB_STAT_TYPE,
+    .m_vec          = stat_methods,
+    .m_create       = stat_create,
+    .m_init         = stat_init,
+    .m_get          = stat_udata,
+    .m_get_tbl      = stat_checktable,
+    .m_set_tbl      = stat_pushtable,
+    .m_alloc_tbl    = stat_alloctable,
+    .m_len          = sizeof(luab_stat_t),
+    .m_sz           = sizeof(struct sockproto),
 };

@@ -45,12 +45,12 @@ extern luab_module_t luab_ushrt_type;
 typedef struct luab_ushrt {
     luab_udata_t    ud_softc;
     u_short         ud_value;
-} luab_ushrt_t;
+} luab_u_short;
 
 #define luab_new_ushrt(L, arg) \
-    ((luab_ushrt_t *)luab_newudata(L, &luab_ushrt_type, (arg)))
+    ((luab_u_short *)luab_newudata(L, &luab_ushrt_type, (arg)))
 #define luab_to_ushrt(L, narg) \
-    (luab_todata((L), (narg), &luab_ushrt_type, luab_ushrt_t *))
+    (luab_todata((L), (narg), &luab_ushrt_type, luab_u_short *))
 
 /*
  * Subr.
@@ -59,9 +59,9 @@ typedef struct luab_ushrt {
 static void
 ushrt_fillxtable(lua_State *L, int narg, void *arg)
 {
-    luab_ushrt_t *self;
+    luab_u_short *self;
 
-    if ((self = (luab_ushrt_t *)arg) != NULL) {
+    if ((self = (luab_u_short *)arg) != NULL) {
 
         luab_setinteger(L, narg, "value", self->ud_value);
     } else
@@ -133,7 +133,7 @@ USHRT_dump(lua_State *L)
 static int
 USHRT_set_value(lua_State *L)
 {
-    luab_ushrt_t *self;
+    luab_u_short *self;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 2);
@@ -158,7 +158,7 @@ USHRT_set_value(lua_State *L)
 static int
 USHRT_get_value(lua_State *L)
 {
-    luab_ushrt_t *self;
+    luab_u_short *self;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 1);
@@ -221,7 +221,7 @@ ushrt_init(void *ud, void *arg)
 static void *
 ushrt_udata(lua_State *L, int narg)
 {
-    luab_ushrt_t *self;
+    luab_u_short *self;
     self = luab_to_ushrt(L, narg);
     return ((void *)&(self->ud_value));
 }
@@ -233,7 +233,7 @@ ushrt_checktable(lua_State *L, int narg)
     u_short *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(u_short))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_ushrt_type)) != NULL) {
 
         if (((x = (u_short *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -269,7 +269,7 @@ ushrt_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (u_short *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -285,15 +285,23 @@ ushrt_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+ushrt_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_ushrt_type, vec, card));
+}
+
 luab_module_t luab_ushrt_type = {
-    .m_cookie   = LUAB_USHRT_TYPE_ID,
-    .m_name     = LUAB_USHRT_TYPE,
-    .m_vec      = ushrt_methods,
-    .m_create   = ushrt_create,
-    .m_init     = ushrt_init,
-    .m_get      = ushrt_udata,
-    .m_get_tbl  = ushrt_checktable,
-    .m_set_tbl  = ushrt_pushtable,
-    .m_sz       = sizeof(luab_ushrt_t),
+    .m_id           = LUAB_USHRT_TYPE_ID,
+    .m_name         = LUAB_USHRT_TYPE,
+    .m_vec          = ushrt_methods,
+    .m_create       = ushrt_create,
+    .m_init         = ushrt_init,
+    .m_get          = ushrt_udata,
+    .m_get_tbl      = ushrt_checktable,
+    .m_set_tbl      = ushrt_pushtable,
+    .m_alloc_tbl    = ushrt_alloctable,
+    .m_len          = sizeof(luab_u_short),
+    .m_sz           = sizeof(u_short),
 };
 #endif /* __BSD_VISIBLE */

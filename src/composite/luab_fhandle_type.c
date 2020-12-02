@@ -55,7 +55,7 @@ typedef struct luab_fhandle {
     ((luab_fhandle_t *)luab_newudata(L, &luab_fhandle_type, (arg)))
 #define luab_to_fhandle(L, narg) \
     (luab_toldata((L), (narg), &luab_fhandle_type, \
-        fhandle_t *, sizeof(fhandle_t)))
+        fhandle_t *, luab_fhandle_type.m_sz))
 
 /*
  * Subr.
@@ -82,9 +82,9 @@ fhandle_fillxtable(lua_State *L, int narg, void *arg)
  * Generator function - translate (LUA_TUSERDATA(FHANDLE)) into (LUA_TTABLE).
  *
  * @function get_table
- * 
+ *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- * 
+ *
  *          t = {
  *              fh_fsid     = (LUA_TUSERDATA(FSID)),
  *              fh_fid      = (LUA_TUSERDATA(FID)),
@@ -119,7 +119,7 @@ FHANDLE_get_table(lua_State *L)
 static int
 FHANDLE_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_fhandle_type, sizeof(fhandle_t)));
+    return (luab_core_dump(L, 1, &luab_fhandle_type, luab_fhandle_type.m_sz));
 }
 
 /*
@@ -232,11 +232,9 @@ fhandle_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     fhandle_t *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(fhandle_t);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_fhandle_type)) != NULL) {
 
         if (((x = (fhandle_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -249,7 +247,7 @@ fhandle_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_fhandle_type, fhandle_t *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_fhandle_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -273,7 +271,7 @@ fhandle_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (fhandle_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -289,14 +287,22 @@ fhandle_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+fhandle_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_fhandle_type, vec, card));
+}
+
 luab_module_t luab_fhandle_type = {
-    .m_cookie   = LUAB_FHANDLE_TYPE_ID,
-    .m_name     = LUAB_FHANDLE_TYPE,
-    .m_vec      = fhandle_methods,
-    .m_create   = fhandle_create,
-    .m_init     = fhandle_init,
-    .m_get      = fhandle_udata,
-    .m_get_tbl  = fhandle_checktable,
-    .m_set_tbl  = fhandle_pushtable,
-    .m_sz       = sizeof(luab_fhandle_t),
+    .m_id           = LUAB_FHANDLE_TYPE_ID,
+    .m_name         = LUAB_FHANDLE_TYPE,
+    .m_vec          = fhandle_methods,
+    .m_create       = fhandle_create,
+    .m_init         = fhandle_init,
+    .m_get          = fhandle_udata,
+    .m_get_tbl      = fhandle_checktable,
+    .m_set_tbl      = fhandle_pushtable,
+    .m_alloc_tbl    = fhandle_alloctable,
+    .m_len          = sizeof(luab_fhandle_t),
+    .m_sz           = sizeof(fhandle_t),
 };

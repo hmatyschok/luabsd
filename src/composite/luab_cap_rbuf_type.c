@@ -236,15 +236,23 @@ cap_rbuf_udata(lua_State *L, int narg)
     return (luab_to_cap(L, narg));
 }
 
+static luab_table_t *
+cap_rbuf_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_cap_rbuf_type, vec, card));
+}
+
 luab_module_t luab_cap_rbuf_type = {
-    .m_cookie   = LUAB_CAP_RBUF_TYPE_ID,
-    .m_name     = LUAB_CAP_RBUF_TYPE,
-    .m_vec      = cap_rbuf_methods,
-    .m_create   = cap_rbuf_create,
-    .m_init     = cap_rbuf_init,
-    .m_get      = cap_rbuf_udata,
-    .m_get_tbl  = luab_iovec_checktable,
-    .m_set_tbl  = luab_iovec_pushtable,
-    .m_sz       = sizeof(luab_cap_rbuf_t),
+    .m_id           = LUAB_CAP_RBUF_TYPE_ID,
+    .m_name         = LUAB_CAP_RBUF_TYPE,
+    .m_vec          = cap_rbuf_methods,
+    .m_create       = cap_rbuf_create,
+    .m_init         = cap_rbuf_init,
+    .m_get          = cap_rbuf_udata,
+    .m_get_tbl      = luab_iovec_checktable,
+    .m_set_tbl      = luab_iovec_pushtable,
+    .m_alloc_tbl    = cap_rbuf_alloctable,
+    .m_len          = sizeof(luab_cap_rbuf_t),
+    .m_sz           = sizeof(struct iovec),
 };
 #endif /* __BSD_VISIBLE */

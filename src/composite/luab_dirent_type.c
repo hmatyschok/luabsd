@@ -66,7 +66,7 @@ typedef struct luab_dirent {
     ((luab_dirent_t *)luab_newudata(L, &luab_dirent_type, (arg)))
 #define luab_to_dirent(L, narg) \
     (luab_toldata((L), (narg), &luab_dirent_type, \
-        struct dirent *, sizeof(struct dirent)))
+        struct dirent *, luab_dirent_type.m_sz))
 
 /*
  * Subr.
@@ -138,7 +138,7 @@ DIRENT_get_table(lua_State *L)
 static int
 DIRENT_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_dirent_type, sizeof(void *)));
+    return (luab_core_dump(L, 1, &luab_dirent_type, luab_dirent_type.m_sz));
 }
 
 /*
@@ -349,11 +349,9 @@ dirent_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct dirent *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct dirent);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_dirent_type)) != NULL) {
 
         if (((x = (struct dirent *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -366,7 +364,7 @@ dirent_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_dirent_type, struct dirent *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_dirent_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -390,7 +388,7 @@ dirent_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct dirent *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -406,14 +404,22 @@ dirent_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+dirent_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_dirent_type, vec, card));
+}
+
 luab_module_t luab_dirent_type = {
-    .m_cookie   = LUAB_DIRENT_TYPE_ID,
-    .m_name     = LUAB_DIRENT_TYPE,
-    .m_vec      = dirent_methods,
-    .m_create   = dirent_create,
-    .m_init     = dirent_init,
-    .m_get      = dirent_udata,
-    .m_get_tbl  = dirent_checktable,
-    .m_set_tbl  = dirent_pushtable,
-    .m_sz       = sizeof(luab_dirent_t),
+    .m_id           = LUAB_DIRENT_TYPE_ID,
+    .m_name         = LUAB_DIRENT_TYPE,
+    .m_vec          = dirent_methods,
+    .m_create       = dirent_create,
+    .m_init         = dirent_init,
+    .m_get          = dirent_udata,
+    .m_get_tbl      = dirent_checktable,
+    .m_set_tbl      = dirent_pushtable,
+    .m_alloc_tbl    = dirent_alloctable,
+    .m_len          = sizeof(luab_dirent_t),
+    .m_sz           = sizeof(struct dirent),
 };

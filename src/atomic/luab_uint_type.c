@@ -233,7 +233,7 @@ uint_checktable(lua_State *L, int narg)
     u_int *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(u_int))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_uint_type)) != NULL) {
 
         if (((x = (u_int *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -269,7 +269,7 @@ uint_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (u_int *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -285,15 +285,23 @@ uint_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+uint_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_uint_type, vec, card));
+}
+
 luab_module_t luab_uint_type = {
-    .m_cookie   = LUAB_UINT_TYPE_ID,
-    .m_name     = LUAB_UINT_TYPE,
-    .m_vec      = uint_methods,
-    .m_create   = uint_create,
-    .m_init     = uint_init,
-    .m_get      = uint_udata,
-    .m_get_tbl  = uint_checktable,
-    .m_set_tbl  = uint_pushtable,
-    .m_sz       = sizeof(luab_uint_t),
+    .m_id           = LUAB_UINT_TYPE_ID,
+    .m_name         = LUAB_UINT_TYPE,
+    .m_vec          = uint_methods,
+    .m_create       = uint_create,
+    .m_init         = uint_init,
+    .m_get          = uint_udata,
+    .m_get_tbl      = uint_checktable,
+    .m_set_tbl      = uint_pushtable,
+    .m_alloc_tbl    = uint_alloctable,
+    .m_len          = sizeof(luab_uint_t),
+    .m_sz           = sizeof(u_int),
 };
 #endif /* __BSD_VISIBLE */

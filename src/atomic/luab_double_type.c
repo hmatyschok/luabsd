@@ -232,7 +232,7 @@ double_checktable(lua_State *L, int narg)
     double *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(double))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_double_type)) != NULL) {
 
         if (((x = (double *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -268,7 +268,7 @@ double_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (double *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -284,14 +284,22 @@ double_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+double_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_double_type, vec, card));
+}
+
 luab_module_t luab_double_type = {
-    .m_cookie   = LUAB_DOUBLE_TYPE_ID,
-    .m_name     = LUAB_DOUBLE_TYPE,
-    .m_vec      = double_methods,
-    .m_create   = double_create,
-    .m_init     = double_init,
-    .m_get      = double_udata,
-    .m_get_tbl  = double_checktable,
-    .m_set_tbl  = double_pushtable,
-    .m_sz       = sizeof(luab_double_t),
+    .m_id           = LUAB_DOUBLE_TYPE_ID,
+    .m_name         = LUAB_DOUBLE_TYPE,
+    .m_vec          = double_methods,
+    .m_create       = double_create,
+    .m_init         = double_init,
+    .m_get          = double_udata,
+    .m_get_tbl      = double_checktable,
+    .m_set_tbl      = double_pushtable,
+    .m_alloc_tbl    = double_alloctable,
+    .m_len          = sizeof(luab_double_t),
+    .m_sz           = sizeof(double),
 };

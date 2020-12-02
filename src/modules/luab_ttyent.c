@@ -240,7 +240,7 @@ static luab_module_table_t luab_ttyent_vec[] = { /* ttyent.h */
 };
 
 luab_module_t luab_ttyent_lib = {
-    .m_cookie   = LUAB_TTYENT_LIB_ID,
+    .m_id       = LUAB_TTYENT_LIB_ID,
     .m_name     = LUAB_TTYENT_LIB_KEY,
     .m_vec      = luab_ttyent_vec,
 };

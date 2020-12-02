@@ -254,7 +254,7 @@ static luab_module_table_t luab_fstab_vec[] = { /* fstab.h */
 };
 
 luab_module_t luab_fstab_lib = {
-    .m_cookie   = LUAB_FSTAB_LIB_ID,
+    .m_id       = LUAB_FSTAB_LIB_ID,
     .m_name     = LUAB_FSTAB_LIB_KEY,
     .m_vec      = luab_fstab_vec,
 };

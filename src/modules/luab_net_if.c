@@ -277,7 +277,7 @@ static luab_module_table_t luab_net_if_vec[] = {
 };
 
 luab_module_t luab_net_if_lib = {
-    .m_cookie   = LUAB_NET_IF_LIB_ID,
+    .m_id       = LUAB_NET_IF_LIB_ID,
     .m_name     = LUAB_NET_IF_LIB_KEY,
     .m_vec      = luab_net_if_vec,
 };

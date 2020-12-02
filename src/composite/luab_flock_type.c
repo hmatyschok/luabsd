@@ -58,7 +58,7 @@ typedef struct luab_flock {
     ((luab_flock_t *)luab_newudata(L, &luab_flock_type, (arg)))
 #define luab_to_flock(L, narg) \
     (luab_toldata((L), (narg), &luab_flock_type, \
-        struct flock *, sizeof(struct flock)))
+        struct flock *, luab_flock_type.m_sz))
 
 /*
  * Subr.
@@ -130,7 +130,7 @@ FLOCK_get_table(lua_State *L)
 static int
 FLOCK_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_flock_type, sizeof(struct flock)));
+    return (luab_core_dump(L, 1, &luab_flock_type, luab_flock_type.m_sz));
 }
 
 /*
@@ -393,11 +393,9 @@ flock_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct flock *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct flock);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_flock_type)) != NULL) {
 
         if (((x = (struct flock *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -410,7 +408,7 @@ flock_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_flock_type, struct flock *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_flock_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -434,7 +432,7 @@ flock_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct flock *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -450,14 +448,22 @@ flock_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+flock_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_flock_type, vec, card));
+}
+
 luab_module_t luab_flock_type = {
-    .m_cookie   = LUAB_FLOCK_TYPE_ID,
-    .m_name     = LUAB_FLOCK_TYPE,
-    .m_vec      = flock_methods,
-    .m_create   = flock_create,
-    .m_init     = flock_init,
-    .m_get      = flock_udata,
-    .m_get_tbl  = flock_checktable,
-    .m_set_tbl  = flock_pushtable,
-    .m_sz       = sizeof(luab_flock_t),
+    .m_id           = LUAB_FLOCK_TYPE_ID,
+    .m_name         = LUAB_FLOCK_TYPE,
+    .m_vec          = flock_methods,
+    .m_create       = flock_create,
+    .m_init         = flock_init,
+    .m_get          = flock_udata,
+    .m_get_tbl      = flock_checktable,
+    .m_set_tbl      = flock_pushtable,
+    .m_alloc_tbl    = flock_alloctable,
+    .m_len          = sizeof(luab_flock_t),
+    .m_sz           = sizeof(struct flock),
 };

@@ -526,7 +526,7 @@ static luab_module_table_t luab_pwd_vec[] = { /* pwd.h */
 };
 
 luab_module_t luab_pwd_lib = {
-    .m_cookie   = LUAB_PWD_LIB_ID,
+    .m_id       = LUAB_PWD_LIB_ID,
     .m_name     = LUAB_PWD_LIB_KEY,
     .m_vec      = luab_pwd_vec,
 };

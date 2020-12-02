@@ -133,7 +133,7 @@ luab_core_checkmodule(luab_type_t idx, uint32_t id, const char *fname)
     if ((m = luab_xmv(idx).mv_mod) == NULL)
         luab_core_err(EX_UNAVAILABLE, fname, ENOSYS);
 
-    if (m->m_cookie != id)
+    if (m->m_id != id)
         luab_core_err(EX_UNAVAILABLE, fname, ENOENT);
 
     return (m);
@@ -566,7 +566,7 @@ luab_core_gc(lua_State *L, int narg, luab_module_t *m)
     if (self->ud_xhd != NULL)
         luab_udata_remove(self);
 
-    (void)memset_s(self, m->m_sz, 0, m->m_sz);
+    (void)memset_s(self, m->m_len, 0, m->m_len);
 
     return (0);
 }
@@ -1189,7 +1189,7 @@ static luab_module_table_t luab_core_vec[] = {
 };
 
 luab_module_t luab_core_lib = {
-    .m_cookie   = LUAB_CORE_LIB_ID,
+    .m_id       = LUAB_CORE_LIB_ID,
     .m_name     = LUAB_CORE_LIB_KEY,
     .m_vec      = luab_core_vec,
 };

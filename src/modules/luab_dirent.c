@@ -568,7 +568,7 @@ static luab_module_table_t luab_dirent_vec[] = { /* dirent.h */
 };
 
 luab_module_t luab_dirent_lib = {
-    .m_cookie   = LUAB_DIRENT_LIB_ID,
+    .m_id       = LUAB_DIRENT_LIB_ID,
     .m_name     = LUAB_DIRENT_LIB_KEY,
     .m_vec      = luab_dirent_vec,
 };

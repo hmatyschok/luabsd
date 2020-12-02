@@ -241,11 +241,9 @@ if_nameindex_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct if_nameindex *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct if_nameindex);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_if_nameindex_type)) != NULL) {
 
         if (((x = (struct if_nameindex *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -258,7 +256,7 @@ if_nameindex_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_if_nameindex_type, struct if_nameindex *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_if_nameindex_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -282,7 +280,7 @@ if_nameindex_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int c
     if (tbl != NULL) {
 
         if (((x = (struct if_nameindex *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -298,14 +296,22 @@ if_nameindex_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int c
         errno = ERANGE;
 }
 
+static luab_table_t *
+if_nameindex_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_if_nameindex_type, vec, card));
+}
+
 luab_module_t luab_if_nameindex_type = {
-    .m_cookie   = LUAB_IF_NAMEINDEX_TYPE_ID,
-    .m_name     = LUAB_IF_NAMEINDEX_TYPE,
-    .m_vec      = if_nameindex_methods,
-    .m_create   = if_nameindex_create,
-    .m_init     = if_nameindex_init,
-    .m_get      = if_nameindex_udata,
-    .m_get_tbl  = if_nameindex_checktable,
-    .m_set_tbl  = if_nameindex_pushtable,
-    .m_sz       = sizeof(luab_if_nameindex_t),
+    .m_id           = LUAB_IF_NAMEINDEX_TYPE_ID,
+    .m_name         = LUAB_IF_NAMEINDEX_TYPE,
+    .m_vec          = if_nameindex_methods,
+    .m_create       = if_nameindex_create,
+    .m_init         = if_nameindex_init,
+    .m_get          = if_nameindex_udata,
+    .m_get_tbl      = if_nameindex_checktable,
+    .m_set_tbl      = if_nameindex_pushtable,
+    .m_alloc_tbl    = if_nameindex_alloctable,
+    .m_len          = sizeof(luab_if_nameindex_t),
+    .m_sz           = sizeof(struct if_nameindex),
 };

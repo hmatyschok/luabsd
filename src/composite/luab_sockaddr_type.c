@@ -1215,12 +1215,20 @@ sockaddr_udata(lua_State *L, int narg)
     return (luab_to_sockaddr(L, narg));
 }
 
+static luab_table_t *
+sockaddr_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_sockaddr_type, vec, card));
+}
+
 luab_module_t luab_sockaddr_type = {
-    .m_cookie   = LUAB_SOCKADDR_TYPE_ID,
-    .m_name     = LUAB_SOCKADDR_TYPE,
-    .m_vec      = sockaddr_methods,
-    .m_create   = sockaddr_create,
-    .m_init     = sockaddr_init,
-    .m_get      = sockaddr_udata,
-    .m_sz       = sizeof(luab_sockaddr_t),
+    .m_id           = LUAB_SOCKADDR_TYPE_ID,
+    .m_name         = LUAB_SOCKADDR_TYPE,
+    .m_vec          = sockaddr_methods,
+    .m_create       = sockaddr_create,
+    .m_init         = sockaddr_init,
+    .m_get          = sockaddr_udata,
+    .m_alloc_tbl    = sockaddr_alloctable,
+    .m_len          = sizeof(luab_sockaddr_t),
+    .m_sz           = sizeof(struct sockaddr_storage),
 };

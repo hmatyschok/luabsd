@@ -32,6 +32,7 @@
 
 #include "luabsd.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 extern luab_module_t luab_sfile_type;
 
@@ -359,7 +360,9 @@ SFILE_cookie(lua_State *L)
 static int
 SFILE_gc(lua_State *L __unused)
 {
-    luab_sfile_t *self = luab_to_file(L, 1);
+    luab_sfile_t *self;
+
+    self = luab_to_file(L, 1);
 
     if (self->ud_fp != NULL) {
         (void)fclose(self->ud_fp);
@@ -415,16 +418,26 @@ sfile_init(void *ud, void *arg)
 static void *
 sfile_udata(lua_State *L, int narg)
 {
-    luab_sfile_t *self = luab_to_file(L, narg);
+    luab_sfile_t *self;
+    
+    self = luab_to_file(L, narg);
     return (self->ud_fp);
 }
 
+static luab_table_t *
+sfile_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_sfile_type, vec, card));
+}
+
 luab_module_t luab_sfile_type = {
-    .m_cookie   = LUAB_SFILE_TYPE_ID,
-    .m_name     = LUAB_SFILE_TYPE,
-    .m_vec      = sfile_methods,
-    .m_create   = sfile_create,
-    .m_init     = sfile_init,
-    .m_get      = sfile_udata,
-    .m_sz       = sizeof(luab_sfile_t),
+    .m_id           = LUAB_SFILE_TYPE_ID,
+    .m_name         = LUAB_SFILE_TYPE,
+    .m_vec          = sfile_methods,
+    .m_create       = sfile_create,
+    .m_init         = sfile_init,
+    .m_get          = sfile_udata,
+    .m_alloc_tbl    = sfile_alloctable,
+    .m_len          = sizeof(luab_sfile_t),
+    .m_sz           = sizeof(struct __sFILE),
 };

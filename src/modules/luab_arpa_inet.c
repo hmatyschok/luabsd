@@ -889,7 +889,7 @@ static luab_module_table_t luab_arpa_inet_vec[] = {
 };
 
 luab_module_t luab_arpa_inet_lib = {
-    .m_cookie   = LUAB_ARPA_INET_LIB_ID,
+    .m_id       = LUAB_ARPA_INET_LIB_ID,
     .m_name     = LUAB_ARPA_INET_LIB_KEY,
     .m_vec      = luab_arpa_inet_vec,
 };

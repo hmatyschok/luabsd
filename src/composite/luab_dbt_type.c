@@ -285,13 +285,21 @@ dbt_udata(lua_State *L, int narg)
     return (luab_to_dbt(L, narg));
 }
 
+static luab_table_t *
+dbt_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_dbt_type, vec, card));
+}
+
 luab_module_t luab_dbt_type = {
-    .m_cookie   = LUAB_DBT_TYPE_ID,
-    .m_name     = LUAB_DBT_TYPE,
-    .m_vec      = dbt_methods,
-    .m_create   = dbt_create,
-    .m_init     = dbt_init,
-    .m_get      = dbt_udata,
-    .m_sz       = sizeof(luab_dbt_t),
+    .m_id           = LUAB_DBT_TYPE_ID,
+    .m_name         = LUAB_DBT_TYPE,
+    .m_vec          = dbt_methods,
+    .m_create       = dbt_create,
+    .m_init         = dbt_init,
+    .m_get          = dbt_udata,
+    .m_alloc_tbl    = dbt_alloctable,
+    .m_len          = sizeof(luab_dbt_t),
+    .m_sz           = sizeof(DBT),
 };
 #endif /* __BSD_VISIBLE */

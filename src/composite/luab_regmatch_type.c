@@ -54,7 +54,7 @@ typedef struct luab_regmatch {
     ((luab_regmatch_t *)luab_newudata(L, &luab_regmatch_type, (arg)))
 #define luab_to_regmatch(L, narg) \
     (luab_toldata((L), (narg), &luab_regmatch_type, \
-        regmatch_t *, sizeof(regmatch_t)))
+        regmatch_t *, luab_regmatch_type.m_sz))
 
 /*
  * Subr.
@@ -118,7 +118,7 @@ REGMATCH_get_table(lua_State *L)
 static int
 REGMATCH_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_regmatch_type, sizeof(regmatch_t)));
+    return (luab_core_dump(L, 1, &luab_regmatch_type, luab_regmatch_type.m_sz));
 }
 
 /*
@@ -231,11 +231,9 @@ regmatch_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     regmatch_t *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(regmatch_t);
-
-    if ((tbl = luab_newvector(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvector(L, narg, &luab_regmatch_type)) != NULL) {
 
         if (((x = (regmatch_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -248,7 +246,7 @@ regmatch_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_regmatch_type, regmatch_t *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_regmatch_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -271,7 +269,7 @@ regmatch_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (regmatch_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -287,14 +285,22 @@ regmatch_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+regmatch_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_regmatch_type, vec, card));
+}
+
 luab_module_t luab_regmatch_type = {
-    .m_cookie   = LUAB_REGMATCH_TYPE_ID,
-    .m_name     = LUAB_REGMATCH_TYPE,
-    .m_vec      = regmatch_methods,
-    .m_create   = regmatch_create,
-    .m_init     = regmatch_init,
-    .m_get      = regmatch_udata,
-    .m_get_tbl  = regmatch_checktable,
-    .m_set_tbl  = regmatch_pushtable,
-    .m_sz       = sizeof(luab_regmatch_t),
+    .m_id           = LUAB_REGMATCH_TYPE_ID,
+    .m_name         = LUAB_REGMATCH_TYPE,
+    .m_vec          = regmatch_methods,
+    .m_create       = regmatch_create,
+    .m_init         = regmatch_init,
+    .m_get          = regmatch_udata,
+    .m_get_tbl      = regmatch_checktable,
+    .m_set_tbl      = regmatch_pushtable,
+    .m_alloc_tbl    = regmatch_alloctable,
+    .m_len          = sizeof(luab_regmatch_t),
+    .m_sz           = sizeof(regmatch_t),
 };

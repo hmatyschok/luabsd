@@ -90,7 +90,7 @@ static luab_module_table_t luab_sys_un_vec[] = {
 };
 
 luab_module_t luab_sys_un_lib = {
-    .m_cookie   = LUAB_SYS_UN_LIB_ID,
+    .m_id       = LUAB_SYS_UN_LIB_ID,
     .m_name     = LUAB_SYS_UN_LIB_KEY,
     .m_vec      = luab_sys_un_vec,
 };

@@ -232,7 +232,7 @@ fpos_checktable(lua_State *L, int narg)
     fpos_t *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(fpos_t))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_fpos_type)) != NULL) {
 
         if (((x = (fpos_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -268,7 +268,7 @@ fpos_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (fpos_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -284,14 +284,22 @@ fpos_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+fpos_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_fpos_type, vec, card));
+}
+
 luab_module_t luab_fpos_type = {
-    .m_cookie   = LUAB_FPOS_TYPE_ID,
-    .m_name     = LUAB_FPOS_TYPE,
-    .m_vec      = fpos_methods,
-    .m_create   = fpos_create,
-    .m_init     = fpos_init,
-    .m_get      = fpos_udata,
-    .m_get_tbl  = fpos_checktable,
-    .m_set_tbl  = fpos_pushtable,
-    .m_sz       = sizeof(luab_fpos_t),
+    .m_id           = LUAB_FPOS_TYPE_ID,
+    .m_name         = LUAB_FPOS_TYPE,
+    .m_vec          = fpos_methods,
+    .m_create       = fpos_create,
+    .m_init         = fpos_init,
+    .m_get          = fpos_udata,
+    .m_get_tbl      = fpos_checktable,
+    .m_set_tbl      = fpos_pushtable,
+    .m_alloc_tbl    = fpos_alloctable,
+    .m_len          = sizeof(luab_fpos_t),
+    .m_sz           = sizeof(fpos_t),
 };

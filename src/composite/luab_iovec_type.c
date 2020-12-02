@@ -693,14 +693,22 @@ iovec_udata(lua_State *L, int narg)
     return (luab_to_iovec(L, narg));
 }
 
+static luab_table_t *
+iovec_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_iovec_type, vec, card));
+}
+
 luab_module_t luab_iovec_type = {
-    .m_cookie   = LUAB_IOVEC_TYPE_ID,
-    .m_name     = LUAB_IOVEC_TYPE,
-    .m_vec      = iovec_methods,
-    .m_create   = iovec_create,
-    .m_init     = iovec_init,
-    .m_get      = iovec_udata,
-    .m_get_tbl  = luab_iovec_checktable,
-    .m_set_tbl  = luab_iovec_pushtable,
-    .m_sz       = sizeof(luab_iovec_t),
+    .m_id           = LUAB_IOVEC_TYPE_ID,
+    .m_name         = LUAB_IOVEC_TYPE,
+    .m_vec          = iovec_methods,
+    .m_create       = iovec_create,
+    .m_init         = iovec_init,
+    .m_get          = iovec_udata,
+    .m_get_tbl      = luab_iovec_checktable,
+    .m_set_tbl      = luab_iovec_pushtable,
+    .m_alloc_tbl    = iovec_alloctable,
+    .m_len          = sizeof(luab_iovec_t),
+    .m_sz           = sizeof(struct iovec),
 };

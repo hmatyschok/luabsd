@@ -47,32 +47,32 @@ luab_table_checkmmsghdr(lua_State *L, int narg)
     luab_table_t *tbl;
     struct mmsghdr *x;
     struct msghdr *msg;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct mmsghdr);
+    n = luab_checktable(L, narg);
 
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_alloc(n, sizeof(struct mmsghdr), 0)) != NULL) {
+        luab_table_init(L, 0);
 
-        if (((x = (struct mmsghdr *)(tbl->tbl_vec)) != NULL) &&
-            (tbl->tbl_card > 1)) {
-            luab_table_init(L, 0);
+        x = (struct mmsghdr *)(tbl->tbl_vec);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+        for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
 
-                if (lua_next(L, narg) != 0) {
-
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isuserdata(L, -1) != 0)) {
-                        msg = luab_udata(L, -1, luab_xmod(MSGHDR, TYPE, __func__), struct msghdr *);
-                        (void)memmove(&(x[m].msg_hdr), msg, sizeof(struct msghdr));
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
+            if (lua_next(L, narg) != 0) {
+                /*
+                 * (k,v) := (-2,-1) -> (LUA_TNUMBER,LUA_TSTRING)
+                 */
+                if ((lua_isnumber(L, -2) != 0) &&
+                    (lua_isuserdata(L, -1) != 0)) {
+                    msg = luab_udata(L, -1, luab_xmod(MSGHDR, TYPE, __func__), struct msghdr *);
+                    (void)memmove(&(x[m].msg_hdr), msg, sizeof(struct msghdr));
+                } else
+                    luab_core_err(EX_DATAERR, __func__, EINVAL);
+            } else {
+                errno = ENOENT;
+                break;
             }
+            lua_pop(L, 1);
         }
     }
     return (tbl);
@@ -262,7 +262,7 @@ luab_accept4(lua_State *L)
     addr = luab_udataisnil(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
     addrlen = luab_udataisnil(L, 3, luab_xmod(SOCKLEN, TYPE, __func__), socklen_t *);
     flags = (int)luab_checkinteger(L, 4, luab_env_int_max);
-    
+
     as = accept4(s, addr, addrlen, flags);
 
     return (luab_pushxinteger(L, as));
@@ -371,7 +371,7 @@ luab_getpeername(lua_State *L)
     s = (int)luab_checkinteger(L, 1, luab_env_int_max);
     name = luab_udata(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr *);
     namelen = luab_udata(L, 3, luab_xmod(SOCKLEN, TYPE, __func__), socklen_t *);
-    
+
     status = getpeername(s, name, namelen);
 
     return (luab_pushxinteger(L, status));
@@ -1099,10 +1099,9 @@ luab_socketpair(lua_State *L)
 
     (void)luab_checkltable(L, 4, 0);
 
-    if ((tbl = luab_table_alloc(L, 4, 2, sizeof(int))) != NULL) {
-        tbl->tbl_cookie = m->m_cookie;
+    if ((tbl = luab_table_alloc(2, m->m_sz, m->m_id)) != NULL)
         socks = (int *)(tbl->tbl_vec);
-    } else
+    else
         socks = NULL;
 
     if ((status = socketpair(domain, type, protocol, socks)) == 0)
@@ -1538,7 +1537,7 @@ static luab_module_table_t luab_sys_socket_vec[] = {
 };
 
 luab_module_t luab_sys_socket_lib = {
-    .m_cookie   = LUAB_SYS_SOCKET_LIB_ID,
+    .m_id       = LUAB_SYS_SOCKET_LIB_ID,
     .m_name     = LUAB_SYS_SOCKET_LIB_KEY,
     .m_vec      = luab_sys_socket_vec,
 };

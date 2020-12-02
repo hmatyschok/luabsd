@@ -232,7 +232,7 @@ off_checktable(lua_State *L, int narg)
     off_t *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(off_t))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_off_type)) != NULL) {
 
         if (((x = (off_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -268,7 +268,7 @@ off_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (off_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -284,14 +284,22 @@ off_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+off_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_off_type, vec, card));
+}
+
 luab_module_t luab_off_type = {
-    .m_cookie   = LUAB_OFF_TYPE_ID,
-    .m_name     = LUAB_OFF_TYPE,
-    .m_vec      = off_methods,
-    .m_create   = off_create,
-    .m_init     = off_init,
-    .m_get      = off_udata,
-    .m_get_tbl  = off_checktable,
-    .m_set_tbl  = off_pushtable,
-    .m_sz       = sizeof(luab_off_t),
+    .m_id           = LUAB_OFF_TYPE_ID,
+    .m_name         = LUAB_OFF_TYPE,
+    .m_vec          = off_methods,
+    .m_create       = off_create,
+    .m_init         = off_init,
+    .m_get          = off_udata,
+    .m_get_tbl      = off_checktable,
+    .m_set_tbl      = off_pushtable,
+    .m_alloc_tbl    = off_alloctable,
+    .m_len          = sizeof(luab_off_t),
+    .m_sz           = sizeof(off_t),
 };

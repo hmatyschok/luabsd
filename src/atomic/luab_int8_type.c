@@ -232,7 +232,7 @@ int8_checktable(lua_State *L, int narg)
     int8_t *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(int8_t))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_int8_type)) != NULL) {
 
         if (((x = (int8_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -268,7 +268,7 @@ int8_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (int8_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -284,14 +284,22 @@ int8_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+int8_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_int8_type, vec, card));
+}
+
 luab_module_t luab_int8_type = {
-    .m_cookie   = LUAB_INT8_TYPE_ID,
-    .m_name     = LUAB_INT8_TYPE,
-    .m_vec      = int8_methods,
-    .m_create   = int8_create,
-    .m_init     = int8_init,
-    .m_get      = int8_udata,
-    .m_get_tbl  = int8_checktable,
-    .m_set_tbl  = int8_pushtable,
-    .m_sz       = sizeof(luab_int8_t),
+    .m_id           = LUAB_INT8_TYPE_ID,
+    .m_name         = LUAB_INT8_TYPE,
+    .m_vec          = int8_methods,
+    .m_create       = int8_create,
+    .m_init         = int8_init,
+    .m_get          = int8_udata,
+    .m_get_tbl      = int8_checktable,
+    .m_set_tbl      = int8_pushtable,
+    .m_alloc_tbl    = int8_alloctable,
+    .m_len          = sizeof(luab_int8_t),
+    .m_sz           = sizeof(int8_t),
 };

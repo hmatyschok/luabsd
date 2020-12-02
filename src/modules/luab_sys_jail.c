@@ -298,7 +298,7 @@ static luab_module_table_t luab_sys_jail_vec[] = {
 };
 
 luab_module_t luab_sys_jail_lib = {
-    .m_cookie   = LUAB_SYS_JAIL_LIB_ID,
+    .m_id       = LUAB_SYS_JAIL_LIB_ID,
     .m_name     = LUAB_SYS_JAIL_LIB_KEY,
     .m_vec      = luab_sys_jail_vec,
 };

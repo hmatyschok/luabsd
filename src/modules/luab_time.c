@@ -97,7 +97,7 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 };
 
 luab_module_t luab_time_lib = {
-    .m_cookie   = LUAB_TIME_LIB_ID,
+    .m_id       = LUAB_TIME_LIB_ID,
     .m_name     = LUAB_TIME_LIB_KEY,
     .m_vec      = luab_time_vec,
 };

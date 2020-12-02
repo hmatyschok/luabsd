@@ -254,11 +254,9 @@ integer_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     luab_primitive_t *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(luab_primitive_t);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_integer_type)) != NULL) {
 
         if (((x = (luab_primitive_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -271,7 +269,7 @@ integer_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_integer_type, luab_primitive_t *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_integer_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -295,7 +293,7 @@ integer_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (luab_primitive_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -311,14 +309,22 @@ integer_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+integer_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_integer_type, vec, card));
+}
+
 luab_module_t luab_integer_type = {
-    .m_cookie   = LUAB_INTEGER_TYPE_ID,
-    .m_name     = LUAB_INTEGER_TYPE,
-    .m_vec      = integer_methods,
-    .m_create   = integer_create,
-    .m_init     = integer_init,
-    .m_get      = integer_udata,
-    .m_get_tbl  = integer_checktable,
-    .m_set_tbl  = integer_pushtable,
-    .m_sz       = sizeof(luab_integer_t),
+    .m_id           = LUAB_INTEGER_TYPE_ID,
+    .m_name         = LUAB_INTEGER_TYPE,
+    .m_vec          = integer_methods,
+    .m_create       = integer_create,
+    .m_init         = integer_init,
+    .m_get          = integer_udata,
+    .m_get_tbl      = integer_checktable,
+    .m_set_tbl      = integer_pushtable,
+    .m_alloc_tbl    = integer_alloctable,
+    .m_len          = sizeof(luab_integer_t),
+    .m_sz           = sizeof(luab_primitive_t),
 };

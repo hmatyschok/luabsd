@@ -232,7 +232,7 @@ socklen_checktable(lua_State *L, int narg)
     socklen_t *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(socklen_t))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_socklen_type)) != NULL) {
 
         if (((x = (socklen_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -268,7 +268,7 @@ socklen_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (socklen_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -284,14 +284,22 @@ socklen_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+socklen_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_socklen_type, vec, card));
+}
+
 luab_module_t luab_socklen_type = {
-    .m_cookie   = LUAB_SOCKLEN_TYPE_ID,
-    .m_name     = LUAB_SOCKLEN_TYPE,
-    .m_vec      = socklen_methods,
-    .m_create   = socklen_create,
-    .m_init     = socklen_init,
-    .m_get      = socklen_udata,
-    .m_get_tbl  = socklen_checktable,
-    .m_set_tbl  = socklen_pushtable,
-    .m_sz       = sizeof(luab_socklen_t),
+    .m_id           = LUAB_SOCKLEN_TYPE_ID,
+    .m_name         = LUAB_SOCKLEN_TYPE,
+    .m_vec          = socklen_methods,
+    .m_create       = socklen_create,
+    .m_init         = socklen_init,
+    .m_get          = socklen_udata,
+    .m_get_tbl      = socklen_checktable,
+    .m_set_tbl      = socklen_pushtable,
+    .m_alloc_tbl    = socklen_alloctable,
+    .m_len          = sizeof(luab_socklen_t),
+    .m_sz           = sizeof(socklen_t),
 };

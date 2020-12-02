@@ -74,7 +74,7 @@ luab_iovec_freetable(luab_table_t *tbl)
     if (tbl != NULL) {
 
         if (((x = tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0) &&
+            ((n = (tbl->tbl_card - 1)) > 0) &&
             (tbl->tbl_sz == sizeof(struct iovec))) {
 
             for (m = 0; m < n; m++)
@@ -218,23 +218,26 @@ luab_iovec_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 luab_table_t *
 luab_iovec_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct iovec *x;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(struct iovec))) != NULL) {
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct iovec *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+            for (i = 0, j = (tbl->tbl_card - 1); i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        luab_iovec_init(L, -1, &(x[m]));
+                        luab_iovec_init(L, -1, &(x[i]));
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -258,7 +261,7 @@ luab_iovec_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr
     if (tbl != NULL) {
 
         if (((x = (struct iovec *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)

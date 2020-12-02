@@ -55,7 +55,7 @@ typedef struct luab___sbuf {
     ((luab___sbuf_type_t *)luab_newudata(L, &luab___sbuf_type, (arg)))
 #define luab_to___sbuf(L, narg) \
     (luab_toldata((L), (narg), &luab___sbuf_type, \
-        struct __sbuf *, sizeof(struct __sbuf)))
+        struct __sbuf *, luab___sbuf_type.m_sz))
 
 /*
  * Subr.
@@ -119,7 +119,7 @@ SBUF_get_table(lua_State *L)
 static int
 SBUF_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab___sbuf_type, sizeof(struct __sbuf)));
+    return (luab_core_dump(L, 1, &luab___sbuf_type, luab___sbuf_type.m_sz));
 }
 
 /*
@@ -234,11 +234,9 @@ sbuf_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct __sbuf *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct __sbuf);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab___sbuf_type)) != NULL) {
 
         if (((x = (struct __sbuf *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -251,7 +249,7 @@ sbuf_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab___sbuf_type, struct __sbuf *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab___sbuf_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -291,14 +289,22 @@ sbuf_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+sbuf_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab___sbuf_type, vec, card));
+}
+
 luab_module_t luab___sbuf_type = {
-    .m_cookie   = LUAB___SBUF_TYPE_ID,
-    .m_name     = LUAB___SBUF_TYPE,
-    .m_vec      = sbuf_methods,
-    .m_create   = sbuf_create,
-    .m_init     = sbuf_init,
-    .m_get      = sbuf_udata,
-    .m_get_tbl  = sbuf_checktable,
-    .m_set_tbl  = sbuf_pushtable,
-    .m_sz       = sizeof(luab___sbuf_type_t),
+    .m_id           = LUAB___SBUF_TYPE_ID,
+    .m_name         = LUAB___SBUF_TYPE,
+    .m_vec          = sbuf_methods,
+    .m_create       = sbuf_create,
+    .m_init         = sbuf_init,
+    .m_get          = sbuf_udata,
+    .m_get_tbl      = sbuf_checktable,
+    .m_set_tbl      = sbuf_pushtable,
+    .m_alloc_tbl    = sbuf_alloctable,
+    .m_len          = sizeof(luab___sbuf_type_t),
+    .m_sz           = sizeof(struct __sbuf),
 };

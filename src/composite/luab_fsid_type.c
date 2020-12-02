@@ -51,7 +51,7 @@ typedef struct luab_fsid {
     ((luab_fsid_t *)luab_newudata(L, &luab_fsid_type, (arg)))
 #define luab_to_fsid(L, narg) \
     (luab_toldata((L), (narg), &luab_fsid_type, \
-        fsid_t *, sizeof(fsid_t)))
+        fsid_t *, luab_fsid_type.m_sz))
 
 /*
  * Subr.
@@ -143,7 +143,7 @@ FSID_get_table(lua_State *L)
 static int
 FSID_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_fsid_type, sizeof(struct fsid)));
+    return (luab_core_dump(L, 1, &luab_fsid_type, luab_fsid_type.m_sz));
 }
 
 /*
@@ -232,11 +232,9 @@ fsid_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     fsid_t *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(fsid_t);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_fsid_type)) != NULL) {
 
         if (((x = (fsid_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -249,7 +247,7 @@ fsid_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_fsid_type, fsid_t *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_fsid_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -273,7 +271,7 @@ fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (fsid_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -289,14 +287,22 @@ fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+fsid_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_fsid_type, vec, card));
+}
+
 luab_module_t luab_fsid_type = {
-    .m_cookie   = LUAB_FSID_TYPE_ID,
-    .m_name     = LUAB_FSID_TYPE,
-    .m_vec      = fsid_methods,
-    .m_create   = fsid_create,
-    .m_init     = fsid_init,
-    .m_get      = fsid_udata,
-    .m_get_tbl  = fsid_checktable,
-    .m_set_tbl  = fsid_pushtable,
-    .m_sz       = sizeof(luab_fsid_t),
+    .m_id           = LUAB_FSID_TYPE_ID,
+    .m_name         = LUAB_FSID_TYPE,
+    .m_vec          = fsid_methods,
+    .m_create       = fsid_create,
+    .m_init         = fsid_init,
+    .m_get          = fsid_udata,
+    .m_get_tbl      = fsid_checktable,
+    .m_set_tbl      = fsid_pushtable,
+    .m_alloc_tbl    = fsid_alloctable,
+    .m_len          = sizeof(luab_fsid_t),
+    .m_sz           = sizeof(fsid_t),
 };

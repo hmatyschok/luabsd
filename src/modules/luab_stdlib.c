@@ -2925,7 +2925,7 @@ static luab_module_table_t luab_stdlib_vec[] = {
 };
 
 luab_module_t luab_stdlib_lib = {
-    .m_cookie   = LUAB_STDLIB_LIB_ID,
+    .m_id       = LUAB_STDLIB_LIB_ID,
     .m_name     = LUAB_STDLIB_LIB_KEY,
     .m_vec      = luab_stdlib_vec,
 };

@@ -493,11 +493,9 @@ msghdr_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct msghdr *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct msghdr);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_msghdr_type)) != NULL) {
 
         if (((x = (struct msghdr *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -510,7 +508,7 @@ msghdr_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_msghdr_type, struct msghdr *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_msghdr_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -534,7 +532,7 @@ msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct msghdr *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -550,15 +548,23 @@ msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+msghdr_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_msghdr_type, vec, card));
+}
+
 luab_module_t luab_msghdr_type = {
-    .m_cookie   = LUAB_MSGHDR_TYPE_ID,
-    .m_name     = LUAB_MSGHDR_TYPE,
-    .m_vec      = msghdr_methods,
-    .m_create   = msghdr_create,
-    .m_init     = msghdr_init,
-    .m_get      = msghdr_udata,
-    .m_get_tbl  = msghdr_checktable,
-    .m_set_tbl  = msghdr_pushtable,
-    .m_sz       = sizeof(luab_msghdr_t),
+    .m_id           = LUAB_MSGHDR_TYPE_ID,
+    .m_name         = LUAB_MSGHDR_TYPE,
+    .m_vec          = msghdr_methods,
+    .m_create       = msghdr_create,
+    .m_init         = msghdr_init,
+    .m_get          = msghdr_udata,
+    .m_get_tbl      = msghdr_checktable,
+    .m_set_tbl      = msghdr_pushtable,
+    .m_alloc_tbl    = msghdr_alloctable,
+    .m_len          = sizeof(luab_msghdr_t),
+    .m_sz           = sizeof(struct msghdr),
 };
 #endif /* __BSD_VISIBLE */

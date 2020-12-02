@@ -102,30 +102,33 @@ luab_initstring(lua_State *L, luab_primitive_t *un)
 
 typedef uint32_t luab_id_t;
 
-typedef void *  (*luab_ctor_fn)(lua_State *, void *);
+typedef void *  (*luab_create_fn)(lua_State *, void *);
 typedef void  (*luab_init_fn)(void *, void *);
 typedef void *  (*luab_get_fn)(lua_State *, int);
 
 typedef struct luab_table {
-    luab_id_t   tbl_cookie;
+    luab_id_t   tbl_id;
     void        *tbl_vec;
     size_t      tbl_card;
     size_t      tbl_sz;
 } luab_table_t;
 
+typedef luab_table_t *   (*luab_alloc_tbl_fn)(void *, size_t);
 typedef luab_table_t *   (*luab_get_tbl_fn)(lua_State *, int);
 typedef void     (*luab_set_tbl_fn)(lua_State *, int, luab_table_t *, int, int);
 
 typedef struct luab_module {
-    luab_id_t           m_cookie;        /*  date -u +'%s' */
+    luab_id_t           m_id;        /*  date -u +'%s' */
+    size_t              m_len;
     size_t              m_sz;
     const char          *m_name;
     luab_module_table_t *m_vec;
-    luab_ctor_fn        m_create;
+    luab_create_fn      m_create;
     luab_init_fn        m_init;
     luab_get_fn         m_get;
     luab_get_tbl_fn     m_get_tbl;
     luab_set_tbl_fn     m_set_tbl;
+    luab_alloc_tbl_fn   m_alloc_tbl;
 } luab_module_t;
 
 typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);

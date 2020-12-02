@@ -425,7 +425,7 @@ SF_HDTR_gc(lua_State *L)
 
     self = luab_to_sf_hdtr(L, 1);
 
-    n = LUAB_XIOVEC_HDR; 
+    n = LUAB_XIOVEC_HDR;
 
     do {
         tbl = self->ud_cache[n];
@@ -492,11 +492,9 @@ sf_hdtr_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct sf_hdtr *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct sf_hdtr);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_sf_hdtr_type)) != NULL) {
 
         if (((x = (struct sf_hdtr *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -509,7 +507,7 @@ sf_hdtr_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_sf_hdtr_type, struct sf_hdtr *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_sf_hdtr_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -533,7 +531,7 @@ sf_hdtr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct sf_hdtr *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -549,15 +547,23 @@ sf_hdtr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+sf_hdtr_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_sf_hdtr_type, vec, card));
+}
+
 luab_module_t luab_sf_hdtr_type = {
-    .m_cookie   = LUAB_SF_HDTR_TYPE_ID,
-    .m_name     = LUAB_SF_HDTR_TYPE,
-    .m_vec      = sf_hdtr_methods,
-    .m_create   = sf_hdtr_create,
-    .m_init     = sf_hdtr_init,
-    .m_get      = sf_hdtr_udata,
-    .m_get_tbl  = sf_hdtr_checktable,
-    .m_set_tbl  = sf_hdtr_pushtable,
-    .m_sz       = sizeof(luab_sf_hdtr_t),
+    .m_id           = LUAB_SF_HDTR_TYPE_ID,
+    .m_name         = LUAB_SF_HDTR_TYPE,
+    .m_vec          = sf_hdtr_methods,
+    .m_create       = sf_hdtr_create,
+    .m_init         = sf_hdtr_init,
+    .m_get          = sf_hdtr_udata,
+    .m_get_tbl      = sf_hdtr_checktable,
+    .m_set_tbl      = sf_hdtr_pushtable,
+    .m_alloc_tbl    = sf_hdtr_alloctable,
+    .m_len          = sizeof(luab_sf_hdtr_t),
+    .m_sz           = sizeof(struct sf_hdtr),
 };
 #endif /* __BSD_VISBLE */

@@ -58,7 +58,7 @@ typedef struct luab_accept_filter_arg {
     ((luab_accept_filter_arg_t *)luab_newudata(L, &luab_accept_filter_arg_type, (arg)))
 #define luab_to_accept_filter_arg(L, narg) \
     (luab_toldata((L), (narg), &luab_accept_filter_arg_type, \
-        struct accept_filter_arg *, sizeof(struct accept_filter_arg)))
+        struct accept_filter_arg *, luab_accept_filter_arg_type.m_sz))
 
 /*
  * Subr.
@@ -122,7 +122,7 @@ ACCEPT_FILTER_ARG_get_table(lua_State *L)
 static int
 ACCEPT_FILTER_ARG_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_accept_filter_arg_type, sizeof(struct accept_filter_arg)));
+    return (luab_core_dump(L, 1, &luab_accept_filter_arg_type, luab_accept_filter_arg_type.m_sz));
 }
 
 /*
@@ -295,11 +295,9 @@ accept_filter_arg_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct accept_filter_arg *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct accept_filter_arg);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_accept_filter_arg_type)) != NULL) {
 
         if (((x = (struct accept_filter_arg *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -312,7 +310,7 @@ accept_filter_arg_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_accept_filter_arg_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -352,15 +350,23 @@ accept_filter_arg_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, 
         errno = ERANGE;
 }
 
+static luab_table_t *
+accept_filter_arg_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_accept_filter_arg_type, vec, card));
+}
+
 luab_module_t luab_accept_filter_arg_type = {
-    .m_cookie   = LUAB_ACCEPT_FILTER_ARG_TYPE_ID,
-    .m_name     = LUAB_ACCEPT_FILTER_ARG_TYPE,
-    .m_vec      = accept_filter_arg_methods,
-    .m_create   = accept_filter_arg_create,
-    .m_init     = accept_filter_arg_init,
-    .m_get      = accept_filter_arg_udata,
-    .m_get_tbl  = accept_filter_arg_checktable,
-    .m_set_tbl  = accept_filter_arg_pushtable,
-    .m_sz       = sizeof(luab_accept_filter_arg_t),
+    .m_id           = LUAB_ACCEPT_FILTER_ARG_TYPE_ID,
+    .m_name         = LUAB_ACCEPT_FILTER_ARG_TYPE,
+    .m_vec          = accept_filter_arg_methods,
+    .m_create       = accept_filter_arg_create,
+    .m_init         = accept_filter_arg_init,
+    .m_get          = accept_filter_arg_udata,
+    .m_get_tbl      = accept_filter_arg_checktable,
+    .m_set_tbl      = accept_filter_arg_pushtable,
+    .m_alloc_tbl    = accept_filter_arg_alloctable,
+    .m_len          = sizeof(luab_accept_filter_arg_t),
+    .m_sz           = sizeof(struct accept_filter_arg),
 };
 #endif /* __BSD_VISIBLE */

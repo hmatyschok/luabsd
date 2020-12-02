@@ -431,10 +431,9 @@ luab_getfsstat(lua_State *L)
 
         if ((bufsize = (n * sz)) != 0) {
 
-            if ((tbl = luab_table_allocnil(n, sz)) != NULL) {
-                tbl->tbl_cookie = m->m_cookie;
+            if ((tbl = luab_table_allocnil(n, sz, m->m_id)) != NULL)
                 buf = (struct statfs *)(tbl->tbl_vec);
-            } else
+            else
                 buf = NULL;
 
         } else {
@@ -491,10 +490,9 @@ luab_getmntinfo(lua_State *L)
 
     mode = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    if ((tbl = luab_table_allocnil(0, 0)) != NULL) {
+    if ((tbl = luab_table_allocnil(0, 0, m->m_id)) != NULL) {
 
         if ((nmts = getmntinfo(&vec, mode)) > 0) {
-            tbl->tbl_cookie = m->m_cookie;
             tbl->tbl_sz = sizeof(struct statfs);
             tbl->tbl_card = (nmts + 1);     /* XXX externalize it */
 
@@ -995,7 +993,7 @@ static luab_module_table_t luab_sys_mount_vec[] = {
 };
 
 luab_module_t luab_sys_mount_lib = {
-    .m_cookie   = LUAB_SYS_MOUNT_LIB_ID,
+    .m_id       = LUAB_SYS_MOUNT_LIB_ID,
     .m_name     = LUAB_SYS_MOUNT_LIB_KEY,
     .m_vec      = luab_sys_mount_vec,
 };

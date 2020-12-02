@@ -54,7 +54,7 @@ typedef struct luab_timeval {
     ((luab_timeval_t *)luab_newudata(L, &luab_timeval_type, (arg)))
 #define luab_to_timeval(L, narg) \
     (luab_toldata((L), (narg), &luab_timeval_type, \
-        struct timeval *, sizeof(struct timeval)))
+        struct timeval *, luab_timeval_type.m_sz))
 
 /*
  * Subr.
@@ -118,7 +118,7 @@ TIMEVAL_get_table(lua_State *L)
 static int
 TIMEVAL_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_timeval_type, sizeof(struct timeval)));
+    return (luab_core_dump(L, 1, &luab_timeval_type, luab_timeval_type.m_sz));
 }
 
 /*
@@ -287,11 +287,9 @@ timeval_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct timeval *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct timeval);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_timeval_type)) != NULL) {
 
         if (((x = (struct timeval *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -304,7 +302,7 @@ timeval_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_timeval_type, struct timeval *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_timeval_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -327,7 +325,7 @@ timeval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct timeval *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -343,14 +341,22 @@ timeval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+timeval_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_timeval_type, vec, card));
+}
+
 luab_module_t luab_timeval_type = {
-    .m_cookie   = LUAB_TIMEVAL_TYPE_ID,
-    .m_name     = LUAB_TIMEVAL_TYPE,
-    .m_vec      = timeval_methods,
-    .m_create   = timeval_create,
-    .m_init     = timeval_init,
-    .m_get      = timeval_udata,
-    .m_get_tbl  = timeval_checktable,
-    .m_set_tbl  = timeval_pushtable,
-    .m_sz       = sizeof(luab_timeval_t),
+    .m_id           = LUAB_TIMEVAL_TYPE_ID,
+    .m_name         = LUAB_TIMEVAL_TYPE,
+    .m_vec          = timeval_methods,
+    .m_create       = timeval_create,
+    .m_init         = timeval_init,
+    .m_get          = timeval_udata,
+    .m_get_tbl      = timeval_checktable,
+    .m_set_tbl      = timeval_pushtable,
+    .m_alloc_tbl    = timeval_alloctable,
+    .m_len          = sizeof(luab_timeval_t),
+    .m_sz           = sizeof(struct timeval),
 };

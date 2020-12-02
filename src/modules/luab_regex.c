@@ -342,7 +342,7 @@ static luab_module_table_t luab_regex_vec[] = { /* regex.h */
 };
 
 luab_module_t luab_regex_lib = {
-    .m_cookie   = LUAB_REGEX_LIB_ID,
+    .m_id       = LUAB_REGEX_LIB_ID,
     .m_name     = LUAB_REGEX_LIB_KEY,
     .m_vec      = luab_regex_vec,
 };

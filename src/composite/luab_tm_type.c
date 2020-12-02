@@ -63,7 +63,7 @@ typedef struct luab_tm {
     ((luab_tm_t *)luab_newudata(L, &luab_tm_type, (arg)))
 #define luab_to_tm(L, narg) \
     (luab_toldata((L), (narg), &luab_tm_type, \
-        struct tm *, sizeof(struct tm)))
+        struct tm *, luab_tm_type.m_sz))
 
 /*
  * Subr.
@@ -147,7 +147,7 @@ TM_get_table(lua_State *L)
 static int
 TM_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_tm_type, sizeof(struct tm)));
+    return (luab_core_dump(L, 1, &luab_tm_type, luab_tm_type.m_sz));
 }
 
 /*
@@ -739,7 +739,6 @@ static void
 tm_init(void *ud, void *arg)
 {
     luab_udata_init(&luab_tm_type, ud, arg);
-    luab_udata_init(&luab_tm_type, ud, arg);
 }
 
 static void *
@@ -753,11 +752,9 @@ tm_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct tm *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct tm);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_tm_type)) != NULL) {
 
         if (((x = (struct tm *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -770,7 +767,7 @@ tm_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_tm_type, struct tm *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_tm_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -793,7 +790,7 @@ tm_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct tm *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -809,14 +806,22 @@ tm_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+tm_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_tm_type, vec, card));
+}
+
 luab_module_t luab_tm_type = {
-    .m_cookie   = LUAB_TM_TYPE_ID,
-    .m_name     = LUAB_TM_TYPE,
-    .m_vec      = tm_methods,
-    .m_create   = tm_create,
-    .m_init     = tm_init,
-    .m_get      = tm_udata,
-    .m_get_tbl  = tm_checktable,
-    .m_set_tbl  = tm_pushtable,
-    .m_sz       = sizeof(luab_tm_t),
+    .m_id           = LUAB_TM_TYPE_ID,
+    .m_name         = LUAB_TM_TYPE,
+    .m_vec          = tm_methods,
+    .m_create       = tm_create,
+    .m_init         = tm_init,
+    .m_get          = tm_udata,
+    .m_get_tbl      = tm_checktable,
+    .m_set_tbl      = tm_pushtable,
+    .m_alloc_tbl    = tm_alloctable,
+    .m_len          = sizeof(luab_tm_t),
+    .m_sz           = sizeof(struct tm),
 };

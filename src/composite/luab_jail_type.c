@@ -712,11 +712,9 @@ jail_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct jail *x, *y;
-    size_t m, n, sz;
+    size_t m, n;
 
-    sz = sizeof(struct jail);
-
-    if ((tbl = luab_newvectornil(L, narg, sz)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_jail_type)) != NULL) {
 
         if (((x = (struct jail *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -729,7 +727,7 @@ jail_checktable(lua_State *L, int narg)
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_jail_type, struct jail *);
-                        (void)memmove(&(x[m]), y, sz);
+                        (void)memmove(&(x[m]), y, luab_jail_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -753,7 +751,7 @@ jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct jail *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -769,14 +767,22 @@ jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = ERANGE;
 }
 
+static luab_table_t *
+jail_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_jail_type, vec, card));
+}
+
 luab_module_t luab_jail_type = {
-    .m_cookie   = LUAB_JAIL_TYPE_ID,
-    .m_name     = LUAB_JAIL_TYPE,
-    .m_vec      = jail_methods,
-    .m_create   = jail_create,
-    .m_init     = jail_init,
-    .m_get      = jail_udata,
-    .m_get_tbl  = jail_checktable,
-    .m_set_tbl  = jail_pushtable,
-    .m_sz       = sizeof(luab_jail_t),
+    .m_id           = LUAB_JAIL_TYPE_ID,
+    .m_name         = LUAB_JAIL_TYPE,
+    .m_vec          = jail_methods,
+    .m_create       = jail_create,
+    .m_init         = jail_init,
+    .m_get          = jail_udata,
+    .m_get_tbl      = jail_checktable,
+    .m_set_tbl      = jail_pushtable,
+    .m_alloc_tbl    = jail_alloctable,
+    .m_len          = sizeof(luab_jail_t),
+    .m_sz           = sizeof(struct jail),
 };

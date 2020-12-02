@@ -232,7 +232,7 @@ int_checktable(lua_State *L, int narg)
     int *x, y;
     size_t m, n;
 
-    if ((tbl = luab_newvectornil(L, narg, sizeof(int))) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_int_type)) != NULL) {
 
         if (((x = (int *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 1)) {
@@ -268,7 +268,7 @@ int_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (int *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) != 0)) {
+            ((n = (tbl->tbl_card - 1)) > 0)) {
             luab_table_init(L, new);
 
             for (m = 0, k = 1; m < n; m++, k++)
@@ -284,14 +284,22 @@ int_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
         errno = EINVAL;
 }
 
+static luab_table_t *
+int_alloctable(void *vec, size_t card)
+{
+    return (luab_table_create(&luab_int_type, vec, card));
+}
+
 luab_module_t luab_int_type = {
-    .m_cookie   = LUAB_INT_TYPE_ID,
-    .m_name     = LUAB_INT_TYPE,
-    .m_vec      = int_methods,
-    .m_create   = int_create,
-    .m_init     = int_init,
-    .m_get      = int_udata,
-    .m_get_tbl  = int_checktable,
-    .m_set_tbl  = int_pushtable,
-    .m_sz       = sizeof(luab_int_t),
+    .m_id           = LUAB_INT_TYPE_ID,
+    .m_name         = LUAB_INT_TYPE,
+    .m_vec          = int_methods,
+    .m_create       = int_create,
+    .m_init         = int_init,
+    .m_get          = int_udata,
+    .m_get_tbl      = int_checktable,
+    .m_set_tbl      = int_pushtable,
+    .m_alloc_tbl    = int_alloctable,
+    .m_len          = sizeof(luab_int_t),
+    .m_sz           = sizeof(int),
 };

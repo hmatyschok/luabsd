@@ -43,7 +43,7 @@ typedef struct luab_udata {
 static __inline size_t
 luab_xlen(luab_module_t *m)
 {
-    return ((m->m_sz - sizeof(luab_udata_t)));
+    return ((m->m_len - sizeof(luab_udata_t)));
 }
 
 /*
