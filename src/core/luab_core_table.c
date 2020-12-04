@@ -470,3 +470,53 @@ luab_table_pushxtable(lua_State *L, int narg, luab_xtable_param_t *xtp)
 
     return (luab_table_pusherr(L, errno, 1));
 }
+
+int
+luab_table_pushxvector(lua_State *L, int narg, luab_module_t *m,
+    void *vec, size_t card, int new, int clr)
+{
+    luab_table_t *tbl = NULL;
+
+    if (m != NULL) {
+
+        if (m->m_alloc_tbl != NULL) {
+
+            if ((tbl = (*m->m_alloc_tbl)(vec, card)) != NULL)
+                luab_table_pushxdata(L, narg, m, tbl, new, clr);
+        } else
+            errno = ENXIO;
+    } else
+        errno = ENOSYS;
+
+    return (luab_table_pusherr(L, errno, 1));
+}
+
+int
+luab_table_setxvector(lua_State *L, int narg, luab_module_t *m,
+    const char *k, void *vec, size_t card, int new, int clr)
+{
+    luab_table_t *tbl = NULL;
+
+    if (m != NULL) {
+
+        if (m->m_alloc_tbl != NULL) {
+
+            if ((tbl = (*m->m_alloc_tbl)(vec, card)) != NULL) {
+                luab_table_pushxdata(L, narg, m, tbl, new, clr);
+
+                if (k != NULL)
+                    lua_setfield(L, narg, k);
+                else {
+                    if (narg < 0)
+                        lua_pushvalue(L, narg + 1);
+                    else
+                        lua_pushvalue(L, narg);
+                }
+            }
+        } else
+            errno = ENXIO;
+    } else
+        errno = ENOSYS;
+
+    return (luab_table_pusherr(L, errno, 1));
+}

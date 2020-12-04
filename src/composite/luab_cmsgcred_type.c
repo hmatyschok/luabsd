@@ -76,12 +76,10 @@ cmsgcred_type_fillxtable(lua_State *L, int narg, void *arg)
         luab_setinteger(L, narg, "cmcred_gid",        cmcred->cmcred_gid);
         luab_setinteger(L, narg, "cmcred_ngroups",    cmcred->cmcred_ngroups);
 
-        /*
-         * XXX
-         *  (LUA_TTABLE)
-         */
-
-        luab_setldata(L, narg, "cmcred_groups", cmcred->cmcred_groups, CMGROUP_MAX);
+        if (cmcred->cmcred_ngroups > 0)
+            luab_table_setxvector(L, narg, luab_xmod(GID, TYPE, __func__),
+                "cmcred_groups", cmcred->cmcred_groups,
+                    cmcred->cmcred_ngroups, 1, 1);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -103,7 +101,7 @@ cmsgcred_type_fillxtable(lua_State *L, int narg, void *arg)
  *              cmcred_euid     = (LUA_TNUMBER),
  *              cmcred_gid      = (LUA_TNUMBER),
  *              cmcred_ngroups  = (LUA_TNUMBER),
- *              cmcred_groups   = (LUA_T{NIL,STRING}),
+ *              cmcred_groups   = (LUA_T{NIL,USERDATA(GID)}),
  *          }
  *
  * @usage t [, err, msg ] = cmsgcred:get_table()
@@ -269,19 +267,20 @@ CMSGCRED_cmcred_ngroups(lua_State *L)
 static int
 CMSGCRED_cmcred_groups(lua_State *L)
 {
+    luab_module_t *m;
     struct cmsgcred *cmcred;
-    void *dp;
-    size_t len;
+    void *vec;
+    size_t card;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(GID, TYPE, __func__);
+
     cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
-    dp = cmcred->cmcred_groups;
-    len = (luab_env_ngroups_max * luab_cmsgcred_type.m_sz);
+    vec = (void *)cmcred->cmcred_groups;
+    card = cmcred->cmcred_ngroups;
 
-        /* XXX (LUA_TTABLE), pending.. */
-
-    return (luab_pushldata(L, dp, len));
+    return (luab_table_pushxvector(L, -2, m, vec, card, 1, 1));
 }
 
 /*
@@ -387,10 +386,10 @@ cmsgcred_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct cmsgcred *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) > 0)) {
+            (tbl->tbl_card > 1)) {
             luab_table_init(L, new);
 
-            for (m = 0, k = 1; m < n; m++, k++)
+            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
                 luab_rawsetudata(L, narg, &luab_cmsgcred_type, k, &(x[m]));
 
             errno = ENOENT;

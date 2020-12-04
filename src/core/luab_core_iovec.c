@@ -74,10 +74,10 @@ luab_iovec_freetable(luab_table_t *tbl)
     if (tbl != NULL) {
 
         if (((x = tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) > 0) &&
+            (tbl->tbl_card > 0) &&
             (tbl->tbl_sz == sizeof(struct iovec))) {
 
-            for (m = 0; m < n; m++)
+            for (m = 0, n = (tbl->tbl_card -1); m < n; m++)
                 (void)luab_iov_free(&(x[m]));
 
             errno = ENOENT;
@@ -261,10 +261,10 @@ luab_iovec_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr
     if (tbl != NULL) {
 
         if (((x = (struct iovec *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) > 0)) {
+            (tbl->tbl_card > 1)) {
             luab_table_init(L, new);
 
-            for (m = 0, k = 1; m < n; m++, k++)
+            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
                 luab_iov_rawsetxdata(L, narg, k, &(x[m]));
 
             errno = ENOENT;

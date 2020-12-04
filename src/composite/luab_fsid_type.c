@@ -271,10 +271,10 @@ fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (fsid_t *)tbl->tbl_vec) != NULL) &&
-            ((n = (tbl->tbl_card - 1)) > 0)) {
+            (tbl->tbl_card > 1)) {
             luab_table_init(L, new);
 
-            for (m = 0, k = 1; m < n; m++, k++)
+            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
                 luab_rawsetudata(L, narg, &luab_fsid_type, k, &(x[m]));
 
             errno = ENOENT;

@@ -403,12 +403,13 @@ luab_getfhat(lua_State *L)
 static int
 luab_getfsstat(lua_State *L)
 {
+    luab_table_t *tbl = NULL;
+    struct statfs *buf = NULL;
     luab_module_t *m;
     long n, bufsize;
     int mode, card;
     size_t sz;
-    luab_table_t *tbl;
-    struct statfs *buf;
+    
 
     (void)luab_core_checkmaxargs(L, 3);
 
@@ -433,12 +434,6 @@ luab_getfsstat(lua_State *L)
 
             if ((tbl = luab_table_allocnil(n, sz, m->m_id)) != NULL)
                 buf = (struct statfs *)(tbl->tbl_vec);
-            else
-                buf = NULL;
-
-        } else {
-            tbl = NULL;
-            buf = NULL;
         }
 
         if ((card = getfsstat(buf, bufsize, mode)) > 0)
@@ -478,7 +473,7 @@ luab_getmntinfo(lua_State *L)
 {
     luab_module_t *m;
     int mode;
-    ssize_t nmts, sz;
+    ssize_t nmts;
     struct statfs *vec;
     luab_table_t *tbl;
 
@@ -490,23 +485,14 @@ luab_getmntinfo(lua_State *L)
 
     mode = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    if ((tbl = luab_table_allocnil(0, 0, m->m_id)) != NULL) {
-
-        if ((nmts = getmntinfo(&vec, mode)) > 0) {
-            tbl->tbl_sz = sizeof(struct statfs);
-            tbl->tbl_card = (nmts + 1);     /* XXX externalize it */
-
-            sz = (tbl->tbl_sz * tbl->tbl_card);
-
-            if ((tbl->tbl_vec = realloc(vec, sz)) == NULL)
-                luab_core_err(EX_DATAERR, __func__, errno);
-
+    if ((nmts = getmntinfo(&vec, mode)) > 0) {
+        if ((tbl = (*m->m_alloc_tbl)(vec, nmts)) != NULL)
             luab_table_pushxdata(L, 1, m, tbl, 0, 1);
-        } else
-            luab_table_free(tbl);
-    } else
-        nmts = -1;
+        else
+            nmts = -1;
 
+        free(vec);
+    }
     return (luab_pushxinteger(L, nmts));
 }
 
