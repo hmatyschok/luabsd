@@ -1450,7 +1450,7 @@ luab_getlogin_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    buf = luab_udata(L, 1, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *); /* XXX macro might defined */
+    buf = luab_udata(L, 1, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
     len = (size_t)luab_checklinteger(L, 2, 0);
 
     if (((name = buf->iov.iov_base) != NULL) &&
@@ -2516,7 +2516,7 @@ luab_getpass(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    prompt = luab_checklstring(L, 1, _PASSWORD_LEN, NULL);  /* XXX */
+    prompt = luab_checklstring(L, 1, luab_env_passwd_max, NULL);
     value = getpass(prompt);
 
     return (luab_pushstring(L, value));

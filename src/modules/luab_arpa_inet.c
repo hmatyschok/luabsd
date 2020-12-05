@@ -48,22 +48,22 @@ extern luab_module_t luab_arpa_inet_lib;
 static void *
 luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
 {
-    luab_module_t *type = NULL;
+    luab_module_t *xmod = NULL;
 
     switch (af) {
     case AF_INET:
-        type = luab_xmod(IN_ADDR, TYPE, __func__);
+        xmod = luab_xmod(IN_ADDR, TYPE, __func__);
         *len = INET_ADDRSTRLEN;
         break;
     case AF_INET6:
-        type = luab_xmod(IN6_ADDR, TYPE, __func__);
+        xmod = luab_xmod(IN6_ADDR, TYPE, __func__);
         *len = INET6_ADDRSTRLEN;
         break;
     default:
         luab_core_argerror(L, narg, NULL, -1, 0, EINVAL);
-        break;  /* not reached */
+        break;
     }
-    return ((*type->m_get)(L, narg));
+    return ((*xmod->m_get)(L, narg));
 }
 
 /*

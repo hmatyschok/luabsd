@@ -297,7 +297,7 @@ luab_posix_fadvise(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    offset = (off_t)luab_checkinteger(L, 2, luab_env_int_max);   /* XXX */
+    offset = (off_t)luab_checkinteger(L, 2, luab_env_int_max);
     len = (off_t)luab_checkinteger(L, 3, luab_env_int_max);
     advice = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
@@ -334,7 +334,7 @@ luab_posix_fallocate(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    offset = (off_t)luab_checkinteger(L, 2, luab_env_int_max);  /* XXX */
+    offset = (off_t)luab_checkinteger(L, 2, luab_env_int_max);
     len = (off_t)luab_checkinteger(L, 3, luab_env_int_max);
 
     if ((errno = posix_fallocate(fd, offset, len)) != 0)

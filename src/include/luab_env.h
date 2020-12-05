@@ -152,12 +152,24 @@ typedef struct luab_sysconf_vec {
 #define LUAB_SC_VEC_SENTINEL \
     { .scv_key = LUAB_SC_NOTSUPP, .scv_dflt = 0, .scv_val = NULL, }
 
+#define LUAB_BUFFERSIZE                         LUAL_BUFFERSIZE
+#define LUAB_MAXPATHLEN                         MAXPATHLEN
+#define LUAB_SPECNAMELEN                        SPECNAMELEN
+#define LUAB_IF_NAMESIZE                        IF_NAMESIZE
+#define LUAB_NAME_MAX                           NAME_MAX
+#if __XSI_VISIBLE
+#define LUAB_PASSWD_MAX                         PASS_MAX
+#else
+#define LUAB_PASSWD_MAX                         128
+#endif
+
 extern u_long luab_env_buf_max;
 extern u_long luab_env_path_max;
 extern u_long luab_env_logname_max;
 extern u_long luab_env_specname_max;
 extern u_long luab_env_ifname_max;
 extern u_long luab_env_name_max;
+extern u_long luab_env_passwd_max;
 
 #define LUAB_SC_ARG_MAX                         _SC_ARG_MAX
 #define LUAB_SC_CHILD_MAX                       _SC_CHILD_MAX

@@ -82,6 +82,7 @@ u_long luab_env_logname_max;
 u_long luab_env_specname_max;
 u_long luab_env_ifname_max;
 u_long luab_env_name_max;
+u_long luab_env_passwd_max;
 
 u_long luab_env_arg_max;
 u_long luab_env_child_max;

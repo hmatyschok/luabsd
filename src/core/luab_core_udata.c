@@ -241,7 +241,7 @@ void *
 luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     luab_iovec_t *iov;
-    void *buf;
+    void *dp;
                                                         /* XXX */
     if ((iov = luab_isiovec(L, narg)) != NULL) {
 
@@ -251,11 +251,11 @@ luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
         if (iov->iov.iov_len != len)
             luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-        buf = iov->iov.iov_base;
+        dp = iov->iov.iov_base;
     } else
-        buf = luab_toudata(L, narg, m);
+        dp = luab_toudata(L, narg, m);
 
-    return (buf);
+    return (dp);
 }
 
 void *

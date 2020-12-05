@@ -35,14 +35,10 @@
 /*
  * XXX
  *
- *  (a) The implementation violates the DRY principle. Therefore, components
- *      shall reimplemented by boiler-plate code, e. g. utilizing macros or
- *      something else.
- *
- *  (b) Condition tests against constraints on mapping from cardinality
+ *  (a) Condition tests against constraints on mapping from cardinality
  *      to the Lua stacksize shall implemented.
  *
- *  (c) Reimplementation of the luab_table_xsentinel() functor.
+ *  (b) Reimplementation of the luab_table_xsentinel() functor.
  */
 
 #if 0

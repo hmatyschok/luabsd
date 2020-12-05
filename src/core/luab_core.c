@@ -44,23 +44,23 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
 static luab_sysconf_vec_t luab_param[] = {
     {                                               /* <core> */
         .scv_key = LUAB_SC_NOTSUPP,
-        .scv_dflt = LUAL_BUFFERSIZE,
+        .scv_dflt = LUAB_BUFFERSIZE,
         .scv_val = &luab_env_buf_max,
     },{
         .scv_key = LUAB_SC_NOTSUPP,
-        .scv_dflt = MAXPATHLEN,
+        .scv_dflt = LUAB_MAXPATHLEN,
         .scv_val = &luab_env_path_max,
     },{
         .scv_key = LUAB_SC_NOTSUPP,
-        .scv_dflt = LUAL_BUFFERSIZE,
+        .scv_dflt = LUAB_BUFFERSIZE,
         .scv_val = &luab_env_logname_max,
     },{
         .scv_key = LUAB_SC_NOTSUPP,
-        .scv_dflt = MAXPATHLEN,
+        .scv_dflt = LUAB_MAXPATHLEN,
         .scv_val = &luab_env_path_max,
     },{
         .scv_key = LUAB_SC_NOTSUPP,
-        .scv_dflt = SPECNAMELEN,
+        .scv_dflt = LUAB_SPECNAMELEN,
         .scv_val = &luab_env_specname_max,
     },{
         .scv_key = LUAB_SC_NOTSUPP,
@@ -68,8 +68,12 @@ static luab_sysconf_vec_t luab_param[] = {
         .scv_val = &luab_env_ifname_max,
     },{
         .scv_key = LUAB_SC_NOTSUPP,
-        .scv_dflt = NAME_MAX,
+        .scv_dflt = LUAB_NAME_MAX,
         .scv_val = &luab_env_name_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = LUAB_PASSWD_MAX,
+        .scv_val = &luab_env_passwd_max,
     },{                                             /* <unistd.h> */
         .scv_key = LUAB_SC_ARG_MAX,
         .scv_dflt = ARG_MAX,
@@ -448,7 +452,7 @@ static luab_sysconf_vec_t luab_param[] = {
         .scv_val = &luab_env_trace_log,
     },{
         .scv_key = LUAB_SC_TTY_NAME_MAX,
-        .scv_dflt = SPECNAMELEN,
+        .scv_dflt = LUAB_SPECNAMELEN,
         .scv_val = &luab_env_tty_name_max,
     },{
         .scv_key = LUAB_SC_TYPED_MEMORY_OBJECTS,
