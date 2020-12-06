@@ -123,7 +123,7 @@ msghdr_fillxtable(lua_State *L, int narg, void *arg)
         luab_setinteger(L, narg, "msg_namelen", msg->msg_namelen);
 
         if (msg->msg_name != NULL)
-            luab_setudata(L, narg, luab_xmod(SOCKADDR, TYPE, __func__), "msg_name", msg->msg_name);
+            luab_setxdata(L, narg, luab_xmod(SOCKADDR, TYPE, __func__), "msg_name", msg->msg_name);
 
         if (msg->msg_iov != NULL)
             (void)msghdr_pushiovec(L, narg, "msg_iov", self->msg_buf);
@@ -340,7 +340,7 @@ MSGHDR_get_msg_name(lua_State *L)
     msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
 
     if ((sa = msg->msg_name) != NULL)
-        status = luab_pushudata(L, luab_xmod(SOCKADDR, TYPE, __func__), sa);
+        status = luab_pushxdata(L, luab_xmod(SOCKADDR, TYPE, __func__), sa);
     else {
         errno = EADDRNOTAVAIL;
         status = luab_pushnil(L);
@@ -536,7 +536,7 @@ msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, &luab_msghdr_type, k, &(x[m]));
+                luab_rawsetxdata(L, narg, &luab_msghdr_type, k, &(x[m]));
 
             errno = ENOENT;
         } else

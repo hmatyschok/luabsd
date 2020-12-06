@@ -68,8 +68,8 @@ fhandle_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((fh = (fhandle_t *)arg) != NULL) {
 
-        luab_setudata(L, narg, luab_xmod(FSID, TYPE, __func__), "fh_fsid",  &(fh->fh_fsid));
-        luab_setudata(L, narg, luab_xmod(FID, TYPE, __func__), "fh_fid",    &(fh->fh_fid));
+        luab_setxdata(L, narg, luab_xmod(FSID, TYPE, __func__), "fh_fsid",  &(fh->fh_fsid));
+        luab_setxdata(L, narg, luab_xmod(FID, TYPE, __func__), "fh_fid",    &(fh->fh_fid));
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -146,7 +146,7 @@ FHANDLE_fh_fsid(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     x = &(fh->fh_fsid);
 
-    return (luab_pushudata(L, luab_xmod(FSID, TYPE, __func__), x));
+    return (luab_pushxdata(L, luab_xmod(FSID, TYPE, __func__), x));
 }
 
 /***
@@ -169,7 +169,7 @@ FHANDLE_fh_fid(lua_State *L)
     fh = luab_udata(L, 1, &luab_fhandle_type, fhandle_t *);
     fid = &(fh->fh_fid);
 
-    return (luab_pushudata(L, luab_xmod(FID, TYPE, __func__), fid));
+    return (luab_pushxdata(L, luab_xmod(FID, TYPE, __func__), fid));
 }
 
 /*
@@ -275,7 +275,7 @@ fhandle_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, &luab_fhandle_type, k, &(x[m]));
+                luab_rawsetxdata(L, narg, &luab_fhandle_type, k, &(x[m]));
 
             errno = ENOENT;
         } else

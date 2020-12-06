@@ -154,7 +154,7 @@ luab_sockaddr_dl_create(lua_State *L)
     data = (struct sockaddr *)&sdl;
     luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));
 
-    return (luab_pushudata(L, luab_xmod(SOCKADDR, TYPE, __func__), data));
+    return (luab_pushxdata(L, luab_xmod(SOCKADDR, TYPE, __func__), data));
 }
 
 /*

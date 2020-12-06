@@ -157,7 +157,7 @@ sockaddr_in_fillxtable(lua_State *L, int narg, void *arg)
         luab_setinteger(L, narg, "sin_port",      ntohs(sin->sin_port));
 
         sin->sin_addr.s_addr = ntohl(sin->sin_addr.s_addr);
-        luab_setudata(L, narg, luab_xmod(IN_ADDR, TYPE, __func__),
+        luab_setxdata(L, narg, luab_xmod(IN_ADDR, TYPE, __func__),
             "sin_addr", &sin->sin_addr);
         sin->sin_addr.s_addr = htonl(sin->sin_addr.s_addr);
     } else
@@ -176,7 +176,7 @@ sockaddr_in6_fillxtable(lua_State *L, int narg, void *arg)
         luab_setinteger(L, narg, "sin6_port",     ntohs(sin6->sin6_port));
         luab_setinteger(L, narg, "sin6_flowinfo", ntohl(sin6->sin6_flowinfo));
 
-        luab_setudata(L, narg, luab_xmod(IN6_ADDR, TYPE, __func__),
+        luab_setxdata(L, narg, luab_xmod(IN6_ADDR, TYPE, __func__),
             "sin6_addr", &sin6->sin6_addr);
 
         luab_setinteger(L, narg, "sin6_scope_id", ntohl(sin6->sin6_scope_id));
@@ -782,7 +782,7 @@ SOCKADDR_get_sin_addr(lua_State *L)
 
     if (sin->sin_family == AF_INET) {
         sin->sin_addr.s_addr = ntohl(sin->sin_addr.s_addr);
-        status = luab_pushudata(L, luab_xmod(IN_ADDR, TYPE, __func__), &sin->sin_addr);
+        status = luab_pushxdata(L, luab_xmod(IN_ADDR, TYPE, __func__), &sin->sin_addr);
         sin->sin_addr.s_addr = htonl(sin->sin_addr.s_addr);
     } else {
         errno = EPERM;
@@ -984,7 +984,7 @@ SOCKADDR_get_sin6_addr(lua_State *L)
 
     if (sin6->sin6_family == AF_INET6) {
         ia = sin6->sin6_addr;
-        status = luab_pushudata(L, luab_xmod(IN6_ADDR, TYPE, __func__), &ia);
+        status = luab_pushxdata(L, luab_xmod(IN6_ADDR, TYPE, __func__), &ia);
     } else {
         errno = EPERM;
         status = luab_pushnil(L);

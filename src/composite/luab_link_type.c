@@ -91,7 +91,7 @@ LINK_get_table(lua_State *L)
 
     lua_newtable(L);
     luab_setfstring(L, -2, "link_dp", "(%p)", link->link_dp);
-    luab_setudata(L, -2, luab_xmod(SOCKADDR, TYPE, __func__), "link_sa", link->link_sa);
+    luab_setxdata(L, -2, luab_xmod(SOCKADDR, TYPE, __func__), "link_sa", link->link_sa);
     lua_pushvalue(L, -1);
 
     return (1);

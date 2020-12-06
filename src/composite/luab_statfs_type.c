@@ -104,7 +104,7 @@ statfs_fillxtable(lua_State *L, int narg, void *arg)
         luab_setinteger(L, narg, "f_namemax",     f->f_namemax);
         luab_setinteger(L, narg, "f_owner",       f->f_owner);
 
-        luab_setudata(L, -2, luab_xmod(FSID, TYPE, __func__), "f_fsid", (void *)&(f->f_fsid));
+        luab_setxdata(L, -2, luab_xmod(FSID, TYPE, __func__), "f_fsid", (void *)&(f->f_fsid));
 
         luab_setldata(L, narg, "f_fstypename",    f->f_fstypename, MFSNAMELEN);
         luab_setldata(L, narg, "f_mntfromname",   f->f_mntfromname, MNAMELEN);
@@ -571,7 +571,7 @@ STATFS_f_fsid(lua_State *L)
     f = luab_udata(L, 1, &luab_statfs_type, struct statfs *);
     v = (void *)&(f->f_fsid);
 
-    return (luab_pushudata(L, luab_xmod(FSID, TYPE, __func__), v));
+    return (luab_pushxdata(L, luab_xmod(FSID, TYPE, __func__), v));
 }
 
 /***
@@ -763,7 +763,7 @@ statfs_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, &luab_statfs_type, k, &(x[m]));
+                luab_rawsetxdata(L, narg, &luab_statfs_type, k, &(x[m]));
 
             errno = ENOENT;
         } else

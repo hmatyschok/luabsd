@@ -65,7 +65,7 @@ luab_getfsent(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, fs));
+    return (luab_pushxdata(L, m, fs));
 }
 
 /***
@@ -95,7 +95,7 @@ luab_getfsspec(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, fs));
+    return (luab_pushxdata(L, m, fs));
 }
 
 /***
@@ -125,7 +125,7 @@ luab_getfsfile(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, fs));
+    return (luab_pushxdata(L, m, fs));
 }
 
 /***

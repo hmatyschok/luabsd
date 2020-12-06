@@ -133,7 +133,7 @@ luab_opendir2(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, dirp));
+    return (luab_pushxdata(L, m, dirp));
 }
 
 /***
@@ -314,7 +314,7 @@ luab_opendir(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, dirp));
+    return (luab_pushxdata(L, m, dirp));
 }
 
 /***
@@ -344,7 +344,7 @@ luab_fdopendir(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, dirp));
+    return (luab_pushxdata(L, m, dirp));
 }
 
 /***
@@ -374,7 +374,7 @@ luab_readdir(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, dp));
+    return (luab_pushxdata(L, m, dp));
 }
 
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 500

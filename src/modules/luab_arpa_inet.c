@@ -95,7 +95,7 @@ luab_inet_addr(lua_State *L)
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN, NULL);
     ia.s_addr = inet_addr(cp);
 
-    return (luab_pushudata(L, m, &ia));
+    return (luab_pushxdata(L, m, &ia));
 }
 
 /***
@@ -307,7 +307,7 @@ luab_inet_lnaof(lua_State *L)
     ia = luab_udata(L, 1, m, struct in_addr *);
     lna.s_addr = inet_lnaof(*ia);
 
-    return (luab_pushudata(L, m, &lna));
+    return (luab_pushxdata(L, m, &lna));
 }
 
 /***
@@ -341,7 +341,7 @@ luab_inet_makeaddr(lua_State *L)
 
     ia = inet_makeaddr(net->s_addr, lna->s_addr);
 
-    return (luab_pushudata(L, m, &ia));
+    return (luab_pushxdata(L, m, &ia));
 }
 
 /***
@@ -428,7 +428,7 @@ luab_inet_netof(lua_State *L)
     ia = luab_udata(L, 1, m, struct in_addr *);
     net.s_addr = inet_netof(*ia);
 
-    return (luab_pushudata(L, m, &net));
+    return (luab_pushxdata(L, m, &net));
 }
 
 /***
@@ -456,7 +456,7 @@ luab_inet_network(lua_State *L)
     cp = luab_checklstring(L, 1, INET_ADDRSTRLEN, NULL);
     ia.s_addr = inet_network(cp);
 
-    return (luab_pushudata(L, m, &ia));
+    return (luab_pushxdata(L, m, &ia));
 }
 
 /***
@@ -856,7 +856,7 @@ luab_sockaddr_in_create(lua_State *L)
         sin.sin_port = htons(sin.sin_port);
         break;
     }
-    return (luab_pushudata(L, m1, data));
+    return (luab_pushxdata(L, m1, data));
 }
 
 /***
@@ -904,7 +904,7 @@ luab_sockaddr_in6_create(lua_State *L)
         sin6.sin6_port = htons(sin6.sin6_port);
         break;
     }
-    return (luab_pushudata(L, m1, data));
+    return (luab_pushxdata(L, m1, data));
 }
 
 /*

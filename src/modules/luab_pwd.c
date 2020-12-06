@@ -78,7 +78,7 @@ luab_getpwnam(lua_State *L)
     login = luab_checklstring(L, 1, luab_env_logname_max, NULL);
 
     if ((pwd = getpwnam(login)) != NULL)
-        status = luab_pushudata(L, m, pwd);
+        status = luab_pushxdata(L, m, pwd);
     else
         status = luab_pushnil(L);
 
@@ -110,7 +110,7 @@ luab_getpwuid(lua_State *L)
     uid = luab_checkinteger(L, 1, luab_env_int_max);
 
     if ((pwd = getpwuid(uid)) != NULL)
-        status = luab_pushudata(L, m, pwd);
+        status = luab_pushxdata(L, m, pwd);
     else
         status = luab_pushnil(L);
 
@@ -157,7 +157,7 @@ luab_getpwent(lua_State *L)
     m = luab_xmod(PASSWD, TYPE, __func__);
 
     if ((pwd = getpwent()) != NULL)
-        status = luab_pushudata(L, m, pwd);
+        status = luab_pushxdata(L, m, pwd);
     else
         status = luab_pushnil(L);
 

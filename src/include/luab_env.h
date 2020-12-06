@@ -162,6 +162,7 @@ typedef struct luab_sysconf_vec {
 #else
 #define LUAB_PASSWD_MAX                         128
 #endif
+#define LUAB_TS_MIN                             26
 
 extern u_long luab_env_buf_max;
 extern u_long luab_env_path_max;
@@ -170,6 +171,7 @@ extern u_long luab_env_specname_max;
 extern u_long luab_env_ifname_max;
 extern u_long luab_env_name_max;
 extern u_long luab_env_passwd_max;
+extern u_long luab_env_ts_min;
 
 #define LUAB_SC_ARG_MAX                         _SC_ARG_MAX
 #define LUAB_SC_CHILD_MAX                       _SC_CHILD_MAX

@@ -105,9 +105,9 @@ void     *luab_udata_checkxlink(lua_State *L, int narg, luab_module_t *m,
  * Access functions, [C -> stack].
  */
 
-int  luab_pushudata(lua_State *, luab_module_t *, void *);
-void     luab_rawsetudata(lua_State *, int, luab_module_t *, lua_Integer, void *);
-void     luab_setudata(lua_State *, int, luab_module_t *, const char *, void *);
+int  luab_pushxdata(lua_State *, luab_module_t *, void *);
+void     luab_rawsetxdata(lua_State *, int, luab_module_t *, lua_Integer, void *);
+void     luab_setxdata(lua_State *, int, luab_module_t *, const char *, void *);
 
 #include "luab_buf.h"
 #include "luab_iovec.h"

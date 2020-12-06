@@ -443,7 +443,7 @@ luab_uuid_create(lua_State *L)
 
     uuid_create(&uuid, status);
 
-    return (luab_pushudata(L, luab_xmod(UUID, TYPE, __func__), &uuid));
+    return (luab_pushxdata(L, luab_xmod(UUID, TYPE, __func__), &uuid));
 }
 
 /***
@@ -478,7 +478,7 @@ luab_uuid_create_nil(lua_State *L)
 
     uuid_create_nil(&uuid, status);
 
-    return (luab_pushudata(L, luab_xmod(UUID, TYPE, __func__), &uuid));
+    return (luab_pushxdata(L, luab_xmod(UUID, TYPE, __func__), &uuid));
 }
 
 /*

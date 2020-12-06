@@ -60,7 +60,7 @@ luab_ushrt_create(lua_State *L)
 
     x = (u_short)luab_checkinteger(L, 1, luab_env_ushrt_max);
 
-    return (luab_pushudata(L, luab_xmod(USHRT, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(USHRT, TYPE, __func__), &x));
 }
 
 /***
@@ -83,7 +83,7 @@ luab_uint_create(lua_State *L)
 
     x = (u_int)luab_checkinteger(L, 1, luab_env_uint_max);
 
-    return (luab_pushudata(L, luab_xmod(UINT, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(UINT, TYPE, __func__), &x));
 }
 #endif /* __BSD_VISIBLE */
 
@@ -107,7 +107,7 @@ luab_char_create(lua_State *L)
 
     x = (char)luab_checkinteger(L, 1, luab_env_uchar_max);
 
-    return (luab_pushudata(L, luab_xmod(CHAR, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(CHAR, TYPE, __func__), &x));
 }
 
 /***
@@ -130,7 +130,7 @@ luab_short_create(lua_State *L)
 
     x = (short)luab_checkinteger(L, 1, luab_env_uchar_max);
 
-    return (luab_pushudata(L, luab_xmod(SHORT, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(SHORT, TYPE, __func__), &x));
 }
 
 /***
@@ -153,7 +153,7 @@ luab_int_create(lua_State *L)
 
     x = (int)luab_checkinteger(L, 1, luab_env_uint_max);
 
-    return (luab_pushudata(L, luab_xmod(INT, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(INT, TYPE, __func__), &x));
 }
 
 /***
@@ -176,7 +176,7 @@ luab_long_create(lua_State *L)
 
     x = (long)luab_checkinteger(L, 1, luab_env_long_max);
 
-    return (luab_pushudata(L, luab_xmod(LONG, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(LONG, TYPE, __func__), &x));
 }
 
 /***
@@ -199,7 +199,7 @@ luab_double_create(lua_State *L)
 
     x = (double)luaL_checknumber(L, 1); /* XXX */
 
-    return (luab_pushudata(L, luab_xmod(DOUBLE, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(DOUBLE, TYPE, __func__), &x));
 }
 
 /***
@@ -222,7 +222,7 @@ luab_float_create(lua_State *L)
 
     x = (float)luaL_checknumber(L, 1); /* XXX */
 
-    return (luab_pushudata(L, luab_xmod(FLOAT, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(FLOAT, TYPE, __func__), &x));
 }
 
 /***
@@ -245,7 +245,7 @@ luab_int8_create(lua_State *L)
 
     x = (int8_t)luab_checkinteger(L, 1, luab_env_uchar_max);
 
-    return (luab_pushudata(L, luab_xmod(INT8, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(INT8, TYPE, __func__), &x));
 }
 
 /***
@@ -268,7 +268,7 @@ luab_int16_create(lua_State *L)
 
     x = (int16_t)luab_checkinteger(L, 1, luab_env_ushrt_max);
 
-    return (luab_pushudata(L, luab_xmod(INT16, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(INT16, TYPE, __func__), &x));
 }
 
 /***
@@ -291,7 +291,7 @@ luab_int32_create(lua_State *L)
 
     x = (int32_t)luab_checkinteger(L, 1, luab_env_uint_max);
 
-    return (luab_pushudata(L, luab_xmod(INT32, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(INT32, TYPE, __func__), &x));
 }
 
 /***
@@ -314,7 +314,7 @@ luab_int64_create(lua_State *L)
 
     x = (int64_t)luab_checkinteger(L, 1, luab_env_ullong_max);
 
-    return (luab_pushudata(L, luab_xmod(INT64, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(INT64, TYPE, __func__), &x));
 }
 
 /***
@@ -337,7 +337,7 @@ luab_fpos_create(lua_State *L)
 
     x = (fpos_t)luab_checkinteger(L, 1, luab_env_long_max);
 
-    return (luab_pushudata(L, luab_xmod(INT64, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(INT64, TYPE, __func__), &x));
 }
 
 /***
@@ -360,7 +360,7 @@ luab_gid_create(lua_State *L)
 
     x = (gid_t)luab_checkinteger(L, 1, luab_env_int_max);
 
-    return (luab_pushudata(L, luab_xmod(GID, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(GID, TYPE, __func__), &x));
 }
 
 /***
@@ -383,7 +383,7 @@ luab_off_create(lua_State *L)
 
     x = (off_t)luab_checkinteger(L, 1, luab_env_long_max);
 
-    return (luab_pushudata(L, luab_xmod(OFF, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(OFF, TYPE, __func__), &x));
 }
 
 /***
@@ -406,7 +406,7 @@ luab_size_create(lua_State *L)
 
     x = (size_t)luab_checklinteger(L, 1, 0);
 
-    return (luab_pushudata(L, luab_xmod(SIZE, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(SIZE, TYPE, __func__), &x));
 }
 
 /***
@@ -429,7 +429,7 @@ luab_socklen_create(lua_State *L)
 
     x = (socklen_t)luab_checkinteger(L, 1, luab_env_int_max);
 
-    return (luab_pushudata(L, luab_xmod(SOCKLEN, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(SOCKLEN, TYPE, __func__), &x));
 }
 
 /***
@@ -452,7 +452,7 @@ luab_ssize_create(lua_State *L)
 
     x = (ssize_t)luab_checklinteger(L, 1, 1);
 
-    return (luab_pushudata(L, luab_xmod(SSIZE, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(SSIZE, TYPE, __func__), &x));
 }
 
 /***
@@ -475,7 +475,7 @@ luab_uid_create(lua_State *L)
 
     x = (uid_t)luab_checkinteger(L, 1, luab_env_uid_max);
 
-    return (luab_pushudata(L, luab_xmod(UID, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(UID, TYPE, __func__), &x));
 }
 
 /***
@@ -498,7 +498,7 @@ luab_wchar_create(lua_State *L)
 
     x = (wchar_t)luab_checkinteger(L, 1, luab_env_uint_max);
 
-    return (luab_pushudata(L, luab_xmod(WCHAR, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(WCHAR, TYPE, __func__), &x));
 }
 
 /***
@@ -521,7 +521,7 @@ luab_time_create(lua_State *L)
 
     x = (time_t)luab_checklinteger(L, 1, 1);
 
-    return (luab_pushudata(L, luab_xmod(TIME, TYPE, __func__), &x));
+    return (luab_pushxdata(L, luab_xmod(TIME, TYPE, __func__), &x));
 }
 
 static luab_module_table_t luab_core_atomic_vec[] = {

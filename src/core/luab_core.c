@@ -78,6 +78,10 @@ static luab_sysconf_vec_t luab_param[] = {
         .scv_key = LUAB_SC_NOTSUPP,
         .scv_dflt = LUAB_PASSWD_MAX,
         .scv_val = &luab_env_ifname_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = LUAB_TS_MIN,
+        .scv_val = &luab_env_ts_min,
     },{                                             /* <unistd.h> */
         .scv_key = LUAB_SC_ARG_MAX,
         .scv_dflt = ARG_MAX,

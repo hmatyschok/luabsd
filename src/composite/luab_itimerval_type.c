@@ -68,8 +68,8 @@ itimerval_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((it = (struct itimerval *)arg) != NULL) {
 
-        luab_setudata(L, narg, luab_xmod(TIMEVAL, TYPE, __func__), "it_interval",   &it->it_interval);
-        luab_setudata(L, narg, luab_xmod(TIMEVAL, TYPE, __func__), "it_value",      &it->it_value);
+        luab_setxdata(L, narg, luab_xmod(TIMEVAL, TYPE, __func__), "it_interval",   &it->it_interval);
+        luab_setxdata(L, narg, luab_xmod(TIMEVAL, TYPE, __func__), "it_value",      &it->it_value);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -176,7 +176,7 @@ ITIMERVAL_get_it_interval(lua_State *L)
     it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
     tv = &(it->it_interval);
 
-    return (luab_pushudata(L, luab_xmod(TIMEVAL, TYPE, __func__), tv));
+    return (luab_pushxdata(L, luab_xmod(TIMEVAL, TYPE, __func__), tv));
 }
 
 /* current value */
@@ -230,7 +230,7 @@ ITIMERVAL_get_it_value(lua_State *L)
     it = luab_udata(L, 1, &luab_itimerval_type, struct itimerval *);
     tv = &(it->it_value);
 
-    return (luab_pushudata(L, luab_xmod(TIMEVAL, TYPE, __func__), tv));
+    return (luab_pushxdata(L, luab_xmod(TIMEVAL, TYPE, __func__), tv));
 }
 
 /*
@@ -338,7 +338,7 @@ itimerval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, &luab_itimerval_type, k, &(x[m]));
+                luab_rawsetxdata(L, narg, &luab_itimerval_type, k, &(x[m]));
 
             errno = ENOENT;
         } else

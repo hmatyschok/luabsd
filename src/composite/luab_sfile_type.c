@@ -129,7 +129,7 @@ SFILE_get_table(lua_State *L)
         luab_setinteger(L, -2, "_w",                    fp->_w);
         luab_setinteger(L, -2, "_flags",                fp->_flags);
         luab_setinteger(L, -2, "_file",                 fp->_file);
-        luab_setudata(L, -2, luab_xmod(__SBUF, TYPE, __func__), "_bf",    &(fp->_bf));
+        luab_setxdata(L, -2, luab_xmod(__SBUF, TYPE, __func__), "_bf",    &(fp->_bf));
         luab_setfstring(L, -2, "_cookie", "(%p)",       fp->_cookie);
         lua_pushvalue(L, -1);
     }
@@ -322,7 +322,7 @@ SFILE_bf(lua_State *L)
         v = NULL;
         m = NULL;
     }
-    return (luab_pushudata(L, luab_xmod(__SBUF, TYPE, __func__), v));
+    return (luab_pushxdata(L, luab_xmod(__SBUF, TYPE, __func__), v));
 }
 
 /***

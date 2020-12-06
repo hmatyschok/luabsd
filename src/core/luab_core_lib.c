@@ -549,7 +549,7 @@ luab_core_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
     } else
         arg = NULL;
 
-    return (luab_pushudata(L, m0, arg));
+    return (luab_pushxdata(L, m0, arg));
 }
 
 int

@@ -93,7 +93,7 @@ luab_getgrent(lua_State *L)
     m = luab_xmod(GROUP, TYPE, __func__);
 
     if ((grp = getgrent()) != NULL)
-        status = luab_pushudata(L, m, grp);
+        status = luab_pushxdata(L, m, grp);
     else
         status = luab_pushnil(L);
 
@@ -126,7 +126,7 @@ luab_getgrgid(lua_State *L)
     gid = luab_checkinteger(L, 1, luab_env_int_max);
 
     if ((grp = getgrgid(gid)) != NULL)
-        status = luab_pushudata(L, m, grp);
+        status = luab_pushxdata(L, m, grp);
     else
         status = luab_pushnil(L);
 
@@ -158,7 +158,7 @@ luab_getgrnam(lua_State *L)
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
 
     if ((grp = getgrnam(name)) != NULL)
-        status = luab_pushudata(L, m, grp);
+        status = luab_pushxdata(L, m, grp);
     else
         status = luab_pushnil(L);
 

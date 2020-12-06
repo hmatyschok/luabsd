@@ -189,7 +189,7 @@ luab_div(lua_State *L)
 
     data = div(num, denom);
 
-    return (luab_pushudata(L, luab_xmod(DIV, TYPE, __func__), &data));
+    return (luab_pushxdata(L, luab_xmod(DIV, TYPE, __func__), &data));
 }
 
 /***
@@ -294,7 +294,7 @@ luab_ldiv(lua_State *L)
 
     data = ldiv(num, denom);
 
-    return (luab_pushudata(L, luab_xmod(LINGER, TYPE, __func__), &data));
+    return (luab_pushxdata(L, luab_xmod(LINGER, TYPE, __func__), &data));
 }
 
 /***
@@ -780,7 +780,7 @@ luab_lldiv(lua_State *L)
 
     data = lldiv(num, denom);
 
-    return (luab_pushudata(L, luab_xmod(LLDIV, TYPE, __func__), &data));
+    return (luab_pushxdata(L, luab_xmod(LLDIV, TYPE, __func__), &data));
 }
 
 /***

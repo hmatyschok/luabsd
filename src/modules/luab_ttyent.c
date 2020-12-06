@@ -64,7 +64,7 @@ luab_getttyent(lua_State *L)
     else
         m = NULL;
 
-     return (luab_pushudata(L, m, typ));
+     return (luab_pushxdata(L, m, typ));
 }
 
 /***
@@ -94,7 +94,7 @@ luab_getttynam(lua_State *L)
     else
         m = NULL;
 
-    return (luab_pushudata(L, m, typ));
+    return (luab_pushxdata(L, m, typ));
 }
 
 /***

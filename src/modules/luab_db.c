@@ -76,7 +76,7 @@ luab_dbopen(lua_State *L)
     dbp.dbp_db = dbopen(dbp.dbp_file, dbp.dbp_flags, dbp.dbp_mode,
         dbp.dbp_type, NULL);
 
-    return (luab_pushudata(L, m, &dbp));
+    return (luab_pushxdata(L, m, &dbp));
 }
 
 /*

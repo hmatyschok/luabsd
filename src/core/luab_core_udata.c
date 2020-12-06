@@ -306,7 +306,7 @@ luab_udata_checkxlink(lua_State *L, int narg, luab_module_t *m,
  */
 
 int
-luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
+luab_pushxdata(lua_State *L, luab_module_t *m, void *arg)
 {
     int up_call;
     int status;
@@ -341,7 +341,7 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
  */
 
 void
-luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
+luab_rawsetxdata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *v)
 {
     if (m != NULL) {
         if (m->m_create != NULL && v != NULL) {
@@ -353,7 +353,7 @@ luab_rawsetudata(lua_State *L, int narg, luab_module_t *m, lua_Integer k, void *
 }
 
 void
-luab_setudata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
+luab_setxdata(lua_State *L, int narg, luab_module_t *m, const char *k, void *v)
 {
     if (m != NULL && k != NULL) {
         if (m->m_create != NULL && v != NULL) {

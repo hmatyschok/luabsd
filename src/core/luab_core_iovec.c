@@ -98,11 +98,11 @@ luab_iovec_freetable(luab_table_t *tbl)
  *
  *  #3: If constraints are viaolated, NULL will be returned and call of
  *
- *       (a) luab_pushudata(3),
+ *       (a) luab_pushxdata(3),
  *
- *       (b) luab_rawsetudata(3) or
+ *       (b) luab_rawsetxdata(3) or
  *
- *       (c) luab_setudata(3)
+ *       (c) luab_setxdata(3)
  *
  *     fails implecitely.
  */
@@ -188,7 +188,7 @@ luab_iovec_pushxdata(lua_State *L, void *v, size_t len, size_t max_len)
     luab_module_t *m;
 
     m = luab_iovec_param_init(&mpi, v, len, max_len);
-    return (luab_pushudata(L, m, &mpi));
+    return (luab_pushxdata(L, m, &mpi));
 }
 
 /*
@@ -202,7 +202,7 @@ luab_iovec_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t le
     luab_module_t *m;
 
     m = luab_iovec_param_init(&mpi, v, len, len);
-    luab_rawsetudata(L, narg, m, k, &mpi);
+    luab_rawsetxdata(L, narg, m, k, &mpi);
 }
 
 void
@@ -212,7 +212,7 @@ luab_iovec_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
     luab_module_t *m;
 
     m = luab_iovec_param_init(&mpi, v, len, len);
-    luab_setudata(L, narg, m, k, &mpi);
+    luab_setxdata(L, narg, m, k, &mpi);
 }
 
 luab_table_t *

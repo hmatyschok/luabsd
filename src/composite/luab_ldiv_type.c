@@ -272,7 +272,7 @@ ldiv_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetudata(L, narg, &luab_ldiv_type, k, &(x[m]));
+                luab_rawsetxdata(L, narg, &luab_ldiv_type, k, &(x[m]));
 
             errno = ENOENT;
         } else
