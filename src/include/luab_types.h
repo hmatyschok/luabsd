@@ -166,6 +166,7 @@ typedef enum luab_type {
     LUAB_SSIZE_IDX,
     LUAB_UID_IDX,
     LUAB_WCHAR_IDX,
+    LUAB_TIME_IDX,
 
     /* composite data types */
     LUAB_CLOCKINFO_IDX,
@@ -302,6 +303,9 @@ extern luab_module_vec_t luab_typevec[];
 
 #define LUAB_WCHAR_TYPE_ID                  1605963183
 #define LUAB_WCHAR_TYPE                     "WCHAR*"
+
+#define LUAB_TIME_TYPE_ID                   1607255289
+#define LUAB_TIME_TYPE                      "TIME*"
 
 /*
  * Set of composite data types.

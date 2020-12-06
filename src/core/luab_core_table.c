@@ -152,7 +152,7 @@ luab_table_allocnil(size_t n, size_t sz, luab_id_t id)
     luab_table_t *tbl;
 
     if ((tbl = luab_core_alloc(1, sizeof(luab_table_t))) != NULL) {
-    
+
         if ((n * sz) > 0) {
 
             /* sentinel, (n + 1) := LUAB_TABLE_XS_FLAG */

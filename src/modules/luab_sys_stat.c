@@ -745,6 +745,8 @@ luab_stat(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(STAT, TYPE, __func__);
+
     path = luab_checklstring(L, 1, luab_env_path_max, NULL);
     sb = luab_udata(L, 2, m, struct stat *);
 

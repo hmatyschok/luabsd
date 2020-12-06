@@ -74,6 +74,10 @@ static luab_sysconf_vec_t luab_param[] = {
         .scv_key = LUAB_SC_NOTSUPP,
         .scv_dflt = LUAB_PASSWD_MAX,
         .scv_val = &luab_env_passwd_max,
+    },{
+        .scv_key = LUAB_SC_NOTSUPP,
+        .scv_dflt = LUAB_PASSWD_MAX,
+        .scv_val = &luab_env_ifname_max,
     },{                                             /* <unistd.h> */
         .scv_key = LUAB_SC_ARG_MAX,
         .scv_dflt = ARG_MAX,
@@ -625,9 +629,13 @@ luab_core_newmetatable(lua_State *L, int narg, luab_module_t *m)
 {
     if (m != NULL) {
         luaL_newmetatable(L, m->m_name);
-        lua_pushvalue(L, -1);
-        lua_setfield(L, -2, "__index");
 
+        if (narg < 0)
+            lua_pushvalue(L, narg + 1);
+        else
+            lua_pushvalue(L, narg - 1);
+
+        lua_setfield(L, narg, "__index");
         luab_core_populate(L, narg, m);
 
         lua_pop(L, 1);
@@ -703,6 +711,9 @@ static luab_module_vec_t luab_sys_vec[] = {
 static luab_module_vec_t luab_core_vec[] = {
     {
         .mv_mod = &luab_core_lib,
+        .mv_init = luab_core_newtable,
+    },{
+        .mv_mod = &luab_core_atomic_lib,
         .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_db_lib,
@@ -837,6 +848,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_wchar_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_WCHAR_IDX,
+    },{
+        .mv_mod = &luab_time_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_TIME_IDX,
     },{                                     /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,

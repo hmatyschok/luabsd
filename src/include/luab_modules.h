@@ -60,6 +60,7 @@ extern luab_module_t luab_ssize_type;
 extern luab_module_t luab_uid_type;
 
 extern luab_module_t luab_wchar_type;
+extern luab_module_t luab_time_type;
 
 /*
  * Set of composite data types.
@@ -140,6 +141,7 @@ extern luab_module_t luab_sys_reboot_lib;
 extern luab_module_t luab_sys_socket_lib;
 
 extern luab_module_t luab_core_lib;
+extern luab_module_t luab_core_atomic_lib;  /* XXX <core/atomic> */
 
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_dirent_lib;

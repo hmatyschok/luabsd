@@ -4,6 +4,8 @@
 SRCS+=  luab_core.c
 SRCS+=  luab_core_buf.c
 SRCS+=  luab_core_env.c
+
+SRCS+=  luab_core_atomic.c
 SRCS+=  luab_core_lib.c
 
 SRCS+=  luab_core_table.c
