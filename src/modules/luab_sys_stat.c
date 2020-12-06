@@ -381,7 +381,6 @@ luab_futimens(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     m = luab_xmod(TIMESPEC, TYPE, __func__);
-
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
 
     if (lua_isnil(L, 2) != 0)
@@ -491,14 +490,16 @@ luab_utimensat(lua_State *L)
 static int
 luab_fstat(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     struct stat *sb;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    sb = luab_udata(L, 2, luab_xmod(STAT, TYPE, __func__), struct stat *);
+    sb = luab_udata(L, 2, m, struct stat *);
 
     status = fstat(fd, sb);
 
@@ -609,14 +610,16 @@ luab_lchmod(lua_State *L)
 static int
 luab_lstat(lua_State *L)
 {
+    luab_module_t *m;
     const char *path;
     struct stat *sb;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     path = luab_checklstring(L, 1, luab_env_path_max, NULL);
-    sb = luab_udata(L, 2, luab_xmod(STAT, TYPE, __func__), struct stat *);
+    sb = luab_udata(L, 2, m, struct stat *);
 
     status = lstat(path, sb);
 
@@ -735,6 +738,7 @@ luab_mknod(lua_State *L)
 static int
 luab_stat(lua_State *L)
 {
+    luab_module_t *m;
     const char *path;
     struct stat *sb;
     int status;
@@ -742,7 +746,7 @@ luab_stat(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     path = luab_checklstring(L, 1, luab_env_path_max, NULL);
-    sb = luab_udata(L, 2, luab_xmod(STAT, TYPE, __func__), struct stat *);
+    sb = luab_udata(L, 2, m, struct stat *);
 
     status = stat(path, sb);
 
@@ -806,6 +810,7 @@ luab_umask(lua_State *L)
 static int
 luab_fstatat(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     const char *path;
     struct stat *sb;
@@ -814,9 +819,11 @@ luab_fstatat(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(STAT, TYPE, __func__);
+
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     path = luab_checklstring(L, 2, luab_env_path_max, NULL);
-    sb = luab_udata(L, 3, luab_xmod(STAT, TYPE, __func__), struct stat *);
+    sb = luab_udata(L, 3, m, struct stat *);
     flag = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     status = fstatat(fd, path, sb, flag);

@@ -58,14 +58,17 @@ extern luab_module_t luab_sys_uio_lib;
 static int
 luab_readv(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
 
     (void)luab_core_checkmaxargs(L, 3);
 
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    buf = luab_udata(L, 2, m, luab_iovec_t *);
     iovcnt = (size_t)luab_checklinteger(L, 3, 0);
 
     return (luab_iovec_readv(L, fd, buf, iovcnt));
@@ -87,14 +90,17 @@ luab_readv(lua_State *L)
 static int
 luab_writev(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
 
     (void)luab_core_checkmaxargs(L, 3);
 
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    buf = luab_udata(L, 2, m, luab_iovec_t *);
     iovcnt = (size_t)luab_checklinteger(L, 3, 0);
 
     return (luab_iovec_writev(L, fd, buf, iovcnt));
@@ -118,6 +124,7 @@ luab_writev(lua_State *L)
 static int
 luab_preadv(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
@@ -125,8 +132,10 @@ luab_preadv(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    buf = luab_udata(L, 2, m, luab_iovec_t *);
     iovcnt = (size_t)luab_checklinteger(L, 3, 0);
     offset = (off_t)luab_checkinteger(L, 4, luab_env_long_max);
 
@@ -150,6 +159,7 @@ luab_preadv(lua_State *L)
 static int
 luab_pwritev(lua_State *L)
 {
+    luab_module_t *m;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
@@ -157,8 +167,10 @@ luab_pwritev(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    buf = luab_udata(L, 2, m, luab_iovec_t *);
     iovcnt = (size_t)luab_checklinteger(L, 3, 0);
     offset = (off_t)luab_checkinteger(L, 4, luab_env_long_max);
 

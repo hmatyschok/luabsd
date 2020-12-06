@@ -665,14 +665,16 @@ luab_nmount(lua_State *L)
 static int
 luab_statfs(lua_State *L)
 {
+    luab_module_t *m;
     const char *path;
     struct statfs *buf;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(STATFS, TYPE, __func__);
     path = luab_checklstring(L, 1, luab_env_path_max, NULL);
-    buf = luab_udata(L, 2, luab_xmod(STATFS, TYPE, __func__), struct statfs *);
+    buf = luab_udata(L, 2, m, struct statfs *);
 
     status = statfs(path, buf);
 
@@ -739,14 +741,16 @@ luab_unmount(lua_State *L)
 static int
 luab_getvfsbyname(lua_State *L)
 {
+    luab_module_t *m;
     const char *name;
     struct xvfsconf *vfc;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(XVFSCONF, TYPE, __func__);
     name = luab_checklstring(L, 1, MFSNAMELEN, NULL);   /* XXX */
-    vfc = luab_udata(L, 2, luab_xmod(XVFSCONF, TYPE, __func__), struct xvfsconf *);
+    vfc = luab_udata(L, 2, m, struct xvfsconf *);
 
     status = getvfsbyname(name, vfc);
     return (luab_pushxinteger(L, status));

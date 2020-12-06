@@ -59,12 +59,14 @@ extern luab_module_t luab_sys_jail_lib;
 static int
 luab_jail(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jp = luab_udata(L, 1, luab_xmod(JAIL, TYPE, __func__), struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     status = jail(jp);
 
     return (luab_pushxinteger(L, status));
