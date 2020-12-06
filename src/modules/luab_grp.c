@@ -84,13 +84,16 @@ luab_endgrent(lua_State *L)
 static int
 luab_getgrent(lua_State *L)
 {
+    luab_module_t *m;
     struct group *grp;
     int status;
 
     (void)luab_core_checkmaxargs(L, 0);
 
+    m = luab_xmod(GROUP, TYPE, __func__);
+
     if ((grp = getgrent()) != NULL)
-        status = luab_pushudata(L, luab_xmod(GROUP, TYPE, __func__), grp);
+        status = luab_pushudata(L, m, grp);
     else
         status = luab_pushnil(L);
 
@@ -112,16 +115,18 @@ luab_getgrent(lua_State *L)
 static int
 luab_getgrgid(lua_State *L)
 {
+    luab_module_t *m;
     gid_t gid;
     struct group *grp;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(GROUP, TYPE, __func__);
     gid = luab_checkinteger(L, 1, luab_env_int_max);
 
     if ((grp = getgrgid(gid)) != NULL)
-        status = luab_pushudata(L, luab_xmod(GROUP, TYPE, __func__), grp);
+        status = luab_pushudata(L, m, grp);
     else
         status = luab_pushnil(L);
 
@@ -142,16 +147,18 @@ luab_getgrgid(lua_State *L)
 static int
 luab_getgrnam(lua_State *L)
 {
+    luab_module_t *m;
     const char *name;
     struct group *grp;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(GROUP, TYPE, __func__);
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
 
     if ((grp = getgrnam(name)) != NULL)
-        status = luab_pushudata(L, luab_xmod(GROUP, TYPE, __func__), grp);
+        status = luab_pushudata(L, m, grp);
     else
         status = luab_pushnil(L);
 
@@ -205,14 +212,16 @@ luab_group_from_gid(lua_State *L)
 static int
 luab_gid_from_group(lua_State *L)
 {
+    luab_module_t *m;
     const char *name;
     gid_t *gid;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(GID, TYPE, __func__);
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
-    gid = luab_udata(L, 2, luab_xmod(GID, TYPE, __func__), gid_t *);
+    gid = luab_udata(L, 2, m, gid_t *);
 
     status = gid_from_group(name, gid);
     return (luab_pushxinteger(L, status));
@@ -261,6 +270,7 @@ luab_setgrent(lua_State *L)
 static int
 luab_getgrgid_r(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     gid_t gid;
     struct group *grp;
     luab_iovec_t *buf;
@@ -272,11 +282,14 @@ luab_getgrgid_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
+    m0 = luab_xmod(GROUP, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
     gid = luab_checkinteger(L, 1, luab_env_int_max);
-    grp = luab_udata(L, 2, luab_xmod(GROUP, TYPE, __func__), struct group *);
-    buf = luab_udata(L, 3, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    grp = luab_udata(L, 2, m0, struct group *);
+    buf = luab_udata(L, 3, m1, luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4, 0);
-    ret = luab_udata(L, 5, luab_xmod(GROUP, TYPE, __func__), struct group *);
+    ret = luab_udata(L, 5, m0, struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -322,6 +335,7 @@ luab_getgrgid_r(lua_State *L)
 static int
 luab_getgrnam_r(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     const char *name;
     struct group *grp;
     luab_iovec_t *buf;
@@ -333,11 +347,14 @@ luab_getgrnam_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
+    m0 = luab_xmod(GROUP, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
-    grp = luab_udata(L, 2, luab_xmod(GROUP, TYPE, __func__), struct group *);
-    buf = luab_udata(L, 3, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    grp = luab_udata(L, 2, m0, struct group *);
+    buf = luab_udata(L, 3, m1, luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4, 0);
-    ret = luab_udata(L, 5, luab_xmod(GROUP, TYPE, __func__), struct group *);
+    ret = luab_udata(L, 5, m0, struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -384,6 +401,7 @@ luab_getgrnam_r(lua_State *L)
 static int
 luab_getgrent_r(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct group *grp;
     luab_iovec_t *buf;
     size_t bufsize;
@@ -394,10 +412,13 @@ luab_getgrent_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    grp = luab_udata(L, 1, luab_xmod(GROUP, TYPE, __func__), struct group *);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    m0 = luab_xmod(GROUP, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
+    grp = luab_udata(L, 1, m0, struct group *);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 3, 0);
-    ret = luab_udata(L, 4, luab_xmod(GROUP, TYPE, __func__), struct group *);
+    ret = luab_udata(L, 4, m0, struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&

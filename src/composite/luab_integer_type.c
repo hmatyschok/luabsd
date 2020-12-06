@@ -259,10 +259,10 @@ integer_checktable(lua_State *L, int narg)
     if ((tbl = luab_table_newvectornil(L, narg, &luab_integer_type)) != NULL) {
 
         if (((x = (luab_primitive_t *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+            for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
                 if (lua_next(L, narg) != 0) {
 
@@ -293,10 +293,10 @@ integer_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (luab_primitive_t *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
+            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
                 luab_rawsetudata(L, narg, &luab_integer_type, k, &(x[m]));
 
             errno = ENOENT;

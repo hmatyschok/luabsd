@@ -142,19 +142,22 @@ static int
 luab_fcntl(lua_State *L)
 {
     int narg;
+    luab_module_t *m;
     int fd, cmd, arg, status;
     struct flock *argp;
 
     narg = luab_core_checkmaxargs(L, 3);
+    m = luab_xmod(FLOCK, TYPE, __func__);
 
     fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     cmd = (int)luab_checkinteger(L, 2, luab_env_int_max);
+
     arg = 0;
     argp = NULL;
 
     if (narg == 3) {
         if (lua_type(L, narg) == LUA_TUSERDATA)
-            argp = luab_udata(L, narg, luab_xmod(FLOCK, TYPE, __func__), struct flock *);
+            argp = luab_udata(L, narg, m, struct flock *);
         else
             arg = luab_checkinteger(L, narg, luab_env_int_max);
     }

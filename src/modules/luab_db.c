@@ -61,9 +61,12 @@ extern luab_module_t luab_db_lib;
 static int
 luab_dbopen(lua_State *L)
 {
+    luab_module_t *m;
     luab_db_param_t dbp;
 
     (void)luab_core_checkmaxargs(L, 4);
+
+    m = luab_xmod(DB, TYPE, __func__);
 
     dbp.dbp_file = luab_islstring(L, 1, luab_env_path_max);
     dbp.dbp_flags = luab_checkinteger(L, 2, luab_env_int_max);
@@ -73,7 +76,7 @@ luab_dbopen(lua_State *L)
     dbp.dbp_db = dbopen(dbp.dbp_file, dbp.dbp_flags, dbp.dbp_mode,
         dbp.dbp_type, NULL);
 
-    return (luab_pushudata(L, luab_xmod(DB, TYPE, __func__), &dbp));
+    return (luab_pushudata(L, m, &dbp));
 }
 
 /*
@@ -94,7 +97,12 @@ luab_dbopen(lua_State *L)
 static int
 luab_dbt_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(DBT, TYPE, __func__), luab_xmod(IOVEC, TYPE, __func__)));
+    luab_module_t *m0, *m1;
+
+    m0 = luab_xmod(DBT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
+    return (luab_core_create(L, 1, m0, m1));
 }
 #endif /* __BSD_VISIBLE */
 

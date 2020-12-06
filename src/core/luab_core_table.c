@@ -147,23 +147,18 @@ luab_table_argerror(lua_State *L, int narg, luab_table_t *tbl, int up_call)
  */
 
 luab_table_t *
-luab_table_allocnil(size_t m, size_t sz, luab_id_t id)
+luab_table_allocnil(size_t n, size_t sz, luab_id_t id)
 {
     luab_table_t *tbl;
-    size_t len, n;
 
-    if ((tbl = malloc(sizeof(luab_table_t))) != NULL) {
-        (void)memset_s(tbl, sizeof(*tbl), 0, sizeof(*tbl));
-
-        if (m > 0 && sz > 0) {
-            n = (m + 1);
-            len = (n * sz);
+    if ((tbl = luab_core_alloc(1, sizeof(luab_table_t))) != NULL) {
+    
+        if ((n * sz) > 0) {
 
             /* sentinel, (n + 1) := LUAB_TABLE_XS_FLAG */
-            if ((tbl->tbl_vec = malloc(len)) != NULL) {
-                (void)memset_s(tbl->tbl_vec, len, 0, len);
+            if ((tbl->tbl_vec = luab_core_alloc(n, sz)) != NULL) {
 #if 0
-                luab_table_xsentinel(vec, n, sz);
+                luab_table_xsentinel(vec, n + 1, sz);
 #endif
                 tbl->tbl_card = n;
                 tbl->tbl_sz = sz;
@@ -294,7 +289,7 @@ luab_table_checkargv(lua_State *L, int narg)
         argv = (void *)(tbl->tbl_vec);
         x = (void *)(intptr_t)(argv);
 
-        for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+        for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
             if (lua_next(L, narg) != 0) {
                 /*
@@ -330,7 +325,7 @@ luab_table_toxargp(lua_State *L, int narg)
         argv = (void *)(tbl->tbl_vec);
         x = (void *)(intptr_t)(argv);
 
-        for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+        for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
             if (lua_next(L, narg) != 0) {
                 /*
@@ -380,7 +375,7 @@ luab_table_checklxdata(lua_State *L, int narg, luab_module_t *m, size_t nmax)
 
         if (tbl->tbl_vec != NULL && tbl->tbl_card > 0) {
 
-            if ((tbl->tbl_card - 1) != nmax)
+            if (tbl->tbl_card != nmax)
                 luab_table_argerror(L, narg, tbl, ERANGE);
         } else
             luab_table_argerror(L, narg, tbl, ERANGE);
@@ -397,7 +392,7 @@ luab_table_tolxargp(lua_State *L, int narg, size_t nmax)
 
         if (tbl->tbl_vec != NULL && tbl->tbl_card > 0) {
 
-            if ((tbl->tbl_card - 1) != nmax)
+            if (tbl->tbl_card != nmax)
                 luab_table_argerror(L, narg, tbl, ERANGE);
         } else
             luab_table_argerror(L, narg, tbl, ERANGE);

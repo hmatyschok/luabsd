@@ -56,7 +56,7 @@ luab_table_checkmmsghdr(lua_State *L, int narg)
 
         x = (struct mmsghdr *)(tbl->tbl_vec);
 
-        for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+        for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
             if (lua_next(L, narg) != 0) {
                 /*

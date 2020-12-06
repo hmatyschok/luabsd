@@ -52,7 +52,7 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
             (void)memset_s(ud, m->m_len, 0, m->m_len);
 
             if (m->m_init != NULL && arg != NULL)
-                (*m->m_init)(ud, arg);
+                (*m->m_init)(ud, arg);  /* XXX upcall */
 
             ud->ud_m = m;
             ud->ud_ts = time(NULL);
@@ -322,11 +322,11 @@ luab_pushudata(lua_State *L, luab_module_t *m, void *arg)
             else
                 status = luab_pushnil(L);
         } else {
-            errno = (up_call != 0) ? up_call : ENXIO;
+            errno = ENXIO;
             status = luab_pushnil(L);
         }
     } else {
-        errno = (up_call != 0) ? up_call : ENOENT;
+        errno = ENOENT;
         status = luab_pushnil(L);
     }
     return (status);

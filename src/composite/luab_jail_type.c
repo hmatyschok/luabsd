@@ -102,7 +102,7 @@ jail_ip4_addr(struct jail *jp, luab_table_t *tbl)
 {
     if (tbl != NULL) {
         jp->ip4 = (struct in_addr *)(tbl->tbl_vec);
-        jp->ip4s = (tbl->tbl_card - 1);
+        jp->ip4s = tbl->tbl_card;
     } else {
         jp->ip4 = NULL;
         jp->ip4s = 0;
@@ -115,7 +115,7 @@ jail_ip6_addr(struct jail *jp, luab_table_t *tbl)
 {
     if (tbl != NULL) {
         jp->ip6 = (struct in6_addr *)(tbl->tbl_vec);
-        jp->ip6s = (tbl->tbl_card - 1);
+        jp->ip6s = tbl->tbl_card;
     } else {
         jp->ip6 = NULL;
         jp->ip6s = 0;
@@ -717,10 +717,10 @@ jail_checktable(lua_State *L, int narg)
     if ((tbl = luab_table_newvectornil(L, narg, &luab_jail_type)) != NULL) {
 
         if (((x = (struct jail *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+            for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
                 if (lua_next(L, narg) != 0) {
 
@@ -751,10 +751,10 @@ jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct jail *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
+            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
                 luab_rawsetudata(L, narg, &luab_jail_type, k, &(x[m]));
 
             errno = ENOENT;

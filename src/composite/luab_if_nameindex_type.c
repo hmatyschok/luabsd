@@ -47,15 +47,14 @@ extern luab_module_t luab_if_nameindex_type;
  * Attributes are immutable.
  */
 typedef struct luab_if_nameindex {
-    luab_udata_t    ud_softc;
-    u_int   if_index;
-    char    if_name[IFNAMSIZ];
+    luab_udata_t            ud_softc;
+    struct if_nameindex     ud_ifni;
 } luab_if_nameindex_t;
 
 #define luab_new_if_nameindex(L, arg) \
     ((luab_if_nameindex_t *)luab_newudata(L, &luab_if_nameindex_type, (arg)))
 #define luab_to_if_nameindex(L, narg) \
-    ((struct if_nameindex *)luab_toudata((L), (narg), &luab_if_nameindex_type))
+    (luab_todata((L), (narg), &luab_if_nameindex_type, luab_if_nameindex_t *))
 
 /*
  * Subr.
@@ -156,7 +155,7 @@ IF_NAMEINDEX_if_index(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage name [, err, msg ]= if_nameindex:if_name()
+ * @usage name [, err, msg ] = if_nameindex:if_name()
  */
 static int
 IF_NAMEINDEX_if_name(lua_State *L)
@@ -179,6 +178,15 @@ IF_NAMEINDEX_if_name(lua_State *L)
 static int
 IF_NAMEINDEX_gc(lua_State *L)
 {
+    struct if_nameindex *ifni;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    ifni = luab_udata(L, 1, &luab_if_nameindex_type, struct if_nameindex *);
+
+    if (ifni->if_name != NULL)
+        luab_core_freestr(ifni->if_name);
+
     return (luab_core_gc(L, 1, &luab_if_nameindex_type));
 }
 
@@ -221,19 +229,29 @@ if_nameindex_init(void *ud, void *arg)
     luab_if_nameindex_t *self;
     struct if_nameindex *ifni;
     size_t len;
+    caddr_t dp;
 
     if (((self = (luab_if_nameindex_t *)ud) != NULL) &&
         ((ifni = (struct if_nameindex *)arg) != NULL)) {
-        self->if_index = ifni->if_index;
-        len = strnlen(ifni->if_name, IFNAMSIZ);
-        (void)memmove(self->if_name, ifni->if_name, len);
+        self->ud_ifni.if_index = ifni->if_index;
+
+        if ((len = strnlen(ifni->if_name, luab_env_ifname_max)) > 0) {
+
+            dp = luab_core_alloc(luab_env_ifname_max, sizeof(char));
+
+            if ((self->ud_ifni.if_name = dp) != NULL)
+                (void)memmove(self->ud_ifni.if_name, ifni->if_name, len);
+        }
     }
 }
 
 static void *
 if_nameindex_udata(lua_State *L, int narg)
 {
-    return (luab_to_if_nameindex(L, narg));
+    luab_if_nameindex_t *self;
+    
+    self = luab_to_if_nameindex(L, narg);
+    return (&self->ud_ifni);
 }
 
 static luab_table_t *
@@ -246,10 +264,10 @@ if_nameindex_checktable(lua_State *L, int narg)
     if ((tbl = luab_table_newvectornil(L, narg, &luab_if_nameindex_type)) != NULL) {
 
         if (((x = (struct if_nameindex *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+            for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
                 if (lua_next(L, narg) != 0) {
 
@@ -280,10 +298,10 @@ if_nameindex_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int c
     if (tbl != NULL) {
 
         if (((x = (struct if_nameindex *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
+            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
                 luab_rawsetudata(L, narg, &luab_if_nameindex_type, k, &(x[m]));
 
             errno = ENOENT;

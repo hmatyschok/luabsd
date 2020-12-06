@@ -121,7 +121,7 @@ luab_jail_set(lua_State *L)
     if (tbl != NULL) {
         iov = (struct iovec *)(tbl->tbl_vec);
 
-        if ((tbl->tbl_card - 1) == niov && niov > 0) {
+        if (tbl->tbl_card == niov && niov > 0) {
             status = jail_set(iov, niov, flags);
             luab_table_pushxdata(L, 1, m, tbl, 0, 1);
         } else {
@@ -186,7 +186,7 @@ luab_jail_get(lua_State *L)
     if (tbl != NULL) {
         iov = (struct iovec *)(tbl->tbl_vec);
 
-        if ((tbl->tbl_card - 1) == niov && niov > 0) {
+        if (tbl->tbl_card == niov && niov > 0) {
             status = jail_get(iov, niov, flags);
             luab_table_pushxdata(L, 1, m, tbl, 0, 1);
         } else {

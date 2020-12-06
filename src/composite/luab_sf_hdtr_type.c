@@ -96,7 +96,7 @@ sf_hdtr_hdr(struct sf_hdtr *hdtr, luab_table_t *tbl)
 {
     if (tbl != NULL) {
         hdtr->headers = (struct iovec *)(tbl->tbl_vec);
-        hdtr->hdr_cnt = (tbl->tbl_card - 1);
+        hdtr->hdr_cnt = tbl->tbl_card;
     } else {
         hdtr->headers = NULL;
         hdtr->hdr_cnt = 0;
@@ -109,7 +109,7 @@ sf_hdtr_trl(struct sf_hdtr *hdtr, luab_table_t *tbl)
 {
     if (tbl != NULL) {
         hdtr->trailers = (struct iovec *)(tbl->tbl_vec);
-        hdtr->trl_cnt = (tbl->tbl_card - 1);
+        hdtr->trl_cnt = tbl->tbl_card;
     } else {
         hdtr->trailers = NULL;
         hdtr->trl_cnt = 0;
@@ -497,10 +497,10 @@ sf_hdtr_checktable(lua_State *L, int narg)
     if ((tbl = luab_table_newvectornil(L, narg, &luab_sf_hdtr_type)) != NULL) {
 
         if (((x = (struct sf_hdtr *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+            for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
                 if (lua_next(L, narg) != 0) {
 
@@ -531,10 +531,10 @@ sf_hdtr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct sf_hdtr *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
+            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
                 luab_rawsetudata(L, narg, &luab_sf_hdtr_type, k, &(x[m]));
 
             errno = ENOENT;

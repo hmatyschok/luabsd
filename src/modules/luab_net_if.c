@@ -59,6 +59,7 @@ extern luab_module_t luab_net_if_lib;
 static int
 luab_if_indextoname(lua_State *L)
 {
+    luab_module_t *m;
     u_int ifindex;
     luab_iovec_t *buf;
     caddr_t bp;
@@ -66,8 +67,10 @@ luab_if_indextoname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
     ifindex = (u_int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    buf = luab_udata(L, 2, m, luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -100,38 +103,39 @@ luab_if_indextoname(lua_State *L)
  *
  * @function if_nameindex
  *
- * @param ifni              Empty Table, (LUA_TTABLE), but filled by
- *                          (LUA_TUSERDATA(IF_NAMEINDEX)), if
- *                          call was performed successfully.
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  * @usage ret [, err, msg ] = bsd.net.if_nameindex(ifni)
  */
 static int
 luab_if_nameindex(lua_State *L)
 {
+    luab_module_t *m;
+    luab_table_t *tbl;
     struct if_nameindex *vec;
     struct if_nameindex *ifni;
-    int status;
+    size_t card;
 
-    (void)luab_core_checkmaxargs(L, 1);
-    (void)luab_checkltable(L, 1, 0);
+    (void)luab_core_checkmaxargs(L, 0);
+
+    m = luab_xmod(IF_NAMEINDEX, TYPE, __func__);
 
     if ((vec = if_nameindex()) != NULL) {
-        lua_pushnil(L);
 
-        for (ifni = vec; ifni->if_name != NULL; ifni++)
-            luab_rawsetudata(L, 1, luab_xmod(IF_NAMEINDEX, TYPE, __func__), ifni->if_index, ifni);
+        ifni = vec;
+        do {
+            card = ifni->if_index;
+            ifni++;
+        } while (ifni->if_name != NULL);
 
-        lua_pop(L, 0);
+        if ((tbl = (*m->m_alloc_tbl)(vec, card)) != NULL)
+            luab_table_pushxdata(L, -2, m, tbl, 1, 1);
 
-        free(vec);
-        status = 0;
+        if_freenameindex(vec);
     } else
-        status = -1;
+        errno = (errno != 0) ? errno : ERANGE;
 
-    return (luab_pushxinteger(L, status));
+    return (luab_table_pusherr(L, errno, 1));
 }
 
 /***

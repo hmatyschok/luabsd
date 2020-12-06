@@ -293,10 +293,10 @@ bintime_checktable(lua_State *L, int narg)
     if ((tbl = luab_table_newvectornil(L, narg, &luab_bintime_type)) != NULL) {
 
         if (((x = (struct bintime *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = (tbl->tbl_card - 1); m < n; m++) {
+            for (m = 0, n = tbl->tbl_card; m < n; m++) {
 
                 if (lua_next(L, narg) != 0) {
 
@@ -327,10 +327,10 @@ bintime_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
     if (tbl != NULL) {
 
         if (((x = (struct bintime *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 1)) {
+            (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = (tbl->tbl_card - 1), k = 1; m < n; m++, k++)
+            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
                 luab_rawsetudata(L, narg, &luab_bintime_type, k, &(x[m]));
 
             errno = ENOENT;

@@ -60,7 +60,6 @@ luab_core_free(void *v, size_t sz)
             (void)memset_s(v, sz, 0, sz);
 
         free(v);
-        errno = EEXIST;
     } else
         errno = ENOENT;
 }
@@ -75,6 +74,24 @@ luab_core_freestr(caddr_t dp)
         luab_core_free(dp, n);
     } else
         errno = ENOENT;
+}
+
+void *
+luab_core_alloc(size_t n, size_t sz)
+{
+    size_t nbytes, len;
+    caddr_t dp;
+
+    if ((nbytes = (n * sz)) > 0) {
+        len = nbytes + sz;
+
+        if ((dp = malloc(len)) != NULL)
+            (void)memset_s(dp, len, 0, len);
+    } else {
+        errno = ERANGE;
+        dp = NULL;
+    }
+    return (dp);
 }
 
 void
@@ -267,10 +284,9 @@ luab_checklstringalloc(lua_State *L, int narg, size_t nmax)
 
     if ((dp = luab_checklstringisnil(L, narg, nmax, &len)) != NULL) {
 
-        if ((bp = malloc(len + 1)) != NULL) {
-            (void)memset_s(bp, len, 0, len);
-            (void)snprintf(bp, len + 1, "%s", dp);
-        } else
+        if ((bp = luab_core_alloc(len, sizeof(char))) != NULL)
+            (void)memmove(bp, dp, len);
+        else
             luab_core_argerror(L, narg, NULL, 0, 0, errno);
     } else
         bp = NULL;

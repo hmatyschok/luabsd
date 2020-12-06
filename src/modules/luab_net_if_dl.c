@@ -55,13 +55,16 @@ extern luab_module_t luab_net_if_dl_lib;
 static int
 luab_link_addr(lua_State *L)
 {
+    luab_module_t *m;
     const char *addr;
     struct sockaddr_dl *sdl;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(SOCKADDR, TYPE, __func__);
+
     addr = luab_checklstring(L, 1, LUAB_SDL_MAXDATALEN, NULL); /* XXX */
-    sdl = luab_udata(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr_dl *);
+    sdl = luab_udata(L, 2, m, struct sockaddr_dl *);
 
     link_addr(addr, sdl);
 
@@ -85,6 +88,7 @@ luab_link_addr(lua_State *L)
 static int
 luab_link_ntoa(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct sockaddr_dl *sdl;
     luab_iovec_t *buf;
     caddr_t src, dst;
@@ -93,8 +97,11 @@ luab_link_ntoa(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    sdl = luab_udata(L, 1, luab_xmod(SOCKADDR, TYPE, __func__), struct sockaddr_dl *);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    m0 = luab_xmod(SOCKADDR, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
+    sdl = luab_udata(L, 1, m0, struct sockaddr_dl *);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&

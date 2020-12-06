@@ -634,7 +634,7 @@ luab_nmount(lua_State *L)
 
     if (tbl != NULL) {
 
-        if ((tbl->tbl_card - 1) == (size_t)niov) {
+        if (tbl->tbl_card == (size_t)niov) {
             iov = (struct iovec *)(tbl->tbl_vec);
             status = nmount(iov, niov, flags);
             luab_table_pushxdata(L, 1, m, tbl, 0, 1);

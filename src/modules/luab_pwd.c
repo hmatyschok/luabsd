@@ -67,16 +67,18 @@ extern luab_module_t luab_pwd_lib;
 static int
 luab_getpwnam(lua_State *L)
 {
+    luab_module_t *m;
     const char *login;
     struct passwd *pwd;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(PASSWD, TYPE, __func__);
     login = luab_checklstring(L, 1, luab_env_logname_max, NULL);
 
     if ((pwd = getpwnam(login)) != NULL)
-        status = luab_pushudata(L, luab_xmod(PASSWD, TYPE, __func__), pwd);
+        status = luab_pushudata(L, m, pwd);
     else
         status = luab_pushnil(L);
 
@@ -97,16 +99,18 @@ luab_getpwnam(lua_State *L)
 static int
 luab_getpwuid(lua_State *L)
 {
+    luab_module_t *m;
     uid_t uid;
     struct passwd *pwd;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(PASSWD, TYPE, __func__);
     uid = luab_checkinteger(L, 1, luab_env_int_max);
 
     if ((pwd = getpwuid(uid)) != NULL)
-        status = luab_pushudata(L, luab_xmod(PASSWD, TYPE, __func__), pwd);
+        status = luab_pushudata(L, m, pwd);
     else
         status = luab_pushnil(L);
 
@@ -144,13 +148,16 @@ luab_endpwent(lua_State *L)
 static int
 luab_getpwent(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     int status;
 
     (void)luab_core_checkmaxargs(L, 0);
 
+    m = luab_xmod(PASSWD, TYPE, __func__);
+
     if ((pwd = getpwent()) != NULL)
-        status = luab_pushudata(L, luab_xmod(PASSWD, TYPE, __func__), pwd);
+        status = luab_pushudata(L, m, pwd);
     else
         status = luab_pushnil(L);
 
@@ -198,6 +205,7 @@ luab_setpwent(lua_State *L)
 static int
 luab_getpwnam_r(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     const char *name;
     struct passwd *pwd;
     luab_iovec_t *buf;
@@ -209,11 +217,14 @@ luab_getpwnam_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
+    m0 = luab_xmod(PASSWD, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
-    pwd = luab_udata(L, 2, luab_xmod(PASSWD, TYPE, __func__), struct passwd *);
-    buf = luab_udata(L, 3, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    pwd = luab_udata(L, 2, m0, struct passwd *);
+    buf = luab_udata(L, 3, m1, luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4, 0);
-    ret = luab_udata(L, 5, luab_xmod(PASSWD, TYPE, __func__), struct passwd *);
+    ret = luab_udata(L, 5, m0, struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -259,6 +270,7 @@ luab_getpwnam_r(lua_State *L)
 static int
 luab_getpwuid_r(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     uid_t uid;
     struct passwd *pwd;
     luab_iovec_t *buf;
@@ -270,11 +282,14 @@ luab_getpwuid_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
+    m0 = luab_xmod(PASSWD, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
     uid = luab_checkinteger(L, 1, luab_env_int_max);
-    pwd = luab_udata(L, 2, luab_xmod(PASSWD, TYPE, __func__), struct passwd *);
-    buf = luab_udata(L, 3, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    pwd = luab_udata(L, 2, m0, struct passwd *);
+    buf = luab_udata(L, 3, m1, luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 4, 0);
-    ret = luab_udata(L, 5, luab_xmod(PASSWD, TYPE, __func__), struct passwd *);
+    ret = luab_udata(L, 5, m0, struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -346,6 +361,7 @@ luab_setpassent(lua_State *L)
 static int
 luab_getpwent_r(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct passwd *pwd;
     luab_iovec_t *buf;
     size_t bufsize;
@@ -356,10 +372,13 @@ luab_getpwent_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    pwd = luab_udata(L, 1, luab_xmod(PASSWD, TYPE, __func__), struct passwd *);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    m0 = luab_xmod(PASSWD, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
+    pwd = luab_udata(L, 1, m0, struct passwd *);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
     bufsize = (size_t)luab_checklinteger(L, 3, 0);
-    ret = luab_udata(L, 4, luab_xmod(PASSWD, TYPE, __func__), struct passwd *);
+    ret = luab_udata(L, 4, m0, struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -430,14 +449,17 @@ luab_user_from_uid(lua_State *L)
 static int
 luab_uid_from_user(lua_State *L)
 {
+    luab_module_t *m;
     const char *name;
     uid_t *uid;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(UID, TYPE, __func__);
+
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
-    uid = luab_udata(L, 2, luab_xmod(UID, TYPE, __func__), uid_t *);
+    uid = luab_udata(L, 2, m, uid_t *);
 
     status = uid_from_user(name, uid);
     return (luab_pushxinteger(L, status));

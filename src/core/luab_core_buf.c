@@ -96,7 +96,7 @@ luab_iov_alloc(struct iovec *iov, size_t len)
 
     if (iov != NULL && len > 1) {
 
-        if ((iov->iov_base = malloc(len)) != NULL) {
+        if ((iov->iov_base = luab_core_alloc(len, sizeof(char))) != NULL) {
             iov->iov_len = len;
             status = 0;
         } else {
