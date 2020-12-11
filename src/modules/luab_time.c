@@ -71,8 +71,25 @@ luab_asctime(lua_State *L)
     return (luab_pushstring(L, dp));
 }
 
+/***
+ * clock(3) - determine processor time used
+ *
+ * @function clock
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.clock()
+ */
+static int
+luab_clock(lua_State *L)
+{
+    time_t ret;
 
+    (void)luab_core_checkmaxargs(L, 0);
 
+    ret = clock();
+    return (luab_pushxinteger(L, ret));
+}
 
 
 /***
@@ -486,6 +503,7 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #endif /* !defined(TIMER_ABSTIME) && __POSIX_VISIBLE >= 200112 */
     LUAB_INT("CLOCKS_PER_SEC",              CLOCKS_PER_SEC),
     LUAB_FUNC("asctime",                    luab_asctime),
+    LUAB_FUNC("clock",                      luab_clock),
     LUAB_FUNC("ctime",                      luab_ctime),
 #ifndef _STANDALONE
     LUAB_FUNC("difftime",                   luab_difftime),
