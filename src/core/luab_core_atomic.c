@@ -49,7 +49,7 @@
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ushrt [, err, msg ] = bsd.atomic.ushrt_create(x)
+ * @usage ushrt [, err, msg ] = bsd.core.atomic.ushrt_create(x)
  */
 static int
 luab_ushrt_create(lua_State *L)
@@ -72,7 +72,7 @@ luab_ushrt_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint [, err, msg ] = bsd.atomic.uint_create(x)
+ * @usage uint [, err, msg ] = bsd.core.atomic.uint_create(x)
  */
 static int
 luab_uint_create(lua_State *L)
@@ -96,7 +96,7 @@ luab_uint_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage char [, err, msg ] = bsd.atomic.char_create(x)
+ * @usage char [, err, msg ] = bsd.core.atomic.char_create(x)
  */
 static int
 luab_char_create(lua_State *L)
@@ -119,7 +119,7 @@ luab_char_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage short [, err, msg ] = bsd.atomic.short_create(x)
+ * @usage short [, err, msg ] = bsd.core.atomic.short_create(x)
  */
 static int
 luab_short_create(lua_State *L)
@@ -142,7 +142,7 @@ luab_short_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int [, err, msg ] = bsd.atomic.int_create(x)
+ * @usage int [, err, msg ] = bsd.core.atomic.int_create(x)
  */
 static int
 luab_int_create(lua_State *L)
@@ -165,7 +165,7 @@ luab_int_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage long [, err, msg ] = bsd.atomic.long_create(x)
+ * @usage long [, err, msg ] = bsd.core.atomic.long_create(x)
  */
 static int
 luab_long_create(lua_State *L)
@@ -188,7 +188,7 @@ luab_long_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage double [, err, msg ] = bsd.atomic.double_create(x)
+ * @usage double [, err, msg ] = bsd.core.atomic.double_create(x)
  */
 static int
 luab_double_create(lua_State *L)
@@ -211,7 +211,7 @@ luab_double_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage float [, err, msg ] = bsd.atomic.float_create(x)
+ * @usage float [, err, msg ] = bsd.core.atomic.float_create(x)
  */
 static int
 luab_float_create(lua_State *L)
@@ -234,7 +234,7 @@ luab_float_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int8 [, err, msg ] = bsd.atomic.int8_create(x)
+ * @usage int8 [, err, msg ] = bsd.core.atomic.int8_create(x)
  */
 static int
 luab_int8_create(lua_State *L)
@@ -257,7 +257,7 @@ luab_int8_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int16 [, err, msg ] = bsd.atomic.int16_create(x)
+ * @usage int16 [, err, msg ] = bsd.core.atomic.int16_create(x)
  */
 static int
 luab_int16_create(lua_State *L)
@@ -280,7 +280,7 @@ luab_int16_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int32 [, err, msg ] = bsd.atomic.int32_create(x)
+ * @usage int32 [, err, msg ] = bsd.core.atomic.int32_create(x)
  */
 static int
 luab_int32_create(lua_State *L)
@@ -303,7 +303,7 @@ luab_int32_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int64 [, err, msg ] = bsd.atomic.int64_create(x)
+ * @usage int64 [, err, msg ] = bsd.core.atomic.int64_create(x)
  */
 static int
 luab_int64_create(lua_State *L)
@@ -326,7 +326,7 @@ luab_int64_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fpos [, err, msg ] = bsd.atomic.fpos_create(x)
+ * @usage fpos [, err, msg ] = bsd.core.atomic.fpos_create(x)
  */
 static int
 luab_fpos_create(lua_State *L)
@@ -349,7 +349,7 @@ luab_fpos_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage gid [, err, msg ] = bsd.atomic.gid_create(x)
+ * @usage gid [, err, msg ] = bsd.core.atomic.gid_create(x)
  */
 static int
 luab_gid_create(lua_State *L)
@@ -372,7 +372,7 @@ luab_gid_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage off [, err, msg ] = bsd.atomic.off_create(x)
+ * @usage off [, err, msg ] = bsd.core.atomic.off_create(x)
  */
 static int
 luab_off_create(lua_State *L)
@@ -395,7 +395,7 @@ luab_off_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage size [, err, msg ] = bsd.atomic.size_create(x)
+ * @usage size [, err, msg ] = bsd.core.atomic.size_create(x)
  */
 static int
 luab_size_create(lua_State *L)
@@ -418,7 +418,7 @@ luab_size_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage socklen [, err, msg ] = bsd.atomic.socklen_create(x)
+ * @usage socklen [, err, msg ] = bsd.core.atomic.socklen_create(x)
  */
 static int
 luab_socklen_create(lua_State *L)
@@ -441,7 +441,7 @@ luab_socklen_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ssize [, err, msg ] = bsd.atomic.ssize_create(x)
+ * @usage ssize [, err, msg ] = bsd.core.atomic.ssize_create(x)
  */
 static int
 luab_ssize_create(lua_State *L)
@@ -464,7 +464,7 @@ luab_ssize_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uid [, err, msg ] = bsd.atomic.uid_create(x)
+ * @usage uid [, err, msg ] = bsd.core.atomic.uid_create(x)
  */
 static int
 luab_uid_create(lua_State *L)
@@ -487,7 +487,7 @@ luab_uid_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage wchar [, err, msg ] = bsd.atomic.wchar_create(x)
+ * @usage wchar [, err, msg ] = bsd.core.atomic.wchar_create(x)
  */
 static int
 luab_wchar_create(lua_State *L)
@@ -510,7 +510,7 @@ luab_wchar_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage time [, err, msg ] = bsd.atomic.time_create(x)
+ * @usage time [, err, msg ] = bsd.core.atomic.time_create(x)
  */
 static int
 luab_time_create(lua_State *L)
@@ -522,6 +522,29 @@ luab_time_create(lua_State *L)
     x = (time_t)luab_checklinteger(L, 1, 1);
 
     return (luab_pushxdata(L, luab_xmod(TIME, TYPE, __func__), &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CLOCK)).
+ *
+ * @function clock_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage time [, err, msg ] = bsd.core.atomic.time_create(x)
+ */
+static int
+luab_clock_create(lua_State *L)
+{
+    time_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    x = (time_t)luab_checklinteger(L, 1, 1);
+
+    return (luab_pushxdata(L, luab_xmod(CLOCK, TYPE, __func__), &x));
 }
 
 static luab_module_table_t luab_core_atomic_vec[] = {
@@ -555,6 +578,7 @@ static luab_module_table_t luab_core_atomic_vec[] = {
     LUAB_FUNC("uid_create",         luab_uid_create),
     LUAB_FUNC("wchar_create",       luab_wchar_create),
     LUAB_FUNC("time_create",        luab_time_create),
+    LUAB_FUNC("clock_create",       luab_clock_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

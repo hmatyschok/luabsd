@@ -167,6 +167,7 @@ typedef enum luab_type {
     LUAB_UID_IDX,
     LUAB_WCHAR_IDX,
     LUAB_TIME_IDX,
+    LUAB_CLOCK_IDX,
 
     /* composite data types */
     LUAB_CLOCKINFO_IDX,
@@ -216,9 +217,6 @@ typedef enum luab_type {
     LUAB_CMSGCRED_IDX,
     LUAB_SF_HDTR_IDX,
 #endif /* __BSD_VISIBLE */
-#if LUAB_DEBUG
-    LUAB_LINK_IDX,
-#endif /* LUAB_DEBUG */
     LUAB_TYPE_SENTINEL
 } luab_type_t;
 
@@ -306,6 +304,10 @@ extern luab_module_vec_t luab_typevec[];
 
 #define LUAB_TIME_TYPE_ID                   1607255289
 #define LUAB_TIME_TYPE                      "TIME*"
+
+#define LUAB_CLOCK_TYPE_ID                   1607649423
+#define LUAB_CLOCK_TYPE                      "CLOCK*"
+
 
 /*
  * Set of composite data types.

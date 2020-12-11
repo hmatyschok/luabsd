@@ -79,7 +79,6 @@ luab_table_t     *luab_iovec_checktable(lua_State *, int);
  * Access functions, [C -> stack].
  */
 
-
 int  luab_iovec_pushxdata(lua_State *, void *, size_t, size_t);
 
 void     luab_iovec_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);

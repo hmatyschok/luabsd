@@ -711,15 +711,20 @@ static luab_module_vec_t luab_sys_vec[] = {
     LUAB_MOD_VEC_SENTINEL
 };
 
-/* Interface against <xxx.h> or <core>. */
 static luab_module_vec_t luab_core_vec[] = {
     {
-        .mv_mod = &luab_core_lib,
-        .mv_init = luab_core_newtable,
-    },{
         .mv_mod = &luab_core_atomic_lib,
         .mv_init = luab_core_newtable,
     },{
+        .mv_mod = &luab_core_lib,
+        .mv_init = luab_core_populate,
+    },
+    LUAB_MOD_VEC_SENTINEL
+};
+
+/* Interface against <xxx.h> */
+static luab_module_vec_t luab_vec[] = {
+    {
         .mv_mod = &luab_db_lib,
         .mv_init = luab_core_newtable,
     },{
@@ -856,6 +861,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_time_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_TIME_IDX,
+    },{
+        .mv_mod = &luab_clock_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_CLOCK_IDX,
     },{                                     /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,
@@ -1114,10 +1123,11 @@ luaopen_bsd(lua_State *L)
     /* register modules */
     lua_newtable(L);
 
-    luab_core_registerlib(L, -2, luab_arpa_vec,  "arpa");
-    luab_core_registerlib(L, -2, luab_net_vec,   "net");
-    luab_core_registerlib(L, -2, luab_sys_vec,   "sys");
-    luab_core_registerlib(L, -2, luab_core_vec,  NULL);
+    luab_core_registerlib(L, -2, luab_arpa_vec, "arpa");
+    luab_core_registerlib(L, -2, luab_core_vec, "core");
+    luab_core_registerlib(L, -2, luab_net_vec,  "net");
+    luab_core_registerlib(L, -2, luab_sys_vec,  "sys");
+    luab_core_registerlib(L, -2, luab_vec,      NULL);
 
     lua_pushvalue(L, -1);
 

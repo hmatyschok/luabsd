@@ -31,3 +31,4 @@ SRCS+=  luab_uid_type.c
 
 SRCS+=  luab_wchar_type.c
 SRCS+=  luab_time_type.c
+SRCS+=  luab_clock_type.c

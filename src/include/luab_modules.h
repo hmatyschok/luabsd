@@ -61,6 +61,7 @@ extern luab_module_t luab_uid_type;
 
 extern luab_module_t luab_wchar_type;
 extern luab_module_t luab_time_type;
+extern luab_module_t luab_clock_type;
 
 /*
  * Set of composite data types.
@@ -113,10 +114,6 @@ extern luab_module_t luab_accept_filter_arg_type;
 extern luab_module_t luab_sockproto_type;
 extern luab_module_t luab_cmsgcred_type;
 extern luab_module_t luab_sf_hdtr_type;
-#endif
-
-#if LUAB_DEBUG
-extern luab_module_t luab_link_type;
 #endif
 
 /*
