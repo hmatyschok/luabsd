@@ -237,6 +237,70 @@ luab_mktime(lua_State *L)
     return (luab_pushxinteger(L, ret));
 }
 
+/***
+ * strftime(3) - format data and time
+ *
+ * @function strftime
+ *
+ * @param buf               Buffer for formatted time information by
+ *                          an instance of (LUA_TUSERDATA(IOVEC)).
+ * @param maxsize           Specifies constraint for buffer.
+ * @param format            Specifies format string for conversion.
+ * @param timeptr           Specifies broken down time by an
+ *                          instance of (LUA_TUSERDATA(TM)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.strftime(buf, maxsize, format, timeptr)
+ */
+static int
+luab_strftime(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    luab_iovec_t *buf;
+    size_t maxsize;
+    const char *format;
+    struct tm *timeptr;
+    caddr_t bp;
+    ssize_t status;
+
+    (void)luab_core_checkmaxargs(L, 4);
+
+    m0 = luab_xmod(IOVEC, TYPE, __func__);
+    m1 = luab_xmod(TM, TYPE, __func__);
+
+    buf = luab_udata(L, 1, m0, luab_iovec_t *);
+    maxsize = luab_checklinteger(L, 2, 0);
+    format = luab_checklstring(L, 3, maxsize, NULL);
+    timeptr = luab_udata(L, 4, m1, struct tm *);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= luab_env_buf_max) &&
+        (maxsize <= buf->iov_max_len) &&
+        (buf->iov_flags & IOV_BUFF)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((status = strftime(bp, maxsize, format, timeptr)) > 0)
+                buf->iov.iov_len = status;
+            else
+                buf->iov.iov_len = maxsize;
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            status = -1;
+        }
+    } else {
+        errno = ERANGE;
+        status = -1;
+    }
+    return (luab_pushxinteger(L, status));
+}
+
+
+
 #if __POSIX_VISIBLE >= 199506
 /***
  * asctime_r(3) - transform binary data and time
@@ -511,6 +575,7 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("gmtime",                     luab_gmtime),
     LUAB_FUNC("localtime",                  luab_localtime),
     LUAB_FUNC("mktime",                     luab_mktime),
+    LUAB_FUNC("strftime",                   luab_strftime),
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
     LUAB_FUNC("ctime_r",                    luab_ctime_r),

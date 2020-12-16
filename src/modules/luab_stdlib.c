@@ -2636,7 +2636,7 @@ luab_mkostemp(lua_State *L)
     buf = luab_udata(L, 1, m, luab_iovec_t *);
     oflags = (int)luab_checkinteger(L, 2, luab_env_int_max);
 
-    if (((bp = buf->iov.iov_base) != 0) &&
+    if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
@@ -2699,7 +2699,7 @@ luab_mkostemps(lua_State *L)
     suffixlen = (int)luab_checkinteger(L, 2, luab_env_int_max);
     oflags = (int)luab_checkinteger(L, 3, luab_env_int_max);
 
-    if (((bp = buf->iov.iov_base) != 0) &&
+    if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
