@@ -35,6 +35,11 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
+/*
+ * XXX
+ *  Subr. for registry over <luab_xxx_vec>.
+ */
+
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
@@ -711,6 +716,16 @@ static luab_module_vec_t luab_sys_vec[] = {
     LUAB_MOD_VEC_SENTINEL
 };
 
+/* Interface against <xlocale/xxx.h>. */
+static luab_module_vec_t luab_xlocale_vec[] = {
+    {
+        .mv_mod = &luab_xlocale_locale_lib,
+        .mv_init = luab_core_newtable,
+    },
+    LUAB_MOD_VEC_SENTINEL
+};
+
+/* Interface against <core/xxx> */
 static luab_module_vec_t luab_core_vec[] = {
     {
         .mv_mod = &luab_core_atomic_lib,
@@ -1123,11 +1138,12 @@ luaopen_bsd(lua_State *L)
     /* register modules */
     lua_newtable(L);
 
-    luab_core_registerlib(L, -2, luab_arpa_vec, "arpa");
-    luab_core_registerlib(L, -2, luab_core_vec, "core");
-    luab_core_registerlib(L, -2, luab_net_vec,  "net");
-    luab_core_registerlib(L, -2, luab_sys_vec,  "sys");
-    luab_core_registerlib(L, -2, luab_vec,      NULL);
+    luab_core_registerlib(L, -2, luab_arpa_vec,     "arpa");
+    luab_core_registerlib(L, -2, luab_core_vec,     "core");
+    luab_core_registerlib(L, -2, luab_net_vec,      "net");
+    luab_core_registerlib(L, -2, luab_sys_vec,      "sys");
+    luab_core_registerlib(L, -2, luab_xlocale_vec,  "xlocale");
+    luab_core_registerlib(L, -2, luab_vec,          NULL);
 
     lua_pushvalue(L, -1);
 

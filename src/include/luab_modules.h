@@ -122,6 +122,9 @@ extern luab_module_t luab_sf_hdtr_type;
 
 extern luab_module_t luab_arpa_inet_lib;
 
+extern luab_module_t luab_core_lib;
+extern luab_module_t luab_core_atomic_lib;
+
 extern luab_module_t luab_net_if_lib;
 extern luab_module_t luab_net_if_dl_lib;
 
@@ -137,8 +140,7 @@ extern luab_module_t luab_sys_unistd_lib;
 extern luab_module_t luab_sys_reboot_lib;
 extern luab_module_t luab_sys_socket_lib;
 
-extern luab_module_t luab_core_lib;
-extern luab_module_t luab_core_atomic_lib;  /* XXX <core/atomic> */
+extern luab_module_t luab_xlocale_locale_lib;
 
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_dirent_lib;
