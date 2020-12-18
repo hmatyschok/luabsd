@@ -794,7 +794,9 @@ luab_inet_cidr_pton(lua_State *L)
 static int
 luab_in_addr_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(IN_ADDR, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(IN_ADDR, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -811,12 +813,10 @@ luab_in_addr_create(lua_State *L)
 static int
 luab_in6_addr_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(IN6_ADDR, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
-
-/*
- * Generator functions.
- */
 
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).

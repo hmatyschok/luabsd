@@ -1550,7 +1550,9 @@ luab_fpurge(lua_State *L)
 static int
 luab_sbuf_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(__SBUF, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(__SBUF, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -1567,7 +1569,9 @@ luab_sbuf_create(lua_State *L)
 static int
 luab_sfile_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(SFILE, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(SFILE, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /*

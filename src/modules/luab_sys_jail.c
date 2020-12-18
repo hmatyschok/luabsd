@@ -268,7 +268,9 @@ luab_jail_remove(lua_State *L)
 static int
 luab_jail_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_xmod(JAIL, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(JAIL, TYPE, __func__);
+    return (luab_core_create(L, 0, m, NULL));
 }
 
 /*

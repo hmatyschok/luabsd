@@ -132,6 +132,10 @@ luab_link_ntoa(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/*
+ * Generator functions.
+ */
+
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
@@ -146,15 +150,17 @@ luab_link_ntoa(lua_State *L)
 static int
 luab_sockaddr_dl_create(lua_State *L)
 {
+    luab_module_t *m;
     struct sockaddr_dl sdl;
     struct sockaddr *data;
 
     (void)luab_core_checkmaxargs(L, 0);
 
+    m = luab_xmod(SOCKADDR, TYPE, __func__);
     data = (struct sockaddr *)&sdl;
     luab_sockaddr_pci(data, AF_LINK, sizeof(sdl));
 
-    return (luab_pushxdata(L, luab_xmod(SOCKADDR, TYPE, __func__), data));
+    return (luab_pushxdata(L, m, data));
 }
 
 /*

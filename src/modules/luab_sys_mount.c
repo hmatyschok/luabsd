@@ -409,7 +409,7 @@ luab_getfsstat(lua_State *L)
     long n, bufsize;
     int mode, card;
     size_t sz;
-    
+
 
     (void)luab_core_checkmaxargs(L, 3);
 
@@ -774,7 +774,9 @@ luab_getvfsbyname(lua_State *L)
 static int
 luab_fsid_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(FSID, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -791,7 +793,9 @@ luab_fsid_create(lua_State *L)
 static int
 luab_fid_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(FID, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -808,7 +812,9 @@ luab_fid_create(lua_State *L)
 static int
 luab_statfs_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(STATFS, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(STATFS, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -825,7 +831,9 @@ luab_statfs_create(lua_State *L)
 static int
 luab_fhandle_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(FHANDLE, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(FHANDLE, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -842,7 +850,9 @@ luab_fhandle_create(lua_State *L)
 static int
 luab_xvfsconf_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(XVFSCONF, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(XVFSCONF, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /*

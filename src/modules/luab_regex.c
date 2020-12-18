@@ -281,7 +281,9 @@ luab_regfree(lua_State *L)
 static int
 luab_regex_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(REGEX, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(REGEX, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -298,7 +300,9 @@ luab_regex_create(lua_State *L)
 static int
 luab_regmatch_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(REGMATCH, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /*

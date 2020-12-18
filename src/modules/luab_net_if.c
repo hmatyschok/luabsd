@@ -181,7 +181,9 @@ luab_if_nametoindex(lua_State *L)
 static int
 luab_if_nameindex_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(IF_NAMEINDEX, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(IF_NAMEINDEX, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /*
