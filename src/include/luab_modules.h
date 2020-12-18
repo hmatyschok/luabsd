@@ -62,6 +62,7 @@ extern luab_module_t luab_uid_type;
 extern luab_module_t luab_wchar_type;
 extern luab_module_t luab_time_type;
 extern luab_module_t luab_clock_type;
+extern luab_module_t luab_locale_type;
 
 /*
  * Set of composite data types.

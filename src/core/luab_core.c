@@ -880,6 +880,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_clock_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CLOCK_IDX,
+    },{
+        .mv_mod = &luab_locale_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_LOCALE_IDX,
     },{                                     /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,
