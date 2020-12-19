@@ -27,7 +27,7 @@
 #ifndef _LUAB_LOCALE_H_
 #define _LUAB_LOCALE_H_
 
-#include <locale.h>
+#include <xlocale.h>
 
 typedef struct luab_locale {
     luab_udata_t    ud_softc;

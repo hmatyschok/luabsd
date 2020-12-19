@@ -721,6 +721,9 @@ static luab_module_vec_t luab_xlocale_vec[] = {
     {
         .mv_mod = &luab_xlocale_locale_lib,
         .mv_init = luab_core_newtable,
+    },{
+        .mv_mod = &luab_xlocale_time_lib,
+        .mv_init = luab_core_newtable,
     },
     LUAB_MOD_VEC_SENTINEL
 };
@@ -1139,7 +1142,12 @@ luaopen_bsd(lua_State *L)
     /* initialize constraints */
     luab_core_initenv(luab_param);
 
-    /* register modules */
+    /*
+     * register modules
+     *
+     * XXX
+     *  We shall externalize this.
+     */
     lua_newtable(L);
 
     luab_core_registerlib(L, -2, luab_arpa_vec,     "arpa");

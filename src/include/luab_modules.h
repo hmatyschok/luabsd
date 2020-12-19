@@ -142,6 +142,7 @@ extern luab_module_t luab_sys_reboot_lib;
 extern luab_module_t luab_sys_socket_lib;
 
 extern luab_module_t luab_xlocale_locale_lib;
+extern luab_module_t luab_xlocale_time_lib;
 
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_dirent_lib;
