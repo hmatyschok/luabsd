@@ -4823,7 +4823,9 @@ luab_undelete(lua_State *L)
 static int
 luab_crypt_data_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(CRYPT_DATA, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /*

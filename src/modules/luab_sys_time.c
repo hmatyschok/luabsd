@@ -190,7 +190,9 @@ luab_getitimer(lua_State *L)
 static int
 luab_bintime_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(BINTIME, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(BINTIME, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 #endif
 
@@ -208,7 +210,9 @@ luab_bintime_create(lua_State *L)
 static int
 luab_clockinfo_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(CLOCKINFO, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(CLOCKINFO, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -225,7 +229,9 @@ luab_clockinfo_create(lua_State *L)
 static int
 luab_itimerval_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(ITIMERVAL, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -242,7 +248,9 @@ luab_itimerval_create(lua_State *L)
 static int
 luab_timespec_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(TIMESPEC, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(TIMESPEC, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -259,7 +267,9 @@ luab_timespec_create(lua_State *L)
 static int
 luab_timeval_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(TIMEVAL, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -276,7 +286,9 @@ luab_timeval_create(lua_State *L)
 static int
 luab_timezone_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(TIMEZONE, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /*

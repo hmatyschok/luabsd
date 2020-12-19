@@ -1185,7 +1185,9 @@ luab_socketpair(lua_State *L)
 static int
 luab_linger_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(LINGER, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -1202,7 +1204,9 @@ luab_linger_create(lua_State *L)
 static int
 luab_sockaddr_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(SOCKADDR, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(SOCKADDR, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -1217,7 +1221,9 @@ luab_sockaddr_create(lua_State *L)
 static int
 luab_msghdr_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_xmod(MSGHDR, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    return (luab_core_create(L, 0, m, NULL));
 }
 
 #if __BSD_VISIBLE
@@ -1235,7 +1241,9 @@ luab_msghdr_create(lua_State *L)
 static int
 luab_accept_filter_arg_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -1250,7 +1258,9 @@ luab_accept_filter_arg_create(lua_State *L)
 static int
 luab_cmsgcred_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_xmod(CMSGCRED, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_core_create(L, 0, m, NULL));
 }
 
 /***
@@ -1267,7 +1277,9 @@ luab_cmsgcred_create(lua_State *L)
 static int
 luab_sockproto_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(SOCKPROTO, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /***
@@ -1282,7 +1294,9 @@ luab_sockproto_create(lua_State *L)
 static int
 luab_sf_hdtr_create(lua_State *L)
 {
-    return (luab_core_create(L, 0, luab_xmod(SF_HDTR, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    return (luab_core_create(L, 0, m, NULL));
 }
 #endif
 

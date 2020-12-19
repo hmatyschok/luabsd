@@ -530,7 +530,9 @@ luab_timegm(lua_State *L)
 static int
 luab_tm_create(lua_State *L)
 {
-    return (luab_core_create(L, 1, luab_xmod(TM, TYPE, __func__), NULL));
+    luab_module_t *m;
+    m = luab_xmod(TM, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
 /*

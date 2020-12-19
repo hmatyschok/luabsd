@@ -57,10 +57,12 @@ extern luab_module_t luab_sys_un_lib;
 static int
 luab_sockaddr_un_create(lua_State *L)
 {
+    luab_module_t *m;
     struct sockaddr_un sun;
     struct sockaddr *data;
     const char *sun_path;
 
+    m = luab_xmod(SOCKADDR, TYPE, __func__);
     data = (struct sockaddr *)&sun;
     luab_sockaddr_pci(data, AF_UNIX, sizeof(sun));
 
@@ -71,7 +73,7 @@ luab_sockaddr_un_create(lua_State *L)
     default:
         break;
     }
-    return (luab_pushxdata(L, luab_xmod(SOCKADDR, TYPE, __func__), data));
+    return (luab_pushxdata(L, m, data));
 }
 
 /*
