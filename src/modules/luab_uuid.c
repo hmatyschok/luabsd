@@ -466,16 +466,20 @@ luab_uuid_dec_be(lua_State *L)
 static int
 luab_uuid_create(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     uint32_t *status;
     uuid_t uuid;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    status = luab_udata(L, 1, luab_xmod(UINT, TYPE, __func__), uint32_t *);
+    m0 = luab_xmod(UINT, TYPE, __func__);
+    m1 = luab_xmod(UUID, TYPE, __func__);
+
+    status = luab_udata(L, 1, m0, uint32_t *);
 
     uuid_create(&uuid, status);
 
-    return (luab_pushxdata(L, luab_xmod(UUID, TYPE, __func__), &uuid));
+    return (luab_pushxdata(L, m1, &uuid));
 }
 
 /***
@@ -501,16 +505,20 @@ luab_uuid_create(lua_State *L)
 static int
 luab_uuid_create_nil(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     uint32_t *status;
     uuid_t uuid;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    status = luab_udata(L, 1, luab_xmod(UINT, TYPE, __func__), uint32_t *);
+    m0 = luab_xmod(UINT, TYPE, __func__);
+    m1 = luab_xmod(UUID, TYPE, __func__);
+
+    status = luab_udata(L, 1, m0, uint32_t *);
 
     uuid_create_nil(&uuid, status);
 
-    return (luab_pushxdata(L, luab_xmod(UUID, TYPE, __func__), &uuid));
+    return (luab_pushxdata(L, m1, &uuid));
 }
 
 /*
