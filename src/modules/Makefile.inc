@@ -17,6 +17,7 @@ SRCS+=  luab_sys_un.c
 SRCS+=  luab_sys_unistd.c
 SRCS+=  luab_sys_reboot.c
 SRCS+=  luab_sys_socket.c
+SRCS+=  luab_sys_stdint.c
 
 SRCS+=  luab_xlocale_locale.c
 SRCS+=	luab_xlocale_time.c

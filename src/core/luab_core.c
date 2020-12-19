@@ -712,6 +712,9 @@ static luab_module_vec_t luab_sys_vec[] = {
     },{
         .mv_mod = &luab_sys_socket_lib,
         .mv_init = luab_core_newtable,
+    },{
+        .mv_mod = &luab_sys_stdint_lib,
+        .mv_init = luab_core_newtable,
     },
     LUAB_MOD_VEC_SENTINEL
 };
@@ -789,7 +792,7 @@ static luab_module_vec_t luab_vec[] = {
  * Bindings against atomic / composite data types.
  *
  * XXX
- *  We should split this vector table into subsets by category.
+ *  We should split this vector table into subsets by category and externilze.
  */
 luab_module_vec_t luab_typevec[] = {
 #if __BSD_VISIBLE

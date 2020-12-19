@@ -1,3 +1,16 @@
+#
+# XXX
+#   We shall implement a so called directory
+#   structure for components, e. g. over
+#
+#       t : { T }
+#
+#   by
+#
+#       T = { atomic, composite }
+#
+#   its type, realm and/or domain, etc.
+#
 
 .PATH: ${LUAB_SRCTOP}/atomic
 
