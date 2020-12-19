@@ -40,12 +40,6 @@ typedef struct luab_udata {
     void                    *ud_xhd;
 } luab_udata_t;
 
-static __inline size_t
-luab_xlen(luab_module_t *m)
-{
-    return ((m->m_len - sizeof(luab_udata_t)));
-}
-
 /*
  * Protocol Control Information (PCI).
  */
@@ -112,5 +106,6 @@ void     luab_setxdata(lua_State *, int, luab_module_t *, const char *, void *);
 #include "luab_buf.h"
 #include "luab_iovec.h"
 #include "luab_db.h"
+#include "luab_locale.h"
 
 #endif /* _LUAB_UDATA_H_ */

@@ -61,7 +61,7 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
             luaL_setmetatable(L, m->m_name);
         }
     } else
-        errno = EINVAL;
+        errno = ENOENT;
 
     return (ud);
 }
@@ -73,8 +73,14 @@ luab_newudata(lua_State *L, luab_module_t *m, void *arg)
 void
 luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
 {
-    if (m != NULL && ud != NULL && arg != NULL)
-        (void)memmove(ud + 1, arg, luab_xlen(m));
+    if (m != NULL) {
+
+        if (ud != NULL && arg != NULL)
+            (void)memmove(ud + 1, arg, m->m_sz);
+        else
+            errno = EINVAL;
+    } else
+        errno = ENOENT;
 }
 
 void
@@ -88,7 +94,8 @@ luab_udata_remove(luab_udata_t *ud)
             ud->ud_xhd = NULL;
         }
         LIST_REMOVE(ud, ud_next);
-    }
+    } else
+        errno = ENOENT;
 }
 
 luab_udata_t *
@@ -105,6 +112,9 @@ luab_udata_find(luab_udata_t *udx, void **x)
     } else
         ud = NULL;
 
+    if (ud == NULL)
+        errno = ENOENT;
+
     return (ud);
 }
 
@@ -113,18 +123,25 @@ luab_udata_insert(luab_udata_t *udx, luab_udata_t *ud, void **x)
 {
     void *dp;
 
-    if (udx != NULL && ud != NULL && x != NULL) {
-        LIST_INSERT_HEAD(&udx->ud_list, ud, ud_next);
+    if (udx != NULL) {
 
-        *(void **)x = (void *)(ud + 1);
+        if (ud != NULL && x != NULL) {
+            LIST_INSERT_HEAD(&udx->ud_list, ud, ud_next);
 
-        ud->ud_x = x;
-        ud->ud_xhd = &udx->ud_list;
+            *(void **)x = (void *)(ud + 1);
 
-        dp = *x;
-    } else
+            ud->ud_x = x;
+            ud->ud_xhd = &udx->ud_list;
+
+            dp = *x;
+        } else {
+            errno = EINVAL;
+            dp = NULL;
+        }
+    } else {
+        errno = ENOENT;
         dp = NULL;
-
+    }
     return (dp);
 }
 
@@ -202,6 +219,11 @@ luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
     luab_module_vec_t *vec;
     luab_udata_t *ud;
 
+    /*
+     * XXX
+     *  We shall refactor this component.
+     */
+
     vec = luab_typevec;
 
     while (vec->mv_mod != NULL) {
@@ -217,7 +239,7 @@ luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
 
         if (ud != NULL) {
             pci->xarg_idx = vec->mv_idx;
-            pci->xarg_len = luab_xlen(vec->mv_mod);
+            pci->xarg_len = vec->mv_mod->m_sz;
         } else {
             pci->xarg_idx = LUAB_TYPE_SENTINEL;
             pci->xarg_len = 0;
@@ -314,7 +336,7 @@ luab_pushxdata(lua_State *L, luab_module_t *m, void *arg)
     up_call = errno;
 
     if (m != NULL) {
-        
+
         if (m->m_create != NULL) {
 
             if ((*m->m_create)(L, arg) != NULL)

@@ -596,7 +596,7 @@ luab_core_len(lua_State *L, int narg, luab_module_t *m)
     (void)luab_core_checkmaxargs(L, narg);
 
     if ((ud = luab_todata(L, narg, m, luab_udata_t *)) != NULL)
-        len = luab_xlen(m);
+        len = m->m_sz;
     else {
         errno = ERANGE;
         len = -1;

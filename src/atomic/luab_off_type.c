@@ -43,7 +43,7 @@ extern luab_module_t luab_off_type;
 
 typedef struct luab_off {
     luab_udata_t    ud_softc;
-    off_t          ud_value;
+    off_t          ud_sdu;
 } luab_off_t;
 
 #define luab_new_off(L, arg) \
@@ -62,7 +62,7 @@ off_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((self = (luab_off_t *)arg) != NULL) {
 
-        luab_setinteger(L, narg, "value", self->ud_value);
+        luab_setinteger(L, narg, "value", self->ud_sdu);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -140,7 +140,7 @@ OFF_set_value(lua_State *L)
     self = luab_to_off(L, 1);
     x = (off_t)luab_checkinteger(L, 2, luab_env_ulong_max);
 
-    self->ud_value = x;
+    self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -163,7 +163,7 @@ OFF_get_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_off(L, 1);
-    x = self->ud_value;
+    x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
 }
@@ -222,7 +222,7 @@ off_udata(lua_State *L, int narg)
 {
     luab_off_t *self;
     self = luab_to_off(L, narg);
-    return ((void *)&(self->ud_value));
+    return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *

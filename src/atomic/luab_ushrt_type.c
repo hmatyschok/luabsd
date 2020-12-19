@@ -44,7 +44,7 @@ extern luab_module_t luab_ushrt_type;
 
 typedef struct luab_ushrt {
     luab_udata_t    ud_softc;
-    u_short         ud_value;
+    u_short         ud_sdu;
 } luab_u_short;
 
 #define luab_new_ushrt(L, arg) \
@@ -63,7 +63,7 @@ ushrt_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((self = (luab_u_short *)arg) != NULL) {
 
-        luab_setinteger(L, narg, "value", self->ud_value);
+        luab_setinteger(L, narg, "value", self->ud_sdu);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -141,7 +141,7 @@ USHRT_set_value(lua_State *L)
     self = luab_to_ushrt(L, 1);
     x = (u_short)luab_checkinteger(L, 2, luab_env_ushrt_max);
 
-    self->ud_value = x;
+    self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -164,7 +164,7 @@ USHRT_get_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_ushrt(L, 1);
-    x = self->ud_value;
+    x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
 }
@@ -223,7 +223,7 @@ ushrt_udata(lua_State *L, int narg)
 {
     luab_u_short *self;
     self = luab_to_ushrt(L, narg);
-    return ((void *)&(self->ud_value));
+    return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *

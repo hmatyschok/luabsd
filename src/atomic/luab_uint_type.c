@@ -44,7 +44,7 @@ extern luab_module_t luab_uint_type;
 
 typedef struct luab_uint {
     luab_udata_t    ud_softc;
-    u_int           ud_value;
+    u_int           ud_sdu;
 } luab_uint_t;
 
 #define luab_new_uint(L, arg) \
@@ -63,7 +63,7 @@ uint_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((self = (luab_uint_t *)arg) != NULL) {
 
-        luab_setinteger(L, narg, "value", self->ud_value);
+        luab_setinteger(L, narg, "value", self->ud_sdu);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -141,7 +141,7 @@ UINT_set_value(lua_State *L)
     self = luab_to_uint(L, 1);
     x = (u_int)luab_checkinteger(L, 2, luab_env_uint_max);
 
-    self->ud_value = x;
+    self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -164,7 +164,7 @@ UINT_get_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_uint(L, 1);
-    x = self->ud_value;
+    x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
 }
@@ -223,7 +223,7 @@ uint_udata(lua_State *L, int narg)
 {
     luab_uint_t *self;
     self = luab_to_uint(L, narg);
-    return ((void *)&(self->ud_value));
+    return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *

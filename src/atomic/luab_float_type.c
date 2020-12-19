@@ -43,7 +43,7 @@ extern luab_module_t luab_float_type;
 
 typedef struct luab_float {
     luab_udata_t    ud_softc;
-    float           ud_value;
+    float           ud_sdu;
 } luab_float_t;
 
 #define luab_new_float(L, arg) \
@@ -62,7 +62,7 @@ float_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((self = (luab_float_t *)arg) != NULL) {
 
-        luab_setinteger(L, narg, "value", self->ud_value);
+        luab_setinteger(L, narg, "value", self->ud_sdu);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -140,7 +140,7 @@ FLOAT_set_value(lua_State *L)
     self = luab_to_float(L, 1);
     x = (float)luaL_checknumber(L, 2);
 
-    self->ud_value = x;
+    self->ud_sdu = x;
 
     return (luab_pushxnumber(L, x));
 }
@@ -163,7 +163,7 @@ FLOAT_get_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_float(L, 1);
-    x = self->ud_value;
+    x = self->ud_sdu;
 
     return (luab_pushxnumber(L, x));
 }
@@ -222,7 +222,7 @@ float_udata(lua_State *L, int narg)
 {
     luab_float_t *self;
     self = luab_to_float(L, narg);
-    return ((void *)&(self->ud_value));
+    return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *

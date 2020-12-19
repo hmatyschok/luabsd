@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <locale.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -43,11 +41,6 @@ extern luab_module_t luab_locale_type;
  *
  */
 
-typedef struct luab_locale {
-    luab_udata_t    ud_softc;
-    locale_t        ud_value;
-} luab_locale_t;
-
 #define luab_new_locale(L, arg) \
     ((luab_locale_t *)luab_newudata(L, &luab_locale_type, (arg)))
 #define luab_to_locale(L, narg) \
@@ -64,7 +57,7 @@ locale_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((self = (luab_locale_t *)arg) != NULL) {
 
-        luab_setfstring(L, narg, "value", "(%p)", self->ud_value);
+        luab_setfstring(L, narg, "value", "(%p)", self->ud_sdu);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -138,7 +131,7 @@ LOCALE_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_locale(L, 1);
-    x = self->ud_value;
+    x = self->ud_sdu;
 
     return (luab_pushfstring(L, "(%p)", x));
 }
@@ -156,8 +149,8 @@ LOCALE_gc(lua_State *L)
 
     self = luab_to_locale(L, 1);
 
-    if (self->ud_value != NULL)
-        freelocale(self->ud_value);
+    if (self->ud_sdu != NULL)
+        freelocale(self->ud_sdu);
 
     return (luab_core_gc(L, 1, &luab_locale_type));
 }
@@ -205,7 +198,7 @@ locale_udata(lua_State *L, int narg)
 {
     luab_locale_t *self;
     self = luab_to_locale(L, narg);
-    return ((void *)self->ud_value);
+    return ((void *)self);
 }
 
 luab_module_t luab_locale_type = {

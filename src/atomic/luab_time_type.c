@@ -43,7 +43,7 @@ extern luab_module_t luab_time_type;
 
 typedef struct luab_time {
     luab_udata_t    ud_softc;
-    time_t          ud_value;
+    time_t          ud_sdu;
 } luab_time_t;
 
 #define luab_new_time(L, arg) \
@@ -62,7 +62,7 @@ time_fillxtable(lua_State *L, int narg, void *arg)
 
     if ((self = (luab_time_t *)arg) != NULL) {
 
-        luab_setinteger(L, narg, "value", self->ud_value);
+        luab_setinteger(L, narg, "value", self->ud_sdu);
     } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
@@ -140,7 +140,7 @@ TIME_set_value(lua_State *L)
     self = luab_to_time(L, 1);
     x = (time_t)luab_checklinteger(L, 2, 1);
 
-    self->ud_value = x;
+    self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
@@ -163,7 +163,7 @@ TIME_get_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     self = luab_to_time(L, 1);
-    x = self->ud_value;
+    x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
 }
@@ -222,7 +222,7 @@ time_udata(lua_State *L, int narg)
 {
     luab_time_t *self;
     self = luab_to_time(L, narg);
-    return ((void *)&(self->ud_value));
+    return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
