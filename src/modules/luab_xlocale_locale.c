@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <xlocale/_locale.h>
+#include <locale.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -47,6 +47,72 @@ extern luab_module_t luab_xlocale_locale_lib;
 /*
  * Service primitives.
  */
+
+/***
+ * duplocale(3) - duplicate an locale
+ *
+ * @function duplocale
+ *
+ * @param locale            Specifies locale about duplicated by an
+ *                          instance of (LUA_TUSERDATA(LOCALE)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage locale [, err, msg ] = bsd.xlocale.locale.duplocale(locale)
+ */
+static int
+luab_duplocale(lua_State *L)
+{
+    luab_module_t *m;
+    locale_t locale;
+    locale_t ret;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(LOCALE, TYPE, __func__);
+    locale = luab_udata(L, 1, m, locale_t);
+
+    if (locale != NULL)
+        ret = duplocale(locale);
+    else {
+        ret = NULL;
+        m = NULL;
+    }
+    return (luab_pushxdata(L, m, ret));
+}
+
+/***
+ * freelocale(3) - Frees a locale created with duplocale(3) or newlocale(3)
+ *
+ * @function freelocale
+ *
+ * @param locale            Specifies locale, instance of (LUA_TUSERDATA(LOCALE)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.xlocale.locale.freelocale(locale)
+ */
+static int
+luab_freelocale(lua_State *L)
+{
+    luab_module_t *m;
+    locale_t locale;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(LOCALE, TYPE, __func__);
+    locale = luab_udata(L, 1, m, locale_t);
+
+    if (locale != NULL) {
+        freelocale(locale);
+        status = 0;
+    } else {
+        errno = ENOENT;
+        status = -1;
+    }
+    return (luab_pushxinteger(L, status));
+}
 
 /*
  * Generator functions.
@@ -88,6 +154,8 @@ static luab_module_table_t luab_xlocale_locale_vec[] = {
     LUAB_INT("LC_TIME_MASK",                LC_TIME_MASK),
     LUAB_INT("LC_MESSAGES_MASK",            LC_MESSAGES_MASK),
     LUAB_INT("LC_ALL_MASK",                 LC_ALL_MASK),
+    LUAB_FUNC("duplocale",                  luab_duplocale),
+    LUAB_FUNC("freelocale",                 luab_freelocale),
     LUAB_FUNC("locale_create",              luab_locale_create),
     LUAB_MOD_TBL_SENTINEL
 };

@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <xlocale/_locale.h>
+#include <locale.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -150,6 +150,15 @@ LOCALE_value(lua_State *L)
 static int
 LOCALE_gc(lua_State *L)
 {
+    luab_locale_t *self;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    self = luab_to_locale(L, 1);
+
+    if (self->ud_value != NULL)
+        freelocale(self->ud_value);
+
     return (luab_core_gc(L, 1, &luab_locale_type));
 }
 
