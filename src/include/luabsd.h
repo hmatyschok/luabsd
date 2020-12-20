@@ -32,10 +32,13 @@
 #include <sys/socket.h>
 #include <sys/queue.h>
 
+#include <net/if.h> /* XXX */
+
 #include <errno.h>
 #include <stdlib.h>
 #include <string.h>
 #include <sysexits.h>
+#include <unistd.h>
 
 #include "luab_env.h"
 #include "luab_types.h"

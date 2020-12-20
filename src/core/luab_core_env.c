@@ -210,3 +210,30 @@ u_long luab_env_nprocessors_onln;
 u_long luab_env_cpuset_size;
 
 u_long luab_env_phys_pages;
+
+/*
+ * Initializes set of environment variables.
+ */
+void
+luab_core_initenv(luab_sysconf_vec_t *vec)
+{
+    luab_sysconf_vec_t *tok;
+    long scx;
+
+    if ((tok = vec) != NULL) {
+
+        do {
+            if (tok->scv_val != NULL) {
+
+                if ((scx = sysconf(tok->scv_key)) < 0)
+                    *(tok->scv_val) = tok->scv_dflt;
+                else
+                    *(tok->scv_val) = (u_long)scx;
+            } else
+                errno = ENOENT;
+
+            tok++;
+        } while (tok->scv_val != NULL);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENXIO);
+}
