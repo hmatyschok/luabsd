@@ -223,6 +223,36 @@ luab_uint16_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UINT32)).
+ *
+ * @function uint32_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uint32 [, err, msg ] = bsd.sys.stdint.uint32_create(x)
+ */
+static int
+luab_uint32_create(lua_State *L)
+{
+    luab_module_t *m;
+    uint32_t x, *xp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT32, TYPE, __func__);
+
+    if (lua_isnumber(L, 1) != 0) {
+        x = (uint32_t)luab_checkinteger(L, 1, luab_env_uint_max);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, uint32_t *);
+
+    return (luab_pushxdata(L, m, xp));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(INTPTR)).
  *
  * @function intptr_create
@@ -361,6 +391,7 @@ static luab_module_table_t luab_sys_stdint_vec[] = {
     LUAB_FUNC("int64_create",           luab_int64_create),
     LUAB_FUNC("uint8_create",           luab_uint8_create),
     LUAB_FUNC("uint16_create",          luab_uint16_create),
+    LUAB_FUNC("uint32_create",          luab_uint32_create),
     LUAB_FUNC("intptr_create",          luab_intptr_create),
     LUAB_FUNC("uintptr_create",         luab_uintptr_create),
     LUAB_FUNC("intmax_create",          luab_intmax_create),

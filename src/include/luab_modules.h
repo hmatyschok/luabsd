@@ -44,7 +44,6 @@ extern luab_module_t luab_long_type;
 extern luab_module_t luab_double_type;
 extern luab_module_t luab_float_type;
 
-
 /* standard types */
 extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_gid_type;
@@ -67,6 +66,7 @@ extern luab_module_t luab_int64_type;
 
 extern luab_module_t luab_uint8_type;
 extern luab_module_t luab_uint16_type;
+extern luab_module_t luab_uint32_type;
 
 extern luab_module_t luab_intptr_type;
 extern luab_module_t luab_uintptr_type;
