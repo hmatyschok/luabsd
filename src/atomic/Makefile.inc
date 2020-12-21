@@ -49,3 +49,4 @@ SRCS+=  luab_int64_type.c
 
 SRCS+=  luab_intptr_type.c
 SRCS+=  luab_uintptr_type.c
+SRCS+=  luab_intmax_type.c

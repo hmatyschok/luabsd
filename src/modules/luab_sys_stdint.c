@@ -222,6 +222,36 @@ luab_uintptr_create(lua_State *L)
     return (luab_pushxdata(L, m, xp));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(INTMAX)).
+ *
+ * @function intmax_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage intmax [, err, msg ] = bsd.sys.stdint.intmax_create(x)
+ */
+static int
+luab_intmax_create(lua_State *L)
+{
+    luab_module_t *m;
+    intmax_t x, *xp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INTMAX, TYPE, __func__);
+
+    if (lua_isnumber(L, 1) != 0) {
+        x = (intmax_t)luab_checkinteger(L, 1, luab_env_int_max);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, intmax_t *);
+
+    return (luab_pushxdata(L, m, xp));
+}
+
 /*
  * Interface against <sys/stdint.h>
  */
@@ -241,6 +271,7 @@ static luab_module_table_t luab_sys_stdint_vec[] = {
     LUAB_FUNC("int64_create",           luab_int64_create),
     LUAB_FUNC("intptr_create",          luab_intptr_create),
     LUAB_FUNC("uintptr_create",         luab_uintptr_create),
+    LUAB_FUNC("intmax_create",          luab_intmax_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
