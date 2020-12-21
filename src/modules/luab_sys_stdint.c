@@ -184,10 +184,40 @@ luab_intptr_create(lua_State *L)
     m = luab_xmod(INTPTR, TYPE, __func__);
 
     if (lua_isnumber(L, 1) != 0) {
-        x = (intptr_t)luab_checklinteger(L, 1, 0);
+        x = (intptr_t)luab_checklinteger(L, 1, 1);
         xp = &x;
     } else
         xp = luab_udataisnil(L, 1, m, intptr_t *);
+
+    return (luab_pushxdata(L, m, xp));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UINTPTR)).
+ *
+ * @function uintptr_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uintptr [, err, msg ] = bsd.sys.stdint.uintptr_create(x)
+ */
+static int
+luab_uintptr_create(lua_State *L)
+{
+    luab_module_t *m;
+    uintptr_t x, *xp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINTPTR, TYPE, __func__);
+
+    if (lua_isnumber(L, 1) != 0) {
+        x = (uintptr_t)luab_checklinteger(L, 1, 0);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, uintptr_t *);
 
     return (luab_pushxdata(L, m, xp));
 }
@@ -205,11 +235,12 @@ static luab_module_table_t luab_sys_stdint_vec[] = {
 #endif /* __EXT1_VISIBLE */
 
     /* POSIX sized integrals */
-    LUAB_FUNC("int8_create",        luab_int8_create),
-    LUAB_FUNC("int16_create",       luab_int16_create),
-    LUAB_FUNC("int32_create",       luab_int32_create),
-    LUAB_FUNC("int64_create",       luab_int64_create),
-    LUAB_FUNC("intptr_create",      luab_intptr_create),
+    LUAB_FUNC("int8_create",            luab_int8_create),
+    LUAB_FUNC("int16_create",           luab_int16_create),
+    LUAB_FUNC("int32_create",           luab_int32_create),
+    LUAB_FUNC("int64_create",           luab_int64_create),
+    LUAB_FUNC("intptr_create",          luab_intptr_create),
+    LUAB_FUNC("uintptr_create",         luab_uintptr_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

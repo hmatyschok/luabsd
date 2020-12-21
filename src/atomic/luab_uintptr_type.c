@@ -32,35 +32,35 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t luab_int8_type;
+extern luab_module_t luab_uintptr_type;
 
 /*
  * Interface against
  *
- *  int8_t
+ *  uintptr_t
  *
  */
 
-typedef struct luab_int8 {
+typedef struct luab_uintptr {
     luab_udata_t    ud_softc;
-    int8_t          ud_sdu;
-} luab_int8_t;
+    uintptr_t        ud_sdu;
+} luab_uintptr_t;
 
-#define luab_new_int8(L, arg) \
-    ((luab_int8_t *)luab_newudata(L, &luab_int8_type, (arg)))
-#define luab_to_int8(L, narg) \
-    (luab_todata((L), (narg), &luab_int8_type, luab_int8_t *))
+#define luab_new_uintptr(L, arg) \
+    ((luab_uintptr_t *)luab_newudata(L, &luab_uintptr_type, (arg)))
+#define luab_to_uintptr(L, narg) \
+    (luab_todata((L), (narg), &luab_uintptr_type, luab_uintptr_t *))
 
 /*
  * Subr.
  */
 
 static void
-int8_fillxtable(lua_State *L, int narg, void *arg)
+uintptr_fillxtable(lua_State *L, int narg, void *arg)
 {
-    luab_int8_t *self;
+    luab_uintptr_t *self;
 
-    if ((self = (luab_int8_t *)arg) != NULL) {
+    if ((self = (luab_uintptr_t *)arg) != NULL) {
 
         luab_setinteger(L, narg, "value", self->ud_sdu);
     } else
@@ -72,27 +72,27 @@ int8_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(INT8)) into (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(UINTPTR)) into (LUA_TTABLE).
  *
  * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              value = (LUA_TNUMBER),
+ *              value = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t [, err, msg ]= int8:get_table()
+ * @usage t [, err, msg ] = uintptr:get_table()
  */
 static int
-INT8_get_table(lua_State *L)
+UINTPTR_get_table(lua_State *L)
 {
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xtp.xtp_fill = int8_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_int8(L, 1);
+    xtp.xtp_fill = uintptr_fillxtable;
+    xtp.xtp_arg = (void *)luab_to_uintptr(L, 1);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -106,10 +106,10 @@ INT8_get_table(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage iovec [, err, msg ] = int8:dump()
+ * @usage iovec [, err, msg ] = uintptr:dump()
  */
 static int
-INT8_dump(lua_State *L)
+UINTPTR_dump(lua_State *L)
 {
     return (luab_core_dump(L, 1, NULL, 0));
 }
@@ -119,26 +119,26 @@ INT8_dump(lua_State *L)
  */
 
 /***
- * Set int8.
+ * Set uintptr.
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param x                 Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = int8:set_value(data)
+ * @usage x [, err, msg ] = uintptr:set_value(x)
  */
 static int
-INT8_set_value(lua_State *L)
+UINTPTR_set_value(lua_State *L)
 {
-    luab_int8_t *self;
-    int8_t x;
+    luab_uintptr_t *self;
+    uintptr_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_int8(L, 1);
-    x = (int8_t)luab_checkinteger(L, 2, luab_env_uchar_max);
+    self = luab_to_uintptr(L, 1);
+    x = (uintptr_t)luab_checkinteger(L, 2, luab_env_ullong_max);
 
     self->ud_sdu = x;
 
@@ -146,23 +146,23 @@ INT8_set_value(lua_State *L)
 }
 
 /***
- * Get int8.
+ * Get uintptr.
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = int8:get_value()
+ * @usage data [, err, msg ] = uintptr:get_value()
  */
 static int
-INT8_get_value(lua_State *L)
+UINTPTR_get_value(lua_State *L)
 {
-    luab_int8_t *self;
-    int8_t x;
+    luab_uintptr_t *self;
+    uintptr_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_int8(L, 1);
+    self = luab_to_uintptr(L, 1);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -173,68 +173,68 @@ INT8_get_value(lua_State *L)
  */
 
 static int
-INT8_gc(lua_State *L)
+UINTPTR_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_int8_type));
+    return (luab_core_gc(L, 1, &luab_uintptr_type));
 }
 
 static int
-INT8_len(lua_State *L)
+UINTPTR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_int8_type));
+    return (luab_core_len(L, 2, &luab_uintptr_type));
 }
 
 static int
-INT8_tostring(lua_State *L)
+UINTPTR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_int8_type));
+    return (luab_core_tostring(L, 1, &luab_uintptr_type));
 }
 
 /*
- * Internal int8erface.
+ * Internal uintptrerface.
  */
 
-static luab_module_table_t int8_methods[] = {
-    LUAB_FUNC("set_value",      INT8_set_value),
-    LUAB_FUNC("get_table",      INT8_get_table),
-    LUAB_FUNC("get_value",      INT8_get_value),
-    LUAB_FUNC("dump",           INT8_dump),
-    LUAB_FUNC("__gc",           INT8_gc),
-    LUAB_FUNC("__len",          INT8_len),
-    LUAB_FUNC("__tostring",     INT8_tostring),
+static luab_module_table_t uintptr_methods[] = {
+    LUAB_FUNC("set_value",      UINTPTR_set_value),
+    LUAB_FUNC("get_table",      UINTPTR_get_table),
+    LUAB_FUNC("get_value",      UINTPTR_get_value),
+    LUAB_FUNC("dump",           UINTPTR_dump),
+    LUAB_FUNC("__gc",           UINTPTR_gc),
+    LUAB_FUNC("__len",          UINTPTR_len),
+    LUAB_FUNC("__tostring",     UINTPTR_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 
 static void *
-int8_create(lua_State *L, void *arg)
+uintptr_create(lua_State *L, void *arg)
 {
-    return (luab_new_int8(L, arg));
+    return (luab_new_uintptr(L, arg));
 }
 
 static void
-int8_init(void *ud, void *arg)
+uintptr_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_int8_type, ud, arg);
+    luab_udata_init(&luab_uintptr_type, ud, arg);
 }
 
 static void *
-int8_udata(lua_State *L, int narg)
+uintptr_udata(lua_State *L, int narg)
 {
-    luab_int8_t *self;
-    self = luab_to_int8(L, narg);
+    luab_uintptr_t *self;
+    self = luab_to_uintptr(L, narg);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
-int8_checktable(lua_State *L, int narg)
+uintptr_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
-    int8_t *x, y;
+    uintptr_t *x, y;
     size_t m, n;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_int8_type)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, &luab_uintptr_type)) != NULL) {
 
-        if (((x = (int8_t *)tbl->tbl_vec) != NULL) &&
+        if (((x = (uintptr_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
@@ -244,8 +244,8 @@ int8_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (int8_t)luab_tointeger(L, -1, luab_env_uchar_max);
-                        x[m] = (int8_t)y;
+                        y = (uintptr_t)luab_tointeger(L, -1, luab_env_ullong_max);
+                        x[m] = (uintptr_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -260,14 +260,14 @@ int8_checktable(lua_State *L, int narg)
 }
 
 static void
-int8_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+uintptr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
-    int8_t *x;
+    uintptr_t *x;
     size_t m, n, k;
 
     if (tbl != NULL) {
 
-        if (((x = (int8_t *)tbl->tbl_vec) != NULL) &&
+        if (((x = (uintptr_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
@@ -285,21 +285,21 @@ int8_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 }
 
 static luab_table_t *
-int8_alloctable(void *vec, size_t card)
+uintptr_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_int8_type, vec, card));
+    return (luab_table_create(&luab_uintptr_type, vec, card));
 }
 
-luab_module_t luab_int8_type = {
-    .m_id           = LUAB_INT8_TYPE_ID,
-    .m_name         = LUAB_INT8_TYPE,
-    .m_vec          = int8_methods,
-    .m_create       = int8_create,
-    .m_init         = int8_init,
-    .m_get          = int8_udata,
-    .m_get_tbl      = int8_checktable,
-    .m_set_tbl      = int8_pushtable,
-    .m_alloc_tbl    = int8_alloctable,
-    .m_len          = sizeof(luab_int8_t),
-    .m_sz           = sizeof(int8_t),
+luab_module_t luab_uintptr_type = {
+    .m_id           = LUAB_UINTPTR_TYPE_ID,
+    .m_name         = LUAB_UINTPTR_TYPE,
+    .m_vec          = uintptr_methods,
+    .m_create       = uintptr_create,
+    .m_init         = uintptr_init,
+    .m_get          = uintptr_udata,
+    .m_get_tbl      = uintptr_checktable,
+    .m_set_tbl      = uintptr_pushtable,
+    .m_alloc_tbl    = uintptr_alloctable,
+    .m_len          = sizeof(luab_uintptr_t),
+    .m_sz           = sizeof(uintptr_t),
 };

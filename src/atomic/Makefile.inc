@@ -27,12 +27,6 @@ SRCS+=  luab_long_type.c
 SRCS+=  luab_double_type.c
 SRCS+=  luab_float_type.c
 
-# POSIX sized integrals
-SRCS+=  luab_int8_type.c
-SRCS+=  luab_int16_type.c
-SRCS+=  luab_int32_type.c
-SRCS+=  luab_int64_type.c
-
 # standard types
 SRCS+=  luab_fpos_type.c
 SRCS+=  luab_gid_type.c
@@ -47,5 +41,11 @@ SRCS+=  luab_time_type.c
 SRCS+=  luab_clock_type.c
 SRCS+=  luab_locale_type.c
 
-# <sys/stdint.h>
+# POSIX sized integrals,  <sys/stdint.h>
+SRCS+=  luab_int8_type.c
+SRCS+=  luab_int16_type.c
+SRCS+=  luab_int32_type.c
+SRCS+=  luab_int64_type.c
+
 SRCS+=  luab_intptr_type.c
+SRCS+=  luab_uintptr_type.c
