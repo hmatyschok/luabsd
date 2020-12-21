@@ -155,9 +155,13 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INT64_IDX,
     },{
-        .mv_mod = &luab_int8_type,
+        .mv_mod = &luab_uint8_type,
         .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_INT8_IDX,
+        .mv_idx = LUAB_UINT8_IDX,
+    },{
+        .mv_mod = &luab_uint16_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_UINT16_IDX,
     },{ 
         .mv_mod = &luab_intptr_type,
         .mv_init = luab_core_newmetatable,

@@ -172,6 +172,7 @@ typedef enum luab_type {
     LUAB_INT64_IDX,
 
     LUAB_UINT8_IDX,
+    LUAB_UINT16_IDX,
 
     LUAB_INTPTR_IDX,
     LUAB_UINTPTR_IDX,
@@ -337,6 +338,8 @@ extern luab_module_vec_t luab_typevec[];
 #define LUAB_UINT8_TYPE_ID                  1608568551
 #define LUAB_UINT8_TYPE                     "UINT8*"
 
+#define LUAB_UINT16_TYPE_ID                 1608570564
+#define LUAB_UINT16_TYPE                    "UINT16*"
 
 /*
  * Set of composite data types.
