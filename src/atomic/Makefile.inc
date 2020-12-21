@@ -50,6 +50,7 @@ SRCS+=  luab_int64_type.c
 SRCS+=  luab_uint8_type.c
 SRCS+=  luab_uint16_type.c
 SRCS+=  luab_uint32_type.c
+SRCS+=  luab_uint64_type.c
 
 SRCS+=  luab_intptr_type.c
 SRCS+=  luab_uintptr_type.c
