@@ -68,6 +68,7 @@ extern luab_module_t luab_locale_type;
 extern luab_module_t luab_intptr_type;
 extern luab_module_t luab_uintptr_type;
 extern luab_module_t luab_intmax_type;
+extern luab_module_t luab_uintmax_type;
 
 /*
  * Set of composite data types.

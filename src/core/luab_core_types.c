@@ -166,6 +166,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_intmax_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INTMAX_IDX,
+    },{
+        .mv_mod = &luab_uintmax_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_UINTMAX_IDX,
     },{                                     /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,

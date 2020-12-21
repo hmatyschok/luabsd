@@ -244,10 +244,40 @@ luab_intmax_create(lua_State *L)
     m = luab_xmod(INTMAX, TYPE, __func__);
 
     if (lua_isnumber(L, 1) != 0) {
-        x = (intmax_t)luab_checkinteger(L, 1, luab_env_int_max);
+        x = (intmax_t)luab_checkinteger(L, 1, luab_env_long_max);
         xp = &x;
     } else
         xp = luab_udataisnil(L, 1, m, intmax_t *);
+
+    return (luab_pushxdata(L, m, xp));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UINTMAX)).
+ *
+ * @function uintmax_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uintmax [, err, msg ] = bsd.sys.stdint.uintmax_create(x)
+ */
+static int
+luab_uintmax_create(lua_State *L)
+{
+    luab_module_t *m;
+    uintmax_t x, *xp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINTMAX, TYPE, __func__);
+
+    if (lua_isnumber(L, 1) != 0) {
+        x = (uintmax_t)luab_checkinteger(L, 1, luab_env_ulong_max);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, uintmax_t *);
 
     return (luab_pushxdata(L, m, xp));
 }
@@ -272,6 +302,7 @@ static luab_module_table_t luab_sys_stdint_vec[] = {
     LUAB_FUNC("intptr_create",          luab_intptr_create),
     LUAB_FUNC("uintptr_create",         luab_uintptr_create),
     LUAB_FUNC("intmax_create",          luab_intmax_create),
+    LUAB_FUNC("uintmax_create",         luab_uintmax_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
