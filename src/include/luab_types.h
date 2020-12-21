@@ -151,12 +151,6 @@ typedef enum luab_type {
     LUAB_DOUBLE_IDX,
     LUAB_FLOAT_IDX,
 
-    /* POSIX sized integrals */
-    LUAB_INT8_IDX,
-    LUAB_INT16_IDX,
-    LUAB_INT32_IDX,
-    LUAB_INT64_IDX,
-
     /* standard types */
     LUAB_FPOS_IDX,
     LUAB_GID_IDX,
@@ -172,10 +166,19 @@ typedef enum luab_type {
     LUAB_LOCALE_IDX,
 
     /* <sys/stdint.h> */
+    LUAB_INT8_IDX,
+    LUAB_INT16_IDX,
+    LUAB_INT32_IDX,
+    LUAB_INT64_IDX,
+
+    LUAB_UINT8_IDX,
+
     LUAB_INTPTR_IDX,
     LUAB_UINTPTR_IDX,
     LUAB_INTMAX_IDX,
     LUAB_UINTMAX_IDX,
+
+
 
     /* composite data types */
     LUAB_CLOCKINFO_IDX,
@@ -330,6 +333,10 @@ extern luab_module_vec_t luab_typevec[];
 
 #define LUAB_UINTMAX_TYPE_ID                1608559801
 #define LUAB_UINTMAX_TYPE                   "UINTMAX*"
+
+#define LUAB_UINT8_TYPE_ID                  1608568551
+#define LUAB_UINT8_TYPE                     "UINT8*"
+
 
 /*
  * Set of composite data types.

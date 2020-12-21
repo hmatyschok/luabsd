@@ -94,22 +94,6 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_float_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FLOAT_IDX,
-    },{                                     /* POSIX sized integrals */
-        .mv_mod = &luab_int8_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_INT8_IDX,
-    },{
-        .mv_mod = &luab_int16_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_INT16_IDX,
-    },{
-        .mv_mod = &luab_int32_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_INT32_IDX,
-    },{
-        .mv_mod = &luab_int64_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_INT64_IDX,
     },{                                     /* standard types */
         .mv_mod = &luab_fpos_type,
         .mv_init = luab_core_newmetatable,
@@ -154,7 +138,27 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_locale_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LOCALE_IDX,
-    },{ /* <sys/stdint.h> */
+    },{ /* POSIX sized integrals, <sys/stdint.h> */
+        .mv_mod = &luab_int8_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT8_IDX,
+    },{
+        .mv_mod = &luab_int16_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT16_IDX,
+    },{
+        .mv_mod = &luab_int32_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT32_IDX,
+    },{
+        .mv_mod = &luab_int64_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT64_IDX,
+    },{
+        .mv_mod = &luab_int8_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INT8_IDX,
+    },{ 
         .mv_mod = &luab_intptr_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INTPTR_IDX,
