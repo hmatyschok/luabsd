@@ -64,6 +64,9 @@ extern luab_module_t luab_time_type;
 extern luab_module_t luab_clock_type;
 extern luab_module_t luab_locale_type;
 
+/* <sys/stdint.h> */
+extern luab_module_t luab_intptr_type;
+
 /*
  * Set of composite data types.
  */

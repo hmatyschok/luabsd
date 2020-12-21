@@ -214,7 +214,7 @@ luab_checkxdataisnil(lua_State *L, int narg, luab_module_t *m)
 }
 
 void *
-luab_toxudata(lua_State *L, int narg, luab_xarg_t *pci)
+luab_isxdata(lua_State *L, int narg, luab_xarg_t *pci)
 {
     luab_module_vec_t *vec;
     luab_udata_t *ud;
@@ -253,7 +253,7 @@ luab_toxdata(lua_State *L, int narg, luab_xarg_t *pci)
 {
     luab_udata_t *ud;
 
-    if ((ud = luab_toxudata(L, narg, pci)) != NULL)
+    if ((ud = luab_isxdata(L, narg, pci)) != NULL)
         return (ud + 1);
 
     return (NULL);
@@ -292,7 +292,7 @@ luab_udata_xlink(lua_State *L, int narg, luab_udata_t *udx, void **x)
     if ((ud = luab_udata_find(udx, x)) != NULL)
         luab_udata_remove(ud);
 
-    if ((ud = luab_toxudata(L, narg, NULL)) != NULL)
+    if ((ud = luab_isxdata(L, narg, NULL)) != NULL)
         dp = luab_udata_insert(udx, ud, x);
     else {
         errno = ENOENT;

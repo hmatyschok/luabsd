@@ -39,8 +39,25 @@
  * Bindings against atomic / composite data types.
  *
  * XXX
- *  We should split this vector table into subsets by category and externilze.
+ *
+ *  (a) We should split this vector table into
+ *      subsets by category and externalize.
+ *
+ *  (b) Changes on documentation and namespace
+ *      are neccessary.
+ *
+ *  (c) We shall regroup the set by utilizing a so called
+ *      directory-like structure for components, e. g. over
+ *
+ *          t : { T }
+ *
+ *      by
+ *
+ *          T = { atomic, composite }
+ *
+ *      its type, realm and/or domain, etc.
  */
+
 luab_module_vec_t luab_typevec[] = {
 #if __BSD_VISIBLE
     {                                       /* integer types */
@@ -137,6 +154,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_locale_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LOCALE_IDX,
+    },{ /* <sys/stdint.h> */
+        .mv_mod = &luab_intptr_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_INTPTR_IDX,
     },{                                     /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,

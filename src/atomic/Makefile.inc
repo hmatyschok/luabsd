@@ -46,3 +46,6 @@ SRCS+=  luab_wchar_type.c
 SRCS+=  luab_time_type.c
 SRCS+=  luab_clock_type.c
 SRCS+=  luab_locale_type.c
+
+# <sys/stdint.h>
+SRCS+=  luab_intptr_type.c

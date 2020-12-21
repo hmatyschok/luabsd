@@ -88,7 +88,7 @@ void     *luab_checkludata(lua_State *, int, luab_module_t *, size_t);
 void     *luab_checkxdata(lua_State *, int, luab_module_t *, luab_udata_t **);
 void     *luab_checkxdataisnil(lua_State *, int, luab_module_t *);
 
-void     *luab_toxudata(lua_State *, int, luab_xarg_t *);
+void     *luab_isxdata(lua_State *, int, luab_xarg_t *);
 void     *luab_toxdata(lua_State *, int, luab_xarg_t *);
 
 void     *luab_udata_xlink(lua_State *, int, luab_udata_t *, void **);

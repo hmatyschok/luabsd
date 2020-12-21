@@ -171,6 +171,9 @@ typedef enum luab_type {
 
     LUAB_LOCALE_IDX,
 
+    /* <sys/stdint.h> */
+    LUAB_INTPTR_IDX,
+
     /* composite data types */
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
@@ -312,6 +315,9 @@ extern luab_module_vec_t luab_typevec[];
 
 #define LUAB_LOCALE_TYPE_ID                 1608306297
 #define LUAB_LOCALE_TYPE                    "LOCALE*"
+
+#define LUAB_INTPTR_TYPE_ID                 1608485473
+#define LUAB_INTPTR_TYPE                    "INTPTR*"
 
 /*
  * Set of composite data types.

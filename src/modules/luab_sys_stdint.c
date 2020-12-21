@@ -57,14 +57,19 @@ static int
 luab_int8_create(lua_State *L)
 {
     luab_module_t *m;
-    int8_t x;
+    int8_t x, *xp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT8, TYPE, __func__);
-    x = (int8_t)luab_checkinteger(L, 1, luab_env_uchar_max);
 
-    return (luab_pushxdata(L, m, &x));
+    if (lua_isnumber(L, 1) != 0) {
+        x = (int8_t)luab_checkinteger(L, 1, luab_env_uchar_max);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, int8_t *);
+
+    return (luab_pushxdata(L, m, xp));
 }
 
 /***
@@ -82,14 +87,19 @@ static int
 luab_int16_create(lua_State *L)
 {
     luab_module_t *m;
-    int16_t x;
+    int16_t x, *xp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT16, TYPE, __func__);
-    x = (int16_t)luab_checkinteger(L, 1, luab_env_ushrt_max);
 
-    return (luab_pushxdata(L, m, &x));
+    if (lua_isnumber(L, 1) != 0) {
+        x = (int16_t)luab_checkinteger(L, 1, luab_env_ushrt_max);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, int16_t *);
+
+    return (luab_pushxdata(L, m, xp));
 }
 
 /***
@@ -107,14 +117,19 @@ static int
 luab_int32_create(lua_State *L)
 {
     luab_module_t *m;
-    int32_t x;
+    int32_t x, *xp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT32, TYPE, __func__);
-    x = (int32_t)luab_checkinteger(L, 1, luab_env_uint_max);
 
-    return (luab_pushxdata(L, m, &x));
+    if (lua_isnumber(L, 1) != 0) {
+        x = (int32_t)luab_checkinteger(L, 1, luab_env_uint_max);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, int32_t *);
+
+    return (luab_pushxdata(L, m, xp));
 }
 
 /***
@@ -132,14 +147,49 @@ static int
 luab_int64_create(lua_State *L)
 {
     luab_module_t *m;
-    int64_t x;
+    int64_t x, *xp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT64, TYPE, __func__);
-    x = (int64_t)luab_checkinteger(L, 1, luab_env_ullong_max);
 
-    return (luab_pushxdata(L, m, &x));
+    if (lua_isnumber(L, 1) != 0) {
+        x = (int64_t)luab_checkinteger(L, 1, luab_env_ullong_max);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, int64_t *);
+
+    return (luab_pushxdata(L, m, xp));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(INTPTR)).
+ *
+ * @function intptr_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage intptr [, err, msg ] = bsd.sys.stdint.intptr_create(x)
+ */
+static int
+luab_intptr_create(lua_State *L)
+{
+    luab_module_t *m;
+    intptr_t x, *xp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INTPTR, TYPE, __func__);
+
+    if (lua_isnumber(L, 1) != 0) {
+        x = (intptr_t)luab_checklinteger(L, 1, 0);
+        xp = &x;
+    } else
+        xp = luab_udataisnil(L, 1, m, intptr_t *);
+
+    return (luab_pushxdata(L, m, xp));
 }
 
 /*
@@ -159,6 +209,7 @@ static luab_module_table_t luab_sys_stdint_vec[] = {
     LUAB_FUNC("int16_create",       luab_int16_create),
     LUAB_FUNC("int32_create",       luab_int32_create),
     LUAB_FUNC("int64_create",       luab_int64_create),
+    LUAB_FUNC("intptr_create",      luab_intptr_create),
     LUAB_MOD_TBL_SENTINEL
 };
 
