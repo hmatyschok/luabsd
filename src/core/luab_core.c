@@ -641,6 +641,9 @@ static luab_module_vec_t luab_xlocale_vec[] = {
         .mv_mod = &luab_xlocale_inttypes_lib,
         .mv_init = luab_core_newtable,
     },{
+        .mv_mod = &luab_xlocale_langinfo_lib,
+        .mv_init = luab_core_newtable,
+    },{
         .mv_mod = &luab_xlocale_locale_lib,
         .mv_init = luab_core_newtable,
     },{

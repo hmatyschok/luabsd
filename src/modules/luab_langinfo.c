@@ -47,11 +47,11 @@ extern luab_module_t luab_langinfo_lib;
  *
  * @function nl_langinfo
  *
- * @param item              The specified item obout requsted information,
- *                          either by an instance of (LUA_TNUMBER) or by
- *                          an instance of (LUA_TUSERDARA(NL_ITEM)).
+ * @param item              The specified item obout requested information,
+ *                          either by an instance of (LUA_TNUMBER) or by an
+ *                          instance of (LUA_TUSERDARA(NL_ITEM)).
  *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  * @usage ret [, err, msg ] = bsd.langinfo.nl_langinfo(item)
  */

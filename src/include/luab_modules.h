@@ -156,6 +156,7 @@ extern luab_module_t luab_sys_socket_lib;
 extern luab_module_t luab_sys_stdint_lib;
 
 extern luab_module_t luab_xlocale_inttypes_lib;
+extern luab_module_t luab_xlocale_langinfo_lib;
 extern luab_module_t luab_xlocale_locale_lib;
 extern luab_module_t luab_xlocale_time_lib;
 
