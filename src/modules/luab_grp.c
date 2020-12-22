@@ -294,7 +294,7 @@ luab_getgrgid_r(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -359,7 +359,7 @@ luab_getgrnam_r(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -423,7 +423,7 @@ luab_getgrent_r(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (bufsize <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;

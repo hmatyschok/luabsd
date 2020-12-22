@@ -27,6 +27,7 @@
 #ifndef _LUAB_LOCALE_H_
 #define _LUAB_LOCALE_H_
 
+#include <inttypes.h>
 #include <xlocale.h>
 
 typedef struct luab_locale {

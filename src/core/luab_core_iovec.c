@@ -293,7 +293,7 @@ luab_iovec_copyin(luab_iovec_t *buf, const void *dp, size_t len)
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
             (len <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -332,7 +332,7 @@ luab_iovec_copyout(luab_iovec_t *buf, void *dp, size_t len)
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
             (len <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -370,7 +370,7 @@ luab_iovec_read(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -411,7 +411,7 @@ luab_iovec_readv(lua_State *L, int fd, luab_iovec_t *buf, size_t n)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -445,7 +445,7 @@ luab_iovec_write(lua_State *L, int fd, luab_iovec_t *buf, size_t *n)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -484,7 +484,7 @@ luab_iovec_writev(lua_State *L, int fd, luab_iovec_t *buf, size_t n)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -520,7 +520,7 @@ luab_iovec_readlink(lua_State *L, const char *path, luab_iovec_t *buf, size_t *n
     if (path != NULL && buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -565,7 +565,7 @@ luab_iovec_pread(lua_State *L, int fd, luab_iovec_t *buf, size_t *n, off_t off)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -607,7 +607,7 @@ luab_iovec_pwrite(lua_State *L, int fd, luab_iovec_t *buf, size_t *n, off_t off)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -650,7 +650,7 @@ luab_iovec_readlinkat(lua_State *L, int fd, const char *path,
     if (path != NULL && buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -693,7 +693,7 @@ luab_iovec_preadv(lua_State *L, int fd, luab_iovec_t *buf, size_t n, off_t off)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -726,7 +726,7 @@ luab_iovec_pwritev(lua_State *L, int fd, luab_iovec_t *buf, size_t n, off_t off)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -765,7 +765,7 @@ luab_iovec_recv(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -811,7 +811,7 @@ luab_iovec_recvfrom(lua_State *L, int s, luab_iovec_t *buf, size_t *n,
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -856,7 +856,7 @@ luab_iovec_send(lua_State *L, int s, luab_iovec_t *buf, size_t *n, int flags)
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -900,7 +900,7 @@ luab_iovec_sendto(lua_State *L, int s, luab_iovec_t *buf, size_t *n,
     if (buf != NULL) {
 
         if ((buf->iov_max_len <= luab_env_buf_max) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;

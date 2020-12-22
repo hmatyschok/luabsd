@@ -327,7 +327,7 @@ luab_mblen(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (nbytes <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -380,7 +380,7 @@ luab_mbstowcs(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (nbytes <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -935,7 +935,7 @@ luab_realpath(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (luab_env_path_max <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -1191,7 +1191,7 @@ luab_initstate(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (n <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -1483,7 +1483,7 @@ luab_putenv(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags && IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -1590,7 +1590,7 @@ luab_setstate(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -1775,7 +1775,7 @@ luab_arc4random_buf(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (nbytes <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -2374,7 +2374,7 @@ luab_devname_r(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (luab_env_path_max <= buf->iov_max_len) &&
         ((size_t)len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
 
@@ -2453,7 +2453,7 @@ luab_fdevname_r(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (luab_env_path_max <= buf->iov_max_len) &&
         ((size_t)len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
 
@@ -2579,7 +2579,7 @@ luab_l64a_r(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         ((size_t)buflen <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -2640,7 +2640,7 @@ luab_mkostemp(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -2703,7 +2703,7 @@ luab_mkostemps(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;

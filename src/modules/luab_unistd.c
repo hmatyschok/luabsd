@@ -542,7 +542,7 @@ luab_getcwd(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (size <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -1275,7 +1275,7 @@ luab_ttyname_r(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -1469,7 +1469,7 @@ luab_getlogin_r(lua_State *L)
     if (((name = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -1589,7 +1589,7 @@ luab_gethostname(lua_State *L)
     if (((dp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (namelen <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -2581,7 +2581,7 @@ luab_getwd(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (luab_env_path_max <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3045,7 +3045,7 @@ luab_getdomainname(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov_max_len <= MAXHOSTNAMELEN) &&
         (namelen <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3096,7 +3096,7 @@ luab_getentropy(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (MAX_INPUT <= buf->iov_max_len) &&
         (buflen <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3209,7 +3209,7 @@ luab_getloginclass(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov_max_len <= luab_env_logname_max) &&
         (len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3259,7 +3259,7 @@ luab_getmode(lua_State *L)
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov_max_len <= LUAB_SETMAXLEN) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3537,7 +3537,7 @@ luab_iruserok_sa(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         ((size_t)addrlen <= buf->iov.iov_len) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3638,7 +3638,7 @@ luab_mkdtemp(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3685,7 +3685,7 @@ luab_mkstemp(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3735,7 +3735,7 @@ luab_mkstemps(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3782,7 +3782,7 @@ luab_mktemp(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -3888,7 +3888,7 @@ luab_profil(lua_State *L)
         if (((bp = buf->iov.iov_base) != NULL) &&
             (buf->iov_max_len <= luab_env_buf_max) &&
             (size <= buf->iov_max_len) &&
-            (buf->iov_flags & IOV_BUFF)) {
+            ((buf->iov_flags & IOV_BUFF) != 0)) {
 
             if ((buf->iov_flags & IOV_LOCK) == 0) {
                 buf->iov_flags |= IOV_LOCK;
@@ -3956,7 +3956,7 @@ luab_rcmd(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -4024,7 +4024,7 @@ luab_rcmd_af(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -4088,7 +4088,7 @@ luab_rcmdsh(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_path_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -4311,7 +4311,7 @@ luab_setdomainname(lua_State *L)
         (buf->iov_max_len <= MAXHOSTNAMELEN) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         ((size_t)namelen <= buf->iov.iov_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -4446,7 +4446,7 @@ luab_setloginclass(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (buf->iov_max_len <= luab_env_logname_max) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;
@@ -4495,7 +4495,7 @@ luab_setmode(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
         (LUAB_SETMAXLEN <= buf->iov_max_len) &&
-        (buf->iov_flags & IOV_BUFF)) {
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
 
         if ((buf->iov_flags & IOV_LOCK) == 0) {
             buf->iov_flags |= IOV_LOCK;

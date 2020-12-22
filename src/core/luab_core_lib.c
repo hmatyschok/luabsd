@@ -186,6 +186,15 @@ luab_core_Integer_promotion_msk(int s)
  * not exist.
  */
 
+void *
+luab_checknil(lua_State *L, int narg)
+{
+    if (lua_isnil(L, narg) == 0)
+        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
+
+    return (NULL);
+}
+
 lua_Integer
 luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
 {

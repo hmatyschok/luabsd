@@ -38,7 +38,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sysexits.h>
-#include <unistd.h>
+#include <unistd.h> /* XXX */
 
 #include "luab_env.h"
 #include "luab_types.h"
@@ -70,6 +70,8 @@ lua_Integer  luab_core_Integer_promotion_msk(int);
 /*
  * Access functions, n-th arg over argv, [stack -> C].
  */
+
+void     *luab_checknil(lua_State *, int);
 
 lua_Integer  luab_checkinteger(lua_State *, int, lua_Integer);
 lua_Integer  luab_tointeger(lua_State *, int, lua_Integer);
