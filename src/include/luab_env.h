@@ -530,5 +530,9 @@ extern u_long luab_env_cpuset_size;
 
 extern u_long luab_env_phys_pages;
 
+/*
+ * Service primitives / subr.
+ */
+
 void     luab_core_initenv(luab_sysconf_vec_t *);
 #endif /* _LUAB_ENV_H_ */

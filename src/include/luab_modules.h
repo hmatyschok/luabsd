@@ -74,6 +74,9 @@ extern luab_module_t luab_uintptr_type;
 extern luab_module_t luab_intmax_type;
 extern luab_module_t luab_uintmax_type;
 
+/* <langinfo.h> */
+extern luab_module_t luab_nl_item_type;
+
 /*
  * Set of composite data types.
  */
@@ -161,6 +164,7 @@ extern luab_module_t luab_dirent_lib;
 extern luab_module_t luab_fcntl_lib;
 extern luab_module_t luab_fstab_lib;
 extern luab_module_t luab_grp_lib;
+extern luab_module_t luab_langinfo_lib;
 extern luab_module_t luab_pwd_lib;
 extern luab_module_t luab_regex_lib;
 extern luab_module_t luab_stdio_lib;
@@ -170,6 +174,10 @@ extern luab_module_t luab_ttyent_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
+/*
+ * Service primitives / subr.
+ */
+ 
 void     luab_core_populate(lua_State *, int, luab_module_t *);
 void     luab_core_newtable(lua_State *, int, luab_module_t *);
 void     luab_core_newmetatable(lua_State *, int, luab_module_t *);

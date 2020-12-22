@@ -181,6 +181,9 @@ typedef enum luab_type {
     LUAB_INTMAX_IDX,
     LUAB_UINTMAX_IDX,
 
+    /* <langinfo.h> */
+    LUAB_NL_ITEM_IDX,
+
     /* composite data types */
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
@@ -346,6 +349,9 @@ extern luab_module_vec_t luab_typevec[];
 
 #define LUAB_UINT64_TYPE_ID                 1608592367
 #define LUAB_UINT64_TYPE                    "UINT64*"
+
+#define LUAB_NL_ITEM_TYPE_ID                1608651977
+#define LUAB_NL_ITEM_TYPE                   "NL_ITEM*"
 
 /*
  * Set of composite data types.
