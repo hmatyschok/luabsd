@@ -49,7 +49,7 @@ extern luab_module_t luab_langinfo_lib;
  *
  * @param item              The specified item obout requested information,
  *                          either by an instance of (LUA_TNUMBER) or by an
- *                          instance of (LUA_TUSERDARA(NL_ITEM)).
+ *                          instance of (LUA_TUSERDATA(NL_ITEM)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

@@ -160,6 +160,7 @@ extern luab_module_t luab_xlocale_langinfo_lib;
 extern luab_module_t luab_xlocale_locale_lib;
 extern luab_module_t luab_xlocale_time_lib;
 
+extern luab_module_t luab_cpio_lib;
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_dirent_lib;
 extern luab_module_t luab_fcntl_lib;
