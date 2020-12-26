@@ -74,6 +74,9 @@ extern luab_module_t luab_uintptr_type;
 extern luab_module_t luab_intmax_type;
 extern luab_module_t luab_uintmax_type;
 
+/* <ctype.h> */
+extern luab_module_t luab_ct_rune_type;
+
 /* <langinfo.h> */
 extern luab_module_t luab_nl_item_type;
 
@@ -161,6 +164,7 @@ extern luab_module_t luab_xlocale_locale_lib;
 extern luab_module_t luab_xlocale_time_lib;
 
 extern luab_module_t luab_cpio_lib;
+extern luab_module_t luab_ctype_lib;
 extern luab_module_t luab_db_lib;
 extern luab_module_t luab_dirent_lib;
 extern luab_module_t luab_fcntl_lib;

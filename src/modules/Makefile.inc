@@ -25,6 +25,7 @@ SRCS+=  luab_xlocale_locale.c
 SRCS+=	luab_xlocale_time.c
 
 SRCS+=  luab_cpio.c
+SRCS+=  luab_ctype.c
 SRCS+=  luab_db.c
 SRCS+=  luab_dirent.c
 SRCS+=  luab_fcntl.c

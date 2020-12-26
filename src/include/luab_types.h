@@ -181,6 +181,9 @@ typedef enum luab_type {
     LUAB_INTMAX_IDX,
     LUAB_UINTMAX_IDX,
 
+    /* <ctype.h */
+    LUAB_CT_RUNE_IDX,
+
     /* <langinfo.h> */
     LUAB_NL_ITEM_IDX,
 
@@ -494,5 +497,8 @@ extern luab_module_vec_t luab_typevec[];
 
 #define LUAB_XVFSCONF_TYPE_ID               1604736441
 #define LUAB_XVFSCONF_TYPE                  "XVFSCONF*"
+
+#define LUAB_CT_RUNE_TYPE_ID                1608692148
+#define LUAB_CT_RUNE_TYPE                   "CT_RUNE*"
 
 #endif /* _LUAB_TYPES_H_ */
