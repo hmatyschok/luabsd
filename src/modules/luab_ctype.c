@@ -71,7 +71,7 @@ luab_runetype_l(lua_State *L)
 
     m0 = luab_xmod(CT_RUNE, TYPE, __func__);
     m1 = luab_xmod(LOCALE, TYPE, __func__);
-        
+
     if (lua_isnumber(L, 1) != 0) {
         x = (__ct_rune_t)luab_checkinteger(L, 1, luab_env_int_max);
         xp = &x;
@@ -118,7 +118,7 @@ luab_runetype(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     m0 = luab_xmod(CT_RUNE, TYPE, __func__);
-        
+
     if (lua_isnumber(L, 1) != 0) {
         x = (__ct_rune_t)luab_checkinteger(L, 1, luab_env_int_max);
         xp = &x;
@@ -153,20 +153,16 @@ luab_runetype(lua_State *L)
 static int
 luab_ct_rune_create(lua_State *L)
 {
-    luab_module_t *m;
-    __ct_rune_t x, *xp;
+    luab_xmodule_t xm;
+    __ct_rune_t x;
 
-    (void)luab_core_checkmaxargs(L, 1);
+    xm.xm_idx = luab_idx(CT_RUNE);
+    xm.xm_id = luab_xcookie(CT_RUNE, TYPE);
+    xm.xm_fname = __func__;
 
-    m = luab_xmod(CT_RUNE, TYPE, __func__);
+    x = (__ct_rune_t)luab_checkxinteger(L, 1, &xm, luab_env_int_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (__ct_rune_t)luab_checkinteger(L, 1, luab_env_int_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, __ct_rune_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xm.xm_mod, &x));
 }
 
 /*

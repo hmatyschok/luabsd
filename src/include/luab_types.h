@@ -257,248 +257,84 @@ typedef struct luab_module_vec {
 extern luab_module_vec_t luab_typevec[];
 
 /*
- * Set of atomic data types.
+ * Primitives for module-vector operations.
  */
 
-#define LUAB_CHAR_TYPE_ID                   1605964271
-#define LUAB_CHAR_TYPE                      "CHAR*"
+typedef struct luab_xmodule {
+    luab_type_t     xm_idx;
+    uint32_t        xm_id;
+    const char      *xm_fname;
+    luab_module_t   *xm_mod;
+} luab_xmodule_t;
 
-#define LUAB_DOUBLE_TYPE_ID                 1605894356
-#define LUAB_DOUBLE_TYPE                    "DOUBLE*"
+luab_module_t    *luab_core_checkmodule(luab_type_t, uint32_t, const char *);
 
-#define LUAB_FLOAT_TYPE_ID                  1605908147
-#define LUAB_FLOAT_TYPE                     "FLOAT*"
+#define luab_xmod(name, type, fname)                                \
+    (luab_core_checkmodule(luab_idx(name),                          \
+        luab_xcookie(name, type), (fname)))
 
-#define LUAB_FPOS_TYPE_ID                   1605960373
-#define LUAB_FPOS_TYPE                      "FPOS*"
+void     luab_core_populate(lua_State *, int, luab_module_t *);
+void     luab_core_newtable(lua_State *, int, luab_module_t *);
+void     luab_core_newmetatable(lua_State *, int, luab_module_t *);
 
-#define LUAB_GID_TYPE_ID                    1605908910
-#define LUAB_GID_TYPE                       "GID*"
-
-#define LUAB_INT16_TYPE_ID                  1606002046
-#define LUAB_INT16_TYPE                     "INT16*"
-
-#define LUAB_INT32_TYPE_ID                  1606004102
-#define LUAB_INT32_TYPE                     "INT32*"
-
-#define LUAB_INT64_TYPE_ID                  1606004507
-#define LUAB_INT64_TYPE                     "INT64*"
-
-#define LUAB_INT8_TYPE_ID                   1606001349
-#define LUAB_INT8_TYPE                      "INT8*"
-
-#define LUAB_INT_TYPE_ID                    1605877856
-#define LUAB_INT_TYPE                       "INT*"
-
-#define LUAB_LONG_TYPE_ID                   1605965914
-#define LUAB_LONG_TYPE                      "LONG*"
-
-#define LUAB_OFF_TYPE_ID                    1605914553
-#define LUAB_OFF_TYPE                       "OFF*"
-
-#define LUAB_SHORT_TYPE_ID                  1605997500
-#define LUAB_SHORT_TYPE                     "SHORT*"
-
-#define LUAB_SIZE_TYPE_ID                   1605967268
-#define LUAB_SIZE_TYPE                      "SIZE*"
-
-#define LUAB_SOCKLEN_TYPE_ID                1605960373
-#define LUAB_SOCKLEN_TYPE                   "SOCKLEN*"
-
-#define LUAB_SSIZE_TYPE_ID                  1605991182
-#define LUAB_SSIZE_TYPE                     "SSIZE*"
-
-#define LUAB_UID_TYPE_ID                    1605913920
-#define LUAB_UID_TYPE                       "UID*"
-
-#define LUAB_UINT_TYPE_ID                   1605965347
-#define LUAB_UINT_TYPE                      "UINT*"
-
-#define LUAB_USHRT_TYPE_ID                  1605911568
-#define LUAB_USHRT_TYPE                     "USHRT*"
-
-#define LUAB_WCHAR_TYPE_ID                  1605963183
-#define LUAB_WCHAR_TYPE                     "WCHAR*"
-
-#define LUAB_TIME_TYPE_ID                   1607255289
-#define LUAB_TIME_TYPE                      "TIME*"
-
-#define LUAB_CLOCK_TYPE_ID                  1607649423
-#define LUAB_CLOCK_TYPE                     "CLOCK*"
-
-#define LUAB_LOCALE_TYPE_ID                 1608306297
-#define LUAB_LOCALE_TYPE                    "LOCALE*"
-
-#define LUAB_INTPTR_TYPE_ID                 1608485473
-#define LUAB_INTPTR_TYPE                    "INTPTR*"
-
-#define LUAB_UINTPTR_TYPE_ID                1608557891
-#define LUAB_UINTPTR_TYPE                   "UINTPTR*"
-
-#define LUAB_INTMAX_TYPE_ID                 1608559100
-#define LUAB_INTMAX_TYPE                    "INTMAX*"
-
-#define LUAB_UINTMAX_TYPE_ID                1608559801
-#define LUAB_UINTMAX_TYPE                   "UINTMAX*"
-
-#define LUAB_UINT8_TYPE_ID                  1608568551
-#define LUAB_UINT8_TYPE                     "UINT8*"
-
-#define LUAB_UINT16_TYPE_ID                 1608570564
-#define LUAB_UINT16_TYPE                    "UINT16*"
-
-#define LUAB_UINT32_TYPE_ID                 1608590394
-#define LUAB_UINT32_TYPE                    "UINT32*"
-
-#define LUAB_UINT64_TYPE_ID                 1608592367
-#define LUAB_UINT64_TYPE                    "UINT64*"
-
-#define LUAB_NL_ITEM_TYPE_ID                1608651977
-#define LUAB_NL_ITEM_TYPE                   "NL_ITEM*"
+void     luab_core_initmodule(lua_State *, int, luab_module_vec_t *,
+    const char *, int);
 
 /*
- * Set of composite data types.
+ * Access functions, n-th arg over argv, [stack -> C].
  */
 
-#define LUAB___SBUF_TYPE_ID                 1605302940
-#define LUAB___SBUF_TYPE                    "__SBUF*"
+void     *luab_checknil(lua_State *, int);
 
-#define LUAB_ACCEPT_FILTER_ARG_TYPE_ID      1601330449
-#define LUAB_ACCEPT_FILTER_ARG_TYPE         "ACCEPT_FILTER_ARG*"
+lua_Integer  luab_core_Integer_promotion_msk(int);
 
-#define LUAB_BINTIME_TYPE_ID                1594161740
-#define LUAB_BINTIME_TYPE                   "BINTIME*"
+lua_Integer  luab_checkinteger(lua_State *, int, lua_Integer);
+lua_Integer  luab_tointeger(lua_State *, int, lua_Integer);
+lua_Integer  luab_tolinteger(lua_State *, int, int);
 
-#define LUAB_CAP_RBUF_TYPE_ID               1601143331
-#define LUAB_CAP_RBUF_TYPE                  "CAP_RBUF*"
+lua_Integer  luab_checklinteger(lua_State *, int, int);
 
-#define LUAB_CLOCKINFO_TYPE_ID              1594164272
-#define LUAB_CLOCKINFO_TYPE                 "CLOCKINFO*"
+lua_Integer  luab_checkxinteger(lua_State *, int, luab_xmodule_t *, lua_Integer);
 
-#define LUAB_CMSGCRED_TYPE_ID               1601557495
-#define LUAB_CMSGCRED_TYPE                  "CMSGCRED*"
+const char   *luab_islstring(lua_State *, int, size_t);
+const char   *luab_tolstring(lua_State *, int, size_t);
+const char   *luab_checklstring(lua_State *, int, size_t, size_t *);
+const char   *luab_checklstringisnil(lua_State *, int, size_t, size_t *);
 
-#define LUAB_CRYPT_DATA_TYPE_ID             1595491033
-#define LUAB_CRYPT_DATA_TYPE                "CRYPT_DATA*"
+char     *luab_checklstringalloc(lua_State *, int, size_t);
 
-#define LUAB_DB_TYPE_ID                     1596201370
-#define LUAB_DB_TYPE                        "DB*"
+/*
+ * Access functions, [C -> stack].
+ */
 
-#define LUAB_DBT_TYPE_ID                    1596025036
-#define LUAB_DBT_TYPE                       "DBT*"
+void     luab_rawsetinteger(lua_State *, int, lua_Integer, lua_Integer);
+void     luab_rawsetnumber(lua_State *, int, lua_Integer, lua_Number);
+void     luab_rawsetstring(lua_State *, int, lua_Integer, const char *);
+void     luab_rawsetfstring(lua_State *, int, lua_Integer, const char *, ...);
+void     luab_rawsetldata(lua_State *, int, lua_Integer, void *, size_t);
 
-#define LUAB_DIR_TYPE_ID                    1604794619
-#define LUAB_DIR_TYPE                       "DIR*"
+void     luab_setcfunction(lua_State *, int, const char *, lua_CFunction);
+void     luab_setinteger(lua_State *, int, const char *, lua_Integer);
+void     luab_setnumber(lua_State *, int, const char *, lua_Number);
 
-#define LUAB_DIRENT_TYPE_ID                 1604795865
-#define LUAB_DIRENT_TYPE                    "DIRENT*"
+void     luab_setstring(lua_State *, int, const char *, const char *);
+void     luab_setfstring(lua_State *, int, const char *, const char *, ...);
+void     luab_setldata(lua_State *, int, const char *, void *, size_t);
 
-#define LUAB_DIV_TYPE_ID                    1600388163
-#define LUAB_DIV_TYPE                       "DIV*"
+int  luab_pusherr(lua_State *, int, int);
 
-#define LUAB_FHANDLE_TYPE_ID                1604445207
-#define LUAB_FHANDLE_TYPE                   "FHANDLE*"
+#define luab_pushxinteger(L, x) \
+    (luab_pushinteger((L), (lua_Integer)(x)))
+#define luab_pushxnumber(L, x) \
+    (luab_pushnumber((L), (lua_Number)(x)))
 
-#define LUAB_FID_TYPE_ID                    1604423994
-#define LUAB_FID_TYPE                       "FID*"
+int  luab_pushinteger(lua_State *, lua_Integer);
+int  luab_pushnumber(lua_State *, lua_Number);
+int  luab_pushnil(lua_State *);
 
-#define LUAB_FLOCK_TYPE_ID                  1593623399
-#define LUAB_FLOCK_TYPE                     "FLOCK*"
+int  luab_pushstring(lua_State *, const char *);
+int  luab_pushfstring(lua_State *, const char *, ...);
 
-#define LUAB_FSID_TYPE_ID                   1604426384
-#define LUAB_FSID_TYPE                      "FSID*"
-
-#define LUAB_FSTAB_TYPE_ID                  1604964419
-#define LUAB_FSTAB_TYPE                     "FSTAB*"
-
-#define LUAB_GROUP_TYPE_ID                  1604324396
-#define LUAB_GROUP_TYPE                     "GROUP*"
-
-#define LUAB_IF_NAMEINDEX_TYPE_ID           1596840702
-#define LUAB_IF_NAMEINDEX_TYPE              "IF_NAMEINDEX*"
-
-#define LUAB_IN6_ADDR_TYPE_ID               1595890830
-#define LUAB_IN6_ADDR_TYPE                  "IN6_ADDR*"
-
-#define LUAB_IN_ADDR_TYPE_ID                1595799233
-#define LUAB_IN_ADDR_TYPE                   "IN_ADDR*"
-
-#define LUAB_INTEGER_TYPE_ID                1595975665
-#define LUAB_INTEGER_TYPE                   "INTEGER*"
-
-#define LUAB_IOVEC_TYPE_ID                  1594559731
-#define LUAB_IOVEC_TYPE                     "IOVEC*"
-
-#define LUAB_ITIMERVAL_TYPE_ID              1594110231
-#define LUAB_ITIMERVAL_TYPE                 "ITIMERVAL*"
-
-#define LUAB_JAIL_TYPE_ID                   1606011567
-#define LUAB_JAIL_TYPE                      "JAIL*"
-
-#define LUAB_LDIV_TYPE_ID                   1600394297
-#define LUAB_LDIV_TYPE                      "LDIV*"
-
-#define LUAB_LINGER_TYPE_ID                 1597012436
-#define LUAB_LINGER_TYPE                    "LINGER*"
-
-#define LUAB_LINK_TYPE_ID                   1601843279
-#define LUAB_LINK_TYPE                      "LINK*"
-
-#define LUAB_LLDIV_TYPE_ID                  1600628549
-#define LUAB_LLDIV_TYPE                     "LLDIV*"
-
-#define LUAB_MSGHDR_TYPE_ID                 1597320239
-#define LUAB_MSGHDR_TYPE                    "MSGHDR*"
-
-#define LUAB_PASSWD_TYPE_ID                 1604262109
-#define LUAB_PASSWD_TYPE                    "PASSWD*"
-
-#define LUAB_REGEX_TYPE_ID                  1604367435
-#define LUAB_REGEX_TYPE                     "REGEX*"
-
-#define LUAB_REGMATCH_TYPE_ID               1604371586
-#define LUAB_REGMATCH_TYPE                  "REGMATCH*"
-
-#define LUAB_SF_HDTR_TYPE_ID                1602287699
-#define LUAB_SF_HDTR_TYPE                   "SF_HDTR*"
-
-#define LUAB_SFILE_TYPE_ID                  1605120444
-#define LUAB_SFILE_TYPE                     "SFILE*"
-
-#define LUAB_SOCKADDR_TYPE_ID               1595755513
-#define LUAB_SOCKADDR_TYPE                  "SOCKADDR*"
-
-#define LUAB_SOCKPROTO_TYPE_ID              1601383780
-#define LUAB_SOCKPROTO_TYPE                 "SOCKPROTO*"
-
-#define LUAB_STAT_TYPE_ID                   1594028586
-#define LUAB_STAT_TYPE                      "STAT*"
-
-#define LUAB_STATFS_TYPE_ID                 1604429614
-#define LUAB_STATFS_TYPE                    "STATFS*"
-
-#define LUAB_TIMESPEC_TYPE_ID               1594034844
-#define LUAB_TIMESPEC_TYPE                  "TIMESPEC*"
-
-#define LUAB_TIMEVAL_TYPE_ID                1599788349
-#define LUAB_TIMEVAL_TYPE                   "TIMEVAL*"
-
-#define LUAB_TIMEZONE_TYPE_ID               1594159943
-#define LUAB_TIMEZONE_TYPE                  "TIMEZONE*"
-
-#define LUAB_TM_TYPE_ID                     1594168426
-#define LUAB_TM_TYPE                        "TM*"
-
-#define LUAB_TTYENT_TYPE_ID                 1604759728
-#define LUAB_TTYENT_TYPE                    "TTYENT*"
-
-#define LUAB_UUID_TYPE_ID                   1599304529
-#define LUAB_UUID_TYPE                      "UUID*"
-
-#define LUAB_XVFSCONF_TYPE_ID               1604736441
-#define LUAB_XVFSCONF_TYPE                  "XVFSCONF*"
-
-#define LUAB_CT_RUNE_TYPE_ID                1608692148
-#define LUAB_CT_RUNE_TYPE                   "CT_RUNE*"
+int  luab_pushldata(lua_State *, void *, size_t);
 
 #endif /* _LUAB_TYPES_H_ */

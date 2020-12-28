@@ -180,15 +180,4 @@ extern luab_module_t luab_ttyent_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 
-/*
- * Service primitives / subr.
- */
- 
-void     luab_core_populate(lua_State *, int, luab_module_t *);
-void     luab_core_newtable(lua_State *, int, luab_module_t *);
-void     luab_core_newmetatable(lua_State *, int, luab_module_t *);
-
-void     luab_core_initmodule(lua_State *, int, luab_module_vec_t *,
-    const char *, int);
-
 #endif /* _LUAB_MODULES_H_ */

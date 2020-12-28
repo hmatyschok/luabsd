@@ -35,6 +35,20 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
+luab_module_t *
+luab_core_checkmodule(luab_type_t idx, uint32_t id, const char *fname)
+{
+    luab_module_t *m;
+
+    if ((m = luab_xmv(idx).mv_mod) == NULL)
+        luab_core_err(EX_UNAVAILABLE, fname, ENOSYS);
+
+    if (m->m_id != id)
+        luab_core_err(EX_UNAVAILABLE, fname, ENOENT);
+
+    return (m);
+}
+
 /*
  * Common subr. for initializiation, those are
  * called during runtime of package.loadlib().
