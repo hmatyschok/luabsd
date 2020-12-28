@@ -138,7 +138,7 @@ UINTMAX_set_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_uintmax(L, 1);
-    x = (uintmax_t)luab_checkinteger(L, 2, luab_env_ullong_max);
+    x = (uintmax_t)luab_checkinteger(L, 2, luab_env_ulong_max);
 
     self->ud_sdu = x;
 

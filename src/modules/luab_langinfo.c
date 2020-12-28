@@ -70,7 +70,7 @@ luab_nl_langinfo(lua_State *L)
         x = (nl_item)luab_checkinteger(L, 1, luab_env_int_max);
         xp = &x;
     } else
-        xp = luab_udataisnil(L, 1, m, nl_item *);
+        xp = luab_udata(L, 1, m, nl_item *);
 
     if (xp != NULL)
         dp = nl_langinfo(*xp);

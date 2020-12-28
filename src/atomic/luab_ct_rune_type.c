@@ -138,7 +138,7 @@ CT_RUNE_set_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_ct_rune(L, 1);
-    x = (__ct_rune_t)luab_checkinteger(L, 2, luab_env_uchar_max);
+    x = (__ct_rune_t)luab_checkinteger(L, 2, luab_env_int_max);
 
     self->ud_sdu = x;
 

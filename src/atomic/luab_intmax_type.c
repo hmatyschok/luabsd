@@ -138,7 +138,7 @@ INTMAX_set_value(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     self = luab_to_intmax(L, 1);
-    x = (intmax_t)luab_checkinteger(L, 2, luab_env_ullong_max);
+    x = (intmax_t)luab_checkinteger(L, 2, luab_env_long_max);
 
     self->ud_sdu = x;
 
