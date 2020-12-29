@@ -61,22 +61,23 @@ extern luab_module_t luab_db_lib;
 static int
 luab_dbopen(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     luab_db_param_t dbp;
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    m = luab_xmod(DB, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(DB, TYPE, __func__);
 
     dbp.dbp_file = luab_islstring(L, 1, luab_env_path_max);
-    dbp.dbp_flags = luab_checkinteger(L, 2, luab_env_int_max);
-    dbp.dbp_mode = luab_checkinteger(L, 3, luab_env_int_max);
-    dbp.dbp_type = luab_checkinteger(L, 4, luab_env_int_max);
+    dbp.dbp_flags = luab_checkxinteger(L, 2, m0, luab_env_int_max);
+    dbp.dbp_mode = luab_checkxinteger(L, 3, m0, luab_env_int_max);
+    dbp.dbp_type = luab_checkxinteger(L, 4, m0, luab_env_int_max);
 
     dbp.dbp_db = dbopen(dbp.dbp_file, dbp.dbp_flags, dbp.dbp_mode,
         dbp.dbp_type, NULL);
 
-    return (luab_pushxdata(L, m, &dbp));
+    return (luab_pushxdata(L, m1, &dbp));
 }
 
 /*
