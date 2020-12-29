@@ -604,6 +604,35 @@ luab_toascii(lua_State *L)
 }
 #endif /* __XSI_VISIBLE */
 
+#if __ISO_C_VISIBLE >= 1999
+/***
+ * isblank(3) - space or tab character test
+ *
+ * @function isblank
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isblank(c)
+ */
+static int
+luab_isblank(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isblank(c);
+
+    return (luab_pushxinteger(L, status));
+}
+#endif /* __ISO_C_VISIBLE >= 1999 */
+
 /*
  * Interface against <ctype.h>.
  */
@@ -648,6 +677,9 @@ static luab_module_table_t luab_ctype_vec[] = {
 #if __XSI_VISIBLE
     LUAB_FUNC("isascii",                luab_isascii),
     LUAB_FUNC("toascii",                luab_toascii),
+#endif
+#if __ISO_C_VISIBLE >= 1999
+    LUAB_FUNC("isblank",                luab_isblank),
 #endif
     LUAB_FUNC("ct_rune_create",         luab_ct_rune_create),
     LUAB_FUNC("ct_rune_tolower",        luab_ct_rune_tolower),
