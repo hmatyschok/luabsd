@@ -462,17 +462,16 @@ luab_checklinteger(lua_State *L, int narg, int s)
 }
 
 lua_Integer
-luab_checkxinteger(lua_State *L, int narg, luab_xmodule_t *xm, lua_Integer b_msk)
+luab_checkxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
 {
     lua_Integer *xp;
 
-    if (xm != NULL) {
-        xm->xm_mod = luab_core_checkmodule(xm->xm_idx, xm->xm_id, xm->xm_fname);
+    if (m != NULL) {
 
         if (lua_isnumber(L, narg) != 0)
             return (luab_checkinteger(L, narg, b_msk));
 
-        xp = luab_udataisnil(L, 1, xm->xm_mod, lua_Integer *);
+        xp = luab_udataisnil(L, 1, m, lua_Integer *);
 
         if (xp != NULL)
             return (*xp & b_msk);
@@ -483,17 +482,16 @@ luab_checkxinteger(lua_State *L, int narg, luab_xmodule_t *xm, lua_Integer b_msk
 }
 
 lua_Integer
-luab_checkxlinteger(lua_State *L, int narg, luab_xmodule_t *xm, int s)
+luab_checkxlinteger(lua_State *L, int narg, luab_module_t *m, int s)
 {
     lua_Integer *xp, b_msk;
 
-    if (xm != NULL) {
-        xm->xm_mod = luab_core_checkmodule(xm->xm_idx, xm->xm_id, xm->xm_fname);
+    if (m != NULL) {
 
         if (lua_isnumber(L, narg) != 0)
             return (luab_checklinteger(L, narg, s));
 
-        xp = luab_udataisnil(L, 1, xm->xm_mod, lua_Integer *);
+        xp = luab_udataisnil(L, 1, m, lua_Integer *);
 
         if (xp != NULL) {
             b_msk = luab_core_Integer_promotion_msk(s);
@@ -506,17 +504,16 @@ luab_checkxlinteger(lua_State *L, int narg, luab_xmodule_t *xm, int s)
 }
 
 lua_Number
-luab_checkxnumber(lua_State *L, int narg, luab_xmodule_t *xm)
+luab_checkxnumber(lua_State *L, int narg, luab_module_t *m)
 {
     lua_Number *xp;
 
-    if (xm != NULL) {
-        xm->xm_mod = luab_core_checkmodule(xm->xm_idx, xm->xm_id, xm->xm_fname);
+    if (m != NULL) {
 
         if (lua_isnumber(L, narg) != 0)
             return (luaL_checknumber(L, narg));
 
-        xp = luab_udataisnil(L, 1, xm->xm_mod, lua_Number *);
+        xp = luab_udataisnil(L, 1, m, lua_Number *);
 
         if (xp != NULL)
             return (*xp);

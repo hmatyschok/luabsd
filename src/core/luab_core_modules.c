@@ -49,6 +49,25 @@ luab_core_checkmodule(luab_type_t idx, uint32_t id, const char *fname)
     return (m);
 }
 
+luab_module_t *
+luab_core_checkxmodule(luab_type_t idx, uint32_t id, const char *fname,
+    luab_xmodule_t *xmp)
+{
+    luab_module_t *m;
+
+    m = luab_core_checkmodule(idx, id, fname);
+
+    if (xmp != NULL) {
+        xmp->xm_idx = idx;
+        xmp->xm_id = id;
+        xmp->xm_fname = fname;
+        xmp->xm_mod = m;
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENXIO);
+
+    return (m);
+}
+
 /*
  * Common subr. for initializiation, those are
  * called during runtime of package.loadlib().

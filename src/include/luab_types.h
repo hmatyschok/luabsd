@@ -238,7 +238,7 @@ typedef enum luab_type {
     LUAB_TYPE_SENTINEL
 } luab_type_t;
 
-#define luab_idx(name) \
+#define luab_xid(name) \
     (LUAB_##name##_IDX)
 #define luab_xcookie(name, type) \
     ((LUAB_##name##_##type##_ID))
@@ -260,31 +260,6 @@ extern luab_module_vec_t luab_typevec[];
  * Primitives for module-vector operations.
  */
 
-typedef struct luab_xmodule {
-    luab_type_t     xm_idx;
-    uint32_t        xm_id;
-    const char      *xm_fname;
-    luab_module_t   *xm_mod;
-} luab_xmodule_t;
-
-#define luab_initxmodule(xmp, name, type, fname, m)                 \
-    do {                                                            \
-        if (xmp != NULL) {                                          \
-            (xmp)->xm_idx = luab_idx(name);                         \
-            (xmp)->xm_id = luab_xcookie(name, type);                \
-            (xmp)->xm_fname = (fname);                              \
-            (xmp)->xm_mod = (m);                                    \
-        } else                                                      \
-            luab_core_err(EX_UNAVAILABLE, (fname), ENOSYS);         \
-                                                                    \
-    } while (0)
-
-luab_module_t    *luab_core_checkmodule(luab_type_t, uint32_t, const char *);
-
-#define luab_xmod(name, type, fname)                                \
-    (luab_core_checkmodule(luab_idx(name),                          \
-        luab_xcookie(name, type), (fname)))
-
 void     luab_core_populate(lua_State *, int, luab_module_t *);
 void     luab_core_newtable(lua_State *, int, luab_module_t *);
 void     luab_core_newmetatable(lua_State *, int, luab_module_t *);
@@ -292,6 +267,25 @@ void     luab_core_newmetatable(lua_State *, int, luab_module_t *);
 void     luab_core_initmodule(lua_State *, int, luab_module_vec_t *,
     const char *, int);
 
+luab_module_t    *luab_core_checkmodule(luab_type_t, uint32_t, const char *);
+
+#define luab_xmod(name, type, fname)                                \
+    (luab_core_checkmodule(luab_xid(name),                          \
+        luab_xcookie(name, type), (fname)))
+
+typedef struct luab_xmodule {
+    luab_type_t     xm_idx;
+    uint32_t        xm_id;
+    const char      *xm_fname;
+    luab_module_t   *xm_mod;
+} luab_xmodule_t;
+
+#define luab_checkxmodule(name, type, fname, xmp)                   \
+    (luab_core_checkxmodule(luab_xid(name),                         \
+        luab_xcookie(name, type), (fname), (xmp)))
+
+luab_module_t    *luab_core_checkxmodule(luab_type_t, uint32_t, const char *,
+    luab_xmodule_t *);
 /*
  * Access functions, n-th arg over argv, [stack -> C].
  */
@@ -306,9 +300,9 @@ lua_Integer  luab_tolinteger(lua_State *, int, int);
 
 lua_Integer  luab_checklinteger(lua_State *, int, int);
 
-lua_Integer  luab_checkxinteger(lua_State *, int, luab_xmodule_t *, lua_Integer);
-lua_Integer  luab_checkxlinteger(lua_State *, int, luab_xmodule_t *, int);
-lua_Number   luab_checkxnumber(lua_State *, int, luab_xmodule_t *);
+lua_Integer  luab_checkxinteger(lua_State *, int, luab_module_t *, lua_Integer);
+lua_Integer  luab_checkxlinteger(lua_State *, int, luab_module_t *, int);
+lua_Number   luab_checkxnumber(lua_State *, int, luab_module_t *);
 
 const char   *luab_islstring(lua_State *, int, size_t);
 const char   *luab_tolstring(lua_State *, int, size_t);

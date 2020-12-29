@@ -2,7 +2,7 @@
 libluabsd - interface for implementing (e. g. web-based) software or rc-scripting
 =================================================================================
 
-This library provides an easy customizable interface as extension of the Lua
+This library provides an easy customizable interface as extension for the Lua
 (5.2.4) language against APIs those are common on Unix-like Operating Systems,
 e. g. *BSD, GNU/Linux, Minix, QNX, etc.
 
