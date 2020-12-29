@@ -548,6 +548,62 @@ luab_toupper(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+#if __XSI_VISIBLE
+/***
+ * isascii(3) - test for ASCII character
+ *
+ * @function isascii
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isascii(c)
+ */
+static int
+luab_isascii(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isascii(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * toascii(3) - convert a byte to 7-bit ASCII
+ *
+ * @function toascii
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.toascii(c)
+ */
+static int
+luab_toascii(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = toascii(c);
+
+    return (luab_pushxinteger(L, status));
+}
+#endif /* __XSI_VISIBLE */
+
 /*
  * Interface against <ctype.h>.
  */
@@ -589,6 +645,10 @@ static luab_module_table_t luab_ctype_vec[] = {
     LUAB_FUNC("isxdigit",               luab_isxdigit),
     LUAB_FUNC("tolower",                luab_tolower),
     LUAB_FUNC("toupper",                luab_toupper),
+#if __XSI_VISIBLE
+    LUAB_FUNC("isascii",                luab_isascii),
+    LUAB_FUNC("toascii",                luab_toascii),
+#endif
     LUAB_FUNC("ct_rune_create",         luab_ct_rune_create),
     LUAB_FUNC("ct_rune_tolower",        luab_ct_rune_tolower),
     LUAB_FUNC("ct_rune_toupper",        luab_ct_rune_toupper),
