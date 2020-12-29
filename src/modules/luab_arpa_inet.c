@@ -60,10 +60,19 @@ luab_checkxaddr(lua_State *L, int narg, int af, size_t *len)
         *len = INET6_ADDRSTRLEN;
         break;
     default:
-        luab_core_argerror(L, narg, NULL, -1, 0, EINVAL);
         break;
     }
-    return ((*xmod->m_get)(L, narg));
+
+    if (xmod != NULL) {
+
+        if (xmod->m_get != NULL)
+            return ((*xmod->m_get)(L, narg));
+        else
+            luab_core_argerror(L, narg, NULL, 0, 0, ENXIO);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, EAFNOSUPPORT);
+
+    return (NULL);
 }
 
 /*
@@ -147,7 +156,7 @@ luab_inet_ntoa(lua_State *L)
 static int
 luab_inet_ntop(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     int af;
     void *src;
     luab_iovec_t *buf;
@@ -157,11 +166,12 @@ luab_inet_ntop(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
 
-    af = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    af = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     src = luab_checkxaddr(L, 2, af, &size);
-    buf = luab_udata(L, 3, m, luab_iovec_t *);
+    buf = luab_udata(L, 3, m1, luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 4, 0);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
@@ -209,7 +219,7 @@ luab_inet_ntop(lua_State *L)
 static int
 luab_inet_pton(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     int af;
     luab_iovec_t *buf;
     void *dst;
@@ -219,10 +229,11 @@ luab_inet_pton(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
 
-    af = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m, luab_iovec_t *);
+    af = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
 
     if (((src = buf->iov.iov_base) != NULL) &&
@@ -481,7 +492,7 @@ luab_inet_network(lua_State *L)
 static int
 luab_inet_net_ntop(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     int af;
     void *src;
     int bits;
@@ -492,12 +503,13 @@ luab_inet_net_ntop(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
 
-    af = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    af = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     src = luab_checkxaddr(L, 2, af, &size);
-    bits = (int)luab_checkinteger(L, 3, luab_env_uint_max);
-    buf = luab_udata(L, 4, m, luab_iovec_t *);
+    bits = (int)luab_checkxinteger(L, 3, m0, luab_env_int_max);
+    buf = luab_udata(L, 4, m1, luab_iovec_t *);
     size = (size_t)luab_checklinteger(L, 5, 0);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
@@ -546,7 +558,7 @@ luab_inet_net_ntop(lua_State *L)
 static int
 luab_inet_net_pton(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     int af;
     luab_iovec_t *buf;
     void *dst;
@@ -556,10 +568,11 @@ luab_inet_net_pton(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
 
-    af = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m, luab_iovec_t *);
+    af = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
     size = (size_t)luab_checklinteger(L, 4, 0);
 
@@ -603,7 +616,7 @@ luab_inet_net_pton(lua_State *L)
 static int
 luab_inet_ntoa_r(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     struct in_addr *in;
     luab_iovec_t *buf;
     socklen_t size;
@@ -614,10 +627,11 @@ luab_inet_ntoa_r(lua_State *L)
 
     m0 = luab_xmod(IN_ADDR, TYPE, __func__);
     m1 = luab_xmod(IOVEC, TYPE, __func__);
+    m2 = luab_xmod(SOCKLEN, TYPE, __func__);
 
     in = luab_udata(L, 1, m0, struct in_addr *);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    size = (size_t)luab_checklinteger(L, 3, 0);
+    size = (size_t)luab_checkxlinteger(L, 3, m2, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -667,7 +681,7 @@ luab_inet_ntoa_r(lua_State *L)
 static int
 luab_inet_cidr_ntop(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     int af;
     void *src;
     int bits;
@@ -678,13 +692,15 @@ luab_inet_cidr_ntop(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+    m2 = luab_xmod(SIZE, TYPE, __func__);
 
-    af = (int)luab_checkinteger(L, 1, luab_env_int_max);
+    af = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     src = luab_checkxaddr(L, 2, af, &size);
-    bits = (int)luab_checkinteger(L, 3, luab_env_uint_max);
-    buf = luab_udata(L, 4, m, luab_iovec_t *);
-    size = (size_t)luab_checklinteger(L, 5, 0);
+    bits = (int)luab_checkxinteger(L, 3, m0, luab_env_uint_max);
+    buf = luab_udata(L, 4, m1, luab_iovec_t *);
+    size = (size_t)luab_checkxlinteger(L, 5, m2, 0);
 
     if (((dst = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -744,13 +760,13 @@ luab_inet_cidr_pton(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(INT, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
 
-    af = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m0, luab_iovec_t *);
+    af = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
     dst = luab_checkxaddr(L, 3, af, &size);
-    bits = luab_udata(L, 4, m1, int *);
+    bits = luab_udata(L, 4, m0, int *);
 
     if (((src = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -779,6 +795,31 @@ luab_inet_cidr_pton(lua_State *L)
 /*
  * Generator functions.
  */
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(IN_PORT)).
+ *
+ * @function in_port_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage in_port [, err, msg ] = bsd.arpa.inet.in_port_create(x)
+ */
+static int
+luab_in_port_create(lua_State *L)
+{
+    luab_module_t *m;
+    in_port_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(IN_PORT, TYPE, __func__);
+    x = (in_port_t)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
+
+    return (luab_pushxdata(L, m, &x));
+}
 
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(IN_ADDR)).
@@ -834,13 +875,14 @@ luab_in6_addr_create(lua_State *L)
 static int
 luab_sockaddr_in_create(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     struct sockaddr_in sin;
     struct sockaddr *data;
     struct in_addr *addr;
 
     m0 = luab_xmod(IN_ADDR, TYPE, __func__);
-    m1 = luab_xmod(SOCKADDR, TYPE, __func__);
+    m1 = luab_xmod(SHORT, TYPE, __func__);
+    m2 = luab_xmod(SOCKADDR, TYPE, __func__);
 
     data = (struct sockaddr *)&sin;
     luab_sockaddr_pci(data, AF_INET, sizeof(sin));
@@ -850,13 +892,13 @@ luab_sockaddr_in_create(lua_State *L)
         addr = luab_udata(L, 2, m0, struct in_addr *);
         (void)memmove(&sin.sin_addr, addr, sizeof(sin.sin_addr));
     case 1:
-        sin.sin_port = (in_port_t)luab_checkinteger(L, 1, luab_env_shrt_max);
+        sin.sin_port = (in_port_t)luab_checkxinteger(L, 1, m1, luab_env_shrt_max);
     default:
         sin.sin_addr.s_addr = htonl(sin.sin_addr.s_addr);
         sin.sin_port = htons(sin.sin_port);
         break;
     }
-    return (luab_pushxdata(L, m1, data));
+    return (luab_pushxdata(L, m2, data));
 }
 
 /***
@@ -877,34 +919,36 @@ luab_sockaddr_in_create(lua_State *L)
 static int
 luab_sockaddr_in6_create(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2, *m3;
     struct sockaddr_in6 sin6;
     struct sockaddr *data;
     struct in6_addr *addr;
 
-    m0 = luab_xmod(IN6_ADDR, TYPE, __func__);
-    m1 = luab_xmod(SOCKADDR, TYPE, __func__);
+    m0 = luab_xmod(UINT32, TYPE, __func__);
+    m1 = luab_xmod(IN6_ADDR, TYPE, __func__);
+    m2 = luab_xmod(IN_PORT, TYPE, __func__);
+    m3 = luab_xmod(SOCKADDR, TYPE, __func__);
 
     data = (struct sockaddr *)&sin6;
     luab_sockaddr_pci(data, AF_INET6, sizeof(sin6));
 
     switch (luab_core_checkmaxargs(L, 4)) {     /* FALLTHROUGH */
     case 4:
-        sin6.sin6_scope_id = (uint32_t)luab_checkinteger(L, 4, luab_env_int_max);
+        sin6.sin6_scope_id = (uint32_t)luab_checkxinteger(L, 4, m0, luab_env_int_max);
     case 3:
-        addr = luab_udata(L, 3, m0, struct in6_addr *);
+        addr = luab_udata(L, 3, m1, struct in6_addr *);
         (void)memmove(&sin6.sin6_addr, addr, sizeof(sin6.sin6_addr));
     case 2:
-        sin6.sin6_flowinfo = (uint32_t)luab_checkinteger(L, 2, luab_env_int_max);
+        sin6.sin6_flowinfo = (uint32_t)luab_checkxinteger(L, 2, m1, luab_env_int_max);
     case 1:
-        sin6.sin6_port = (in_port_t)luab_checkinteger(L, 1, luab_env_shrt_max);
+        sin6.sin6_port = (in_port_t)luab_checkxinteger(L, 1, m2, luab_env_shrt_max);
     default:
         sin6.sin6_scope_id = htons(sin6.sin6_scope_id);
         sin6.sin6_flowinfo = htons(sin6.sin6_flowinfo);
         sin6.sin6_port = htons(sin6.sin6_port);
         break;
     }
-    return (luab_pushxdata(L, m1, data));
+    return (luab_pushxdata(L, m3, data));
 }
 
 /*
@@ -912,35 +956,36 @@ luab_sockaddr_in6_create(lua_State *L)
  */
 
 static luab_module_table_t luab_arpa_inet_vec[] = {
-    LUAB_INT("INET_ADDRSTRLEN",       INET_ADDRSTRLEN),
-    LUAB_INT("INET6_ADDRSTRLEN",      INET6_ADDRSTRLEN),
-    LUAB_FUNC("inet_addr",            luab_inet_addr),
-    LUAB_FUNC("inet_ntoa",            luab_inet_ntoa),
-    LUAB_FUNC("inet_ntop",            luab_inet_ntop),
-    LUAB_FUNC("inet_pton",            luab_inet_pton),
+    LUAB_INT("INET_ADDRSTRLEN",         INET_ADDRSTRLEN),
+    LUAB_INT("INET6_ADDRSTRLEN",        INET6_ADDRSTRLEN),
+    LUAB_FUNC("inet_addr",              luab_inet_addr),
+    LUAB_FUNC("inet_ntoa",              luab_inet_ntoa),
+    LUAB_FUNC("inet_ntop",              luab_inet_ntop),
+    LUAB_FUNC("inet_pton",              luab_inet_pton),
 #if __BSD_VISIBLE
-    LUAB_FUNC("inet_aton",            luab_inet_aton),
-    LUAB_FUNC("inet_lnaof",           luab_inet_lnaof),
-    LUAB_FUNC("inet_makeaddr",        luab_inet_makeaddr),
-    LUAB_FUNC("inet_neta",            luab_inet_neta),
-    LUAB_FUNC("inet_netof",           luab_inet_netof),
-    LUAB_FUNC("inet_network",         luab_inet_network),
-    LUAB_FUNC("inet_net_ntop",        luab_inet_net_ntop),
-    LUAB_FUNC("inet_net_pton",        luab_inet_net_pton),
-    LUAB_FUNC("inet_ntoa_r",          luab_inet_ntoa_r),
-    LUAB_FUNC("inet_cidr_ntop",       luab_inet_cidr_ntop),
-    LUAB_FUNC("inet_cidr_pton",       luab_inet_cidr_pton),
+    LUAB_FUNC("inet_aton",              luab_inet_aton),
+    LUAB_FUNC("inet_lnaof",             luab_inet_lnaof),
+    LUAB_FUNC("inet_makeaddr",          luab_inet_makeaddr),
+    LUAB_FUNC("inet_neta",              luab_inet_neta),
+    LUAB_FUNC("inet_netof",             luab_inet_netof),
+    LUAB_FUNC("inet_network",           luab_inet_network),
+    LUAB_FUNC("inet_net_ntop",          luab_inet_net_ntop),
+    LUAB_FUNC("inet_net_pton",          luab_inet_net_pton),
+    LUAB_FUNC("inet_ntoa_r",            luab_inet_ntoa_r),
+    LUAB_FUNC("inet_cidr_ntop",         luab_inet_cidr_ntop),
+    LUAB_FUNC("inet_cidr_pton",         luab_inet_cidr_pton),
 #if 0
-    LUAB_FUNC("inet_nsap_addr",       luab_inet_nsap_addr),
-    LUAB_FUNC("inet_nsap_ntoa",       luab_inet_nsap_ntoa),
+    LUAB_FUNC("inet_nsap_addr",         luab_inet_nsap_addr),
+    LUAB_FUNC("inet_nsap_ntoa",         luab_inet_nsap_ntoa),
 #endif
 #endif /* __BSD_VISIBLE */
-    LUAB_FUNC("in_addr_create",       luab_in_addr_create),
-    LUAB_FUNC("in6_addr_create",      luab_in6_addr_create),
+    LUAB_FUNC("in_port_create",         luab_in_port_create),
+    LUAB_FUNC("in_addr_create",         luab_in_addr_create),
+    LUAB_FUNC("in6_addr_create",        luab_in6_addr_create),
 
     /* XXX wrong, because maps to <netinet/in.h> */
-    LUAB_FUNC("sockaddr_in_create",   luab_sockaddr_in_create),
-    LUAB_FUNC("sockaddr_in6_create",  luab_sockaddr_in6_create),
+    LUAB_FUNC("sockaddr_in_create",     luab_sockaddr_in_create),
+    LUAB_FUNC("sockaddr_in6_create",    luab_sockaddr_in6_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

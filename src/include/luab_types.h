@@ -135,6 +135,9 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
 
 /*
  * Selector.
+ *
+ * XXX
+ *  We should externalize set over luab_type{} to <luab_core_env>.
  */
 
 typedef enum luab_type {
@@ -164,6 +167,9 @@ typedef enum luab_type {
     LUAB_CLOCK_IDX,
 
     LUAB_LOCALE_IDX,
+
+    /* <arpa/inet.h> */
+    LUAB_IN_PORT_IDX,
 
     /* <sys/stdint.h> */
     LUAB_INT8_IDX,

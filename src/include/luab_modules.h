@@ -58,6 +58,9 @@ extern luab_module_t luab_time_type;
 extern luab_module_t luab_clock_type;
 extern luab_module_t luab_locale_type;
 
+/* <arpa/inet.h> */
+extern luab_module_t luab_in_port_type;
+
 /* POSIX sized integrals, <sys/stdint.h> */
 extern luab_module_t luab_int8_type;
 extern luab_module_t luab_int16_type;

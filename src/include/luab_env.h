@@ -637,6 +637,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_CT_RUNE_TYPE_ID                    1608692148
 #define LUAB_CT_RUNE_TYPE                       "CT_RUNE*"
 
+#define LUAB_IN_PORT_TYPE_ID                    1609278999
+#define LUAB_IN_PORT_TYPE                       "IN_PORT*"
+
 /*
  * Set of composite data types.
  */
