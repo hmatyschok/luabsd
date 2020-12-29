@@ -62,37 +62,26 @@ static int
 luab_runetype_l(lua_State *L)
 {
     luab_module_t *m0, *m1;
-    __ct_rune_t x, *xp;
+    __ct_rune_t c;
     luab_locale_t *xloc;
     locale_t locale;
-    unsigned long status;
+    unsigned long x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
     m0 = luab_xmod(CT_RUNE, TYPE, __func__);
     m1 = luab_xmod(LOCALE, TYPE, __func__);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (__ct_rune_t)luab_checkinteger(L, 1, luab_env_int_max);
-        xp = &x;
-    } else
-        xp = luab_udata(L, 1, m0, __ct_rune_t *);
-
+    c = (__ct_rune_t)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     xloc = luab_udata(L, 2, m1, luab_locale_t *);
 
-    if ((locale = xloc->ud_sdu) != NULL) {
-
-        if (xp != NULL)
-            status = ___runetype_l(*xp, locale);
-        else {
-            errno = ERANGE;
-            status = -1;
-        }
-    } else {
-        errno = ENOENT;
-        status = -1;
+    if ((locale = xloc->ud_sdu) != NULL)
+        x = ___runetype_l(c, locale);
+    else {
+        errno = ENXIO;
+        x = -1;
     }
-    return (luab_pushxinteger(L, status));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -111,27 +100,18 @@ luab_runetype_l(lua_State *L)
 static int
 luab_runetype(lua_State *L)
 {
-    luab_module_t *m0;
-    __ct_rune_t x, *xp;
-    unsigned long status;
+    luab_module_t *m;
+    __ct_rune_t c;
+    unsigned long x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m0 = luab_xmod(CT_RUNE, TYPE, __func__);
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (__ct_rune_t)luab_checkinteger(L, 1, luab_env_int_max);
-        xp = &x;
-    } else
-        xp = luab_udata(L, 1, m0, __ct_rune_t *);
+    c = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+    x = ___runetype(c);
 
-    if (xp != NULL)
-        status = ___runetype(*xp);
-    else {
-        errno = ERANGE;
-        status = -1;
-    }
-    return (luab_pushxinteger(L, status));
+    return (luab_pushxinteger(L, x));
 }
 
 
@@ -160,6 +140,60 @@ luab_ct_rune_create(lua_State *L)
 
     m = luab_xmod(CT_RUNE, TYPE, __func__);
     x = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
+ *
+ * @function ct_rune_tolower
+ *
+ * @param x                 Specifies initial value about converted.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_tolower(x)
+ */
+static int
+luab_ct_rune_tolower(lua_State *L)
+{
+    luab_module_t *m;
+    __ct_rune_t c, x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
+    c = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+
+    x = ___tolower(c);
+
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
+ *
+ * @function ct_rune_toupper
+ *
+ * @param x                 Specifies initial value about converted.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_toupper(x)
+ */
+static int
+luab_ct_rune_toupper(lua_State *L)
+{
+    luab_module_t *m;
+    __ct_rune_t c, x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
+    c = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+
+    x = ___toupper(c);
 
     return (luab_pushxdata(L, m, &x));
 }
@@ -193,6 +227,8 @@ static luab_module_table_t luab_ctype_vec[] = {
     LUAB_FUNC("runetype_l",             luab_runetype_l),
     LUAB_FUNC("runetype",               luab_runetype),
     LUAB_FUNC("ct_rune_create",         luab_ct_rune_create),
+    LUAB_FUNC("ct_rune_tolower",        luab_ct_rune_tolower),
+    LUAB_FUNC("ct_rune_toupper",        luab_ct_rune_toupper),
     LUAB_MOD_TBL_SENTINEL
 };
 
