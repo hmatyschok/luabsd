@@ -59,23 +59,15 @@ static int
 luab_nl_langinfo(lua_State *L)
 {
     luab_module_t *m;
-    nl_item x, *xp;
+    nl_item item;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(NL_ITEM, TYPE, __func__);
+    item = (nl_item)luab_checkxinteger(L, 1, m, luab_env_int_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (nl_item)luab_checkinteger(L, 1, luab_env_int_max);
-        xp = &x;
-    } else
-        xp = luab_udata(L, 1, m, nl_item *);
-
-    if (xp != NULL)
-        dp = nl_langinfo(*xp);
-    else
-        dp = NULL;
+    dp = nl_langinfo(item);
 
     return (luab_pushstring(L, dp));
 }
@@ -99,19 +91,15 @@ static int
 luab_nl_item_create(lua_State *L)
 {
     luab_module_t *m;
-    nl_item x, *xp;
+    nl_item item;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(NL_ITEM, TYPE, __func__);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (nl_item)luab_checkinteger(L, 1, luab_env_ulong_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, nl_item *);
+    item = (nl_item)luab_checkxinteger(L, 1, m, luab_env_int_max);
 
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &item));
 }
 
 /*
