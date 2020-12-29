@@ -57,19 +57,14 @@ static int
 luab_int8_create(lua_State *L)
 {
     luab_module_t *m;
-    int8_t x, *xp;
+    int8_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT8, TYPE, __func__);
+    x = (int8_t)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (int8_t)luab_checkinteger(L, 1, luab_env_uchar_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, int8_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -87,19 +82,14 @@ static int
 luab_int16_create(lua_State *L)
 {
     luab_module_t *m;
-    int16_t x, *xp;
+    int16_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT16, TYPE, __func__);
+    x = (int16_t)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (int16_t)luab_checkinteger(L, 1, luab_env_ushrt_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, int16_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -117,19 +107,14 @@ static int
 luab_int32_create(lua_State *L)
 {
     luab_module_t *m;
-    int32_t x, *xp;
+    int32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT32, TYPE, __func__);
+    x = (int32_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (int32_t)luab_checkinteger(L, 1, luab_env_uint_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, int32_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -147,19 +132,14 @@ static int
 luab_int64_create(lua_State *L)
 {
     luab_module_t *m;
-    int64_t x, *xp;
+    int64_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT64, TYPE, __func__);
+    x = (int64_t)luab_checkxinteger(L, 1, m, luab_env_ullong_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (int64_t)luab_checkinteger(L, 1, luab_env_ullong_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, int64_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -177,19 +157,14 @@ static int
 luab_uint8_create(lua_State *L)
 {
     luab_module_t *m;
-    uint8_t x, *xp;
+    uint8_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(UINT8, TYPE, __func__);
+    x = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (uint8_t)luab_checkinteger(L, 1, luab_env_uchar_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, uint8_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -207,19 +182,14 @@ static int
 luab_uint16_create(lua_State *L)
 {
     luab_module_t *m;
-    uint16_t x, *xp;
+    uint16_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(UINT16, TYPE, __func__);
+    x = (uint16_t)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (uint16_t)luab_checkinteger(L, 1, luab_env_ushrt_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, uint16_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -237,19 +207,14 @@ static int
 luab_uint32_create(lua_State *L)
 {
     luab_module_t *m;
-    uint32_t x, *xp;
+    uint32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(UINT32, TYPE, __func__);
+    x = (uint32_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (uint32_t)luab_checkinteger(L, 1, luab_env_uint_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, uint32_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -267,19 +232,14 @@ static int
 luab_uint64_create(lua_State *L)
 {
     luab_module_t *m;
-    uint64_t x, *xp;
+    uint64_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(UINT64, TYPE, __func__);
+    x = (uint64_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (uint64_t)luab_checkinteger(L, 1, luab_env_ulong_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, uint64_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -297,19 +257,14 @@ static int
 luab_intptr_create(lua_State *L)
 {
     luab_module_t *m;
-    intptr_t x, *xp;
+    intptr_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INTPTR, TYPE, __func__);
+    x = (intptr_t)luab_checklinteger(L, 1, 1);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (intptr_t)luab_checklinteger(L, 1, 1);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, intptr_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -327,19 +282,14 @@ static int
 luab_uintptr_create(lua_State *L)
 {
     luab_module_t *m;
-    uintptr_t x, *xp;
+    uintptr_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(UINTPTR, TYPE, __func__);
+    x = (uintptr_t)luab_checklinteger(L, 1, 0);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (uintptr_t)luab_checklinteger(L, 1, 0);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, uintptr_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -357,19 +307,14 @@ static int
 luab_intmax_create(lua_State *L)
 {
     luab_module_t *m;
-    intmax_t x, *xp;
+    intmax_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INTMAX, TYPE, __func__);
+    x = (intmax_t)luab_checkxinteger(L, 1, m, luab_env_long_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (intmax_t)luab_checkinteger(L, 1, luab_env_long_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, intmax_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /***
@@ -387,19 +332,14 @@ static int
 luab_uintmax_create(lua_State *L)
 {
     luab_module_t *m;
-    uintmax_t x, *xp;
+    uintmax_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(UINTMAX, TYPE, __func__);
+    x = (uintmax_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (uintmax_t)luab_checkinteger(L, 1, luab_env_ulong_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, uintmax_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, m, &x));
 }
 
 /*
