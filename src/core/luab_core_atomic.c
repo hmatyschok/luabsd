@@ -54,20 +54,15 @@
 static int
 luab_ushrt_create(lua_State *L)
 {
-    luab_module_t *m;
-    u_short x, *xp;
+    luab_xmodule_t xm, *xmp;
+    u_short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(USHRT, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), USHRT, TYPE, __func__, NULL);
+    x = (u_short)luab_checkxinteger(L, 1, xmp, luab_env_ushrt_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (u_short)luab_checkinteger(L, 1, luab_env_ushrt_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, u_short *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -84,20 +79,15 @@ luab_ushrt_create(lua_State *L)
 static int
 luab_uint_create(lua_State *L)
 {
-    luab_module_t *m;
-    u_int x, *xp;
+    luab_xmodule_t xm, *xmp;
+    u_int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(UINT, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), UINT, TYPE, __func__, NULL);
+    x = (u_int)luab_checkxinteger(L, 1, xmp, luab_env_uint_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (u_int)luab_checkinteger(L, 1, luab_env_uint_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, u_int *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 #endif /* __BSD_VISIBLE */
 
@@ -115,20 +105,15 @@ luab_uint_create(lua_State *L)
 static int
 luab_char_create(lua_State *L)
 {
-    luab_module_t *m;
-    char x, *xp;
+    luab_xmodule_t xm, *xmp;
+    char x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(CHAR, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), CHAR, TYPE, __func__, NULL);
+    x = (char)luab_checkxinteger(L, 1, xmp, luab_env_uchar_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (char)luab_checkinteger(L, 1, luab_env_uchar_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, char *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -145,20 +130,15 @@ luab_char_create(lua_State *L)
 static int
 luab_short_create(lua_State *L)
 {
-    luab_module_t *m;
-    short x, *xp;
+    luab_xmodule_t xm, *xmp;
+    short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(SHORT, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), SHORT, TYPE, __func__, NULL);
+    x = (short)luab_checkxinteger(L, 1, xmp, luab_env_uchar_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (short)luab_checkinteger(L, 1, luab_env_uchar_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, short *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -175,20 +155,15 @@ luab_short_create(lua_State *L)
 static int
 luab_int_create(lua_State *L)
 {
-    luab_module_t *m;
-    int x, *xp;
+    luab_xmodule_t xm, *xmp;
+    int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(INT, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), INT, TYPE, __func__, NULL);
+    x = (int)luab_checkxinteger(L, 1, xmp, luab_env_uint_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (int)luab_checkinteger(L, 1, luab_env_uint_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, int *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -205,20 +180,15 @@ luab_int_create(lua_State *L)
 static int
 luab_long_create(lua_State *L)
 {
-    luab_module_t *m;
-    long x, *xp;
+    luab_xmodule_t xm, *xmp;
+    long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(LONG, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), LONG, TYPE, __func__, NULL);
+    x = (long)luab_checkxinteger(L, 1, xmp, luab_env_long_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (long)luab_checkinteger(L, 1, luab_env_long_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, long *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -235,20 +205,15 @@ luab_long_create(lua_State *L)
 static int
 luab_double_create(lua_State *L)
 {
-    luab_module_t *m;
-    double x, *xp;
+    luab_xmodule_t xm, *xmp;
+    double x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(DOUBLE, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), DOUBLE, TYPE, __func__, NULL);
+    x = (double)luab_checkxnumber(L, 1, xmp);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (double)luaL_checknumber(L, 1); /* XXX */
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, double *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -265,20 +230,15 @@ luab_double_create(lua_State *L)
 static int
 luab_float_create(lua_State *L)
 {
-    luab_module_t *m;
-    float x, *xp;
+    luab_xmodule_t xm, *xmp;
+    float x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(FLOAT, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), FLOAT, TYPE, __func__, NULL);
+    x = (float)luab_checkxnumber(L, 1, xmp);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (float)luaL_checknumber(L, 1); /* XXX */
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, float *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -295,20 +255,15 @@ luab_float_create(lua_State *L)
 static int
 luab_fpos_create(lua_State *L)
 {
-    luab_module_t *m;
-    fpos_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    fpos_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(INT64, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), FPOS, TYPE, __func__, NULL);
+    x = (fpos_t)luab_checkxinteger(L, 1, xmp, luab_env_long_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (fpos_t)luab_checkinteger(L, 1, luab_env_long_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, fpos_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -325,20 +280,15 @@ luab_fpos_create(lua_State *L)
 static int
 luab_gid_create(lua_State *L)
 {
-    luab_module_t *m;
-    gid_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    gid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(GID, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), GID, TYPE, __func__, NULL);
+    x = (gid_t)luab_checkxinteger(L, 1, xmp, luab_env_int_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (gid_t)luab_checkinteger(L, 1, luab_env_int_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, gid_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -355,20 +305,15 @@ luab_gid_create(lua_State *L)
 static int
 luab_off_create(lua_State *L)
 {
-    luab_module_t *m;
-    off_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    off_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(OFF, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), OFF, TYPE, __func__, NULL);
+    x = (off_t)luab_checkxinteger(L, 1, xmp, luab_env_long_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (off_t)luab_checkinteger(L, 1, luab_env_long_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, off_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -385,20 +330,15 @@ luab_off_create(lua_State *L)
 static int
 luab_size_create(lua_State *L)
 {
-    luab_module_t *m;
-    size_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    size_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(SIZE, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), SIZE, TYPE, __func__, NULL);
+    x = (size_t)luab_checkxlinteger(L, 1, xmp, 0);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (size_t)luab_checklinteger(L, 1, 0);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, size_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -415,20 +355,15 @@ luab_size_create(lua_State *L)
 static int
 luab_socklen_create(lua_State *L)
 {
-    luab_module_t *m;
-    socklen_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    socklen_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(SOCKLEN, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), SOCKLEN, TYPE, __func__, NULL);
+    x = (socklen_t)luab_checkxinteger(L, 1, xmp, luab_env_int_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (socklen_t)luab_checkinteger(L, 1, luab_env_int_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, socklen_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -445,20 +380,15 @@ luab_socklen_create(lua_State *L)
 static int
 luab_ssize_create(lua_State *L)
 {
-    luab_module_t *m;
-    ssize_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    ssize_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(SSIZE, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), SSIZE, TYPE, __func__, NULL);
+    x = (ssize_t)luab_checkxlinteger(L, 1, xmp, 1);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (ssize_t)luab_checklinteger(L, 1, 1);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, ssize_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -475,20 +405,15 @@ luab_ssize_create(lua_State *L)
 static int
 luab_uid_create(lua_State *L)
 {
-    luab_module_t *m;
-    uid_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(UID, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), UID, TYPE, __func__, NULL);
+    x = (uid_t)luab_checkxinteger(L, 1, xmp, luab_env_uid_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (uid_t)luab_checkinteger(L, 1, luab_env_uid_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, uid_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -505,20 +430,15 @@ luab_uid_create(lua_State *L)
 static int
 luab_wchar_create(lua_State *L)
 {
-    luab_module_t *m;
-    wchar_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    wchar_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(WCHAR, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), WCHAR, TYPE, __func__, NULL);
+    x = (wchar_t)luab_checkxinteger(L, 1, xmp, luab_env_uint_max);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (wchar_t)luab_checkinteger(L, 1, luab_env_uint_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, wchar_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -535,20 +455,15 @@ luab_wchar_create(lua_State *L)
 static int
 luab_time_create(lua_State *L)
 {
-    luab_module_t *m;
-    time_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(TIME, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), TIME, TYPE, __func__, NULL);
+    x = (time_t)luab_checkxlinteger(L, 1, xmp, 1);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (time_t)luab_checklinteger(L, 1, 1);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, time_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /***
@@ -565,20 +480,15 @@ luab_time_create(lua_State *L)
 static int
 luab_clock_create(lua_State *L)
 {
-    luab_module_t *m;
-    clock_t x, *xp;
+    luab_xmodule_t xm, *xmp;
+    clock_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(CLOCK, TYPE, __func__);
+    luab_initxmodule((xmp = &xm), CLOCK, TYPE, __func__, NULL);
+    x = (clock_t)luab_checkxlinteger(L, 1, xmp, 1);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (clock_t)luab_checklinteger(L, 1, 1);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m, clock_t *);
-
-    return (luab_pushxdata(L, m, xp));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 static luab_module_table_t luab_core_atomic_vec[] = {

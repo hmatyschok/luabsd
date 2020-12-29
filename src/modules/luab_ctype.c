@@ -153,16 +153,15 @@ luab_runetype(lua_State *L)
 static int
 luab_ct_rune_create(lua_State *L)
 {
-    luab_xmodule_t xm;
+    luab_xmodule_t xm, *xmp;
     __ct_rune_t x;
 
-    xm.xm_idx = luab_idx(CT_RUNE);
-    xm.xm_id = luab_xcookie(CT_RUNE, TYPE);
-    xm.xm_fname = __func__;
+    (void)luab_core_checkmaxargs(L, 1);
 
-    x = (__ct_rune_t)luab_checkxinteger(L, 1, &xm, luab_env_int_max);
+    luab_initxmodule((xmp = &xm), CT_RUNE, TYPE, __func__, NULL);
+    x = (__ct_rune_t)luab_checkxinteger(L, 1, xmp, luab_env_int_max);
 
-    return (luab_pushxdata(L, xm.xm_mod, &x));
+    return (luab_pushxdata(L, xmp->xm_mod, &x));
 }
 
 /*

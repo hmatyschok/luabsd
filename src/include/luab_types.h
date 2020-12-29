@@ -267,6 +267,18 @@ typedef struct luab_xmodule {
     luab_module_t   *xm_mod;
 } luab_xmodule_t;
 
+#define luab_initxmodule(xmp, name, type, fname, m)                 \
+    do {                                                            \
+        if (xmp != NULL) {                                          \
+            (xmp)->xm_idx = luab_idx(name);                         \
+            (xmp)->xm_id = luab_xcookie(name, type);                \
+            (xmp)->xm_fname = (fname);                              \
+            (xmp)->xm_mod = (m);                                    \
+        } else                                                      \
+            luab_core_err(EX_UNAVAILABLE, (fname), ENOSYS);         \
+                                                                    \
+    } while (0)
+
 luab_module_t    *luab_core_checkmodule(luab_type_t, uint32_t, const char *);
 
 #define luab_xmod(name, type, fname)                                \
@@ -295,6 +307,8 @@ lua_Integer  luab_tolinteger(lua_State *, int, int);
 lua_Integer  luab_checklinteger(lua_State *, int, int);
 
 lua_Integer  luab_checkxinteger(lua_State *, int, luab_xmodule_t *, lua_Integer);
+lua_Integer  luab_checkxlinteger(lua_State *, int, luab_xmodule_t *, int);
+lua_Number   luab_checkxnumber(lua_State *, int, luab_xmodule_t *);
 
 const char   *luab_islstring(lua_State *, int, size_t);
 const char   *luab_tolstring(lua_State *, int, size_t);
