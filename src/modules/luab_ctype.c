@@ -633,6 +633,197 @@ luab_isblank(lua_State *L)
 }
 #endif /* __ISO_C_VISIBLE >= 1999 */
 
+#if __BSD_VISIBLE
+/***
+ * digittoint(3) - convert a numeric character to its integer value
+ *
+ * @function digittoint
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.digittoint(c)
+ */
+static int
+luab_digittoint(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = digittoint(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * ishexnumber(3) - hexadecimal-digit character test
+ *
+ * @function ishexnumber
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.ishexnumber(c)
+ */
+static int
+luab_ishexnumber(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = ishexnumber(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isideogram(3) - ideographic character test
+ *
+ * @function isideogram
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isideogram(c)
+ */
+static int
+luab_isideogram(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isideogram(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isnumber(3) - decimal-digit character test
+ *
+ * @function isnumber
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isnumber(c)
+ */
+static int
+luab_isnumber(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isnumber(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isphonogram(3) - phonographic character test
+ *
+ * @function isphonogram
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isphonogram(c)
+ */
+static int
+luab_isphonogram(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isphonogram(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isrune(3) - valid character test
+ *
+ * @function isrune
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isrune(c)
+ */
+static int
+luab_isrune(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isrune(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isspecial(3) - special character test
+ *
+ * @function isspecial
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isspecial(c)
+ */
+static int
+luab_isspecial(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isspecial(c);
+
+    return (luab_pushxinteger(L, status));
+}
+#endif /* __BSD_VISIBLE */
+
 /*
  * Interface against <ctype.h>.
  */
@@ -680,6 +871,15 @@ static luab_module_table_t luab_ctype_vec[] = {
 #endif
 #if __ISO_C_VISIBLE >= 1999
     LUAB_FUNC("isblank",                luab_isblank),
+#endif
+#if __BSD_VISIBLE
+    LUAB_FUNC("digittoint",             luab_digittoint),
+    LUAB_FUNC("ishexnumber",            luab_ishexnumber),
+    LUAB_FUNC("isideogram",             luab_isideogram),
+    LUAB_FUNC("isnumber",               luab_isnumber),
+    LUAB_FUNC("isphonogram",            luab_isphonogram),
+    LUAB_FUNC("isrune",                 luab_isrune),
+    LUAB_FUNC("isspecial",              luab_isspecial),
 #endif
     LUAB_FUNC("ct_rune_create",         luab_ct_rune_create),
     LUAB_FUNC("ct_rune_tolower",        luab_ct_rune_tolower),
