@@ -62,7 +62,7 @@ static int
 luab_nl_langinfo_l(lua_State *L)
 {
     luab_module_t *m0, *m1;
-    nl_item x, *xp;
+    nl_item item;
     luab_locale_t *xloc;
     locale_t loc;
     caddr_t dp;
@@ -72,21 +72,12 @@ luab_nl_langinfo_l(lua_State *L)
     m0 = luab_xmod(NL_ITEM, TYPE, __func__);
     m1 = luab_xmod(LOCALE, TYPE, __func__);
 
-    if (lua_isnumber(L, 1) != 0) {
-        x = (nl_item)luab_checkinteger(L, 1, luab_env_int_max);
-        xp = &x;
-    } else
-        xp = luab_udataisnil(L, 1, m0, nl_item *);
-
+    item = (nl_item)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     xloc = luab_udata(L, 2, m1, luab_locale_t *);
 
-    if ((loc = xloc->ud_sdu) != NULL) {
-
-        if (xp != NULL)
-            dp = nl_langinfo_l(*xp, loc);
-        else
-            dp = NULL;
-    } else
+    if ((loc = xloc->ud_sdu) != NULL)
+        dp = nl_langinfo_l(item, loc);
+    else
         dp = NULL;
 
     return (luab_pushstring(L, dp));
