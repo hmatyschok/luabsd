@@ -114,6 +114,113 @@ luab_runetype(lua_State *L)
     return (luab_pushxinteger(L, x));
 }
 
+/***
+ * isalnum(3) - alphanumeric character set
+ *
+ * @function isalnum
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isalnum(c)
+ */
+static int
+luab_isalnum(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isalnum(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isalpha(3) - alphabetic character set
+ *
+ * @function isalpha
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isalpha(c)
+ */
+static int
+luab_isalpha(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isalpha(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * iscntrl(3) - control character set
+ *
+ * @function iscntrl
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.iscntrl(c)
+ */
+static int
+luab_iscntrl(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = iscntrl(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isdigit(3) - decimal-digit character set
+ *
+ * @function isdigit
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isdigit(c)
+ */
+static int
+luab_isdigit(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isdigit(c);
+
+    return (luab_pushxinteger(L, status));
+}
 
 /*
  * Generator functions.
@@ -198,6 +305,249 @@ luab_ct_rune_toupper(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/***
+ * isgraph(3) - printing character set (space character exclusive)
+ *
+ * @function isgraph
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isgraph(c)
+ */
+static int
+luab_isgraph(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isgraph(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * islower(3) - lower-case character set
+ *
+ * @function islower
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.islower(c)
+ */
+static int
+luab_islower(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = islower(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isprint(3) - printing character set (space character inclusive)
+ *
+ * @function isprint
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isprint(c)
+ */
+static int
+luab_isprint(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isprint(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * ispunct(3) - punctuation character set
+ *
+ * @function ispunct
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.ispunct(c)
+ */
+static int
+luab_ispunct(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = ispunct(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isspace(3) - white-space character set
+ *
+ * @function isspace
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isspace(c)
+ */
+static int
+luab_isspace(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isspace(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isupper(3) - upper-case character set
+ *
+ * @function isupper
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isupper(c)
+ */
+static int
+luab_isupper(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isupper(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * isxdigit(3) - hexadecimal-digit character set
+ *
+ * @function isxdigit
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.isxdigit(c)
+ */
+static int
+luab_isxdigit(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = isxdigit(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * tolower(3) - upper case to lower case letter conversion
+ *
+ * @function tolower
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.tolower(c)
+ */
+static int
+luab_tolower(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = tolower(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * toupper(3) - lower case to upper case letter conversion
+ *
+ * @function toupper
+ *
+ * @param c                 Specifies either value over (unsigned char)
+ *                          or an instance of (LUA_TUSERDATA(UINT8)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.ctype.toupper(c)
+ */
+static int
+luab_toupper(lua_State *L)
+{
+    luab_module_t *m;
+    int c, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT8, TYPE, __func__);
+    c = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_char_max);
+    status = toupper(c);
+
+    return (luab_pushxinteger(L, status));
+}
+
 /*
  * Interface against <ctype.h>.
  */
@@ -224,8 +574,21 @@ static luab_module_table_t luab_ctype_vec[] = {
     LUAB_INT("_CTYPE_SW3",              _CTYPE_SW3),
     LUAB_INT("_CTYPE_SWM",              _CTYPE_SWM),
     LUAB_INT("_CTYPE_SWS",              _CTYPE_SWS),
-    LUAB_FUNC("runetype_l",             luab_runetype_l),
+    LUAB_FUNC("runetype_l",             luab_runetype_l),   /* XXX */
     LUAB_FUNC("runetype",               luab_runetype),
+    LUAB_FUNC("isalnum",                luab_isalnum),
+    LUAB_FUNC("isalpha",                luab_isalpha),
+    LUAB_FUNC("iscntrl",                luab_iscntrl),
+    LUAB_FUNC("isdigit",                luab_isdigit),
+    LUAB_FUNC("isgraph",                luab_isgraph),
+    LUAB_FUNC("islower",                luab_islower),
+    LUAB_FUNC("isprint",                luab_isprint),
+    LUAB_FUNC("ispunct",                luab_ispunct),
+    LUAB_FUNC("isspace",                luab_isspace),
+    LUAB_FUNC("isupper",                luab_isupper),
+    LUAB_FUNC("isxdigit",               luab_isxdigit),
+    LUAB_FUNC("tolower",                luab_tolower),
+    LUAB_FUNC("toupper",                luab_toupper),
     LUAB_FUNC("ct_rune_create",         luab_ct_rune_create),
     LUAB_FUNC("ct_rune_tolower",        luab_ct_rune_tolower),
     LUAB_FUNC("ct_rune_toupper",        luab_ct_rune_toupper),
