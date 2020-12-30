@@ -11,13 +11,13 @@
  *    notice, this list of conditions and the following disclaimer in the
  *    documentation and/or other materials provided with the distribution.
  *
- * THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ * THIS SOFTWARE IS PROVIDED BY THE AUTHOR AS IS'' AND ANY EXPRESS OR
  * IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED.  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT,
  * INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
  * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS FPOSERRUPTION)
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
  * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
  * STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
@@ -43,7 +43,7 @@ extern luab_module_t luab_fpos_type;
 
 typedef struct luab_fpos {
     luab_udata_t    ud_softc;
-    fpos_t             ud_sdu;
+    fpos_t          ud_sdu;
 } luab_fpos_t;
 
 #define luab_new_fpos(L, arg) \
@@ -72,7 +72,7 @@ fpos_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(FPOS)) fposo (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(FPOS)) into (LUA_TTABLE).
  *
  * @function get_table
  *
@@ -123,22 +123,24 @@ FPOS_dump(lua_State *L)
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fpos:set_value(data)
+ * @usage x [, err, msg ] = fpos:set_value(arg)
  */
 static int
 FPOS_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_fpos_t *self;
     fpos_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(FPOS, TYPE, __func__);
     self = luab_to_fpos(L, 1);
-    x = (fpos_t)luab_checkinteger(L, 2, luab_env_ulong_max);
+    x = (fpos_t)luab_checkxinteger(L, 2, m, luab_env_long_max);
 
     self->ud_sdu = x;
 
@@ -152,7 +154,7 @@ FPOS_set_value(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fpos:get_value()
+ * @usage x [, err, msg ] = fpos:get_value()
  */
 static int
 FPOS_get_value(lua_State *L)
@@ -244,7 +246,7 @@ fpos_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (fpos_t)luab_tointeger(L, -1, luab_env_ulong_max);
+                        y = (fpos_t)luab_tointeger(L, -1, luab_env_ushrt_max);
                         x[m] = (fpos_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

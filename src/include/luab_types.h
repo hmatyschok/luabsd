@@ -155,7 +155,6 @@ typedef enum luab_type {
     LUAB_FLOAT_IDX,
 
     /* standard types */
-    LUAB_FPOS_IDX,
     LUAB_GID_IDX,
     LUAB_OFF_IDX,
     LUAB_SIZE_IDX,
@@ -197,6 +196,7 @@ typedef enum luab_type {
     LUAB_NL_ITEM_IDX,
 
     /* <stdio.h> */
+    LUAB_FPOS_IDX,
     LUAB_RSIZE_IDX,
 
     /* composite data types */

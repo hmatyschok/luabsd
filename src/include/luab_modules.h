@@ -45,7 +45,6 @@ extern luab_module_t luab_double_type;
 extern luab_module_t luab_float_type;
 
 /* standard types */
-extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_gid_type;
 extern luab_module_t luab_off_type;
 extern luab_module_t luab_size_type;
@@ -87,6 +86,7 @@ extern luab_module_t luab_mode_type;
 extern luab_module_t luab_nl_item_type;
 
 /* <stdio.h> */
+extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_rsize_type;
 
 /*

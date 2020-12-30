@@ -123,11 +123,11 @@ RSIZE_dump(lua_State *L)
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = rsize:set_value(data)
+ * @usage x [, err, msg ] = rsize:set_value(arg)
  */
 static int
 RSIZE_set_value(lua_State *L)
@@ -154,7 +154,7 @@ RSIZE_set_value(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = rsize:get_value()
+ * @usage x [, err, msg ] = rsize:get_value()
  */
 static int
 RSIZE_get_value(lua_State *L)
