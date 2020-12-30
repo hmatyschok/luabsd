@@ -59,7 +59,7 @@ extern luab_module_t luab_net_if_lib;
 static int
 luab_if_indextoname(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     u_int ifindex;
     luab_iovec_t *buf;
     caddr_t bp;
@@ -67,10 +67,11 @@ luab_if_indextoname(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(UINT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
 
-    ifindex = (u_int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m, luab_iovec_t *);
+    ifindex = (u_int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
