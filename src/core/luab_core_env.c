@@ -30,6 +30,9 @@
 
 #include "luabsd.h"
 
+const lua_Integer luab_env_error = LUAB_ERROR;
+const lua_Integer luab_env_success = LUAB_SUCCESS;
+
 const lua_Integer luab_env_char_bit = LUAB_CHAR_BIT;
 
 const lua_Integer luab_env_schar_max = LUAB_SCHAR_MAX;

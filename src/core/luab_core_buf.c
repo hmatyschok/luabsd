@@ -77,14 +77,14 @@ luab_iov_clear(struct iovec *iov)
         if (((bp = iov->iov_base) != NULL) &&
             ((len = iov->iov_len) > 1)) {
             (void)memset_s(bp, len, 0, len);
-            status = 0;
+            status = luab_env_success;
         } else {
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (status);
 }
@@ -98,14 +98,14 @@ luab_iov_alloc(struct iovec *iov, size_t len)
 
         if ((iov->iov_base = luab_core_alloc(len, sizeof(char))) != NULL) {
             iov->iov_len = len;
-            status = 0;
+            status = luab_env_success;
         } else {
             iov->iov_len = 0;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (status);
 }
@@ -121,12 +121,12 @@ luab_iov_realloc(struct iovec *iov, size_t len)
         if ((bp = realloc(iov->iov_base, len)) != NULL) {
             iov->iov_base = bp;
             iov->iov_len = len;
-            status = 0;
+            status = luab_env_success;
         } else
-            status = -1;
+            status = luab_env_error;
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (status);
 }
@@ -143,14 +143,14 @@ luab_iov_copyin(struct iovec *iov, const void *v, ssize_t len)
             (len == (ssize_t)iov->iov_len)) {
             (void)memmove(bp, v, len);
 
-            status = 0;
+            status = luab_env_success;
         } else {
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (status);
 }
@@ -167,14 +167,14 @@ luab_iov_copyout(struct iovec *iov, void *v, ssize_t len)
             (len == (ssize_t)iov->iov_len)) {
             (void)memmove(v, bp, len);
 
-            status = 0;
+            status = luab_env_success;
         } else {
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (status);
 }
@@ -190,10 +190,10 @@ luab_iov_free(struct iovec *iov)
             iov->iov_base = NULL;
         }
         iov->iov_len = 0;
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (status);
 }

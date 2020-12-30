@@ -579,7 +579,7 @@ luab_mount(lua_State *L)
         status = mount(type, dir, flags, data);
     else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -641,10 +641,10 @@ luab_nmount(lua_State *L)
         } else {
             luab_iovec_freetable(tbl);
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }

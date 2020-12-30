@@ -125,7 +125,7 @@ luab_alarm(lua_State *L)    /* XXX */
         saved_L = L;    /* XXX race condition */
 
         if (signal(SIGALRM, h_signal) == SIG_ERR)
-            return luab_pushxinteger(L, -1);
+            return (luab_pushxinteger(L, luab_env_error));
     }
     status = alarm(seconds);
 
@@ -264,7 +264,7 @@ luab_closefrom(lua_State *L)
     lowfd = (int)luab_checkinteger(L, 1, luab_env_int_max);
     closefrom(lowfd);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -364,7 +364,7 @@ luab_execv(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -407,7 +407,7 @@ luab_execve(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -450,7 +450,7 @@ luab_execvp(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -962,7 +962,7 @@ luab_pipe(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1286,11 +1286,11 @@ luab_ttyname_r(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1480,11 +1480,11 @@ luab_getlogin_r(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1600,11 +1600,11 @@ luab_gethostname(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -2013,7 +2013,7 @@ luab_fexecve(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -2425,17 +2425,17 @@ luab_swab(lua_State *L)
             out_buf->iov_flags |= IOV_LOCK;
 
             swab(src, dst, len);
-            status = 0;
+            status = luab_env_success;
 
             out_buf->iov_flags &= ~IOV_LOCK;
             in_buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -2456,7 +2456,7 @@ luab_sync(lua_State *L)
 
     sync();
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 #endif /* __XSI_VISIBLE */
 
@@ -2868,7 +2868,7 @@ luab_endusershell(lua_State *L)
 
     endusershell();
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -2909,7 +2909,7 @@ luab_exect(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -2955,7 +2955,7 @@ luab_execvP(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3056,11 +3056,11 @@ luab_getdomainname(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3107,11 +3107,11 @@ luab_getentropy(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3170,10 +3170,10 @@ luab_getgrouplist(lua_State *L)
             if ((status = getgrouplist(name, basegid, gidset, (int *)ngroups)) == 0)
                 luab_table_pushxdata(L, 3, m0, tbl, 0, 1);
         } else
-            status = -1;
+            status = luab_env_error;
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3220,11 +3220,11 @@ luab_getloginclass(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3270,11 +3270,11 @@ luab_getmode(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3547,11 +3547,11 @@ luab_iruserok_sa(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3695,11 +3695,11 @@ luab_mkstemp(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3745,11 +3745,11 @@ luab_mkstemps(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3847,7 +3847,7 @@ luab_pipe2(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -3899,11 +3899,11 @@ luab_profil(lua_State *L)
                 buf->iov_flags &= ~IOV_LOCK;
             } else {
                 errno = EBUSY;
-                status = -1;
+                status = luab_env_error;
             }
         } else {
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
     } else
         status = profil(NULL, size, offset, scale);
@@ -4321,11 +4321,11 @@ luab_setdomainname(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -4365,7 +4365,7 @@ luab_setgroups(lua_State *L)
         luab_table_free(tbl);
     } else {
         errno = EINVAL;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -4456,11 +4456,11 @@ luab_setloginclass(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -4568,7 +4568,7 @@ luab_setproctitle(lua_State *L)
     title = luab_checklstring(L, 1, luab_env_buf_max, NULL);
     setproctitle("%s", title);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -4593,7 +4593,7 @@ luab_setproctitle_fast(lua_State *L)
     title = luab_checklstring(L, 1, luab_env_buf_max, NULL);
     setproctitle_fast("%s", title);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -4726,7 +4726,7 @@ luab_setusershell(lua_State *L)
 
     setusershell();
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***

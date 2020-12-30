@@ -265,7 +265,7 @@ luab_regfree(lua_State *L)
     preg = luab_udata(L, 1, luab_xmod(REGEX, TYPE, __func__), regex_t *);
     regfree(preg);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /*

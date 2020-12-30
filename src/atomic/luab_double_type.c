@@ -142,7 +142,7 @@ DOUBLE_set_value(lua_State *L)
 
     self->ud_sdu = x;
 
-    return (luab_pushxnumber(L, x));
+    return (luab_pushxnumber(L, x, 0));
 }
 
 /***
@@ -165,7 +165,7 @@ DOUBLE_get_value(lua_State *L)
     self = luab_to_double(L, 1);
     x = self->ud_sdu;
 
-    return (luab_pushxnumber(L, x));
+    return (luab_pushxnumber(L, x, 0));
 }
 
 /*

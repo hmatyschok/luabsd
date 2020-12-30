@@ -87,10 +87,10 @@ luab_clearerr(lua_State *L)
 
     if (stream != NULL) {
         clearerr(stream);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -122,7 +122,7 @@ luab_fclose(lua_State *L)
         status = fclose(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -154,7 +154,7 @@ luab_feof(lua_State *L)
         status = feof(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -186,7 +186,7 @@ luab_ferror(lua_State *L)
         status = ferror(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -218,7 +218,7 @@ luab_fflush(lua_State *L)
         status = fflush(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -250,7 +250,7 @@ luab_fgetc(lua_State *L)
         status = fgetc(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -288,7 +288,7 @@ luab_fgetpos(lua_State *L)
         status = fgetpos(stream, pos);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -338,22 +338,22 @@ luab_fgets(lua_State *L)
 
                 if (fgets(bp, size, stream) != NULL) {
                     buf->iov.iov_len = size;
-                    status = 0;
+                    status = luab_env_success;
                 } else
-                    status = -1;
+                    status = luab_env_error;
 
             } else {
                 errno = ENOENT;
-                status = -1;
+                status = luab_env_error;
             }
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = 0;
+            status = luab_env_success;
         }
     } else {
         errno = ERANGE;
-        status = 0;
+        status = luab_env_success;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -423,7 +423,7 @@ luab_fputc(lua_State *L)
         status = fputc(c, stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -459,7 +459,7 @@ luab_fputs(lua_State *L)
         status = fputs(str, stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -550,7 +550,7 @@ luab_fseek(lua_State *L)
         status = fseek(stream, offset, whence);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -588,7 +588,7 @@ luab_fsetpos(lua_State *L)
         status = fsetpos(stream, pos);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -620,7 +620,7 @@ luab_ftell(lua_State *L)
         status = ftell(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -652,7 +652,7 @@ luab_getc(lua_State *L)
         status = getc(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -710,18 +710,18 @@ luab_gets(lua_State *L)
 
             if (gets(bp) != NULL) {
                 buf->iov.iov_len = strnlen(bp, luab_env_buf_max);
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -765,18 +765,18 @@ luab_gets_s(lua_State *L)
 
             if (gets_s(bp, size) != NULL) {
                 buf->iov.iov_len = size;
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -814,7 +814,7 @@ luab_putc(lua_State *L)
         status = putc(c, stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -920,10 +920,10 @@ luab_rewind(lua_State *L)
 
     if (stream != NULL) {
         rewind(stream);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -990,7 +990,7 @@ luab_fileno(lua_State *L)
         status = fileno(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1024,7 +1024,7 @@ luab_getc_unlocked(lua_State *L)
         status = getc_unlocked(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1081,7 +1081,7 @@ luab_putc_unlocked(lua_State *L)
         status = putc_unlocked(c, stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1137,10 +1137,10 @@ luab_clearerr_unlocked(lua_State *L)
 
     if (stream != NULL) {
         clearerr_unlocked(stream);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1172,7 +1172,7 @@ luab_feof_unlocked(lua_State *L)
         status = feof_unlocked(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1204,7 +1204,7 @@ luab_ferror_unlocked(lua_State *L)
         status = ferror_unlocked(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1236,7 +1236,7 @@ luab_fileno_unlocked(lua_State *L)
         status = fileno_unlocked(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1287,7 +1287,7 @@ luab_fseeko(lua_State *L)
         status = fseeko(stream, offset, whence);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1319,7 +1319,7 @@ luab_ftello(lua_State *L)
         status = ftello(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1353,7 +1353,7 @@ luab_getw(lua_State *L)
         status = getw(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1390,7 +1390,7 @@ luab_putw(lua_State *L)
         status = putw(w, stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1474,7 +1474,7 @@ luab_fcloseall(lua_State *L)
 
     fcloseall();
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -1510,7 +1510,7 @@ luab_fdclose(lua_State *L)
         status = fdclose(stream, fdp);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1542,7 +1542,7 @@ luab_fpurge(lua_State *L)
         status = fpurge(stream);
     else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

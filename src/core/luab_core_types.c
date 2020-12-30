@@ -754,23 +754,25 @@ luab_pusherr(lua_State *L, int up_call, int ret)
 }
 
 int
-luab_pushinteger(lua_State *L, lua_Integer res)
+luab_pushinteger(lua_State *L, lua_Integer x)
 {
     int up_call;
 
     up_call = errno;
-    lua_pushinteger(L, res);
+    lua_pushinteger(L, x);
 
     return (luab_pusherr(L, up_call, 1));
 }
 
 int
-luab_pushnumber(lua_State *L, lua_Number res)
+luab_pushnumber(lua_State *L, lua_Number x, int err)
 {
     int up_call;
 
-    up_call = errno;
-    lua_pushnumber(L, res);
+    if ((up_call = errno) != 0 && err != 0)
+        lua_pushinteger(L, luab_env_error);
+    else
+        lua_pushnumber(L, x);
 
     return (luab_pusherr(L, up_call, 1));
 }

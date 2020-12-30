@@ -129,7 +129,7 @@ luab_endpwent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     endpwent();
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -172,7 +172,7 @@ luab_setpwent(lua_State *L)
     (void)luab_core_checkmaxargs(L, 0);
 
     setpwent();
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 #endif /* __XSI_VISIBLE */
 
@@ -234,11 +234,11 @@ luab_getpwnam_r(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = 0;
+            status = luab_env_success;
         }
     } else {
         errno = ERANGE;
-        status = 0;
+        status = luab_env_success;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -301,11 +301,11 @@ luab_getpwuid_r(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = 0;
+            status = luab_env_success;
         }
     } else {
         errno = ERANGE;
-        status = 0;
+        status = luab_env_success;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -394,11 +394,11 @@ luab_getpwent_r(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = 0;
+            status = luab_env_success;
         }
     } else {
         errno = ERANGE;
-        status = 0;
+        status = luab_env_success;
     }
     return (luab_pushxinteger(L, status));
 }

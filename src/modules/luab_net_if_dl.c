@@ -68,7 +68,7 @@ luab_link_addr(lua_State *L)
 
     link_addr(addr, sdl);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -115,19 +115,19 @@ luab_link_ntoa(lua_State *L)
                 len = strnlen(src, LUAB_SDL_MAXDATALEN);
                 (void)memmove(dst, src, len);
                 buf->iov.iov_len = len;
-                status = 0;
+                status = luab_env_success;
             } else {
                 errno = EINVAL;
-                status = -1;
+                status = luab_env_error;
             }
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

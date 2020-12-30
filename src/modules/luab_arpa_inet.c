@@ -184,18 +184,18 @@ luab_inet_ntop(lua_State *L)
 
             if (inet_ntop(af, src, dst, size) != NULL) {
                 buf->iov.iov_len = size;
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -250,11 +250,11 @@ luab_inet_pton(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -398,18 +398,18 @@ luab_inet_neta(lua_State *L)
 
             if (inet_neta(src->s_addr, dst, size) != NULL) {
                 buf->iov.iov_len = size;
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -522,18 +522,18 @@ luab_inet_net_ntop(lua_State *L)
 
             if (inet_net_ntop(af, src, bits, dst, size) != NULL) {
                 buf->iov.iov_len = size;
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -590,11 +590,11 @@ luab_inet_net_pton(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -643,18 +643,18 @@ luab_inet_ntoa_r(lua_State *L)
 
             if (inet_ntoa_r(*in, bp, size) != NULL) {
                 buf->iov.iov_len = size;
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -712,18 +712,18 @@ luab_inet_cidr_ntop(lua_State *L)
 
             if (inet_cidr_ntop(af, src, bits, dst, size) != NULL) {
                 buf->iov.iov_len = size;
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -782,11 +782,11 @@ luab_inet_cidr_pton(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

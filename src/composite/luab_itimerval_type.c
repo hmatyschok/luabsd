@@ -153,7 +153,7 @@ ITIMERVAL_set_it_interval(lua_State *L)
 
     (void)memmove(&it->it_interval, tv, m->m_sz);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***
@@ -207,7 +207,7 @@ ITIMERVAL_set_it_value(lua_State *L)
 
     (void)memmove(&it->it_value, tv, m->m_sz);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***

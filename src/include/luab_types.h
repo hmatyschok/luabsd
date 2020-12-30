@@ -345,11 +345,11 @@ int  luab_pusherr(lua_State *, int, int);
 
 #define luab_pushxinteger(L, x) \
     (luab_pushinteger((L), (lua_Integer)(x)))
-#define luab_pushxnumber(L, x) \
-    (luab_pushnumber((L), (lua_Number)(x)))
+#define luab_pushxnumber(L, x, err) \
+    (luab_pushnumber((L), (lua_Number)(x), (err)))
 
 int  luab_pushinteger(lua_State *, lua_Integer);
-int  luab_pushnumber(lua_State *, lua_Number);
+int  luab_pushnumber(lua_State *, lua_Number, int);
 int  luab_pushnil(lua_State *);
 
 int  luab_pushstring(lua_State *, const char *);

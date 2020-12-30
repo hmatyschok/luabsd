@@ -92,11 +92,11 @@ luab_strtoimax_l(lua_State *L)
             nptr->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -153,11 +153,11 @@ luab_strtoumax_l(lua_State *L)
             nptr->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -214,11 +214,11 @@ luab_wcstoimax_l(lua_State *L)
             nptr->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -275,11 +275,11 @@ luab_wcstoumax_l(lua_State *L)
             nptr->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

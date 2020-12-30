@@ -263,16 +263,16 @@ luab_uuid_enc_le(lua_State *L)
 
             uuid_enc_le(bp, uuid);
             buf->iov.iov_len = LUAB_UUID_STR_LEN;
-            status = 0;
+            status = luab_env_success;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -317,16 +317,16 @@ luab_uuid_dec_le(lua_State *L)
             buf->iov_flags |= IOV_LOCK;
 
             uuid_dec_le(bp, uuid);
-            status = 0;
+            status = luab_env_success;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -371,16 +371,16 @@ luab_uuid_enc_be(lua_State *L)
 
             uuid_enc_be(bp, uuid);
             buf->iov.iov_len = LUAB_UUID_STR_LEN;
-            status = 0;
+            status = luab_env_success;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -425,16 +425,16 @@ luab_uuid_dec_be(lua_State *L)
             buf->iov_flags |= IOV_LOCK;
 
             uuid_dec_be(bp, uuid);
-            status = 0;
+            status = luab_env_success;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

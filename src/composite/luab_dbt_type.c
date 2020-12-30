@@ -174,15 +174,15 @@ DBT_set_data(lua_State *L)
         if (((dbt->data = buf->iov.iov_base) != NULL) &&
             ((dbt->size = buf->iov.iov_len) > 0) &&
             (buf->iov_flags & (IOV_BUFF|IOV_PROXY)))
-            status = 0;
+            status = luab_env_success;
         else {
             errno = EINVAL;
-            status = -1;
+            status = luab_env_error;
         }
         buf->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

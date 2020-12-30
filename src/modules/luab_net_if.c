@@ -83,18 +83,18 @@ luab_if_indextoname(lua_State *L)
 
             if (if_indextoname(ifindex, bp) != NULL) {
                 buf->iov.iov_len = strnlen(bp, IFNAMSIZ);
-                status = 0;
+                status = luab_env_success;
             } else
-                status = -1;
+                status = luab_env_error;
 
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

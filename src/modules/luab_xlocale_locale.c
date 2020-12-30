@@ -105,10 +105,10 @@ luab_freelocale(lua_State *L)
     if ((locale = xloc->ud_sdu) != NULL) {
         freelocale(locale);
         xloc->ud_sdu = NULL;
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = ENOENT;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

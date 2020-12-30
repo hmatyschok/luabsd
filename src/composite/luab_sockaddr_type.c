@@ -405,10 +405,10 @@ SOCKADDR_set_sdl_index(lua_State *L)
 
     if (sdl->sdl_family == AF_LINK) {
         sdl->sdl_index = x;
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -466,10 +466,10 @@ SOCKADDR_set_sdl_type(lua_State *L)
 
     if (sdl->sdl_family == AF_LINK) {
         sdl->sdl_type = x;
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -527,10 +527,10 @@ SOCKADDR_set_sdl_nlen(lua_State *L)
 
     if (sdl->sdl_family == AF_LINK) {
         sdl->sdl_nlen = (x % luab_env_ifname_max);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -588,10 +588,10 @@ SOCKADDR_set_sdl_alen(lua_State *L)
 
     if (sdl->sdl_family == AF_LINK) {    /* XXX constraint depends on IFT_XXX */
         sdl->sdl_alen = (x % LUAB_SDL_MAXADDRLEN);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -691,10 +691,10 @@ SOCKADDR_set_sin_port(lua_State *L)
 
     if (sin->sin_family == AF_INET) {
         sin->sin_port = htons(x);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -753,10 +753,10 @@ SOCKADDR_set_sin_addr(lua_State *L)
 
     if (sin->sin_family == AF_INET) {
         sin->sin_addr.s_addr = htonl(ia->s_addr);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -831,10 +831,10 @@ SOCKADDR_set_sin6_port(lua_State *L)
 
     if (sin6->sin6_family == AF_INET6) {
         sin6->sin6_port = htons(x);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -892,10 +892,10 @@ SOCKADDR_set_sin6_flowinfo(lua_State *L)
 
     if (sin6->sin6_family == AF_INET6) {
         sin6->sin6_flowinfo = htonl(x);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -954,10 +954,10 @@ SOCKADDR_set_sin6_addr(lua_State *L)
 
     if (sin6->sin6_family == AF_INET6) {
         sin6->sin6_addr = *ia;
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1017,10 +1017,10 @@ SOCKADDR_set_sin6_scope_id(lua_State *L)
 
     if (sin6->sin6_family == AF_INET6) {
         sin6->sin6_scope_id = htonl(x);
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -1088,10 +1088,10 @@ SOCKADDR_set_sun_path(lua_State *L)
 
     if (sun->sun_family == AF_UNIX) {
         (void)memmove(sun->sun_path, dp, strlen(dp));
-        status = 0;
+        status = luab_env_success;
     } else {
         errno = EPERM;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

@@ -148,7 +148,7 @@ luab_difftime(lua_State *L)
 
     ret = difftime(time1, time0);
 
-    return (luab_pushnumber(L, ret));
+    return (luab_pushnumber(L, ret, 0));
 }
 #endif /* _STANDALONE */
 
@@ -290,11 +290,11 @@ luab_strftime(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            status = -1;
+            status = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

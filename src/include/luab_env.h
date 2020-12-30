@@ -31,6 +31,9 @@
  * Various usefull constants.
  */
 
+#define LUAB_ERROR                              (-1)
+#define LUAB_SUCCESS                            (0)
+
 #define LUAB_CHAR_BIT                           CHAR_BIT;
 
 #define LUAB_SCHAR_MAX                          SCHAR_MAX
@@ -105,6 +108,9 @@
 #else
 #define LUAB_MQ_PRIO_MAX                        0
 #endif
+
+extern const lua_Integer luab_env_error;
+extern const lua_Integer luab_env_success;
 
 extern const lua_Integer luab_env_char_bit;
 

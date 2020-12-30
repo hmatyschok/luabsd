@@ -282,7 +282,7 @@ IOVEC_get_len(lua_State *L)
         self->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
-        status = luab_pushxinteger(L, -1);
+        status = luab_pushxinteger(L, luab_env_error);
     }
     return (status);
 }
@@ -319,12 +319,12 @@ IOVEC_clear(lua_State *L)
             status = luab_iov_clear(iov);
         else {
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
         self->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }
@@ -436,12 +436,12 @@ IOVEC_resize(lua_State *L)
             }
         } else {
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
         self->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
-        status = -1;
+        status = luab_env_error;
     }
     return (luab_pushxinteger(L, status));
 }

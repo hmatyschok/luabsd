@@ -325,9 +325,9 @@ luab_posix_fadvise(lua_State *L)
     advice = (int)luab_checkxinteger(L, 4, m0, luab_env_int_max);
 
     if ((errno = posix_fadvise(fd, offset, len, advice)) != 0)
-        status = -1;
+        status = luab_env_error;
     else
-        status = 0;
+        status = luab_env_success;
 
     return (luab_pushxinteger(L, status));
 }
@@ -365,9 +365,9 @@ luab_posix_fallocate(lua_State *L)
     len = (off_t)luab_checkxinteger(L, 3, m1, luab_env_int_max);
 
     if ((errno = posix_fallocate(fd, offset, len)) != 0)
-        status = -1;
+        status = luab_env_error;
     else
-        status = 0;
+        status = luab_env_success;
 
     return (luab_pushxinteger(L, status));
 }

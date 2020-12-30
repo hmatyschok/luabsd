@@ -129,10 +129,10 @@ luab_jail_set(lua_State *L)
         } else {
             luab_table_free(tbl);
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }
@@ -194,10 +194,10 @@ luab_jail_get(lua_State *L)
         } else {
             luab_table_free(tbl);
             errno = ERANGE;
-            status = -1;
+            status = luab_env_error;
         }
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }

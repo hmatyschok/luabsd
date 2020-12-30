@@ -447,7 +447,7 @@ luab_rewinddir(lua_State *L)
     m = luab_xmod(DIR, TYPE, __func__);
     dirp = luab_udata(L, 1, m, DIR *);
     rewinddir(dirp);
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 #if __XSI_VISIBLE
@@ -479,7 +479,7 @@ luab_seekdir(lua_State *L)
     loc = (long)luab_checkxinteger(L, 2, m1, luab_env_long_max);
     seekdir(dirp, loc);
 
-    return (luab_pushxinteger(L, 0));
+    return (luab_pushxinteger(L, luab_env_success));
 }
 
 /***

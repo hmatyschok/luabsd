@@ -76,7 +76,7 @@ db_close(DB *db)
         status = (*db->close)(db);
     else {
         errno = EBADF;
-        status = -1;
+        status = luab_env_error;
     }
     return (status);
 }
@@ -220,7 +220,7 @@ DB_del(lua_State *L)
 
         status = (*db->del)(db, k, flags);
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }
@@ -280,7 +280,7 @@ DB_get(lua_State *L)
 
         status = (*db->get)(db, k, v, flags);
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }
@@ -320,7 +320,7 @@ DB_put(lua_State *L)
 
         status = (*db->put)(db, k, v, flags);
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }
@@ -359,7 +359,7 @@ DB_seq(lua_State *L)
 
         status = (*db->seq)(db, k, v, flags);
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }
@@ -393,7 +393,7 @@ DB_sync(lua_State *L)
 
         status = (*db->sync)(db, flags);
     } else
-        status = -1;
+        status = luab_env_error;
 
     return (luab_pushxinteger(L, status));
 }
