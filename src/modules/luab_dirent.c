@@ -118,23 +118,20 @@ luab_dirfd(lua_State *L)
 static int
 luab_opendir2(lua_State *L)
 {
-    luab_module_t *m0;
+    luab_module_t *m0, *m1;
     const char *name;
     int flags;
     DIR *dirp;
-    luab_module_t *m1;
-
 
     (void)luab_core_checkmaxargs(L, 2);
 
     m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(DIR, TYPE, __func__);
 
     name = luab_checklstring(L, 1, luab_env_path_max, NULL);
     flags = (int)luab_checkxinteger(L, 2, m0, luab_env_int_max);
 
-    if ((dirp = __opendir2(name, flags)) != NULL)
-        m1 = luab_xmod(DIR, TYPE, __func__);
-    else
+    if ((dirp = __opendir2(name, flags)) == NULL)
         m1 = NULL;
 
     return (luab_pushxdata(L, m1, dirp));
@@ -309,17 +306,16 @@ luab_fdclosedir(lua_State *L)
 static int
 luab_opendir(lua_State *L)
 {
+    luab_module_t *m;
     const char *filename;
     DIR *dirp;
-    luab_module_t *m;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(DIR, TYPE, __func__);
     filename = luab_checklstring(L, 1, luab_env_path_max, NULL);
 
-    if ((dirp = opendir(filename)) != NULL)
-        m = luab_xmod(DIR, TYPE, __func__);
-    else
+    if ((dirp = opendir(filename)) == NULL)
         m = NULL;
 
     return (luab_pushxdata(L, m, dirp));
@@ -339,19 +335,18 @@ luab_opendir(lua_State *L)
 static int
 luab_fdopendir(lua_State *L)
 {
-    luab_module_t *m0;
+    luab_module_t *m0, *m1;
     int fd;
     DIR *dirp;
-    luab_module_t *m1;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(DIR, TYPE, __func__);
+
     fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
 
-    if ((dirp = fdopendir(fd)) != NULL)
-        m1 = luab_xmod(DIR, TYPE, __func__);
-    else
+    if ((dirp = fdopendir(fd)) == NULL)
         m1 = NULL;
 
     return (luab_pushxdata(L, m1, dirp));
@@ -371,19 +366,18 @@ luab_fdopendir(lua_State *L)
 static int
 luab_readdir(lua_State *L)
 {
-    luab_module_t *m0;
+    luab_module_t *m0, *m1;
     DIR *dirp;
     struct dirent *dp;
-    luab_module_t *m1;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m0 = luab_xmod(DIR, TYPE, __func__);
+    m1 = luab_xmod(DIRENT, TYPE, __func__);
+
     dirp = luab_udata(L, 1, m0, DIR *);
 
-    if ((dp = readdir(dirp)) != NULL)
-        m1 = luab_xmod(DIRENT, TYPE, __func__);
-    else
+    if ((dp = readdir(dirp)) == NULL)
         m1 = NULL;
 
     return (luab_pushxdata(L, m1, dp));
@@ -423,6 +417,7 @@ luab_readdir_r(lua_State *L)
     ret = luab_udata(L, 3, m1, struct dirent *);
 
     if ((status = readdir_r(dirp, entry, &result)) == 0) {
+
         if (result != NULL)
             (void)memmove(ret, result, sizeof(struct dirent));
     }
