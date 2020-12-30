@@ -187,8 +187,11 @@ typedef enum luab_type {
     LUAB_INTMAX_IDX,
     LUAB_UINTMAX_IDX,
 
-    /* <ctype.h */
+    /* <ctype.h> */
     LUAB_CT_RUNE_IDX,
+
+    /* <fcntl.h> */
+    LUAB_MODE_IDX,
 
     /* <langinfo.h> */
     LUAB_NL_ITEM_IDX,

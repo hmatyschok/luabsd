@@ -63,6 +63,9 @@ SRCS+=  luab_uintmax_type.c
 # <ctype.h>
 SRCS+=  luab_ct_rune_type.c
 
+# <fcntl.h>
+SRCS+=  luab_mode_type.c
+
 # <langinfo.h>
 SRCS+=  luab_nl_item_type.c
 

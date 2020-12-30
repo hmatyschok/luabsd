@@ -640,6 +640,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_IN_PORT_TYPE_ID                    1609278999
 #define LUAB_IN_PORT_TYPE                       "IN_PORT*"
 
+#define LUAB_MODE_TYPE_ID                       1609284959
+#define LUAB_MODE_TYPE                          "MODE*"
+
 /*
  * Set of composite data types.
  */

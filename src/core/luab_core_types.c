@@ -194,6 +194,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_ct_rune_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CT_RUNE_IDX,
+    },{ /* <fcntl.h> */
+        .mv_mod = &luab_mode_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_MODE_IDX,
     },{ /* <langinfo.h> */
         .mv_mod = &luab_nl_item_type,
         .mv_init = luab_core_newmetatable,

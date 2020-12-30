@@ -80,6 +80,9 @@ extern luab_module_t luab_uintmax_type;
 /* <ctype.h> */
 extern luab_module_t luab_ct_rune_type;
 
+/* <fcntl.h> */
+extern luab_module_t luab_mode_type;
+
 /* <langinfo.h> */
 extern luab_module_t luab_nl_item_type;
 
