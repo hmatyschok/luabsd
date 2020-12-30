@@ -202,6 +202,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_nl_item_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_NL_ITEM_IDX,
+    },{ /* <stdio.h> */
+        .mv_mod = &luab_rsize_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_RSIZE_IDX,
     },{                                     /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,

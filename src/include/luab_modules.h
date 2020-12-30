@@ -86,6 +86,9 @@ extern luab_module_t luab_mode_type;
 /* <langinfo.h> */
 extern luab_module_t luab_nl_item_type;
 
+/* <stdio.h> */
+extern luab_module_t luab_rsize_type;
+
 /*
  * Set of composite data types.
  */

@@ -309,7 +309,7 @@ luab_fgetpos(lua_State *L)
 static int
 luab_fgets(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     luab_iovec_t *buf;
     size_t size;
     FILE *stream;
@@ -319,11 +319,12 @@ luab_fgets(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(SFILE, TYPE, __func__);
+    m1 = luab_xmod(SIZE, TYPE, __func__);
+    m2 = luab_xmod(SFILE, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    size = (size_t)luab_checkinteger(L, 2, luab_env_int_max);
-    stream = luab_udata(L, 1, m1, FILE *);
+    size = (size_t)luab_checkxlinteger(L, 2, m1, 0);
+    stream = luab_udata(L, 1, m2, FILE *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -372,19 +373,19 @@ luab_fgets(lua_State *L)
 static int
 luab_fopen(lua_State *L)
 {
+    luab_module_t *m;
     const char *path;
     const char *mode;
     FILE *stream;
-    luab_module_t *m;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
-    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);
+    m = luab_xmod(SFILE, TYPE, __func__);
 
-    if ((stream = fopen(path, mode)) != NULL)
-        m = luab_xmod(SFILE, TYPE, __func__);
-    else
+    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
+    mode = luab_checklstring(L, 2, LUAB_STDIO_MODE_MAXLEN, NULL);   /* XXX */
+
+    if ((stream = fopen(path, mode)) == NULL)
         m = NULL;
 
     return (luab_pushxdata(L, m, stream));
@@ -405,17 +406,18 @@ luab_fopen(lua_State *L)
 static int
 luab_fputc(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     int c;
     FILE *stream;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(SFILE, TYPE, __func__);
+    m0 = luab_xmod(UINT8, TYPE, __func__);
+    m1 = luab_xmod(SFILE, TYPE, __func__);
 
-    c = luab_checkinteger(L, 1, luab_env_uchar_max);
-    stream = luab_udata(L, 2, m, FILE *);
+    c = (int)luab_checkxinteger(L, 1, m0, luab_env_uchar_max);
+    stream = luab_udata(L, 2, m1, FILE *);
 
     if (stream != NULL)
         status = fputc(c, stream);
@@ -528,7 +530,7 @@ luab_freopen(lua_State *L)
 static int
 luab_fseek(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     FILE *stream;
     long offset;
     int whence;
@@ -536,11 +538,13 @@ luab_fseek(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    m = luab_xmod(SFILE, TYPE, __func__);
+    m0 = luab_xmod(SFILE, TYPE, __func__);
+    m1 = luab_xmod(LONG, TYPE, __func__);
+    m2 = luab_xmod(INT, TYPE, __func__);
 
-    stream = luab_udata(L, 1, m, FILE *);
-    offset = (long)luab_checkinteger(L, 2, luab_env_long_max);
-    whence = (int)luab_checkinteger(L, 3, luab_env_int_max);
+    stream = luab_udata(L, 1, m0, FILE *);
+    offset = (long)luab_checkxinteger(L, 2, m1, luab_env_long_max);
+    whence = (int)luab_checkxinteger(L, 3, m2, luab_env_int_max);
 
     if (stream != NULL)
         status = fseek(stream, offset, whence);
@@ -575,7 +579,7 @@ luab_fsetpos(lua_State *L)
     (void)luab_core_checkmaxargs(L, 3);
 
     m0 = luab_xmod(SFILE, TYPE, __func__);
-    m1 = luab_xmod(INT64, TYPE, __func__);
+    m1 = luab_xmod(INT64, TYPE, __func__);  /* XXX */
 
     stream = luab_udata(L, 1, m0, FILE *);
     pos = luab_udata(L, 2, m1, fpos_t *);
@@ -737,7 +741,7 @@ luab_gets(lua_State *L)
 static int
 luab_gets_s(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     luab_iovec_t *buf;
     rsize_t size;
     caddr_t bp;
@@ -745,9 +749,11 @@ luab_gets_s(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
-    buf = luab_udata(L, 1, m, luab_iovec_t *);
-    size = (rsize_t)luab_checklinteger(L, 2, 0);
+    m0 = luab_xmod(IOVEC, TYPE, __func__);
+    m1 = luab_xmod(RSIZE, TYPE, __func__);
+
+    buf = luab_udata(L, 1, m0, luab_iovec_t *);
+    size = (rsize_t)luab_checkxlinteger(L, 2, m1, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -1537,6 +1543,31 @@ luab_fpurge(lua_State *L)
  */
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(RSIZE)).
+ *
+ * @function rsize_create
+ *
+ * @param x                 Specifies initial value.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage rsize [, err, msg ] = bsd.stdio.rsize_create(x)
+ */
+static int
+luab_rsize_create(lua_State *L)
+{
+    luab_module_t *m;
+    rsize_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(RSIZE, TYPE, __func__);
+    x = (rsize_t)luab_checkxlinteger(L, 1, m, 0);
+
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function - create an instance of (LUA_TUSERDATA(__SBUF)).
  *
  * @function sbuf_create
@@ -1683,6 +1714,7 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fdclose",                luab_fdclose),
     LUAB_FUNC("fpurge",                 luab_fpurge),
 #endif /* __BSD_VISIBLE */
+    LUAB_FUNC("rsize_create",           luab_rsize_create),
     LUAB_FUNC("sbuf_create",            luab_sbuf_create),
     LUAB_FUNC("sfile_create",           luab_sfile_create),
     LUAB_MOD_TBL_SENTINEL

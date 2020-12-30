@@ -196,6 +196,9 @@ typedef enum luab_type {
     /* <langinfo.h> */
     LUAB_NL_ITEM_IDX,
 
+    /* <stdio.h> */
+    LUAB_RSIZE_IDX,
+
     /* composite data types */
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
