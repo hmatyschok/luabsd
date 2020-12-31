@@ -97,41 +97,43 @@ typedef struct luab_sockopt {
 static void
 luab_checkxsockopt(lua_State *L, luab_sockopt_t *sopt)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     luab_xarg_t *pci;
     luab_primitive_t *xp;
 
     (void)luab_core_checkmaxargs(L, 5);
 
-    m = luab_xmod(INTEGER, TYPE, __func__);
-#if 0
-    if (sopt == NULL)
-        luab_core_err(EX_DATAERR, __func__, EINVAL);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(INTEGER, TYPE, __func__);
+    m2 = luab_xmod(SOCKLEN, TYPE, __func__);
 
-    (void)memset_s(sizeof(*sopt), 0, sizeof(*sopt));
-#endif
-    pci = &(sopt->sopt_pci);
+    if (sopt != NULL) {
+        (void)memset_s(sopt, sizeof(*sopt), 0, sizeof(*sopt));
 
-    sopt->sopt_sock = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    sopt->sopt_level = (int)luab_checkinteger(L, 2, luab_env_int_max);
-    sopt->sopt_name = (int)luab_checkinteger(L, 3, luab_env_int_max);
+        pci = &(sopt->sopt_pci);
 
-    if ((sopt->sopt_val = luab_toxdata(L, 4, pci)) != NULL) {
+        sopt->sopt_sock = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+        sopt->sopt_level = (int)luab_checkxinteger(L, 2, m0, luab_env_int_max);
+        sopt->sopt_name = (int)luab_checkxinteger(L, 3, m0, luab_env_int_max);
 
-        if (pci->xarg_idx == LUAB_INTEGER_IDX) {   /* XXX macro, anyone ??? */
-            sopt->sopt_val = &(((luab_primitive_t *)sopt->sopt_val)->un_int);
-            pci->xarg_len = sizeof(*(int *)(sopt->sopt_val));
+        if ((sopt->sopt_val = luab_toxdata(L, 4, pci)) != NULL) {
+
+            if (pci->xarg_idx == LUAB_INTEGER_IDX) {   /* XXX macro, anyone ??? */
+                sopt->sopt_val = &(((luab_primitive_t *)sopt->sopt_val)->un_int);
+                pci->xarg_len = sizeof(*(int *)(sopt->sopt_val));
+            }
         }
-    }
 
-    if ((xp = luab_isudata(L, 5, m)) != NULL)
-        sopt->sopt_x = &(xp->un_socklen);
-    else {
-        sopt->sopt_len = (socklen_t)luab_checkinteger(L, 5, luab_env_int_max);
+        if ((xp = luab_isudata(L, 5, m1)) != NULL)
+            sopt->sopt_x = &(xp->un_socklen);
+        else {
+            sopt->sopt_len = (socklen_t)luab_checkxinteger(L, 5, m2, luab_env_int_max);
 
-        if (sopt->sopt_len != pci->xarg_len)
-            luab_core_err(EX_DATAERR, __func__, ERANGE);
-    }
+            if (sopt->sopt_len != pci->xarg_len)
+                luab_core_err(EX_DATAERR, __func__, ERANGE);
+        }
+    } else
+        luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
 
 /*
