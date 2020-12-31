@@ -45,8 +45,8 @@ typedef struct luab_udata {
  */
 
 typedef struct luab_xarg {
-    luab_type_t xarg_idx;
-    size_t      xarg_len;
+    luab_module_t   *xarg_mod;
+    size_t          xarg_len;
 } luab_xarg_t;
 
 /*

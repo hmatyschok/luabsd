@@ -216,35 +216,33 @@ luab_checkxdataisnil(lua_State *L, int narg, luab_module_t *m)
 void *
 luab_isxdata(lua_State *L, int narg, luab_xarg_t *pci)
 {
+    luab_udata_t *ud = NULL;
     luab_module_vec_t *vec;
-    luab_udata_t *ud;
 
-    /*
-     * XXX
-     *  We shall refactor this component.
-     */
+    if ((vec = luab_typevec) != NULL) {
 
-    vec = luab_typevec;
+        while (vec->mv_mod != NULL) {
 
-    while (vec->mv_mod != NULL) {
-
-        if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL) {
-            ud = luab_todata(L, narg, vec->mv_mod, luab_udata_t *);
-            break;
+            if ((ud = luab_isudata(L, narg, vec->mv_mod)) != NULL) {
+                ud = luab_todata(L, narg, vec->mv_mod, luab_udata_t *);
+                break;
+            }
+            vec++;
         }
-        vec++;
-    }
 
-    if (pci != NULL) {
+        if (pci != NULL) {
 
-        if (ud != NULL) {
-            pci->xarg_idx = vec->mv_idx;
-            pci->xarg_len = vec->mv_mod->m_sz;
-        } else {
-            pci->xarg_idx = LUAB_TYPE_SENTINEL;
-            pci->xarg_len = 0;
+            if (ud != NULL) {
+                pci->xarg_mod = vec->mv_mod;
+                pci->xarg_len = vec->mv_mod->m_sz;
+            } else {
+                pci->xarg_mod = NULL;
+                pci->xarg_len = 0;
+            }
         }
-    }
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, ENXIO);
+
     return (ud);
 }
 
