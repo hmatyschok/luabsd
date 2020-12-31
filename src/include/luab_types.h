@@ -167,6 +167,7 @@ typedef enum luab_type {
     LUAB_CLOCK_IDX,
 
     LUAB_LOCALE_IDX,
+    LUAB_VM_OFFSET_IDX,
 
     /* <arpa/inet.h> */
     LUAB_IN_PORT_IDX,

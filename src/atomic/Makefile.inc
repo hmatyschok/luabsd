@@ -41,6 +41,8 @@ SRCS+=  luab_time_type.c
 SRCS+=  luab_clock_type.c
 SRCS+=  luab_locale_type.c
 
+SRCS+=  luab_vm_offset_type.c
+
 # <arpa/inet.h>
 SRCS+=  luab_in_port_type.c
 

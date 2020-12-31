@@ -518,6 +518,33 @@ luab_clock_create(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(VM_OFFSET)).
+ *
+ * @function vm_offset_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(VM_OFFSET)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage vm_offset [, err, msg ] = bsd.core.atomic.vm_offset_create(arg)
+ */
+static int
+luab_vm_offset_create(lua_State *L)
+{
+    luab_module_t *m;
+    vm_offset_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(VM_OFFSET, TYPE, __func__);
+    x = (vm_offset_t)luab_checkxlinteger(L, 1, m, 0);
+
+    return (luab_pushxdata(L, m, &x));
+}
+
 static luab_module_table_t luab_core_atomic_vec[] = {
     /* integer types */
 #if __BSD_VISIBLE
@@ -545,6 +572,7 @@ static luab_module_table_t luab_core_atomic_vec[] = {
     LUAB_FUNC("wchar_create",       luab_wchar_create),
     LUAB_FUNC("time_create",        luab_time_create),
     LUAB_FUNC("clock_create",       luab_clock_create),
+    LUAB_FUNC("vm_offset_create",   luab_vm_offset_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

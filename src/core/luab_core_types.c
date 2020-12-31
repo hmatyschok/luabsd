@@ -138,6 +138,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_locale_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LOCALE_IDX,
+    },{
+        .mv_mod = &luab_vm_offset_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_VM_OFFSET_IDX,
     },{ /* <arpa/inet.h> */
         .mv_mod = &luab_in_port_type,
         .mv_init = luab_core_newmetatable,
