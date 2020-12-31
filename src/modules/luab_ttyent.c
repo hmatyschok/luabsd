@@ -54,14 +54,14 @@ extern luab_module_t luab_ttyent_lib;
 static int
 luab_getttyent(lua_State *L)
 {
-    struct ttyent *typ;
     luab_module_t *m;
+    struct ttyent *typ;
 
     (void)luab_core_checkmaxargs(L, 0);
 
-    if ((typ = getttyent()) != NULL)
-        m = luab_xmod(TTYENT, TYPE, __func__);
-    else
+    m = luab_xmod(TTYENT, TYPE, __func__);
+
+    if ((typ = getttyent()) == NULL)
         m = NULL;
 
      return (luab_pushxdata(L, m, typ));
@@ -81,17 +81,16 @@ luab_getttyent(lua_State *L)
 static int
 luab_getttynam(lua_State *L)
 {
+    luab_module_t *m;
     const char *name;
     struct ttyent *typ;
-    luab_module_t *m;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(TTYENT, TYPE, __func__);
     name = luab_checklstring(L, 1, luab_env_tty_name_max, NULL);
 
-    if ((typ = getttynam(name)) != NULL)
-        m = luab_xmod(TTYENT, TYPE, __func__);
-    else
+    if ((typ = getttynam(name)) == NULL)
         m = NULL;
 
     return (luab_pushxdata(L, m, typ));
