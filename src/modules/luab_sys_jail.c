@@ -105,7 +105,7 @@ luab_jail(lua_State *L)
 static int
 luab_jail_set(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     luab_table_t *tbl;
     struct iovec *iov;
     u_int niov;
@@ -114,18 +114,20 @@ luab_jail_set(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(IOVEC, TYPE, __func__);
+    m1 = luab_xmod(UINT, TYPE, __func__);
+    m2 = luab_xmod(INT, TYPE, __func__);
 
-    tbl = luab_table_checkxdata(L, 1, m);
-    niov = luab_checkinteger(L, 2, luab_env_int_max);
-    flags = luab_checkinteger(L, 3, luab_env_int_max);
+    tbl = luab_table_checkxdata(L, 1, m0);
+    niov = luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    flags = luab_checkxinteger(L, 3, m2, luab_env_int_max);
 
     if (tbl != NULL) {
         iov = (struct iovec *)(tbl->tbl_vec);
 
         if (tbl->tbl_card == niov && niov > 0) {
             status = jail_set(iov, niov, flags);
-            luab_table_pushxdata(L, 1, m, tbl, 0, 1);
+            luab_table_pushxdata(L, 1, m0, tbl, 0, 1);
         } else {
             luab_table_free(tbl);
             errno = ERANGE;
@@ -170,7 +172,7 @@ luab_jail_set(lua_State *L)
 static int
 luab_jail_get(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     luab_table_t *tbl;
     struct iovec *iov;
     u_int niov;
@@ -179,18 +181,20 @@ luab_jail_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(IOVEC, TYPE, __func__);
+    m1 = luab_xmod(UINT, TYPE, __func__);
+    m2 = luab_xmod(INT, TYPE, __func__);
 
-    tbl = luab_table_checkxdata(L, 1, m);
-    niov = luab_checkinteger(L, 2, luab_env_int_max);
-    flags = luab_checkinteger(L, 3, luab_env_int_max);
+    tbl = luab_table_checkxdata(L, 1, m0);
+    niov = luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    flags = luab_checkxinteger(L, 3, m2, luab_env_int_max);
 
     if (tbl != NULL) {
         iov = (struct iovec *)(tbl->tbl_vec);
 
         if (tbl->tbl_card == niov && niov > 0) {
             status = jail_get(iov, niov, flags);
-            luab_table_pushxdata(L, 1, m, tbl, 0, 1);
+            luab_table_pushxdata(L, 1, m0, tbl, 0, 1);
         } else {
             luab_table_free(tbl);
             errno = ERANGE;
@@ -216,11 +220,14 @@ luab_jail_get(lua_State *L)
 static int
 luab_jail_attach(lua_State *L)
 {
+    luab_module_t *m;
     int jls, status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jls = luab_checkinteger(L, 1, luab_env_int_max);
+    m = luab_xmod(INT, TYPE, __func__);
+
+    jls = luab_checkxinteger(L, 1, m, luab_env_int_max);
     status = jail_attach(jls);
 
     return (luab_pushxinteger(L, status));
@@ -240,11 +247,14 @@ luab_jail_attach(lua_State *L)
 static int
 luab_jail_remove(lua_State *L)
 {
+    luab_module_t *m;
     int jls, status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jls = luab_checkinteger(L, 1, luab_env_int_max);
+    m = luab_xmod(INT, TYPE, __func__);
+
+    jls = luab_checkxinteger(L, 1, m, luab_env_int_max);
     status = jail_remove(jls);
 
     return (luab_pushxinteger(L, status));
