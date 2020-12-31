@@ -74,3 +74,6 @@ SRCS+=  luab_nl_item_type.c
 # <stdio.h>
 SRCS+=  luab_fpos_type.c
 SRCS+=  luab_rsize_type.c
+
+# <unistd.h>
+SRCS+=  luab_pid_type.c
