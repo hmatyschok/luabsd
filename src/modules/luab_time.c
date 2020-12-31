@@ -137,14 +137,16 @@ luab_ctime(lua_State *L)
 static int
 luab_difftime(lua_State *L)
 {
+    luab_module_t *m;
     time_t time1;
     time_t time0;
     double ret;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    time1 = luab_checklinteger(L, 1, 1);
-    time0 = luab_checklinteger(L, 2, 1);
+    m = luab_xmod(TIME, TYPE, __func__);
+    time1 = luab_checkxlinteger(L, 1, m, 1);
+    time0 = luab_checkxlinteger(L, 2, m, 1);
 
     ret = difftime(time1, time0);
 
@@ -167,17 +169,19 @@ luab_difftime(lua_State *L)
 static int
 luab_gmtime(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     const time_t *clock;
-    struct tm *ret;
+    struct tm *x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(TM, TYPE, __func__);
-    clock = luab_udata(L, 1, m, const time_t *);
-    ret = gmtime(clock);
+    m0 = luab_xmod(TIME, TYPE, __func__);
+    m1 = luab_xmod(TM, TYPE, __func__);
 
-    return (luab_pushxdata(L, m, ret));
+    clock = luab_udata(L, 1, m0, const time_t *);
+    x = gmtime(clock);
+
+    return (luab_pushxdata(L, m1, x));
 }
 
 /***
@@ -195,18 +199,19 @@ luab_gmtime(lua_State *L)
 static int
 luab_localtime(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     const time_t *clock;
-    struct tm *ret;
+    struct tm *x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(TIME, TYPE, __func__);
+    m0 = luab_xmod(TIME, TYPE, __func__);
+    m1 = luab_xmod(TM, TYPE, __func__);
 
-    clock = luab_udata(L, 1, m, const time_t *);
-    ret = localtime(clock);
+    clock = luab_udata(L, 1, m0, const time_t *);
+    x = localtime(clock);
 
-    return (luab_pushxdata(L, m, ret));
+    return (luab_pushxdata(L, m1, x));
 }
 
 /***
@@ -226,15 +231,15 @@ luab_mktime(lua_State *L)
 {
     luab_module_t *m;
     struct tm *tm;
-    time_t ret;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(TM, TYPE, __func__);
     tm = luab_udata(L, 1, m, struct tm *);
-    ret = mktime(tm);
+    x = mktime(tm);
 
-    return (luab_pushxinteger(L, ret));
+    return (luab_pushxinteger(L, x));
 }
 
 /***
@@ -256,7 +261,7 @@ luab_mktime(lua_State *L)
 static int
 luab_strftime(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     luab_iovec_t *buf;
     size_t maxsize;
     const char *format;
@@ -267,12 +272,13 @@ luab_strftime(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(TM, TYPE, __func__);
+    m1 = luab_xmod(SIZE, TYPE, __func__);
+    m2 = luab_xmod(TM, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    maxsize = luab_checklinteger(L, 2, 0);
+    maxsize = (size_t)luab_checkxlinteger(L, 2, m1, 0);
     format = luab_checklstring(L, 3, maxsize, NULL);
-    timeptr = luab_udata(L, 4, m1, struct tm *);
+    timeptr = luab_udata(L, 4, m2, struct tm *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -430,7 +436,7 @@ luab_gmtime_r(lua_State *L)
     luab_module_t *m0, *m1;
     const time_t *clock;
     struct tm *result;
-    struct tm *ret;
+    struct tm *x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
@@ -440,9 +446,9 @@ luab_gmtime_r(lua_State *L)
     clock = luab_udata(L, 1, m0, const time_t *);
     result = luab_udata(L, 2, m1, struct tm *);
 
-    ret = gmtime_r(clock, result);
+    x = gmtime_r(clock, result);
 
-    return (luab_pushxdata(L, m1, ret));
+    return (luab_pushxdata(L, m1, x));
 }
 
 /***
@@ -465,7 +471,7 @@ luab_localtime_r(lua_State *L)
     luab_module_t *m0, *m1;
     const time_t *clock;
     struct tm *result;
-    struct tm *ret;
+    struct tm *x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
@@ -475,9 +481,9 @@ luab_localtime_r(lua_State *L)
     clock = luab_udata(L, 1, m0, const time_t *);
     result = luab_udata(L, 2, m1, struct tm *);
 
-    ret = localtime_r(clock, result);
+    x = localtime_r(clock, result);
 
-    return (luab_pushxdata(L, m1, ret));
+    return (luab_pushxdata(L, m1, x));
 }
 #endif /* __POSIX_VISIBLE >= 199506 */
 
@@ -499,16 +505,16 @@ luab_timegm(lua_State *L)
 {
     luab_module_t *m;
     struct tm *tm;
-    time_t ret;
+    time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(TM, TYPE, __func__);
     tm = luab_udata(L, 1, m, struct tm *);
 
-    ret = timegm(tm);
+    x = timegm(tm);
 
-    return (luab_pushxinteger(L, ret));
+    return (luab_pushxinteger(L, x));
 }
 #endif /* __BSD_VISIBLE */
 
