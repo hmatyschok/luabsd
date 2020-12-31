@@ -94,6 +94,7 @@ extern luab_module_t luab_rsize_type;
 
 /* <unistd.h> */
 extern luab_module_t luab_pid_type;
+extern luab_module_t luab_useconds_type;
 
 /*
  * Set of composite data types.

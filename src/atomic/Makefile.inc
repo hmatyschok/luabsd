@@ -77,3 +77,4 @@ SRCS+=  luab_rsize_type.c
 
 # <unistd.h>
 SRCS+=  luab_pid_type.c
+SRCS+=  luab_useconds_type.c

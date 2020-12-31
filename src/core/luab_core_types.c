@@ -214,6 +214,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_pid_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PID_IDX,
+    },{
+        .mv_mod = &luab_useconds_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_USECONDS_IDX,
     },{                                     /* composite data types */
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,

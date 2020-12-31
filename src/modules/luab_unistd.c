@@ -2754,12 +2754,15 @@ luab_getwd(lua_State *L)
 static int
 luab_usleep(lua_State *L)
 {
+    luab_module_t *m;
     useconds_t microseconds;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    microseconds = (useconds_t)luab_checkinteger(L, 1, luab_env_int_max);
+    m = luab_xmod(USECONDS, TYPE, __func__);
+
+    microseconds = (useconds_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
     status = usleep(microseconds);
 
     return (luab_pushxinteger(L, status));
@@ -2948,6 +2951,7 @@ luab_crypt_set_format(lua_State *L)
 static int
 luab_dup3(lua_State *L)
 {
+    luab_module_t *m;
     int oldd;
     int newd;
     int flags;
@@ -2955,9 +2959,11 @@ luab_dup3(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    oldd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    newd = (int)luab_checkinteger(L, 2, luab_env_int_max);
-    flags = (int)luab_checkinteger(L, 3, luab_env_int_max);
+    m = luab_xmod(INT, TYPE, __func__);
+
+    oldd = (int)luab_checkxinteger(L, 1, m, luab_env_int_max);
+    newd = (int)luab_checkxinteger(L, 2, m, luab_env_int_max);
+    flags = (int)luab_checkxinteger(L, 3, m, luab_env_int_max);
 
     status = dup3(oldd, newd, flags);
 
@@ -2979,13 +2985,16 @@ luab_dup3(lua_State *L)
 static int
 luab_eaccess(lua_State *L)
 {
+    luab_module_t *m;
     const char *path;
     int mode, status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(INT, TYPE, __func__);
+
     path = luab_checklstring(L, 1, luab_env_path_max, NULL);
-    mode = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    mode = (int)luab_checkxinteger(L, 2, m, luab_env_int_max);
     status = eaccess(path, mode);
 
     return (luab_pushxinteger(L, status));
@@ -4976,6 +4985,33 @@ luab_pid_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(USECONDS)).
+ *
+ * @function useconds_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(USECONDS)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage useconds [, err, msg ] = bsd.unistd.useconds_create(arg)
+ */
+static int
+luab_useconds_create(lua_State *L)
+{
+    luab_module_t *m;
+    useconds_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(USECONDS, TYPE, __func__);
+    x = (useconds_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function - create an instance of (LUA_TUSERDATA(CRYPT_DATA)).
  *
  * @function crypt_data_create
@@ -5391,6 +5427,7 @@ static luab_module_table_t luab_unistd_vec[] = {
     LUAB_FUNC("swapoff",                luab_swapoff),
     LUAB_FUNC("undelete",               luab_undelete),
     LUAB_FUNC("pid_create",             luab_pid_create),
+    LUAB_FUNC("useconds_create",        luab_useconds_create),
     LUAB_FUNC("crypt_data_create",      luab_crypt_data_create),
 #endif /* __BSD_VISIBLE */
     LUAB_MOD_TBL_SENTINEL

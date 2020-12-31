@@ -204,6 +204,7 @@ typedef enum luab_type {
 
     /* <unistd.h> */
     LUAB_PID_IDX,
+    LUAB_USECONDS_IDX,
 
     /* composite data types */
     LUAB_CLOCKINFO_IDX,
