@@ -246,7 +246,7 @@ dev_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (dev_t)luab_tointeger(L, -1, luab_env_ushrt_max);
+                        y = (dev_t)luab_tointeger(L, -1, luab_env_ulong_max);
                         x[m] = (dev_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
