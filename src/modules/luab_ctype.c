@@ -79,7 +79,7 @@ luab_runetype_l(lua_State *L)
         x = ___runetype_l(c, locale);
     else {
         errno = ENXIO;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }

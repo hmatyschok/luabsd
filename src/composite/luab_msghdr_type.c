@@ -382,7 +382,7 @@ MSGHDR_set_msg_iov(lua_State *L)
 
         iovlen = msg->msg_iovlen;
     } else
-        iovlen = -1;
+        iovlen = luab_env_error;
 
     return (luab_pushxinteger(L, iovlen));
 }

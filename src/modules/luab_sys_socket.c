@@ -642,7 +642,7 @@ luab_recvmsg(lua_State *L)
         count = recvmsg(s, msg, flags);
     else {
         errno = ERANGE;
-        count = -1;
+        count = luab_env_error;
     }
     return (luab_pushxinteger(L, count));
 }
@@ -701,7 +701,7 @@ luab_recvmmsg(lua_State *L)
         count = recvmmsg(s, msgvec, vlen, flags, timeout);
         luab_table_free(tbl);
     } else
-        count = -1;
+        count = luab_env_error;
 
     return (luab_pushxinteger(L, count));
 }
@@ -852,7 +852,7 @@ luab_sendmsg(lua_State *L)
         count = sendmsg(s, msg, flags);
     else {
         errno = ERANGE;
-        count = -1;
+        count = luab_env_error;
     }
     return (luab_pushxinteger(L, count));
 }
@@ -964,7 +964,7 @@ luab_sendmmsg(lua_State *L)
         count = sendmmsg(s, msgvec, vlen, flags);
         luab_table_free(tbl);
     } else
-        count = -1;
+        count = luab_env_error;
 
     return (luab_pushxinteger(L, count));
 }

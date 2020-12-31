@@ -206,7 +206,7 @@ SFILE_r(lua_State *L)
         x = fp->_r;
     else {
         errno = ENOENT;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -234,7 +234,7 @@ SFILE_w(lua_State *L)
         x = fp->_w;
     else {
         errno = ENOENT;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -262,7 +262,7 @@ SFILE_flags(lua_State *L)
         x = fp->_flags;
     else {
         errno = ENOENT;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -290,7 +290,7 @@ SFILE_file(lua_State *L)
         x = fp->_file;
     else {
         errno = ENOENT;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }

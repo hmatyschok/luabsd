@@ -192,11 +192,11 @@ luab_fhreadlink(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            count = -1;
+            count = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        count = -1;
+        count = luab_env_error;
     }
     return (luab_pushxinteger(L, count));
 }
@@ -443,7 +443,7 @@ luab_getfsstat(lua_State *L)
 
     } else {
         errno = ERANGE;
-        card = -1;
+        card = luab_env_error;
     }
     return (luab_pushxinteger(L, card));
 }
@@ -489,7 +489,7 @@ luab_getmntinfo(lua_State *L)
         if ((tbl = (*m->m_alloc_tbl)(vec, nmts)) != NULL)
             luab_table_pushxdata(L, 1, m, tbl, 0, 1);
         else
-            nmts = -1;
+            nmts = luab_env_error;
 
         free(vec);
     }

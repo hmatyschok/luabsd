@@ -214,15 +214,15 @@ luab_iov_readv(struct iovec *iov, int fd, size_t n)
                 count = readv(fd, iov, n);
             else {
                 errno = ERANGE;
-                count = -1;
+                count = luab_env_error;
             }
         } else {
             errno = ERANGE;
-            count = -1;
+            count = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        count = -1;
+        count = luab_env_error;
     }
     return (count);
 }
@@ -239,15 +239,15 @@ luab_iov_writev(struct iovec *iov, int fd, size_t n)
                 count = writev(fd, iov, n);
             else {
                 errno = ERANGE;
-                count = -1;
+                count = luab_env_error;
             }
         } else {
             errno = ERANGE;
-            count = -1;
+            count = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        count = -1;
+        count = luab_env_error;
     }
     return (count);
 }
@@ -265,15 +265,15 @@ luab_iov_preadv(struct iovec *iov, int fd, size_t n, off_t off)
                 count = preadv(fd, iov, n, off);
             else {
                 errno = ERANGE;
-                count = -1;
+                count = luab_env_error;
             }
         } else {
             errno = ERANGE;
-            count = -1;
+            count = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        count = -1;
+        count = luab_env_error;
     }
     return (count);
 }
@@ -290,15 +290,15 @@ luab_iov_pwritev(struct iovec *iov, int fd, size_t n, off_t off)
                 count = pwritev(fd, iov, n, off);
             else {
                 errno = ERANGE;
-                count = -1;
+                count = luab_env_error;
             }
         } else {
             errno = ERANGE;
-            count = -1;
+            count = luab_env_error;
         }
     } else {
         errno = EINVAL;
-        count = -1;
+        count = luab_env_error;
     }
     return (count);
 }
@@ -317,7 +317,7 @@ luab_iov_pushlen(lua_State *L, struct iovec *iov)
         len = iov->iov_len;
     else {
         errno = EINVAL;
-        len = -1;
+        len = luab_env_error;
     }
     return (luab_pushxinteger(L, len));
 }

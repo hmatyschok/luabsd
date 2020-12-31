@@ -245,7 +245,7 @@ DB_fd(lua_State *L)
     if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL)
         fd = (*db->fd)(db);
     else
-        fd = -1;
+        fd = luab_env_error;
 
     return (luab_pushxinteger(L, fd));
 }

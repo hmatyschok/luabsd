@@ -192,7 +192,7 @@ IOVEC_max_len(lua_State *L)
         self->iov_flags &= ~IOV_LOCK;
     } else {
         errno = EBUSY;
-        nbytes = -1;
+        nbytes = luab_env_error;
     }
     return (luab_pushxinteger(L, nbytes));
 }
@@ -244,11 +244,11 @@ IOVEC_set_len(lua_State *L)
             self->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            len = -1;
+            len = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        len = -1;
+        len = luab_env_error;
     }
     return (luab_pushxinteger(L, len));
 }

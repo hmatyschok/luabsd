@@ -347,11 +347,11 @@ luab_mblen(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            len = -1;
+            len = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        len = -1;
+        len = luab_env_error;
     }
     return (luab_pushxinteger(L, len));
 }
@@ -402,11 +402,11 @@ luab_mbstowcs(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            len = -1;
+            len = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        len = -1;
+        len = luab_env_error;
     }
     return (luab_pushxinteger(L, len));
 }
@@ -713,11 +713,11 @@ luab_wcstombs(lua_State *L)
             buf1->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            len = -1;
+            len = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        len = -1;
+        len = luab_env_error;
     }
     return (luab_pushxinteger(L, len));
 }
@@ -2244,7 +2244,7 @@ luab_cgetstr(lua_State *L)
             dp = NULL;
     } else {
         dp = NULL;
-        len = -1;
+        len = luab_env_error;
     }
     status = luab_iovec_copyin(res, dp, len);
     return (luab_pushxinteger(L, status));
@@ -2288,7 +2288,7 @@ luab_cgetustr(lua_State *L)
             dp = NULL;
     } else {
         dp = NULL;
-        len = -1;
+        len = luab_env_error;
     }
     status = luab_iovec_copyin(res, dp, len);
     return (luab_pushxinteger(L, status));

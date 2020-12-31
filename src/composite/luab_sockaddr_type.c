@@ -436,7 +436,7 @@ SOCKADDR_get_sdl_index(lua_State *L)
         x = (int)sdl->sdl_index;
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -497,7 +497,7 @@ SOCKADDR_get_sdl_type(lua_State *L)
         x = (int)sdl->sdl_type;
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -558,7 +558,7 @@ SOCKADDR_get_sdl_nlen(lua_State *L)
         x = (int)sdl->sdl_nlen;
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -619,7 +619,7 @@ SOCKADDR_get_sdl_alen(lua_State *L)
         x = (int)sdl->sdl_alen;
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -647,7 +647,7 @@ SOCKADDR_sdl_slen(lua_State *L)
         x = (int)sdl->sdl_slen;
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -722,7 +722,7 @@ SOCKADDR_get_sin_port(lua_State *L)
         x = (int)ntohs(sin->sin_port);
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -862,7 +862,7 @@ SOCKADDR_get_sin6_port(lua_State *L)
         x = (int)ntohs(sin6->sin6_port);
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -923,7 +923,7 @@ SOCKADDR_get_sin6_flowinfo(lua_State *L)
         x = ntohl(sin6->sin6_flowinfo);
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }
@@ -1048,7 +1048,7 @@ SOCKADDR_get_sin6_scope_id(lua_State *L)
         x = ntohl(sin6->sin6_scope_id);
     else {
         errno = EPERM;
-        x = -1;
+        x = luab_env_error;
     }
     return (luab_pushxinteger(L, x));
 }

@@ -211,7 +211,7 @@ luab_core_len(lua_State *L, int narg, luab_module_t *m)
         len = m->m_sz;
     else {
         errno = ERANGE;
-        len = -1;
+        len = luab_env_error;
     }
     return (luab_pushxinteger(L, len));
 }

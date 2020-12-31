@@ -189,11 +189,11 @@ luab_getdents(lua_State *L)
         } else {
             luab_table_free(tbl);
             errno = ERANGE;
-            count = -1;
+            count = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        count = -1;
+        count = luab_env_error;
     }
     return (luab_pushxinteger(L, count));
 }
@@ -254,11 +254,11 @@ luab_getdirentries(lua_State *L)
         } else {
             luab_table_free(tbl);
             errno = ERANGE;
-            count = -1;
+            count = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        count = -1;
+        count = luab_env_error;
     }
     return (luab_pushxinteger(L, count));
 }

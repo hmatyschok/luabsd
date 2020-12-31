@@ -666,13 +666,13 @@ luab_getgroups(lua_State *L)
                 gidset = (gid_t *)(tbl->tbl_vec);
                 ngroups = 0;
             } else
-                ngroups = -1;
+                ngroups = luab_env_error;
         } else
             ngroups = 0;
 
     } else {
         errno = ERANGE;
-        ngroups = -1;
+        ngroups = luab_env_error;
     }
 
     if (ngroups == 0) {
@@ -3967,11 +3967,11 @@ luab_rcmd(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            s = -1;
+            s = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        s = -1;
+        s = luab_env_error;
     }
     return (luab_pushxinteger(L, s));
 }
@@ -4035,11 +4035,11 @@ luab_rcmd_af(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            s = -1;
+            s = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        s = -1;
+        s = luab_env_error;
     }
     return (luab_pushxinteger(L, s));
 }
@@ -4099,11 +4099,11 @@ luab_rcmdsh(lua_State *L)
             buf->iov_flags &= ~IOV_LOCK;
         } else {
             errno = EBUSY;
-            s = -1;
+            s = luab_env_error;
         }
     } else {
         errno = ERANGE;
-        s = -1;
+        s = luab_env_error;
     }
     return (luab_pushxinteger(L, s));
 }
