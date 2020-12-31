@@ -658,8 +658,11 @@ extern u_long luab_env_phys_pages;
 #define LUAB_PID_TYPE_ID                        1609404242
 #define LUAB_PID_TYPE                           "PID*"
 
-#define LUAB_USECONDS_TYPE_ID             1609414979
-#define LUAB_USECONDS_TYPE                "USECONDS*"
+#define LUAB_USECONDS_TYPE_ID                   1609414979
+#define LUAB_USECONDS_TYPE                      "USECONDS*"
+
+#define LUAB_ULONG_TYPE_ID                      1609419610
+#define LUAB_ULONG_TYPE                         "ULONG*"
 
 /*
  * Set of composite data types.

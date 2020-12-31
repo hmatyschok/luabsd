@@ -17,6 +17,7 @@
 # integer types
 SRCS+=  luab_ushrt_type.c
 SRCS+=  luab_uint_type.c
+SRCS+=  luab_ulong_type.c
 
 SRCS+=  luab_char_type.c
 SRCS+=  luab_short_type.c

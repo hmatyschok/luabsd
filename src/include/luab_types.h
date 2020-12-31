@@ -144,6 +144,7 @@ typedef enum luab_type {
 #if __BSD_VISIBLE
     LUAB_USHRT_IDX,
     LUAB_UINT_IDX,
+    LUAB_ULONG_IDX,
 #endif /* __BSD_VISIBLE */
     LUAB_CHAR_IDX,
     LUAB_SHORT_IDX,

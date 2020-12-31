@@ -68,6 +68,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_uint_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_UINT_IDX,
+    },{
+        .mv_mod = &luab_ulong_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_ULONG_IDX,
     },
 #endif /* __BSD_VISIBLE */
     {
