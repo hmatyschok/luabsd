@@ -652,6 +652,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_RSIZE_TYPE_ID                      1609334778
 #define LUAB_RSIZE_TYPE                         "RSIZE*"
 
+#define LUAB_DEV_TYPE_ID                        1609369104
+#define LUAB_DEV_TYPE                           "DEV*"
+
 /*
  * Set of composite data types.
  */

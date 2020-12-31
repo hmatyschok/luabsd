@@ -2378,19 +2378,18 @@ luab_daemonfd(lua_State *L)
 static int
 luab_devname(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     dev_t dev;
     mode_t type;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    /*
-     * XXX
-     *  We shall implement <luab_dev_type>.
-     */
+    m0 = luab_xmod(DEV, TYPE, __func__);
+    m1 = luab_xmod(MODE, TYPE, __func__);
 
-    dev = (dev_t)luab_checkinteger(L, 1, luab_env_long_max);
-    type = (mode_t)luab_checkinteger(L, 2, luab_env_shrt_max);
+    dev = (dev_t)luab_checkxinteger(L, 1, m0, luab_env_long_max);
+    type = (mode_t)luab_checkxinteger(L, 2, m1, luab_env_shrt_max);
 
     dp = devname(dev, type);
 
@@ -2418,7 +2417,7 @@ luab_devname(lua_State *L)
 static int
 luab_devname_r(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     dev_t dev;
     mode_t type;
     luab_iovec_t *buf;
@@ -2428,16 +2427,13 @@ luab_devname_r(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    /*
-     * XXX
-     *  We shall implement <luab_dev_type>.
-     */
+    m0 = luab_xmod(DEV, TYPE, __func__);
+    m1 = luab_xmod(MODE, TYPE, __func__);
+    m2 = luab_xmod(IOVEC, TYPE, __func__);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
-
-    dev = (dev_t)luab_checkinteger(L, 1, luab_env_long_max);
-    type = (mode_t)luab_checkinteger(L, 2, luab_env_shrt_max);
-    buf = luab_udata(L, 3, m, luab_iovec_t *);
+    dev = (dev_t)luab_checkxinteger(L, 1, m0, luab_env_long_max);
+    type = (mode_t)luab_checkxinteger(L, 2, m1, luab_env_shrt_max);
+    buf = luab_udata(L, 3, m2, luab_iovec_t *);
     len = (int)luab_checkinteger(L, 4, luab_env_int_max);
 
     if (((bp = buf->iov.iov_base) != NULL) &&

@@ -43,6 +43,9 @@ SRCS+=  luab_locale_type.c
 # <arpa/inet.h>
 SRCS+=  luab_in_port_type.c
 
+# <sys/stat.h>
+SRCS+=  luab_dev_type.c
+
 # POSIX sized integrals, <sys/stdint.h>
 SRCS+=  luab_int8_type.c
 SRCS+=  luab_int16_type.c

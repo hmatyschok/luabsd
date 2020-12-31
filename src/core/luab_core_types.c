@@ -138,6 +138,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_in_port_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_IN_PORT_IDX,
+    },{ /* <sys/stat.h> */
+        .mv_mod = &luab_dev_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_DEV_IDX,
     },{ /* POSIX sized integrals, <sys/stdint.h> */
         .mv_mod = &luab_int8_type,
         .mv_init = luab_core_newmetatable,

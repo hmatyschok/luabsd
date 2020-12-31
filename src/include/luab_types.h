@@ -170,6 +170,9 @@ typedef enum luab_type {
     /* <arpa/inet.h> */
     LUAB_IN_PORT_IDX,
 
+    /* <sys/stat.h> */
+    LUAB_DEV_IDX,
+
     /* <sys/stdint.h> */
     LUAB_INT8_IDX,
     LUAB_INT16_IDX,
