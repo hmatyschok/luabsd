@@ -40,13 +40,16 @@ luab_core_checkmodule(luab_type_t idx, uint32_t id, const char *fname)
 {
     luab_module_t *m;
 
-    if ((m = luab_xmv(idx).mv_mod) == NULL)
+    if ((m = luab_xmv(idx).mv_mod) != NULL) {
+
+        if (m->m_id == id)
+            return (m);
+        else
+            luab_core_err(EX_UNAVAILABLE, fname, ENOENT);
+    } else
         luab_core_err(EX_UNAVAILABLE, fname, ENOSYS);
 
-    if (m->m_id != id)
-        luab_core_err(EX_UNAVAILABLE, fname, ENOENT);
-
-    return (m);
+    return (NULL);
 }
 
 luab_module_t *
