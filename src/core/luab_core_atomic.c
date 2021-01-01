@@ -123,11 +123,13 @@ luab_ulong_create(lua_State *L)
  *
  * @function char_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(CHAR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage char [, err, msg ] = bsd.core.atomic.char_create(x)
+ * @usage char [, err, msg ] = bsd.core.atomic.char_create(arg)
  */
 static int
 luab_char_create(lua_State *L)
@@ -139,7 +141,6 @@ luab_char_create(lua_State *L)
 
     m = luab_xmod(CHAR, TYPE, __func__);
     x = (char)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 

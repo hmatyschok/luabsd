@@ -123,22 +123,24 @@ CT_RUNE_dump(lua_State *L)
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ct_rune:set_value(data)
+ * @usage x [, err, msg ] = ct_rune:set_value(arg)
  */
 static int
 CT_RUNE_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_ct_rune_t *self;
     __ct_rune_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     self = luab_to_ct_rune(L, 1);
-    x = (__ct_rune_t)luab_checkinteger(L, 2, luab_env_int_max);
+    x = (__ct_rune_t)luab_checkxinteger(L, 2, m, luab_env_int_max);
 
     self->ud_sdu = x;
 
@@ -152,7 +154,7 @@ CT_RUNE_set_value(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ct_rune:get_value()
+ * @usage x [, err, msg ] = ct_rune:get_value()
  */
 static int
 CT_RUNE_get_value(lua_State *L)
@@ -244,7 +246,7 @@ ct_rune_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (__ct_rune_t)luab_tointeger(L, -1, luab_env_uchar_max);
+                        y = (__ct_rune_t)luab_tointeger(L, -1, luab_env_int_max);
                         x[m] = (__ct_rune_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

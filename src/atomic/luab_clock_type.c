@@ -123,22 +123,24 @@ CLOCK_dump(lua_State *L)
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = clock:set_value(data)
+ * @usage x [, err, msg ] = clock:set_value(arg)
  */
 static int
 CLOCK_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_clock_t *self;
     clock_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(CLOCK, TYPE, __func__);
     self = luab_to_clock(L, 1);
-    x = (clock_t)luab_checklinteger(L, 2, 1);
+    x = (clock_t)luab_checkxlinteger(L, 2, m, 1);
 
     self->ud_sdu = x;
 
@@ -152,7 +154,7 @@ CLOCK_set_value(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = clock:get_value()
+ * @usage x [, err, msg ] = clock:get_value()
  */
 static int
 CLOCK_get_value(lua_State *L)

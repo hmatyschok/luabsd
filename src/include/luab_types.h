@@ -315,10 +315,13 @@ void     *luab_checknil(lua_State *, int);
 
 lua_Integer  luab_core_Integer_promotion_msk(int);
 
-lua_Integer  luab_checkinteger(lua_State *, int, lua_Integer);
 lua_Integer  luab_tointeger(lua_State *, int, lua_Integer);
 lua_Integer  luab_tolinteger(lua_State *, int, int);
 
+lua_Integer  luab_toxinteger(lua_State *, int, luab_module_t *, lua_Integer);
+lua_Integer  luab_tolxinteger(lua_State *, int, luab_module_t *, int);
+
+lua_Integer  luab_checkinteger(lua_State *, int, lua_Integer);
 lua_Integer  luab_checklinteger(lua_State *, int, int);
 
 lua_Integer  luab_checkxinteger(lua_State *, int, luab_module_t *, lua_Integer);

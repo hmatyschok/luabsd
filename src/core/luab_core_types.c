@@ -464,12 +464,6 @@ luab_checknil(lua_State *L, int narg)
 }
 
 lua_Integer
-luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((luaL_checkinteger(L, narg)) & (b_msk));
-}
-
-lua_Integer
 luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
 {
     return ((lua_tointeger(L, narg)) & (b_msk));
@@ -482,6 +476,50 @@ luab_tolinteger(lua_State *L, int narg, int s)
 
     b_msk = luab_core_Integer_promotion_msk(s);
     return (luab_tointeger(L, narg, b_msk));
+}
+
+lua_Integer
+luab_toxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
+{
+    lua_Integer *xp;
+
+    if (m != NULL) {
+
+        if (lua_isnumber(L, narg) != 0)
+            return (luab_tointeger(L, narg, b_msk));
+
+        xp = luab_udataisnil(L, 1, m, lua_Integer *);
+
+        if (xp != NULL)
+            return (*xp & b_msk);
+    }
+    return (0);
+}
+
+lua_Integer
+luab_tolxinteger(lua_State *L, int narg, luab_module_t *m, int s)
+{
+    lua_Integer *xp, b_msk;
+
+    if (m != NULL) {
+
+        if (lua_isnumber(L, narg) != 0)
+            return (luab_tolinteger(L, narg, s));
+
+        xp = luab_udataisnil(L, 1, m, lua_Integer *);
+
+        if (xp != NULL) {
+            b_msk = luab_core_Integer_promotion_msk(s);
+            return (*xp & b_msk);
+        }
+    }
+    return (0);
+}
+
+lua_Integer
+luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
+{
+    return ((luaL_checkinteger(L, narg)) & (b_msk));
 }
 
 lua_Integer
