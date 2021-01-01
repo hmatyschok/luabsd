@@ -63,7 +63,7 @@ extern luab_module_t luab_xlocale_time_lib;
 static int
 luab_strftime_l(lua_State *L)
 {
-    luab_module_t *m0, *m1, *m2;
+    luab_module_t *m0, *m1, *m2, *m3;
     luab_iovec_t *buf;
     size_t maxsize;
     const char *format;
@@ -76,14 +76,15 @@ luab_strftime_l(lua_State *L)
     (void)luab_core_checkmaxargs(L, 5);
 
     m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(TM, TYPE, __func__);
-    m2 = luab_xmod(LOCALE, TYPE, __func__);
+    m1 = luab_xmod(SIZE, TYPE, __func__);
+    m2 = luab_xmod(TM, TYPE, __func__);
+    m3 = luab_xmod(LOCALE, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    maxsize = luab_checklinteger(L, 2, 0);
+    maxsize = luab_checkxlinteger(L, 2, m1, 0);
     format = luab_checklstring(L, 3, maxsize, NULL);
-    timeptr = luab_udata(L, 4, m1, struct tm *);
-    xloc = luab_udata(L, 5, m2, luab_locale_t *);
+    timeptr = luab_udata(L, 4, m2, struct tm *);
+    xloc = luab_udata(L, 5, m3, luab_locale_t *);
 
     if (((loc = xloc->ud_sdu) != NULL) &&
         ((bp = buf->iov.iov_base) != NULL) &&
