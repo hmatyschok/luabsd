@@ -24,9 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <net/if.h> /* XXX */
-#include <unistd.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>

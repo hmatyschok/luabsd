@@ -801,11 +801,13 @@ luab_inet_cidr_pton(lua_State *L)
  *
  * @function in_port_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(IN_PORT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_port [, err, msg ] = bsd.arpa.inet.in_port_create(x)
+ * @usage in_port [, err, msg ] = bsd.arpa.inet.in_port_create(arg)
  */
 static int
 luab_in_port_create(lua_State *L)
@@ -817,7 +819,6 @@ luab_in_port_create(lua_State *L)
 
     m = luab_xmod(IN_PORT, TYPE, __func__);
     x = (in_port_t)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 

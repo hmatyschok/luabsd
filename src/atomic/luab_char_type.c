@@ -43,7 +43,7 @@ extern luab_module_t luab_char_type;
 
 typedef struct luab_char {
     luab_udata_t    ud_softc;
-    char         ud_sdu;
+    char            ud_sdu;
 } luab_char_t;
 
 /*
