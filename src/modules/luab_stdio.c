@@ -1574,7 +1574,7 @@ luab_fpos_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(FPOS, TYPE, __func__);
-    x = (fpos_t)luab_checkxinteger(L, 1, m, luab_env_long_max);
+    x = (fpos_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
 
     return (luab_pushxdata(L, m, &x));
 }

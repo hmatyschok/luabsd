@@ -46,11 +46,6 @@ typedef struct luab_fpos {
     fpos_t          ud_sdu;
 } luab_fpos_t;
 
-#define luab_new_fpos(L, arg) \
-    ((luab_fpos_t *)luab_newudata(L, &luab_fpos_type, (arg)))
-#define luab_to_fpos(L, narg) \
-    (luab_todata((L), (narg), &luab_fpos_type, luab_fpos_t *))
-
 /*
  * Subr.
  */
@@ -87,12 +82,15 @@ fpos_fillxtable(lua_State *L, int narg, void *arg)
 static int
 FPOS_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_fpos_type;
+
     xtp.xtp_fill = fpos_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_fpos(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,7 +117,7 @@ FPOS_dump(lua_State *L)
  */
 
 /***
- * Set fpos.
+ * Set value over (fpos_t).
  *
  * @function set_value
  *
@@ -138,17 +136,16 @@ FPOS_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(FPOS, TYPE, __func__);
-    self = luab_to_fpos(L, 1);
-    x = (fpos_t)luab_checkxinteger(L, 2, m, luab_env_long_max);
-
+    m = &luab_fpos_type;
+    self = luab_todata(L, 1, m, luab_fpos_t *);
+    x = (fpos_t)luab_checkxinteger(L, 2, m, luab_env_ulong_max);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get fpos.
+ * Get value over (fpos_t).
  *
  * @function get_value
  *
@@ -159,12 +156,14 @@ FPOS_set_value(lua_State *L)
 static int
 FPOS_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_fpos_t *self;
     fpos_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_fpos(L, 1);
+    m = &luab_fpos_type;
+    self = luab_todata(L, 1, m, luab_fpos_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -177,23 +176,29 @@ FPOS_get_value(lua_State *L)
 static int
 FPOS_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_fpos_type));
+    luab_module_t *m;
+    m = &luab_fpos_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 FPOS_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_fpos_type));
+    luab_module_t *m;
+    m = &luab_fpos_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 FPOS_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_fpos_type));
+    luab_module_t *m;
+    m = &luab_fpos_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal fposerface.
+ * Internal interface.
  */
 
 static luab_module_table_t fpos_methods[] = {
@@ -210,44 +215,54 @@ static luab_module_table_t fpos_methods[] = {
 static void *
 fpos_create(lua_State *L, void *arg)
 {
-    return (luab_new_fpos(L, arg));
+    luab_module_t *m;
+    m = &luab_fpos_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 fpos_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_fpos_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_fpos_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 fpos_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_fpos_t *self;
-    self = luab_to_fpos(L, narg);
+
+    m = &luab_fpos_type;
+    self = luab_todata(L, narg, m, luab_fpos_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 fpos_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     fpos_t *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_fpos_type)) != NULL) {
+    m = &luab_fpos_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (fpos_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (fpos_t)luab_tointeger(L, -1, luab_env_ushrt_max);
-                        x[m] = (fpos_t)y;
+                        y = (fpos_t)luab_toxinteger(L, -1, m, luab_env_ulong_max);
+                        x[i] = (fpos_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -265,7 +280,7 @@ static void
 fpos_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     fpos_t *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -273,8 +288,8 @@ fpos_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -289,7 +304,9 @@ fpos_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 fpos_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_fpos_type, vec, card));
+    luab_module_t *m;
+    m = &luab_fpos_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_fpos_type = {
