@@ -46,7 +46,6 @@ extern luab_module_t luab_double_type;
 extern luab_module_t luab_float_type;
 
 /* standard types */
-extern luab_module_t luab_gid_type;
 extern luab_module_t luab_off_type;
 extern luab_module_t luab_size_type;
 extern luab_module_t luab_socklen_type;
@@ -83,6 +82,9 @@ extern luab_module_t luab_uintmax_type;
 
 /* <ctype.h> */
 extern luab_module_t luab_ct_rune_type;
+
+/* <grp.h> */
+extern luab_module_t luab_gid_type;
 
 /* <fcntl.h> */
 extern luab_module_t luab_mode_type;

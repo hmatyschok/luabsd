@@ -270,56 +270,6 @@ luab_float_create(lua_State *L)
 }
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(FPOS)).
- *
- * @function fpos_create
- *
- * @param x                 Specifies initial value.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage fpos [, err, msg ] = bsd.core.atomic.fpos_create(x)
- */
-static int
-luab_fpos_create(lua_State *L)
-{
-    luab_module_t *m;
-    fpos_t x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(FPOS, TYPE, __func__);
-    x = (fpos_t)luab_checkxinteger(L, 1, m, luab_env_long_max);
-
-    return (luab_pushxdata(L, m, &x));
-}
-
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(GID)).
- *
- * @function gid_create
- *
- * @param x                 Specifies initial value.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage gid [, err, msg ] = bsd.core.atomic.gid_create(x)
- */
-static int
-luab_gid_create(lua_State *L)
-{
-    luab_module_t *m;
-    gid_t x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(GID, TYPE, __func__);
-    x = (gid_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
-
-    return (luab_pushxdata(L, m, &x));
-}
-
-/***
  * Generator function, creates an instance of (LUA_TUSERDATA(OFF)).
  *
  * @function off_create
@@ -563,8 +513,6 @@ static luab_module_table_t luab_core_atomic_vec[] = {
     LUAB_FUNC("float_create",       luab_float_create),
 
     /* stadard types */
-    LUAB_FUNC("fpos_type",          luab_fpos_create),
-    LUAB_FUNC("gid_create",         luab_gid_create),
     LUAB_FUNC("off_create",         luab_off_create),
     LUAB_FUNC("size_create",        luab_size_create),
     LUAB_FUNC("socklen_create",     luab_socklen_create),

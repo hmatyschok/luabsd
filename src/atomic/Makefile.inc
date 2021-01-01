@@ -29,7 +29,6 @@ SRCS+=  luab_double_type.c
 SRCS+=  luab_float_type.c
 
 # standard types
-SRCS+=  luab_gid_type.c
 SRCS+=  luab_off_type.c
 SRCS+=  luab_size_type.c
 SRCS+=  luab_socklen_type.c
@@ -67,6 +66,9 @@ SRCS+=  luab_uintmax_type.c
 
 # <ctype.h>
 SRCS+=  luab_ct_rune_type.c
+
+# <grp.h>
+SRCS+=  luab_gid_type.c
 
 # <fcntl.h>
 SRCS+=  luab_mode_type.c

@@ -156,7 +156,6 @@ typedef enum luab_type {
     LUAB_FLOAT_IDX,
 
     /* standard types */
-    LUAB_GID_IDX,
     LUAB_OFF_IDX,
     LUAB_SIZE_IDX,
     LUAB_SOCKLEN_IDX,
@@ -166,7 +165,6 @@ typedef enum luab_type {
     LUAB_TIME_IDX,
     LUAB_CLOCK_IDX,
 
-    LUAB_LOCALE_IDX,
     LUAB_VM_OFFSET_IDX,
 
     /* <arpa/inet.h> */
@@ -191,12 +189,18 @@ typedef enum luab_type {
     LUAB_INTMAX_IDX,
     LUAB_UINTMAX_IDX,
 
+    /* <xlocale/_locale.h> */
+    LUAB_LOCALE_IDX,
+
     /* <ctype.h> */
     LUAB_CT_RUNE_IDX,
 
     /* <fcntl.h> */
     LUAB_MODE_IDX,
 
+    /* <grp.h> */
+    LUAB_GID_IDX,
+    
     /* <langinfo.h> */
     LUAB_NL_ITEM_IDX,
 
