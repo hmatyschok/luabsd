@@ -47,11 +47,13 @@ extern luab_module_t luab_sys_stdint_lib;
  *
  * @function int8_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(INT8)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int8 [, err, msg ] = bsd.sys.stdint.int8_create(x)
+ * @usage int8 [, err, msg ] = bsd.sys.stdint.int8_create(arg)
  */
 static int
 luab_int8_create(lua_State *L)
@@ -63,7 +65,6 @@ luab_int8_create(lua_State *L)
 
     m = luab_xmod(INT8, TYPE, __func__);
     x = (int8_t)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
