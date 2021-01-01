@@ -58,18 +58,20 @@ extern luab_module_t luab_sys_uio_lib;
 static int
 luab_readv(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+    m2 = luab_xmod(SIZE, TYPE, __func__);
 
-    fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m, luab_iovec_t *);
-    iovcnt = (size_t)luab_checklinteger(L, 3, 0);
+    fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
+    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
 
     return (luab_iovec_readv(L, fd, buf, iovcnt));
 }
@@ -90,18 +92,20 @@ luab_readv(lua_State *L)
 static int
 luab_writev(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+    m2 = luab_xmod(SIZE, TYPE, __func__);
 
-    fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m, luab_iovec_t *);
-    iovcnt = (size_t)luab_checklinteger(L, 3, 0);
+    fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
+    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
 
     return (luab_iovec_writev(L, fd, buf, iovcnt));
 }
@@ -124,7 +128,7 @@ luab_writev(lua_State *L)
 static int
 luab_preadv(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2, *m3;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
@@ -132,12 +136,15 @@ luab_preadv(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+    m2 = luab_xmod(SIZE, TYPE, __func__);
+    m3 = luab_xmod(OFF, TYPE, __func__);
 
-    fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m, luab_iovec_t *);
-    iovcnt = (size_t)luab_checklinteger(L, 3, 0);
-    offset = (off_t)luab_checkinteger(L, 4, luab_env_long_max);
+    fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
+    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    offset = (off_t)luab_checkxinteger(L, 4, m3, luab_env_long_max);
 
     return (luab_iovec_preadv(L, fd, buf, iovcnt, offset));
 }
@@ -159,7 +166,7 @@ luab_preadv(lua_State *L)
 static int
 luab_pwritev(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1, *m2, *m3;
     int fd;
     luab_iovec_t *buf;
     size_t iovcnt;
@@ -167,12 +174,15 @@ luab_pwritev(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    m = luab_xmod(IOVEC, TYPE, __func__);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+    m2 = luab_xmod(SIZE, TYPE, __func__);
+    m3 = luab_xmod(OFF, TYPE, __func__);
 
-    fd = (int)luab_checkinteger(L, 1, luab_env_int_max);
-    buf = luab_udata(L, 2, m, luab_iovec_t *);
-    iovcnt = (size_t)luab_checklinteger(L, 3, 0);
-    offset = (off_t)luab_checkinteger(L, 4, luab_env_long_max);
+    fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
+    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    offset = (off_t)luab_checkxinteger(L, 4, m3, luab_env_long_max);
 
     return (luab_iovec_preadv(L, fd, buf, iovcnt, offset));
 }
@@ -196,11 +206,13 @@ luab_pwritev(lua_State *L)
 static int
 luab_iovec_create(lua_State *L)
 {
+    luab_module_t *m;
     size_t max_len;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    max_len = (size_t)luab_checklinteger(L, 1, 0);
+    m = luab_xmod(SIZE, TYPE, __func__);
+    max_len = (size_t)luab_checkxlinteger(L, 1, m, 0);
 
     return (luab_iovec_pushxdata(L, NULL, 0, max_len));
 }
