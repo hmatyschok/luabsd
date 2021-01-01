@@ -301,11 +301,13 @@ luab_uintptr_create(lua_State *L)
  *
  * @function intmax_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(INTMAX)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage intmax [, err, msg ] = bsd.sys.stdint.intmax_create(x)
+ * @usage intmax [, err, msg ] = bsd.sys.stdint.intmax_create(arg)
  */
 static int
 luab_intmax_create(lua_State *L)
@@ -316,8 +318,7 @@ luab_intmax_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INTMAX, TYPE, __func__);
-    x = (intmax_t)luab_checkxinteger(L, 1, m, luab_env_long_max);
-
+    x = (intmax_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
     return (luab_pushxdata(L, m, &x));
 }
 
