@@ -73,11 +73,13 @@ luab_int8_create(lua_State *L)
  *
  * @function int16_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(INT16)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int16 [, err, msg ] = bsd.sys.stdint.int16_create(x)
+ * @usage int16 [, err, msg ] = bsd.sys.stdint.int16_create(arg)
  */
 static int
 luab_int16_create(lua_State *L)
@@ -89,9 +91,9 @@ luab_int16_create(lua_State *L)
 
     m = luab_xmod(INT16, TYPE, __func__);
     x = (int16_t)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
-
     return (luab_pushxdata(L, m, &x));
 }
+
 
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INT32)).
