@@ -59,7 +59,7 @@ extern luab_module_t luab_xlocale_inttypes_lib;
 static int
 luab_strtoimax_l(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     luab_iovec_t *nptr;
     char **endptr;
     int base;
@@ -71,12 +71,13 @@ luab_strtoimax_l(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(LOCALE, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(LOCALE, TYPE, __func__);
 
     nptr = luab_udata(L, 1, m0, luab_iovec_t *);
     endptr = (char **)luab_checknil(L, 2);
-    base = (int)luab_checkinteger(L, 3, luab_env_int_max);
-    xloc = luab_udata(L, 4, m1, luab_locale_t *);
+    base = (int)luab_checkxinteger(L, 3, m1, luab_env_int_max);
+    xloc = luab_udata(L, 4, m2, luab_locale_t *);
 
     if (((locale = xloc->ud_sdu) != NULL) &&
         ((bp = nptr->iov.iov_base) != NULL) &&
@@ -120,7 +121,7 @@ luab_strtoimax_l(lua_State *L)
 static int
 luab_strtoumax_l(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     luab_iovec_t *nptr;
     char **endptr;
     int base;
@@ -132,12 +133,13 @@ luab_strtoumax_l(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(LOCALE, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(LOCALE, TYPE, __func__);
 
     nptr = luab_udata(L, 1, m0, luab_iovec_t *);
     endptr = (char **)luab_checknil(L, 2);
-    base = (int)luab_checkinteger(L, 3, luab_env_int_max);
-    xloc = luab_udata(L, 4, m1, luab_locale_t *);
+    base = (int)luab_checkxinteger(L, 3, m1, luab_env_int_max);
+    xloc = luab_udata(L, 4, m2, luab_locale_t *);
 
     if (((locale = xloc->ud_sdu) != NULL) &&
         ((bp = nptr->iov.iov_base) != NULL) &&
@@ -181,7 +183,7 @@ luab_strtoumax_l(lua_State *L)
 static int
 luab_wcstoimax_l(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     luab_iovec_t *nptr;
     wchar_t **endptr;
     int base;
@@ -191,14 +193,15 @@ luab_wcstoimax_l(lua_State *L)
     intmax_t status;
 
     (void)luab_core_checkmaxargs(L, 4);
-
+    
     m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(LOCALE, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(LOCALE, TYPE, __func__);
 
     nptr = luab_udata(L, 1, m0, luab_iovec_t *);
     endptr = (wchar_t **)luab_checknil(L, 2);
-    base = (int)luab_checkinteger(L, 3, luab_env_int_max);
-    xloc = luab_udata(L, 4, m1, luab_locale_t *);
+    base = (int)luab_checkxinteger(L, 3, m1, luab_env_int_max);
+    xloc = luab_udata(L, 4, m2, luab_locale_t *);
 
     if (((locale = xloc->ud_sdu) != NULL) &&
         ((bp = (wchar_t *)nptr->iov.iov_base) != NULL) &&
@@ -242,7 +245,7 @@ luab_wcstoimax_l(lua_State *L)
 static int
 luab_wcstoumax_l(lua_State *L)
 {
-    luab_module_t *m0, *m1;
+    luab_module_t *m0, *m1, *m2;
     luab_iovec_t *nptr;
     wchar_t **endptr;
     int base;
@@ -254,12 +257,13 @@ luab_wcstoumax_l(lua_State *L)
     (void)luab_core_checkmaxargs(L, 4);
 
     m0 = luab_xmod(IOVEC, TYPE, __func__);
-    m1 = luab_xmod(LOCALE, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(LOCALE, TYPE, __func__);
 
     nptr = luab_udata(L, 1, m0, luab_iovec_t *);
     endptr = (wchar_t **)luab_checknil(L, 2);
-    base = (int)luab_checkinteger(L, 3, luab_env_int_max);
-    xloc = luab_udata(L, 4, m1, luab_locale_t *);
+    base = (int)luab_checkxinteger(L, 3, m1, luab_env_int_max);
+    xloc = luab_udata(L, 4, m2, luab_locale_t *);
 
     if (((locale = xloc->ud_sdu) != NULL) &&
         ((bp = (wchar_t *)nptr->iov.iov_base) != NULL) &&
