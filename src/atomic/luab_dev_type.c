@@ -43,13 +43,8 @@ extern luab_module_t luab_dev_type;
 
 typedef struct luab_dev {
     luab_udata_t    ud_softc;
-    dev_t          ud_sdu;
+    dev_t         ud_sdu;
 } luab_dev_t;
-
-#define luab_new_dev(L, arg) \
-    ((luab_dev_t *)luab_newudata(L, &luab_dev_type, (arg)))
-#define luab_to_dev(L, narg) \
-    (luab_todata((L), (narg), &luab_dev_type, luab_dev_t *))
 
 /*
  * Subr.
@@ -87,12 +82,15 @@ dev_fillxtable(lua_State *L, int narg, void *arg)
 static int
 DEV_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_dev_type;
+
     xtp.xtp_fill = dev_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_dev(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,7 +117,7 @@ DEV_dump(lua_State *L)
  */
 
 /***
- * Set dev.
+ * Set value over (dev_t).
  *
  * @function set_value
  *
@@ -138,17 +136,16 @@ DEV_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(DEV, TYPE, __func__);
-    self = luab_to_dev(L, 1);
-    x = (dev_t)luab_checkxinteger(L, 2, m, luab_env_ulong_max);
-
+    m = &luab_dev_type;
+    self = luab_todata(L, 1, m, luab_dev_t *);
+    x = (dev_t)luab_checkxinteger(L, 2, m, luab_env_long_max);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get dev.
+ * Get value over (dev_t).
  *
  * @function get_value
  *
@@ -159,12 +156,14 @@ DEV_set_value(lua_State *L)
 static int
 DEV_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_dev_t *self;
     dev_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_dev(L, 1);
+    m = &luab_dev_type;
+    self = luab_todata(L, 1, m, luab_dev_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -177,23 +176,29 @@ DEV_get_value(lua_State *L)
 static int
 DEV_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_dev_type));
+    luab_module_t *m;
+    m = &luab_dev_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 DEV_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_dev_type));
+    luab_module_t *m;
+    m = &luab_dev_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 DEV_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_dev_type));
+    luab_module_t *m;
+    m = &luab_dev_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal deverface.
+ * Internal interface.
  */
 
 static luab_module_table_t dev_methods[] = {
@@ -210,44 +215,54 @@ static luab_module_table_t dev_methods[] = {
 static void *
 dev_create(lua_State *L, void *arg)
 {
-    return (luab_new_dev(L, arg));
+    luab_module_t *m;
+    m = &luab_dev_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 dev_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_dev_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_dev_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 dev_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_dev_t *self;
-    self = luab_to_dev(L, narg);
+
+    m = &luab_dev_type;
+    self = luab_todata(L, narg, m, luab_dev_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 dev_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     dev_t *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_dev_type)) != NULL) {
+    m = &luab_dev_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (dev_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (dev_t)luab_tointeger(L, -1, luab_env_ulong_max);
-                        x[m] = (dev_t)y;
+                        y = (dev_t)luab_toxinteger(L, -1, m, luab_env_long_max);
+                        x[i] = (dev_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -265,7 +280,7 @@ static void
 dev_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     dev_t *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -273,8 +288,8 @@ dev_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -289,7 +304,9 @@ dev_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 dev_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_dev_type, vec, card));
+    luab_module_t *m;
+    m = &luab_dev_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_dev_type = {

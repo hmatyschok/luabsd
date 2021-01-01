@@ -1058,7 +1058,7 @@ luab_dev_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(DEV, TYPE, __func__);
-    x = (dev_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
+    x = (dev_t)luab_checkxinteger(L, 1, m, luab_env_long_max);
 
     return (luab_pushxdata(L, m, &x));
 }
