@@ -408,11 +408,13 @@ luab_uid_create(lua_State *L)
  *
  * @function wchar_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(WCHAR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage wchar [, err, msg ] = bsd.core.atomic.wchar_create(x)
+ * @usage wchar [, err, msg ] = bsd.core.atomic.wchar_create(arg)
  */
 static int
 luab_wchar_create(lua_State *L)
@@ -424,7 +426,6 @@ luab_wchar_create(lua_State *L)
 
     m = luab_xmod(WCHAR, TYPE, __func__);
     x = (wchar_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
