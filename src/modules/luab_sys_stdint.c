@@ -203,11 +203,13 @@ luab_uint16_create(lua_State *L)
  *
  * @function uint32_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UINT32)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint32 [, err, msg ] = bsd.sys.stdint.uint32_create(x)
+ * @usage uint32 [, err, msg ] = bsd.sys.stdint.uint32_create(arg)
  */
 static int
 luab_uint32_create(lua_State *L)
@@ -219,7 +221,6 @@ luab_uint32_create(lua_State *L)
 
     m = luab_xmod(UINT32, TYPE, __func__);
     x = (uint32_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
