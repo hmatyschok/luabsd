@@ -327,17 +327,18 @@ luab_intmax_create(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
-
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINTMAX)).
  *
  * @function uintmax_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UINTMAX)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uintmax [, err, msg ] = bsd.sys.stdint.uintmax_create(x)
+ * @usage uintmax [, err, msg ] = bsd.sys.stdint.uintmax_create(arg)
  */
 static int
 luab_uintmax_create(lua_State *L)
@@ -349,7 +350,6 @@ luab_uintmax_create(lua_State *L)
 
     m = luab_xmod(UINTMAX, TYPE, __func__);
     x = (uintmax_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
