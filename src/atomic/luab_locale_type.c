@@ -82,7 +82,7 @@ LOCALE_get_table(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_locale_type;
+    m = luab_xmod(LOCALE, TYPE, __func__);
 
     xtp.xtp_fill = locale_fillxtable;
     xtp.xtp_arg = luab_todata(L, 1, m, void *);
@@ -129,7 +129,7 @@ LOCALE_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_locale_type;
+    m = luab_xmod(LOCALE, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_locale_t *);
     x = self->ud_sdu;
 
@@ -148,7 +148,7 @@ LOCALE_gc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_locale_type;
+    m = luab_xmod(LOCALE, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_locale_t *);
 
     if (self->ud_sdu != NULL)
@@ -161,7 +161,7 @@ static int
 LOCALE_len(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_locale_type;
+    m = luab_xmod(LOCALE, TYPE, __func__);
     return (luab_core_len(L, 2, m));
 }
 
@@ -169,7 +169,7 @@ static int
 LOCALE_tostring(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_locale_type;
+    m = luab_xmod(LOCALE, TYPE, __func__);
     return (luab_core_tostring(L, 1, m));
 }
 
@@ -191,7 +191,7 @@ static void *
 locale_create(lua_State *L, void *arg)
 {
     luab_module_t *m;
-    m = &luab_locale_type;
+    m = luab_xmod(LOCALE, TYPE, __func__);
     return (luab_newudata(L, m, arg));
 }
 
@@ -199,7 +199,7 @@ static void
 locale_init(void *ud, void *arg)
 {
     luab_module_t *m;
-    m = &luab_locale_type;
+    m = luab_xmod(LOCALE, TYPE, __func__);
     luab_udata_init(m, ud, arg);
 }
 
@@ -209,7 +209,7 @@ locale_udata(lua_State *L, int narg)
     luab_module_t *m;
     luab_locale_t *self;
 
-    m = &luab_locale_type; 
+    m = luab_xmod(LOCALE, TYPE, __func__); 
     self = luab_todata(L, narg, m, luab_locale_t *);
     return ((void *)self);
 }

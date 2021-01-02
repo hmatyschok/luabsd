@@ -88,7 +88,7 @@ UINT_get_table(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
 
     xtp.xtp_fill = uint_fillxtable;
     xtp.xtp_arg = luab_todata(L, 1, m, void *);
@@ -137,7 +137,7 @@ UINT_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_uint_t *);
     x = (u_int)luab_checkxinteger(L, 2, m, luab_env_uint_max);
     self->ud_sdu = x;
@@ -163,7 +163,7 @@ UINT_get_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_uint_t *);
     x = self->ud_sdu;
 
@@ -178,7 +178,7 @@ static int
 UINT_gc(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     return (luab_core_gc(L, 1, m));
 }
 
@@ -186,7 +186,7 @@ static int
 UINT_len(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     return (luab_core_len(L, 2, m));
 }
 
@@ -194,7 +194,7 @@ static int
 UINT_tostring(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     return (luab_core_tostring(L, 1, m));
 }
 
@@ -217,7 +217,7 @@ static void *
 uint_create(lua_State *L, void *arg)
 {
     luab_module_t *m;
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     return (luab_newudata(L, m, arg));
 }
 
@@ -225,7 +225,7 @@ static void
 uint_init(void *ud, void *arg)
 {
     luab_module_t *m;
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     luab_udata_init(m, ud, arg);
 }
 
@@ -235,7 +235,7 @@ uint_udata(lua_State *L, int narg)
     luab_module_t *m;
     luab_uint_t *self;
 
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     self = luab_todata(L, narg, m, luab_uint_t *);
     return ((void *)&(self->ud_sdu));
 }
@@ -248,7 +248,7 @@ uint_checktable(lua_State *L, int narg)
     u_int *x, y;
     size_t i, j;
 
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
 
     if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
@@ -306,7 +306,7 @@ static luab_table_t *
 uint_alloctable(void *vec, size_t card)
 {
     luab_module_t *m;
-    m = &luab_uint_type;
+    m = luab_xmod(UINT, TYPE, __func__);
     return (luab_table_create(m, vec, card));
 }
 

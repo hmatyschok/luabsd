@@ -87,7 +87,7 @@ SSIZE_get_table(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
 
     xtp.xtp_fill = ssize_fillxtable;
     xtp.xtp_arg = luab_todata(L, 1, m, void *);
@@ -136,7 +136,7 @@ SSIZE_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_ssize_t *);
     x = (ssize_t)luab_checklxinteger(L, 2, m, 0);
     self->ud_sdu = x;
@@ -162,7 +162,7 @@ SSIZE_get_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_ssize_t *);
     x = self->ud_sdu;
 
@@ -177,7 +177,7 @@ static int
 SSIZE_gc(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     return (luab_core_gc(L, 1, m));
 }
 
@@ -185,7 +185,7 @@ static int
 SSIZE_len(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     return (luab_core_len(L, 2, m));
 }
 
@@ -193,7 +193,7 @@ static int
 SSIZE_tostring(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     return (luab_core_tostring(L, 1, m));
 }
 
@@ -216,7 +216,7 @@ static void *
 ssize_create(lua_State *L, void *arg)
 {
     luab_module_t *m;
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     return (luab_newudata(L, m, arg));
 }
 
@@ -224,7 +224,7 @@ static void
 ssize_init(void *ud, void *arg)
 {
     luab_module_t *m;
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     luab_udata_init(m, ud, arg);
 }
 
@@ -234,7 +234,7 @@ ssize_udata(lua_State *L, int narg)
     luab_module_t *m;
     luab_ssize_t *self;
 
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     self = luab_todata(L, narg, m, luab_ssize_t *);
     return ((void *)&(self->ud_sdu));
 }
@@ -247,7 +247,7 @@ ssize_checktable(lua_State *L, int narg)
     ssize_t *x, y;
     size_t i, j;
 
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
 
     if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
@@ -305,7 +305,7 @@ static luab_table_t *
 ssize_alloctable(void *vec, size_t card)
 {
     luab_module_t *m;
-    m = &luab_ssize_type;
+    m = luab_xmod(SSIZE, TYPE, __func__);
     return (luab_table_create(m, vec, card));
 }
 

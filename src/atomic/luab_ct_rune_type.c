@@ -87,7 +87,7 @@ CT_RUNE_get_table(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
 
     xtp.xtp_fill = ct_rune_fillxtable;
     xtp.xtp_arg = luab_todata(L, 1, m, void *);
@@ -136,7 +136,7 @@ CT_RUNE_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_ct_rune_t *);
     x = (__ct_rune_t)luab_checkxinteger(L, 2, m, luab_env_uint_max);
     self->ud_sdu = x;
@@ -162,7 +162,7 @@ CT_RUNE_get_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_ct_rune_t *);
     x = self->ud_sdu;
 
@@ -177,7 +177,7 @@ static int
 CT_RUNE_gc(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     return (luab_core_gc(L, 1, m));
 }
 
@@ -185,7 +185,7 @@ static int
 CT_RUNE_len(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     return (luab_core_len(L, 2, m));
 }
 
@@ -193,7 +193,7 @@ static int
 CT_RUNE_tostring(lua_State *L)
 {
     luab_module_t *m;
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     return (luab_core_tostring(L, 1, m));
 }
 
@@ -216,7 +216,7 @@ static void *
 ct_rune_create(lua_State *L, void *arg)
 {
     luab_module_t *m;
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     return (luab_newudata(L, m, arg));
 }
 
@@ -224,7 +224,7 @@ static void
 ct_rune_init(void *ud, void *arg)
 {
     luab_module_t *m;
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     luab_udata_init(m, ud, arg);
 }
 
@@ -234,7 +234,7 @@ ct_rune_udata(lua_State *L, int narg)
     luab_module_t *m;
     luab_ct_rune_t *self;
 
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     self = luab_todata(L, narg, m, luab_ct_rune_t *);
     return ((void *)&(self->ud_sdu));
 }
@@ -247,7 +247,7 @@ ct_rune_checktable(lua_State *L, int narg)
     __ct_rune_t *x, y;
     size_t i, j;
 
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
 
     if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
@@ -305,7 +305,7 @@ static luab_table_t *
 ct_rune_alloctable(void *vec, size_t card)
 {
     luab_module_t *m;
-    m = &luab_ct_rune_type;
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
     return (luab_table_create(m, vec, card));
 }
 
