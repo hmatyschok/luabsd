@@ -753,7 +753,7 @@ luab_gets_s(lua_State *L)
     m1 = luab_xmod(RSIZE, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    size = (rsize_t)luab_checkxlinteger(L, 2, m1, 0);
+    size = (rsize_t)luab_checklxinteger(L, 2, m1, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -1601,7 +1601,7 @@ luab_rsize_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(RSIZE, TYPE, __func__);
-    x = (rsize_t)luab_checkxlinteger(L, 1, m, 0);
+    x = (rsize_t)luab_checklxinteger(L, 1, m, 0);
     return (luab_pushxdata(L, m, &x));
 }
 

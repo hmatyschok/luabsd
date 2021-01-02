@@ -138,7 +138,7 @@ VM_OFFSET_set_value(lua_State *L)
 
     m = &luab_vm_offset_type;
     self = luab_todata(L, 1, m, luab_vm_offset_t *);
-    x = (vm_offset_t)luab_checkxlinteger(L, 2, m, 0);
+    x = (vm_offset_t)luab_checklxinteger(L, 2, m, 0);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));

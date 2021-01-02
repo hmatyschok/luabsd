@@ -81,7 +81,7 @@ luab_strftime_l(lua_State *L)
     m3 = luab_xmod(LOCALE, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    maxsize = luab_checkxlinteger(L, 2, m1, 0);
+    maxsize = luab_checklxinteger(L, 2, m1, 0);
     format = luab_checklstring(L, 3, maxsize, NULL);
     timeptr = luab_udata(L, 4, m2, struct tm *);
     xloc = luab_udata(L, 5, m3, luab_locale_t *);

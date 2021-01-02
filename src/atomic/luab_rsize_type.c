@@ -138,7 +138,7 @@ RSIZE_set_value(lua_State *L)
 
     m = &luab_rsize_type;
     self = luab_todata(L, 1, m, luab_rsize_t *);
-    x = (rsize_t)luab_checkxlinteger(L, 2, m, 0);
+    x = (rsize_t)luab_checklxinteger(L, 2, m, 0);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));

@@ -4051,7 +4051,7 @@ luab_profil(lua_State *L)
 
     buf = luab_isiovec(L, 1);
     size = (size_t)luab_checklxinteger(L, 2, m0, 0);
-    offset = (vm_offset_t)luab_checkxlinteger(L, 3, m1, 0);
+    offset = (vm_offset_t)luab_checklxinteger(L, 3, m1, 0);
     scale = (int)luab_checkxinteger(L, 4, m2, luab_env_int_max);
 
     if (buf != NULL) {

@@ -145,8 +145,8 @@ luab_difftime(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     m = luab_xmod(TIME, TYPE, __func__);
-    time1 = luab_checkxlinteger(L, 1, m, 1);
-    time0 = luab_checkxlinteger(L, 2, m, 1);
+    time1 = (time_t)luab_checklxinteger(L, 1, m, 1);
+    time0 = (time_t)luab_checklxinteger(L, 2, m, 1);
 
     ret = difftime(time1, time0);
 

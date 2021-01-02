@@ -460,11 +460,13 @@ luab_time_create(lua_State *L)
  *
  * @function clock_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(CLOCK)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage time [, err, msg ] = bsd.core.atomic.clock_create(x)
+ * @usage clock [, err, msg ] = bsd.core.atomic.clock_create(arg)
  */
 static int
 luab_clock_create(lua_State *L)
@@ -475,8 +477,7 @@ luab_clock_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(CLOCK, TYPE, __func__);
-    x = (clock_t)luab_checkxlinteger(L, 1, m, 1);
-
+    x = (clock_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
     return (luab_pushxdata(L, m, &x));
 }
 
@@ -502,7 +503,7 @@ luab_vm_offset_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(VM_OFFSET, TYPE, __func__);
-    x = (vm_offset_t)luab_checkxlinteger(L, 1, m, 0);
+    x = (vm_offset_t)luab_checklxinteger(L, 1, m, 0);
     return (luab_pushxdata(L, m, &x));
 }
 
