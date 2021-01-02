@@ -255,7 +255,9 @@ luab_uselocale(lua_State *L)
  *
  * @function locale_create
  *
- * @param x                 Specifies initial value or (LUA_TNIL).
+ * @param arg               Specifies its initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(LOCALE)}).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

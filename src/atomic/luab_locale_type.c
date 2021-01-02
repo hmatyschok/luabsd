@@ -41,11 +41,6 @@ extern luab_module_t luab_locale_type;
  *
  */
 
-#define luab_new_locale(L, arg) \
-    ((luab_locale_t *)luab_newudata(L, &luab_locale_type, (arg)))
-#define luab_to_locale(L, narg) \
-    (luab_todata((L), (narg), &luab_locale_type, luab_locale_t *))
-
 /*
  * Subr.
  */
@@ -82,12 +77,15 @@ locale_fillxtable(lua_State *L, int narg, void *arg)
 static int
 LOCALE_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_locale_type;
+
     xtp.xtp_fill = locale_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_locale(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -125,12 +123,14 @@ LOCALE_dump(lua_State *L)
 static int
 LOCALE_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_locale_t *self;
     locale_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_locale(L, 1);
+    m = &luab_locale_type;
+    self = luab_todata(L, 1, m, luab_locale_t *);
     x = self->ud_sdu;
 
     return (luab_pushfstring(L, "(%p)", x));
@@ -143,11 +143,13 @@ LOCALE_value(lua_State *L)
 static int
 LOCALE_gc(lua_State *L)
 {
+    luab_module_t *m;
     luab_locale_t *self;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_locale(L, 1);
+    m = &luab_locale_type;
+    self = luab_todata(L, 1, m, luab_locale_t *);
 
     if (self->ud_sdu != NULL)
         freelocale(self->ud_sdu);
@@ -158,13 +160,17 @@ LOCALE_gc(lua_State *L)
 static int
 LOCALE_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_locale_type));
+    luab_module_t *m;
+    m = &luab_locale_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 LOCALE_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_locale_type));
+    luab_module_t *m;
+    m = &luab_locale_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -184,20 +190,27 @@ static luab_module_table_t locale_methods[] = {
 static void *
 locale_create(lua_State *L, void *arg)
 {
-    return (luab_new_locale(L, arg));
+    luab_module_t *m;
+    m = &luab_locale_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 locale_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_locale_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_locale_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 locale_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_locale_t *self;
-    self = luab_to_locale(L, narg);
+
+    m = &luab_locale_type; 
+    self = luab_todata(L, narg, m, luab_locale_t *);
     return ((void *)self);
 }
 
