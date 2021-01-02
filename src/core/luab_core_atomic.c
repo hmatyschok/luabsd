@@ -149,11 +149,13 @@ luab_char_create(lua_State *L)
  *
  * @function short_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SHORT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage short [, err, msg ] = bsd.core.atomic.short_create(x)
+ * @usage short [, err, msg ] = bsd.core.atomic.short_create(arg)
  */
 static int
 luab_short_create(lua_State *L)
@@ -164,8 +166,7 @@ luab_short_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(SHORT, TYPE, __func__);
-    x = (short)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
-
+    x = (short)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
     return (luab_pushxdata(L, m, &x));
 }
 

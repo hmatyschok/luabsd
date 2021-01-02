@@ -43,13 +43,8 @@ extern luab_module_t luab_short_type;
 
 typedef struct luab_short {
     luab_udata_t    ud_softc;
-    short           ud_sdu;
+    short         ud_sdu;
 } luab_short_t;
-
-#define luab_new_short(L, arg) \
-    ((luab_short_t *)luab_newudata(L, &luab_short_type, (arg)))
-#define luab_to_short(L, narg) \
-    (luab_todata((L), (narg), &luab_short_type, luab_short_t *))
 
 /*
  * Subr.
@@ -72,7 +67,7 @@ short_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(SHORT)) shorto (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(SHORT)) into (LUA_TTABLE).
  *
  * @function get_table
  *
@@ -87,12 +82,15 @@ short_fillxtable(lua_State *L, int narg, void *arg)
 static int
 SHORT_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_short_type;
+
     xtp.xtp_fill = short_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_short(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,50 +117,53 @@ SHORT_dump(lua_State *L)
  */
 
 /***
- * Set short.
+ * Set value over (short).
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = short:set_value(data)
+ * @usage x [, err, msg ] = short:set_value(arg)
  */
 static int
 SHORT_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_short_t *self;
     short x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_short(L, 1);
-    x = (short)luab_checkinteger(L, 2, luab_env_ushrt_max);
-
+    m = &luab_short_type;
+    self = luab_todata(L, 1, m, luab_short_t *);
+    x = (short)luab_checkxinteger(L, 2, m, luab_env_ushrt_max);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get short.
+ * Get value over (short).
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = short:get_value()
+ * @usage x [, err, msg ] = short:get_value()
  */
 static int
 SHORT_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_short_t *self;
     short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_short(L, 1);
+    m = &luab_short_type;
+    self = luab_todata(L, 1, m, luab_short_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -175,23 +176,29 @@ SHORT_get_value(lua_State *L)
 static int
 SHORT_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_short_type));
+    luab_module_t *m;
+    m = &luab_short_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 SHORT_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_short_type));
+    luab_module_t *m;
+    m = &luab_short_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 SHORT_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_short_type));
+    luab_module_t *m;
+    m = &luab_short_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal shorterface.
+ * Internal interface.
  */
 
 static luab_module_table_t short_methods[] = {
@@ -208,44 +215,54 @@ static luab_module_table_t short_methods[] = {
 static void *
 short_create(lua_State *L, void *arg)
 {
-    return (luab_new_short(L, arg));
+    luab_module_t *m;
+    m = &luab_short_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 short_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_short_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_short_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 short_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_short_t *self;
-    self = luab_to_short(L, narg);
+
+    m = &luab_short_type;
+    self = luab_todata(L, narg, m, luab_short_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 short_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     short *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_short_type)) != NULL) {
+    m = &luab_short_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (short *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (short)luab_tointeger(L, -1, luab_env_ushrt_max);
-                        x[m] = (short)y;
+                        y = (short)luab_toxinteger(L, -1, m, luab_env_ushrt_max);
+                        x[i] = (short)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -263,7 +280,7 @@ static void
 short_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     short *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -271,8 +288,8 @@ short_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -287,7 +304,9 @@ short_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 short_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_short_type, vec, card));
+    luab_module_t *m;
+    m = &luab_short_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_short_type = {
