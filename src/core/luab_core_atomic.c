@@ -381,11 +381,13 @@ luab_ssize_create(lua_State *L)
  *
  * @function uid_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UID)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uid [, err, msg ] = bsd.core.atomic.uid_create(x)
+ * @usage uid [, err, msg ] = bsd.core.atomic.uid_create(arg)
  */
 static int
 luab_uid_create(lua_State *L)
@@ -397,7 +399,6 @@ luab_uid_create(lua_State *L)
 
     m = luab_xmod(UID, TYPE, __func__);
     x = (uid_t)luab_checkxinteger(L, 1, m, luab_env_uid_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
