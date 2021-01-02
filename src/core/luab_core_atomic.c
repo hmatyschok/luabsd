@@ -431,11 +431,13 @@ luab_wchar_create(lua_State *L)
  *
  * @function time_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(TIME)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage time [, err, msg ] = bsd.core.atomic.time_create(x)
+ * @usage time [, err, msg ] = bsd.core.atomic.time_create(arg)
  */
 static int
 luab_time_create(lua_State *L)
@@ -446,8 +448,7 @@ luab_time_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(TIME, TYPE, __func__);
-    x = (time_t)luab_checkxlinteger(L, 1, m, 1);
-
+    x = (time_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
     return (luab_pushxdata(L, m, &x));
 }
 
