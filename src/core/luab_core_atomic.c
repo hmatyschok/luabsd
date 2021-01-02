@@ -174,11 +174,13 @@ luab_short_create(lua_State *L)
  *
  * @function int_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(INT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int [, err, msg ] = bsd.core.atomic.int_create(x)
+ * @usage int [, err, msg ] = bsd.core.atomic.int_create(arg)
  */
 static int
 luab_int_create(lua_State *L)
@@ -190,7 +192,6 @@ luab_int_create(lua_State *L)
 
     m = luab_xmod(INT, TYPE, __func__);
     x = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
