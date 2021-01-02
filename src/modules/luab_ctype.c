@@ -222,89 +222,6 @@ luab_isdigit(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-/*
- * Generator functions.
- */
-
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
- *
- * @function ct_rune_create
- *
- * @param x                 Specifies initial value.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_create(x)
- */
-static int
-luab_ct_rune_create(lua_State *L)
-{
-    luab_module_t *m;
-    __ct_rune_t x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(CT_RUNE, TYPE, __func__);
-    x = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
-
-    return (luab_pushxdata(L, m, &x));
-}
-
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
- *
- * @function ct_rune_tolower
- *
- * @param x                 Specifies initial value about converted.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_tolower(x)
- */
-static int
-luab_ct_rune_tolower(lua_State *L)
-{
-    luab_module_t *m;
-    __ct_rune_t c, x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(CT_RUNE, TYPE, __func__);
-    c = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
-
-    x = ___tolower(c);
-
-    return (luab_pushxdata(L, m, &x));
-}
-
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
- *
- * @function ct_rune_toupper
- *
- * @param x                 Specifies initial value about converted.
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_toupper(x)
- */
-static int
-luab_ct_rune_toupper(lua_State *L)
-{
-    luab_module_t *m;
-    __ct_rune_t c, x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(CT_RUNE, TYPE, __func__);
-    c = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
-
-    x = ___toupper(c);
-
-    return (luab_pushxdata(L, m, &x));
-}
-
 /***
  * isgraph(3) - printing character set (space character exclusive)
  *
@@ -823,6 +740,90 @@ luab_isspecial(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
+ *
+ * @function ct_rune_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(CT_RUNE)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_create(arg)
+ */
+static int
+luab_ct_rune_create(lua_State *L)
+{
+    luab_module_t *m;
+    __ct_rune_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
+    x = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
+ *
+ * @function ct_rune_tolower
+ *
+ * @param x                 Specifies initial value about converted.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_tolower(x)
+ */
+static int
+luab_ct_rune_tolower(lua_State *L)
+{
+    luab_module_t *m;
+    __ct_rune_t c, x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
+    c = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+
+    x = ___tolower(c);
+
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
+ *
+ * @function ct_rune_toupper
+ *
+ * @param x                 Specifies initial value about converted.
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_toupper(x)
+ */
+static int
+luab_ct_rune_toupper(lua_State *L)
+{
+    luab_module_t *m;
+    __ct_rune_t c, x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CT_RUNE, TYPE, __func__);
+    c = (__ct_rune_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+
+    x = ___toupper(c);
+
+    return (luab_pushxdata(L, m, &x));
+}
 
 /*
  * Interface against <ctype.h>.
