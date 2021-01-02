@@ -43,13 +43,8 @@ extern luab_module_t luab_intptr_type;
 
 typedef struct luab_intptr {
     luab_udata_t    ud_softc;
-    intptr_t        ud_sdu;
+    intptr_t         ud_sdu;
 } luab_intptr_t;
-
-#define luab_new_intptr(L, arg) \
-    ((luab_intptr_t *)luab_newudata(L, &luab_intptr_type, (arg)))
-#define luab_to_intptr(L, narg) \
-    (luab_todata((L), (narg), &luab_intptr_type, luab_intptr_t *))
 
 /*
  * Subr.
@@ -79,7 +74,7 @@ intptr_fillxtable(lua_State *L, int narg, void *arg)
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              value = (LUA_T{NIL,STRING}),
+ *              value = (LUA_TNUMBER),
  *          }
  *
  * @usage t [, err, msg ] = intptr:get_table()
@@ -87,12 +82,15 @@ intptr_fillxtable(lua_State *L, int narg, void *arg)
 static int
 INTPTR_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_intptr_type;
+
     xtp.xtp_fill = intptr_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_intptr(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,50 +117,53 @@ INTPTR_dump(lua_State *L)
  */
 
 /***
- * Set intptr.
+ * Set value over (intptr_t).
  *
  * @function set_value
  *
- * @param x                 Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage x [, err, msg ] = intptr:set_value(x)
+ * @usage x [, err, msg ] = intptr:set_value(arg)
  */
 static int
 INTPTR_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_intptr_t *self;
     intptr_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_intptr(L, 1);
-    x = (intptr_t)luab_checkinteger(L, 2, luab_env_ullong_max);
-
+    m = &luab_intptr_type;
+    self = luab_todata(L, 1, m, luab_intptr_t *);
+    x = (intptr_t)luab_checkxlinteger(L, 2, m, 0);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get intptr.
+ * Get value over (intptr_t).
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = intptr:get_value()
+ * @usage x [, err, msg ] = intptr:get_value()
  */
 static int
 INTPTR_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_intptr_t *self;
     intptr_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_intptr(L, 1);
+    m = &luab_intptr_type;
+    self = luab_todata(L, 1, m, luab_intptr_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -175,23 +176,29 @@ INTPTR_get_value(lua_State *L)
 static int
 INTPTR_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_intptr_type));
+    luab_module_t *m;
+    m = &luab_intptr_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 INTPTR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_intptr_type));
+    luab_module_t *m;
+    m = &luab_intptr_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 INTPTR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_intptr_type));
+    luab_module_t *m;
+    m = &luab_intptr_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal intptrerface.
+ * Internal interface.
  */
 
 static luab_module_table_t intptr_methods[] = {
@@ -208,44 +215,54 @@ static luab_module_table_t intptr_methods[] = {
 static void *
 intptr_create(lua_State *L, void *arg)
 {
-    return (luab_new_intptr(L, arg));
+    luab_module_t *m;
+    m = &luab_intptr_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 intptr_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_intptr_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_intptr_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 intptr_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_intptr_t *self;
-    self = luab_to_intptr(L, narg);
+
+    m = &luab_intptr_type;
+    self = luab_todata(L, narg, m, luab_intptr_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 intptr_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     intptr_t *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_intptr_type)) != NULL) {
+    m = &luab_intptr_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (intptr_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (intptr_t)luab_tointeger(L, -1, luab_env_ullong_max);
-                        x[m] = (intptr_t)y;
+                        y = (intptr_t)luab_tolxinteger(L, -1, m, 0);
+                        x[i] = (intptr_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -263,7 +280,7 @@ static void
 intptr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     intptr_t *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -271,8 +288,8 @@ intptr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -287,7 +304,9 @@ intptr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 intptr_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_intptr_type, vec, card));
+    luab_module_t *m;
+    m = &luab_intptr_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_intptr_type = {
