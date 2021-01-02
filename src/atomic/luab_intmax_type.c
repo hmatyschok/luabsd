@@ -138,7 +138,7 @@ INTMAX_set_value(lua_State *L)
 
     m = &luab_intmax_type;
     self = luab_todata(L, 1, m, luab_intmax_t *);
-    x = (intmax_t)luab_checkxinteger(L, 2, m, luab_env_int_max);
+    x = (intmax_t)luab_checkxinteger(L, 2, m, luab_env_ulong_max);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
@@ -261,7 +261,7 @@ intmax_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (intmax_t)luab_toxinteger(L, -1, m, luab_env_int_max);
+                        y = (intmax_t)luab_toxinteger(L, -1, m, luab_env_ulong_max);
                         x[i] = (intmax_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);

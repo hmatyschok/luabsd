@@ -318,9 +318,10 @@ luab_intmax_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INTMAX, TYPE, __func__);
-    x = (intmax_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
+    x = (intmax_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
     return (luab_pushxdata(L, m, &x));
 }
+
 
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINTMAX)).
