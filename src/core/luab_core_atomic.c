@@ -276,11 +276,13 @@ luab_float_create(lua_State *L)
  *
  * @function off_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(OFF)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage off [, err, msg ] = bsd.core.atomic.off_create(x)
+ * @usage off [, err, msg ] = bsd.core.atomic.off_create(arg)
  */
 static int
 luab_off_create(lua_State *L)
@@ -291,10 +293,10 @@ luab_off_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(OFF, TYPE, __func__);
-    x = (off_t)luab_checkxinteger(L, 1, m, luab_env_long_max);
-
+    x = (off_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
     return (luab_pushxdata(L, m, &x));
 }
+
 
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SIZE)).
