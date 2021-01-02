@@ -114,7 +114,6 @@ luab_ulong_create(lua_State *L)
 
     m = luab_xmod(ULONG, TYPE, __func__);
     x = (u_long)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 #endif /* __BSD_VISIBLE */

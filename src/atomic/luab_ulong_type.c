@@ -44,13 +44,8 @@ extern luab_module_t luab_ulong_type;
 
 typedef struct luab_ulong {
     luab_udata_t    ud_softc;
-    u_long          ud_sdu;
+    u_long         ud_sdu;
 } luab_ulong_t;
-
-#define luab_new_ulong(L, arg) \
-    ((luab_ulong_t *)luab_newudata(L, &luab_ulong_type, (arg)))
-#define luab_to_ulong(L, narg) \
-    (luab_todata((L), (narg), &luab_ulong_type, luab_ulong_t *))
 
 /*
  * Subr.
@@ -88,12 +83,15 @@ ulong_fillxtable(lua_State *L, int narg, void *arg)
 static int
 ULONG_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_ulong_type;
+
     xtp.xtp_fill = ulong_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_ulong(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -139,10 +137,9 @@ ULONG_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(ULONG, TYPE, __func__);
-    self = luab_to_ulong(L, 1);
+    m = &luab_ulong_type;
+    self = luab_todata(L, 1, m, luab_ulong_t *);
     x = (u_long)luab_checkxinteger(L, 2, m, luab_env_ulong_max);
-
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
@@ -160,12 +157,14 @@ ULONG_set_value(lua_State *L)
 static int
 ULONG_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_ulong_t *self;
     u_long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_ulong(L, 1);
+    m = &luab_ulong_type;
+    self = luab_todata(L, 1, m, luab_ulong_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -178,19 +177,25 @@ ULONG_get_value(lua_State *L)
 static int
 ULONG_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_ulong_type));
+    luab_module_t *m;
+    m = &luab_ulong_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 ULONG_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_ulong_type));
+    luab_module_t *m;
+    m = &luab_ulong_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 ULONG_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_ulong_type));
+    luab_module_t *m;
+    m = &luab_ulong_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -211,44 +216,54 @@ static luab_module_table_t ulong_methods[] = {
 static void *
 ulong_create(lua_State *L, void *arg)
 {
-    return (luab_new_ulong(L, arg));
+    luab_module_t *m;
+    m = &luab_ulong_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 ulong_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_ulong_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_ulong_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 ulong_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_ulong_t *self;
-    self = luab_to_ulong(L, narg);
+
+    m = &luab_ulong_type;
+    self = luab_todata(L, narg, m, luab_ulong_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 ulong_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     u_long *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_ulong_type)) != NULL) {
+    m = &luab_ulong_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (u_long *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (u_long)luab_tointeger(L, -1, luab_env_ulong_max);
-                        x[m] = (u_long)y;
+                        y = (u_long)luab_toxinteger(L, -1, m, luab_env_ulong_max);
+                        x[i] = (u_long)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -266,7 +281,7 @@ static void
 ulong_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     u_long *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -274,8 +289,8 @@ ulong_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -290,7 +305,9 @@ ulong_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 ulong_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_ulong_type, vec, card));
+    luab_module_t *m;
+    m = &luab_ulong_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_ulong_type = {
