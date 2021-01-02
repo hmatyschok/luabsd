@@ -329,11 +329,13 @@ luab_size_create(lua_State *L)
  *
  * @function socklen_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SOCKLEN)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage socklen [, err, msg ] = bsd.core.atomic.socklen_create(x)
+ * @usage socklen [, err, msg ] = bsd.core.atomic.socklen_create(arg)
  */
 static int
 luab_socklen_create(lua_State *L)
@@ -344,8 +346,7 @@ luab_socklen_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(SOCKLEN, TYPE, __func__);
-    x = (socklen_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
-
+    x = (socklen_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
     return (luab_pushxdata(L, m, &x));
 }
 
