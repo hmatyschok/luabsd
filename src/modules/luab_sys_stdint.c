@@ -281,11 +281,13 @@ luab_intptr_create(lua_State *L)
  *
  * @function uintptr_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UINTPTR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uintptr [, err, msg ] = bsd.sys.stdint.uintptr_create(x)
+ * @usage uintptr [, err, msg ] = bsd.sys.stdint.uintptr_create(arg)
  */
 static int
 luab_uintptr_create(lua_State *L)
@@ -296,8 +298,7 @@ luab_uintptr_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(UINTPTR, TYPE, __func__);
-    x = (uintptr_t)luab_checklinteger(L, 1, 0);
-
+    x = (uintptr_t)luab_checkxlinteger(L, 1, m, 0);
     return (luab_pushxdata(L, m, &x));
 }
 
