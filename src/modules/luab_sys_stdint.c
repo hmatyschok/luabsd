@@ -171,16 +171,19 @@ luab_uint8_create(lua_State *L)
     x = (uint8_t)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
     return (luab_pushxdata(L, m, &x));
 }
+
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINT16)).
  *
  * @function uint16_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UINT16)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint16 [, err, msg ] = bsd.sys.stdint.uint16_create(x)
+ * @usage uint16 [, err, msg ] = bsd.sys.stdint.uint16_create(arg)
  */
 static int
 luab_uint16_create(lua_State *L)
@@ -192,7 +195,6 @@ luab_uint16_create(lua_State *L)
 
     m = luab_xmod(UINT16, TYPE, __func__);
     x = (uint16_t)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
