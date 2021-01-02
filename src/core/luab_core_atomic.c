@@ -502,7 +502,6 @@ luab_vm_offset_create(lua_State *L)
 
     m = luab_xmod(VM_OFFSET, TYPE, __func__);
     x = (vm_offset_t)luab_checkxlinteger(L, 1, m, 0);
-
     return (luab_pushxdata(L, m, &x));
 }
 
