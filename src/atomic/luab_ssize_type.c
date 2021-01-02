@@ -43,13 +43,8 @@ extern luab_module_t luab_ssize_type;
 
 typedef struct luab_ssize {
     luab_udata_t    ud_softc;
-    ssize_t           ud_sdu;
+    ssize_t         ud_sdu;
 } luab_ssize_t;
-
-#define luab_new_ssize(L, arg) \
-    ((luab_ssize_t *)luab_newudata(L, &luab_ssize_type, (arg)))
-#define luab_to_ssize(L, narg) \
-    (luab_todata((L), (narg), &luab_ssize_type, luab_ssize_t *))
 
 /*
  * Subr.
@@ -72,7 +67,7 @@ ssize_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(SSIZE)) ssizeo (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(SSIZE)) into (LUA_TTABLE).
  *
  * @function get_table
  *
@@ -87,12 +82,15 @@ ssize_fillxtable(lua_State *L, int narg, void *arg)
 static int
 SSIZE_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_ssize_type;
+
     xtp.xtp_fill = ssize_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_ssize(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,50 +117,53 @@ SSIZE_dump(lua_State *L)
  */
 
 /***
- * Set ssize.
+ * Set value over (ssize_t).
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ssize:set_value(data)
+ * @usage x [, err, msg ] = ssize:set_value(arg)
  */
 static int
 SSIZE_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_ssize_t *self;
     ssize_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_ssize(L, 1);
-    x = (ssize_t)luab_checklinteger(L, 2, 1);
-
+    m = &luab_ssize_type;
+    self = luab_todata(L, 1, m, luab_ssize_t *);
+    x = (ssize_t)luab_checkxlinteger(L, 2, m, 0);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get ssize.
+ * Get value over (ssize_t).
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ssize:get_value()
+ * @usage x [, err, msg ] = ssize:get_value()
  */
 static int
 SSIZE_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_ssize_t *self;
     ssize_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_ssize(L, 1);
+    m = &luab_ssize_type;
+    self = luab_todata(L, 1, m, luab_ssize_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -175,23 +176,29 @@ SSIZE_get_value(lua_State *L)
 static int
 SSIZE_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_ssize_type));
+    luab_module_t *m;
+    m = &luab_ssize_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 SSIZE_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_ssize_type));
+    luab_module_t *m;
+    m = &luab_ssize_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 SSIZE_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_ssize_type));
+    luab_module_t *m;
+    m = &luab_ssize_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal ssizeerface.
+ * Internal interface.
  */
 
 static luab_module_table_t ssize_methods[] = {
@@ -208,44 +215,54 @@ static luab_module_table_t ssize_methods[] = {
 static void *
 ssize_create(lua_State *L, void *arg)
 {
-    return (luab_new_ssize(L, arg));
+    luab_module_t *m;
+    m = &luab_ssize_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 ssize_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_ssize_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_ssize_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 ssize_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_ssize_t *self;
-    self = luab_to_ssize(L, narg);
+
+    m = &luab_ssize_type;
+    self = luab_todata(L, narg, m, luab_ssize_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 ssize_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     ssize_t *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_ssize_type)) != NULL) {
+    m = &luab_ssize_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (ssize_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (ssize_t)luab_tolinteger(L, -1, 1);
-                        x[m] = (ssize_t)y;
+                        y = (ssize_t)luab_tolxinteger(L, -1, m, 0);
+                        x[i] = (ssize_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -263,7 +280,7 @@ static void
 ssize_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     ssize_t *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -271,8 +288,8 @@ ssize_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -287,7 +304,9 @@ ssize_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 ssize_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_ssize_type, vec, card));
+    luab_module_t *m;
+    m = &luab_ssize_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_ssize_type = {

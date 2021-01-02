@@ -355,11 +355,13 @@ luab_socklen_create(lua_State *L)
  *
  * @function ssize_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SSIZE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ssize [, err, msg ] = bsd.core.atomic.ssize_create(x)
+ * @usage ssize [, err, msg ] = bsd.core.atomic.ssize_create(arg)
  */
 static int
 luab_ssize_create(lua_State *L)
@@ -370,8 +372,7 @@ luab_ssize_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(SSIZE, TYPE, __func__);
-    x = (ssize_t)luab_checkxlinteger(L, 1, m, 1);
-
+    x = (ssize_t)luab_checkxlinteger(L, 1, m, 0);
     return (luab_pushxdata(L, m, &x));
 }
 
