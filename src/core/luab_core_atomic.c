@@ -298,17 +298,18 @@ luab_off_create(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
-
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SIZE)).
  *
  * @function size_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SIZE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage size [, err, msg ] = bsd.core.atomic.size_create(x)
+ * @usage size [, err, msg ] = bsd.core.atomic.size_create(arg)
  */
 static int
 luab_size_create(lua_State *L)
@@ -320,7 +321,6 @@ luab_size_create(lua_State *L)
 
     m = luab_xmod(SIZE, TYPE, __func__);
     x = (size_t)luab_checkxlinteger(L, 1, m, 0);
-
     return (luab_pushxdata(L, m, &x));
 }
 
