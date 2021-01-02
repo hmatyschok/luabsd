@@ -45,11 +45,13 @@
  *
  * @function ushrt_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(USHRT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ushrt [, err, msg ] = bsd.core.atomic.ushrt_create(x)
+ * @usage ushrt [, err, msg ] = bsd.core.atomic.ushrt_create(arg)
  */
 static int
 luab_ushrt_create(lua_State *L)
@@ -61,7 +63,6 @@ luab_ushrt_create(lua_State *L)
 
     m = luab_xmod(USHRT, TYPE, __func__);
     x = (u_short)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 
