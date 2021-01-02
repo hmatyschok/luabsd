@@ -545,7 +545,7 @@ luab_checkxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
 }
 
 lua_Integer
-luab_checkxlinteger(lua_State *L, int narg, luab_module_t *m, int s)
+luab_checklxinteger(lua_State *L, int narg, luab_module_t *m, int s)
 {
     lua_Integer *xp, b_msk;
 

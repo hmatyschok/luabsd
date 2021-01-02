@@ -386,7 +386,7 @@ luab_mbstowcs(lua_State *L)
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
     mbstring = luab_checklstring(L, 2, luab_env_buf_max, NULL);
-    nbytes = (size_t)luab_checkxlinteger(L, 3, m1, 0);
+    nbytes = (size_t)luab_checklxinteger(L, 3, m1, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -441,7 +441,7 @@ luab_mbtowc(lua_State *L)
 
     wcharp = luab_udata(L, 1, m0, wchar_t *);
     mbchar = luab_udata(L, 2, m1, const char *);
-    nbytes = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    nbytes = (size_t)luab_checklxinteger(L, 3, m2, 0);
 
     status = mbtowc(wcharp, mbchar, nbytes);
 
@@ -692,7 +692,7 @@ luab_wcstombs(lua_State *L)
 
     buf1 = luab_udata(L, 1, m0, luab_iovec_t *);
     buf2 = luab_udata(L, 2, m0, luab_iovec_t *);
-    nbytes = (size_t)luab_checkxlinteger(L, 3, m1, 0);
+    nbytes = (size_t)luab_checklxinteger(L, 3, m1, 0);
 
     if (((dst = buf1->iov.iov_base) != NULL) &&
         ((src = (wchar_t *)buf2->iov.iov_base) != NULL) &&
@@ -1225,7 +1225,7 @@ luab_initstate(lua_State *L)
 
     seed = (u_int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    n = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    n = (size_t)luab_checklxinteger(L, 3, m2, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&
@@ -1821,7 +1821,7 @@ luab_arc4random_buf(lua_State *L)
     m1 = luab_xmod(SIZE, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    nbytes = (size_t)luab_checkxlinteger(L, 2, m1, 0);
+    nbytes = (size_t)luab_checklxinteger(L, 2, m1, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&

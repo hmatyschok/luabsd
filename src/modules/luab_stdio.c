@@ -323,7 +323,7 @@ luab_fgets(lua_State *L)
     m2 = luab_xmod(SFILE, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    size = (size_t)luab_checkxlinteger(L, 2, m1, 0);
+    size = (size_t)luab_checklxinteger(L, 2, m1, 0);
     stream = luab_udata(L, 1, m2, FILE *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -1426,7 +1426,7 @@ luab_fmemopen(lua_State *L)
     m2 = luab_xmod(SFILE, TYPE, __func__);
 
     buf = luab_udata(L, 1, m0, luab_iovec_t *);
-    size = (size_t)luab_checkxlinteger(L, 2, m1, 0);
+    size = (size_t)luab_checklxinteger(L, 2, m1, 0);
     mode = luab_checklstring(L, 3, LUAB_STDIO_MODE_MAXLEN, NULL);
 
     if (((bp = buf->iov.iov_base) != NULL) &&

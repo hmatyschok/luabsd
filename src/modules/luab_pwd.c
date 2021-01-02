@@ -217,7 +217,7 @@ luab_getpwnam_r(lua_State *L)
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
     pwd = luab_udata(L, 2, m0, struct passwd *);
     buf = luab_udata(L, 3, m1, luab_iovec_t *);
-    bufsize = (size_t)luab_checkxlinteger(L, 4, m2, 0);
+    bufsize = (size_t)luab_checklxinteger(L, 4, m2, 0);
     ret = luab_udata(L, 5, m0, struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -284,7 +284,7 @@ luab_getpwuid_r(lua_State *L)
     uid = (uid_t)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     pwd = luab_udata(L, 2, m1, struct passwd *);
     buf = luab_udata(L, 3, m2, luab_iovec_t *);
-    bufsize = (size_t)luab_checkxlinteger(L, 4, m3, 0);
+    bufsize = (size_t)luab_checklxinteger(L, 4, m3, 0);
     ret = luab_udata(L, 5, m1, struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -377,7 +377,7 @@ luab_getpwent_r(lua_State *L)
 
     pwd = luab_udata(L, 1, m0, struct passwd *);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    bufsize = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    bufsize = (size_t)luab_checklxinteger(L, 3, m2, 0);
     ret = luab_udata(L, 4, m0, struct passwd *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&

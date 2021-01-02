@@ -329,7 +329,7 @@ lua_Integer  luab_checkinteger(lua_State *, int, lua_Integer);
 lua_Integer  luab_checklinteger(lua_State *, int, int);
 
 lua_Integer  luab_checkxinteger(lua_State *, int, luab_module_t *, lua_Integer);
-lua_Integer  luab_checkxlinteger(lua_State *, int, luab_module_t *, int);
+lua_Integer  luab_checklxinteger(lua_State *, int, luab_module_t *, int);
 lua_Number   luab_checkxnumber(lua_State *, int, luab_module_t *);
 
 const char   *luab_islstring(lua_State *, int, size_t);

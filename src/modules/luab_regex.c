@@ -146,7 +146,7 @@ luab_regexec(lua_State *L)
 
     preg = luab_udata(L, 1, m0, regex_t *);
     string = luab_checklstring(L, 2, luab_env_buf_max, NULL);
-    nmatch = (size_t)luab_checkxlinteger(L, 3, m1, 0);
+    nmatch = (size_t)luab_checklxinteger(L, 3, m1, 0);
     tbl = luab_table_checkxdata(L, 4, m2);
     eflags = (int)luab_checkxinteger(L, 5, m3, luab_env_int_max);
 
@@ -218,7 +218,7 @@ luab_regerror(lua_State *L)
     errcode = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     preg = luab_udata(L, 2, m1, regex_t *);
     buf = luab_udata(L, 3, m2, luab_iovec_t *);
-    errbuf_size = (size_t)luab_checkxlinteger(L, 4, m3, 0);
+    errbuf_size = (size_t)luab_checklxinteger(L, 4, m3, 0);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
         (buf->iov_max_len <= luab_env_buf_max) &&

@@ -287,7 +287,7 @@ luab_getgrgid_r(lua_State *L)
     gid = (gid_t)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     grp = luab_udata(L, 2, m1, struct group *);
     buf = luab_udata(L, 3, m2, luab_iovec_t *);
-    bufsize = (size_t)luab_checkxlinteger(L, 4, m3, 0);
+    bufsize = (size_t)luab_checklxinteger(L, 4, m3, 0);
     ret = luab_udata(L, 5, m0, struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -353,7 +353,7 @@ luab_getgrnam_r(lua_State *L)
     name = luab_checklstring(L, 1, luab_env_logname_max, NULL);
     grp = luab_udata(L, 2, m0, struct group *);
     buf = luab_udata(L, 3, m1, luab_iovec_t *);
-    bufsize = (size_t)luab_checkxlinteger(L, 4, m2, 0);
+    bufsize = (size_t)luab_checklxinteger(L, 4, m2, 0);
     ret = luab_udata(L, 5, m0, struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&
@@ -418,7 +418,7 @@ luab_getgrent_r(lua_State *L)
 
     grp = luab_udata(L, 1, m0, struct group *);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    bufsize = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    bufsize = (size_t)luab_checklxinteger(L, 3, m2, 0);
     ret = luab_udata(L, 4, m0, struct group *);
 
     if (((bp = buf->iov.iov_base) != NULL) &&

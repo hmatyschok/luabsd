@@ -71,7 +71,7 @@ luab_readv(lua_State *L)
 
     fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    iovcnt = (size_t)luab_checklxinteger(L, 3, m2, 0);
 
     return (luab_iovec_readv(L, fd, buf, iovcnt));
 }
@@ -105,7 +105,7 @@ luab_writev(lua_State *L)
 
     fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    iovcnt = (size_t)luab_checklxinteger(L, 3, m2, 0);
 
     return (luab_iovec_writev(L, fd, buf, iovcnt));
 }
@@ -143,7 +143,7 @@ luab_preadv(lua_State *L)
 
     fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    iovcnt = (size_t)luab_checklxinteger(L, 3, m2, 0);
     offset = (off_t)luab_checkxinteger(L, 4, m3, luab_env_long_max);
 
     return (luab_iovec_preadv(L, fd, buf, iovcnt, offset));
@@ -181,7 +181,7 @@ luab_pwritev(lua_State *L)
 
     fd = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
-    iovcnt = (size_t)luab_checkxlinteger(L, 3, m2, 0);
+    iovcnt = (size_t)luab_checklxinteger(L, 3, m2, 0);
     offset = (off_t)luab_checkxinteger(L, 4, m3, luab_env_long_max);
 
     return (luab_iovec_preadv(L, fd, buf, iovcnt, offset));
@@ -212,7 +212,7 @@ luab_iovec_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 2);
 
     m = luab_xmod(SIZE, TYPE, __func__);
-    max_len = (size_t)luab_checkxlinteger(L, 1, m, 0);
+    max_len = (size_t)luab_checklxinteger(L, 1, m, 0);
 
     return (luab_iovec_pushxdata(L, NULL, 0, max_len));
 }

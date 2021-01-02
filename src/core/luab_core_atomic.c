@@ -321,7 +321,7 @@ luab_size_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(SIZE, TYPE, __func__);
-    x = (size_t)luab_checkxlinteger(L, 1, m, 0);
+    x = (size_t)luab_checklxinteger(L, 1, m, 0);
     return (luab_pushxdata(L, m, &x));
 }
 
@@ -373,7 +373,7 @@ luab_ssize_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(SSIZE, TYPE, __func__);
-    x = (ssize_t)luab_checkxlinteger(L, 1, m, 0);
+    x = (ssize_t)luab_checklxinteger(L, 1, m, 0);
     return (luab_pushxdata(L, m, &x));
 }
 
