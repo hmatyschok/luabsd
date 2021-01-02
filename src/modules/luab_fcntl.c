@@ -382,11 +382,13 @@ luab_posix_fallocate(lua_State *L)
  *
  * @function mode_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(MODE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage mode [, err, msg ] = bsd.fcntl.mode_create(x)
+ * @usage mode [, err, msg ] = bsd.fcntl.mode_create(arg)
  */
 static int
 luab_mode_create(lua_State *L)
@@ -398,7 +400,6 @@ luab_mode_create(lua_State *L)
 
     m = luab_xmod(MODE, TYPE, __func__);
     x = (mode_t)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
-
     return (luab_pushxdata(L, m, &x));
 }
 

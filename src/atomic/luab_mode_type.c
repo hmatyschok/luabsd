@@ -43,13 +43,8 @@ extern luab_module_t luab_mode_type;
 
 typedef struct luab_mode {
     luab_udata_t    ud_softc;
-    mode_t          ud_sdu;
+    mode_t         ud_sdu;
 } luab_mode_t;
-
-#define luab_new_mode(L, arg) \
-    ((luab_mode_t *)luab_newudata(L, &luab_mode_type, (arg)))
-#define luab_to_mode(L, narg) \
-    (luab_todata((L), (narg), &luab_mode_type, luab_mode_t *))
 
 /*
  * Subr.
@@ -87,12 +82,15 @@ mode_fillxtable(lua_State *L, int narg, void *arg)
 static int
 MODE_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_mode_type;
+
     xtp.xtp_fill = mode_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_mode(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,15 +117,15 @@ MODE_dump(lua_State *L)
  */
 
 /***
- * Set mode.
+ * Set value over (mode_t).
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = mode:set_value(data)
+ * @usage x [, err, msg ] = mode:set_value(arg)
  */
 static int
 MODE_set_value(lua_State *L)
@@ -138,33 +136,34 @@ MODE_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(MODE, TYPE, __func__);
-    self = luab_to_mode(L, 1);
+    m = &luab_mode_type;
+    self = luab_todata(L, 1, m, luab_mode_t *);
     x = (mode_t)luab_checkxinteger(L, 2, m, luab_env_ushrt_max);
-
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get mode.
+ * Get value over (mode_t).
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = mode:get_value()
+ * @usage x [, err, msg ] = mode:get_value()
  */
 static int
 MODE_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_mode_t *self;
     mode_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_mode(L, 1);
+    m = &luab_mode_type;
+    self = luab_todata(L, 1, m, luab_mode_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -177,23 +176,29 @@ MODE_get_value(lua_State *L)
 static int
 MODE_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_mode_type));
+    luab_module_t *m;
+    m = &luab_mode_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 MODE_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_mode_type));
+    luab_module_t *m;
+    m = &luab_mode_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 MODE_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_mode_type));
+    luab_module_t *m;
+    m = &luab_mode_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal modeerface.
+ * Internal interface.
  */
 
 static luab_module_table_t mode_methods[] = {
@@ -210,44 +215,54 @@ static luab_module_table_t mode_methods[] = {
 static void *
 mode_create(lua_State *L, void *arg)
 {
-    return (luab_new_mode(L, arg));
+    luab_module_t *m;
+    m = &luab_mode_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 mode_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_mode_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_mode_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 mode_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_mode_t *self;
-    self = luab_to_mode(L, narg);
+
+    m = &luab_mode_type;
+    self = luab_todata(L, narg, m, luab_mode_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 mode_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     mode_t *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_mode_type)) != NULL) {
+    m = &luab_mode_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (mode_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (mode_t)luab_tointeger(L, -1, luab_env_ushrt_max);
-                        x[m] = (mode_t)y;
+                        y = (mode_t)luab_toxinteger(L, -1, m, luab_env_ushrt_max);
+                        x[i] = (mode_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -265,7 +280,7 @@ static void
 mode_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     mode_t *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -273,8 +288,8 @@ mode_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -289,7 +304,9 @@ mode_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 mode_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_mode_type, vec, card));
+    luab_module_t *m;
+    m = &luab_mode_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_mode_type = {
