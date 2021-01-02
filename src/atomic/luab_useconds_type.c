@@ -43,13 +43,8 @@ extern luab_module_t luab_useconds_type;
 
 typedef struct luab_useconds {
     luab_udata_t    ud_softc;
-    useconds_t          ud_sdu;
+    useconds_t         ud_sdu;
 } luab_useconds_t;
-
-#define luab_new_useconds(L, arg) \
-    ((luab_useconds_t *)luab_newudata(L, &luab_useconds_type, (arg)))
-#define luab_to_useconds(L, narg) \
-    (luab_todata((L), (narg), &luab_useconds_type, luab_useconds_t *))
 
 /*
  * Subr.
@@ -87,12 +82,15 @@ useconds_fillxtable(lua_State *L, int narg, void *arg)
 static int
 USECONDS_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_useconds_type;
+
     xtp.xtp_fill = useconds_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_useconds(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,7 +117,7 @@ USECONDS_dump(lua_State *L)
  */
 
 /***
- * Set useconds.
+ * Set value over (useconds_t).
  *
  * @function set_value
  *
@@ -138,17 +136,16 @@ USECONDS_set_value(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(USECONDS, TYPE, __func__);
-    self = luab_to_useconds(L, 1);
-    x = (useconds_t)luab_checkxinteger(L, 2, m, luab_env_int_max);
-
+    m = &luab_useconds_type;
+    self = luab_todata(L, 1, m, luab_useconds_t *);
+    x = (useconds_t)luab_checkxinteger(L, 2, m, luab_env_uint_max);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get useconds.
+ * Get value over (useconds_t).
  *
  * @function get_value
  *
@@ -159,12 +156,14 @@ USECONDS_set_value(lua_State *L)
 static int
 USECONDS_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_useconds_t *self;
     useconds_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_useconds(L, 1);
+    m = &luab_useconds_type;
+    self = luab_todata(L, 1, m, luab_useconds_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -177,23 +176,29 @@ USECONDS_get_value(lua_State *L)
 static int
 USECONDS_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_useconds_type));
+    luab_module_t *m;
+    m = &luab_useconds_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 USECONDS_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_useconds_type));
+    luab_module_t *m;
+    m = &luab_useconds_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 USECONDS_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_useconds_type));
+    luab_module_t *m;
+    m = &luab_useconds_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal usecondserface.
+ * Internal interface.
  */
 
 static luab_module_table_t useconds_methods[] = {
@@ -210,44 +215,54 @@ static luab_module_table_t useconds_methods[] = {
 static void *
 useconds_create(lua_State *L, void *arg)
 {
-    return (luab_new_useconds(L, arg));
+    luab_module_t *m;
+    m = &luab_useconds_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 useconds_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_useconds_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_useconds_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 useconds_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_useconds_t *self;
-    self = luab_to_useconds(L, narg);
+
+    m = &luab_useconds_type;
+    self = luab_todata(L, narg, m, luab_useconds_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 useconds_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     useconds_t *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_useconds_type)) != NULL) {
+    m = &luab_useconds_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (useconds_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (useconds_t)luab_tointeger(L, -1, luab_env_int_max);
-                        x[m] = (useconds_t)y;
+                        y = (useconds_t)luab_toxinteger(L, -1, m, luab_env_uint_max);
+                        x[i] = (useconds_t)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -265,7 +280,7 @@ static void
 useconds_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     useconds_t *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -273,8 +288,8 @@ useconds_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -289,7 +304,9 @@ useconds_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 useconds_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_useconds_type, vec, card));
+    luab_module_t *m;
+    m = &luab_useconds_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_useconds_type = {

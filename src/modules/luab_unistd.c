@@ -5062,8 +5062,7 @@ luab_useconds_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(USECONDS, TYPE, __func__);
-    x = (useconds_t)luab_checkxinteger(L, 1, m, luab_env_int_max);
-
+    x = (useconds_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
     return (luab_pushxdata(L, m, &x));
 }
 
