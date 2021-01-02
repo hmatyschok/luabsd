@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -199,11 +199,13 @@ luab_int_create(lua_State *L)
  *
  * @function long_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(LONG)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage long [, err, msg ] = bsd.core.atomic.long_create(x)
+ * @usage long [, err, msg ] = bsd.core.atomic.long_create(arg)
  */
 static int
 luab_long_create(lua_State *L)
@@ -214,8 +216,7 @@ luab_long_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(LONG, TYPE, __func__);
-    x = (long)luab_checkxinteger(L, 1, m, luab_env_long_max);
-
+    x = (long)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
     return (luab_pushxdata(L, m, &x));
 }
 

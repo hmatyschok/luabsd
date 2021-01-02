@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -736,7 +736,7 @@ luab_core_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
 }
 
 static const char *copyright =
-    " Copyright (c) 2020 Henning Matyschok\n"
+    " Copyright (c) 2020, 2021 Henning Matyschok\n"
     " All rights reserved.\n"
     "\n"
     "  The implementation of the interface against alarm(3) and setitimer(2)\n"

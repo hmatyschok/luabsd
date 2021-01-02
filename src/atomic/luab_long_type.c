@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -43,13 +43,8 @@ extern luab_module_t luab_long_type;
 
 typedef struct luab_long {
     luab_udata_t    ud_softc;
-    long            ud_sdu;
+    long         ud_sdu;
 } luab_long_t;
-
-#define luab_new_long(L, arg) \
-    ((luab_long_t *)luab_newudata(L, &luab_long_type, (arg)))
-#define luab_to_long(L, narg) \
-    (luab_todata((L), (narg), &luab_long_type, luab_long_t *))
 
 /*
  * Subr.
@@ -72,7 +67,7 @@ long_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(LONG)) longo (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(LONG)) into (LUA_TTABLE).
  *
  * @function get_table
  *
@@ -87,12 +82,15 @@ long_fillxtable(lua_State *L, int narg, void *arg)
 static int
 LONG_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_long_type;
+
     xtp.xtp_fill = long_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_long(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,50 +117,53 @@ LONG_dump(lua_State *L)
  */
 
 /***
- * Set long.
+ * Set value over (long).
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = long:set_value(data)
+ * @usage x [, err, msg ] = long:set_value(arg)
  */
 static int
 LONG_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_long_t *self;
     long x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_long(L, 1);
-    x = (long)luab_checkinteger(L, 2, luab_env_ulong_max);
-
+    m = &luab_long_type;
+    self = luab_todata(L, 1, m, luab_long_t *);
+    x = (long)luab_checkxinteger(L, 2, m, luab_env_ulong_max);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get long.
+ * Get value over (long).
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = long:get_value()
+ * @usage x [, err, msg ] = long:get_value()
  */
 static int
 LONG_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_long_t *self;
     long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_long(L, 1);
+    m = &luab_long_type;
+    self = luab_todata(L, 1, m, luab_long_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -175,23 +176,29 @@ LONG_get_value(lua_State *L)
 static int
 LONG_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_long_type));
+    luab_module_t *m;
+    m = &luab_long_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 LONG_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_long_type));
+    luab_module_t *m;
+    m = &luab_long_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 LONG_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_long_type));
+    luab_module_t *m;
+    m = &luab_long_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal longerface.
+ * Internal interface.
  */
 
 static luab_module_table_t long_methods[] = {
@@ -208,44 +215,54 @@ static luab_module_table_t long_methods[] = {
 static void *
 long_create(lua_State *L, void *arg)
 {
-    return (luab_new_long(L, arg));
+    luab_module_t *m;
+    m = &luab_long_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 long_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_long_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_long_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 long_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_long_t *self;
-    self = luab_to_long(L, narg);
+
+    m = &luab_long_type;
+    self = luab_todata(L, narg, m, luab_long_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 long_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     long *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_long_type)) != NULL) {
+    m = &luab_long_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (long *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (long)luab_tointeger(L, -1, luab_env_ulong_max);
-                        x[m] = (long)y;
+                        y = (long)luab_toxinteger(L, -1, m, luab_env_ulong_max);
+                        x[i] = (long)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -263,7 +280,7 @@ static void
 long_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     long *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -271,8 +288,8 @@ long_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -287,7 +304,9 @@ long_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 long_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_long_type, vec, card));
+    luab_module_t *m;
+    m = &luab_long_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_long_type = {
