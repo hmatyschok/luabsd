@@ -1586,7 +1586,7 @@ luab_fpos_create(lua_State *L)
  *
  * @param arg               Specifies initial value by an instance of
  *
- *                              (LUA_T{NIL,NUMBER,USERDATA(${type_id})).
+ *                              (LUA_T{NIL,NUMBER,USERDATA(RSIZE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1602,7 +1602,6 @@ luab_rsize_create(lua_State *L)
 
     m = luab_xmod(RSIZE, TYPE, __func__);
     x = (rsize_t)luab_checkxlinteger(L, 1, m, 0);
-
     return (luab_pushxdata(L, m, &x));
 }
 
