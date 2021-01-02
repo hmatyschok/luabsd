@@ -45,13 +45,8 @@ extern luab_module_t luab_nl_item_type;
 
 typedef struct luab_nl_item {
     luab_udata_t    ud_softc;
-    nl_item          ud_sdu;
-} luab_nl_item;
-
-#define luab_new_nl_item(L, arg) \
-    ((luab_nl_item *)luab_newudata(L, &luab_nl_item_type, (arg)))
-#define luab_to_nl_item(L, narg) \
-    (luab_todata((L), (narg), &luab_nl_item_type, luab_nl_item *))
+    nl_item         ud_sdu;
+} luab_nl_item_t;
 
 /*
  * Subr.
@@ -60,9 +55,9 @@ typedef struct luab_nl_item {
 static void
 nl_item_fillxtable(lua_State *L, int narg, void *arg)
 {
-    luab_nl_item *self;
+    luab_nl_item_t *self;
 
-    if ((self = (luab_nl_item *)arg) != NULL) {
+    if ((self = (luab_nl_item_t *)arg) != NULL) {
 
         luab_setinteger(L, narg, "value", self->ud_sdu);
     } else
@@ -89,12 +84,15 @@ nl_item_fillxtable(lua_State *L, int narg, void *arg)
 static int
 NL_ITEM_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = &luab_nl_item_type;
+
     xtp.xtp_fill = nl_item_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_nl_item(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -121,50 +119,53 @@ NL_ITEM_dump(lua_State *L)
  */
 
 /***
- * Set nl_item.
+ * Set value over (nl_item).
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = nl_item:set_value(data)
+ * @usage x [, err, msg ] = nl_item:set_value(arg)
  */
 static int
 NL_ITEM_set_value(lua_State *L)
 {
-    luab_nl_item *self;
+    luab_module_t *m;
+    luab_nl_item_t *self;
     nl_item x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_nl_item(L, 1);
-    x = (nl_item)luab_checkinteger(L, 2, luab_env_ullong_max);
-
+    m = &luab_nl_item_type;
+    self = luab_todata(L, 1, m, luab_nl_item_t *);
+    x = (nl_item)luab_checkxinteger(L, 2, m, luab_env_uint_max);
     self->ud_sdu = x;
 
     return (luab_pushxinteger(L, x));
 }
 
 /***
- * Get nl_item.
+ * Get value over (nl_item).
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = nl_item:get_value()
+ * @usage x [, err, msg ] = nl_item:get_value()
  */
 static int
 NL_ITEM_get_value(lua_State *L)
 {
-    luab_nl_item *self;
+    luab_module_t *m;
+    luab_nl_item_t *self;
     nl_item x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_nl_item(L, 1);
+    m = &luab_nl_item_type;
+    self = luab_todata(L, 1, m, luab_nl_item_t *);
     x = self->ud_sdu;
 
     return (luab_pushxinteger(L, x));
@@ -177,23 +178,29 @@ NL_ITEM_get_value(lua_State *L)
 static int
 NL_ITEM_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_nl_item_type));
+    luab_module_t *m;
+    m = &luab_nl_item_type;
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 NL_ITEM_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_nl_item_type));
+    luab_module_t *m;
+    m = &luab_nl_item_type;
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 NL_ITEM_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_nl_item_type));
+    luab_module_t *m;
+    m = &luab_nl_item_type;
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal nl_itemerface.
+ * Internal interface.
  */
 
 static luab_module_table_t nl_item_methods[] = {
@@ -210,44 +217,54 @@ static luab_module_table_t nl_item_methods[] = {
 static void *
 nl_item_create(lua_State *L, void *arg)
 {
-    return (luab_new_nl_item(L, arg));
+    luab_module_t *m;
+    m = &luab_nl_item_type;
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 nl_item_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_nl_item_type, ud, arg);
+    luab_module_t *m;
+    m = &luab_nl_item_type;
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 nl_item_udata(lua_State *L, int narg)
 {
-    luab_nl_item *self;
-    self = luab_to_nl_item(L, narg);
+    luab_module_t *m;
+    luab_nl_item_t *self;
+
+    m = &luab_nl_item_type;
+    self = luab_todata(L, narg, m, luab_nl_item_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 nl_item_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     nl_item *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_nl_item_type)) != NULL) {
+    m = &luab_nl_item_type;
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (nl_item *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (nl_item)luab_tointeger(L, -1, luab_env_ullong_max);
-                        x[m] = (nl_item)y;
+                        y = (nl_item)luab_toxinteger(L, -1, m, luab_env_uint_max);
+                        x[i] = (nl_item)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -265,7 +282,7 @@ static void
 nl_item_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     nl_item *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -273,8 +290,8 @@ nl_item_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetinteger(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetinteger(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -289,7 +306,9 @@ nl_item_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 nl_item_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_nl_item_type, vec, card));
+    luab_module_t *m;
+    m = &luab_nl_item_type;
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_nl_item_type = {
@@ -302,6 +321,6 @@ luab_module_t luab_nl_item_type = {
     .m_get_tbl      = nl_item_checktable,
     .m_set_tbl      = nl_item_pushtable,
     .m_alloc_tbl    = nl_item_alloctable,
-    .m_len          = sizeof(luab_nl_item),
+    .m_len          = sizeof(luab_nl_item_t),
     .m_sz           = sizeof(nl_item),
 };

@@ -81,25 +81,25 @@ luab_nl_langinfo(lua_State *L)
  *
  * @function nl_item_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(NL_ITEM)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage nl_item [, err, msg ] = bsd.sys.stdint.nl_item_create(x)
+ * @usage nl_item [, err, msg ] = bsd.langinfo.nl_item_create(arg)
  */
 static int
 luab_nl_item_create(lua_State *L)
 {
     luab_module_t *m;
-    nl_item item;
+    nl_item x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(NL_ITEM, TYPE, __func__);
-
-    item = (nl_item)luab_checkxinteger(L, 1, m, luab_env_int_max);
-
-    return (luab_pushxdata(L, m, &item));
+    x = (nl_item)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
 }
 
 /*
