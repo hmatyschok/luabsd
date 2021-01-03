@@ -228,11 +228,13 @@ luab_long_create(lua_State *L)
  *
  * @function double_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(DOUBLE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage double [, err, msg ] = bsd.core.atomic.double_create(x)
+ * @usage double [, err, msg ] = bsd.core.atomic.double_create(arg)
  */
 static int
 luab_double_create(lua_State *L)
@@ -244,7 +246,6 @@ luab_double_create(lua_State *L)
 
     m = luab_xmod(DOUBLE, TYPE, __func__);
     x = (double)luab_checkxnumber(L, 1, m);
-
     return (luab_pushxdata(L, m, &x));
 }
 

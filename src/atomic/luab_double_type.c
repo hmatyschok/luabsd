@@ -46,11 +46,6 @@ typedef struct luab_double {
     double          ud_sdu;
 } luab_double_t;
 
-#define luab_new_double(L, arg) \
-    ((luab_double_t *)luab_newudata(L, &luab_double_type, (arg)))
-#define luab_to_double(L, narg) \
-    (luab_todata((L), (narg), &luab_double_type, luab_double_t *))
-
 /*
  * Subr.
  */
@@ -61,9 +56,9 @@ double_fillxtable(lua_State *L, int narg, void *arg)
     luab_double_t *self;
 
     if ((self = (luab_double_t *)arg) != NULL) {
+        luab_setnumber(L, narg, "value", self->ud_sdu);
 
-        luab_setinteger(L, narg, "value", self->ud_sdu);
-    } else
+   } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
 }
 
@@ -72,7 +67,7 @@ double_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(DOUBLE)) doubleo (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(DOUBLE)) into (LUA_TTABLE).
  *
  * @function get_table
  *
@@ -87,12 +82,15 @@ double_fillxtable(lua_State *L, int narg, void *arg)
 static int
 DOUBLE_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+
     xtp.xtp_fill = double_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_double(L, 1);
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,50 +117,53 @@ DOUBLE_dump(lua_State *L)
  */
 
 /***
- * Set double.
+ * Set value over (double).
  *
  * @function set_value
  *
- * @param data              Self-explanatory.
+ * @param arg               Self-explanatory.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = double:set_value(data)
+ * @usage x [, err, msg ] = double:set_value(arg)
  */
 static int
 DOUBLE_set_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_double_t *self;
     double x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_double(L, 1);
-    x = (double)luaL_checknumber(L, 2);
-
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_double_t *);
+    x = (double)luab_checkxnumber(L, 2, m);
     self->ud_sdu = x;
 
     return (luab_pushxnumber(L, x, 0));
 }
 
 /***
- * Get double.
+ * Get value over (double).
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = double:get_value()
+ * @usage x [, err, msg ] = double:get_value()
  */
 static int
 DOUBLE_get_value(lua_State *L)
 {
+    luab_module_t *m;
     luab_double_t *self;
     double x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_double(L, 1);
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_double_t *);
     x = self->ud_sdu;
 
     return (luab_pushxnumber(L, x, 0));
@@ -175,23 +176,29 @@ DOUBLE_get_value(lua_State *L)
 static int
 DOUBLE_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_double_type));
+    luab_module_t *m;
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 DOUBLE_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_double_type));
+    luab_module_t *m;
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 DOUBLE_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_double_type));
+    luab_module_t *m;
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
- * Internal doubleerface.
+ * Internal interface.
  */
 
 static luab_module_table_t double_methods[] = {
@@ -208,44 +215,54 @@ static luab_module_table_t double_methods[] = {
 static void *
 double_create(lua_State *L, void *arg)
 {
-    return (luab_new_double(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 double_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_double_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 double_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_double_t *self;
-    self = luab_to_double(L, narg);
+
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    self = luab_todata(L, narg, m, luab_double_t *);
     return ((void *)&(self->ud_sdu));
 }
 
 static luab_table_t *
 double_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     double *x, y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_double_type)) != NULL) {
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (double *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isnumber(L, -1) != 0)) {
-                        y = (double)lua_tonumber(L, -1);
-                        x[m] = (double)y;
+                        y = (double)luab_toxnumber(L, -1, m);
+                        x[i] = (double)y;
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -254,7 +271,8 @@ double_checktable(lua_State *L, int narg)
                 }
                 lua_pop(L, 1);
             }
-        }
+        } else
+            errno = ERANGE;
     }
     return (tbl);
 }
@@ -263,7 +281,7 @@ static void
 double_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     double *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -271,8 +289,8 @@ double_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetnumber(L, narg, k, x[m]);
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetnumber(L, narg, k, x[i]);
 
             errno = ENOENT;
         } else
@@ -287,7 +305,9 @@ double_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 double_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_double_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_double_type = {
