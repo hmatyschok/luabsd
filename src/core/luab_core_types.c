@@ -485,7 +485,9 @@ luab_toxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
 
         if (xp != NULL)
             return (*xp & b_msk);
-    }
+    } else
+        errno = ENOSYS;
+
     return (0);
 }
 
@@ -505,7 +507,9 @@ luab_tolxinteger(lua_State *L, int narg, luab_module_t *m, int s)
             b_msk = luab_core_Integer_promotion_msk(s);
             return (*xp & b_msk);
         }
-    }
+    } else
+        errno = ENOSYS;
+
     return (0);
 }
 
@@ -564,6 +568,26 @@ luab_checklxinteger(lua_State *L, int narg, luab_module_t *m, int s)
         luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
 
     return (0);
+}
+
+lua_Number
+luab_toxnumber(lua_State *L, int narg, luab_module_t *m)
+{
+    lua_Number *xp;
+
+    if (m != NULL) {
+
+        if (lua_isnumber(L, narg) != 0)
+            return (lua_tonumber(L, narg));
+
+        xp = luab_udataisnil(L, 1, m, lua_Number *);
+
+        if (xp != NULL)
+            return (*xp);
+    } else
+        errno = ENOSYS;
+
+    return (0.0);
 }
 
 lua_Number
