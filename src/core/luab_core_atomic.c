@@ -254,11 +254,13 @@ luab_double_create(lua_State *L)
  *
  * @function float_create
  *
- * @param x                 Specifies initial value.
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(FLOAT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage float [, err, msg ] = bsd.core.atomic.float_create(x)
+ * @usage float [, err, msg ] = bsd.core.atomic.float_create(arg)
  */
 static int
 luab_float_create(lua_State *L)
@@ -270,7 +272,6 @@ luab_float_create(lua_State *L)
 
     m = luab_xmod(FLOAT, TYPE, __func__);
     x = (float)luab_checkxnumber(L, 1, m);
-
     return (luab_pushxdata(L, m, &x));
 }
 
