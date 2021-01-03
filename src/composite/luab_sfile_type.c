@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -162,7 +162,7 @@ SFILE_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = file:_p()
+ * @usage x [, err, msg ] = file:_p()
  */
 static int
 SFILE_p(lua_State *L)
@@ -190,7 +190,7 @@ SFILE_p(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = file:_r()
+ * @usage x [, err, msg ] = file:_r()
  */
 static int
 SFILE_r(lua_State *L)
@@ -218,7 +218,7 @@ SFILE_r(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = file:_w()
+ * @usage x [, err, msg ] = file:_w()
  */
 static int
 SFILE_w(lua_State *L)
@@ -246,7 +246,7 @@ SFILE_w(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = file:_flags()
+ * @usage x [, err, msg ] = file:_flags()
  */
 static int
 SFILE_flags(lua_State *L)
@@ -274,7 +274,7 @@ SFILE_flags(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = file:_file()
+ * @usage x [, err, msg ] = file:_file()
  */
 static int
 SFILE_file(lua_State *L)
@@ -302,7 +302,7 @@ SFILE_file(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = file:_bf()
+ * @usage x [, err, msg ] = file:_bf()
  */
 static int
 SFILE_bf(lua_State *L)
@@ -332,7 +332,7 @@ SFILE_bf(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = file:_cookie()
+ * @usage x [, err, msg ] = file:_cookie()
  */
 static int
 SFILE_cookie(lua_State *L)

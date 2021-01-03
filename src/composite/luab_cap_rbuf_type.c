@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -58,11 +58,6 @@ typedef struct luab_cap_rbuf {
     struct iovec    ud_iov;
 } luab_cap_rbuf_t;
 
-#define luab_new_cap(L, arg) \
-    ((luab_cap_rbuf_t *)luab_newudata(L, &luab_cap_rbuf_type, (arg)))
-#define luab_to_cap(L, narg) \
-    ((luab_cap_rbuf_t *)luab_toudata((L), (narg), &luab_cap_rbuf_type))
-
 /*
  * Subr.
  */
@@ -101,9 +96,12 @@ cap_rbuf_fillxtable(lua_State *L, int narg, void *arg)
 static int
 CAP_RBUF_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
 
     xtp.xtp_fill = cap_rbuf_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_cap_rbuf_type);
@@ -144,11 +142,13 @@ CAP_RBUF_dump(lua_State *L)
 static int
 CAP_RBUF_iov_base(lua_State *L)
 {
+    luab_module_t *m;
     struct iovec *iov;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    iov = luab_udata(L, 1, m, struct iovec *);
 
     return (luab_iov_pushdata(L, iov));
 }
@@ -165,11 +165,13 @@ CAP_RBUF_iov_base(lua_State *L)
 static int
 CAP_RBUF_iov_len(lua_State *L)
 {
+    luab_module_t *m;
     struct iovec *iov;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    iov = luab_udata(L, 1, m, struct iovec *);
 
     return (luab_iov_pushlen(L, iov));
 }
@@ -181,26 +183,32 @@ CAP_RBUF_iov_len(lua_State *L)
 static int
 CAP_RBUF_gc(lua_State *L)
 {
+    luab_module_t *m;
     struct iovec *iov;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    iov = luab_udata(L, 1, &luab_cap_rbuf_type, struct iovec *);
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    iov = luab_udata(L, 1, m, struct iovec *);
     (void)luab_iov_free(iov);
 
-    return (luab_core_gc(L, 1, &luab_cap_rbuf_type));
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 CAP_RBUF_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_cap_rbuf_type));
+    luab_module_t *m;
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 CAP_RBUF_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_cap_rbuf_type));
+    luab_module_t *m;
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -221,25 +229,33 @@ static luab_module_table_t cap_rbuf_methods[] = {
 static void *
 cap_rbuf_create(lua_State *L, void *arg)
 {
-    return (luab_new_cap(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 cap_rbuf_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_cap_rbuf_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 cap_rbuf_udata(lua_State *L, int narg)
 {
-    return (luab_to_cap(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    return (luab_toudata(L, narg, m));
 }
 
 static luab_table_t *
 cap_rbuf_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_cap_rbuf_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(CAP_RBUF, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_cap_rbuf_type = {

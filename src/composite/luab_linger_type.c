@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -130,11 +130,11 @@ LINGER_dump(lua_State *L)
  *
  * @function set_l_onoff
  *
- * @param data              Option.
+ * @param arg               Option.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = linger:set_l_onoff(data)
+ * @usage x [, err, msg ] = linger:set_l_onoff(arg)
  */
 static int
 LINGER_set_l_onoff(lua_State *L)
@@ -159,7 +159,7 @@ LINGER_set_l_onoff(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = linger:get_l_onoff()
+ * @usage x [, err, msg ] = linger:get_l_onoff()
  */
 static int
 LINGER_get_l_onoff(lua_State *L)
@@ -180,11 +180,11 @@ LINGER_get_l_onoff(lua_State *L)
  *
  * @function set_l_linger
  *
- * @param data              Specifies l_linger.
+ * @param arg               Specifies l_linger.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = linger:set_l_linger(data)
+ * @usage x [, err, msg ] = linger:set_l_linger(arg)
  */
 static int
 LINGER_set_l_linger(lua_State *L)
@@ -209,7 +209,7 @@ LINGER_set_l_linger(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = linger:get_l_linger()
+ * @usage x [, err, msg ] = linger:get_l_linger()
  */
 static int
 LINGER_get_l_linger(lua_State *L)
@@ -287,7 +287,7 @@ linger_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct linger *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_linger_type)) != NULL) {
 
@@ -295,14 +295,14 @@ linger_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_linger_type, struct linger *);
-                        (void)memmove(&(x[m]), y, luab_linger_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_linger_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -321,7 +321,7 @@ static void
 linger_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct linger *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -329,8 +329,8 @@ linger_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_linger_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_linger_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

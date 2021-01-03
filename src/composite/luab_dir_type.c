@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -48,11 +48,6 @@ typedef struct luab_dir {
     void            *ud_dirp;
 } luab_dir_t;
 
-#define luab_new_dir(L, arg) \
-    ((luab_dir_t *)luab_newudata(L, &luab_dir_type, (arg)))
-#define luab_to_dir(L, narg) \
-    (luab_toldata((L), (narg), &luab_dir_type, void *, luab_dir_type.m_sz))
-
 /*
  * Subr.
  */
@@ -89,12 +84,15 @@ dir_fillxtable(lua_State *L, int narg, void *arg)
 static int
 DIR_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(DIR, TYPE, __func__);
+
     xtp.xtp_fill = dir_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_dir_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -113,7 +111,9 @@ DIR_get_table(lua_State *L)
 static int
 DIR_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_dir_type, luab_dir_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -127,16 +127,18 @@ DIR_dump(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = dir:dir()
+ * @usage x [, err, msg ] = dir:dir()
  */
 static int
 DIR_dirp(lua_State *L)
 {
+    luab_module_t *m;
     void *dirp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dirp = luab_udata(L, 1, &luab_dir_type, void *);
+    m = luab_xmod(DIR, TYPE, __func__);
+    dirp = luab_udata(L, 1, m, void *);
 
     return (luab_pushfstring(L, "(%s)", dirp));
 }
@@ -148,19 +150,25 @@ DIR_dirp(lua_State *L)
 static int
 DIR_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_dir_type));
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 DIR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_dir_type));
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 DIR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_dir_type));
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -180,25 +188,33 @@ static luab_module_table_t dir_methods[] = {
 static void *
 dir_create(lua_State *L, void *arg)
 {
-    return (luab_new_dir(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 dir_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_dir_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 dir_udata(lua_State *L, int narg)
 {
-    return (luab_to_dir(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 dir_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_dir_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(DIR, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_dir_type = {

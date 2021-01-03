@@ -89,7 +89,7 @@ luab_dbopen(lua_State *L)
  *
  * @function dbt_create
  *
- * @param data          (LUA_T{NIL,USERDATA(IOVEC)}), optional.
+ * @param arg           (LUA_T{NIL,USERDATA(IOVEC)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

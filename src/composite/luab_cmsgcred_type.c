@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,12 +53,6 @@ typedef struct luab_cmsgcred {
     struct cmsgcred     ud_cmcred;
 } luab_cmsgcred_t;
 
-#define luab_new_cmsgcred(L, arg) \
-    ((luab_cmsgcred_t *)luab_newudata(L, &luab_cmsgcred_type, (arg)))
-#define luab_to_cmsgcred(L, narg) \
-    (luab_toldata((L), (narg), &luab_cmsgcred_type, \
-        struct cmsgcred *, luab_cmsgcred_type.m_sz))
-
 /*
  * Subr.
  */
@@ -109,12 +103,15 @@ cmsgcred_type_fillxtable(lua_State *L, int narg, void *arg)
 static int
 CMSGCRED_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+
     xtp.xtp_fill = cmsgcred_type_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_cmsgcred_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -133,7 +130,9 @@ CMSGCRED_get_table(lua_State *L)
 static int
 CMSGCRED_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_cmsgcred_type, luab_cmsgcred_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -147,17 +146,19 @@ CMSGCRED_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = cmsgcred:cmcred_pid()
+ * @usage x [, err, msg ] = cmsgcred:cmcred_pid()
  */
 static int
 CMSGCRED_cmcred_pid(lua_State *L)
 {
+    luab_module_t *m;
     struct cmsgcred *cmcred;
     pid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    cmcred = luab_udata(L, 1, m, struct cmsgcred *);
     x = cmcred->cmcred_pid;
 
     return (luab_pushxinteger(L, x));
@@ -170,17 +171,19 @@ CMSGCRED_cmcred_pid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = cmsgcred:cmcred_uid()
+ * @usage x [, err, msg ] = cmsgcred:cmcred_uid()
  */
 static int
 CMSGCRED_cmcred_uid(lua_State *L)
 {
+    luab_module_t *m;
     struct cmsgcred *cmcred;
     uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    cmcred = luab_udata(L, 1, m, struct cmsgcred *);
     x = cmcred->cmcred_uid;
 
     return (luab_pushxinteger(L, x));
@@ -193,17 +196,19 @@ CMSGCRED_cmcred_uid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = cmsgcred:cmcred_euid()
+ * @usage x [, err, msg ] = cmsgcred:cmcred_euid()
  */
 static int
 CMSGCRED_cmcred_euid(lua_State *L)
 {
+    luab_module_t *m;
     struct cmsgcred *cmcred;
     uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    cmcred = luab_udata(L, 1, m, struct cmsgcred *);
     x = cmcred->cmcred_euid;
 
     return (luab_pushxinteger(L, x));
@@ -216,17 +221,19 @@ CMSGCRED_cmcred_euid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = cmsgcred:cmcred_gid()
+ * @usage x [, err, msg ] = cmsgcred:cmcred_gid()
  */
 static int
 CMSGCRED_cmcred_gid(lua_State *L)
 {
+    luab_module_t *m;
     struct cmsgcred *cmcred;
     gid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    cmcred = luab_udata(L, 1, m, struct cmsgcred *);
     x = cmcred->cmcred_gid;
 
     return (luab_pushxinteger(L, x));
@@ -239,17 +246,19 @@ CMSGCRED_cmcred_gid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = cmsgcred:cmcred_ngroups()
+ * @usage x [, err, msg ] = cmsgcred:cmcred_ngroups()
  */
 static int
 CMSGCRED_cmcred_ngroups(lua_State *L)
 {
+    luab_module_t *m;
     struct cmsgcred *cmcred;
     short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    cmcred = luab_udata(L, 1, m, struct cmsgcred *);
     x = cmcred->cmcred_ngroups;
 
     return (luab_pushxinteger(L, x));
@@ -262,25 +271,26 @@ CMSGCRED_cmcred_ngroups(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = cmsgcred:cmcred_groups()
+ * @usage x [, err, msg ] = cmsgcred:cmcred_groups()
  */
 static int
 CMSGCRED_cmcred_groups(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     struct cmsgcred *cmcred;
     void *vec;
     size_t card;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(GID, TYPE, __func__);
+    m0 = luab_xmod(CMSGCRED, TYPE, __func__);
+    m1 = luab_xmod(GID, TYPE, __func__);
 
-    cmcred = luab_udata(L, 1, &luab_cmsgcred_type, struct cmsgcred *);
+    cmcred = luab_udata(L, 1, m0, struct cmsgcred *);
     vec = (void *)cmcred->cmcred_groups;
     card = cmcred->cmcred_ngroups;
 
-    return (luab_table_pushxvector(L, -2, m, vec, card, 1, 1));
+    return (luab_table_pushxvector(L, -2, m1, vec, card, 1, 1));
 }
 
 /*
@@ -290,19 +300,25 @@ CMSGCRED_cmcred_groups(lua_State *L)
 static int
 CMSGCRED_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_cmsgcred_type));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 CMSGCRED_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_cmsgcred_type));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 CMSGCRED_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_cmsgcred_type));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -327,42 +343,51 @@ static luab_module_table_t cmsgcred_methods[] = {
 static void *
 cmsgcred_create(lua_State *L, void *arg)
 {
-    return (luab_new_cmsgcred(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 cmsgcred_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_cmsgcred_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 cmsgcred_udata(lua_State *L, int narg)
 {
-    return (luab_to_cmsgcred(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 cmsgcred_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct cmsgcred *x, *y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_cmsgcred_type)) != NULL) {
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct cmsgcred *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_cmsgcred_type, struct cmsgcred *);
-                        (void)memmove(&(x[m]), y, luab_cmsgcred_type.m_sz);
+                        y = luab_udata(L, -1, m, struct cmsgcred *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -380,8 +405,11 @@ cmsgcred_checktable(lua_State *L, int narg)
 static void
 cmsgcred_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct cmsgcred *x;
-    size_t m, n, k;
+    size_t i, j, k;
+
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -389,8 +417,8 @@ cmsgcred_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_cmsgcred_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -405,7 +433,9 @@ cmsgcred_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 cmsgcred_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_cmsgcred_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(CMSGCRED, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_cmsgcred_type = {

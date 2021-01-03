@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -334,11 +334,11 @@ IOVEC_clear(lua_State *L)
  *
  * @function copy_in
  *
- * @param data              Either (LUA_TSTRING) or (LUA_TUSERDATA(IOVEC)).
+ * @param arg               Either (LUA_TSTRING) or (LUA_TUSERDATA(IOVEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = iovec:copy_in(data)
+ * @usage ret [, err, msg ] = iovec:copy_in(arg)
  */
 static int
 IOVEC_copy_in(lua_State *L)
@@ -365,7 +365,7 @@ IOVEC_copy_in(lua_State *L)
  *
  * @return (LUA_TSTRING [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = iovec:copy_out()
+ * @usage x [, err, msg ] = iovec:copy_out()
  */
 static int
 IOVEC_copy_out(lua_State *L)

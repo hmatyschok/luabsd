@@ -1068,7 +1068,7 @@ luab_dev_create(lua_State *L)
  *
  * @function stat_create
  *
- * @param data          Instance of (LUA_TUSERDATA(STAT)).
+ * @param arg           Instance of (LUA_TUSERDATA(STAT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

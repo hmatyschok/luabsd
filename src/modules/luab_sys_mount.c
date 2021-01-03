@@ -593,7 +593,7 @@ luab_lgetfh(lua_State *L)
  *
  *                          are constructed by bitwise-inclusive OR.
  *
- * @param data              File system specific argument structure.
+ * @param arg               File system specific argument structure.
  *
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])

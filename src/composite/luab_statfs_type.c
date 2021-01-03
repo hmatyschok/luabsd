@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -190,7 +190,7 @@ STATFS_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_version()
+ * @usage x [, err, msg ] = statfs:f_version()
  */
 static int
 STATFS_f_version(lua_State *L)
@@ -213,7 +213,7 @@ STATFS_f_version(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_type()
+ * @usage x [, err, msg ] = statfs:f_type()
  */
 static int
 STATFS_f_type(lua_State *L)
@@ -236,7 +236,7 @@ STATFS_f_type(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_flags()
+ * @usage x [, err, msg ] = statfs:f_flags()
  */
 static int
 STATFS_f_flags(lua_State *L)
@@ -259,7 +259,7 @@ STATFS_f_flags(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_bsize()
+ * @usage x [, err, msg ] = statfs:f_bsize()
  */
 static int
 STATFS_f_bsize(lua_State *L)
@@ -282,7 +282,7 @@ STATFS_f_bsize(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_iosize()
+ * @usage x [, err, msg ] = statfs:f_iosize()
  */
 static int
 STATFS_f_iosize(lua_State *L)
@@ -305,7 +305,7 @@ STATFS_f_iosize(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_blocks()
+ * @usage x [, err, msg ] = statfs:f_blocks()
  */
 static int
 STATFS_f_blocks(lua_State *L)
@@ -328,7 +328,7 @@ STATFS_f_blocks(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_blocks()
+ * @usage x [, err, msg ] = statfs:f_blocks()
  */
 static int
 STATFS_f_bfree(lua_State *L)
@@ -351,7 +351,7 @@ STATFS_f_bfree(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_bavail()
+ * @usage x [, err, msg ] = statfs:f_bavail()
  */
 static int
 STATFS_f_bavail(lua_State *L)
@@ -374,7 +374,7 @@ STATFS_f_bavail(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_files()
+ * @usage x [, err, msg ] = statfs:f_files()
  */
 static int
 STATFS_f_files(lua_State *L)
@@ -397,7 +397,7 @@ STATFS_f_files(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_ffree()
+ * @usage x [, err, msg ] = statfs:f_ffree()
  */
 static int
 STATFS_f_ffree(lua_State *L)
@@ -420,7 +420,7 @@ STATFS_f_ffree(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_syncwrites()
+ * @usage x [, err, msg ] = statfs:f_syncwrites()
  */
 static int
 STATFS_f_syncwrites(lua_State *L)
@@ -443,7 +443,7 @@ STATFS_f_syncwrites(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_asyncwrites()
+ * @usage x [, err, msg ] = statfs:f_asyncwrites()
  */
 static int
 STATFS_f_asyncwrites(lua_State *L)
@@ -466,7 +466,7 @@ STATFS_f_asyncwrites(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_syncreads()
+ * @usage x [, err, msg ] = statfs:f_syncreads()
  */
 static int
 STATFS_f_syncreads(lua_State *L)
@@ -489,7 +489,7 @@ STATFS_f_syncreads(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_asyncreads()
+ * @usage x [, err, msg ] = statfs:f_asyncreads()
  */
 static int
 STATFS_f_asyncreads(lua_State *L)
@@ -512,7 +512,7 @@ STATFS_f_asyncreads(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_namemax()
+ * @usage x [, err, msg ] = statfs:f_namemax()
  */
 static int
 STATFS_f_namemax(lua_State *L)
@@ -535,7 +535,7 @@ STATFS_f_namemax(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_owner()
+ * @usage x [, err, msg ] = statfs:f_owner()
  */
 static int
 STATFS_f_owner(lua_State *L)
@@ -558,7 +558,7 @@ STATFS_f_owner(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_fsid()
+ * @usage x [, err, msg ] = statfs:f_fsid()
  */
 static int
 STATFS_f_fsid(lua_State *L)
@@ -581,7 +581,7 @@ STATFS_f_fsid(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_fstypename()
+ * @usage x [, err, msg ] = statfs:f_fstypename()
  */
 static int
 STATFS_f_fstypename(lua_State *L)
@@ -604,7 +604,7 @@ STATFS_f_fstypename(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_mntfromname()
+ * @usage x [, err, msg ] = statfs:f_mntfromname()
  */
 static int
 STATFS_f_mntfromname(lua_State *L)
@@ -627,7 +627,7 @@ STATFS_f_mntfromname(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = statfs:f_mntonname()
+ * @usage x [, err, msg ] = statfs:f_mntonname()
  */
 static int
 STATFS_f_mntonname(lua_State *L)
@@ -721,7 +721,7 @@ statfs_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct statfs *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_statfs_type)) != NULL) {
 
@@ -729,14 +729,14 @@ statfs_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_statfs_type, struct statfs *);
-                        (void)memmove(&(x[m]), y, luab_statfs_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_statfs_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -754,7 +754,7 @@ static void
 statfs_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct statfs *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -762,8 +762,8 @@ statfs_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_statfs_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_statfs_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

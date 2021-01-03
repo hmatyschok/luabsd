@@ -173,7 +173,7 @@ luab_if_nametoindex(lua_State *L)
  *
  * @function if_nameindex_create
  *
- * @param data          Instance of (LUA_TUSERDATA(IF_NAMEINDEX)).
+ * @param arg           Instance of (LUA_TUSERDATA(IF_NAMEINDEX)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

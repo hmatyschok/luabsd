@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -159,11 +159,11 @@ TM_dump(lua_State *L)
  *
  * @function set_tm_sec
  *
- * @param data              Seconds.
+ * @param arg               Seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:set_tm_sec(data)
+ * @usage x [, err, msg ] = tm:set_tm_sec(arg)
  */
 static int
 TM_set_tm_sec(lua_State *L)
@@ -188,7 +188,7 @@ TM_set_tm_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_sec()
+ * @usage x [, err, msg ] = tm:get_tm_sec()
  */
 static int
 TM_get_tm_sec(lua_State *L)
@@ -209,11 +209,11 @@ TM_get_tm_sec(lua_State *L)
  *
  * @function set_tm_min
  *
- * @param data              Minutes.
+ * @param arg               Minutes.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, min ] = tm:set_tm_min(data)
+ * @usage data [, err, min ] = tm:set_tm_min(arg)
  */
 static int
 TM_set_tm_min(lua_State *L)
@@ -259,11 +259,11 @@ TM_get_tm_min(lua_State *L)
  *
  * @function set_tm_hour
  *
- * @param data              Hour.
+ * @param arg               Hour.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:set_tm_hour(data)
+ * @usage x [, err, msg ] = tm:set_tm_hour(arg)
  */
 static int
 TM_set_tm_hour(lua_State *L)
@@ -288,7 +288,7 @@ TM_set_tm_hour(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_hour()
+ * @usage x [, err, msg ] = tm:get_tm_hour()
  */
 static int
 TM_get_tm_hour(lua_State *L)
@@ -309,11 +309,11 @@ TM_get_tm_hour(lua_State *L)
  *
  * @function set_tm_mday
  *
- * @param data              Day.
+ * @param arg               Day.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:set_tm_mday(data)
+ * @usage x [, err, msg ] = tm:set_tm_mday(arg)
  */
 static int
 TM_set_tm_mday(lua_State *L)
@@ -338,7 +338,7 @@ TM_set_tm_mday(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_mday()
+ * @usage x [, err, msg ] = tm:get_tm_mday()
  */
 static int
 TM_get_tm_mday(lua_State *L)
@@ -359,11 +359,11 @@ TM_get_tm_mday(lua_State *L)
  *
  * @function set_tm_mon
  *
- * @param data              Month.
+ * @param arg               Month.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:set_tm_mon(data)
+ * @usage x [, err, msg ] = tm:set_tm_mon(arg)
  */
 static int
 TM_set_tm_mon(lua_State *L)
@@ -388,7 +388,7 @@ TM_set_tm_mon(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_mon()
+ * @usage x [, err, msg ] = tm:get_tm_mon()
  */
 static int
 TM_get_tm_mon(lua_State *L)
@@ -409,11 +409,11 @@ TM_get_tm_mon(lua_State *L)
  *
  * @function set_tm_year
  *
- * @param data              Seconds.
+ * @param arg               Seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:set_tm_year(data)
+ * @usage x [, err, msg ] = tm:set_tm_year(arg)
  */
 static int
 TM_set_tm_year(lua_State *L)
@@ -438,7 +438,7 @@ TM_set_tm_year(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_year()
+ * @usage x [, err, msg ] = tm:get_tm_year()
  */
 static int
 TM_get_tm_year(lua_State *L)
@@ -459,11 +459,11 @@ TM_get_tm_year(lua_State *L)
  *
  * @function set_tm_wday
  *
- * @param data              Day.
+ * @param arg               Day.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:set_tm_wday(data)
+ * @usage x [, err, msg ] = tm:set_tm_wday(arg)
  */
 static int
 TM_set_tm_wday(lua_State *L)
@@ -488,7 +488,7 @@ TM_set_tm_wday(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_wday()
+ * @usage x [, err, msg ] = tm:get_tm_wday()
  */
 static int
 TM_get_tm_wday(lua_State *L)
@@ -509,11 +509,11 @@ TM_get_tm_wday(lua_State *L)
  *
  * @function set_tm_yday
  *
- * @param data              Day.
+ * @param arg               Day.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ]= tm:set_tm_yday(data)
+ * @usage data [, err, msg ]= tm:set_tm_yday(arg)
  */
 static int
 TM_set_tm_yday(lua_State *L)
@@ -559,11 +559,11 @@ TM_get_tm_yday(lua_State *L)
  *
  * @function set_tm_isdst
  *
- * @param data              Daylight Savings Time.
+ * @param arg               Daylight Savings Time.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_isdst(data)
+ * @usage x [, err, msg ] = tm:get_tm_isdst(arg)
  */
 static int
 TM_set_tm_isdst(lua_State *L)
@@ -588,7 +588,7 @@ TM_set_tm_isdst(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_isdst()
+ * @usage x [, err, msg ] = tm:get_tm_isdst()
  */
 static int
 TM_get_tm_isdst(lua_State *L)
@@ -609,11 +609,11 @@ TM_get_tm_isdst(lua_State *L)
  *
  * @function set_tm_gmtoff
  *
- * @param data              Offset.
+ * @param arg               Offset.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:set_tm_gmtoff(data)
+ * @usage x [, err, msg ] = tm:set_tm_gmtoff(arg)
  */
 static int
 TM_set_tm_gmtoff(lua_State *L)
@@ -638,7 +638,7 @@ TM_set_tm_gmtoff(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = tm:get_tm_gmtoff()
+ * @usage x [, err, msg ] = tm:get_tm_gmtoff()
  */
 static int
 TM_get_tm_gmtoff(lua_State *L)
@@ -752,7 +752,7 @@ tm_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct tm *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_tm_type)) != NULL) {
 
@@ -760,14 +760,14 @@ tm_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_tm_type, struct tm *);
-                        (void)memmove(&(x[m]), y, luab_tm_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_tm_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -785,7 +785,7 @@ static void
 tm_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct tm *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -793,8 +793,8 @@ tm_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_tm_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_tm_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

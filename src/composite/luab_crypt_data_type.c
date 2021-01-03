@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -53,12 +53,6 @@ typedef struct luab_crypt_data {
 
 #define LUAB_CRYPT_DATAMAXLEN  256
 
-#define luab_new_crypt_data(L, arg) \
-    ((luab_crypt_data_t *)luab_newudata(L, &luab_crypt_data_type, (arg)))
-#define luab_to_crypt_data(L, narg) \
-    (luab_toldata((L), (narg), &luab_crypt_data_type, \
-        struct crypt_data *, luab_crypt_data_type.m_sz))
-
 /*
  * Subr.
  */
@@ -97,12 +91,15 @@ crypt_data_fillxtable(lua_State *L, int narg, void *arg)
 static int
 CRYPT_DATA_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+
     xtp.xtp_fill = crypt_data_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_crypt_data_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -121,7 +118,9 @@ CRYPT_DATA_get_table(lua_State *L)
 static int
 CRYPT_DATA_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_crypt_data_type, luab_crypt_data_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -133,22 +132,26 @@ CRYPT_DATA_dump(lua_State *L)
  *
  * @function set_initialized
  *
- * @param data              Integer.
+ * @param arg               Integer.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = crypt_data:set_initialized(data)
+ * @usage x [, err, msg ] = crypt_data:set_initialized(arg)
  */
 static int
 CRYPT_DATA_set_initialized(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct crypt_data *cd;
     int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
-    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    cd = luab_udata(L, 1, m0, struct crypt_data *);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     cd->initialized = x;
 
@@ -162,17 +165,19 @@ CRYPT_DATA_set_initialized(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = crypt_data:get_initialized()
+ * @usage x [, err, msg ] = crypt_data:get_initialized()
  */
 static int
 CRYPT_DATA_get_initialized(lua_State *L)
 {
+    luab_module_t *m;
     struct crypt_data *cd;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    cd = luab_udata(L, 1, m, struct crypt_data *);
     x = cd->initialized;
 
     return (luab_pushxinteger(L, x));
@@ -183,22 +188,24 @@ CRYPT_DATA_get_initialized(lua_State *L)
  *
  * @function copyin
  *
- * @param data              Byte string.
+ * @param arg               Byte string.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = crypt_data:set_buf(data)
+ * @usage ret [, err, msg ] = crypt_data:set_buf(arg)
  */
 static int
 CRYPT_DATA_set_buf(lua_State *L)
 {
+    luab_module_t *m;
     struct crypt_data *cd;
     const char *dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    cd = luab_udata(L, 1, m, struct crypt_data *);
     dp = luab_checklstring(L, 2, LUAB_CRYPT_DATAMAXLEN, NULL);
 
     if ((len = strnlen(dp, LUAB_CRYPT_DATAMAXLEN)) > 0)
@@ -219,13 +226,15 @@ CRYPT_DATA_set_buf(lua_State *L)
 static int
 CRYPT_DATA_get_buf(lua_State *L)
 {
+    luab_module_t *m;
     struct crypt_data *cd;
     caddr_t dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    cd = luab_udata(L, 1, &luab_crypt_data_type, struct crypt_data *);
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    cd = luab_udata(L, 1, m, struct crypt_data *);
 
     dp = cd->__buf;
     len = strnlen(dp, LUAB_CRYPT_DATAMAXLEN);
@@ -240,19 +249,25 @@ CRYPT_DATA_get_buf(lua_State *L)
 static int
 CRYPT_DATA_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_crypt_data_type));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 CRYPT_DATA_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_crypt_data_type));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 CRYPT_DATA_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_crypt_data_type));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -275,42 +290,51 @@ static luab_module_table_t crypt_data_methods[] = {
 static void *
 crypt_data_create(lua_State *L, void *arg)
 {
-    return (luab_new_crypt_data(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 crypt_data_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_crypt_data_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 crypt_data_udata(lua_State *L, int narg)
 {
-    return (luab_to_crypt_data(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 crypt_data_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct crypt_data *x, *y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_crypt_data_type)) != NULL) {
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct crypt_data *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_crypt_data_type, struct crypt_data *);
-                        (void)memmove(&(x[m]), y, luab_crypt_data_type.m_sz);
+                        y = luab_udata(L, -1, m, struct crypt_data *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -328,8 +352,11 @@ crypt_data_checktable(lua_State *L, int narg)
 static void
 crypt_data_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct crypt_data *x;
-    size_t m, n, k;
+    size_t i, j, k;
+
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -337,8 +364,8 @@ crypt_data_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_crypt_data_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -353,7 +380,9 @@ crypt_data_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr
 static luab_table_t *
 crypt_data_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_crypt_data_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(CRYPT_DATA, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_crypt_data_type = {

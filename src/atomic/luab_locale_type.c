@@ -118,7 +118,7 @@ LOCALE_dump(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = locale:value()
+ * @usage x [, err, msg ] = locale:value()
  */
 static int
 LOCALE_value(lua_State *L)

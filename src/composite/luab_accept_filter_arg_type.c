@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -54,12 +54,6 @@ typedef struct luab_accept_filter_arg {
 #define LUAB_AF_NAMEMAXLEN  16
 #define LUAB_AF_ARGMAXLEN   240
 
-#define luab_new_accept_filter_arg(L, arg) \
-    ((luab_accept_filter_arg_t *)luab_newudata(L, &luab_accept_filter_arg_type, (arg)))
-#define luab_to_accept_filter_arg(L, narg) \
-    (luab_toldata((L), (narg), &luab_accept_filter_arg_type, \
-        struct accept_filter_arg *, luab_accept_filter_arg_type.m_sz))
-
 /*
  * Subr.
  */
@@ -98,9 +92,12 @@ accept_filter_arg_fillxtable(lua_State *L, int narg, void *arg)
 static int
 ACCEPT_FILTER_ARG_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
 
     xtp.xtp_fill = accept_filter_arg_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, &luab_accept_filter_arg_type);
@@ -122,7 +119,9 @@ ACCEPT_FILTER_ARG_get_table(lua_State *L)
 static int
 ACCEPT_FILTER_ARG_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_accept_filter_arg_type, luab_accept_filter_arg_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -134,25 +133,29 @@ ACCEPT_FILTER_ARG_dump(lua_State *L)
  *
  * @function set_af_name
  *
- * @param data              Specifies protocol domain(9) by name, (LUA_TSTRING).
+ * @param arg               Specifies protocol domain(9) by name, (LUA_TSTRING).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = accept_filter_arg:set_af_name(data)
+ * @usage x [, err, msg ] = accept_filter_arg:set_af_name(arg)
  */
 static int
 ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
 {
+    luab_module_t *m;
     struct accept_filter_arg *af;
     const char *dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+
+    af = luab_udata(L, 1, m, struct accept_filter_arg *);
     dp = luab_checklstring(L, 2, LUAB_AF_NAMEMAXLEN, NULL);
     len = strlen(dp);
     (void)memmove(af->af_name, dp, len);
+
     return (luab_pushldata(L, af->af_name, len));
 }
 
@@ -163,18 +166,21 @@ ACCEPT_FILTER_ARG_set_af_name(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = accept_filter_arg:get_af_name()
+ * @usage x [, err, msg ] = accept_filter_arg:get_af_name()
  */
 static int
 ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
 {
+    luab_module_t *m;
     struct accept_filter_arg *af;
     caddr_t dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+
+    af = luab_udata(L, 1, m, struct accept_filter_arg *);
     dp = af->af_name;
     len = strlen(dp);
 
@@ -186,25 +192,29 @@ ACCEPT_FILTER_ARG_get_af_name(lua_State *L)
  *
  * @function set_af_arg
  *
- * @param data              Specifies accept filter string, (LUA_TSTRING).
+ * @param arg               Specifies accept filter string, (LUA_TSTRING).
  *
  * @return (LUA_T{NIL,NUMBER} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = accept_filter_arg:set_af_name(data)
+ * @usage x [, err, msg ] = accept_filter_arg:set_af_name(arg)
  */
 static int
 ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
 {
+    luab_module_t *m;
     struct accept_filter_arg *af;
     const char *dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+
+    af = luab_udata(L, 1, m, struct accept_filter_arg *);
     dp = luab_checklstring(L, 2, LUAB_AF_ARGMAXLEN, NULL);
     len = strlen(dp);
     (void)memmove(af->af_arg, dp, len);
+
     return (luab_pushldata(L, af->af_arg, len));
 }
 
@@ -215,18 +225,21 @@ ACCEPT_FILTER_ARG_set_af_arg(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = accept_filter_arg:get_af_name()
+ * @usage x [, err, msg ] = accept_filter_arg:get_af_name()
  */
 static int
 ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
 {
+    luab_module_t *m;
     struct accept_filter_arg *af;
     caddr_t dp;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    af = luab_udata(L, 1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+
+    af = luab_udata(L, 1, m, struct accept_filter_arg *);
     dp = af->af_arg;
     len = strlen(dp);
 
@@ -240,19 +253,25 @@ ACCEPT_FILTER_ARG_get_af_arg(lua_State *L)
 static int
 ACCEPT_FILTER_ARG_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_accept_filter_arg_type));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 ACCEPT_FILTER_ARG_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_accept_filter_arg_type));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 ACCEPT_FILTER_ARG_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_accept_filter_arg_type));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -275,42 +294,51 @@ static luab_module_table_t accept_filter_arg_methods[] = {
 static void *
 accept_filter_arg_create(lua_State *L, void *arg)
 {
-    return (luab_new_accept_filter_arg(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 accept_filter_arg_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_accept_filter_arg_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 accept_filter_arg_udata(lua_State *L, int narg)
 {
-    return (luab_to_accept_filter_arg(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 accept_filter_arg_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct accept_filter_arg *x, *y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_accept_filter_arg_type)) != NULL) {
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct accept_filter_arg *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_accept_filter_arg_type, struct accept_filter_arg *);
-                        (void)memmove(&(x[m]), y, luab_accept_filter_arg_type.m_sz);
+                        y = luab_udata(L, -1, m, struct accept_filter_arg *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -328,8 +356,11 @@ accept_filter_arg_checktable(lua_State *L, int narg)
 static void
 accept_filter_arg_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct accept_filter_arg *x;
-    size_t m, n, k;
+    size_t i, j, k;
+
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -337,8 +368,8 @@ accept_filter_arg_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, 
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_accept_filter_arg_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -353,7 +384,9 @@ accept_filter_arg_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, 
 static luab_table_t *
 accept_filter_arg_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_accept_filter_arg_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_accept_filter_arg_type = {

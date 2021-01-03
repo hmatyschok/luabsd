@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,12 +51,6 @@ typedef struct luab_fid {
     struct fid      ud_fid;
 } luab_fid_t;
 
-#define luab_new_fid(L, arg) \
-    ((luab_fid_t *)luab_newudata(L, &luab_fid_type, (arg)))
-#define luab_to_fid(L, narg) \
-    (luab_toldata((L), (narg), &luab_fid_type, \
-        struct fid *, luab_fid_type.m_sz))
-
 /*
  * Subr.
  */
@@ -97,12 +91,15 @@ fid_fillxtable(lua_State *L, int narg, void *arg)
 static int
 FID_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(FID, TYPE, __func__);
+
     xtp.xtp_fill = fid_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_fid_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -121,7 +118,9 @@ FID_get_table(lua_State *L)
 static int
 FID_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_fid_type, luab_fid_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -135,17 +134,19 @@ FID_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fid:fid_len()
+ * @usage x [, err, msg ] = fid:fid_len()
  */
 static int
 FID_fid_len(lua_State *L)
 {
+    luab_module_t *m;
     struct fid *fid;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
+    m = luab_xmod(FID, TYPE, __func__);
+    fid = luab_udata(L, 1, m, struct fid *);
     x = fid->fid_len;
 
     return (luab_pushxinteger(L, x));
@@ -158,17 +159,19 @@ FID_fid_len(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fid:fid_data0()
+ * @usage x [, err, msg ] = fid:fid_data0()
  */
 static int
 FID_fid_data0(lua_State *L)
 {
+    luab_module_t *m;
     struct fid *fid;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
+    m = luab_xmod(FID, TYPE, __func__);
+    fid = luab_udata(L, 1, m, struct fid *);
     x = fid->fid_data0;
 
     return (luab_pushxinteger(L, x));
@@ -181,17 +184,19 @@ FID_fid_data0(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = fid:fid_data()
+ * @usage x [, err, msg ] = fid:fid_data()
  */
 static int
 FID_fid_data(lua_State *L)
 {
+    luab_module_t *m;
     struct fid *fid;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fid = luab_udata(L, 1, &luab_fid_type, struct fid *);
+    m = luab_xmod(FID, TYPE, __func__);
+    fid = luab_udata(L, 1, m, struct fid *);
     dp = fid->fid_data;
 
     return (luab_pushldata(L, dp, MAXFIDSZ));   /* XXX */
@@ -204,19 +209,25 @@ FID_fid_data(lua_State *L)
 static int
 FID_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_fid_type));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 FID_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_fid_type));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 FID_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_fid_type));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -238,42 +249,51 @@ static luab_module_table_t fid_methods[] = {
 static void *
 fid_create(lua_State *L, void *arg)
 {
-    return (luab_new_fid(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 fid_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_fid_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 fid_udata(lua_State *L, int narg)
 {
-    return (luab_to_fid(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 fid_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct fid *x, *y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_fid_type)) != NULL) {
+    m = luab_xmod(FID, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct fid *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_fid_type, struct fid *);
-                        (void)memmove(&(x[m]), y, luab_fid_type.m_sz);
+                        y = luab_udata(L, -1, m, struct fid *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -291,8 +311,11 @@ fid_checktable(lua_State *L, int narg)
 static void
 fid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct fid *x;
-    size_t m, n, k;
+    size_t i, j, k;
+
+    m = luab_xmod(FID, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -300,8 +323,8 @@ fid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_fid_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -316,7 +339,9 @@ fid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 fid_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_fid_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(FID, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_fid_type = {

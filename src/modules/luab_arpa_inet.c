@@ -828,7 +828,7 @@ luab_in_port_create(lua_State *L)
  *
  * @function in_addr_create
  *
- * @param data          Instance of (LUA_TUSERDATA(IN_ADDR)).
+ * @param arg           Instance of (LUA_TUSERDATA(IN_ADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -847,7 +847,7 @@ luab_in_addr_create(lua_State *L)
  *
  * @function in6_addr_create
  *
- * @param data          Instance of (LUA_TUSERDATA(IN6_ADDR)).
+ * @param arg           Instance of (LUA_TUSERDATA(IN6_ADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

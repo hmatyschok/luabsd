@@ -184,7 +184,7 @@ luab_getitimer(lua_State *L)
  *
  * @function bintime_create
  *
- * @param data          Instance of (LUA_TUSERDATA(BINTIME)).
+ * @param arg           Instance of (LUA_TUSERDATA(BINTIME)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -204,7 +204,7 @@ luab_bintime_create(lua_State *L)
  *
  * @function clockinfo_create
  *
- * @param data          Instance of (LUA_TUSERDATA(CLOCKINFO)).
+ * @param arg           Instance of (LUA_TUSERDATA(CLOCKINFO)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -223,7 +223,7 @@ luab_clockinfo_create(lua_State *L)
  *
  * @function itimerval_create
  *
- * @param data          Instance of (LUA_TUSERDATA(ITIMERVAL)).
+ * @param arg           Instance of (LUA_TUSERDATA(ITIMERVAL)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -242,7 +242,7 @@ luab_itimerval_create(lua_State *L)
  *
  * @function timespec_create
  *
- * @param data          Instance of (LUA_TUSERDATA(TIMESPEC)).
+ * @param arg           Instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -261,7 +261,7 @@ luab_timespec_create(lua_State *L)
  *
  * @function timeval_create
  *
- * @param data          Instance of (LUA_TUSERDATA(TIMEVAL)).
+ * @param arg           Instance of (LUA_TUSERDATA(TIMEVAL)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -280,7 +280,7 @@ luab_timeval_create(lua_State *L)
  *
  * @function timezone_create
  *
- * @param data          Instance of (LUA_TUSERDATA(TIMEZONE)).
+ * @param arg           Instance of (LUA_TUSERDATA(TIMEZONE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

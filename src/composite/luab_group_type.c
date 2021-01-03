@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -65,13 +65,13 @@ typedef struct luab_group {
 static int
 luab_table_pushgroup(lua_State *L, int narg, const char *k, caddr_t *vec)
 {
-    size_t m, n;
+    size_t i, j;
 
     if (vec != NULL) {
         luab_table_init(L, 1);
 
-        for (m = 0, n = 1; vec[m] != NULL; m++, n++)
-            luab_rawsetstring(L, narg, n, vec[m]);
+        for (i = 0, j = 1; vec[i] != NULL; i++, j++)
+            luab_rawsetstring(L, narg, j, vec[i]);
 
         /*
          * Set field k and/or push on top of Lua stack.
@@ -170,7 +170,7 @@ GROUP_dump(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = group:gr_name()
+ * @usage x [, err, msg ] = group:gr_name()
  */
 static int
 GROUP_gr_name(lua_State *L)
@@ -193,7 +193,7 @@ GROUP_gr_name(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = group:gr_passwd()
+ * @usage x [, err, msg ] = group:gr_passwd()
  */
 static int
 GROUP_gr_passwd(lua_State *L)
@@ -216,7 +216,7 @@ GROUP_gr_passwd(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = group:gr_gid()
+ * @usage x [, err, msg ] = group:gr_gid()
  */
 static int
 GROUP_gr_gid(lua_State *L)
@@ -239,7 +239,7 @@ GROUP_gr_gid(lua_State *L)
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = group:gr_mem()
+ * @usage x [, err, msg ] = group:gr_mem()
  */
 static int
 GROUP_gr_mem(lua_State *L)
@@ -334,7 +334,7 @@ group_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct group *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_group_type)) != NULL) {
 
@@ -342,14 +342,14 @@ group_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_group_type, struct group *);
-                        (void)memmove(&(x[m]), y, luab_group_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_group_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -368,7 +368,7 @@ static void
 group_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct group *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -376,8 +376,8 @@ group_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_group_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_group_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

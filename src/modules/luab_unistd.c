@@ -2877,7 +2877,7 @@ luab_crypt_get_format(lua_State *L)
  *                           #3 Traditional
  *
  *                          form.
- * @param data              Instance of (LUA_TUSERDATA(CRYPT_DATA)).
+ * @param arg               Instance of (LUA_TUSERDATA(CRYPT_DATA)).
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -5071,7 +5071,7 @@ luab_useconds_create(lua_State *L)
  *
  * @function crypt_data_create
  *
- * @param data          Instance of (LUA_TUSERDATA(CRYPT_DATA)).
+ * @param arg           Instance of (LUA_TUSERDATA(CRYPT_DATA)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

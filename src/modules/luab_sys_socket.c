@@ -1226,7 +1226,7 @@ luab_socketpair(lua_State *L)
  *
  * @function linger_create
  *
- * @param data          Instance of (LUA_TUSERDATA(LINGER)).
+ * @param arg           Instance of (LUA_TUSERDATA(LINGER)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1245,7 +1245,7 @@ luab_linger_create(lua_State *L)
  *
  * @function sockaddr_create
  *
- * @param data          Instance of (LUA_TUSERDATA(SOCKADDR)).
+ * @param arg           Instance of (LUA_TUSERDATA(SOCKADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1282,7 +1282,7 @@ luab_msghdr_create(lua_State *L)
  *
  * @function accept_filter_arg_create
  *
- * @param data          Instance of (LUA_TUSERDATA(ACCEPT_FILTER_ARG)).
+ * @param arg           Instance of (LUA_TUSERDATA(ACCEPT_FILTER_ARG)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1318,7 +1318,7 @@ luab_cmsgcred_create(lua_State *L)
  *
  * @function sockproto_create
  *
- * @param data          Instance of (LUA_TUSERDATA(SOCKPROTO)).
+ * @param arg           Instance of (LUA_TUSERDATA(SOCKPROTO)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

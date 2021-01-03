@@ -2914,7 +2914,7 @@ luab_strtonum(lua_State *L)
  *
  * @function div_create
  *
- * @param data          Instance of (LUA_TUSERDATA(DIV)).
+ * @param arg           Instance of (LUA_TUSERDATA(DIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2933,7 +2933,7 @@ luab_div_create(lua_State *L)
  *
  * @function ldiv_create
  *
- * @param data          Instance of (LUA_TUSERDATA(LDIV)).
+ * @param arg           Instance of (LUA_TUSERDATA(LDIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2954,7 +2954,7 @@ luab_ldiv_create(lua_State *L)
  *
  * @function lldiv_create
  *
- * @param data          Instance of (LUA_TUSERDATA(LLDIV)).
+ * @param arg           Instance of (LUA_TUSERDATA(LLDIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *

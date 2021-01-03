@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -51,11 +51,6 @@ typedef struct luab_dbt {
     DBT             ud_dbt;
 } luab_dbt_t;
 
-#define luab_new_dbt(L, arg) \
-    ((luab_dbt_t *)luab_newudata(L, &luab_dbt_type, (arg)))
-#define luab_to_dbt(L, narg) \
-    ((DBT *)luab_toudata((L), (narg), &luab_dbt_type))
-
 /*
  * Subr.
  */
@@ -94,12 +89,15 @@ dbt_fillxtable(lua_State *L, int narg, void *arg)
 static int
 DBT_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(DBT, TYPE, __func__);
+
     xtp.xtp_fill = dbt_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_dbt_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -128,12 +126,14 @@ DBT_dump(lua_State *L)
 static int
 DBT_get_size(lua_State *L)
 {
+    luab_module_t *m;
     DBT *dbt;
     size_t len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
+    m = luab_xmod(DBT, TYPE, __func__);
+    dbt = luab_udata(L, 1, m, DBT *);
     len = dbt->size;
 
     return (luab_pushxinteger(L, len));
@@ -157,14 +157,18 @@ DBT_get_size(lua_State *L)
 static int
 DBT_set_data(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     DBT *dbt;
     luab_iovec_t *buf;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    m0 = luab_xmod(DBT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
+    dbt = luab_udata(L, 1, m0, DBT *);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
 
     if ((buf->iov_flags & IOV_LOCK) == 0) {
         buf->iov_flags |= IOV_LOCK;
@@ -190,14 +194,19 @@ DBT_set_data(lua_State *L)
 static int
 DBT_get_data(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     DBT *dbt;
     luab_iovec_t *buf;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    dbt = luab_udata(L, 1, &luab_dbt_type, DBT *);
-    buf = luab_udata(L, 2, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    m0 = luab_xmod(DBT, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
+
+    dbt = luab_udata(L, 1, m0, DBT *);
+    buf = luab_udata(L, 2, m1, luab_iovec_t *);
+
     status = luab_iovec_copyin(buf, dbt->data, dbt->size);
     return (luab_pushxinteger(L, status));
 }
@@ -209,11 +218,13 @@ DBT_get_data(lua_State *L)
 static int
 DBT_gc(lua_State *L)
 {
+    luab_module_t *m;
     DBT *dbt;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    dbt = luab_to_dbt(L, 1);
+    m = luab_xmod(DBT, TYPE, __func__);
+    dbt = luab_udata(L, 1, m, DBT *);
 
     if (dbt->data != NULL) {
         dbt->data = NULL;
@@ -225,13 +236,17 @@ DBT_gc(lua_State *L)
 static int
 DBT_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_dbt_type));
+    luab_module_t *m;
+    m = luab_xmod(DBT, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 DBT_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_dbt_type));
+    luab_module_t *m;
+    m = luab_xmod(DBT, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -253,7 +268,9 @@ static luab_module_table_t dbt_methods[] = {
 static void *
 dbt_create(lua_State *L, void *arg)
 {
-    return (luab_new_dbt(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(DBT, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
@@ -282,13 +299,17 @@ dbt_init(void *ud, void *arg)
 static void *
 dbt_udata(lua_State *L, int narg)
 {
-    return (luab_to_dbt(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(DBT, TYPE, __func__);
+    return (luab_toudata(L, narg, m));
 }
 
 static luab_table_t *
 dbt_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_dbt_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(DBT, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_dbt_type = {

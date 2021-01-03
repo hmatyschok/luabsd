@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -154,7 +154,7 @@ TTYENT_dump(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ttyent:ty_name()
+ * @usage x [, err, msg ] = ttyent:ty_name()
  */
 static int
 TTYENT_ty_name(lua_State *L)
@@ -177,7 +177,7 @@ TTYENT_ty_name(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ttyent:ty_getty()
+ * @usage x [, err, msg ] = ttyent:ty_getty()
  */
 static int
 TTYENT_ty_getty(lua_State *L)
@@ -200,7 +200,7 @@ TTYENT_ty_getty(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ttyent:ty_type()
+ * @usage x [, err, msg ] = ttyent:ty_type()
  */
 static int
 TTYENT_ty_type(lua_State *L)
@@ -223,7 +223,7 @@ TTYENT_ty_type(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ttyent:ty_status()
+ * @usage x [, err, msg ] = ttyent:ty_status()
  */
 static int
 TTYENT_ty_status(lua_State *L)
@@ -246,7 +246,7 @@ TTYENT_ty_status(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ttyent:ty_window()
+ * @usage x [, err, msg ] = ttyent:ty_window()
  */
 static int
 TTYENT_ty_window(lua_State *L)
@@ -269,7 +269,7 @@ TTYENT_ty_window(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ttyent:ty_comment()
+ * @usage x [, err, msg ] = ttyent:ty_comment()
  */
 static int
 TTYENT_ty_comment(lua_State *L)
@@ -292,7 +292,7 @@ TTYENT_ty_comment(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = ttyent:ty_group()
+ * @usage x [, err, msg ] = ttyent:ty_group()
  */
 static int
 TTYENT_ty_group(lua_State *L)
@@ -373,7 +373,7 @@ ttyent_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct ttyent *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_ttyent_type)) != NULL) {
 
@@ -381,14 +381,14 @@ ttyent_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_ttyent_type, struct ttyent *);
-                        (void)memmove(&(x[m]), y, luab_ttyent_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_ttyent_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -406,7 +406,7 @@ static void
 ttyent_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct ttyent *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -414,8 +414,8 @@ ttyent_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_ttyent_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_ttyent_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

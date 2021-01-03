@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -130,11 +130,11 @@ TIMESPEC_dump(lua_State *L)
  *
  * @function set_tv_sec
  *
- * @param data              Specifies value in seconds.
+ * @param arg               Specifies value in seconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = timespec:set_tv_sec(data)
+ * @usage x [, err, msg ] = timespec:set_tv_sec(arg)
  */
 static int
 TIMESPEC_set_tv_sec(lua_State *L)
@@ -159,7 +159,7 @@ TIMESPEC_set_tv_sec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = timespec:get_tv_sec()
+ * @usage x [, err, msg ] = timespec:get_tv_sec()
  */
 static int
 TIMESPEC_get_tv_sec(lua_State *L)
@@ -180,11 +180,11 @@ TIMESPEC_get_tv_sec(lua_State *L)
  *
  * @function set_tv_nsec
  *
- * @param data              Specifies value in nanoneconds.
+ * @param arg               Specifies value in nanoneconds.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = timespec:set_tv_nsec(data)
+ * @usage x [, err, msg ] = timespec:set_tv_nsec(arg)
  */
 static int
 TIMESPEC_set_tv_nsec(lua_State *L)
@@ -209,7 +209,7 @@ TIMESPEC_set_tv_nsec(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = timespec:get_tv_nsec()
+ * @usage x [, err, msg ] = timespec:get_tv_nsec()
  */
 static int
 TIMESPEC_get_tv_nsec(lua_State *L)
@@ -287,7 +287,7 @@ timespec_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct timespec *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_timespec_type)) != NULL) {
 
@@ -295,14 +295,14 @@ timespec_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_timespec_type, struct timespec *);
-                        (void)memmove(&(x[m]), y, luab_timespec_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_timespec_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -320,7 +320,7 @@ static void
 timespec_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct timespec *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -328,8 +328,8 @@ timespec_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_timespec_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_timespec_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

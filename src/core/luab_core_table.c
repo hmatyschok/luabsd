@@ -279,7 +279,7 @@ luab_table_checkargv(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     intptr_t **argv, *x;
-    size_t m, n;
+    size_t i, j, n;
 
     n = luab_checktable(L, narg);
 
@@ -289,7 +289,7 @@ luab_table_checkargv(lua_State *L, int narg)
         argv = (void *)(tbl->tbl_vec);
         x = (void *)(intptr_t)(argv);
 
-        for (m = 0, n = tbl->tbl_card; m < n; m++) {
+        for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
             if (lua_next(L, narg) != 0) {
                 /*
@@ -297,7 +297,7 @@ luab_table_checkargv(lua_State *L, int narg)
                  */
                 if ((lua_isnumber(L, -2) != 0) &&
                     (lua_isstring(L, -1) != 0)) {
-                    x[m] = (intptr_t)lua_tostring(L, -1);
+                    x[i] = (intptr_t)lua_tostring(L, -1);
                 } else
                     luab_core_err(EX_DATAERR, __func__, EINVAL);
             } else {
@@ -315,7 +315,7 @@ luab_table_toxargp(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     intptr_t **argv, *x;
-    size_t m, n;
+    size_t i, j, n;
 
     n = luab_checktable(L, narg);
 
@@ -325,7 +325,7 @@ luab_table_toxargp(lua_State *L, int narg)
         argv = (void *)(tbl->tbl_vec);
         x = (void *)(intptr_t)(argv);
 
-        for (m = 0, n = tbl->tbl_card; m < n; m++) {
+        for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
             if (lua_next(L, narg) != 0) {
                 /*
@@ -333,7 +333,7 @@ luab_table_toxargp(lua_State *L, int narg)
                  */
                 if ((lua_isnumber(L, -2) != 0) &&
                     (lua_type(L, -1) != -1)) {
-                    x[m] = (intptr_t)lua_topointer(L, -1);
+                    x[i] = (intptr_t)lua_topointer(L, -1);
                 } else
                     luab_core_err(EX_DATAERR, __func__, EINVAL);
             } else {

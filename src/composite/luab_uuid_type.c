@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -145,11 +145,11 @@ UUID_dump(lua_State *L)
  *
  * @function set_time_low
  *
- * @param data              Octets maps to 0-3.
+ * @param arg               Octets maps to 0-3.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:set_time_low(data)
+ * @usage x [, err, msg ] = uuid:set_time_low(arg)
  */
 static int
 UUID_set_time_low(lua_State *L)
@@ -174,7 +174,7 @@ UUID_set_time_low(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:get_time_low()
+ * @usage x [, err, msg ] = uuid:get_time_low()
  */
 static int
 UUID_get_time_low(lua_State *L)
@@ -195,11 +195,11 @@ UUID_get_time_low(lua_State *L)
  *
  * @function set_time_mid
  *
- * @param data              Octets maps to 4-5.
+ * @param arg               Octets maps to 4-5.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:set_time_mid(data)
+ * @usage x [, err, msg ] = uuid:set_time_mid(arg)
  */
 static int
 UUID_set_time_mid(lua_State *L)
@@ -224,7 +224,7 @@ UUID_set_time_mid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:get_time_mid()
+ * @usage x [, err, msg ] = uuid:get_time_mid()
  */
 static int
 UUID_get_time_mid(lua_State *L)
@@ -246,11 +246,11 @@ UUID_get_time_mid(lua_State *L)
  *
  * @function set_time_hi_and_version
  *
- * @param data              Octets maps to 6-7.
+ * @param arg               Octets maps to 6-7.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:set_time_hi_and_version(data)
+ * @usage x [, err, msg ] = uuid:set_time_hi_and_version(arg)
  */
 static int
 UUID_set_time_hi_and_version(lua_State *L)
@@ -276,7 +276,7 @@ UUID_set_time_hi_and_version(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:get_time_hi_and_version()
+ * @usage x [, err, msg ] = uuid:get_time_hi_and_version()
  */
 static int
 UUID_get_time_hi_and_version(lua_State *L)
@@ -298,11 +298,11 @@ UUID_get_time_hi_and_version(lua_State *L)
  *
  * @function set_clock_seq_hi_and_reserved
  *
- * @param data              Octet maps to 8.
+ * @param arg               Octet maps to 8.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:set_clock_seq_hi_and_reserved(data)
+ * @usage x [, err, msg ] = uuid:set_clock_seq_hi_and_reserved(arg)
  */
 static int
 UUID_set_clock_seq_hi_and_reserved(lua_State *L)
@@ -328,7 +328,7 @@ UUID_set_clock_seq_hi_and_reserved(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:get_clock_seq_hi_and_reserved()
+ * @usage x [, err, msg ] = uuid:get_clock_seq_hi_and_reserved()
  */
 static int
 UUID_get_clock_seq_hi_and_reserved(lua_State *L)
@@ -349,11 +349,11 @@ UUID_get_clock_seq_hi_and_reserved(lua_State *L)
  *
  * @function set_clock_seq_low
  *
- * @param data              Octet maps to 9.
+ * @param arg               Octet maps to 9.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:set_clock_seq_low(data)
+ * @usage x [, err, msg ] = uuid:set_clock_seq_low(arg)
  */
 static int
 UUID_set_clock_seq_low(lua_State *L)
@@ -378,7 +378,7 @@ UUID_set_clock_seq_low(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = uuid:get_clock_seq_low()
+ * @usage x [, err, msg ] = uuid:get_clock_seq_low()
  */
 static int
 UUID_get_clock_seq_low(lua_State *L)
@@ -399,11 +399,11 @@ UUID_get_clock_seq_low(lua_State *L)
  *
  * @function set_node
  *
- * @param data              Octets maps to 10-15, unsigned 48 bit integer.
+ * @param arg               Octets maps to 10-15, unsigned 48 bit integer.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage str [, err, msg ] = uuid:set_node(data)
+ * @usage str [, err, msg ] = uuid:set_node(arg)
  */
 static int
 UUID_set_node(lua_State *L)
@@ -520,7 +520,7 @@ uuid_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct uuid *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_uuid_type)) != NULL) {
 
@@ -528,14 +528,14 @@ uuid_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_uuid_type, struct uuid *);
-                        (void)memmove(&(x[m]), y, luab_uuid_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_uuid_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -553,7 +553,7 @@ static void
 uuid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct uuid *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -561,8 +561,8 @@ uuid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_uuid_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_uuid_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

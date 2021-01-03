@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -159,7 +159,7 @@ PASSWD_dump(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_name()
+ * @usage x [, err, msg ] = passwd:pw_name()
  */
 static int
 PASSWD_pw_name(lua_State *L)
@@ -182,7 +182,7 @@ PASSWD_pw_name(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_passwd()
+ * @usage x [, err, msg ] = passwd:pw_passwd()
  */
 static int
 PASSWD_pw_passwd(lua_State *L)
@@ -205,7 +205,7 @@ PASSWD_pw_passwd(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_uid()
+ * @usage x [, err, msg ] = passwd:pw_uid()
  */
 static int
 PASSWD_pw_uid(lua_State *L)
@@ -228,7 +228,7 @@ PASSWD_pw_uid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_gid()
+ * @usage x [, err, msg ] = passwd:pw_gid()
  */
 static int
 PASSWD_pw_gid(lua_State *L)
@@ -251,7 +251,7 @@ PASSWD_pw_gid(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_change()
+ * @usage x [, err, msg ] = passwd:pw_change()
  */
 static int
 PASSWD_pw_change(lua_State *L)
@@ -274,7 +274,7 @@ PASSWD_pw_change(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_class()
+ * @usage x [, err, msg ] = passwd:pw_class()
  */
 static int
 PASSWD_pw_class(lua_State *L)
@@ -297,7 +297,7 @@ PASSWD_pw_class(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_gecos()
+ * @usage x [, err, msg ] = passwd:pw_gecos()
  */
 static int
 PASSWD_pw_gecos(lua_State *L)
@@ -320,7 +320,7 @@ PASSWD_pw_gecos(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_dir()
+ * @usage x [, err, msg ] = passwd:pw_dir()
  */
 static int
 PASSWD_pw_dir(lua_State *L)
@@ -343,7 +343,7 @@ PASSWD_pw_dir(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_shell()
+ * @usage x [, err, msg ] = passwd:pw_shell()
  */
 static int
 PASSWD_pw_shell(lua_State *L)
@@ -366,7 +366,7 @@ PASSWD_pw_shell(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_expire()
+ * @usage x [, err, msg ] = passwd:pw_expire()
  */
 static int
 PASSWD_pw_expire(lua_State *L)
@@ -389,7 +389,7 @@ PASSWD_pw_expire(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = passwd:pw_fields()
+ * @usage x [, err, msg ] = passwd:pw_fields()
  */
 static int
 PASSWD_pw_fields(lua_State *L)
@@ -487,7 +487,7 @@ passwd_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct passwd *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_passwd_type)) != NULL) {
 
@@ -495,14 +495,14 @@ passwd_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_passwd_type, struct passwd *);
-                        (void)memmove(&(x[m]), y, luab_passwd_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_passwd_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -521,7 +521,7 @@ static void
 passwd_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct passwd *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -529,8 +529,8 @@ passwd_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_passwd_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_passwd_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

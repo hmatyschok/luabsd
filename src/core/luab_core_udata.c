@@ -284,6 +284,10 @@ luab_udata_xlink(lua_State *L, int narg, luab_udata_t *udx, void **x)
     luab_udata_t *ud;
     void *dp;
 
+    /*
+     * XXX
+     */
+     
     if (udx == NULL || x == NULL)
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -292,7 +292,7 @@ JAIL_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:get_version()
+ * @usage x [, err, msg ] = jail:get_version()
  */
 static int
 JAIL_version(lua_State *L)
@@ -315,7 +315,7 @@ JAIL_version(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:ip4s()
+ * @usage x [, err, msg ] = jail:ip4s()
  */
 static int
 JAIL_ip4s(lua_State *L)
@@ -338,7 +338,7 @@ JAIL_ip4s(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:ip6s()
+ * @usage x [, err, msg ] = jail:ip6s()
  */
 static int
 JAIL_ip6s(lua_State *L)
@@ -363,11 +363,11 @@ JAIL_ip6s(lua_State *L)
  *
  * @function set_path
  *
- * @param data              Specifies path.
+ * @param arg               Specifies path.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:set_path(data)
+ * @usage x [, err, msg ] = jail:set_path(arg)
  */
 static int
 JAIL_set_path(lua_State *L)
@@ -393,7 +393,7 @@ JAIL_set_path(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:get_path()
+ * @usage x [, err, msg ] = jail:get_path()
  */
 static int
 JAIL_get_path(lua_State *L)
@@ -414,11 +414,11 @@ JAIL_get_path(lua_State *L)
  *
  * @function set_hostname
  *
- * @param data              Specifies hostname.
+ * @param arg               Specifies hostname.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:set_hostname(data)
+ * @usage x [, err, msg ] = jail:set_hostname(arg)
  */
 static int
 JAIL_set_hostname(lua_State *L)
@@ -444,7 +444,7 @@ JAIL_set_hostname(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:get_hostname()
+ * @usage x [, err, msg ] = jail:get_hostname()
  */
 static int
 JAIL_get_hostname(lua_State *L)
@@ -465,11 +465,11 @@ JAIL_get_hostname(lua_State *L)
  *
  * @function set_jailname
  *
- * @param data              Specifies jailname.
+ * @param arg               Specifies jailname.
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:set_jailname(data)
+ * @usage x [, err, msg ] = jail:set_jailname(arg)
  */
 static int
 JAIL_set_jailname(lua_State *L)
@@ -495,7 +495,7 @@ JAIL_set_jailname(lua_State *L)
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:get_jailname()
+ * @usage x [, err, msg ] = jail:get_jailname()
  */
 static int
 JAIL_get_jailname(lua_State *L)
@@ -516,12 +516,12 @@ JAIL_get_jailname(lua_State *L)
  *
  * @function set_jailname
  *
- * @param data              Specifies (LUA_TTABLE) capable to hold at least
+ * @param arg               Specifies (LUA_TTABLE) capable to hold at least
  *                          one instance of (LUA_TUSERDATA(IN_ADDR)) or more.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:set_ip4(data)
+ * @usage x [, err, msg ] = jail:set_ip4(arg)
  */
 static int
 JAIL_set_ip4(lua_State *L)
@@ -543,7 +543,7 @@ JAIL_set_ip4(lua_State *L)
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:get_ip4()
+ * @usage x [, err, msg ] = jail:get_ip4()
  */
 static int
 JAIL_get_ip4(lua_State *L)
@@ -562,12 +562,12 @@ JAIL_get_ip4(lua_State *L)
  *
  * @function set_jailname
  *
- * @param data              Specifies (LUA_TTABLE) capable to hold at least
+ * @param arg               Specifies (LUA_TTABLE) capable to hold at least
  *                          one instance of (LUA_TUSERDATA(IN_ADDR)) or more.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:set_ip6(data)
+ * @usage x [, err, msg ] = jail:set_ip6(arg)
  */
 static int
 JAIL_set_ip6(lua_State *L)
@@ -589,7 +589,7 @@ JAIL_set_ip6(lua_State *L)
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = jail:get_ip6()
+ * @usage x [, err, msg ] = jail:get_ip6()
  */
 static int
 JAIL_get_ip6(lua_State *L)
@@ -712,7 +712,7 @@ jail_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     struct jail *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvectornil(L, narg, &luab_jail_type)) != NULL) {
 
@@ -720,14 +720,14 @@ jail_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_jail_type, struct jail *);
-                        (void)memmove(&(x[m]), y, luab_jail_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_jail_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -746,7 +746,7 @@ static void
 jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     struct jail *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -754,8 +754,8 @@ jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_jail_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_jail_type, k, &(x[i]));
 
             errno = ENOENT;
         } else

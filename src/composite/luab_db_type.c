@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -57,11 +57,6 @@ typedef struct luab_db {
     luab_udata_t    ud_softc;
     DB              *ud_db;
 } luab_db_t;
-
-#define luab_new_db(L, arg) \
-    ((luab_db_t *)luab_newudata(L, &luab_db_type, (arg)))
-#define luab_to_db(L, narg) \
-    (luab_todata((L), (narg), &luab_db_type, luab_db_t *))
 
 /*
  * Subr.
@@ -132,12 +127,15 @@ db_fillxtable(lua_State *L, int narg, void *arg)
 static int
 DB_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(DB, TYPE, __func__);
+
     xtp.xtp_fill = db_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_db(L, 1);   /* XXX */
+    xtp.xtp_arg = (void *)luab_todata(L, 1, m, luab_db_t *);   /* XXX */
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -175,12 +173,14 @@ DB_dump(lua_State *L)
 static int
 DB_close(lua_State *L)
 {
+    luab_module_t *m;
     luab_db_t *self;
     int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_db(L, 1);
+    m = luab_xmod(DB, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_db_t *);
 
     if ((status = db_close(self->ud_db)) == 0)
         self->ud_db = NULL;
@@ -207,6 +207,7 @@ DB_close(lua_State *L)
 static int
 DB_del(lua_State *L)
 {
+    luab_module_t *m0, *m1, *m2;
     DB *db;
     DBT *k;
     u_int flags;
@@ -214,9 +215,13 @@ DB_del(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xmod(DBT, TYPE, __func__), DBT *);
-        flags = (u_int)luab_checkinteger(L, 3, luab_env_int_max);
+    m0 = luab_xmod(DB, TYPE, __func__);
+    m1 = luab_xmod(DBT, TYPE, __func__);
+    m2 = luab_xmod(UINT, TYPE, __func__);
+
+    if ((db = luab_udata(L, 1, m0, DB *)) != NULL) {
+        k = luab_udata(L, 2, m1, DBT *);
+        flags = (u_int)luab_checkxinteger(L, 3, m2, luab_env_int_max);
 
         status = (*db->del)(db, k, flags);
     } else
@@ -237,12 +242,15 @@ DB_del(lua_State *L)
 static int
 DB_fd(lua_State *L)
 {
+    luab_module_t *m;
     DB *db;
     int fd;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL)
+    m = luab_xmod(DB, TYPE, __func__);
+
+    if ((db = luab_udata(L, 1, m, DB *)) != NULL)
         fd = (*db->fd)(db);
     else
         fd = luab_env_error;
@@ -256,7 +264,7 @@ DB_fd(lua_State *L)
  * @function get
  *
  * @param key               Instance of (LUA_TUSERDATA(DBT)).
- * @param data              Instance of (LUA_TUSERDATA(DBT)).
+ * @param arg               Instance of (LUA_TUSERDATA(DBT)).
  * @param flags             Set to 0.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -266,6 +274,7 @@ DB_fd(lua_State *L)
 static int
 DB_get(lua_State *L)
 {
+    luab_module_t *m0, *m1, *m2;
     DB *db;
     DBT *k, *v;
     u_int flags;
@@ -273,10 +282,14 @@ DB_get(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xmod(DBT, TYPE, __func__), DBT *);
-        v = luab_udata(L, 3, luab_xmod(DBT, TYPE, __func__), DBT *);
-        flags = (u_int)luab_checkinteger(L, 4, luab_env_int_max);
+    m0 = luab_xmod(DB, TYPE, __func__);
+    m1 = luab_xmod(DBT, TYPE, __func__);
+    m2 = luab_xmod(UINT, TYPE, __func__);
+
+    if ((db = luab_udata(L, 1, m0, DB *)) != NULL) {
+        k = luab_udata(L, 2, m1, DBT *);
+        v = luab_udata(L, 3, m1, DBT *);
+        flags = (u_int)luab_checkxinteger(L, 4, m2, luab_env_int_max);
 
         status = (*db->get)(db, k, v, flags);
     } else
@@ -291,7 +304,7 @@ DB_get(lua_State *L)
  * @function put
  *
  * @param key               Instance of (LUA_TUSERDATA(DBT)).
- * @param data              Instance of (LUA_TUSERDATA(DBT)).
+ * @param arg               Instance of (LUA_TUSERDATA(DBT)).
  * @param flags             May be set from
  *
  *                              bsd.db.R_{CURSOR,I{AFTER,BEFORE},
@@ -306,6 +319,7 @@ DB_get(lua_State *L)
 static int
 DB_put(lua_State *L)
 {
+    luab_module_t *m0, *m1, *m2;
     DB *db;
     DBT *k, *v;
     u_int flags;
@@ -313,10 +327,14 @@ DB_put(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xmod(DBT, TYPE, __func__), DBT *);
-        v = luab_udata(L, 3, luab_xmod(DBT, TYPE, __func__), DBT *);
-        flags = (u_int)luab_checkinteger(L, 4, luab_env_int_max);
+    m0 = luab_xmod(DB, TYPE, __func__);
+    m1 = luab_xmod(DBT, TYPE, __func__);
+    m2 = luab_xmod(UINT, TYPE, __func__);
+
+    if ((db = luab_udata(L, 1, m0, DB *)) != NULL) {
+        k = luab_udata(L, 2, m1, DBT *);
+        v = luab_udata(L, 3, m1, DBT *);
+        flags = (u_int)luab_checkxinteger(L, 4, m2, luab_env_int_max);
 
         status = (*db->put)(db, k, v, flags);
     } else
@@ -331,7 +349,7 @@ DB_put(lua_State *L)
  * @function seq
  *
  * @param key               Instance of (LUA_TUSERDATA(DBT)).
- * @param data              Instance of (LUA_TUSERDATA(DBT)).
+ * @param arg               Instance of (LUA_TUSERDATA(DBT)).
  * @param flags             May be set from
  *
  *                              bsd.db.R_{CURSOR,FIRST,LAST,NEXT,PREV}
@@ -345,6 +363,7 @@ DB_put(lua_State *L)
 static int
 DB_seq(lua_State *L)
 {
+    luab_module_t *m0, *m1, *m2;
     DB *db;
     DBT *k, *v;
     u_int flags;
@@ -352,10 +371,14 @@ DB_seq(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 4);
 
-    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        k = luab_udata(L, 2, luab_xmod(DBT, TYPE, __func__), DBT *);
-        v = luab_udata(L, 3, luab_xmod(DBT, TYPE, __func__), DBT *);
-        flags = (u_int)luab_checkinteger(L, 4, luab_env_int_max);
+    m0 = luab_xmod(DB, TYPE, __func__);
+    m1 = luab_xmod(DBT, TYPE, __func__);
+    m2 = luab_xmod(UINT, TYPE, __func__);
+
+    if ((db = luab_udata(L, 1, m0, DB *)) != NULL) {
+        k = luab_udata(L, 2, m1, DBT *);
+        v = luab_udata(L, 3, m1, DBT *);
+        flags = (u_int)luab_checkxinteger(L, 4, m2, luab_env_int_max);
 
         status = (*db->seq)(db, k, v, flags);
     } else
@@ -382,14 +405,18 @@ DB_seq(lua_State *L)
 static int
 DB_sync(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     DB *db;
     u_int flags;
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    if ((db = luab_udata(L, 1, &luab_db_type, DB *)) != NULL) {
-        flags = (u_int)luab_checkinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(DB, TYPE, __func__);
+    m1 = luab_xmod(UINT, TYPE, __func__);
+
+    if ((db = luab_udata(L, 1, m0, DB *)) != NULL) {
+        flags = (u_int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
         status = (*db->sync)(db, flags);
     } else
@@ -405,11 +432,13 @@ DB_sync(lua_State *L)
 static int
 DB_gc(lua_State *L)
 {
+    luab_module_t *m;
     luab_db_t *self;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_db(L, 1);
+    m = luab_xmod(DB, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_db_t *);
 
     if (db_close(self->ud_db) == 0)
         self->ud_db = NULL;
@@ -420,17 +449,21 @@ DB_gc(lua_State *L)
 static int
 DB_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_db_type));
+    luab_module_t *m;
+    m = luab_xmod(DB, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 DB_tostring(lua_State *L)
 {
+    luab_module_t *m;
     luab_db_t *self;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_db(L, 1);
+    m = luab_xmod(DB, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_db_t *);
 
     if (self->ud_db != NULL)
         lua_pushfstring(L, "db (%p)", self->ud_db);
@@ -463,12 +496,15 @@ static luab_module_table_t db_methods[] = {
 static void *
 db_create(lua_State *L, void *arg)
 {
+    luab_module_t *m;
     luab_db_param_t *dbp;
     luab_db_t *self;
 
+    m = luab_xmod(DB, TYPE, __func__);
+
     if ((dbp = (luab_db_param_t *)arg) != NULL) {
 
-        if ((self = luab_new_db(L, dbp->dbp_db)) == NULL) {
+        if ((self = luab_newudata(L, m, dbp->dbp_db)) == NULL) {
 
             if (dbp->dbp_db != NULL)
                 (void)(*dbp->dbp_db->close)(dbp->dbp_db);
@@ -491,7 +527,11 @@ db_init(void *ud, void *arg)
 static void *
 db_udata(lua_State *L, int narg)
 {
-    luab_db_t *self = luab_to_db(L, narg);
+    luab_module_t *m;
+    luab_db_t *self;
+
+    m = luab_xmod(DB, TYPE, __func__);
+    self = luab_todata(L, narg, m, luab_db_t *);
 
     if (self->ud_db == NULL)
         errno = EBADF;
@@ -502,24 +542,27 @@ db_udata(lua_State *L, int narg)
 static luab_table_t *
 db_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     DB *x, *y;
-    size_t m, n;
+    size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_db_type)) != NULL) {
+    m = luab_xmod(DB, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (DB *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_db_type, DB *);
-                        (void)memmove(&(x[m]), y, luab_db_type.m_sz);
+                        y = luab_udata(L, -1, m, DB *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -537,8 +580,11 @@ db_checktable(lua_State *L, int narg)
 static void
 db_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     DB *x;
-    size_t m, n, k;
+    size_t i, j, k;
+
+    m = luab_xmod(DB, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -546,8 +592,8 @@ db_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_db_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -562,7 +608,9 @@ db_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 db_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_db_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(DB, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_db_type = {

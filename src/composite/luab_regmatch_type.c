@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 Henning Matyschok
+ * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -132,7 +132,7 @@ REGMATCH_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = regmatch:rm_so()
+ * @usage x [, err, msg ] = regmatch:rm_so()
  */
 static int
 REGMATCH_rm_so(lua_State *L)
@@ -155,7 +155,7 @@ REGMATCH_rm_so(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage data [, err, msg ] = regmatch:rm_eo()
+ * @usage x [, err, msg ] = regmatch:rm_eo()
  */
 static int
 REGMATCH_rm_eo(lua_State *L)
@@ -231,7 +231,7 @@ regmatch_checktable(lua_State *L, int narg)
 {
     luab_table_t *tbl;
     regmatch_t *x, *y;
-    size_t m, n;
+    size_t i, j;
 
     if ((tbl = luab_table_newvector(L, narg, &luab_regmatch_type)) != NULL) {
 
@@ -239,14 +239,14 @@ regmatch_checktable(lua_State *L, int narg)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
-            for (m = 0, n = tbl->tbl_card; m < n; m++) {
+            for (i = 0, j = tbl->tbl_card; i < j; i++) {
 
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
                         y = luab_udata(L, -1, &luab_regmatch_type, regmatch_t *);
-                        (void)memmove(&(x[m]), y, luab_regmatch_type.m_sz);
+                        (void)memmove(&(x[i]), y, luab_regmatch_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -264,7 +264,7 @@ static void
 regmatch_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     regmatch_t *x;
-    size_t m, n, k;
+    size_t i, j, k;
 
     if (tbl != NULL) {
 
@@ -272,8 +272,8 @@ regmatch_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
-            for (m = 0, n = tbl->tbl_card, k = 1; m < n; m++, k++)
-                luab_rawsetxdata(L, narg, &luab_regmatch_type, k, &(x[m]));
+            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
+                luab_rawsetxdata(L, narg, &luab_regmatch_type, k, &(x[i]));
 
             errno = ENOENT;
         } else
