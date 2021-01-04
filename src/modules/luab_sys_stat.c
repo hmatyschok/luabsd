@@ -1064,6 +1064,32 @@ luab_dev_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(INO)).
+ *
+ * @function ino_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(INO)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ino [, err, msg ] = bsd.sys.stat.ino_create(arg)
+ */
+static int
+luab_ino_create(lua_State *L)
+{
+    luab_module_t *m;
+    ino_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INO, TYPE, __func__);
+    x = (ino_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function - create an instance of (LUA_TUSERDATA(STAT)).
  *
  * @function stat_create
@@ -1185,6 +1211,7 @@ static luab_module_table_t luab_sys_stat_vec[] = {
     LUAB_FUNC("mknodat",        luab_mknodat),
 #endif
     LUAB_FUNC("dev_create",     luab_dev_create),
+    LUAB_FUNC("ino_create",     luab_ino_create),
     LUAB_FUNC("stat_create",    luab_stat_create),
     LUAB_MOD_TBL_SENTINEL
 };

@@ -667,6 +667,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_VM_OFFSET_TYPE_ID                  1609421996
 #define LUAB_VM_OFFSET_TYPE                     "VM_OFFSET*"
 
+#define LUAB_INO_TYPE_ID                        1609721091
+#define LUAB_INO_TYPE                           "INO*"
+
 /*
  * Set of composite data types.
  */
