@@ -147,6 +147,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_DEV_IDX,
     },{
+        .mv_mod = &luab_fflags_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_FFLAGS_IDX,
+    },{
         .mv_mod = &luab_ino_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INO_IDX,

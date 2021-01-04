@@ -676,6 +676,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_BLKCNT_TYPE_ID                     1609763312
 #define LUAB_BLKCNT_TYPE                        "BLKCNT*"
 
+#define LUAB_FFLAGS_TYPE_ID                     1609765760
+#define LUAB_FFLAGS_TYPE                        "FFLAGS*"
+
 /*
  * Set of composite data types.
  */

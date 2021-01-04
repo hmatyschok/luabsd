@@ -1090,6 +1090,32 @@ luab_dev_create(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(FFLAGS)).
+ *
+ * @function fflags_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(FFLAGS)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage fflags [, err, msg ] = bsd.sys.stat.fflags_create(arg)
+ */
+static int
+luab_fflags_create(lua_State *L)
+{
+    luab_module_t *m;
+    fflags_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(FFLAGS, TYPE, __func__);
+    x = (fflags_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(INO)).
  *
  * @function ino_create
@@ -1264,6 +1290,7 @@ static luab_module_table_t luab_sys_stat_vec[] = {
 #endif
     LUAB_FUNC("blkcnt",             luab_blkcnt_create)
     LUAB_FUNC("dev_create",         luab_dev_create),
+    LUAB_FUNC("fflags_create",      luab_fflags_create),
     LUAB_FUNC("ino_create",         luab_ino_create),
     LUAB_FUNC("nlink_create",       luab_nlink_create),
     LUAB_FUNC("stat_create",        luab_stat_create),

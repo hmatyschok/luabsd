@@ -48,6 +48,7 @@ SRCS+=  luab_in_port_type.c
 # <sys/stat.h>
 SRCS+=  luab_blkcnt_type.c
 SRCS+=  luab_dev_type.c
+SRCS+=  luab_fflags_type.c
 SRSC+=  luab_ino_type.c
 SRCS+=  luab_nlink_type.c
 
