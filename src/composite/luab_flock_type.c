@@ -187,7 +187,7 @@ FLOCK_set_l_len(lua_State *L)
     m1 = luab_xmod(OFF, TYPE, __func__);
 
     l = luab_udata(L, 1, m0, struct flock *);
-    x = (off_t)luab_checkxinteger(L, 2, m1, luab_env_long_max);
+    x = (off_t)luab_checkxinteger(L, 2, m1, luab_env_ulong_max);
 
     l->l_len = x;
 
@@ -224,7 +224,7 @@ FLOCK_set_l_pid(lua_State *L)
     m1 = luab_xmod(PID, TYPE, __func__);
 
     l = luab_udata(L, 1, m0, struct flock *);
-    x = (pid_t)luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    x = (pid_t)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     l->l_pid = x;
 
@@ -261,7 +261,7 @@ FLOCK_set_l_type(lua_State *L)
     m1 = luab_xmod(SHORT, TYPE, __func__);
 
     l = luab_udata(L, 1, m0, struct flock *);
-    x = (short)luab_checkxinteger(L, 2, m1, luab_env_shrt_max);
+    x = (short)luab_checkxinteger(L, 2, m1, luab_env_ushrt_max);
 
     l->l_type = x;
 
@@ -298,7 +298,7 @@ FLOCK_set_l_whence(lua_State *L)
     m1 = luab_xmod(SHORT, TYPE, __func__);
 
     l = luab_udata(L, 1, m0, struct flock *);
-    x = (short)luab_checkxinteger(L, 2, m1, luab_env_shrt_max);
+    x = (short)luab_checkxinteger(L, 2, m1, luab_env_ushrt_max);
 
     l->l_whence = x;
 
@@ -335,7 +335,7 @@ FLOCK_set_l_sysid(lua_State *L)
     m1 = luab_xmod(INT, TYPE, __func__);
 
     l = luab_udata(L, 1, m0, struct flock *);
-    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     l->l_sysid = x;
 

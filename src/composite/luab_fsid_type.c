@@ -47,12 +47,6 @@ typedef struct luab_fsid {
     fsid_t          ud_fsid;
 } luab_fsid_t;
 
-#define luab_new_fsid(L, arg) \
-    ((luab_fsid_t *)luab_newudata(L, &luab_fsid_type, (arg)))
-#define luab_to_fsid(L, narg) \
-    (luab_toldata((L), (narg), &luab_fsid_type, \
-        fsid_t *, luab_fsid_type.m_sz))
-
 /*
  * Subr.
  */
@@ -124,12 +118,15 @@ fsid_fillxtable(lua_State *L, int narg, void *arg)
 static int
 FSID_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(FSID, TYPE, __func__);
+
     xtp.xtp_fill = fsid_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_fsid_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -148,7 +145,9 @@ FSID_get_table(lua_State *L)
 static int
 FSID_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_fsid_type, luab_fsid_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -167,12 +166,14 @@ FSID_dump(lua_State *L)
 static int
 FSID_val(lua_State *L)
 {
+    luab_module_t *m;
     fsid_t *fsid;
     int32_t *dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fsid = luab_udata(L, 1, &luab_fsid_type, fsid_t *);
+    m = luab_xmod(FSID, TYPE, __func__);
+    fsid = luab_udata(L, 1, m, fsid_t *);
     dp = fsid->val;
 
     return (luab_table_pushfsid(L, -2, NULL, dp));
@@ -185,19 +186,25 @@ FSID_val(lua_State *L)
 static int
 FSID_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_fsid_type));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 FSID_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_fsid_type));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 FSID_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_fsid_type));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -217,29 +224,38 @@ static luab_module_table_t fsid_methods[] = {
 static void *
 fsid_create(lua_State *L, void *arg)
 {
-    return (luab_new_fsid(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 fsid_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_fsid_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 fsid_udata(lua_State *L, int narg)
 {
-    return (luab_to_fsid(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 fsid_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     fsid_t *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_fsid_type)) != NULL) {
+    m = luab_xmod(FSID, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (fsid_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -251,8 +267,8 @@ fsid_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_fsid_type, fsid_t *);
-                        (void)memmove(&(x[i]), y, luab_fsid_type.m_sz);
+                        y = luab_udata(L, -1, m, fsid_t *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -270,8 +286,11 @@ fsid_checktable(lua_State *L, int narg)
 static void
 fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     fsid_t *x;
     size_t i, j, k;
+
+    m = luab_xmod(FSID, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -280,7 +299,7 @@ fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_fsid_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -295,7 +314,9 @@ fsid_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 fsid_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_fsid_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(FSID, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_fsid_type = {

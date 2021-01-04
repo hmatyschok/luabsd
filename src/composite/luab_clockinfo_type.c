@@ -156,7 +156,7 @@ CLOCKINFO_set_hz(lua_State *L)
     m1 = luab_xmod(INT, TYPE, __func__);
 
     ci = luab_udata(L, 1, m0, struct clockinfo *);
-    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     ci->hz = x;
 
@@ -212,7 +212,7 @@ CLOCKINFO_set_tick(lua_State *L)
     m1 = luab_xmod(INT, TYPE, __func__);
 
     ci = luab_udata(L, 1, m0, struct clockinfo *);
-    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     ci->tick = x;
 
@@ -268,7 +268,7 @@ CLOCKINFO_set_stathz(lua_State *L)
     m1 = luab_xmod(INT, TYPE, __func__);
 
     ci = luab_udata(L, 1, m0, struct clockinfo *);
-    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     ci->stathz = x;
 
@@ -324,7 +324,7 @@ CLOCKINFO_set_profhz(lua_State *L)
     m1 = luab_xmod(INT, TYPE, __func__);
 
     ci = luab_udata(L, 1, m0, struct clockinfo *);
-    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     ci->profhz = x;
 

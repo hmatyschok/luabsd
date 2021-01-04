@@ -151,7 +151,7 @@ CRYPT_DATA_set_initialized(lua_State *L)
     m1 = luab_xmod(INT, TYPE, __func__);
 
     cd = luab_udata(L, 1, m0, struct crypt_data *);
-    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     cd->initialized = x;
 

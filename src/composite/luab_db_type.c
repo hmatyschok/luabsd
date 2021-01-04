@@ -135,7 +135,7 @@ DB_get_table(lua_State *L)
     m = luab_xmod(DB, TYPE, __func__);
 
     xtp.xtp_fill = db_fillxtable;
-    xtp.xtp_arg = (void *)luab_todata(L, 1, m, luab_db_t *);   /* XXX */
+    xtp.xtp_arg = luab_todata(L, 1, m, void *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
