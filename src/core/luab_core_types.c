@@ -158,7 +158,7 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_nlink_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_NLINK_IDX,
-    }{ /* POSIX sized integrals, <sys/stdint.h> */
+    },{ /* POSIX sized integrals, <sys/stdint.h> */
         .mv_mod = &luab_int8_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INT8_IDX,

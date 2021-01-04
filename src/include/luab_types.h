@@ -173,6 +173,7 @@ typedef enum luab_type {
     /* <sys/stat.h> */
     LUAB_BLKCNT_IDX,
     LUAB_DEV_IDX,
+    LUAB_FFLAGS_IDX,
     LUAB_INO_IDX,
     LUAB_NLINK_IDX,
 

@@ -1288,7 +1288,7 @@ static luab_module_table_t luab_sys_stat_vec[] = {
 #if __XSI_VISIBLE >= 700
     LUAB_FUNC("mknodat",            luab_mknodat),
 #endif
-    LUAB_FUNC("blkcnt",             luab_blkcnt_create)
+    LUAB_FUNC("blkcnt_create",      luab_blkcnt_create),
     LUAB_FUNC("dev_create",         luab_dev_create),
     LUAB_FUNC("fflags_create",      luab_fflags_create),
     LUAB_FUNC("ino_create",         luab_ino_create),
