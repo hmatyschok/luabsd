@@ -25,6 +25,7 @@
  */
 
 #include <fstab.h>
+#undef FSTAB    /* XXX */
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -55,12 +56,6 @@ typedef struct luab_fstab {
     luab_udata_t    ud_softc;
     struct fstab    ud_fs;
 } luab_fstab_t;
-
-#define luab_new_fstab(L, arg) \
-    ((luab_fstab_t *)luab_newudata(L, &luab_fstab_type, (arg)))
-#define luab_to_fstab(L, narg) \
-    (luab_toldata((L), (narg), &luab_fstab_type, \
-        struct fstab *, luab_fstab_type.m_sz))
 
 /*
  * Subr.
@@ -110,12 +105,15 @@ fstab_fillxtable(lua_State *L, int narg, void *arg)
 static int
 FSTAB_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(FSTAB, TYPE, __func__);
+
     xtp.xtp_fill = fstab_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_fstab_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -134,7 +132,9 @@ FSTAB_get_table(lua_State *L)
 static int
 FSTAB_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_fstab_type, luab_fstab_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -153,12 +153,14 @@ FSTAB_dump(lua_State *L)
 static int
 FSTAB_fs_spec(lua_State *L)
 {
+    luab_module_t *m;
     struct fstab *fs;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    fs = luab_udata(L, 1, m, struct fstab *);
     dp = fs->fs_spec;
 
     return (luab_pushstring(L, dp));
@@ -176,12 +178,14 @@ FSTAB_fs_spec(lua_State *L)
 static int
 FSTAB_fs_file(lua_State *L)
 {
+    luab_module_t *m;
     struct fstab *fs;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    fs = luab_udata(L, 1, m, struct fstab *);
     dp = fs->fs_file;
 
     return (luab_pushstring(L, dp));
@@ -199,12 +203,14 @@ FSTAB_fs_file(lua_State *L)
 static int
 FSTAB_fs_vfstype(lua_State *L)
 {
+    luab_module_t *m;
     struct fstab *fs;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    fs = luab_udata(L, 1, m, struct fstab *);
     dp = fs->fs_vfstype;
 
     return (luab_pushstring(L, dp));
@@ -222,12 +228,14 @@ FSTAB_fs_vfstype(lua_State *L)
 static int
 FSTAB_fs_mntops(lua_State *L)
 {
+    luab_module_t *m;
     struct fstab *fs;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    fs = luab_udata(L, 1, m, struct fstab *);
     dp = fs->fs_mntops;
 
     return (luab_pushstring(L, dp));
@@ -245,12 +253,14 @@ FSTAB_fs_mntops(lua_State *L)
 static int
 FSTAB_fs_type(lua_State *L)
 {
+    luab_module_t *m;
     struct fstab *fs;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    fs = luab_udata(L, 1, m, struct fstab *);
     dp = fs->fs_type;
 
     return (luab_pushstring(L, dp));
@@ -268,12 +278,14 @@ FSTAB_fs_type(lua_State *L)
 static int
 FSTAB_fs_freq(lua_State *L)
 {
+    luab_module_t *m;
     struct fstab *fs;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    fs = luab_udata(L, 1, m, struct fstab *);
     x = fs->fs_freq;
 
     return (luab_pushxinteger(L, x));
@@ -291,12 +303,14 @@ FSTAB_fs_freq(lua_State *L)
 static int
 FSTAB_fs_passno(lua_State *L)
 {
+    luab_module_t *m;
     struct fstab *fs;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    fs = luab_udata(L, 1, &luab_fstab_type, struct fstab *);
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    fs = luab_udata(L, 1, m, struct fstab *);
     x = fs->fs_passno;
 
     return (luab_pushxinteger(L, x));
@@ -309,19 +323,25 @@ FSTAB_fs_passno(lua_State *L)
 static int
 FSTAB_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_fstab_type));
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 FSTAB_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_fstab_type));
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 FSTAB_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_fstab_type));
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -347,29 +367,38 @@ static luab_module_table_t fstab_methods[] = {
 static void *
 fstab_create(lua_State *L, void *arg)
 {
-    return (luab_new_fstab(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 fstab_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_fstab_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 fstab_udata(lua_State *L, int narg)
 {
-    return (luab_to_fstab(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 fstab_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct fstab *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_fstab_type)) != NULL) {
+    m = luab_xmod(FSTAB, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct fstab *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -381,8 +410,8 @@ fstab_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_fstab_type, struct fstab *);
-                        (void)memmove(&(x[i]), y, luab_fstab_type.m_sz);
+                        y = luab_udata(L, -1, m, struct fstab *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -400,8 +429,11 @@ fstab_checktable(lua_State *L, int narg)
 static void
 fstab_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct fstab *x;
     size_t i, j, k;
+
+    m = luab_xmod(FSTAB, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -410,7 +442,7 @@ fstab_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_fstab_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -425,7 +457,9 @@ fstab_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 fstab_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_fstab_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(FSTAB, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_fstab_type = {
