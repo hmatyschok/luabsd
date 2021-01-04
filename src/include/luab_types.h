@@ -171,6 +171,7 @@ typedef enum luab_type {
     LUAB_IN_PORT_IDX,
 
     /* <sys/stat.h> */
+    LUAB_BLKCNT_IDX,
     LUAB_DEV_IDX,
     LUAB_INO_IDX,
     LUAB_NLINK_IDX,

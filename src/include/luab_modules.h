@@ -62,6 +62,7 @@ extern luab_module_t luab_vm_offset_type;
 extern luab_module_t luab_in_port_type;
 
 /* <sys/stat.h> */
+extern luab_module_t luab_blkcnt_type;
 extern luab_module_t luab_dev_type;
 extern luab_module_t luab_ino_type;
 extern luab_module_t luab_nlink_type;

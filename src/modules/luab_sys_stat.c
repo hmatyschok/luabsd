@@ -1037,6 +1037,32 @@ luab_mknodat(lua_State *L)
  */
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(BLKCNT)).
+ *
+ * @function blkcnt_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(BLKCNT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage blkcnt [, err, msg ] = bsd.sys.stat.blkcnt_create(arg)
+ */
+static int
+luab_blkcnt_create(lua_State *L)
+{
+    luab_module_t *m;
+    blkcnt_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(BLKCNT, TYPE, __func__);
+    x = (blkcnt_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(DEV)).
  *
  * @function dev_create
@@ -1058,7 +1084,7 @@ luab_dev_create(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(DEV, TYPE, __func__);
-    x = (dev_t)luab_checkxinteger(L, 1, m, luab_env_long_max);
+    x = (dev_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
 
     return (luab_pushxdata(L, m, &x));
 }
@@ -1236,6 +1262,7 @@ static luab_module_table_t luab_sys_stat_vec[] = {
 #if __XSI_VISIBLE >= 700
     LUAB_FUNC("mknodat",            luab_mknodat),
 #endif
+    LUAB_FUNC("blkcnt",             luab_blkcnt_create)
     LUAB_FUNC("dev_create",         luab_dev_create),
     LUAB_FUNC("ino_create",         luab_ino_create),
     LUAB_FUNC("nlink_create",       luab_nlink_create),

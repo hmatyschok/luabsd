@@ -673,6 +673,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_NLINK_TYPE_ID                      1609760120
 #define LUAB_NLINK_TYPE                         "NLINK*"
 
+#define LUAB_BLKCNT_TYPE_ID                     1609763312
+#define LUAB_BLKCNT_TYPE                        "BLKCNT*"
+
 /*
  * Set of composite data types.
  */

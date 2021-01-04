@@ -216,7 +216,7 @@ STAT_set_st_dev(lua_State *L)
     m1 = luab_xmod(DEV, TYPE, __func__);
 
     st = luab_udata(L, 1, m0, struct stat *);
-    x = (dev_t)luab_checkxinteger(L, 2, m1, luab_env_long_max);
+    x = (dev_t)luab_checkxinteger(L, 2, m1, luab_env_ulong_max);
 
     st->st_dev = x;
 
@@ -286,10 +286,11 @@ STAT_set_st_nlink(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(NLINK, TYPE, __func__);
     
-    
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (nlink_t)luab_checkxinteger(L, 2, luab_env_long_max);
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (nlink_t)luab_checkxinteger(L, 2, m1, luab_env_ulong_max);
 
     st->st_nlink = x;
 
@@ -300,7 +301,6 @@ static int
 STAT_get_st_nlink(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     nlink_t x;
 
@@ -317,16 +317,17 @@ STAT_get_st_nlink(lua_State *L)
 static int
 STAT_set_st_mode(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     mode_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(MODE, TYPE, __func__);
     
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (mode_t)luab_checkxinteger(L, 2, luab_env_ushrt_max);
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (mode_t)luab_checkxinteger(L, 2, m1, luab_env_ushrt_max);
 
     st->st_mode = x;
 
@@ -337,12 +338,12 @@ static int
 STAT_get_st_mode(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     mode_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_mode;
 
@@ -353,15 +354,17 @@ STAT_get_st_mode(lua_State *L)
 static int
 STAT_set_st_uid(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     uid_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (uid_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(UID, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (uid_t)luab_checkxinteger(L, 2, m1, luab_env_uid_max);
 
     st->st_uid = x;
 
@@ -372,12 +375,12 @@ static int
 STAT_get_st_uid(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_uid;
 
@@ -388,15 +391,17 @@ STAT_get_st_uid(lua_State *L)
 static int
 STAT_set_st_gid(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     gid_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (gid_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(GID, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (gid_t)luab_checkxinteger(L, 2, m1, luab_env_gid_max);
 
     st->st_gid = x;
 
@@ -407,12 +412,12 @@ static int
 STAT_get_st_gid(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     gid_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_gid;
 
@@ -423,15 +428,17 @@ STAT_get_st_gid(lua_State *L)
 static int
 STAT_set_st_rdev(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     dev_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (dev_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(DEV, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (dev_t)luab_checkxinteger(L, 2, m1, luab_env_ulong_max);
 
     st->st_rdev = x;
 
@@ -459,15 +466,17 @@ STAT_get_st_rdev(lua_State *L)
 static int
 STAT_set_st_atim_ext(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (__int32_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(INT32, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (__int32_t)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     st->st_atim_ext = x;
 
@@ -478,12 +487,12 @@ static int
 STAT_get_st_atim_ext(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_atim_ext;
 
@@ -494,35 +503,39 @@ STAT_get_st_atim_ext(lua_State *L)
 static int
 STAT_set_st_atim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    tv = luab_udata(L, 2, m1, struct timespec *);
 
     (void)memmove(&st->st_atim, tv, sizeof(*tv));
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 static int
 STAT_get_st_atim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
     st = luab_udata(L, 1, m, struct stat *);
     tv = &st->st_atim;
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 /* time of last data modification */
@@ -530,15 +543,17 @@ STAT_get_st_atim(lua_State *L)
 static int
 STAT_set_st_mtim_ext(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (__int32_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(INT32, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (__int32_t)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     st->st_mtim_ext = x;
 
@@ -549,12 +564,12 @@ static int
 STAT_get_st_mtim_ext(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_mtim_ext;
 
@@ -565,35 +580,39 @@ STAT_get_st_mtim_ext(lua_State *L)
 static int
 STAT_set_st_mtim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    tv = luab_udata(L, 2, m1, struct timespec *);
 
     (void)memmove(&st->st_mtim, tv, sizeof(*tv));
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 static int
 STAT_get_st_mtim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
     st = luab_udata(L, 1, m, struct stat *);
     tv = &st->st_mtim;
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 /* time of last file status change */
@@ -601,15 +620,17 @@ STAT_get_st_mtim(lua_State *L)
 static int
 STAT_set_st_ctim_ext(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (__int32_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(INT32, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (__int32_t)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     st->st_ctim_ext = x;
 
@@ -620,12 +641,12 @@ static int
 STAT_get_st_ctim_ext(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_ctim_ext;
 
@@ -636,35 +657,39 @@ STAT_get_st_ctim_ext(lua_State *L)
 static int
 STAT_set_st_ctim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    tv = luab_udata(L, 2, m1, struct timespec *);
 
     (void)memmove(&st->st_ctim, tv, sizeof(*tv));
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 static int
 STAT_get_st_ctim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    st = luab_udata(L, 1, m, struct stat *);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
     tv = &st->st_ctim;
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 /* time of file creation */
@@ -672,15 +697,17 @@ STAT_get_st_ctim(lua_State *L)
 static int
 STAT_set_st_btim_ext(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (__int32_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(INT32, TYPE, __func__);
+    
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (__int32_t)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     st->st_btim_ext = x;
 
@@ -691,12 +718,12 @@ static int
 STAT_get_st_btim_ext(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     __int32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_btim_ext;
 
@@ -707,50 +734,56 @@ STAT_get_st_btim_ext(lua_State *L)
 static int
 STAT_set_st_birthtim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    tv = luab_udata(L, 2, luab_xmod(TIMESPEC, TYPE, __func__), struct timespec *);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    tv = luab_udata(L, 2, m1, struct timespec *);
 
     (void)memmove(&st->st_birthtim, tv, sizeof(*tv));
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 static int
 STAT_get_st_birthtim(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0;
     struct stat *st;
     struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    st = luab_udata(L, 1, m, struct stat *);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
     tv = &st->st_birthtim;
 
-    return (luab_pushxdata(L, luab_xmod(TIMESPEC, TYPE, __func__), tv));
+    return (luab_pushxdata(L, m1, tv));
 }
 
 /* file size, in bytes */
 static int
 STAT_set_st_size(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     off_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (off_t)luab_checkxinteger(L, 2, luab_env_long_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(OFF, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (off_t)luab_checkxinteger(L, 2, m1, luab_env_ulong_max);
 
     st->st_size = x;
 
@@ -761,12 +794,12 @@ static int
 STAT_get_st_size(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     off_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_size;
 
@@ -777,15 +810,17 @@ STAT_get_st_size(lua_State *L)
 static int
 STAT_set_st_blocks(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     blkcnt_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (blkcnt_t)luab_checkxinteger(L, 2, luab_env_long_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(BLKCNT, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (blkcnt_t)luab_checkxinteger(L, 2, m0, luab_env_ulong_max);
 
     st->st_blocks = x;
 
@@ -796,12 +831,12 @@ static int
 STAT_get_st_blocks(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     blkcnt_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_blocks;
 
@@ -812,15 +847,17 @@ STAT_get_st_blocks(lua_State *L)
 static int
 STAT_set_st_blksize(lua_State *L)
 {
-    luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
+    luab_module_t *m0, *m1;
     struct stat *st;
     blksize_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (blksize_t)luab_checkxinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(STAT, TYPE, __func__);
+    m1 = luab_xmod(BLKCNT, TYPE, __func__);
+
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (blksize_t)luab_checkxinteger(L, 2, m1, luab_env_ulong_max);
 
     st->st_blksize = x;
 
@@ -831,12 +868,12 @@ static int
 STAT_get_st_blksize(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(STAT, TYPE, __func__);
     struct stat *st;
     blksize_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(STAT, TYPE, __func__);
     st = luab_udata(L, 1, m, struct stat *);
     x = st->st_blksize;
 
