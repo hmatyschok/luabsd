@@ -252,8 +252,8 @@ STAT_set_st_ino(lua_State *L)
     m0 = luab_xmod(STAT, TYPE, __func__);
     m1 = luab_xmod(INO, TYPE, __func__);
 
-    st = luab_udata(L, 1, m, struct stat *);
-    x = (ino_t)luab_checkxinteger(L, 2, luab_env_long_max);
+    st = luab_udata(L, 1, m0, struct stat *);
+    x = (ino_t)luab_checkxinteger(L, 2, m1, luab_env_ulong_max);
 
     st->st_ino = x;
 
