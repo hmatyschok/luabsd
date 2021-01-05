@@ -112,6 +112,8 @@ luab_iovec_param_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_l
 {
     luab_module_t *m;
 
+    m = luab_xmod(IOVEC, TYPE, __func__);
+
     if ((iop != NULL) &&
         (len <= max_len) &&
         (max_len <= luab_env_buf_max)) {
@@ -123,7 +125,6 @@ luab_iovec_param_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_l
             iop->iop_data.iov_len = (len == max_len) ? max_len : len;
             iop->iop_data.iov_base = v;
         }
-        m = luab_xmod(IOVEC, TYPE, __func__);
     } else
         m = NULL;
 
@@ -137,10 +138,12 @@ luab_iovec_param_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_l
 caddr_t
 luab_iovec_toldata(lua_State *L, int narg, size_t len)
 {
+    luab_module_t *m;
     luab_iovec_t *buf;
     caddr_t bp;
 
-    buf = luab_udata(L, narg, luab_xmod(IOVEC, TYPE, __func__), luab_iovec_t *);
+    m = luab_xmod(IOVEC, TYPE, __func__);
+    buf = luab_udata(L, narg, m, luab_iovec_t *);
 
     if ((buf->iov_max_len <= luab_env_buf_max) &&
         (buf->iov.iov_len <= buf->iov_max_len) &&
