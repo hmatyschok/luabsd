@@ -50,12 +50,6 @@ typedef struct luab_linger {
     struct linger   ud_l;
 } luab_linger_t;
 
-#define luab_new_linger(L, arg) \
-    ((luab_linger_t *)luab_newudata(L, &luab_linger_type, (arg)))
-#define luab_to_linger(L, narg) \
-    (luab_toldata((L), (narg), &luab_linger_type, \
-        struct linger *, luab_linger_type.m_sz))
-
 /*
  * Subr.
  */
@@ -94,12 +88,15 @@ linger_fillxtable(lua_State *L, int narg, void *arg)
 static int
 LINGER_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(LINGER, TYPE, __func__);
+
     xtp.xtp_fill = linger_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_linger_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -118,7 +115,9 @@ LINGER_get_table(lua_State *L)
 static int
 LINGER_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_linger_type, luab_linger_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -139,13 +138,17 @@ LINGER_dump(lua_State *L)
 static int
 LINGER_set_l_onoff(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct linger *l;
     int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(LINGER, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    l = luab_udata(L, 1, m0, struct linger *);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     l->l_onoff = x;
 
@@ -164,12 +167,14 @@ LINGER_set_l_onoff(lua_State *L)
 static int
 LINGER_get_l_onoff(lua_State *L)
 {
+    luab_module_t *m;
     struct linger *l;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
+    m = luab_xmod(LINGER, TYPE, __func__);
+    l = luab_udata(L, 1, m, struct linger *);
     x = l->l_onoff;
 
     return (luab_pushxinteger(L, x));
@@ -189,13 +194,17 @@ LINGER_get_l_onoff(lua_State *L)
 static int
 LINGER_set_l_linger(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct linger *l;
     int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
-    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(LINGER, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    l = luab_udata(L, 1, m0, struct linger *);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     l->l_linger = x;
 
@@ -214,12 +223,14 @@ LINGER_set_l_linger(lua_State *L)
 static int
 LINGER_get_l_linger(lua_State *L)
 {
+    luab_module_t *m;
     struct linger *l;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    l = luab_udata(L, 1, &luab_linger_type, struct linger *);
+    m = luab_xmod(LINGER, TYPE, __func__);
+    l = luab_udata(L, 1, m, struct linger *);
     x = l->l_linger;
 
     return (luab_pushxinteger(L, x));
@@ -232,19 +243,25 @@ LINGER_get_l_linger(lua_State *L)
 static int
 LINGER_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_linger_type));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 LINGER_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_linger_type));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 LINGER_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_linger_type));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -267,29 +284,38 @@ static luab_module_table_t linger_methods[] = {
 static void *
 linger_create(lua_State *L, void *arg)
 {
-    return (luab_new_linger(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 linger_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_linger_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 linger_udata(lua_State *L, int narg)
 {
-    return (luab_to_linger(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 linger_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct linger *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_linger_type)) != NULL) {
+    m = luab_xmod(LINGER, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct linger *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -301,8 +327,8 @@ linger_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_linger_type, struct linger *);
-                        (void)memmove(&(x[i]), y, luab_linger_type.m_sz);
+                        y = luab_udata(L, -1, m, struct linger *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -320,8 +346,11 @@ linger_checktable(lua_State *L, int narg)
 static void
 linger_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct linger *x;
     size_t i, j, k;
+
+    m = luab_xmod(LINGER, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -330,7 +359,7 @@ linger_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_linger_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -345,7 +374,9 @@ linger_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 linger_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_linger_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(LINGER, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_linger_type = {
