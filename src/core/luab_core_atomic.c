@@ -535,6 +535,32 @@ luab_lual_integer_create(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(LUAL_NUMBER)).
+ *
+ * @function lual_number_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(LUAL_NUMBER)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage lual_number [, err, msg ] = bsd.core.atomic.lual_number_create(arg)
+ */
+static int
+luab_lual_number_create(lua_State *L)
+{
+    luab_module_t *m;
+    lua_Number x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(LUAL_NUMBER, TYPE, __func__);
+    x = (lua_Number)luab_checklxinteger(L, 1, m, 0);
+    return (luab_pushxdata(L, m, &x));
+}
+
 static luab_module_table_t luab_core_atomic_vec[] = {
     /* integer types */
 #if __BSD_VISIBLE
@@ -562,6 +588,7 @@ static luab_module_table_t luab_core_atomic_vec[] = {
     LUAB_FUNC("clock_create",           luab_clock_create),
     LUAB_FUNC("vm_offset_create",       luab_vm_offset_create),
     LUAB_FUNC("lua_integer_create",     luab_lual_integer_create),
+    LUAB_FUNC("lua_number_create",      luab_lual_number_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

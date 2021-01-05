@@ -59,6 +59,7 @@ extern luab_module_t luab_locale_type;
 extern luab_module_t luab_vm_offset_type;
 
 extern luab_module_t luab_lual_integer_type;
+extern luab_module_t luab_lual_number_type;
 
 /* <arpa/inet.h> */
 extern luab_module_t luab_in_port_type;
