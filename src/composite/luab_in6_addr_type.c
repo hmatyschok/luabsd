@@ -56,12 +56,6 @@ typedef struct luab_in6_addr {
 } luab_in6_addr_t;
 #define s6_addr32   __u6_addr.__u6_addr32
 
-#define luab_new_in6_addr(L, arg) \
-    ((luab_in6_addr_t *)luab_newudata(L, &luab_in6_addr_type, (arg)))
-#define luab_to_in6_addr(L, narg) \
-    (luab_toldata((L), (narg), &luab_in6_addr_type, \
-        struct in6_addr *, luab_in6_addr_type.m_sz))
-
 /*
  * Subr.
  */
@@ -98,12 +92,15 @@ in6_addr_fillxtable(lua_State *L, int narg, void *arg)
 static int
 IN6_ADDR_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+
     xtp.xtp_fill = in6_addr_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_in6_addr_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -122,7 +119,9 @@ IN6_ADDR_get_table(lua_State *L)
 static int
 IN6_ADDR_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_in6_addr_type, luab_in6_addr_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -143,12 +142,16 @@ IN6_ADDR_dump(lua_State *L)
 static int
 IN6_ADDR_set_s6_addr(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct in6_addr *ia;
     uint32_t k, v;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ia = luab_udata(L, 1, &luab_in6_addr_type, struct in6_addr *);
+    m0 = luab_xmod(IN6_ADDR, TYPE, __func__);
+    m1 = luab_xmod(UINT32, TYPE, __func__);
+
+    ia = luab_udata(L, 1, m0, struct in6_addr *);
 
     (void)luab_checkltable(L, 2, 4);
 
@@ -158,7 +161,7 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 
         if ((lua_isnumber(L, -2) != 0) &&
             (lua_isnumber(L, -1) != 0)) {
-            v = (uint32_t)luab_tointeger(L, -1, luab_env_uint_max);
+            v = (uint32_t)luab_toxinteger(L, -1, m1, luab_env_uint_max);
             ia->s6_addr32[k] = (uint32_t)v;
         } else
             luab_core_argerror(L, 2, NULL, 0, 0, EINVAL);
@@ -180,12 +183,14 @@ IN6_ADDR_set_s6_addr(lua_State *L)
 static int
 IN6_ADDR_get_s6_addr(lua_State *L)
 {
+    luab_module_t *m;
     struct in6_addr *ia;
     int i, j;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ia = luab_udata(L, 1, &luab_in6_addr_type, struct in6_addr *);
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    ia = luab_udata(L, 1, m, struct in6_addr *);
 
     luab_table_init(L, 1);
                                                 /* XXX DRY */
@@ -204,19 +209,25 @@ IN6_ADDR_get_s6_addr(lua_State *L)
 static int
 IN6_ADDR_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_in6_addr_type));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 IN6_ADDR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_in6_addr_type));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 IN6_ADDR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_in6_addr_type));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -237,29 +248,38 @@ static luab_module_table_t in6_addr_methods[] = {
 static void *
 in6_addr_create(lua_State *L, void *arg)
 {
-    return (luab_new_in6_addr(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 in6_addr_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_in6_addr_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 in6_addr_udata(lua_State *L, int narg)
 {
-    return (luab_to_in6_addr(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 in6_addr_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct in6_addr *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_in6_addr_type)) != NULL) {
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct in6_addr *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -271,8 +291,8 @@ in6_addr_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_in6_addr_type, struct in6_addr *);
-                        (void)memmove(&(x[i]), y, luab_in6_addr_type.m_sz);
+                        y = luab_udata(L, -1, m, struct in6_addr *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -290,8 +310,11 @@ in6_addr_checktable(lua_State *L, int narg)
 static void
 in6_addr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct in6_addr *x;
     size_t i, j, k;
+
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -300,7 +323,7 @@ in6_addr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_in6_addr_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -315,7 +338,9 @@ in6_addr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 in6_addr_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_in6_addr_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(IN6_ADDR, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_in6_addr_type = {
