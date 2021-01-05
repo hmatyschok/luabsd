@@ -48,12 +48,6 @@ typedef struct luab_ldiv {
     ldiv_t          ud_ldiv;
 } luab_ldiv_t;
 
-#define luab_new_ldiv(L, arg) \
-    ((luab_ldiv_t *)luab_newudata(L, &luab_ldiv_type, (arg)))
-#define luab_to_ldiv(L, narg) \
-    (luab_toldata((L), (narg), &luab_ldiv_type, \
-        ldiv_t *, luab_ldiv_type.m_sz))
-
 /*
  * Subr.
  */
@@ -92,12 +86,15 @@ ldiv_fillxtable(lua_State *L, int narg, void *arg)
 static int
 LDIV_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(LDIV, TYPE, __func__);
+
     xtp.xtp_fill = ldiv_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_ldiv_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -116,7 +113,9 @@ LDIV_get_table(lua_State *L)
 static int
 LDIV_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_ldiv_type, luab_ldiv_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -135,12 +134,14 @@ LDIV_dump(lua_State *L)
 static int
 LDIV_quot(lua_State *L)
 {
+    luab_module_t *m;
     ldiv_t *ldiv;
     long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
+    m = luab_xmod(LDIV, TYPE, __func__);
+    ldiv = luab_udata(L, 1, m, ldiv_t *);
     x = ldiv->quot;
 
     return (luab_pushxinteger(L, x));
@@ -158,12 +159,14 @@ LDIV_quot(lua_State *L)
 static int
 LDIV_rem(lua_State *L)
 {
+    luab_module_t *m;
     ldiv_t *ldiv;
     long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ldiv = luab_udata(L, 1, &luab_ldiv_type, ldiv_t *);
+    m = luab_xmod(LDIV, TYPE, __func__);
+    ldiv = luab_udata(L, 1, m, ldiv_t *);
     x = ldiv->rem;
 
     return (luab_pushxinteger(L, x));
@@ -176,19 +179,25 @@ LDIV_rem(lua_State *L)
 static int
 LDIV_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_ldiv_type));
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 LDIV_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_ldiv_type));
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 LDIV_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_ldiv_type));
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -209,29 +218,38 @@ static luab_module_table_t ldiv_methods[] = {
 static void *
 ldiv_create(lua_State *L, void *arg)
 {
-    return (luab_new_ldiv(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 ldiv_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_ldiv_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 ldiv_udata(lua_State *L, int narg)
 {
-    return (luab_to_ldiv(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 ldiv_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     ldiv_t *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_ldiv_type)) != NULL) {
+    m = luab_xmod(LDIV, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (ldiv_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -243,8 +261,8 @@ ldiv_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_ldiv_type, ldiv_t *);
-                        (void)memmove(&(x[i]), y, luab_ldiv_type.m_sz);
+                        y = luab_udata(L, -1, m, ldiv_t *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -262,8 +280,11 @@ ldiv_checktable(lua_State *L, int narg)
 static void
 ldiv_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     ldiv_t *x;
     size_t i, j, k;
+
+    m = luab_xmod(LDIV, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -272,7 +293,7 @@ ldiv_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_ldiv_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -287,7 +308,9 @@ ldiv_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 ldiv_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_ldiv_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(LDIV, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_ldiv_type = {
