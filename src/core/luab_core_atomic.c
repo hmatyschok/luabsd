@@ -509,32 +509,59 @@ luab_vm_offset_create(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(LUAL_INTEGER)).
+ *
+ * @function lual_integer_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(LUAL_INTEGER)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage lual_integer [, err, msg ] = bsd.core.atomic.lual_integer_create(arg)
+ */
+static int
+luab_lual_integer_create(lua_State *L)
+{
+    luab_module_t *m;
+    lua_Integer x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(LUAL_INTEGER, TYPE, __func__);
+    x = (lua_Integer)luab_checklxinteger(L, 1, m, 0);
+    return (luab_pushxdata(L, m, &x));
+}
+
 static luab_module_table_t luab_core_atomic_vec[] = {
     /* integer types */
 #if __BSD_VISIBLE
-    LUAB_FUNC("ushrt_create",       luab_ushrt_create),
-    LUAB_FUNC("uint_create",        luab_uint_create),
-    LUAB_FUNC("ulong_create",       luab_ulong_create),
+    LUAB_FUNC("ushrt_create",           luab_ushrt_create),
+    LUAB_FUNC("uint_create",            luab_uint_create),
+    LUAB_FUNC("ulong_create",           luab_ulong_create),
 #endif /* __BSD_VISIBLE */
-    LUAB_FUNC("char_create",        luab_char_create),
-    LUAB_FUNC("short_create",       luab_short_create),
-    LUAB_FUNC("int_create",         luab_int_create),
-    LUAB_FUNC("long_create",        luab_long_create),
+    LUAB_FUNC("char_create",            luab_char_create),
+    LUAB_FUNC("short_create",           luab_short_create),
+    LUAB_FUNC("int_create",             luab_int_create),
+    LUAB_FUNC("long_create",            luab_long_create),
 
     /* floating point number types */
-    LUAB_FUNC("double_create",      luab_double_create),
-    LUAB_FUNC("float_create",       luab_float_create),
+    LUAB_FUNC("double_create",          luab_double_create),
+    LUAB_FUNC("float_create",           luab_float_create),
 
     /* stadard types */
-    LUAB_FUNC("off_create",         luab_off_create),
-    LUAB_FUNC("size_create",        luab_size_create),
-    LUAB_FUNC("socklen_create",     luab_socklen_create),
-    LUAB_FUNC("ssize_create",       luab_ssize_create),
-    LUAB_FUNC("uid_create",         luab_uid_create),
-    LUAB_FUNC("wchar_create",       luab_wchar_create),
-    LUAB_FUNC("time_create",        luab_time_create),
-    LUAB_FUNC("clock_create",       luab_clock_create),
-    LUAB_FUNC("vm_offset_create",   luab_vm_offset_create),
+    LUAB_FUNC("off_create",             luab_off_create),
+    LUAB_FUNC("size_create",            luab_size_create),
+    LUAB_FUNC("socklen_create",         luab_socklen_create),
+    LUAB_FUNC("ssize_create",           luab_ssize_create),
+    LUAB_FUNC("uid_create",             luab_uid_create),
+    LUAB_FUNC("wchar_create",           luab_wchar_create),
+    LUAB_FUNC("time_create",            luab_time_create),
+    LUAB_FUNC("clock_create",           luab_clock_create),
+    LUAB_FUNC("vm_offset_create",       luab_vm_offset_create),
+    LUAB_FUNC("lua_integer_create",     luab_lual_integer_create),
     LUAB_MOD_TBL_SENTINEL
 };
 

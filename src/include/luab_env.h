@@ -679,6 +679,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_FFLAGS_TYPE_ID                     1609765760
 #define LUAB_FFLAGS_TYPE                        "FFLAGS*"
 
+#define LUAB_LUAL_INTEGER_TYPE_ID               1609859233
+#define LUAB_LUAL_INTEGER_TYPE                  "LUAL_INTEGER*"
+
 /*
  * Set of composite data types.
  */

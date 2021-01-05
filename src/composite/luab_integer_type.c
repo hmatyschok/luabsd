@@ -72,11 +72,6 @@ typedef struct luab_integer {
     luab_primitive_t     ud_x;
 } luab_integer_t;
 
-#define luab_new_integer(L, arg) \
-    ((luab_integer_t *)luab_newudata(L, &luab_integer_type, (arg)))
-#define luab_to_integer(L, narg) \
-    ((luab_integer_t *)luab_toudata((L), (narg), &luab_integer_type))
-
 /*
  * Subr.
  */
@@ -113,12 +108,15 @@ in_addr_fillxtable(lua_State *L, int narg, void *arg)
 static int
 INTEGER_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(INTEGER, TYPE, __func__);
+
     xtp.xtp_fill = in_addr_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_integer_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -158,13 +156,17 @@ INTEGER_dump(lua_State *L)
 static int
 INTEGER_set_x(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     luab_primitive_t *xp;
     lua_Integer x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    xp = luab_udata(L, 1, &luab_integer_type, luab_primitive_t *);
-    x = luab_checklinteger(L, 2, 1);
+    m0 = luab_xmod(INTEGER, TYPE, __func__);
+    m1 = luab_xmod(LUAL_INTEGER, TYPE, __func__);
+
+    xp = luab_udata(L, 1, m0, luab_primitive_t *);
+    x = luab_checklxinteger(L, 2, m1, 0);
 
     xp->un_intx = x;
 
@@ -183,12 +185,14 @@ INTEGER_set_x(lua_State *L)
 static int
 INTEGER_get_x(lua_State *L)
 {
+    luab_module_t *m;
     luab_primitive_t *xp;
     lua_Integer x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    xp = luab_udata(L, 1, &luab_integer_type, luab_primitive_t *);
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    xp = luab_udata(L, 1, m, luab_primitive_t *);
     x = xp->un_intx;
 
     return (luab_pushxinteger(L, x));
@@ -201,19 +205,25 @@ INTEGER_get_x(lua_State *L)
 static int
 INTEGER_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_integer_type));
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 INTEGER_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_integer_type));
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 INTEGER_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_integer_type));
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -234,29 +244,38 @@ static luab_module_table_t integer_methods[] = {
 static void *
 integer_create(lua_State *L, void *arg)
 {
-    return (luab_new_integer(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 integer_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_integer_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 integer_udata(lua_State *L, int narg)
 {
-    return (luab_to_integer(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    return (luab_toudata(L, narg, m));
 }
 
 static luab_table_t *
 integer_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     luab_primitive_t *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_integer_type)) != NULL) {
+    m = luab_xmod(INTEGER, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (luab_primitive_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -268,8 +287,8 @@ integer_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_integer_type, luab_primitive_t *);
-                        (void)memmove(&(x[i]), y, luab_integer_type.m_sz);
+                        y = luab_udata(L, -1, m, luab_primitive_t *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -287,8 +306,11 @@ integer_checktable(lua_State *L, int narg)
 static void
 integer_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     luab_primitive_t *x;
     size_t i, j, k;
+
+    m = luab_xmod(INTEGER, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -297,7 +319,7 @@ integer_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_integer_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -312,7 +334,9 @@ integer_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 integer_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_integer_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_integer_type = {
