@@ -77,11 +77,6 @@ typedef struct luab_jail {
     luab_table_t    *ud_cache[LUAB_XADDR_MAX];
 } luab_jail_t;
 
-#define luab_new_jail(L, arg) \
-    ((luab_jail_t *)luab_newudata(L, &luab_jail_type, (arg)))
-#define luab_to_jail(L, narg) \
-    (luab_todata((L), (narg), &luab_jail_type, luab_jail_t *))
-
 #define LUAB_XADDR_VEC_SENTINEL                     \
     {                                               \
         .xav_idx   = LUAB_XADDR_MAX,                \
@@ -254,12 +249,15 @@ jail_fillxtable(lua_State *L, int narg, void *arg)
 static int
 JAIL_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(JAIL, TYPE, __func__);
+
     xtp.xtp_fill = jail_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_jail(L, 1);   /* XXX */
+    xtp.xtp_arg = luab_checkudata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -297,12 +295,14 @@ JAIL_dump(lua_State *L)
 static int
 JAIL_version(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     uint32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     x = jp->version;
 
     return (luab_pushxinteger(L, x));
@@ -320,12 +320,14 @@ JAIL_version(lua_State *L)
 static int
 JAIL_ip4s(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     uint32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     x = jp->ip4s;
 
     return (luab_pushxinteger(L, x));
@@ -343,12 +345,14 @@ JAIL_ip4s(lua_State *L)
 static int
 JAIL_ip6s(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     uint32_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     x = jp->ip6s;
 
     return (luab_pushxinteger(L, x));
@@ -372,12 +376,14 @@ JAIL_ip6s(lua_State *L)
 static int
 JAIL_set_path(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     dp = luab_checklstringalloc(L, 2, luab_env_path_max);
 
     luab_core_freestr(jp->path);
@@ -398,12 +404,14 @@ JAIL_set_path(lua_State *L)
 static int
 JAIL_get_path(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     dp = jp->path;
 
     return (luab_pushstring(L, dp));
@@ -423,12 +431,14 @@ JAIL_get_path(lua_State *L)
 static int
 JAIL_set_hostname(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     dp = luab_checklstringalloc(L, 2, luab_env_host_name_max);
 
     luab_core_freestr(jp->hostname);
@@ -449,12 +459,14 @@ JAIL_set_hostname(lua_State *L)
 static int
 JAIL_get_hostname(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     dp = jp->hostname;
 
     return (luab_pushstring(L, dp));
@@ -474,12 +486,14 @@ JAIL_get_hostname(lua_State *L)
 static int
 JAIL_set_jailname(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     dp = luab_checklstringalloc(L, 2, luab_env_host_name_max);
 
     luab_core_freestr(jp->jailname);
@@ -500,12 +514,14 @@ JAIL_set_jailname(lua_State *L)
 static int
 JAIL_get_jailname(lua_State *L)
 {
+    luab_module_t *m;
     struct jail *jp;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    jp = luab_udata(L, 1, &luab_jail_type, struct jail *);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    jp = luab_udata(L, 1, m, struct jail *);
     dp = jp->jailname;
 
     return (luab_pushstring(L, dp));
@@ -526,12 +542,14 @@ JAIL_get_jailname(lua_State *L)
 static int
 JAIL_set_ip4(lua_State *L)
 {
+    luab_module_t *m;
     luab_jail_t *self;
     size_t card;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_jail(L, 1);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_jail_t *);
     card = jail_checkxaddrtable(L, 2, self, LUAB_XADDR_IP4);
     return (luab_pushxinteger(L, card));
 }
@@ -548,11 +566,13 @@ JAIL_set_ip4(lua_State *L)
 static int
 JAIL_get_ip4(lua_State *L)
 {
+    luab_module_t *m;
     luab_jail_t *self;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_jail(L, 1);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_jail_t *);
 
     return (jail_pushxaddrtable(L, -2, NULL, self, LUAB_XADDR_IP4));
 }
@@ -572,12 +592,14 @@ JAIL_get_ip4(lua_State *L)
 static int
 JAIL_set_ip6(lua_State *L)
 {
+    luab_module_t *m;
     luab_jail_t *self;
     size_t card;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_jail(L, 1);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_jail_t *);
     card = jail_checkxaddrtable(L, 2, self, LUAB_XADDR_IP6);
     return (luab_pushxinteger(L, card));
 }
@@ -594,11 +616,13 @@ JAIL_set_ip6(lua_State *L)
 static int
 JAIL_get_ip6(lua_State *L)
 {
+    luab_module_t *m;
     luab_jail_t *self;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_jail(L, 1);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_jail_t *);
 
     return (jail_pushxaddrtable(L, -2, NULL, self, LUAB_XADDR_IP6));
 }
@@ -610,6 +634,7 @@ JAIL_get_ip6(lua_State *L)
 static int
 JAIL_gc(lua_State *L)
 {
+    luab_module_t *m;
     luab_jail_t *self;
     struct jail *jp;
     luab_xaddr_t n;
@@ -617,7 +642,8 @@ JAIL_gc(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_jail(L, 1);
+    m = luab_xmod(JAIL, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_jail_t *);
     jp = &(self->ud_jail);
 
     luab_core_freestr(jp->path);
@@ -632,19 +658,23 @@ JAIL_gc(lua_State *L)
         n++;
     } while (n < LUAB_XADDR_MAX);
 
-    return (luab_core_gc(L, 1, &luab_jail_type));
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 JAIL_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_jail_type));
+    luab_module_t *m;
+    m = luab_xmod(JAIL, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 JAIL_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_jail_type));
+    luab_module_t *m;
+    m = luab_xmod(JAIL, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -676,12 +706,15 @@ static luab_module_table_t jail_methods[] = {
 static void *
 jail_create(lua_State *L, void *arg __unused)
 {
+    luab_module_t *m;
     luab_jail_t *self;
     int api;
 
+    m = luab_xmod(JAIL, TYPE, __func__);
+
     if (JAIL_API_VERSION == 2) {
         api = JAIL_API_VERSION;
-        self = luab_new_jail(L, &api);
+        self = luab_newudata(L, m, &api);
     } else
         self = NULL;
 
@@ -702,19 +735,25 @@ jail_init(void *ud, void *arg)
 static void *
 jail_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_jail_t *self;
-    self = luab_to_jail(L, narg);
+
+    m = luab_xmod(JAIL, TYPE, __func__);
+    self = luab_checkudata(L, narg, m);
     return ((void *)&(self->ud_jail));
 }
 
 static luab_table_t *
 jail_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct jail *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_jail_type)) != NULL) {
+    m = luab_xmod(JAIL, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct jail *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -726,8 +765,8 @@ jail_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_jail_type, struct jail *);
-                        (void)memmove(&(x[i]), y, luab_jail_type.m_sz);
+                        y = luab_udata(L, -1, m, struct jail *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -745,8 +784,11 @@ jail_checktable(lua_State *L, int narg)
 static void
 jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct jail *x;
     size_t i, j, k;
+
+    m = luab_xmod(JAIL, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -755,7 +797,7 @@ jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_jail_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -770,7 +812,9 @@ jail_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 jail_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_jail_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(JAIL, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_jail_type = {
