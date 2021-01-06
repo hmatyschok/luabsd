@@ -61,6 +61,10 @@
 luab_module_vec_t luab_typevec[] = {
 #if __BSD_VISIBLE
     {                                       /* integer types */
+        .mv_mod = &luab_uchar_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_UCHAR_IDX,
+    },{
         .mv_mod = &luab_ushrt_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_USHRT_IDX,

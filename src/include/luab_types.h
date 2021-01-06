@@ -142,6 +142,7 @@ typedef void    (*luab_module_fn)(lua_State *, int, luab_module_t *);
 
 typedef enum luab_type {
 #if __BSD_VISIBLE
+    LUAB_UCHAR_IDX,
     LUAB_USHRT_IDX,
     LUAB_UINT_IDX,
     LUAB_ULONG_IDX,

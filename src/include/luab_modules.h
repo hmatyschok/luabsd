@@ -32,6 +32,7 @@
  */
 
 #if __BSD_VISIBLE
+extern luab_module_t luab_uchar_type;
 extern luab_module_t luab_ushrt_type;
 extern luab_module_t luab_uint_type;
 extern luab_module_t luab_ulong_type;

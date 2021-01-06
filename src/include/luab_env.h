@@ -682,8 +682,11 @@ extern u_long luab_env_phys_pages;
 #define LUAB_LUAL_INTEGER_TYPE_ID               1609859233
 #define LUAB_LUAL_INTEGER_TYPE                  "LUAL_INTEGER*"
 
-#define LUAB_LUAL_NUMBER_TYPE_ID             1609876996
-#define LUAB_LUAL_NUMBER_TYPE                "LUAL_NUMBER*"
+#define LUAB_LUAL_NUMBER_TYPE_ID                1609876996
+#define LUAB_LUAL_NUMBER_TYPE                   "LUAL_NUMBER*"
+
+#define LUAB_UCHAR_TYPE_ID                      1609944412
+#define LUAB_UCHAR_TYPE                         "UCHAR*"
 
 /*
  * Set of composite data types.

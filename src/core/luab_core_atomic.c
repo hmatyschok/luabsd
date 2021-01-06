@@ -41,6 +41,32 @@
 
 #if __BSD_VISIBLE
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UCHAR)).
+ *
+ * @function uchar_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UCHAR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uchar [, err, msg ] = bsd.core.atomic.uchar_create(arg)
+ */
+static int
+luab_uchar_create(lua_State *L)
+{
+    luab_module_t *m;
+    u_char x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UCHAR, TYPE, __func__);
+    x = (u_char)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(USHRT)).
  *
  * @function ushrt_create
@@ -561,9 +587,14 @@ luab_lual_number_create(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/*
+ * Internal interface.
+ */
+
 static luab_module_table_t luab_core_atomic_vec[] = {
     /* integer types */
 #if __BSD_VISIBLE
+    LUAB_FUNC("uchar_create",           luab_uchar_create),
     LUAB_FUNC("ushrt_create",           luab_ushrt_create),
     LUAB_FUNC("uint_create",            luab_uint_create),
     LUAB_FUNC("ulong_create",           luab_ulong_create),

@@ -15,6 +15,7 @@
 .PATH: ${LUAB_SRCTOP}/atomic
 
 # integer types
+SRCS+=  luab_uchar_type.c
 SRCS+=  luab_ushrt_type.c
 SRCS+=  luab_uint_type.c
 SRCS+=  luab_ulong_type.c
