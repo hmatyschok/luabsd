@@ -50,12 +50,6 @@ typedef struct luab_timeval {
     struct timeval      ud_tv;
 } luab_timeval_t;
 
-#define luab_new_timeval(L, arg) \
-    ((luab_timeval_t *)luab_newudata(L, &luab_timeval_type, (arg)))
-#define luab_to_timeval(L, narg) \
-    (luab_toldata((L), (narg), &luab_timeval_type, \
-        struct timeval *, luab_timeval_type.m_sz))
-
 /*
  * Subr.
  */
@@ -94,12 +88,15 @@ timeval_fillxtable(lua_State *L, int narg, void *arg)
 static int
 TIMEVAL_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+
     xtp.xtp_fill = timeval_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_timeval_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -118,7 +115,9 @@ TIMEVAL_get_table(lua_State *L)
 static int
 TIMEVAL_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_timeval_type, luab_timeval_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -139,13 +138,17 @@ TIMEVAL_dump(lua_State *L)
 static int
 TIMEVAL_set_tv_sec(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct timeval *tv;
     time_t x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
-    x = (time_t)luab_checkinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(TIMEVAL, TYPE, __func__);
+    m1 = luab_xmod(TIME, TYPE, __func__);
+
+    tv = luab_udata(L, 1, m0, struct timeval *);
+    x = (time_t)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     tv->tv_sec = x;
 
@@ -164,12 +167,14 @@ TIMEVAL_set_tv_sec(lua_State *L)
 static int
 TIMEVAL_get_tv_sec(lua_State *L)
 {
+    luab_module_t *m;
     struct timeval *tv;
     time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    tv = luab_udata(L, 1, m, struct timeval *);
     x = tv->tv_sec;
 
     return (luab_pushxinteger(L, x));
@@ -189,13 +194,17 @@ TIMEVAL_get_tv_sec(lua_State *L)
 static int
 TIMEVAL_set_tv_usec(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct timeval *tv;
     long x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
-    x = (long)luab_checkinteger(L, 2, luab_env_long_max);
+    m0 = luab_xmod(TIMEVAL, TYPE, __func__);
+    m1 = luab_xmod(LONG, TYPE, __func__);
+
+    tv = luab_udata(L, 1, m0, struct timeval *);
+    x = (long)luab_checkxinteger(L, 2, m1, luab_env_long_max);
 
     tv->tv_usec = x;
 
@@ -214,12 +223,14 @@ TIMEVAL_set_tv_usec(lua_State *L)
 static int
 TIMEVAL_get_tv_usec(lua_State *L)
 {
+    luab_module_t *m;
     struct timeval *tv;
     long x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tv = luab_udata(L, 1, &luab_timeval_type, struct timeval *);
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    tv = luab_udata(L, 1, m, struct timeval *);
     x = tv->tv_usec;
 
     return (luab_pushxinteger(L, x));
@@ -232,19 +243,25 @@ TIMEVAL_get_tv_usec(lua_State *L)
 static int
 TIMEVAL_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_timeval_type));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 TIMEVAL_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_timeval_type));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 TIMEVAL_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_timeval_type));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -267,29 +284,37 @@ static luab_module_table_t timeval_methods[] = {
 static void *
 timeval_create(lua_State *L, void *arg)
 {
-    return (luab_new_timeval(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 timeval_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_timeval_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 timeval_udata(lua_State *L, int narg)
 {
-    return (luab_to_timeval(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 timeval_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
     luab_table_t *tbl;
     struct timeval *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_timeval_type)) != NULL) {
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct timeval *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -301,8 +326,8 @@ timeval_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_timeval_type, struct timeval *);
-                        (void)memmove(&(x[i]), y, luab_timeval_type.m_sz);
+                        y = luab_udata(L, -1, m, struct timeval *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -319,6 +344,8 @@ timeval_checktable(lua_State *L, int narg)
 static void
 timeval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
     struct timeval *x;
     size_t i, j, k;
 
@@ -329,7 +356,7 @@ timeval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_timeval_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -344,7 +371,9 @@ timeval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 timeval_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_timeval_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_timeval_type = {
