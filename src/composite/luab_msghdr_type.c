@@ -34,8 +34,8 @@
 
 #if __BSD_VISIBLE
 /*
- * XXX well, the "implementation" of this "feature" is
- *  incomplete and _under_construction_ [sic!], etc.
+ * XXX
+ *  Well, the "implementation" of this "feature" is incomplete, etc.
  */
 
 extern luab_module_t luab_msghdr_type;
@@ -71,11 +71,6 @@ typedef struct luab_msghdr {
     ssize_t         msg_len;
     luab_table_t    *msg_buf;
 } luab_msghdr_t;
-
-#define luab_new_msghdr(L, arg) \
-    ((luab_msghdr_t *)luab_newudata(L, &luab_msghdr_type, (arg)))
-#define luab_to_msghdr(L, narg) \
-    (luab_todata((L), (narg), &luab_msghdr_type, luab_msghdr_t *))
 
 /*
  * Subr.
@@ -113,8 +108,11 @@ msghdr_pushiovec(lua_State *L, int narg, const char *k, luab_table_t *tbl)
 static void
 msghdr_fillxtable(lua_State *L, int narg, void *arg)
 {
+    luab_module_t *m;
     luab_msghdr_t *self;
     struct msghdr *msg;
+
+    m = luab_xmod(SOCKADDR, TYPE, __func__);
 
     if ((self = (luab_msghdr_t *)arg) != NULL) {
         msg = &(self->msg_hdr);
@@ -123,7 +121,7 @@ msghdr_fillxtable(lua_State *L, int narg, void *arg)
         luab_setinteger(L, narg, "msg_namelen", msg->msg_namelen);
 
         if (msg->msg_name != NULL)
-            luab_setxdata(L, narg, luab_xmod(SOCKADDR, TYPE, __func__), "msg_name", msg->msg_name);
+            luab_setxdata(L, narg, m, "msg_name", msg->msg_name);
 
         if (msg->msg_iov != NULL)
             (void)msghdr_pushiovec(L, narg, "msg_iov", self->msg_buf);
@@ -154,12 +152,15 @@ msghdr_fillxtable(lua_State *L, int narg, void *arg)
 static int
 MSGHDR_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+
     xtp.xtp_fill = msghdr_fillxtable;
-    xtp.xtp_arg = luab_to_msghdr(L, 1);
+    xtp.xtp_arg = luab_checkudata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -198,12 +199,14 @@ MSGHDR_dump(lua_State *L)
 static int
 MSGHDR_msg_namelen(lua_State *L)
 {
+    luab_module_t *m;
     struct msghdr *msg;
     socklen_t namelen;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    msg = luab_udata(L, 1, m, struct msghdr *);
     namelen = msg->msg_namelen;
 
     return (luab_pushxinteger(L, namelen));
@@ -221,12 +224,14 @@ MSGHDR_msg_namelen(lua_State *L)
 static int
 MSGHDR_msg_iovlen(lua_State *L)
 {
+    luab_module_t *m;
     struct msghdr *msg;
     int iovlen;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    msg = luab_udata(L, 1, m, struct msghdr *);
     iovlen = msg->msg_iovlen;
 
     return (luab_pushxinteger(L, iovlen));
@@ -244,12 +249,14 @@ MSGHDR_msg_iovlen(lua_State *L)
 static int
 MSGHDR_msg_flags(lua_State *L)
 {
+    luab_module_t *m;
     struct msghdr *msg;
     int flags;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    msg = luab_udata(L, 1, m, struct msghdr *);
     flags = msg->msg_flags;
 
     return (luab_pushxinteger(L, flags));
@@ -267,12 +274,14 @@ MSGHDR_msg_flags(lua_State *L)
 static int
 MSGHDR_msg_len(lua_State *L)
 {
+    luab_module_t *m;
     struct mmsghdr *msg;
     int len;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &luab_msghdr_type, struct mmsghdr *);
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    msg = luab_udata(L, 1, m, struct mmsghdr *);
     len = msg->msg_len;
 
     return (luab_pushxinteger(L, len));
@@ -296,6 +305,7 @@ MSGHDR_msg_len(lua_State *L)
 static int
 MSGHDR_set_msg_name(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     luab_udata_t *udx;
     struct msghdr *msg;
     struct sockaddr *sa;
@@ -304,10 +314,13 @@ MSGHDR_set_msg_name(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    msg = (struct msghdr *)luab_checkxdata(L, 1, &luab_msghdr_type, &udx);
+    m0 = luab_xmod(MSGHDR, TYPE, __func__);
+    m1 = luab_xmod(SOCKADDR, TYPE, __func__);
+
+    msg = (struct msghdr *)luab_checkxdata(L, 1, m0, &udx);
     dp = luab_dptox(msg->msg_name);
 
-    sa = luab_udata_checkxlink(L, 2, luab_xmod(SOCKADDR, TYPE, __func__), udx, dp);
+    sa = luab_udata_checkxlink(L, 2, m1, udx, dp);
 
     if (sa != NULL)
         msg->msg_namelen = sa->sa_len;
@@ -331,21 +344,22 @@ MSGHDR_set_msg_name(lua_State *L)
 static int
 MSGHDR_get_msg_name(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct msghdr *msg;
     struct sockaddr *sa;
-    int status;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    msg = luab_udata(L, 1, &luab_msghdr_type, struct msghdr *);
+    m0 = luab_xmod(MSGHDR, TYPE, __func__);
+    m1 = luab_xmod(SOCKADDR, TYPE, __func__);
 
-    if ((sa = msg->msg_name) != NULL)
-        status = luab_pushxdata(L, luab_xmod(SOCKADDR, TYPE, __func__), sa);
-    else {
+    msg = luab_udata(L, 1, m0, struct msghdr *);
+
+    if ((sa = msg->msg_name) == NULL) {
         errno = EADDRNOTAVAIL;
-        status = luab_pushnil(L);
+        m1 = NULL;
     }
-    return (status);
+    return (luab_pushxdata(L, m1, sa));
 }
 
 /***
@@ -363,22 +377,26 @@ MSGHDR_get_msg_name(lua_State *L)
 static int
 MSGHDR_set_msg_iov(lua_State *L)
 {
-    luab_msghdr_t *ud;
+    luab_module_t *m0, *m1;
+    luab_msghdr_t *self;
     struct msghdr *msg;
     luab_table_t *iov;
     int iovlen;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    ud = luab_to_msghdr(L, 1);
-    msg = &(ud->msg_hdr);
+    m0 = luab_xmod(MSGHDR, TYPE, __func__);
+    m1 = luab_xmod(IOVEC, TYPE, __func__);
 
-    if ((iov = luab_table_checkxdata(L, 2, luab_xmod(IOVEC, TYPE, __func__))) != NULL) {
-        luab_iovec_freetable(ud->msg_buf);
-        ud->msg_buf = iov;
+    self = luab_todata(L, 1, m0, luab_msghdr_t *);
+    msg = &(self->msg_hdr);
+
+    if ((iov = luab_table_checkxdata(L, 2, m1)) != NULL) {
+        luab_iovec_freetable(self->msg_buf);
+        self->msg_buf = iov;
 
         msg->msg_iov = iov->tbl_vec;
-        msg->msg_iovlen = (iov->tbl_card - 1);
+        msg->msg_iovlen = iov->tbl_card;
 
         iovlen = msg->msg_iovlen;
     } else
@@ -399,13 +417,15 @@ MSGHDR_set_msg_iov(lua_State *L)
 static int
 MSGHDR_get_msg_iov(lua_State *L)
 {
-    luab_msghdr_t *ud;
+    luab_module_t *m;
+    luab_msghdr_t *self;
     luab_table_t *iov;
 
-    (void)luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 1);
 
-    ud = luab_to_msghdr(L, 1);
-    iov = ud->msg_buf;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_msghdr_t *);
+    iov = self->msg_buf;
 
     return (msghdr_pushiovec(L, -2, NULL, iov));
 }
@@ -417,29 +437,35 @@ MSGHDR_get_msg_iov(lua_State *L)
 static int
 MSGHDR_gc(lua_State *L)
 {
-    luab_msghdr_t *ud;
+    luab_module_t *m;
+    luab_msghdr_t *self;
     luab_table_t *iov;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    ud = luab_to_msghdr(L, 1);
-    iov = ud->msg_buf;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_msghdr_t *);
+    iov = self->msg_buf;
 
     luab_iovec_freetable(iov);
 
-    return (luab_core_gc(L, 1, &luab_msghdr_type));
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 MSGHDR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_msghdr_type));
+    luab_module_t *m;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 MSGHDR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_msghdr_type));
+    luab_module_t *m;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -471,7 +497,9 @@ static luab_module_table_t msghdr_methods[] = {
 static void *
 msghdr_create(lua_State *L, void *arg __unused)
 {
-    return (luab_new_msghdr(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
@@ -483,19 +511,24 @@ msghdr_init(void *ud __unused, void *arg __unused)
 static void *
 msghdr_udata(lua_State *L, int narg)
 {
-    luab_msghdr_t *ud = luab_to_msghdr(L, narg);
-
-    return (&(ud->msg_hdr));
+    luab_module_t *m;
+    luab_msghdr_t *self;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    self = luab_todata(L, narg, m, luab_msghdr_t *);
+    return (&(self->msg_hdr));
 }
 
 static luab_table_t *
 msghdr_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct msghdr *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_msghdr_type)) != NULL) {
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct msghdr *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -507,7 +540,7 @@ msghdr_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_msghdr_type, struct msghdr *);
+                        y = luab_udata(L, -1, m, struct msghdr *);
                         (void)memmove(&(x[i]), y, luab_msghdr_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -526,8 +559,11 @@ msghdr_checktable(lua_State *L, int narg)
 static void
 msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct msghdr *x;
     size_t i, j, k;
+
+    m = luab_xmod(MSGHDR, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -536,7 +572,7 @@ msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_msghdr_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -551,7 +587,9 @@ msghdr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 msghdr_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_msghdr_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(MSGHDR, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_msghdr_type = {
