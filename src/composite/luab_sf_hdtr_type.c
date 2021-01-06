@@ -71,11 +71,6 @@ typedef struct luab_sf_hdtr {
     luab_table_t    *ud_cache[LUAB_XIOVEC_MAX];
 } luab_sf_hdtr_t;
 
-#define luab_new_sf_hdtr(L, arg) \
-    ((luab_sf_hdtr_t *)luab_newudata(L, &luab_sf_hdtr_type, (arg)))
-#define luab_to_sf_hdtr(L, narg) \
-    (luab_todata((L), (narg), &luab_sf_hdtr_type, luab_sf_hdtr_t *))
-
 #define LUAB_XIOVEC_VEC_SENTINEL                    \
     {                                               \
         .xiv_idx   = LUAB_XIOVEC_MAX,               \
@@ -240,12 +235,15 @@ sf_hdtr_fillxtable(lua_State *L, int narg, void *arg)
 static int
 SF_HDTR_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+
     xtp.xtp_fill = sf_hdtr_fillxtable;
-    xtp.xtp_arg = (void *)luab_to_sf_hdtr(L, 1);
+    xtp.xtp_arg = (void *)luab_todata(L, 1, m, luab_sf_hdtr_t *);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -268,12 +266,14 @@ SF_HDTR_get_table(lua_State *L)
 static int
 SF_HDTR_hdr_cnt(lua_State *L)
 {
+    luab_module_t *m;
     struct sf_hdtr *hdtr;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    hdtr = luab_udata(L, 1, &luab_sf_hdtr_type, struct sf_hdtr *);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    hdtr = luab_udata(L, 1, m, struct sf_hdtr *);
     x = hdtr->hdr_cnt;
 
     return (luab_pushxinteger(L, x));
@@ -291,12 +291,14 @@ SF_HDTR_hdr_cnt(lua_State *L)
 static int
 SF_HDTR_trl_cnt(lua_State *L)
 {
+    luab_module_t *m;
     struct sf_hdtr *hdtr;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    hdtr = luab_udata(L, 1, &luab_sf_hdtr_type, struct sf_hdtr *);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    hdtr = luab_udata(L, 1, m, struct sf_hdtr *);
     x = hdtr->trl_cnt;
 
     return (luab_pushxinteger(L, x));
@@ -326,12 +328,14 @@ SF_HDTR_trl_cnt(lua_State *L)
 static int
 SF_HDTR_set_headers(lua_State *L)
 {
+    luab_module_t *m;
     luab_sf_hdtr_t *self;
     int card;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_sf_hdtr(L, 1);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_sf_hdtr_t *);
     card = sf_hdtr_checkxiovec(L, 2, self, LUAB_XIOVEC_HDR);
     return (luab_pushxinteger(L, card));
 }
@@ -348,11 +352,13 @@ SF_HDTR_set_headers(lua_State *L)
 static int
 SF_HDTR_get_headers(lua_State *L)
 {
+    luab_module_t *m;
     luab_sf_hdtr_t *self;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_sf_hdtr(L, 1);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_sf_hdtr_t *);
     return (sf_hdtr_pushxiovec(L, -2, NULL, self, LUAB_XIOVEC_HDR));
 }
 
@@ -380,12 +386,14 @@ SF_HDTR_get_headers(lua_State *L)
 static int
 SF_HDTR_set_trailers(lua_State *L)
 {
+    luab_module_t *m;
     luab_sf_hdtr_t *self;
     int card;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    self = luab_to_sf_hdtr(L, 1);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_sf_hdtr_t *);
     card = sf_hdtr_checkxiovec(L, 2, self, LUAB_XIOVEC_TRL);
     return (luab_pushxinteger(L, card));
 }
@@ -402,11 +410,13 @@ SF_HDTR_set_trailers(lua_State *L)
 static int
 SF_HDTR_get_trailers(lua_State *L)
 {
+    luab_module_t *m;
     luab_sf_hdtr_t *self;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_sf_hdtr(L, 1);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_sf_hdtr_t *);
     return (sf_hdtr_pushxiovec(L, -2, NULL, self, LUAB_XIOVEC_TRL));
 }
 
@@ -417,13 +427,15 @@ SF_HDTR_get_trailers(lua_State *L)
 static int
 SF_HDTR_gc(lua_State *L)
 {
+    luab_module_t *m;
     luab_sf_hdtr_t *self;
     luab_xiovec_t n;
     luab_table_t *tbl;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    self = luab_to_sf_hdtr(L, 1);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_sf_hdtr_t *);
 
     n = LUAB_XIOVEC_HDR;
 
@@ -433,19 +445,23 @@ SF_HDTR_gc(lua_State *L)
         n++;
     } while (n < LUAB_XIOVEC_MAX);
 
-    return (luab_core_gc(L, 1, &luab_sf_hdtr_type));
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 SF_HDTR_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_sf_hdtr_type));
+    luab_module_t *m;
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 SF_HDTR_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_sf_hdtr_type));
+    luab_module_t *m;
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -469,32 +485,41 @@ static luab_module_table_t sf_hdtr_methods[] = {
 static void *
 sf_hdtr_create(lua_State *L, void *arg)
 {
-    return (luab_new_sf_hdtr(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 sf_hdtr_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_sf_hdtr_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 sf_hdtr_udata(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_sf_hdtr_t *self;
 
-    self = luab_to_sf_hdtr(L, narg);
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    self = luab_todata(L, narg, m, luab_sf_hdtr_t *);
     return ((void *)&(self->ud_hdtr));
 }
 
 static luab_table_t *
 sf_hdtr_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct sf_hdtr *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_sf_hdtr_type)) != NULL) {
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct sf_hdtr *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -506,7 +531,7 @@ sf_hdtr_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_sf_hdtr_type, struct sf_hdtr *);
+                        y = luab_udata(L, -1, m, struct sf_hdtr *);
                         (void)memmove(&(x[i]), y, luab_sf_hdtr_type.m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -525,8 +550,11 @@ sf_hdtr_checktable(lua_State *L, int narg)
 static void
 sf_hdtr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct sf_hdtr *x;
     size_t i, j, k;
+
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -535,7 +563,7 @@ sf_hdtr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_sf_hdtr_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -550,7 +578,9 @@ sf_hdtr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 sf_hdtr_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_sf_hdtr_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(SF_HDTR, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_sf_hdtr_type = {
