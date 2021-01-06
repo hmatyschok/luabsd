@@ -50,12 +50,6 @@ typedef struct luab_regmatch {
     regmatch_t      ud_rm;
 } luab_regmatch_t;
 
-#define luab_new_regmatch(L, arg) \
-    ((luab_regmatch_t *)luab_newudata(L, &luab_regmatch_type, (arg)))
-#define luab_to_regmatch(L, narg) \
-    (luab_toldata((L), (narg), &luab_regmatch_type, \
-        regmatch_t *, luab_regmatch_type.m_sz))
-
 /*
  * Subr.
  */
@@ -94,12 +88,15 @@ regmatch_fillxtable(lua_State *L, int narg, void *arg)
 static int
 REGMATCH_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+
     xtp.xtp_fill = regmatch_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_regmatch_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -118,7 +115,9 @@ REGMATCH_get_table(lua_State *L)
 static int
 REGMATCH_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_regmatch_type, luab_regmatch_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -137,12 +136,14 @@ REGMATCH_dump(lua_State *L)
 static int
 REGMATCH_rm_so(lua_State *L)
 {
+    luab_module_t *m;
     regmatch_t *rm;
     regoff_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    rm = luab_udata(L, 1, m, regmatch_t *);
     x = rm->rm_so;
 
     return (luab_pushxinteger(L, x));
@@ -160,12 +161,14 @@ REGMATCH_rm_so(lua_State *L)
 static int
 REGMATCH_rm_eo(lua_State *L)
 {
+    luab_module_t *m;
     regmatch_t *rm;
     regoff_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    rm = luab_udata(L, 1, &luab_regmatch_type, regmatch_t *);
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    rm = luab_udata(L, 1, m, regmatch_t *);
     x = rm->rm_eo;
 
     return (luab_pushxinteger(L, x));
@@ -178,19 +181,25 @@ REGMATCH_rm_eo(lua_State *L)
 static int
 REGMATCH_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_regmatch_type));
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 REGMATCH_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_regmatch_type));
+    luab_module_t *m;
+    m =  luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 REGMATCH_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_regmatch_type));
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -211,29 +220,38 @@ static luab_module_table_t regmatch_methods[] = {
 static void *
 regmatch_create(lua_State *L, void *arg)
 {
-    return (luab_new_regmatch(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 regmatch_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_regmatch_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 regmatch_udata(lua_State *L, int narg)
 {
-    return (luab_to_regmatch(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 regmatch_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     regmatch_t *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvector(L, narg, &luab_regmatch_type)) != NULL) {
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+
+    if ((tbl = luab_table_newvector(L, narg, m)) != NULL) {
 
         if (((x = (regmatch_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -245,8 +263,8 @@ regmatch_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_regmatch_type, regmatch_t *);
-                        (void)memmove(&(x[i]), y, luab_regmatch_type.m_sz);
+                        y = luab_udata(L, -1, m, regmatch_t *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -263,8 +281,11 @@ regmatch_checktable(lua_State *L, int narg)
 static void
 regmatch_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     regmatch_t *x;
     size_t i, j, k;
+
+    m = luab_xmod(REGMATCH, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -273,7 +294,7 @@ regmatch_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_regmatch_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -288,7 +309,9 @@ regmatch_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 regmatch_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_regmatch_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(REGMATCH, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_regmatch_type = {
