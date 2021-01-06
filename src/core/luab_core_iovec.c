@@ -135,6 +135,14 @@ luab_iovec_param_init(luab_iovec_param_t *iop, void *v, size_t len, size_t max_l
  * Access functions, [stack -> C].
  */
 
+luab_iovec_t *
+luab_isiovec(lua_State *L, int narg)
+{
+    luab_module_t *m;
+    m = luab_xmod(IOVEC, TYPE, __func__);
+    return (luab_isdata(L, narg, m, luab_iovec_t *));
+}
+
 caddr_t
 luab_iovec_toldata(lua_State *L, int narg, size_t len)
 {
