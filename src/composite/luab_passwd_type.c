@@ -59,12 +59,6 @@ typedef struct luab_passwd {
     struct passwd   ud_pwd;
 } luab_passwd_t;
 
-#define luab_new_passwd(L, arg) \
-    ((luab_passwd_t *)luab_newudata(L, &luab_passwd_type, (arg)))
-#define luab_to_passwd(L, narg) \
-    (luab_toldata((L), (narg), &luab_passwd_type, \
-        struct passwd *, luab_passwd_type.m_sz))
-
 /*
  * Subr.
  */
@@ -121,12 +115,15 @@ passwd_fillxtable(lua_State *L, int narg, void *arg)
 static int
 PASSWD_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(PASSWD, TYPE, __func__);
+
     xtp.xtp_fill = passwd_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_passwd_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -145,7 +142,9 @@ PASSWD_get_table(lua_State *L)
 static int
 PASSWD_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_passwd_type, luab_passwd_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -164,12 +163,14 @@ PASSWD_dump(lua_State *L)
 static int
 PASSWD_pw_name(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     dp = pwd->pw_name;
 
     return (luab_pushstring(L, dp));
@@ -187,12 +188,14 @@ PASSWD_pw_name(lua_State *L)
 static int
 PASSWD_pw_passwd(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     dp = pwd->pw_passwd;
 
     return (luab_pushstring(L, dp));
@@ -210,12 +213,14 @@ PASSWD_pw_passwd(lua_State *L)
 static int
 PASSWD_pw_uid(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     uid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     x = pwd->pw_uid;
 
     return (luab_pushxinteger(L, x));
@@ -233,12 +238,14 @@ PASSWD_pw_uid(lua_State *L)
 static int
 PASSWD_pw_gid(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     gid_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     x = pwd->pw_gid;
 
     return (luab_pushxinteger(L, x));
@@ -256,12 +263,14 @@ PASSWD_pw_gid(lua_State *L)
 static int
 PASSWD_pw_change(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     x = pwd->pw_change;
 
     return (luab_pushxinteger(L, x));
@@ -279,12 +288,14 @@ PASSWD_pw_change(lua_State *L)
 static int
 PASSWD_pw_class(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     dp = pwd->pw_class;
 
     return (luab_pushstring(L, dp));
@@ -302,12 +313,14 @@ PASSWD_pw_class(lua_State *L)
 static int
 PASSWD_pw_gecos(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     dp = pwd->pw_gecos;
 
     return (luab_pushstring(L, dp));
@@ -325,12 +338,14 @@ PASSWD_pw_gecos(lua_State *L)
 static int
 PASSWD_pw_dir(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     dp = pwd->pw_dir;
 
     return (luab_pushstring(L, dp));
@@ -348,12 +363,14 @@ PASSWD_pw_dir(lua_State *L)
 static int
 PASSWD_pw_shell(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     caddr_t dp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     dp = pwd->pw_shell;
 
     return (luab_pushstring(L, dp));
@@ -371,12 +388,14 @@ PASSWD_pw_shell(lua_State *L)
 static int
 PASSWD_pw_expire(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     time_t x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     x = pwd->pw_expire;
 
     return (luab_pushxinteger(L, x));
@@ -394,12 +413,14 @@ PASSWD_pw_expire(lua_State *L)
 static int
 PASSWD_pw_fields(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
     x = pwd->pw_fields;
 
     return (luab_pushxinteger(L, x));
@@ -412,11 +433,13 @@ PASSWD_pw_fields(lua_State *L)
 static int
 PASSWD_gc(lua_State *L)
 {
+    luab_module_t *m;
     struct passwd *pwd;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    pwd = luab_udata(L, 1, &luab_passwd_type, struct passwd *);
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    pwd = luab_udata(L, 1, m, struct passwd *);
 
     luab_core_freestr(pwd->pw_name);
     luab_core_freestr(pwd->pw_passwd);
@@ -425,19 +448,23 @@ PASSWD_gc(lua_State *L)
     luab_core_freestr(pwd->pw_dir);
     luab_core_freestr(pwd->pw_shell);
 
-    return (luab_core_gc(L, 1, &luab_passwd_type));
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 PASSWD_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_passwd_type));
+    luab_module_t *m;
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 PASSWD_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_passwd_type));
+    luab_module_t *m;
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -467,29 +494,38 @@ static luab_module_table_t passwd_methods[] = {
 static void *
 passwd_create(lua_State *L, void *arg)
 {
-    return (luab_new_passwd(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 passwd_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_passwd_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 passwd_udata(lua_State *L, int narg)
 {
-    return (luab_to_passwd(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 passwd_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct passwd *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_passwd_type)) != NULL) {
+    m = luab_xmod(PASSWD, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct passwd *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -501,8 +537,8 @@ passwd_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_passwd_type, struct passwd *);
-                        (void)memmove(&(x[i]), y, luab_passwd_type.m_sz);
+                        y = luab_udata(L, -1, m, struct passwd *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -520,8 +556,11 @@ passwd_checktable(lua_State *L, int narg)
 static void
 passwd_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct passwd *x;
     size_t i, j, k;
+
+    m = luab_xmod(PASSWD, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -530,7 +569,7 @@ passwd_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_passwd_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -545,7 +584,9 @@ passwd_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 passwd_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_passwd_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(PASSWD, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_passwd_type = {
