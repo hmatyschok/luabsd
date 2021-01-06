@@ -51,12 +51,6 @@ typedef struct luab_sockproto {
     struct sockproto    ud_sp;
 } luab_sockproto_t;
 
-#define luab_new_sockproto(L, arg) \
-    ((luab_sockproto_t *)luab_newudata(L, &luab_sockproto_type, (arg)))
-#define luab_to_sockproto(L, narg) \
-    (luab_toldata((L), (narg), &luab_sockproto_type, \
-        struct sockproto *, luab_sockproto_type.m_sz))
-
 /*
  * Subr.
  */
@@ -95,12 +89,15 @@ sockproto_fillxtable(lua_State *L, int narg, void *arg)
 static int
 SOCKPROTO_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+
     xtp.xtp_fill = sockproto_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_sockproto_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -119,7 +116,9 @@ SOCKPROTO_get_table(lua_State *L)
 static int
 SOCKPROTO_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_sockproto_type, luab_sockproto_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -140,13 +139,17 @@ SOCKPROTO_dump(lua_State *L)
 static int
 SOCKPROTO_set_sp_family(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct sockproto *sp;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
-    x = (u_short)luab_checkinteger(L, 2, luab_env_shrt_max);
+    m0 = luab_xmod(SOCKPROTO, TYPE, __func__);
+    m1 = luab_xmod(USHRT, TYPE, __func__);
+
+    sp = luab_udata(L, 1, m0, struct sockproto *);
+    x = (u_short)luab_checkxinteger(L, 2, m1, luab_env_ushrt_max);
     sp->sp_family = x;
 
     return (luab_pushxinteger(L, x));
@@ -164,12 +167,14 @@ SOCKPROTO_set_sp_family(lua_State *L)
 static int
 SOCKPROTO_get_sp_family(lua_State *L)
 {
+    luab_module_t *m;
     struct sockproto *sp;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    sp = luab_udata(L, 1, m, struct sockproto *);
     x = sp->sp_family;
 
     return (luab_pushxinteger(L, x));
@@ -189,13 +194,17 @@ SOCKPROTO_get_sp_family(lua_State *L)
 static int
 SOCKPROTO_set_sp_protocol(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct sockproto *sp;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
-    x = (u_short)luab_checkinteger(L, 2, luab_env_shrt_max);
+    m0 = luab_xmod(SOCKPROTO, TYPE, __func__);
+    m1 = luab_xmod(USHRT, TYPE, __func__);
+
+    sp = luab_udata(L, 1, m0, struct sockproto *);
+    x = (u_short)luab_checkxinteger(L, 2, m1, luab_env_ushrt_max);
     sp->sp_protocol = x;
 
     return (luab_pushxinteger(L, x));
@@ -213,12 +222,14 @@ SOCKPROTO_set_sp_protocol(lua_State *L)
 static int
 SOCKPROTO_get_sp_protocol(lua_State *L)
 {
+    luab_module_t *m;
     struct sockproto *sp;
     u_short x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    sp = luab_udata(L, 1, &luab_sockproto_type, struct sockproto *);
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    sp = luab_udata(L, 1, m, struct sockproto *);
     x = sp->sp_protocol;
 
     return (luab_pushxinteger(L, x));
@@ -231,19 +242,25 @@ SOCKPROTO_get_sp_protocol(lua_State *L)
 static int
 SOCKPROTO_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_sockproto_type));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 SOCKPROTO_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_sockproto_type));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 SOCKPROTO_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_sockproto_type));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -266,29 +283,38 @@ static luab_module_table_t sockproto_methods[] = {
 static void *
 sockproto_create(lua_State *L, void *arg)
 {
-    return (luab_new_sockproto(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 sockproto_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_sockproto_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 sockproto_udata(lua_State *L, int narg)
 {
-    return (luab_to_sockproto(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 sockproto_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct sockproto *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_sockproto_type)) != NULL) {
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct sockproto *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -300,8 +326,8 @@ sockproto_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_sockproto_type, struct sockproto *);
-                        (void)memmove(&(x[i]), y, luab_sockproto_type.m_sz);
+                        y = luab_udata(L, -1, m, struct sockproto *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -318,8 +344,11 @@ sockproto_checktable(lua_State *L, int narg)
 static void
 sockproto_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct sockproto *x;
     size_t i, j, k;
+
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -328,7 +357,7 @@ sockproto_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_sockproto_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -343,7 +372,9 @@ sockproto_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 sockproto_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_sockproto_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(SOCKPROTO, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_sockproto_type = {
