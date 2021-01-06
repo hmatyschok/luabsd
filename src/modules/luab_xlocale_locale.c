@@ -141,7 +141,7 @@ luab_freelocale(lua_State *L)
 static int
 luab_newlocale(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     int mask;
     const char *locale;
     luab_locale_t *xloc;
@@ -149,20 +149,22 @@ luab_newlocale(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 3);
 
-    m = luab_xmod(LOCALE, TYPE, __func__);
-    mask = luab_checkinteger(L, 1, INT_MAX);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(LOCALE, TYPE, __func__);
+
+    mask = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
     locale = luab_checklstring(L, 2, luab_env_name_max, NULL);
-    xloc = luab_udata(L, 3, m, luab_locale_t *);
+    xloc = luab_udata(L, 3, m1, luab_locale_t *);
 
     if ((base = xloc->ud_sdu) != NULL) {
 
         if ((ret = newlocale(mask, locale, base)) == NULL)
-            m = NULL;
+            m1 = NULL;
     } else {
         ret = NULL;
-        m = NULL;
+        m1 = NULL;
     }
-    return (luab_pushxdata(L, m, ret));
+    return (luab_pushxdata(L, m1, ret));
 }
 
 /***
@@ -192,7 +194,7 @@ luab_newlocale(lua_State *L)
 static int
 luab_querylocale(lua_State *L)
 {
-    luab_module_t *m;
+    luab_module_t *m0, *m1;
     int mask;
     luab_locale_t *xloc;
     locale_t locale;
@@ -200,9 +202,11 @@ luab_querylocale(lua_State *L)
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(LOCALE, TYPE, __func__);
-    mask = luab_checkinteger(L, 1, INT_MAX);
-    xloc = luab_udata(L, 2, m, luab_locale_t *);
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(LOCALE, TYPE, __func__);
+
+    mask = (int)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    xloc = luab_udata(L, 2, m1, luab_locale_t *);
 
     if ((locale = xloc->ud_sdu) != NULL)
         dp = querylocale(mask, locale);
