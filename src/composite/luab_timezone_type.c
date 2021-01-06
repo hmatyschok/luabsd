@@ -50,12 +50,6 @@ typedef struct luab_timezone {
     struct timezone     ud_tz;
 } luab_timezone_t;
 
-#define luab_new_timezone(L, arg) \
-    ((luab_timezone_t *)luab_newudata(L, &luab_timezone_type, (arg)))
-#define luab_to_timezone(L, narg) \
-    (luab_toldata((L), (narg), &luab_timezone_type, \
-        struct timezone *, luab_timezone_type.m_sz))
-
 /*
  * Subr.
  */
@@ -94,12 +88,15 @@ timezone_fillxtable(lua_State *L, int narg, void *arg)
 static int
 TIMEZONE_get_table(lua_State *L)
 {
+    luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+
     xtp.xtp_fill = timezone_fillxtable;
-    xtp.xtp_arg = luab_xdata(L, 1, &luab_timezone_type);
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -118,7 +115,9 @@ TIMEZONE_get_table(lua_State *L)
 static int
 TIMEZONE_dump(lua_State *L)
 {
-    return (luab_core_dump(L, 1, &luab_timezone_type, luab_timezone_type.m_sz));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
 /*
@@ -139,13 +138,17 @@ TIMEZONE_dump(lua_State *L)
 static int
 TIMEZONE_set_tz_minuteswest(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct timezone *tz;
     int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
-    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(TIMEZONE, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    tz = luab_udata(L, 1, m0, struct timezone *);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     tz->tz_minuteswest = x;
 
@@ -164,12 +167,14 @@ TIMEZONE_set_tz_minuteswest(lua_State *L)
 static int
 TIMEZONE_get_tz_minuteswest(lua_State *L)
 {
+    luab_module_t *m;
     struct timezone *tz;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    tz = luab_udata(L, 1, m, struct timezone *);
     x = tz->tz_minuteswest;
 
     return (luab_pushxinteger(L, x));
@@ -189,13 +194,17 @@ TIMEZONE_get_tz_minuteswest(lua_State *L)
 static int
 TIMEZONE_set_tz_dsttime(lua_State *L)
 {
+    luab_module_t *m0, *m1;
     struct timezone *tz;
     int x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
-    x = (int)luab_checkinteger(L, 2, luab_env_int_max);
+    m0 = luab_xmod(TIMEZONE, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    tz = luab_udata(L, 1, m0, struct timezone *);
+    x = (int)luab_checkxinteger(L, 2, m1, luab_env_int_max);
 
     tz->tz_dsttime = x;
 
@@ -214,12 +223,14 @@ TIMEZONE_set_tz_dsttime(lua_State *L)
 static int
 TIMEZONE_get_tz_dsttime(lua_State *L)
 {
+    luab_module_t *m;
     struct timezone *tz;
     int x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    tz = luab_udata(L, 1, &luab_timezone_type, struct timezone *);
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    tz = luab_udata(L, 1, m, struct timezone *);
     x = tz->tz_dsttime;
 
     return (luab_pushxinteger(L, x));
@@ -232,19 +243,25 @@ TIMEZONE_get_tz_dsttime(lua_State *L)
 static int
 TIMEZONE_gc(lua_State *L)
 {
-    return (luab_core_gc(L, 1, &luab_timezone_type));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_core_gc(L, 1, m));
 }
 
 static int
 TIMEZONE_len(lua_State *L)
 {
-    return (luab_core_len(L, 2, &luab_timezone_type));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_core_len(L, 2, m));
 }
 
 static int
 TIMEZONE_tostring(lua_State *L)
 {
-    return (luab_core_tostring(L, 1, &luab_timezone_type));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_core_tostring(L, 1, m));
 }
 
 /*
@@ -267,29 +284,38 @@ static luab_module_table_t timezone_methods[] = {
 static void *
 timezone_create(lua_State *L, void *arg)
 {
-    return (luab_new_timezone(L, arg));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_newudata(L, m, arg));
 }
 
 static void
 timezone_init(void *ud, void *arg)
 {
-    luab_udata_init(&luab_timezone_type, ud, arg);
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    luab_udata_init(m, ud, arg);
 }
 
 static void *
 timezone_udata(lua_State *L, int narg)
 {
-    return (luab_to_timezone(L, narg));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
 timezone_checktable(lua_State *L, int narg)
 {
+    luab_module_t *m;
     luab_table_t *tbl;
     struct timezone *x, *y;
     size_t i, j;
 
-    if ((tbl = luab_table_newvectornil(L, narg, &luab_timezone_type)) != NULL) {
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+
+    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
         if (((x = (struct timezone *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
@@ -301,8 +327,8 @@ timezone_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, &luab_timezone_type, struct timezone *);
-                        (void)memmove(&(x[i]), y, luab_timezone_type.m_sz);
+                        y = luab_udata(L, -1, m, struct timezone *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -319,8 +345,11 @@ timezone_checktable(lua_State *L, int narg)
 static void
 timezone_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
+    luab_module_t *m;
     struct timezone *x;
     size_t i, j, k;
+
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
 
     if (tbl != NULL) {
 
@@ -329,7 +358,7 @@ timezone_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetxdata(L, narg, &luab_timezone_type, k, &(x[i]));
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -344,7 +373,9 @@ timezone_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 static luab_table_t *
 timezone_alloctable(void *vec, size_t card)
 {
-    return (luab_table_create(&luab_timezone_type, vec, card));
+    luab_module_t *m;
+    m = luab_xmod(TIMEZONE, TYPE, __func__);
+    return (luab_table_create(m, vec, card));
 }
 
 luab_module_t luab_timezone_type = {
