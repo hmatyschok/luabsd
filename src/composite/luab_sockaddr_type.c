@@ -1280,7 +1280,6 @@ sockaddr_udata(lua_State *L, int narg)
 {
     luab_module_t *m;
     luab_iovec_t *iov;
-    void *v = NULL;
 
     m = luab_xmod(SOCKADDR, TYPE, __func__);
 
@@ -1290,15 +1289,15 @@ sockaddr_udata(lua_State *L, int narg)
 
             if ((iov->iov.iov_len >= LUAB_SOCK_MINADDRLEN) &&
                 (iov->iov.iov_len < LUAB_SOCK_MAXADDRLEN))
-                v = iov->iov.iov_base;
+                return (iov->iov.iov_base);
             else
                 luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
         } else
             luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
     } else
-        v = luab_toudata(L, narg, m);
+        return (luab_toudata(L, narg, m));
 
-    return (v);
+    return (NULL);
 }
 
 static luab_table_t *

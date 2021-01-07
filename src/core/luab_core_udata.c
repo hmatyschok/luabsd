@@ -261,46 +261,41 @@ void *
 luab_checkludata(lua_State *L, int narg, luab_module_t *m, size_t len)
 {
     luab_iovec_t *iov;
-    void *dp;
-                                                        /* XXX */
+
     if ((iov = luab_isiovec(L, narg)) != NULL) {
 
-        if (iov->iov.iov_base == NULL)
-            luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
+        if (iov->iov.iov_base != NULL) {
 
-        if (iov->iov.iov_len != len)
+            if (iov->iov.iov_len == len)
+                return (iov->iov.iov_base);
+            else
+                luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
+        } else
             luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
-
-        dp = iov->iov.iov_base;
     } else
-        dp = luab_toudata(L, narg, m);
+        return (luab_toudata(L, narg, m));
 
-    return (dp);
+    return (NULL);
 }
 
 void *
 luab_udata_xlink(lua_State *L, int narg, luab_udata_t *udx, void **x)
 {
     luab_udata_t *ud;
-    void *dp;
 
-    /*
-     * XXX
-     */
-     
-    if (udx == NULL || x == NULL)
+    if (udx != NULL && x != NULL) {
+
+        if ((ud = luab_udata_find(udx, x)) != NULL)
+            luab_udata_remove(ud);
+
+        if ((ud = luab_isxdata(L, narg, NULL)) != NULL)
+            return (luab_udata_insert(udx, ud, x));
+
+        errno = ENOENT;
+    } else
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-    if ((ud = luab_udata_find(udx, x)) != NULL)
-        luab_udata_remove(ud);
-
-    if ((ud = luab_isxdata(L, narg, NULL)) != NULL)
-        dp = luab_udata_insert(udx, ud, x);
-    else {
-        errno = ENOENT;
-        dp = NULL;
-    }
-    return (dp);
+    return (NULL);
 }
 
 void *
@@ -308,21 +303,21 @@ luab_udata_checkxlink(lua_State *L, int narg, luab_module_t *m,
     luab_udata_t *udx, void **x)
 {
     luab_udata_t *ud;
-    void *dp;
 
-    if (udx == NULL || x == NULL)
+    if (udx != NULL && x != NULL) {
+
+        if ((ud = luab_udata_find(udx, x)) != NULL)
+            luab_udata_remove(ud);
+
+        if ((ud = luab_checkxdataisnil(L, narg, m)) != NULL)
+            return (luab_udata_insert(udx, ud, x));
+
+        errno = ENOENT;
+    } else
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
-    if ((ud = luab_udata_find(udx, x)) != NULL)
-        luab_udata_remove(ud);
 
-    if ((ud = luab_checkxdataisnil(L, narg, m)) != NULL)
-        dp = luab_udata_insert(udx, ud, x);
-    else {
-        errno = ENOENT;
-        dp = NULL;
-    }
-    return (dp);
+    return (NULL);
 }
 
 /*
