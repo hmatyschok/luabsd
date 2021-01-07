@@ -42,7 +42,7 @@
  */
 
 void *
-luab_newudata(lua_State *L, luab_module_t *m, void *arg)
+luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 {
     luab_udata_t *ud = NULL;
 

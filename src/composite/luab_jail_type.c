@@ -714,7 +714,7 @@ jail_create(lua_State *L, void *arg __unused)
 
     if (JAIL_API_VERSION == 2) {
         api = JAIL_API_VERSION;
-        self = luab_newudata(L, m, &api);
+        self = luab_newuserdata(L, m, &api);
     } else
         self = NULL;
 

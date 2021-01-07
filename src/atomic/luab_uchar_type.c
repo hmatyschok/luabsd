@@ -218,7 +218,7 @@ uchar_create(lua_State *L, void *arg)
 {
     luab_module_t *m;
     m = luab_xmod(UCHAR, TYPE, __func__);
-    return (luab_newudata(L, m, arg));
+    return (luab_newuserdata(L, m, arg));
 }
 
 static void

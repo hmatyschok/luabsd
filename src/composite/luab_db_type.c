@@ -504,7 +504,7 @@ db_create(lua_State *L, void *arg)
 
     if ((dbp = (luab_db_param_t *)arg) != NULL) {
 
-        if ((self = luab_newudata(L, m, dbp->dbp_db)) == NULL) {
+        if ((self = luab_newuserdata(L, m, dbp->dbp_db)) == NULL) {
 
             if (dbp->dbp_db != NULL)
                 (void)(*dbp->dbp_db->close)(dbp->dbp_db);

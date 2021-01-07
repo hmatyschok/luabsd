@@ -53,7 +53,7 @@ typedef struct luab_xarg {
  * Generic service primitives.
  */
 
-void     *luab_newudata(lua_State *, luab_module_t *, void *);
+void     *luab_newuserdata(lua_State *, luab_module_t *, void *);
 void     luab_udata_init(luab_module_t *, luab_udata_t *, void *);
 void     luab_udata_remove(luab_udata_t *);
 luab_udata_t     *luab_udata_find(luab_udata_t *, void **);

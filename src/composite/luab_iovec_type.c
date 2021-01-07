@@ -685,7 +685,7 @@ iovec_create(lua_State *L, void *arg)
             iop->iop_flags = IOV_PROXY;
 
         if (iop->iop_flags & IOV_BUFF)
-            self = luab_newudata(L, m, iop);
+            self = luab_newuserdata(L, m, iop);
         else
             self = NULL;    /* XXX IOV_PROXY, not yet. */
     } else
