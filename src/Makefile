@@ -9,8 +9,7 @@ LUAB_SRCTOP?= ${.CURDIR}
 LIB=    luabsd
 SHLIB_MAJOR= 0
 
-.include "${LUAB_SRCTOP}/atomic/Makefile.inc"
-.include "${LUAB_SRCTOP}/composite/Makefile.inc"
+.include "${LUAB_SRCTOP}/types/Makefile.inc"
 .include "${LUAB_SRCTOP}/modules/Makefile.inc"
 .include "${LUAB_SRCTOP}/core/Makefile.inc"
 
