@@ -41,5 +41,6 @@ SRCS+=  luab_time.c
 SRCS+=  luab_ttyent.c
 SRCS+=  luab_unistd.c
 SRCS+=  luab_uuid.c
+SRCS+=  luab_xlocale.c
 
 LIBADD+= crypt

@@ -31,6 +31,7 @@
 #include "luabsd.h"
 #include "luab_modules.h"
 #include "luab_udata.h"
+#include "luab_table.h"
 
 luab_module_t *
 luab_core_checkmodule(luab_type_t idx, uint32_t id, const char *fname)
@@ -99,7 +100,7 @@ void
 luab_core_newtable(lua_State *L, int narg, luab_module_t *m)
 {
     if (m != NULL) {
-        lua_newtable(L);
+        luab_table_init(L, 1);
         luab_core_populate(L, narg, m);
         lua_setfield(L, narg, m->m_name);
     } else
@@ -136,7 +137,7 @@ luab_core_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
     luab_module_vec_t *mv;
 
     if (name != NULL && new != 0)
-        lua_newtable(L);
+        luab_table_init(L, 1);
 
     mv = vec;
 

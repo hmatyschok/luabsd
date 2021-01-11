@@ -32,11 +32,6 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
-/*
- * XXX
- *  Subr. for registry over <luab_xxx_vec>.
- */
-
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
@@ -120,6 +115,9 @@ static luab_module_vec_t luab_xlocale_vec[] = {
     },{
         .mv_mod = &luab_xlocale_time_lib,
         .mv_init = luab_core_newtable,
+    },{
+        .mv_mod = &luab_xlocale_lib,
+        .mv_init = luab_core_populate,
     },
     LUAB_MOD_VEC_SENTINEL
 };

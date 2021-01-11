@@ -208,5 +208,6 @@ extern luab_module_t luab_time_lib;
 extern luab_module_t luab_ttyent_lib;
 extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
+extern luab_module_t luab_xlocale_lib;
 
 #endif /* _LUAB_MODULES_H_ */
