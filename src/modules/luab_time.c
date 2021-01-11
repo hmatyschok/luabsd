@@ -531,7 +531,7 @@ luab_timegm(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage tm [, err, msg ] = bsd.time.tm_create([ data ])
+ * @usage tm [, err, msg ] = bsd.time.tm_create([ arg ])
  */
 static int
 luab_tm_create(lua_State *L)

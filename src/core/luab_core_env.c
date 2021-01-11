@@ -1107,6 +1107,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_jail_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_JAIL_IDX,
+    },{
+        .mv_mod = &luab_lconv_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_LCONV_IDX,
     },
 #if __BSD_VISIBLE
     {

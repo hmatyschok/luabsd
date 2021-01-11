@@ -412,7 +412,7 @@ luab_mode_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage flock [, err, msg ] = bsd.fcntl.flock_create([ data ])
+ * @usage flock [, err, msg ] = bsd.fcntl.flock_create([ arg ])
  */
 static int
 luab_flock_create(lua_State *L)

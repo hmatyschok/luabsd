@@ -2918,7 +2918,7 @@ luab_strtonum(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage div [, err, msg ] = bsd.stdlib.div_create([ data ])
+ * @usage div [, err, msg ] = bsd.stdlib.div_create([ arg ])
  */
 static int
 luab_div_create(lua_State *L)
@@ -2937,7 +2937,7 @@ luab_div_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ldiv [, err, msg ] = bsd.stdlib.ldiv_create([ data ])
+ * @usage ldiv [, err, msg ] = bsd.stdlib.ldiv_create([ arg ])
  */
 static int
 luab_ldiv_create(lua_State *L)
@@ -2958,7 +2958,7 @@ luab_ldiv_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage lldiv [, err, msg ] = bsd.stdlib.lldiv_create([ data ])
+ * @usage lldiv [, err, msg ] = bsd.stdlib.lldiv_create([ arg ])
  */
 static int
 luab_lldiv_create(lua_State *L)

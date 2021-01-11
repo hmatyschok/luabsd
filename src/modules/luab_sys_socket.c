@@ -1230,7 +1230,7 @@ luab_socketpair(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage linger [, err, msg ] = bsd.sys.socket.linger_create([ data ])
+ * @usage linger [, err, msg ] = bsd.sys.socket.linger_create([ arg ])
  */
 static int
 luab_linger_create(lua_State *L)
@@ -1249,7 +1249,7 @@ luab_linger_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_create([ data ])
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_create([ arg ])
  */
 static int
 luab_sockaddr_create(lua_State *L)
@@ -1286,7 +1286,7 @@ luab_msghdr_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage accept_filter_arg [, err, msg ] = bsd.sys.socket.accept_filter_arg_create([ data ])
+ * @usage accept_filter_arg [, err, msg ] = bsd.sys.socket.accept_filter_arg_create([ arg ])
  */
 static int
 luab_accept_filter_arg_create(lua_State *L)
@@ -1322,7 +1322,7 @@ luab_cmsgcred_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockproto [, err, msg ] = bsd.sys.socket.sockproto_create([ data ])
+ * @usage sockproto [, err, msg ] = bsd.sys.socket.sockproto_create([ arg ])
  */
 static int
 luab_sockproto_create(lua_State *L)

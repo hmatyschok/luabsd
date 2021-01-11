@@ -832,7 +832,7 @@ luab_in_port_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_addr [, err, msg ] = bsd.arpa.inet.in_addr_create([ data ])
+ * @usage in_addr [, err, msg ] = bsd.arpa.inet.in_addr_create([ arg ])
  */
 static int
 luab_in_addr_create(lua_State *L)
@@ -851,7 +851,7 @@ luab_in_addr_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in6_addr [, err, msg ] = bsd.arpa.inet.in6_addr_create([ data ])
+ * @usage in6_addr [, err, msg ] = bsd.arpa.inet.in6_addr_create([ arg ])
  */
 static int
 luab_in6_addr_create(lua_State *L)

@@ -188,7 +188,7 @@ luab_getitimer(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ data ])
+ * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ arg ])
  */
 static int
 luab_bintime_create(lua_State *L)
@@ -208,7 +208,7 @@ luab_bintime_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ data ])
+ * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ arg ])
  */
 static int
 luab_clockinfo_create(lua_State *L)
@@ -227,7 +227,7 @@ luab_clockinfo_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ data ])
+ * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ arg ])
  */
 static int
 luab_itimerval_create(lua_State *L)
@@ -246,7 +246,7 @@ luab_itimerval_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ data ])
+ * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ arg ])
  */
 static int
 luab_timespec_create(lua_State *L)
@@ -265,7 +265,7 @@ luab_timespec_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timeval [, err, msg ] = bsd.sys.time.timeval_create([ data ])
+ * @usage timeval [, err, msg ] = bsd.sys.time.timeval_create([ arg ])
  */
 static int
 luab_timeval_create(lua_State *L)
@@ -284,7 +284,7 @@ luab_timeval_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ data ])
+ * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ arg ])
  */
 static int
 luab_timezone_create(lua_State *L)

@@ -145,7 +145,7 @@ luab_link_ntoa(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.net.if_dl.sockaddr_dl_create([ data ])
+ * @usage sockaddr [, err, msg ] = bsd.net.if_dl.sockaddr_dl_create([ arg ])
  */
 static int
 luab_sockaddr_dl_create(lua_State *L)

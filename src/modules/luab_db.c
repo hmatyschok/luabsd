@@ -93,7 +93,7 @@ luab_dbopen(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage dbt [, err, msg ] = bsd.db.dbt_create([ data ])
+ * @usage dbt [, err, msg ] = bsd.db.dbt_create([ arg ])
  */
 static int
 luab_dbt_create(lua_State *L)

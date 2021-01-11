@@ -25,6 +25,7 @@
 .include "${LUAB_SRCTOP}/types/fstab/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/grp/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/langinfo/Makefile.inc"
+.include "${LUAB_SRCTOP}/types/locale/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/pwd/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/regex/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/stdio/Makefile.inc"

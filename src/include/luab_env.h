@@ -830,6 +830,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_XVFSCONF_TYPE_ID                   1604736441
 #define LUAB_XVFSCONF_TYPE                      "XVFSCONF*"
 
+#define LUAB_LCONV_TYPE_ID                      1610321466
+#define LUAB_LCONV_TYPE                         "LCONV*"
+
 /*
  * Service primitives / subr.
  */

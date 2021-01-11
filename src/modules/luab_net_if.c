@@ -177,7 +177,7 @@ luab_if_nametoindex(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage if_nameindex [, err, msg ] = bsd.net.if_nameindex_create([ data ])
+ * @usage if_nameindex [, err, msg ] = bsd.net.if_nameindex_create([ arg ])
  */
 static int
 luab_if_nameindex_create(lua_State *L)

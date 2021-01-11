@@ -5075,7 +5075,7 @@ luab_useconds_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage crypt_data [, err, msg ] = bsd.unistd.crypt_data_create([ data ])
+ * @usage crypt_data [, err, msg ] = bsd.unistd.crypt_data_create([ arg ])
  */
 static int
 luab_crypt_data_create(lua_State *L)
