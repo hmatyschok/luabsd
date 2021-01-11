@@ -305,7 +305,37 @@ luab_strftime(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * time(3) - get time of day
+ *
+ * @function strftime
+ *
+ * @param buf               Buffer for formatted time information by
+ *                          an instance of (LUA_TUSERDATA(IOVEC)).
+ * @param maxsize           Specifies constraint for buffer.
+ * @param format            Specifies format string for conversion.
+ * @param timeptr           Specifies broken down time by an
+ *                          instance of (LUA_TUSERDATA(TM)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.strftime(buf, maxsize, format, timeptr)
+ */
+static int
+luab_time(lua_State *L)
+{
+    luab_module_t *m;
+    time_t *tloc, x;
 
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIME, TYPE, __func__);
+
+    tloc = luab_udata(L, 1, m, time_t *);
+    x = time(tloc);
+
+    return (luab_pushxinteger(L, x));
+}
 
 #if __POSIX_VISIBLE >= 199506
 /***
@@ -523,6 +553,58 @@ luab_timegm(lua_State *L)
  */
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CLOCK)).
+ *
+ * @function clock_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(CLOCK)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage clock [, err, msg ] = bsd.time.clock_create(arg)
+ */
+static int
+luab_clock_create(lua_State *L)
+{
+    luab_module_t *m;
+    clock_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CLOCK, TYPE, __func__);
+    x = (clock_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(TIME)).
+ *
+ * @function time_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(TIME)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage time [, err, msg ] = bsd.time.time_create(arg)
+ */
+static int
+luab_time_create(lua_State *L)
+{
+    luab_module_t *m;
+    time_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIME, TYPE, __func__);
+    x = (time_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function - create an instance of (LUA_TUSERDATA(TM)).
  *
  * @function tm_create
@@ -584,6 +666,7 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("localtime",                  luab_localtime),
     LUAB_FUNC("mktime",                     luab_mktime),
     LUAB_FUNC("strftime",                   luab_strftime),
+    LUAB_FUNC("time",                       luab_time),
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
     LUAB_FUNC("ctime_r",                    luab_ctime_r),
@@ -593,6 +676,8 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #if __BSD_VISIBLE
     LUAB_FUNC("timegm",                     luab_timegm),
 #endif /* __BSD_VISIBLE */
+    LUAB_FUNC("clock_create",               luab_clock_create),
+    LUAB_FUNC("time_create",                luab_time_create),
     LUAB_FUNC("tm_create",                  luab_tm_create),
     LUAB_MOD_TBL_SENTINEL
 };

@@ -458,58 +458,6 @@ luab_wchar_create(lua_State *L)
 }
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(TIME)).
- *
- * @function time_create
- *
- * @param arg               Specifies initial value by an instance of
- *
- *                              (LUA_T{NIL,NUMBER,USERDATA(TIME)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage time [, err, msg ] = bsd.core.atomic.time_create(arg)
- */
-static int
-luab_time_create(lua_State *L)
-{
-    luab_module_t *m;
-    time_t x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(TIME, TYPE, __func__);
-    x = (time_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
-    return (luab_pushxdata(L, m, &x));
-}
-
-/***
- * Generator function, creates an instance of (LUA_TUSERDATA(CLOCK)).
- *
- * @function clock_create
- *
- * @param arg               Specifies initial value by an instance of
- *
- *                              (LUA_T{NIL,NUMBER,USERDATA(CLOCK)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage clock [, err, msg ] = bsd.core.atomic.clock_create(arg)
- */
-static int
-luab_clock_create(lua_State *L)
-{
-    luab_module_t *m;
-    clock_t x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(CLOCK, TYPE, __func__);
-    x = (clock_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
-    return (luab_pushxdata(L, m, &x));
-}
-
-/***
  * Generator function, creates an instance of (LUA_TUSERDATA(VM_OFFSET)).
  *
  * @function vm_offset_create
@@ -615,8 +563,6 @@ static luab_module_table_t luab_core_atomic_vec[] = {
     LUAB_FUNC("ssize_create",           luab_ssize_create),
     LUAB_FUNC("uid_create",             luab_uid_create),
     LUAB_FUNC("wchar_create",           luab_wchar_create),
-    LUAB_FUNC("time_create",            luab_time_create),
-    LUAB_FUNC("clock_create",           luab_clock_create),
     LUAB_FUNC("vm_offset_create",       luab_vm_offset_create),
     LUAB_FUNC("lua_integer_create",     luab_lual_integer_create),
     LUAB_FUNC("lua_number_create",      luab_lual_number_create),
