@@ -28,7 +28,7 @@
 #define _LUAB_MODULES_H_
 
 /*
- * Set of atomic data types.
+ * Subset of atomic data types.
  */
 
 #if __BSD_VISIBLE
@@ -85,9 +85,6 @@ extern luab_module_t luab_uintptr_type;
 extern luab_module_t luab_intmax_type;
 extern luab_module_t luab_uintmax_type;
 
-/* <xlocale/_locale.h> */
-extern luab_module_t luab_locale_type;
-
 /* <ctype.h> */
 extern luab_module_t luab_ct_rune_type;
 
@@ -116,7 +113,19 @@ extern luab_module_t luab_pid_type;
 extern luab_module_t luab_useconds_type;
 
 /*
- * Set of composite data types.
+ * Subset of reference data types.
+ */
+
+/* <xlocale/_locale.h> */
+extern luab_module_t luab_locale_type;
+
+/* <time.h> */
+#if __POSIX_VISIBLE >= 199309
+extern luab_module_t luab_timer_type;
+#endif
+
+/*
+ * Subset of composite data types.
  */
 
 extern luab_module_t luab_clockinfo_type;
@@ -169,7 +178,7 @@ extern luab_module_t luab_sf_hdtr_type;
 #endif
 
 /*
- * Set of interfaces.
+ * Subset of interfaces.
  */
 
 extern luab_module_t luab_arpa_inet_lib;

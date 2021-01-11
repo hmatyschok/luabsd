@@ -195,9 +195,6 @@ typedef enum luab_type {
     LUAB_INTMAX_IDX,
     LUAB_UINTMAX_IDX,
 
-    /* <xlocale/_locale.h> */
-    LUAB_LOCALE_IDX,
-
     /* <ctype.h> */
     LUAB_CT_RUNE_IDX,
 
@@ -226,8 +223,21 @@ typedef enum luab_type {
     LUAB_USECONDS_IDX,
 
     /*
-     * composite data types
+     * Reference data types
      */
+
+    /* <xlocale/_locale.h> */
+    LUAB_LOCALE_IDX,
+
+    /* <time.h> */
+#if __POSIX_VISIBLE >= 199309
+    LUAB_TIMER_IDX,
+#endif
+
+    /*
+     * Composite data types
+     */
+
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
     LUAB_FLOCK_IDX,

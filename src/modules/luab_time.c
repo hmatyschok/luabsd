@@ -24,8 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <time.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -630,6 +628,39 @@ luab_clockid_create(lua_State *L)
     x = (clockid_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
     return (luab_pushxdata(L, m, &x));
 }
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(TIMER)).
+ *
+ * @function timer_create
+ *
+ * @param arg               Specifies its initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(TIMER)}).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage time [, err, msg ] = bsd.xtimer.timer.timer_create(x)
+ */
+static int
+luab_timer_create(lua_State *L)
+{
+    luab_module_t *m;
+    luab_timer_t *xtmr;
+    timer_t timer;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIMER, TYPE, __func__);
+
+    if ((xtmr = luab_udataisnil(L, 1, m, luab_timer_t *)) != NULL)
+        timer = xtmr->ud_sdu;
+    else {
+        errno = ENOENT;
+        timer = NULL;
+    }
+    return (luab_pushxdata(L, m, timer));
+}
 #endif /* __POSIX_VISIBLE >= 199309 */
 
 /***
@@ -708,6 +739,7 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("time_create",                luab_time_create),
 #if __POSIX_VISIBLE >= 199309
     LUAB_FUNC("clockid_create",             luab_clockid_create),
+    LUAB_FUNC("timer_create",               luab_timer_create),
 #endif /* __POSIX_VISIBLE >= 199309 */
     LUAB_FUNC("tm_create",                  luab_tm_create),
     LUAB_MOD_TBL_SENTINEL

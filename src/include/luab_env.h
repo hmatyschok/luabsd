@@ -541,7 +541,7 @@ extern u_long luab_env_cpuset_size;
 extern u_long luab_env_phys_pages;
 
 /*
- * Set of atomic data types.
+ * Subset of atomic data types.
  */
 
 #define LUAB_CHAR_TYPE_ID                       1605964271
@@ -609,9 +609,6 @@ extern u_long luab_env_phys_pages;
 
 #define LUAB_CLOCK_TYPE_ID                      1607649423
 #define LUAB_CLOCK_TYPE                         "CLOCK*"
-
-#define LUAB_LOCALE_TYPE_ID                     1608306297
-#define LUAB_LOCALE_TYPE                        "LOCALE*"
 
 #define LUAB_INTPTR_TYPE_ID                     1608485473
 #define LUAB_INTPTR_TYPE                        "INTPTR*"
@@ -688,11 +685,25 @@ extern u_long luab_env_phys_pages;
 #define LUAB_UCHAR_TYPE_ID                      1609944412
 #define LUAB_UCHAR_TYPE                         "UCHAR*"
 
+#if __POSIX_VISIBLE >= 199309
 #define LUAB_CLOCKID_TYPE_ID                    1610364586
 #define LUAB_CLOCKID_TYPE                       "CLOCKID*"
+#endif
 
 /*
- * Set of composite data types.
+ * Subset of reference data types.
+ */
+
+#define LUAB_LOCALE_TYPE_ID                     1608306297
+#define LUAB_LOCALE_TYPE                        "LOCALE*"
+
+#if __POSIX_VISIBLE >= 199309
+#define LUAB_TIMER_TYPE_ID                      1610374001
+#define LUAB_TIMER_TYPE                         "TIMER*"
+#endif
+
+/*
+ * Subset of composite data types.
  */
 
 #define LUAB___SBUF_TYPE_ID                     1605302940

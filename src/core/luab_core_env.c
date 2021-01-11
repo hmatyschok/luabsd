@@ -768,6 +768,11 @@ static luab_sysconf_vec_t luab_param[] = {
  */
 
 luab_module_vec_t luab_typevec[] = {
+
+    /*
+     * Atomic data types.
+     */
+
 #if __BSD_VISIBLE
     {                                       /* integer types */
         .mv_mod = &luab_uchar_type,
@@ -919,10 +924,6 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_uintmax_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_UINTMAX_IDX,
-    },{ /* <xlocale/_locale.h> */
-        .mv_mod = &luab_locale_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_LOCALE_IDX,
     },{ /* <ctype.h> */
         .mv_mod = &luab_ct_rune_type,
         .mv_init = luab_core_newmetatable,
@@ -955,11 +956,15 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_time_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CLOCKID_IDX,
-    },{
+    },
+#if __POSIX_VISIBLE >= 199309
+    {
         .mv_mod = &luab_clockid_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CLOCKID_IDX,
-    },{ /* <unistd.h> */
+    },
+#endif
+    { /* <unistd.h> */
         .mv_mod = &luab_pid_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PID_IDX,
@@ -970,8 +975,26 @@ luab_module_vec_t luab_typevec[] = {
     },
 
     /*
-     * composite data types
+     * Reference data types.
      */
+
+    { /* <xlocale/_locale.h> */
+        .mv_mod = &luab_locale_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_LOCALE_IDX,
+    },
+#if __POSIX_VISIBLE >= 199309
+    { /* <time.h> */
+        .mv_mod = &luab_timer_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_TIMER_IDX,
+    },
+#endif
+
+    /*
+     * Composite data types.
+     */
+
     {
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,

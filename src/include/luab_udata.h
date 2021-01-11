@@ -107,5 +107,6 @@ void     luab_setxdata(lua_State *, int, luab_module_t *, const char *, void *);
 #include "luab_iovec.h"
 #include "luab_db.h"
 #include "luab_locale.h"
+#include "luab_time.h"
 
 #endif /* _LUAB_UDATA_H_ */

@@ -43,4 +43,4 @@ SRCS+=  luab_unistd.c
 SRCS+=  luab_uuid.c
 SRCS+=  luab_xlocale.c
 
-LIBADD+= crypt
+LIBADD+= crypt rt
