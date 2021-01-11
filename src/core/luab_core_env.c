@@ -836,14 +836,6 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_WCHAR_IDX,
     },{
-        .mv_mod = &luab_time_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_TIME_IDX,
-    },{
-        .mv_mod = &luab_clock_type,
-        .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_CLOCK_IDX,
-    },{
         .mv_mod = &luab_vm_offset_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_VM_OFFSET_IDX,
@@ -879,7 +871,7 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_nlink_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_NLINK_IDX,
-    },{ /* POSIX sized integrals, <sys/stdint.h> */
+    },{ /* <sys/stdint.h>, POSIX sized integrals */
         .mv_mod = &luab_int8_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INT8_IDX,
@@ -955,6 +947,18 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_rsize_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_RSIZE_IDX,
+    },{ /* <time.h> */
+        .mv_mod = &luab_clock_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_CLOCK_IDX,
+    },{
+        .mv_mod = &luab_time_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_CLOCKID_IDX,
+    },{
+        .mv_mod = &luab_clockid_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_CLOCKID_IDX,
     },{ /* <unistd.h> */
         .mv_mod = &luab_pid_type,
         .mv_init = luab_core_newmetatable,
@@ -963,7 +967,12 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_useconds_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_USECONDS_IDX,
-    },{                                     /* composite data types */
+    },
+
+    /*
+     * composite data types
+     */
+    {
         .mv_mod = &luab_clockinfo_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CLOCKINFO_IDX,

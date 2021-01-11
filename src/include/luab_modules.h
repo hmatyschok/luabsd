@@ -54,9 +54,6 @@ extern luab_module_t luab_ssize_type;
 extern luab_module_t luab_uid_type;
 
 extern luab_module_t luab_wchar_type;
-extern luab_module_t luab_time_type;
-extern luab_module_t luab_clock_type;
-extern luab_module_t luab_locale_type;
 extern luab_module_t luab_vm_offset_type;
 
 extern luab_module_t luab_lual_integer_type;
@@ -72,7 +69,7 @@ extern luab_module_t luab_fflags_type;
 extern luab_module_t luab_ino_type;
 extern luab_module_t luab_nlink_type;
 
-/* POSIX sized integrals, <sys/stdint.h> */
+/* <sys/stdint.h>, POSIX sized integrals */
 extern luab_module_t luab_int8_type;
 extern luab_module_t luab_int16_type;
 extern luab_module_t luab_int32_type;
@@ -87,6 +84,9 @@ extern luab_module_t luab_intptr_type;
 extern luab_module_t luab_uintptr_type;
 extern luab_module_t luab_intmax_type;
 extern luab_module_t luab_uintmax_type;
+
+/* <xlocale/_locale.h> */
+extern luab_module_t luab_locale_type;
 
 /* <ctype.h> */
 extern luab_module_t luab_ct_rune_type;
@@ -103,6 +103,13 @@ extern luab_module_t luab_nl_item_type;
 /* <stdio.h> */
 extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_rsize_type;
+
+/* <time.h> */
+extern luab_module_t luab_clock_type;
+extern luab_module_t luab_time_type;
+#if __POSIX_VISIBLE >= 199309
+extern luab_module_t luab_clockid_type;
+#endif
 
 /* <unistd.h> */
 extern luab_module_t luab_pid_type;

@@ -604,6 +604,34 @@ luab_time_create(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+#if __POSIX_VISIBLE >= 199309
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CLOCKID)).
+ *
+ * @function clockid_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(CLOCKID)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage clockid [, err, msg ] = bsd.time.clockid_create(arg)
+ */
+static int
+luab_clockid_create(lua_State *L)
+{
+    luab_module_t *m;
+    clockid_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CLOCKID, TYPE, __func__);
+    x = (clockid_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+#endif /* __POSIX_VISIBLE >= 199309 */
+
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(TM)).
  *
@@ -678,6 +706,9 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #endif /* __BSD_VISIBLE */
     LUAB_FUNC("clock_create",               luab_clock_create),
     LUAB_FUNC("time_create",                luab_time_create),
+#if __POSIX_VISIBLE >= 199309
+    LUAB_FUNC("clockid_create",             luab_clockid_create),
+#endif /* __POSIX_VISIBLE >= 199309 */
     LUAB_FUNC("tm_create",                  luab_tm_create),
     LUAB_MOD_TBL_SENTINEL
 };

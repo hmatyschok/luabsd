@@ -163,10 +163,9 @@ typedef enum luab_type {
     LUAB_SSIZE_IDX,
     LUAB_UID_IDX,
     LUAB_WCHAR_IDX,
-    LUAB_TIME_IDX,
-    LUAB_CLOCK_IDX,
 
     LUAB_VM_OFFSET_IDX,
+
     LUAB_LUAL_INTEGER_IDX,
     LUAB_LUAL_NUMBER_IDX,
 
@@ -215,11 +214,20 @@ typedef enum luab_type {
     LUAB_FPOS_IDX,
     LUAB_RSIZE_IDX,
 
+    /* <time.h> */
+    LUAB_CLOCK_IDX,
+    LUAB_TIME_IDX,
+#if __POSIX_VISIBLE >= 199309
+    LUAB_CLOCKID_IDX,
+#endif
+
     /* <unistd.h> */
     LUAB_PID_IDX,
     LUAB_USECONDS_IDX,
 
-    /* composite data types */
+    /*
+     * composite data types
+     */
     LUAB_CLOCKINFO_IDX,
     LUAB_DIV_IDX,
     LUAB_FLOCK_IDX,

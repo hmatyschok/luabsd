@@ -12,11 +12,12 @@
 #   its type, realm and/or domain, etc.
 #
 
-.include "${LUAB_SRCTOP}/types/core/Makefile.inc"
-
 .include "${LUAB_SRCTOP}/types/arpa/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/net/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/sys/Makefile.inc"
+.include "${LUAB_SRCTOP}/types/xlocale/Makefile.inc"
+
+.include "${LUAB_SRCTOP}/types/core/Makefile.inc"
 
 .include "${LUAB_SRCTOP}/types/ctype/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/db/Makefile.inc"
