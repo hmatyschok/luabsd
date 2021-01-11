@@ -74,7 +74,19 @@ static luab_module_vec_t luab_sys_vec[] = {
         .mv_mod = &luab_sys_mount_lib,
         .mv_init = luab_core_newtable,
     },{
+        .mv_mod = &luab_sys_reboot_lib,
+        .mv_init = luab_core_newtable,
+    },{
+        .mv_mod = &luab_sys_signal_lib,
+        .mv_init = luab_core_newtable,
+    },{
+        .mv_mod = &luab_sys_socket_lib,
+        .mv_init = luab_core_newtable,
+    },{
         .mv_mod = &luab_sys_stat_lib,
+        .mv_init = luab_core_newtable,
+    },{
+        .mv_mod = &luab_sys_stdint_lib,
         .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_time_lib,
@@ -87,15 +99,6 @@ static luab_module_vec_t luab_sys_vec[] = {
         .mv_init = luab_core_newtable,
     },{
         .mv_mod = &luab_sys_unistd_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_reboot_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_socket_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_stdint_lib,
         .mv_init = luab_core_newtable,
     },
     LUAB_MOD_VEC_SENTINEL

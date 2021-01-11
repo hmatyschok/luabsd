@@ -199,6 +199,7 @@ extern luab_module_t luab_sys_uio_lib;
 extern luab_module_t luab_sys_un_lib;
 extern luab_module_t luab_sys_unistd_lib;
 extern luab_module_t luab_sys_reboot_lib;
+extern luab_module_t luab_sys_signal_lib;
 extern luab_module_t luab_sys_socket_lib;
 extern luab_module_t luab_sys_stdint_lib;
 
