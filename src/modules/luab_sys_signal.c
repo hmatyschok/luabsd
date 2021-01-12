@@ -60,15 +60,33 @@ static int
 luab_sigval_create(lua_State *L)
 {
     luab_module_t *m;
-    union sigval *x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
     m = luab_xmod(SIGVAL, TYPE, __func__);
-    x = luab_udataisnil(L, 1, m, union sigval *);
-    return (luab_pushxdata(L, m, x));
+    return (luab_core_create(L, 1, m, NULL));
 }
 #endif /* #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500 */
+
+#if __POSIX_VISIBLE >= 199309
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SIGEVENT)).
+ *
+ * @function sigevent_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SIGEVENT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage sigevent [, err, msg ] = bsd.sys.signal.sigevent_create(arg)
+ */
+static int
+luab_sigevent_create(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(SIGEVENT, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+#endif /* __POSIX_VISIBLE >= 199309 */
 
 /*
  * Interface against <sys/signal.h>
@@ -238,6 +256,9 @@ static luab_module_table_t luab_sys_signal_vec[] = {
 #endif
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
     LUAB_FUNC("sigval_create",          luab_sigval_create),
+#endif
+#if __POSIX_VISIBLE >= 199309
+    LUAB_FUNC("sigevent_create",        luab_sigevent_create),
 #endif
     LUAB_MOD_TBL_SENTINEL
 };

@@ -852,6 +852,11 @@ extern u_long luab_env_phys_pages;
 #define LUAB_LCONV_TYPE_ID                      1610321466
 #define LUAB_LCONV_TYPE                         "LCONV*"
 
+#if __POSIX_VISIBLE >= 199309
+#define LUAB_SIGEVENT_TYPE_ID                   1610459044
+#define LUAB_SIGEVENT_TYPE                      "SIGEVENT*"
+#endif     
+
 /*
  * Service primitives / subr.
  */
