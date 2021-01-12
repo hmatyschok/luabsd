@@ -87,16 +87,16 @@ luab_dbopen(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(DBT)).
  *
- * @function dbt_create
+ * @function create_dbt
  *
  * @param arg           (LUA_T{NIL,USERDATA(IOVEC)}), optional.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage dbt [, err, msg ] = bsd.db.dbt_create([ arg ])
+ * @usage dbt [, err, msg ] = bsd.db.create_dbt([ arg ])
  */
 static int
-luab_dbt_create(lua_State *L)
+luab_type_create_dbt(lua_State *L)
 {
     luab_module_t *m0, *m1;
 
@@ -134,7 +134,7 @@ static luab_module_table_t luab_db_vec[] = {
     LUAB_INT("DB_RECNO",      DB_RECNO),
 #if __BSD_VISIBLE
     LUAB_FUNC("dbopen",       luab_dbopen),
-    LUAB_FUNC("dbt_create",   luab_dbt_create),
+    LUAB_FUNC("create_dbt",   luab_type_create_dbt),
 #endif
     LUAB_MOD_TBL_SENTINEL
 };

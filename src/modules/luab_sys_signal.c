@@ -46,7 +46,7 @@ extern luab_module_t luab_sys_signal_lib;
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SIGVAL)).
  *
- * @function sigval_create
+ * @function create_sigval
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -54,10 +54,10 @@ extern luab_module_t luab_sys_signal_lib;
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sigval [, err, msg ] = bsd.sys.signal.sigval_create(arg)
+ * @usage sigval [, err, msg ] = bsd.sys.signal.create_sigval(arg)
  */
 static int
-luab_sigval_create(lua_State *L)
+luab_type_create_sigval(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(SIGVAL, TYPE, __func__);
@@ -69,7 +69,7 @@ luab_sigval_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SIGEVENT)).
  *
- * @function sigevent_create
+ * @function create_sigevent
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -77,10 +77,10 @@ luab_sigval_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sigevent [, err, msg ] = bsd.sys.signal.sigevent_create(arg)
+ * @usage sigevent [, err, msg ] = bsd.sys.signal.create_sigevent(arg)
  */
 static int
-luab_sigevent_create(lua_State *L)
+luab_type_create_sigevent(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(SIGEVENT, TYPE, __func__);
@@ -255,10 +255,10 @@ static luab_module_table_t luab_sys_signal_vec[] = {
     LUAB_INT("SIG_SETMASK",             SIG_SETMASK),
 #endif
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
-    LUAB_FUNC("sigval_create",          luab_sigval_create),
+    LUAB_FUNC("create_sigval",          luab_type_create_sigval),
 #endif
 #if __POSIX_VISIBLE >= 199309
-    LUAB_FUNC("sigevent_create",        luab_sigevent_create),
+    LUAB_FUNC("create_sigevent",        luab_type_create_sigevent),
 #endif
     LUAB_MOD_TBL_SENTINEL
 };

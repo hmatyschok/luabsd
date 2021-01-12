@@ -139,16 +139,16 @@ luab_link_ntoa(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
- * @function sockaddr_dl_create
+ * @function create_sockaddr_dl
  *
  * @param arg           Instance of (LUA_TUSERDATA(SOCKADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.net.if_dl.sockaddr_dl_create([ arg ])
+ * @usage sockaddr [, err, msg ] = bsd.net.if_dl.create_sockaddr_dl([ arg ])
  */
 static int
-luab_sockaddr_dl_create(lua_State *L)
+luab_type_create_sockaddr_dl(lua_State *L)
 {
     luab_module_t *m;
     struct sockaddr_dl sdl;
@@ -170,7 +170,7 @@ luab_sockaddr_dl_create(lua_State *L)
 static luab_module_table_t luab_net_if_dl_vec[] = {
     LUAB_FUNC("link_addr",            luab_link_addr),
     LUAB_FUNC("link_ntoa",            luab_link_ntoa),
-    LUAB_FUNC("sockaddr_dl_create",   luab_sockaddr_dl_create),
+    LUAB_FUNC("create_sockaddr_dl",   luab_type_create_sockaddr_dl),
     LUAB_MOD_TBL_SENTINEL
 };
 

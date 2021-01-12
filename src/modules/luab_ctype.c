@@ -748,7 +748,7 @@ luab_isspecial(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(CT_RUNE)).
  *
- * @function ct_rune_create
+ * @function create_ct_rune
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -756,10 +756,10 @@ luab_isspecial(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ct_rune [, err, msg ] = bsd.ctype.ct_rune_create(arg)
+ * @usage ct_rune [, err, msg ] = bsd.ctype.create_ct_rune(arg)
  */
 static int
-luab_ct_rune_create(lua_State *L)
+luab_type_create_ct_rune(lua_State *L)
 {
     luab_module_t *m;
     __ct_rune_t x;
@@ -882,7 +882,7 @@ static luab_module_table_t luab_ctype_vec[] = {
     LUAB_FUNC("isrune",                 luab_isrune),
     LUAB_FUNC("isspecial",              luab_isspecial),
 #endif
-    LUAB_FUNC("ct_rune_create",         luab_ct_rune_create),
+    LUAB_FUNC("create_ct_rune",         luab_type_create_ct_rune),
     LUAB_FUNC("ct_rune_tolower",        luab_ct_rune_tolower),
     LUAB_FUNC("ct_rune_toupper",        luab_ct_rune_toupper),
     LUAB_MOD_TBL_SENTINEL

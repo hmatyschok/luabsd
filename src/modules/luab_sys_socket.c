@@ -1224,16 +1224,16 @@ luab_socketpair(lua_State *L)
 /***
  * Generator function.
  *
- * @function linger_create
+ * @function create_linger
  *
  * @param arg           Instance of (LUA_TUSERDATA(LINGER)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage linger [, err, msg ] = bsd.sys.socket.linger_create([ arg ])
+ * @usage linger [, err, msg ] = bsd.sys.socket.create_linger([ arg ])
  */
 static int
-luab_linger_create(lua_State *L)
+luab_type_create_linger(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(LINGER, TYPE, __func__);
@@ -1243,16 +1243,16 @@ luab_linger_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
- * @function sockaddr_create
+ * @function create_sockaddr
  *
  * @param arg           Instance of (LUA_TUSERDATA(SOCKADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_create([ arg ])
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.create_sockaddr([ arg ])
  */
 static int
-luab_sockaddr_create(lua_State *L)
+luab_type_create_sockaddr(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(SOCKADDR, TYPE, __func__);
@@ -1262,14 +1262,14 @@ luab_sockaddr_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(MSGHDR)).
  *
- * @function msghdr_create
+ * @function create_msghdr
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage msghdr [, err, msg ] = bsd.sys.socket.msghdr_create()
+ * @usage msghdr [, err, msg ] = bsd.sys.socket.create_msghdr()
  */
 static int
-luab_msghdr_create(lua_State *L)
+luab_type_create_msghdr(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(MSGHDR, TYPE, __func__);
@@ -1280,16 +1280,16 @@ luab_msghdr_create(lua_State *L)
 /***
  * Generator function.
  *
- * @function accept_filter_arg_create
+ * @function create_accept_filter_arg
  *
  * @param arg           Instance of (LUA_TUSERDATA(ACCEPT_FILTER_ARG)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage accept_filter_arg [, err, msg ] = bsd.sys.socket.accept_filter_arg_create([ arg ])
+ * @usage accept_filter_arg [, err, msg ] = bsd.sys.socket.create_accept_filter_arg([ arg ])
  */
 static int
-luab_accept_filter_arg_create(lua_State *L)
+luab_type_create_accept_filter_arg(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(ACCEPT_FILTER_ARG, TYPE, __func__);
@@ -1299,14 +1299,14 @@ luab_accept_filter_arg_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(CMSGCRED)).
  *
- * @function cmsgcred_create
+ * @function create_cmsgcred
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage cmsgcred [, err, msg ] = bsd.sys.socket.cmsgcred_create()
+ * @usage cmsgcred [, err, msg ] = bsd.sys.socket.create_cmsgcred()
  */
 static int
-luab_cmsgcred_create(lua_State *L)
+luab_type_create_cmsgcred(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(CMSGCRED, TYPE, __func__);
@@ -1316,16 +1316,16 @@ luab_cmsgcred_create(lua_State *L)
 /***
  * Generator function.
  *
- * @function sockproto_create
+ * @function create_sockproto
  *
  * @param arg           Instance of (LUA_TUSERDATA(SOCKPROTO)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockproto [, err, msg ] = bsd.sys.socket.sockproto_create([ arg ])
+ * @usage sockproto [, err, msg ] = bsd.sys.socket.create_sockproto([ arg ])
  */
 static int
-luab_sockproto_create(lua_State *L)
+luab_type_create_sockproto(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(SOCKPROTO, TYPE, __func__);
@@ -1335,14 +1335,14 @@ luab_sockproto_create(lua_State *L)
 /***
  * Generator function.
  *
- * @function sf_hdtr_create
+ * @function create_sf_hdtr
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sf_hdtr [, err, msg ] = bsd.sys.socket.sf_hdtr_create()
+ * @usage sf_hdtr [, err, msg ] = bsd.sys.socket.create_sf_hdtr()
  */
 static int
-luab_sf_hdtr_create(lua_State *L)
+luab_type_create_sf_hdtr(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(SF_HDTR, TYPE, __func__);
@@ -1645,14 +1645,14 @@ static luab_module_table_t luab_sys_socket_vec[] = {
     LUAB_FUNC("socket",                     luab_socket),
     LUAB_FUNC("socketpair",                 luab_socketpair),
     /* generator functions */
-    LUAB_FUNC("linger_create",              luab_linger_create),
-    LUAB_FUNC("sockaddr_create",            luab_sockaddr_create),
-    LUAB_FUNC("msghdr_create",              luab_msghdr_create),
+    LUAB_FUNC("create_linger",              luab_type_create_linger),
+    LUAB_FUNC("create_sockaddr",            luab_type_create_sockaddr),
+    LUAB_FUNC("create_msghdr",              luab_type_create_msghdr),
 #if __BSD_VISIBLE
-    LUAB_FUNC("accept_filter_arg_create",   luab_accept_filter_arg_create),
-    LUAB_FUNC("cmsgcred_create",            luab_cmsgcred_create),
-    LUAB_FUNC("sockproto_create",           luab_sockproto_create),
-    LUAB_FUNC("sf_hdtr_create",             luab_sf_hdtr_create),
+    LUAB_FUNC("create_accept_filter_arg",   luab_type_create_accept_filter_arg),
+    LUAB_FUNC("create_cmsgcred",            luab_type_create_cmsgcred),
+    LUAB_FUNC("create_sockproto",           luab_type_create_sockproto),
+    LUAB_FUNC("create_sf_hdtr",             luab_type_create_sf_hdtr),
 #endif
     LUAB_MOD_TBL_SENTINEL
 };

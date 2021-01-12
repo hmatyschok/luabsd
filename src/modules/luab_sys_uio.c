@@ -195,16 +195,16 @@ luab_pwritev(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(IOVEC)).
  *
- * @function iovec_create
+ * @function create_iovec
  *
  * @param max_len           Capacity in bytes, (LUA_TNUMBER).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage iovec [, err, msg ] = bsd.sys.uio.iovec_create(max_len)
+ * @usage iovec [, err, msg ] = bsd.sys.uio.create_iovec(max_len)
  */
 static int
-luab_iovec_create(lua_State *L)
+luab_type_create_iovec(lua_State *L)
 {
     luab_module_t *m;
     size_t max_len;
@@ -235,7 +235,7 @@ static luab_module_table_t luab_sys_uio_vec[] = {
     LUAB_FUNC("preadv",       luab_preadv),
     LUAB_FUNC("pwritev",      luab_pwritev),
 #endif
-    LUAB_FUNC("iovec_create", luab_iovec_create),
+    LUAB_FUNC("create_iovec", luab_type_create_iovec),
     LUAB_MOD_TBL_SENTINEL
 };
 

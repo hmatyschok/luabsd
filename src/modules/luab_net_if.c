@@ -171,16 +171,16 @@ luab_if_nametoindex(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(IF_NAMEINDEX)).
  *
- * @function if_nameindex_create
+ * @function create_if_nameindex
  *
  * @param arg           Instance of (LUA_TUSERDATA(IF_NAMEINDEX)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage if_nameindex [, err, msg ] = bsd.net.if_nameindex_create([ arg ])
+ * @usage if_nameindex [, err, msg ] = bsd.net.create_if_nameindex([ arg ])
  */
 static int
-luab_if_nameindex_create(lua_State *L)
+luab_type_create_if_nameindex(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(IF_NAMEINDEX, TYPE, __func__);
@@ -279,7 +279,7 @@ static luab_module_table_t luab_net_if_vec[] = {
     LUAB_FUNC("if_indextoname",       luab_if_indextoname),
     LUAB_FUNC("if_nameindex",         luab_if_nameindex),
     LUAB_FUNC("if_nametoindex",       luab_if_nametoindex),
-    LUAB_FUNC("if_nameindex_create",  luab_if_nameindex_create),
+    LUAB_FUNC("create_if_nameindex",  luab_type_create_if_nameindex),
     LUAB_MOD_TBL_SENTINEL
 };
 

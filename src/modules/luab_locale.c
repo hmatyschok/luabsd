@@ -106,16 +106,16 @@ luab_setlocale(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(LCONV)).
  *
- * @function lconv_create
+ * @function create_lconv
  *
  * @param arg           Instance of (LUA_TUSERDATA(LCONV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage lconv [, err, msg ] = bsd.locale.lconv_create([ arg ])
+ * @usage lconv [, err, msg ] = bsd.locale.create_lconv([ arg ])
  */
 static int
-luab_lconv_create(lua_State *L)
+luab_type_create_lconv(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(LCONV, TYPE, __func__);
@@ -137,7 +137,7 @@ static luab_module_table_t luab_locale_vec[] = {
     LUAB_INT("_LC_LAST",                _LC_LAST),
     LUAB_FUNC("localeconv",             luab_localeconv),
     LUAB_FUNC("setlocale",              luab_setlocale),
-    LUAB_FUNC("lconv_create",           luab_lconv_create),
+    LUAB_FUNC("create_lconv",           luab_type_create_lconv),
     LUAB_MOD_TBL_SENTINEL
 };
 

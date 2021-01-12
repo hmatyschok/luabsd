@@ -275,16 +275,16 @@ luab_regfree(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(REGEX)).
  *
- * @function regex_create
+ * @function create_regex
  *
  * @param regex             Instance of (LUA_TUSERDATA(REGEX)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage regex [, err, msg ] = bsd.regex.regex_create([ regex ])
+ * @usage regex [, err, msg ] = bsd.regex.create_regex([ regex ])
  */
 static int
-luab_regex_create(lua_State *L)
+luab_type_create_regex(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(REGEX, TYPE, __func__);
@@ -294,16 +294,16 @@ luab_regex_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(REGMATCH)).
  *
- * @function regmatch_create
+ * @function create_regmatch
  *
  * @param regmatch          Instance of (LUA_TUSERDATA(REGMATCH)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage regmatch [, err, msg ] = bsd.regex.regmatch_create([ regmatch ])
+ * @usage regmatch [, err, msg ] = bsd.regex.create_regmatch([ regmatch ])
  */
 static int
-luab_regmatch_create(lua_State *L)
+luab_type_create_regmatch(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(REGMATCH, TYPE, __func__);
@@ -353,8 +353,8 @@ static luab_module_table_t luab_regex_vec[] = { /* regex.h */
     LUAB_FUNC("regexec",            luab_regexec),
     LUAB_FUNC("regerror",           luab_regerror),
     LUAB_FUNC("regfree",            luab_regfree),
-    LUAB_FUNC("regex_create",       luab_regex_create),
-    LUAB_FUNC("regmatch_create",    luab_regmatch_create),
+    LUAB_FUNC("create_regex",       luab_type_create_regex),
+    LUAB_FUNC("create_regmatch",    luab_type_create_regmatch),
     LUAB_MOD_TBL_SENTINEL
 };
 

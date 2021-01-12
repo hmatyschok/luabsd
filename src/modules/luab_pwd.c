@@ -477,16 +477,16 @@ luab_uid_from_user(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(PASSWD)).
  *
- * @function passwd_create
+ * @function create_passwd
  *
  * @param passwd          Instance of (LUA_TUSERDATA(PASSWD)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage passwd [, err, msg ] = bsd.pwd.passwd_create([ passwd ])
+ * @usage passwd [, err, msg ] = bsd.pwd.create_passwd([ passwd ])
  */
 static int
-luab_passwd_create(lua_State *L)
+luab_type_create_passwd(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(PASSWD, TYPE, __func__);
@@ -549,7 +549,7 @@ static luab_module_table_t luab_pwd_vec[] = { /* pwd.h */
     LUAB_FUNC("user_from_uid",          luab_user_from_uid),
     LUAB_FUNC("uid_from_user",          luab_uid_from_user),
 #endif
-    LUAB_FUNC("passwd_create",          luab_passwd_create),
+    LUAB_FUNC("create_passwd",          luab_type_create_passwd),
     LUAB_MOD_TBL_SENTINEL
 };
 

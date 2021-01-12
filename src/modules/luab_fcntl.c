@@ -380,7 +380,7 @@ luab_posix_fallocate(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(MODE)).
  *
- * @function mode_create
+ * @function create_mode
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -388,10 +388,10 @@ luab_posix_fallocate(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage mode [, err, msg ] = bsd.fcntl.mode_create(arg)
+ * @usage mode [, err, msg ] = bsd.fcntl.create_mode(arg)
  */
 static int
-luab_mode_create(lua_State *L)
+luab_type_create_mode(lua_State *L)
 {
     luab_module_t *m;
     mode_t x;
@@ -406,16 +406,16 @@ luab_mode_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(FLOCK)).
  *
- * @function flock_create
+ * @function create_flock
  *
  * @param arg           Instance of (LUA_TUSERDATA(FLOCK)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage flock [, err, msg ] = bsd.fcntl.flock_create([ arg ])
+ * @usage flock [, err, msg ] = bsd.fcntl.create_flock([ arg ])
  */
 static int
-luab_flock_create(lua_State *L)
+luab_type_create_flock(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(FLOCK, TYPE, __func__);
@@ -541,8 +541,8 @@ static luab_module_table_t luab_fcntl_vec[] = {
     LUAB_FUNC("posix_fadvise",          luab_posix_fadvise),
     LUAB_FUNC("posix_fallocate",        luab_posix_fallocate),
 #endif
-    LUAB_FUNC("mode_create",            luab_mode_create),
-    LUAB_FUNC("flock_create",           luab_flock_create),
+    LUAB_FUNC("create_mode",            luab_type_create_mode),
+    LUAB_FUNC("create_flock",           luab_type_create_flock),
     LUAB_MOD_TBL_SENTINEL
 };
 

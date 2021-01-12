@@ -46,16 +46,16 @@ extern luab_module_t luab_sys_un_lib;
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
- * @function sockaddr_un_create
+ * @function create_sockaddr_un
  *
  * @param path              Specifies path or filename.
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.sys.socket.sockaddr_un_create([ path ])
+ * @usage sockaddr [, err, msg ] = bsd.sys.socket.create_sockaddr_un([ path ])
  */
 static int
-luab_sockaddr_un_create(lua_State *L)
+luab_type_create_sockaddr_un(lua_State *L)
 {
     luab_module_t *m;
     struct sockaddr_un sun;
@@ -87,7 +87,7 @@ static luab_module_table_t luab_sys_un_vec[] = {
     LUAB_INT("LOCAL_CONNWAIT",        LOCAL_CONNWAIT),
     LUAB_INT("LOCAL_VENDOR",          LOCAL_VENDOR),
 #endif
-    LUAB_FUNC("sockaddr_un_create",   luab_sockaddr_un_create),
+    LUAB_FUNC("create_sockaddr_un",   luab_type_create_sockaddr_un),
     LUAB_MOD_TBL_SENTINEL
 };
 

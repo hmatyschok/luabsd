@@ -49,16 +49,16 @@ extern luab_module_t luab_sys_dirent_lib;
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(DIRENT)).
  *
- * @function dirent_create
+ * @function create_dirent
  *
  * @param dirent            Instance of (LUA_TUSERDATA(DIR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage dirent [, err, msg ] = bsd.sys_dirent.dirent_create([ dirent ])
+ * @usage dirent [, err, msg ] = bsd.sys_dirent.create_dirent([ dirent ])
  */
 static int
-luab_dirent_create(lua_State *L)
+luab_type_create_dirent(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(DIRENT, TYPE, __func__);
@@ -81,7 +81,7 @@ static luab_module_table_t luab_sys_dirent_vec[] = { /* sys/dirent.h */
     LUAB_INT("DT_SOCK",                 DT_SOCK),
     LUAB_INT("DT_WHT",                  DT_WHT),
 #endif /* __BSD_VISIBLE */
-    LUAB_FUNC("dirent_create",          luab_dirent_create),
+    LUAB_FUNC("create_dirent",          luab_type_create_dirent),
     LUAB_MOD_TBL_SENTINEL
 };
 

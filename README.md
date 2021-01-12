@@ -38,17 +38,17 @@ A key/value pair
 
 may be created by utilizing
 
-    local buf_key = bsd.sys.uio.iovec_create(#key)
-    local buf_value = bsd.sys.uio.iovec_create(#value)
+    local buf_key = bsd.sys.uio.create_iovec(#key)
+    local buf_value = bsd.sys.uio.create_iovec(#value)
 
     buf_key:copy_in(key)
     buf_value:copy_in(value)
 
 buffer maps to a set of (so called) data base thang
 
-    local dbt_key = bsd.db.dbt_create(buf_key)
-    local dbt_value = bsd.db.dbt_create(buf_value)
-    local dbt_result = bsd.db.dbt_create()
+    local dbt_key = bsd.db.create_dbt(buf_key)
+    local dbt_value = bsd.db.create_dbt(buf_value)
+    local dbt_result = bsd.db.create_dbt()
 
 still implements an interface for operations as described in db(3):
 
@@ -65,7 +65,7 @@ Therefore, a callout may be implemented e. g.
 
         ret, err, msg = db:get(dbt_key, dbt_result, 0)
 
-        buf_result = bsd.sys.uio.iovec_create(dbt_result:get_size())
+        buf_result = bsd.sys.uio.create_iovec(dbt_result:get_size())
         dbt_result:get_data(buf_result)
 
         local k, v = buf_key:copy_out(), buf_result:copy_out()
@@ -77,7 +77,7 @@ Therefore, a callout may be implemented e. g.
 
 by utilizing setitimer(2) or interval timer API [2]:
 
-    local tv = bsd.sys.time.timeval_create()
+    local tv = bsd.sys.time.create_itimerval()
     tv:set_tv_sec(3)
 
     local it_callout = bsd.sys.time.itimerval_create()
@@ -157,7 +157,7 @@ As mentioned before, C Structures are e. g. accessible
 
 by utilizing instances of LUA_TTABLES:
 
-    local sb = bsd.sys.stat.stat_create()
+    local sb = bsd.sys.stat.create_stat()
     fd, err, msg = db:fd()
     print(" db:fd()", fd, err, msg, "\n")
 
@@ -193,7 +193,7 @@ by utilizing instances of LUA_TTABLES:
     ret, err, msg = bsd.unistd.lseek(fd, -off, whence)
     print(string.format(" lseek(%d,%d,%d)", fd, -off, whence), ret, err, msg, "\n")
 
-    local data_buf = bsd.sys.uio.iovec_create(off)
+    local data_buf = bsd.sys.uio.create_iovec(off)
     ret, err, msg = data_buf:read(fd)
     print(string.format(" data_buf:read(%d)", fd), ret, err, msg, "\n")
 
@@ -202,7 +202,7 @@ by utilizing instances of LUA_TTABLES:
 
     print_udata("struct", data_buf, "")
 
-    local tv_new = bsd.sys.time.timespec_create(data_buf)
+    local tv_new = bsd.sys.time.create_timespec(data_buf)
 
     print_udata("struct", tv_new, "")
 

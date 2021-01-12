@@ -79,7 +79,7 @@ luab_nl_langinfo(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(NL_ITEM)).
  *
- * @function nl_item_create
+ * @function create_nl_item
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -87,10 +87,10 @@ luab_nl_langinfo(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage nl_item [, err, msg ] = bsd.langinfo.nl_item_create(arg)
+ * @usage nl_item [, err, msg ] = bsd.langinfo.create_nl_item(arg)
  */
 static int
-luab_nl_item_create(lua_State *L)
+luab_type_create_nl_item(lua_State *L)
 {
     luab_module_t *m;
     nl_item x;
@@ -182,7 +182,7 @@ static luab_module_table_t luab_langinfo_vec[] = {
     LUAB_INT("ALTMON_11",           ALTMON_11),
     LUAB_INT("ALTMON_12",           ALTMON_12),
     LUAB_FUNC("nl_langinfo",        luab_nl_langinfo),
-    LUAB_FUNC("nl_item_create",     luab_nl_item_create),
+    LUAB_FUNC("create_nl_item",     luab_type_create_nl_item),
     LUAB_MOD_TBL_SENTINEL
 };
 

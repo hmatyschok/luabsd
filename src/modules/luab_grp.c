@@ -480,7 +480,7 @@ luab_setgroupent(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(GID)).
  *
- * @function gid_create
+ * @function create_gid
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -488,10 +488,10 @@ luab_setgroupent(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage gid [, err, msg ] = bsd.grp.gid_create(arg)
+ * @usage gid [, err, msg ] = bsd.grp.create_gid(arg)
  */
 static int
-luab_gid_create(lua_State *L)
+luab_type_create_gid(lua_State *L)
 {
     luab_module_t *m;
     gid_t x;
@@ -506,16 +506,16 @@ luab_gid_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(GROUP)).
  *
- * @function group_create
+ * @function create_group
  *
  * @param group             Instance of (LUA_TUSERDATA(GROUP)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage group [, err, msg ] = bsd.grp.group_create([ group ])
+ * @usage group [, err, msg ] = bsd.grp.create_group([ group ])
  */
 static int
-luab_group_create(lua_State *L)
+luab_type_create_group(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(GROUP, TYPE, __func__);
@@ -549,8 +549,8 @@ static luab_module_table_t luab_grp_vec[] = { /* grp.h */
     LUAB_FUNC("getgrent_r",         luab_getgrent_r),
     LUAB_FUNC("setgroupent",        luab_setgroupent),
 #endif
-    LUAB_FUNC("gid_create",         luab_gid_create),
-    LUAB_FUNC("group_create",       luab_group_create),
+    LUAB_FUNC("create_gid",         luab_type_create_gid),
+    LUAB_FUNC("create_group",       luab_type_create_group),
     LUAB_MOD_TBL_SENTINEL
 };
 

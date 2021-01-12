@@ -579,7 +579,7 @@ luab_clock_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(TIME)).
  *
- * @function time_create
+ * @function create_time
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -587,10 +587,10 @@ luab_clock_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage time [, err, msg ] = bsd.time.time_create(arg)
+ * @usage time [, err, msg ] = bsd.time.create_time(arg)
  */
 static int
-luab_time_create(lua_State *L)
+luab_type_create_time(lua_State *L)
 {
     luab_module_t *m;
     time_t x;
@@ -606,7 +606,7 @@ luab_time_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(CLOCKID)).
  *
- * @function clockid_create
+ * @function create_clockid
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -614,10 +614,10 @@ luab_time_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage clockid [, err, msg ] = bsd.time.clockid_create(arg)
+ * @usage clockid [, err, msg ] = bsd.time.create_clockid(arg)
  */
 static int
-luab_clockid_create(lua_State *L)
+luab_type_create_clockid(lua_State *L)
 {
     luab_module_t *m;
     clockid_t x;
@@ -632,7 +632,7 @@ luab_clockid_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(TIMER)).
  *
- * @function timer_create
+ * @function create_timer
  *
  * @param arg               Specifies its initial value by an instance of
  *
@@ -640,10 +640,10 @@ luab_clockid_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage time [, err, msg ] = bsd.xtimer.timer.timer_create(x)
+ * @usage time [, err, msg ] = bsd.xtimer.timer.create_timer(arg)
  */
 static int
-luab_timer_create(lua_State *L)
+luab_type_create_timer(lua_State *L)
 {
     luab_module_t *m;
     luab_timer_t *xtmr;
@@ -675,7 +675,7 @@ luab_timer_create(lua_State *L)
  * @usage tm [, err, msg ] = bsd.time.tm_create([ arg ])
  */
 static int
-luab_tm_create(lua_State *L)
+luab_type_create_tm(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(TM, TYPE, __func__);
@@ -736,12 +736,12 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("timegm",                     luab_timegm),
 #endif /* __BSD_VISIBLE */
     LUAB_FUNC("clock_create",               luab_clock_create),
-    LUAB_FUNC("time_create",                luab_time_create),
+    LUAB_FUNC("create_time",                luab_type_create_time),
 #if __POSIX_VISIBLE >= 199309
-    LUAB_FUNC("clockid_create",             luab_clockid_create),
-    LUAB_FUNC("timer_create",               luab_timer_create),
+    LUAB_FUNC("create_clockid",             luab_type_create_clockid),
+    LUAB_FUNC("create_timer",               luab_type_create_timer),
 #endif /* __POSIX_VISIBLE >= 199309 */
-    LUAB_FUNC("tm_create",                  luab_tm_create),
+    LUAB_FUNC("create_tm",                  luab_type_create_tm),
     LUAB_MOD_TBL_SENTINEL
 };
 

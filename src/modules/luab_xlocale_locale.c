@@ -257,7 +257,7 @@ luab_uselocale(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(LOCALE)).
  *
- * @function locale_create
+ * @function create_locale
  *
  * @param arg               Specifies its initial value by an instance of
  *
@@ -265,10 +265,10 @@ luab_uselocale(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage time [, err, msg ] = bsd.xlocale.locale.locale_create(x)
+ * @usage time [, err, msg ] = bsd.xlocale.locale.create_locale(x)
  */
 static int
-luab_locale_create(lua_State *L)
+luab_type_create_locale(lua_State *L)
 {
     luab_module_t *m;
     luab_locale_t *xloc;
@@ -304,7 +304,7 @@ static luab_module_table_t luab_xlocale_locale_vec[] = {
     LUAB_FUNC("newlocale",                  luab_newlocale),
     LUAB_FUNC("querylocale",                luab_querylocale),
     LUAB_FUNC("uselocale",                  luab_uselocale),
-    LUAB_FUNC("locale_create",              luab_locale_create),
+    LUAB_FUNC("create_locale",              luab_type_create_locale),
     LUAB_MOD_TBL_SENTINEL
 };
 

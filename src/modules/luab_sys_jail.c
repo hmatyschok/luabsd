@@ -54,7 +54,7 @@ extern luab_module_t luab_sys_jail_lib;
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg] = bsd.sys.jail.jail(jail)
+ * @usage ret [, err, msg ] = bsd.sys.jail.jail(jail)
  */
 static int
 luab_jail(lua_State *L)
@@ -267,16 +267,16 @@ luab_jail_remove(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(JAIL)).
  *
- * @function jail_create
+ * @function create_jail
  *
  * @param jail              Instance of (LUA_TUSERDATA(JAIL)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage jail [, err, msg ] = bsd.sys.jail.jail_create()
+ * @usage jail [, err, msg ] = bsd.sys.jail.create_jail()
  */
 static int
-luab_jail_create(lua_State *L)
+luab_type_create_jail(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(JAIL, TYPE, __func__);
@@ -307,7 +307,7 @@ static luab_module_table_t luab_sys_jail_vec[] = {
     LUAB_FUNC("jail_get",               luab_jail_get),
     LUAB_FUNC("jail_attach",            luab_jail_attach),
     LUAB_FUNC("jail_remove",            luab_jail_remove),
-    LUAB_FUNC("jail_create",            luab_jail_create),
+    LUAB_FUNC("create_jail",            luab_type_create_jail),
     LUAB_MOD_TBL_SENTINEL
 };
 

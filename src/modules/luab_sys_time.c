@@ -182,16 +182,16 @@ luab_getitimer(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(BINTIME)).
  *
- * @function bintime_create
+ * @function create_bintime
  *
  * @param arg           Instance of (LUA_TUSERDATA(BINTIME)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage bintime [, err, msg ] = bsd.sys.time.bintime_create([ arg ])
+ * @usage bintime [, err, msg ] = bsd.sys.time.create_bintime([ arg ])
  */
 static int
-luab_bintime_create(lua_State *L)
+luab_type_create_bintime(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(BINTIME, TYPE, __func__);
@@ -202,16 +202,16 @@ luab_bintime_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(CLOCKINFO)).
  *
- * @function clockinfo_create
+ * @function create_clockinfo
  *
  * @param arg           Instance of (LUA_TUSERDATA(CLOCKINFO)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage clockinfo [, err, msg ] = bsd.sys.time.clockinfo_create([ arg ])
+ * @usage clockinfo [, err, msg ] = bsd.sys.time.create_clockinfo([ arg ])
  */
 static int
-luab_clockinfo_create(lua_State *L)
+luab_type_create_clockinfo(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(CLOCKINFO, TYPE, __func__);
@@ -221,16 +221,16 @@ luab_clockinfo_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(ITIMERVAL)).
  *
- * @function itimerval_create
+ * @function create_itimerval
  *
  * @param arg           Instance of (LUA_TUSERDATA(ITIMERVAL)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage itimerval [, err, msg ] = bsd.sys.time.itimerval_create([ arg ])
+ * @usage itimerval [, err, msg ] = bsd.sys.time.create_itimerval([ arg ])
  */
 static int
-luab_itimerval_create(lua_State *L)
+luab_type_create_itimerval(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(ITIMERVAL, TYPE, __func__);
@@ -240,16 +240,16 @@ luab_itimerval_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(TIMESPEC)).
  *
- * @function timespec_create
+ * @function create_timespec
  *
  * @param arg           Instance of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timespec [, err, msg ] = bsd.sys.time.timespec_create([ arg ])
+ * @usage timespec [, err, msg ] = bsd.sys.time.create_timespec([ arg ])
  */
 static int
-luab_timespec_create(lua_State *L)
+luab_type_create_timespec(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(TIMESPEC, TYPE, __func__);
@@ -259,16 +259,16 @@ luab_timespec_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(TIMEVAL)).
  *
- * @function timeval_create
+ * @function create_timeval
  *
  * @param arg           Instance of (LUA_TUSERDATA(TIMEVAL)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timeval [, err, msg ] = bsd.sys.time.timeval_create([ arg ])
+ * @usage timeval [, err, msg ] = bsd.sys.time.create_timeval([ arg ])
  */
 static int
-luab_timeval_create(lua_State *L)
+luab_type_create_timeval(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(TIMEVAL, TYPE, __func__);
@@ -278,16 +278,16 @@ luab_timeval_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(TIMEZONE)).
  *
- * @function timezone_create
+ * @function create_timezone
  *
  * @param arg           Instance of (LUA_TUSERDATA(TIMEZONE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timezone [, err, msg ] = bsd.sys.time.timezone_create([ arg ])
+ * @usage timezone [, err, msg ] = bsd.sys.time.create_timezone([ arg ])
  */
 static int
-luab_timezone_create(lua_State *L)
+luab_type_create_timezone(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(TIMEZONE, TYPE, __func__);
@@ -338,13 +338,13 @@ static luab_module_table_t luab_sys_time_vec[] = { /* sys/time.h */
     LUAB_FUNC("getitimer",                luab_getitimer),
 #endif
 #if __BSD_VISIBLE
-    LUAB_FUNC("bintime_create",           luab_bintime_create),
+    LUAB_FUNC("create_bintime",           luab_type_create_bintime),
 #endif
-    LUAB_FUNC("clockinfo_create",         luab_clockinfo_create),
-    LUAB_FUNC("itimerval_create",         luab_itimerval_create),
-    LUAB_FUNC("timespec_create",          luab_timespec_create),
-    LUAB_FUNC("timeval_create",           luab_timeval_create),
-    LUAB_FUNC("timezone_create",          luab_timezone_create),
+    LUAB_FUNC("create_clockinfo",         luab_type_create_clockinfo),
+    LUAB_FUNC("create_itimerval",         luab_type_create_itimerval),
+    LUAB_FUNC("create_timespec",          luab_type_create_timespec),
+    LUAB_FUNC("create_timeval",           luab_type_create_timeval),
+    LUAB_FUNC("create_timezone",          luab_type_create_timezone),
     LUAB_MOD_TBL_SENTINEL
 };
 

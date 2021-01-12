@@ -1039,7 +1039,7 @@ luab_mknodat(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(BLKCNT)).
  *
- * @function blkcnt_create
+ * @function create_blkcnt
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -1047,10 +1047,10 @@ luab_mknodat(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage blkcnt [, err, msg ] = bsd.sys.stat.blkcnt_create(arg)
+ * @usage blkcnt [, err, msg ] = bsd.sys.stat.create_blkcnt(arg)
  */
 static int
-luab_blkcnt_create(lua_State *L)
+luab_type_create_blkcnt(lua_State *L)
 {
     luab_module_t *m;
     blkcnt_t x;
@@ -1065,7 +1065,7 @@ luab_blkcnt_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(DEV)).
  *
- * @function dev_create
+ * @function create_dev
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -1073,10 +1073,10 @@ luab_blkcnt_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage dev [, err, msg ] = bsd.sys.stat.dev_create(arg)
+ * @usage dev [, err, msg ] = bsd.sys.stat.create_dev(arg)
  */
 static int
-luab_dev_create(lua_State *L)
+luab_type_create_dev(lua_State *L)
 {
     luab_module_t *m;
     dev_t x;
@@ -1092,7 +1092,7 @@ luab_dev_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(FFLAGS)).
  *
- * @function fflags_create
+ * @function create_fflags
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -1100,10 +1100,10 @@ luab_dev_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fflags [, err, msg ] = bsd.sys.stat.fflags_create(arg)
+ * @usage fflags [, err, msg ] = bsd.sys.stat.create_fflags(arg)
  */
 static int
-luab_fflags_create(lua_State *L)
+luab_type_create_fflags(lua_State *L)
 {
     luab_module_t *m;
     fflags_t x;
@@ -1118,7 +1118,7 @@ luab_fflags_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INO)).
  *
- * @function ino_create
+ * @function create_ino
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -1126,10 +1126,10 @@ luab_fflags_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ino [, err, msg ] = bsd.sys.stat.ino_create(arg)
+ * @usage ino [, err, msg ] = bsd.sys.stat.create_ino(arg)
  */
 static int
-luab_ino_create(lua_State *L)
+luab_type_create_ino(lua_State *L)
 {
     luab_module_t *m;
     ino_t x;
@@ -1144,7 +1144,7 @@ luab_ino_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(NLINK)).
  *
- * @function nlink_create
+ * @function create_nlink
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -1152,10 +1152,10 @@ luab_ino_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage nlink [, err, msg ] = bsd.sys.stat.nlink_create(arg)
+ * @usage nlink [, err, msg ] = bsd.sys.stat.create_nlink(arg)
  */
 static int
-luab_nlink_create(lua_State *L)
+luab_type_create_nlink(lua_State *L)
 {
     luab_module_t *m;
     nlink_t x;
@@ -1170,16 +1170,16 @@ luab_nlink_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(STAT)).
  *
- * @function stat_create
+ * @function create_stat
  *
  * @param arg           Instance of (LUA_TUSERDATA(STAT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage hook [, err, msg ] = bsd.sys.stat.stat_create([ arg ])
+ * @usage hook [, err, msg ] = bsd.sys.stat.create_stat([ arg ])
  */
 static int
-luab_stat_create(lua_State *L)
+luab_type_create_stat(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(STAT, TYPE, __func__);
@@ -1288,12 +1288,12 @@ static luab_module_table_t luab_sys_stat_vec[] = {
 #if __XSI_VISIBLE >= 700
     LUAB_FUNC("mknodat",            luab_mknodat),
 #endif
-    LUAB_FUNC("blkcnt_create",      luab_blkcnt_create),
-    LUAB_FUNC("dev_create",         luab_dev_create),
-    LUAB_FUNC("fflags_create",      luab_fflags_create),
-    LUAB_FUNC("ino_create",         luab_ino_create),
-    LUAB_FUNC("nlink_create",       luab_nlink_create),
-    LUAB_FUNC("stat_create",        luab_stat_create),
+    LUAB_FUNC("create_blkcnt",      luab_type_create_blkcnt),
+    LUAB_FUNC("create_dev",         luab_type_create_dev),
+    LUAB_FUNC("create_fflags",      luab_type_create_fflags),
+    LUAB_FUNC("create_ino",         luab_type_create_ino),
+    LUAB_FUNC("create_nlink",       luab_type_create_nlink),
+    LUAB_FUNC("create_stat",        luab_type_create_stat),
     LUAB_MOD_TBL_SENTINEL
 };
 

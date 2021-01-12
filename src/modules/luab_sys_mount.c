@@ -810,16 +810,16 @@ luab_getvfsbyname(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(FSID)).
  *
- * @function fsid_create
+ * @function create_fsid
  *
  * @param fsid              Instance of (LUA_TUSERDATA(FSID)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fsid [, err, msg ] = bsd.sys.mount.fsid_create([ fsid ])
+ * @usage fsid [, err, msg ] = bsd.sys.mount.create_fsid([ fsid ])
  */
 static int
-luab_fsid_create(lua_State *L)
+luab_type_create_fsid(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(FSID, TYPE, __func__);
@@ -829,16 +829,16 @@ luab_fsid_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(FID)).
  *
- * @function fid_create
+ * @function create_fid
  *
  * @param fid               Instance of (LUA_TUSERDATA(FID)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fid [, err, msg ] = bsd.sys.mount.fid_create([ fid ])
+ * @usage fid [, err, msg ] = bsd.sys.mount.create_fid([ fid ])
  */
 static int
-luab_fid_create(lua_State *L)
+luab_type_create_fid(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(FID, TYPE, __func__);
@@ -848,16 +848,16 @@ luab_fid_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(STATFS)).
  *
- * @function statfs_create
+ * @function create_statfs
  *
  * @param statfs            Instance of (LUA_TUSERDATA(FID)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage statfs [, err, msg ] = bsd.sys.mount.statfs_create([ statfs ])
+ * @usage statfs [, err, msg ] = bsd.sys.mount.create_statfs([ statfs ])
  */
 static int
-luab_statfs_create(lua_State *L)
+luab_type_create_statfs(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(STATFS, TYPE, __func__);
@@ -867,16 +867,16 @@ luab_statfs_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(FHANDLE)).
  *
- * @function fhandle_create
+ * @function create_fhandle
  *
  * @param fhandle           Instance of (LUA_TUSERDATA(FHANDLE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fhandle [, err, msg ] = bsd.sys.mount.statfs_create([ fhandle ])
+ * @usage fhandle [, err, msg ] = bsd.sys.mount.create_statfs([ fhandle ])
  */
 static int
-luab_fhandle_create(lua_State *L)
+luab_type_create_fhandle(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(FHANDLE, TYPE, __func__);
@@ -886,16 +886,16 @@ luab_fhandle_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(XVFSCONF)).
  *
- * @function xvfsconf_create
+ * @function create_xvfsconf
  *
  * @param xvfsconf           Instance of (LUA_TUSERDATA(XVFSCONF)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage xvfsconf [, err, msg ] = bsd.sys.mount.statfs_create([ xvfsconf ])
+ * @usage xvfsconf [, err, msg ] = bsd.sys.mount.create_statfs([ xvfsconf ])
  */
 static int
-luab_xvfsconf_create(lua_State *L)
+luab_type_create_xvfsconf(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(XVFSCONF, TYPE, __func__);
@@ -1031,11 +1031,11 @@ static luab_module_table_t luab_sys_mount_vec[] = {
     LUAB_FUNC("statfs",                 luab_statfs),
     LUAB_FUNC("unmount",                luab_unmount),
     LUAB_FUNC("getvfsbyname",           luab_getvfsbyname),
-    LUAB_FUNC("fsid_create",            luab_fsid_create),
-    LUAB_FUNC("fid_create",             luab_fid_create),
-    LUAB_FUNC("statfs_create",          luab_statfs_create),
-    LUAB_FUNC("fhandle_create",         luab_fhandle_create),
-    LUAB_FUNC("xvfsconf_create",        luab_xvfsconf_create),
+    LUAB_FUNC("create_fsid",            luab_type_create_fsid),
+    LUAB_FUNC("create_fid",             luab_type_create_fid),
+    LUAB_FUNC("create_statfs",          luab_type_create_statfs),
+    LUAB_FUNC("create_fhandle",         luab_type_create_fhandle),
+    LUAB_FUNC("create_xvfsconf",        luab_type_create_xvfsconf),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -2912,16 +2912,16 @@ luab_strtonum(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(DIV)).
  *
- * @function div_create
+ * @function create_div
  *
  * @param arg           Instance of (LUA_TUSERDATA(DIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage div [, err, msg ] = bsd.stdlib.div_create([ arg ])
+ * @usage div [, err, msg ] = bsd.stdlib.create_div([ arg ])
  */
 static int
-luab_div_create(lua_State *L)
+luab_type_create_div(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(DIV, TYPE, __func__);
@@ -2931,16 +2931,16 @@ luab_div_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(LDIV)).
  *
- * @function ldiv_create
+ * @function create_ldiv
  *
  * @param arg           Instance of (LUA_TUSERDATA(LDIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ldiv [, err, msg ] = bsd.stdlib.ldiv_create([ arg ])
+ * @usage ldiv [, err, msg ] = bsd.stdlib.create_ldiv([ arg ])
  */
 static int
-luab_ldiv_create(lua_State *L)
+luab_type_create_ldiv(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(LINGER, TYPE, __func__);
@@ -2952,16 +2952,16 @@ luab_ldiv_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(LLDIV)).
  *
- * @function lldiv_create
+ * @function create_lldiv
  *
  * @param arg           Instance of (LUA_TUSERDATA(LLDIV)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage lldiv [, err, msg ] = bsd.stdlib.lldiv_create([ arg ])
+ * @usage lldiv [, err, msg ] = bsd.stdlib.create_lldiv([ arg ])
  */
 static int
-luab_lldiv_create(lua_State *L)
+luab_type_create_lldiv(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(LLDIV, TYPE, __func__);
@@ -3077,11 +3077,11 @@ static luab_module_table_t luab_stdlib_vec[] = {
     LUAB_FUNC("srandomdev",           luab_srandomdev),
     LUAB_FUNC("strtonum",             luab_strtonum),
 #endif
-    LUAB_FUNC("div_create",           luab_div_create),
-    LUAB_FUNC("ldiv_create",          luab_ldiv_create),
+    LUAB_FUNC("create_div",           luab_type_create_div),
+    LUAB_FUNC("create_ldiv",          luab_type_create_ldiv),
 #if __ISO_C_VISIBLE >= 1999 || defined(__cplusplus)
 #ifdef __LONG_LONG_SUPPORTED
-    LUAB_FUNC("lldiv_create",         luab_lldiv_create),
+    LUAB_FUNC("create_lldiv",         luab_type_create_lldiv),
 #endif /* __LONG_LONG_SUPPORTED */
 #endif /* __ISO_C_VISIBLE >= 1999 */
     LUAB_MOD_TBL_SENTINEL

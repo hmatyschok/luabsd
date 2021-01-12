@@ -191,16 +191,16 @@ luab_isnettty(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(TTYENT)).
  *
- * @function ttyent_create
+ * @function create_ttyent
  *
  * @param ttyent          Instance of (LUA_TUSERDATA(TTYENT)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ttyent [, err, msg ] = bsd.ttyent.ttyent_create([ ttyent ])
+ * @usage ttyent [, err, msg ] = bsd.ttyent.create_ttyent([ ttyent ])
  */
 static int
-luab_ttyent_create(lua_State *L)
+luab_type_create_ttyent(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(TTYENT, TYPE, __func__);
@@ -236,7 +236,7 @@ static luab_module_table_t luab_ttyent_vec[] = { /* ttyent.h */
     LUAB_FUNC("endttyent",              luab_endttyent),
     LUAB_FUNC("isdialuptty",            luab_isdialuptty),
     LUAB_FUNC("isnettty",               luab_isnettty),
-    LUAB_FUNC("ttyent_create",          luab_ttyent_create),
+    LUAB_FUNC("create_ttyent",          luab_type_create_ttyent),
     LUAB_MOD_TBL_SENTINEL
 };
 

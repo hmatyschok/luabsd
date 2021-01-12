@@ -800,7 +800,7 @@ luab_inet_cidr_pton(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(IN_PORT)).
  *
- * @function in_port_create
+ * @function create_in_port
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -808,10 +808,10 @@ luab_inet_cidr_pton(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_port [, err, msg ] = bsd.arpa.inet.in_port_create(arg)
+ * @usage in_port [, err, msg ] = bsd.arpa.inet.create_in_port(arg)
  */
 static int
-luab_in_port_create(lua_State *L)
+luab_type_create_in_port(lua_State *L)
 {
     luab_module_t *m;
     in_port_t x;
@@ -826,16 +826,16 @@ luab_in_port_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(IN_ADDR)).
  *
- * @function in_addr_create
+ * @function create_in_addr
  *
  * @param arg           Instance of (LUA_TUSERDATA(IN_ADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in_addr [, err, msg ] = bsd.arpa.inet.in_addr_create([ arg ])
+ * @usage in_addr [, err, msg ] = bsd.arpa.inet.create_in_addr([ arg ])
  */
 static int
-luab_in_addr_create(lua_State *L)
+luab_type_create_in_addr(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(IN_ADDR, TYPE, __func__);
@@ -845,16 +845,16 @@ luab_in_addr_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(IN6_ADDR)).
  *
- * @function in6_addr_create
+ * @function create_in6_addr
  *
  * @param arg           Instance of (LUA_TUSERDATA(IN6_ADDR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage in6_addr [, err, msg ] = bsd.arpa.inet.in6_addr_create([ arg ])
+ * @usage in6_addr [, err, msg ] = bsd.arpa.inet.create_in6_addr([ arg ])
  */
 static int
-luab_in6_addr_create(lua_State *L)
+luab_type_create_in6_addr(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(IN6_ADDR, TYPE, __func__);
@@ -864,7 +864,7 @@ luab_in6_addr_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
- * @function sockaddr_in_create
+ * @function create_sockaddr_in
  *
  * @param port              Specifies port ID, see /etc/services.
  * @param addr              Specifies ip(4) address by instance
@@ -872,10 +872,10 @@ luab_in6_addr_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.arpa.inet.sockaddr_in_create([ port [, addr ]])
+ * @usage sockaddr [, err, msg ] = bsd.arpa.inet.create_sockaddr_in([ port [, addr ]])
  */
 static int
-luab_sockaddr_in_create(lua_State *L)
+luab_type_create_sockaddr_in(lua_State *L)
 {
     luab_module_t *m0, *m1, *m2;
     struct sockaddr_in sin;
@@ -906,7 +906,7 @@ luab_sockaddr_in_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SOCKADDR)).
  *
- * @function sockaddr_in6_create
+ * @function create_sockaddr_in6
  *
  * @param port              Specifies port ID, see /etc/services.
  * @param info              Specifies Flow Label, see RFC6437,.
@@ -916,10 +916,10 @@ luab_sockaddr_in_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sockaddr [, err, msg ] = bsd.arpa.inet.sockaddr_in6_create([ port [, info [, addr [, id ]]]])
+ * @usage sockaddr [, err, msg ] = bsd.arpa.inet.create_sockaddr_in6([ port [, info [, addr [, id ]]]])
  */
 static int
-luab_sockaddr_in6_create(lua_State *L)
+luab_type_create_sockaddr_in6(lua_State *L)
 {
     luab_module_t *m0, *m1, *m2, *m3;
     struct sockaddr_in6 sin6;
@@ -981,13 +981,13 @@ static luab_module_table_t luab_arpa_inet_vec[] = {
     LUAB_FUNC("inet_nsap_ntoa",         luab_inet_nsap_ntoa),
 #endif
 #endif /* __BSD_VISIBLE */
-    LUAB_FUNC("in_port_create",         luab_in_port_create),
-    LUAB_FUNC("in_addr_create",         luab_in_addr_create),
-    LUAB_FUNC("in6_addr_create",        luab_in6_addr_create),
+    LUAB_FUNC("create_in_port",         luab_type_create_in_port),
+    LUAB_FUNC("create_in_addr",         luab_type_create_in_addr),
+    LUAB_FUNC("create_in6_addr",        luab_type_create_in6_addr),
 
     /* XXX wrong, because maps to <netinet/in.h> */
-    LUAB_FUNC("sockaddr_in_create",     luab_sockaddr_in_create),
-    LUAB_FUNC("sockaddr_in6_create",    luab_sockaddr_in6_create),
+    LUAB_FUNC("create_sockaddr_in",     luab_type_create_sockaddr_in),
+    LUAB_FUNC("create_sockaddr_in6",    luab_type_create_sockaddr_in6),
     LUAB_MOD_TBL_SENTINEL
 };
 

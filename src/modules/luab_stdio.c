@@ -1555,7 +1555,7 @@ luab_fpurge(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(FPOS)).
  *
- * @function fpos_create
+ * @function create_fpos
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -1563,10 +1563,10 @@ luab_fpurge(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fpos [, err, msg ] = bsd.stdio.fpos_create(arg)
+ * @usage fpos [, err, msg ] = bsd.stdio.create_fpos(arg)
  */
 static int
-luab_fpos_create(lua_State *L)
+luab_type_create_fpos(lua_State *L)
 {
     luab_module_t *m;
     fpos_t x;
@@ -1582,7 +1582,7 @@ luab_fpos_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(RSIZE)).
  *
- * @function rsize_create
+ * @function create_rsize
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -1590,10 +1590,10 @@ luab_fpos_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage rsize [, err, msg ] = bsd.stdio.rsize_create(arg)
+ * @usage rsize [, err, msg ] = bsd.stdio.create_rsize(arg)
  */
 static int
-luab_rsize_create(lua_State *L)
+luab_type_create_rsize(lua_State *L)
 {
     luab_module_t *m;
     rsize_t x;
@@ -1608,16 +1608,16 @@ luab_rsize_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(__SBUF)).
  *
- * @function sbuf_create
+ * @function create_sbuf
  *
  * @param __sbuf          Instance of (LUA_TUSERDATA(__SBUUF)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage __sbuf [, err, msg ] = bsd.stdio.sbuf_create([ __sbuf ])
+ * @usage __sbuf [, err, msg ] = bsd.stdio.create_sbuf([ __sbuf ])
  */
 static int
-luab_sbuf_create(lua_State *L)
+luab_type_create_sbuf(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(__SBUF, TYPE, __func__);
@@ -1627,16 +1627,16 @@ luab_sbuf_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(SFILE)).
  *
- * @function sfile_create
+ * @function create_sfile
  *
  * @param sfile          Instance of (LUA_TUSERDATA(SFILE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage sfile [, err, msg ] = bsd.stdio.sfile_create([ sfile ])
+ * @usage sfile [, err, msg ] = bsd.stdio.create_sfile([ sfile ])
  */
 static int
-luab_sfile_create(lua_State *L)
+luab_type_create_sfile(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(SFILE, TYPE, __func__);
@@ -1752,10 +1752,10 @@ static luab_module_table_t luab_stdio_vec[] = { /* stdio.h */
     LUAB_FUNC("fdclose",                luab_fdclose),
     LUAB_FUNC("fpurge",                 luab_fpurge),
 #endif /* __BSD_VISIBLE */
-    LUAB_FUNC("fpos_create",            luab_fpos_create),
-    LUAB_FUNC("rsize_create",           luab_rsize_create),
-    LUAB_FUNC("sbuf_create",            luab_sbuf_create),
-    LUAB_FUNC("sfile_create",           luab_sfile_create),
+    LUAB_FUNC("create_fpos",            luab_type_create_fpos),
+    LUAB_FUNC("create_rsize",           luab_type_create_rsize),
+    LUAB_FUNC("create_sbuf",            luab_type_create_sbuf),
+    LUAB_FUNC("create_sfile",           luab_type_create_sfile),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -216,16 +216,16 @@ luab_getfstab(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(FSTAB)).
  *
- * @function fstab_create
+ * @function create_fstab
  *
  * @param fstab          Instance of (LUA_TUSERDATA(FSTAB)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage fstab [, err, msg ] = bsd.fstab.fstab_create([ fstab ])
+ * @usage fstab [, err, msg ] = bsd.fstab.create_fstab([ fstab ])
  */
 static int
-luab_fstab_create(lua_State *L)
+luab_type_create_fstab(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(FSTAB, TYPE, __func__);
@@ -250,7 +250,7 @@ static luab_module_table_t luab_fstab_vec[] = { /* fstab.h */
     LUAB_FUNC("endfsent",           luab_endfsent),
     LUAB_FUNC("setfstab",           luab_setfstab),
     LUAB_FUNC("getfstab",           luab_getfstab),
-    LUAB_FUNC("fstab_create",       luab_fstab_create),
+    LUAB_FUNC("create_fstab",       luab_type_create_fstab),
     LUAB_MOD_TBL_SENTINEL
 };
 

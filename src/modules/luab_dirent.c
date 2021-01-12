@@ -544,16 +544,16 @@ luab_closedir(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(DIR)).
  *
- * @function dir_create
+ * @function create_dir
  *
  * @param dir               Instance of (LUA_TUSERDATA(DIR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage dir [, err, msg ] = bsd.dirent.dir_create([ dir ])
+ * @usage dir [, err, msg ] = bsd.dirent.create_dir([ dir ])
  */
 static int
-luab_dir_create(lua_State *L)
+luab_type_create_dir(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(DIR, TYPE, __func__);
@@ -594,7 +594,7 @@ static luab_module_table_t luab_dirent_vec[] = { /* dirent.h */
     LUAB_FUNC("telldir",                luab_telldir),
 #endif
     LUAB_FUNC("closedir",               luab_closedir),
-    LUAB_FUNC("dir_create",             luab_dir_create),
+    LUAB_FUNC("create_dir",             luab_type_create_dir),
     LUAB_MOD_TBL_SENTINEL
 };
 

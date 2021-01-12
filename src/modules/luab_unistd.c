@@ -5017,7 +5017,7 @@ luab_undelete(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(PID)).
  *
- * @function pid_create
+ * @function create_pid
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -5025,10 +5025,10 @@ luab_undelete(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage pid [, err, msg ] = bsd.unistd.pid_create(arg)
+ * @usage pid [, err, msg ] = bsd.unistd.create_pid(arg)
  */
 static int
-luab_pid_create(lua_State *L)
+luab_type_create_pid(lua_State *L)
 {
     luab_module_t *m;
     pid_t x;
@@ -5043,7 +5043,7 @@ luab_pid_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(USECONDS)).
  *
- * @function useconds_create
+ * @function create_useconds
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -5051,10 +5051,10 @@ luab_pid_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage useconds [, err, msg ] = bsd.unistd.useconds_create(arg)
+ * @usage useconds [, err, msg ] = bsd.unistd.create_useconds(arg)
  */
 static int
-luab_useconds_create(lua_State *L)
+luab_type_create_useconds(lua_State *L)
 {
     luab_module_t *m;
     useconds_t x;
@@ -5069,16 +5069,16 @@ luab_useconds_create(lua_State *L)
 /***
  * Generator function - create an instance of (LUA_TUSERDATA(CRYPT_DATA)).
  *
- * @function crypt_data_create
+ * @function create_crypt_data
  *
  * @param arg           Instance of (LUA_TUSERDATA(CRYPT_DATA)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage crypt_data [, err, msg ] = bsd.unistd.crypt_data_create([ arg ])
+ * @usage crypt_data [, err, msg ] = bsd.unistd.create_crypt_data([ arg ])
  */
 static int
-luab_crypt_data_create(lua_State *L)
+luab_type_create_crypt_data(lua_State *L)
 {
     luab_module_t *m;
     m = luab_xmod(CRYPT_DATA, TYPE, __func__);
@@ -5481,9 +5481,9 @@ static luab_module_table_t luab_unistd_vec[] = {
     LUAB_FUNC("swapon",                 luab_swapon),
     LUAB_FUNC("swapoff",                luab_swapoff),
     LUAB_FUNC("undelete",               luab_undelete),
-    LUAB_FUNC("pid_create",             luab_pid_create),
-    LUAB_FUNC("useconds_create",        luab_useconds_create),
-    LUAB_FUNC("crypt_data_create",      luab_crypt_data_create),
+    LUAB_FUNC("create_pid",             luab_type_create_pid),
+    LUAB_FUNC("create_useconds",        luab_type_create_useconds),
+    LUAB_FUNC("create_crypt_data",      luab_type_create_crypt_data),
 #endif /* __BSD_VISIBLE */
     LUAB_MOD_TBL_SENTINEL
 };

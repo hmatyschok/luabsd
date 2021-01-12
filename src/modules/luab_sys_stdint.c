@@ -45,7 +45,7 @@ extern luab_module_t luab_sys_stdint_lib;
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INT8)).
  *
- * @function int8_create
+ * @function create_int8
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -53,10 +53,10 @@ extern luab_module_t luab_sys_stdint_lib;
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int8 [, err, msg ] = bsd.sys.stdint.int8_create(arg)
+ * @usage int8 [, err, msg ] = bsd.sys.stdint.create_int8(arg)
  */
 static int
-luab_int8_create(lua_State *L)
+luab_type_create_int8(lua_State *L)
 {
     luab_module_t *m;
     int8_t x;
@@ -71,7 +71,7 @@ luab_int8_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INT16)).
  *
- * @function int16_create
+ * @function create_int16
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -79,10 +79,10 @@ luab_int8_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int16 [, err, msg ] = bsd.sys.stdint.int16_create(arg)
+ * @usage int16 [, err, msg ] = bsd.sys.stdint.create_int16(arg)
  */
 static int
-luab_int16_create(lua_State *L)
+luab_type_create_int16(lua_State *L)
 {
     luab_module_t *m;
     int16_t x;
@@ -97,7 +97,7 @@ luab_int16_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INT32)).
  *
- * @function int32_create
+ * @function create_int32
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -105,10 +105,10 @@ luab_int16_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int32 [, err, msg ] = bsd.sys.stdint.int32_create(arg)
+ * @usage int32 [, err, msg ] = bsd.sys.stdint.create_int32(arg)
  */
 static int
-luab_int32_create(lua_State *L)
+luab_type_create_int32(lua_State *L)
 {
     luab_module_t *m;
     int32_t x;
@@ -123,7 +123,7 @@ luab_int32_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INT64)).
  *
- * @function int64_create
+ * @function create_int64
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -131,10 +131,10 @@ luab_int32_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int64 [, err, msg ] = bsd.sys.stdint.int64_create(arg)
+ * @usage int64 [, err, msg ] = bsd.sys.stdint.create_int64(arg)
  */
 static int
-luab_int64_create(lua_State *L)
+luab_type_create_int64(lua_State *L)
 {
     luab_module_t *m;
     int64_t x;
@@ -149,7 +149,7 @@ luab_int64_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINT8)).
  *
- * @function uint8_create
+ * @function create_uint8
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -157,10 +157,10 @@ luab_int64_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint8 [, err, msg ] = bsd.sys.stdint.uint8_create(arg)
+ * @usage uint8 [, err, msg ] = bsd.sys.stdint.create_uint8(arg)
  */
 static int
-luab_uint8_create(lua_State *L)
+luab_type_create_uint8(lua_State *L)
 {
     luab_module_t *m;
     uint8_t x;
@@ -175,7 +175,7 @@ luab_uint8_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINT16)).
  *
- * @function uint16_create
+ * @function create_uint16
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -183,10 +183,10 @@ luab_uint8_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint16 [, err, msg ] = bsd.sys.stdint.uint16_create(arg)
+ * @usage uint16 [, err, msg ] = bsd.sys.stdint.create_uint16(arg)
  */
 static int
-luab_uint16_create(lua_State *L)
+luab_type_create_uint16(lua_State *L)
 {
     luab_module_t *m;
     uint16_t x;
@@ -201,7 +201,7 @@ luab_uint16_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINT32)).
  *
- * @function uint32_create
+ * @function create_uint32
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -209,10 +209,10 @@ luab_uint16_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint32 [, err, msg ] = bsd.sys.stdint.uint32_create(arg)
+ * @usage uint32 [, err, msg ] = bsd.sys.stdint.create_uint32(arg)
  */
 static int
-luab_uint32_create(lua_State *L)
+luab_type_create_uint32(lua_State *L)
 {
     luab_module_t *m;
     uint32_t x;
@@ -227,7 +227,7 @@ luab_uint32_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINT64)).
  *
- * @function uint64_create
+ * @function create_uint64
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -235,10 +235,10 @@ luab_uint32_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint64 [, err, msg ] = bsd.sys.stdint.uint64_create(arg)
+ * @usage uint64 [, err, msg ] = bsd.sys.stdint.create_uint64(arg)
  */
 static int
-luab_uint64_create(lua_State *L)
+luab_type_create_uint64(lua_State *L)
 {
     luab_module_t *m;
     uint64_t x;
@@ -253,7 +253,7 @@ luab_uint64_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INTPTR)).
  *
- * @function intptr_create
+ * @function create_intptr
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -261,10 +261,10 @@ luab_uint64_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage intptr [, err, msg ] = bsd.sys.stdint.intptr_create(arg)
+ * @usage intptr [, err, msg ] = bsd.sys.stdint.create_intptr(arg)
  */
 static int
-luab_intptr_create(lua_State *L)
+luab_type_create_intptr(lua_State *L)
 {
     luab_module_t *m;
     intptr_t x;
@@ -279,7 +279,7 @@ luab_intptr_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINTPTR)).
  *
- * @function uintptr_create
+ * @function create_uintptr
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -287,10 +287,10 @@ luab_intptr_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uintptr [, err, msg ] = bsd.sys.stdint.uintptr_create(arg)
+ * @usage uintptr [, err, msg ] = bsd.sys.stdint.create_uintptr(arg)
  */
 static int
-luab_uintptr_create(lua_State *L)
+luab_type_create_uintptr(lua_State *L)
 {
     luab_module_t *m;
     uintptr_t x;
@@ -305,7 +305,7 @@ luab_uintptr_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INTMAX)).
  *
- * @function intmax_create
+ * @function create_intmax
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -313,10 +313,10 @@ luab_uintptr_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage intmax [, err, msg ] = bsd.sys.stdint.intmax_create(arg)
+ * @usage intmax [, err, msg ] = bsd.sys.stdint.create_intmax(arg)
  */
 static int
-luab_intmax_create(lua_State *L)
+luab_type_create_intmax(lua_State *L)
 {
     luab_module_t *m;
     intmax_t x;
@@ -331,7 +331,7 @@ luab_intmax_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINTMAX)).
  *
- * @function uintmax_create
+ * @function create_uintmax
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -339,10 +339,10 @@ luab_intmax_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uintmax [, err, msg ] = bsd.sys.stdint.uintmax_create(arg)
+ * @usage uintmax [, err, msg ] = bsd.sys.stdint.create_uintmax(arg)
  */
 static int
-luab_uintmax_create(lua_State *L)
+luab_type_create_uintmax(lua_State *L)
 {
     luab_module_t *m;
     uintmax_t x;
@@ -367,18 +367,18 @@ static luab_module_table_t luab_sys_stdint_vec[] = {
 #endif /* __EXT1_VISIBLE */
 
     /* POSIX sized integrals */
-    LUAB_FUNC("int8_create",            luab_int8_create),
-    LUAB_FUNC("int16_create",           luab_int16_create),
-    LUAB_FUNC("int32_create",           luab_int32_create),
-    LUAB_FUNC("int64_create",           luab_int64_create),
-    LUAB_FUNC("uint8_create",           luab_uint8_create),
-    LUAB_FUNC("uint16_create",          luab_uint16_create),
-    LUAB_FUNC("uint32_create",          luab_uint32_create),
-    LUAB_FUNC("uint64_create",          luab_uint64_create),
-    LUAB_FUNC("intptr_create",          luab_intptr_create),
-    LUAB_FUNC("uintptr_create",         luab_uintptr_create),
-    LUAB_FUNC("intmax_create",          luab_intmax_create),
-    LUAB_FUNC("uintmax_create",         luab_uintmax_create),
+    LUAB_FUNC("create_int8",            luab_type_create_int8),
+    LUAB_FUNC("create_int16",           luab_type_create_int16),
+    LUAB_FUNC("create_int32",           luab_type_create_int32),
+    LUAB_FUNC("create_int64",           luab_type_create_int64),
+    LUAB_FUNC("create_uint8",           luab_type_create_uint8),
+    LUAB_FUNC("create_uint16",          luab_type_create_uint16),
+    LUAB_FUNC("create_uint32",          luab_type_create_uint32),
+    LUAB_FUNC("create_uint64",          luab_type_create_uint64),
+    LUAB_FUNC("create_intptr",          luab_type_create_intptr),
+    LUAB_FUNC("create_uintptr",         luab_type_create_uintptr),
+    LUAB_FUNC("create_intmax",          luab_type_create_intmax),
+    LUAB_FUNC("create_uintmax",         luab_type_create_uintmax),
     LUAB_MOD_TBL_SENTINEL
 };
 
