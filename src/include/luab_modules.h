@@ -116,6 +116,11 @@ extern luab_module_t luab_useconds_type;
  * Subset of reference data types.
  */
 
+/* <sys/signal.h> */
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
+extern luab_module_t luab_sigval_type;
+#endif
+
 /* <xlocale/_locale.h> */
 extern luab_module_t luab_locale_type;
 

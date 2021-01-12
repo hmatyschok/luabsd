@@ -977,7 +977,13 @@ luab_module_vec_t luab_typevec[] = {
     /*
      * Reference data types.
      */
-
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
+    { /* <sys/signal.h> */
+        .mv_mod = &luab_sigval_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_SIGVAL_IDX,
+    },
+#endif
     { /* <xlocale/_locale.h> */
         .mv_mod = &luab_locale_type,
         .mv_init = luab_core_newmetatable,

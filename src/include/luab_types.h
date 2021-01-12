@@ -226,6 +226,11 @@ typedef enum luab_type {
      * Reference data types
      */
 
+    /* <sys/signal.h> */
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
+    LUAB_SIGVAL_IDX,
+#endif
+
     /* <xlocale/_locale.h> */
     LUAB_LOCALE_IDX,
 

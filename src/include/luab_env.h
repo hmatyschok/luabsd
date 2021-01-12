@@ -702,6 +702,11 @@ extern u_long luab_env_phys_pages;
 #define LUAB_TIMER_TYPE                         "TIMER*"
 #endif
 
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
+#define LUAB_SIGVAL_TYPE_ID                     1610402059
+#define LUAB_SIGVAL_TYPE                        "SIGVAL*"
+#endif
+
 /*
  * Subset of composite data types.
  */
