@@ -157,7 +157,7 @@ luab_core_create(lua_State *L, int narg, luab_module_t *m0, luab_module_t *m1)
         if (luab_core_checkmaxargs(L, narg) == 0)
             arg = NULL;
         else
-            arg = luab_udata(L, narg, m, caddr_t);
+            arg = luab_udataisnil(L, narg, m, caddr_t);
     } else
         arg = NULL;
 
