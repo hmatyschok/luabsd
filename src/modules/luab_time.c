@@ -377,6 +377,39 @@ luab_timer_create(lua_State *L)
     }
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * timer_delete(2) - delete a per-process timer (REALTIME)
+ *
+ * @function timer_delete
+ *
+ * @param timerid           Specifies the location of per-process used timer.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.timer_delete(timerd)
+ */
+static int
+luab_timer_delete(lua_State *L)
+{
+    luab_module_t *m;
+    luab_timer_t *xtmr;
+    timer_t timerid;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIMER, TYPE, __func__);
+    xtmr = luab_udata(L, 1, m, luab_timer_t *);
+
+    if ((timerid = xtmr->ud_sdu) != NULL)
+        status = timer_delete(timerid);
+    else {
+        errno = ENOENT;
+        status = luab_env_error;
+    }
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __POSIX_VISIBLE >= 200112 */
 
 #if __POSIX_VISIBLE >= 199506
@@ -772,6 +805,7 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("time",                       luab_time),
 #if __POSIX_VISIBLE >= 200112
     LUAB_FUNC("timer_create",               luab_timer_create),
+    LUAB_FUNC("timer_delete",               luab_timer_delete),
 #endif /* __POSIX_VISIBLE >= 200112 */
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
