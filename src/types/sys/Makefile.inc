@@ -8,4 +8,5 @@
 .include "${LUAB_SRCTOP}/types/sys/stat/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/sys/stdint/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/sys/time/Makefile.inc"
+.include "${LUAB_SRCTOP}/types/sys/timespec/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/sys/uio/Makefile.inc"

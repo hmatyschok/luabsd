@@ -203,6 +203,7 @@ extern luab_module_t luab_sys_jail_lib;
 extern luab_module_t luab_sys_mount_lib;
 extern luab_module_t luab_sys_stat_lib;
 extern luab_module_t luab_sys_time_lib;
+extern luab_module_t luab_sys_timespec_lib;
 extern luab_module_t luab_sys_uio_lib;
 extern luab_module_t luab_sys_un_lib;
 extern luab_module_t luab_sys_unistd_lib;

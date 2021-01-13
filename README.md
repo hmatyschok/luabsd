@@ -202,7 +202,7 @@ by utilizing instances of LUA_TTABLES:
 
     print_udata("struct", data_buf, "")
 
-    local tv_new = bsd.sys.time.create_timespec(data_buf)
+    local tv_new = bsd.sys.timespec.create_timespec(data_buf)
 
     print_udata("struct", tv_new, "")
 
