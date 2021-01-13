@@ -32,36 +32,36 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t luab_itimerval_type;
+extern luab_module_t luab_itimerspec_type;
 
 /*
  * Interface against
  *
- *  struct itimerval {
- *      struct  timeval it_interval;
- *      struct  timeval it_value;
+ *  struct itimerspec {
+ *      struct timespec  it_interval;
+ *      struct timespec  it_value;
  *  };
  *
  */
 
-typedef struct luab_itimerval {
+typedef struct luab_itimerspec {
     luab_udata_t        ud_softc;
-    struct itimerval    ud_it;
-} luab_itimerval_t;
+    struct itimerspec    ud_it;
+} luab_itimerspec_t;
 
 /*
  * Subr.
  */
 
 static void
-itimerval_fillxtable(lua_State *L, int narg, void *arg)
+itimerspec_fillxtable(lua_State *L, int narg, void *arg)
 {
     luab_module_t *m;
-    struct itimerval *it;
+    struct itimerspec *it;
 
-    m = luab_xmod(TIMEVAL, TYPE, __func__);
+    m = luab_xmod(TIMESPEC, TYPE, __func__);
 
-    if ((it = (struct itimerval *)arg) != NULL) {
+    if ((it = (struct itimerspec *)arg) != NULL) {
 
         luab_setxdata(L, narg, m, "it_interval",   &it->it_interval);
         luab_setxdata(L, narg, m, "it_value",      &it->it_value);
@@ -74,7 +74,7 @@ itimerval_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(ITIMERVAL)) into (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(ITIMERSPEC)) into (LUA_TTABLE).
  *
  * @function get_table
  *
@@ -85,19 +85,19 @@ itimerval_fillxtable(lua_State *L, int narg, void *arg)
  *              it_value    = (LUA_TUSERDATA(TIMEVAL)),
  *          }
  *
- * @usage t [, err, msg ] = itimerval:get_table()
+ * @usage t [, err, msg ] = itimerspec:get_table()
  */
 static int
-ITIMERVAL_get_table(lua_State *L)
+ITIMERSPEC_get_table(lua_State *L)
 {
     luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
 
-    xtp.xtp_fill = itimerval_fillxtable;
+    xtp.xtp_fill = itimerspec_fillxtable;
     xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
@@ -106,19 +106,19 @@ ITIMERVAL_get_table(lua_State *L)
 }
 
 /***
- * Generator function - translate itimerval{} into (LUA_TUSERDATA(IOVEC)).
+ * Generator function - translate itimerspec{} into (LUA_TUSERDATA(IOVEC)).
  *
  * @function dump
  *
  * @return (LUA_T{NIL,USERDATA(TIMEVAL)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage iovec [, err, msg ] = itimerval:dump()
+ * @usage iovec [, err, msg ] = itimerspec:dump()
  */
 static int
-ITIMERVAL_dump(lua_State *L)
+ITIMERSPEC_dump(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     return (luab_core_dump(L, 1, m, m->m_sz));
 }
 
@@ -135,22 +135,22 @@ ITIMERVAL_dump(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = itimerval:set_it_interval(timeval)
+ * @usage ret [, err, msg ] = itimerspec:set_it_interval(timeval)
  */
 static int
-ITIMERVAL_set_it_interval(lua_State *L)
+ITIMERSPEC_set_it_interval(lua_State *L)
 {
     luab_module_t *m0, *m1;
-    struct itimerval *it;
-    struct timeval *tv;
+    struct itimerspec *it;
+    struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m0 = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m0 = luab_xmod(ITIMERSPEC, TYPE, __func__);
     m1 = luab_xmod(TIMEVAL, TYPE, __func__);
 
-    it = luab_udata(L, 1, m0, struct itimerval *);
-    tv = luab_udata(L, 2, m1, struct timeval *);
+    it = luab_udata(L, 1, m0, struct itimerspec *);
+    tv = luab_udata(L, 2, m1, struct timespec *);
 
     (void)memmove(&it->it_interval, tv, m1->m_sz);
 
@@ -164,21 +164,21 @@ ITIMERVAL_set_it_interval(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA(TIMEVAL)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timeval [, err, msg ] = itimerval:get_it_interval()
+ * @usage timeval [, err, msg ] = itimerspec:get_it_interval()
  */
 static int
-ITIMERVAL_get_it_interval(lua_State *L)
+ITIMERSPEC_get_it_interval(lua_State *L)
 {
     luab_module_t *m0, *m1;
-    struct itimerval *it;
-    struct timeval *tv;
+    struct itimerspec *it;
+    struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m0 = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m0 = luab_xmod(ITIMERSPEC, TYPE, __func__);
     m1 = luab_xmod(TIMEVAL, TYPE, __func__);
 
-    it = luab_udata(L, 1, m0, struct itimerval *);
+    it = luab_udata(L, 1, m0, struct itimerspec *);
     tv = &(it->it_interval);
 
     return (luab_pushxdata(L, m1, tv));
@@ -194,22 +194,22 @@ ITIMERVAL_get_it_interval(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = itimerval:set_it_value(timeval)
+ * @usage ret [, err, msg ] = itimerspec:set_it_value(timeval)
  */
 static int
-ITIMERVAL_set_it_value(lua_State *L)
+ITIMERSPEC_set_it_value(lua_State *L)
 {
     luab_module_t *m0, *m1;
-    struct itimerval *it;
-    struct timeval *tv;
+    struct itimerspec *it;
+    struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m0 = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m0 = luab_xmod(ITIMERSPEC, TYPE, __func__);
     m1 = luab_xmod(TIMEVAL, TYPE, __func__);
 
-    it = luab_udata(L, 1, m0, struct itimerval *);
-    tv = luab_udata(L, 2, m1, struct timeval *);
+    it = luab_udata(L, 1, m0, struct itimerspec *);
+    tv = luab_udata(L, 2, m1, struct timespec *);
 
     (void)memmove(&it->it_value, tv, m1->m_sz);
 
@@ -223,21 +223,21 @@ ITIMERVAL_set_it_value(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA(TIMEVAL)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage timeval [, err, msg ] = itimerval:get_it_value()
+ * @usage timeval [, err, msg ] = itimerspec:get_it_value()
  */
 static int
-ITIMERVAL_get_it_value(lua_State *L)
+ITIMERSPEC_get_it_value(lua_State *L)
 {
     luab_module_t *m0, *m1;
-    struct itimerval *it;
-    struct timeval *tv;
+    struct itimerspec *it;
+    struct timespec *tv;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m0 = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m0 = luab_xmod(ITIMERSPEC, TYPE, __func__);
     m1 = luab_xmod(TIMEVAL, TYPE, __func__);
 
-    it = luab_udata(L, 1, m0, struct itimerval *);
+    it = luab_udata(L, 1, m0, struct itimerspec *);
     tv = &(it->it_value);
 
     return (luab_pushxdata(L, m1, tv));
@@ -248,26 +248,26 @@ ITIMERVAL_get_it_value(lua_State *L)
  */
 
 static int
-ITIMERVAL_gc(lua_State *L)
+ITIMERSPEC_gc(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     return (luab_core_gc(L, 1, m));
 }
 
 static int
-ITIMERVAL_len(lua_State *L)
+ITIMERSPEC_len(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     return (luab_core_len(L, 2, m));
 }
 
 static int
-ITIMERVAL_tostring(lua_State *L)
+ITIMERSPEC_tostring(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     return (luab_core_tostring(L, 1, m));
 }
 
@@ -275,56 +275,56 @@ ITIMERVAL_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_module_table_t itimerval_methods[] = {
-    LUAB_FUNC("set_it_interval",    ITIMERVAL_set_it_interval),
-    LUAB_FUNC("set_it_value",       ITIMERVAL_set_it_value),
-    LUAB_FUNC("get_table",          ITIMERVAL_get_table),
-    LUAB_FUNC("get_it_interval",    ITIMERVAL_get_it_interval),
-    LUAB_FUNC("get_it_value",       ITIMERVAL_get_it_value),
-    LUAB_FUNC("dump",               ITIMERVAL_dump),
-    LUAB_FUNC("__gc",               ITIMERVAL_gc),
-    LUAB_FUNC("__len",              ITIMERVAL_len),
-    LUAB_FUNC("__tostring",         ITIMERVAL_tostring),
+static luab_module_table_t itimerspec_methods[] = {
+    LUAB_FUNC("set_it_interval",    ITIMERSPEC_set_it_interval),
+    LUAB_FUNC("set_it_value",       ITIMERSPEC_set_it_value),
+    LUAB_FUNC("get_table",          ITIMERSPEC_get_table),
+    LUAB_FUNC("get_it_interval",    ITIMERSPEC_get_it_interval),
+    LUAB_FUNC("get_it_value",       ITIMERSPEC_get_it_value),
+    LUAB_FUNC("dump",               ITIMERSPEC_dump),
+    LUAB_FUNC("__gc",               ITIMERSPEC_gc),
+    LUAB_FUNC("__len",              ITIMERSPEC_len),
+    LUAB_FUNC("__tostring",         ITIMERSPEC_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 
 static void *
-itimerval_create(lua_State *L, void *arg)
+itimerspec_create(lua_State *L, void *arg)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     return (luab_newuserdata(L, m, arg));
 }
 
 static void
-itimerval_init(void *ud, void *arg)
+itimerspec_init(void *ud, void *arg)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     luab_udata_init(m, ud, arg);
 }
 
 static void *
-itimerval_udata(lua_State *L, int narg)
+itimerspec_udata(lua_State *L, int narg)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     return (luab_checkludata(L, narg, m, m->m_sz));
 }
 
 static luab_table_t *
-itimerval_checktable(lua_State *L, int narg)
+itimerspec_checktable(lua_State *L, int narg)
 {
     luab_module_t *m;
     luab_table_t *tbl;
-    struct itimerval *x, *y;
+    struct itimerspec *x, *y;
     size_t i, j;
 
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
 
     if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
-        if (((x = (struct itimerval *)tbl->tbl_vec) != NULL) &&
+        if (((x = (struct itimerspec *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
@@ -334,7 +334,7 @@ itimerval_checktable(lua_State *L, int narg)
 
                     if ((lua_isnumber(L, -2) != 0) &&
                         (lua_isuserdata(L, -1) != 0)) {
-                        y = luab_udata(L, -1, m, struct itimerval *);
+                        y = luab_udata(L, -1, m, struct itimerspec *);
                         (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -351,17 +351,17 @@ itimerval_checktable(lua_State *L, int narg)
 }
 
 static void
-itimerval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+itimerspec_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
     luab_module_t *m;
-    struct itimerval *x;
+    struct itimerspec *x;
     size_t i, j, k;
 
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
 
     if (tbl != NULL) {
 
-        if (((x = (struct itimerval *)tbl->tbl_vec) != NULL) &&
+        if (((x = (struct itimerspec *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
@@ -379,23 +379,23 @@ itimerval_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 }
 
 static luab_table_t *
-itimerval_alloctable(void *vec, size_t card)
+itimerspec_alloctable(void *vec, size_t card)
 {
     luab_module_t *m;
-    m = luab_xmod(ITIMERVAL, TYPE, __func__);
+    m = luab_xmod(ITIMERSPEC, TYPE, __func__);
     return (luab_table_create(m, vec, card));
 }
 
-luab_module_t luab_itimerval_type = {
-    .m_id           = LUAB_ITIMERVAL_TYPE_ID,
-    .m_name         = LUAB_ITIMERVAL_TYPE,
-    .m_vec          = itimerval_methods,
-    .m_create       = itimerval_create,
-    .m_init         = itimerval_init,
-    .m_get          = itimerval_udata,
-    .m_get_tbl      = itimerval_checktable,
-    .m_set_tbl      = itimerval_pushtable,
-    .m_alloc_tbl    = itimerval_alloctable,
-    .m_len          = sizeof(luab_itimerval_t),
-    .m_sz           = sizeof(struct itimerval),
+luab_module_t luab_itimerspec_type = {
+    .m_id           = LUAB_ITIMERSPEC_TYPE_ID,
+    .m_name         = LUAB_ITIMERSPEC_TYPE,
+    .m_vec          = itimerspec_methods,
+    .m_create       = itimerspec_create,
+    .m_init         = itimerspec_init,
+    .m_get          = itimerspec_udata,
+    .m_get_tbl      = itimerspec_checktable,
+    .m_set_tbl      = itimerspec_pushtable,
+    .m_alloc_tbl    = itimerspec_alloctable,
+    .m_len          = sizeof(luab_itimerspec_t),
+    .m_sz           = sizeof(struct itimerspec),
 };

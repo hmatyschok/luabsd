@@ -59,12 +59,32 @@ luab_type_create_timespec(lua_State *L)
     return (luab_core_create(L, 1, m, NULL));
 }
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(ITIMERSPEC)).
+ *
+ * @function create_itimerspec
+ *
+ * @param arg           Instance of (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage itimerspec [, err, msg ] = bsd.sys.timespec.create_itimerspec([ arg ])
+ */
+static int
+luab_type_create_itimerspec(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(TIMESPEC, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
 /*
  * Interface against <sys/timespec.h>.
  */
 
 static luab_module_table_t luab_sys_timespec_vec[] = { /* sys/timespec.h */
-    LUAB_FUNC("create_timespec",          luab_type_create_timespec),
+    LUAB_FUNC("create_itimerspec",          luab_type_create_itimerspec),
+    LUAB_FUNC("create_timespec",            luab_type_create_timespec),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -1149,6 +1149,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_lconv_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LCONV_IDX,
+    },{
+        .mv_mod = &luab_itimerspec_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_ITIMERSPEC_IDX,
     },
 #if __POSIX_VISIBLE >= 199309
     {
