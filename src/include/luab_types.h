@@ -284,6 +284,9 @@ typedef enum luab_type {
 #if __POSIX_VISIBLE >= 199309
     LUAB_SIGEVENT_IDX,
 #endif
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE
+    LUAB__SIGINFO_IDX,
+#endif
 #if __BSD_VISIBLE
     LUAB_DBT_IDX,
     LUAB_DB_IDX,

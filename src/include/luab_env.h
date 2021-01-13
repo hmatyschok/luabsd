@@ -860,6 +860,12 @@ extern u_long luab_env_phys_pages;
 #define LUAB_SIGEVENT_TYPE                      "SIGEVENT*"
 #endif     
 
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE
+#define LUAB__SIGINFO_TYPE_ID                   1610570807
+#define LUAB__SIGINFO_TYPE                      "SIGINFO*"
+#endif
+
+
 /*
  * Service primitives / subr.
  */

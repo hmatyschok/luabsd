@@ -174,6 +174,9 @@ extern luab_module_t luab_itimerspec_type;
 #if __POSIX_VISIBLE >= 199309
 extern luab_module_t luab_sigevent_type;
 #endif
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE
+extern luab_module_t luab_siginfo_type;
+#endif
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;
 extern luab_module_t luab_db_type;

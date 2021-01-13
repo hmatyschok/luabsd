@@ -302,7 +302,7 @@ SIGEVENT_get_sigev_value(lua_State *L)
 
     m0 = luab_xmod(SIGEVENT, TYPE, __func__);
     m1 = luab_xmod(SIGVAL, TYPE, __func__);
-    
+
     sigev = luab_udata(L, 1, m0, struct sigevent *);
     x = &sigev->sigev_value;
 

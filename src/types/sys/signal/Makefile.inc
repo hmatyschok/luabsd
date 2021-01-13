@@ -6,3 +6,4 @@ SRCS+=  luab_sigval_type.c
 
 # composite data types
 SRCS+=  luab_sigevent_type.c
+SRCS+=  luab_siginfo_type.c

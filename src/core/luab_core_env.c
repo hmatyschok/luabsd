@@ -1161,6 +1161,13 @@ luab_module_vec_t luab_typevec[] = {
         .mv_idx = LUAB_SIGEVENT_IDX,
     },
 #endif
+#if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE
+    {
+        .mv_mod = &luab_siginfo_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB__SIGINFO_IDX,
+    },
+#endif
 #if __BSD_VISIBLE
     {
         .mv_mod = &luab_dbt_type,
