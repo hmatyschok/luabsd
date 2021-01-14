@@ -335,7 +335,8 @@ luab_time(lua_State *L)
  *
  * @function timer_create
  *
- * @param clockid           Specifies per-process utilized clock.
+ * @param clockid           Specifies per-process utilized clock, by an
+ *                          instance of (LUA_T{NUMBER,USERDATA(CLOCKID)}).
  * @param evp               Defines asynchronous notification by an instance
  *                          of (LUA_TUSERDATA(SIGEVENT)), when timer expires.
  * @param timerid           Specifies the location of per-process used timer.
@@ -378,7 +379,8 @@ luab_timer_create(lua_State *L)
  *
  * @function timer_delete
  *
- * @param timerid           Specifies the location of per-process used timer.
+ * @param timerid           Specifies the location of per-process timer
+ *                          by an instance of (LUA_TUSERDATA(TIMER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -411,7 +413,8 @@ luab_timer_delete(lua_State *L)
  *
  * @function timer_gettime
  *
- * @param timerid           Specifies the location of per-process used timer.
+ * @param timerid           Specifies the location of per-process timer
+ *                          by an instance of (LUA_TUSERDATA(TIMER)).
  * @param value             Contains amount of time until the timer expires.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -447,7 +450,8 @@ luab_timer_gettime(lua_State *L)
  *
  * @function timer_getoverrun
  *
- * @param timerid           Specifies the location of per-process used timer.
+ * @param timerid           Specifies the location of per-process timer
+ *                          by an instance of (LUA_TUSERDATA(TIMER)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -480,7 +484,8 @@ luab_timer_getoverrun(lua_State *L)
  *
  * @function timer_settime
  *
- * @param timerid           Specifies the location of per-process used timer.
+ * @param timerid           Specifies the location of per-process timer
+ *                          by an instance of (LUA_TUSERDATA(TIMER)).
  * @param flags             Specifies utilized per-process timer.
  * @param value             Specifies by (LUA_TUSERDATA(ITIMERSPEC)) the amount
  *                          of time, until the timer expires.
@@ -550,7 +555,8 @@ luab_tzset(lua_State *L)
  *
  * @function clock_getres
  *
- * @param clock_id          Specifies the location of per-process used timer.
+ * @param clock_id          Specifies the location of per-process timer, by
+ *                          an instance of (LUA_T{NUMBER,USERDATA(CLOCKID)}).
  * @param tp                Value / result argument, (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -582,7 +588,8 @@ luab_clock_getres(lua_State *L)
  *
  * @function clock_gettime
  *
- * @param clock_id          Specifies the location of per-process used timer.
+ * @param clock_id          Specifies the location of per-process timer, by
+ *                          an instance of (LUA_T{NUMBER,USERDATA(CLOCKID)}).
  * @param tp                Value / result argument, (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -614,7 +621,8 @@ luab_clock_gettime(lua_State *L)
  *
  * @function clock_gettime
  *
- * @param clock_id          Specifies the location of per-process used timer.
+ * @param clock_id          Specifies the location of per-process timer, by
+ *                          an instance of (LUA_T{NUMBER,USERDATA(CLOCKID)}).
  * @param tp                Value / result argument, (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -687,7 +695,8 @@ luab_nanosleep(lua_State *L)
  *
  * @function clock_getcpuclockid
  *
- * @param clock_id          Specifies the location of per-process used timer.
+ * @param clock_id          Specifies the location of per-process timer, by
+ *                          an instance of (LUA_T{NUMBER,USERDATA(CLOCKID)}).
  * @param flags             Specifies type of per-process utilized clock.
  * @param rqtp              Requested time interval, (LUA_TUSERDATA(TIMESPEC)).
  * @param rmtp              Result argument, remaining amount of time, either by
@@ -1099,6 +1108,41 @@ luab_timegm(lua_State *L)
 
     return (luab_pushxinteger(L, x));
 }
+
+/***
+ * timer_oshandle_np(3) - fetch oshandle property
+ *
+ * @function timer_oshandle_np
+ *
+ * @param timerid           Specifies the location of per-process timer
+ *                          by an instance of (LUA_TUSERDATA(TIMER)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.timer_oshandle_np(timerid)
+ */
+static int
+luab_timer_oshandle_np(lua_State *L)
+{
+    luab_module_t *m;
+    luab_timer_t *xtmr;
+    timer_t timerid;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIMER, TYPE, __func__);
+
+    xtmr = luab_udata(L, 1, m, luab_timer_t *);
+
+    if ((timerid = xtmr->ud_sdu) != NULL)
+        status = timer_oshandle_np(timerid);
+    else {
+        errno = ENOENT;
+        status = luab_env_error;
+    }
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -1315,6 +1359,7 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("tzsetwall",                  luab_tzsetwall),
     LUAB_FUNC("timelocal",                  luab_timelocal),
     LUAB_FUNC("timegm",                     luab_timegm),
+    LUAB_FUNC("timer_oshandle_np",          luab_timer_oshandle_np),
 #endif /* __BSD_VISIBLE */
 
 
