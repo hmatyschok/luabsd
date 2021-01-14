@@ -645,17 +645,89 @@ luab_clock_settime(lua_State *L)
 
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * nanosleep(2) - high resoloution sleep
+ *
+ * @function nanosleep
+ *
+ * @param rqtp              Requested time interval, (LUA_TUSERDATA(TIMESPEC)).
+ * @param rmtp              Result argument, remaining amount of time, either by
+ *                          an instance of(LUA_TUSERDATA(TIMESPEC)) or (LUA_TNIL).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.nanosleep(rqtp, rmtp)
+ */
+static int
+luab_nanosleep(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    clockid_t clock_id;
+    int flags;
+    struct timespec *rqtp;
+    struct timespec *rmtp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 4);
+
+    m0 = luab_xmod(CLOCKID, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    clock_id = (clockid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    flags = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+    rqtp = luab_udata(L, 3, m2, struct timespec *);
+    rmtp = luab_udataisnil(L, 4, m2, struct timespec *);
+
+    status = nanosleep(rqtp, rmtp);
+
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __POSIX_VISIBLE >= 199309 */
 
+#if __POSIX_VISIBLE >= 200112
 
+/***
+ * clock_nanosleep(2) - high resoloution sleep
+ *
+ * @function nanosleep
+ *
+ * @param clock_id          Specifies the location of per-process used timer.
+ * @param flags             Specifies type of per-process utilized clock.
+ * @param rqtp              Requested time interval, (LUA_TUSERDATA(TIMESPEC)).
+ * @param rmtp              Result argument, remaining amount of time, either by
+ *                          an instance of(LUA_TUSERDATA(TIMESPEC)) or (LUA_TNIL).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.clock_nanosleep(clock_id, tp)
+ */
+static int
+luab_clock_nanosleep(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    clockid_t clock_id;
+    int flags;
+    struct timespec *rqtp;
+    struct timespec *rmtp;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 4);
 
+    m0 = luab_xmod(CLOCKID, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(TIMESPEC, TYPE, __func__);
 
+    clock_id = (clockid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    flags = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+    rqtp = luab_udata(L, 3, m2, struct timespec *);
+    rmtp = luab_udataisnil(L, 4, m2, struct timespec *);
 
-
-
-
-
+    status = clock_nanosleep(clock_id, flags, rqtp, rmtp);
+    return (luab_pushxinteger(L, status));
+}
+#endif /* __POSIX_VISIBLE >= 200112 */
 
 #if __POSIX_VISIBLE >= 199506
 /***
@@ -1081,7 +1153,14 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("clock_getres",               luab_clock_getres),
     LUAB_FUNC("clock_gettime",              luab_clock_gettime),
     LUAB_FUNC("clock_settime",              luab_clock_settime),
+    LUAB_FUNC("nanosleep",                  luab_nanosleep),
 #endif /* __POSIX_VISIBLE >= 199309 */
+
+
+#if __POSIX_VISIBLE >= 200112
+    LUAB_FUNC("clock_nanosleep",            luab_clock_nanosleep),
+
+#endif /* __POSIX_VISIBLE */
 
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
