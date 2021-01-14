@@ -687,6 +687,40 @@ luab_nanosleep(lua_State *L)
 #endif /* __POSIX_VISIBLE >= 199309 */
 
 #if __POSIX_VISIBLE >= 200112
+/***
+ * clock_nanosleep(2) - high resoloution sleep
+ *
+ * @function nanosleep
+ *
+ * @param clock_id          Specifies the location of per-process used timer.
+ * @param flags             Specifies type of per-process utilized clock.
+ * @param rqtp              Requested time interval, (LUA_TUSERDATA(TIMESPEC)).
+ * @param rmtp              Result argument, remaining amount of time, either by
+ *                          an instance of(LUA_TUSERDATA(TIMESPEC)) or (LUA_TNIL).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.clock_nanosleep(clock_id, tp)
+ */
+static int
+luab_clock_getcpuclockid(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pid_t pid;
+    clockid_t *clock_id;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PID, TYPE, __func__);
+    m1 = luab_xmod(CLOCKID, TYPE, __func__);
+
+    pid = (pid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    clock_id = luab_udata(L, 2, m1, clockid_t *);
+    status = clock_getcpuclockid(pid, clock_id);
+
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * clock_nanosleep(2) - high resoloution sleep
@@ -1155,11 +1189,9 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("clock_settime",              luab_clock_settime),
     LUAB_FUNC("nanosleep",                  luab_nanosleep),
 #endif /* __POSIX_VISIBLE >= 199309 */
-
-
 #if __POSIX_VISIBLE >= 200112
+    LUAB_FUNC("clock_getcpuclockid",        luab_clock_getcpuclockid),
     LUAB_FUNC("clock_nanosleep",            luab_clock_nanosleep),
-
 #endif /* __POSIX_VISIBLE */
 
 #if __POSIX_VISIBLE >= 199506
