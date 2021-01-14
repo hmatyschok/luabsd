@@ -530,6 +530,25 @@ luab_timer_settime(lua_State *L)
 
 #endif /* __POSIX_VISIBLE >= 200112 */
 
+#if __BSD_VISIBLE
+/***
+ * tzset(3) - initialize time conversion information
+ *
+ * @function tzset
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.tzset()
+ */
+static int
+luab_tzset(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
+    tzset();
+    return (luab_pushxinteger(L, luab_env_success));
+}
+#endif /* __BSD_VISIBLE */
+
 #if __POSIX_VISIBLE >= 199506
 /***
  * asctime_r(3) - transform binary data and time
@@ -741,6 +760,25 @@ luab_timegm(lua_State *L)
 }
 #endif /* __BSD_VISIBLE */
 
+#if __BSD_VISIBLE
+/***
+ * tzsetwall(3) - initialize time conversion information
+ *
+ * @function tzsetwall
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.tzsetwall()
+ */
+static int
+luab_tzsetwall(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
+    tzsetwall();
+    return (luab_pushxinteger(L, luab_env_success));
+}
+#endif /* __BSD_VISIBLE */
+
 /*
  * Generator functions.
  */
@@ -928,6 +966,9 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("timer_getoverrun",           luab_timer_getoverrun),
     LUAB_FUNC("timer_settime",              luab_timer_settime),
 #endif /* __POSIX_VISIBLE >= 200112 */
+#if __BSD_VISIBLE
+    LUAB_FUNC("tzset",                      luab_tzset),
+#endif /* __BSD_VISIBLE */
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
     LUAB_FUNC("ctime_r",                    luab_ctime_r),
@@ -936,6 +977,9 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #endif  /* __POSIX_VISIBLE >= 199506 */
 #if __BSD_VISIBLE
     LUAB_FUNC("timegm",                     luab_timegm),
+#endif /* __BSD_VISIBLE */
+#if __BSD_VISIBLE
+    LUAB_FUNC("tzsetwall",                  luab_tzsetwall),
 #endif /* __BSD_VISIBLE */
     LUAB_FUNC("clock_create",               luab_type_clock_create),
     LUAB_FUNC("create_time",                luab_type_create_time),
