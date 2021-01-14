@@ -1001,6 +1001,36 @@ luab_strptime(lua_State *L)
 
 #if __BSD_VISIBLE
 /***
+ * timezone(3) - return the timezone abbreviation
+ *
+ * @function timezone
+ *
+ * @param zone              Specifies zone by (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param dst               Specifies destinaton by (LUA_T{NIL,USERDATA(INT)}).
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.timegm(tm)
+ */
+static int
+luab_timezone(lua_State *L)
+{
+    luab_module_t *m;
+    int zone, dst;
+    caddr_t dp;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m = luab_xmod(INT, TYPE, __func__);
+
+    zone = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    dst = (int)luab_checkxinteger(L, 2, m, luab_env_uint_max);
+
+    dp = timezone(zone, dst);
+    return (luab_pushstring(L, dp));
+}
+
+/***
  * timegm(3) - transform binary data and time
  *
  * @function timegm
@@ -1258,10 +1288,8 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #if __XSI_VISIBLE
     LUAB_FUNC("strptime",                   luab_strptime),
 #endif
-
-
-
 #if __BSD_VISIBLE
+    LUAB_FUNC("timezone",                   luab_timezone),
     LUAB_FUNC("timegm",                     luab_timegm),
 #endif /* __BSD_VISIBLE */
 
