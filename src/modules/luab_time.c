@@ -365,7 +365,7 @@ luab_timer_create(lua_State *L)
     m1 = luab_xmod(SIGEVENT, TYPE, __func__);
     m2 = luab_xmod(TIMER, TYPE, __func__);
 
-    clockid = luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    clockid = (clockid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
     evp = luab_udataisnil(L, 2, m1, struct sigevent *);
     xtmr = luab_udata(L, 3, m2, luab_timer_t *);
 
@@ -514,7 +514,7 @@ luab_timer_settime(lua_State *L)
     m2 = luab_xmod(ITIMERSPEC, TYPE, __func__);
 
     xtmr = luab_udata(L, 1, m0, luab_timer_t *);
-    flags = luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+    flags = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
     value = luab_udata(L, 3, m2, struct itimerspec *);
     ovalue = luab_udataisnil(L, 4, m2, struct itimerspec *);
 
@@ -548,6 +548,114 @@ luab_tzset(lua_State *L)
     return (luab_pushxinteger(L, luab_env_success));
 }
 #endif /* __BSD_VISIBLE */
+
+#if __POSIX_VISIBLE >= 199309
+/***
+ * clock_getres(2) - calibrate date and time
+ *
+ * @function clock_getres
+ *
+ * @param clock_id          Specifies the location of per-process used timer.
+ * @param tp                Value / result argument, (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.clock_getres(clock_id, tp)
+ */
+static int
+luab_clock_getres(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    clockid_t clock_id;
+    struct timespec *tp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(CLOCKID, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    clock_id = (clockid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    tp = luab_udata(L, 2, m1, struct timespec *);
+    status = clock_getres(clock_id, tp);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * clock_gettime(2) - get date and time
+ *
+ * @function clock_gettime
+ *
+ * @param clock_id          Specifies the location of per-process used timer.
+ * @param tp                Value / result argument, (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.clock_gettime(clock_id, tp)
+ */
+static int
+luab_clock_gettime(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    clockid_t clock_id;
+    struct timespec *tp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(CLOCKID, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    clock_id = (clockid_t)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    tp = luab_udata(L, 2, m1, struct timespec *);
+    status = clock_gettime(clock_id, tp);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * clock_settime(2) - set date and time
+ *
+ * @function clock_gettime
+ *
+ * @param clock_id          Specifies the location of per-process used timer.
+ * @param tp                Value / result argument, (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.clock_settime(clock_id, tp)
+ */
+static int
+luab_clock_settime(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    clockid_t clock_id;
+    struct timespec *tp;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(CLOCKID, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    clock_id = (clockid_t)luab_checkxinteger(L, 1, m0, luab_env_int_max);
+    tp = luab_udata(L, 2, m1, struct timespec *);
+    status = clock_settime(clock_id, tp);
+
+    return (luab_pushxinteger(L, status));
+}
+#endif /* __POSIX_VISIBLE >= 199309 */
+
+
+
+
+
+
+
+
+
+
 
 #if __POSIX_VISIBLE >= 199506
 /***
@@ -969,6 +1077,12 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #if __BSD_VISIBLE
     LUAB_FUNC("tzset",                      luab_tzset),
 #endif /* __BSD_VISIBLE */
+#if __POSIX_VISIBLE >= 199309
+    LUAB_FUNC("clock_getres",               luab_clock_getres),
+    LUAB_FUNC("clock_gettime",              luab_clock_gettime),
+    LUAB_FUNC("clock_settime",              luab_clock_settime),
+#endif /* __POSIX_VISIBLE >= 199309 */
+
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
     LUAB_FUNC("ctime_r",                    luab_ctime_r),
@@ -978,6 +1092,8 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #if __BSD_VISIBLE
     LUAB_FUNC("timegm",                     luab_timegm),
 #endif /* __BSD_VISIBLE */
+
+
 #if __BSD_VISIBLE
     LUAB_FUNC("tzsetwall",                  luab_tzsetwall),
 #endif /* __BSD_VISIBLE */
