@@ -347,7 +347,7 @@ luab_time(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = bsd.time.timer_create(clockid, evp, timerd)
+ * @usage ret [, err, msg ] = bsd.time.timer_create(clockid, evp, timerid)
  */
 static int
 luab_timer_create(lua_State *L)
@@ -410,6 +410,124 @@ luab_timer_delete(lua_State *L)
     }
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * timer_gettime(2) - per-process timers (REALTIME)
+ *
+ * @function timer_gettime
+ *
+ * @param timerid           Specifies the location of per-process used timer.
+ * @param value             Contains amount of time until the timer expires.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.timer_gettime(timerid, value)
+ */
+static int
+luab_timer_gettime(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    luab_timer_t *xtmr;
+    struct itimerspec *value;
+    timer_t timerid;
+    int status;
+
+    m0 = luab_xmod(TIMER, TYPE, __func__);
+    m1 = luab_xmod(ITIMERSPEC, TYPE, __func__);
+
+    xtmr = luab_udata(L, 1, m0, luab_timer_t *);
+    value = luab_udata(L, 2, m1, struct itimerspec *);
+
+    if ((timerid = xtmr->ud_sdu) != NULL)
+        status = timer_gettime(timerid, value);
+    else {
+        errno = ENOENT;
+        status = luab_env_error;
+    }
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * timer_getoverrun(2) - per-process timers (REALTIME)
+ *
+ * @function timer_getoverrun
+ *
+ * @param timerid           Specifies the location of per-process used timer.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.timer_getoverrun(timerid)
+ */
+static int
+luab_timer_getoverrun(lua_State *L)
+{
+    luab_module_t *m;
+    luab_timer_t *xtmr;
+    timer_t timerid;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIMER, TYPE, __func__);
+    xtmr = luab_udata(L, 1, m, luab_timer_t *);
+
+    if ((timerid = xtmr->ud_sdu) != NULL)
+        status = timer_getoverrun(timerid);
+    else {
+        errno = ENOENT;
+        status = luab_env_error;
+    }
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * timer_settime(2) - per-process timers (REALTIME)
+ *
+ * @function timer_settime
+ *
+ * @param timerid           Specifies the location of per-process used timer.
+ * @param flags             Specifies utilized per-process timer.
+ * @param value             Specifies by (LUA_TUSERDATA(ITIMERSPEC)) the amount
+ *                          of time, until the timer expires.
+ * @param ovalue            Stores previous amount of time by an instance of
+ *                          (LUA_TUSERDATA(ITIMERSPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.timer_settime(timerid, value)
+ */
+static int
+luab_timer_settime(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    luab_timer_t *xtmr;
+    int flags;
+    struct itimerspec *value;
+    struct itimerspec *ovalue;
+    timer_t timerid;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 4);
+
+    m0 = luab_xmod(TIMER, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(ITIMERSPEC, TYPE, __func__);
+
+    xtmr = luab_udata(L, 1, m0, luab_timer_t *);
+    flags = luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+    value = luab_udata(L, 3, m2, struct itimerspec *);
+    ovalue = luab_udataisnil(L, 4, m2, struct itimerspec *);
+
+    if ((timerid = xtmr->ud_sdu) != NULL)
+        status = timer_settime(timerid, flags, value, ovalue);
+    else {
+        errno = ENOENT;
+        status = luab_env_error;
+    }
+    return (luab_pushxinteger(L, status));
+}
+
+
 #endif /* __POSIX_VISIBLE >= 200112 */
 
 #if __POSIX_VISIBLE >= 199506
@@ -806,6 +924,9 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #if __POSIX_VISIBLE >= 200112
     LUAB_FUNC("timer_create",               luab_timer_create),
     LUAB_FUNC("timer_delete",               luab_timer_delete),
+    LUAB_FUNC("timer_gettime",              luab_timer_gettime),
+    LUAB_FUNC("timer_getoverrun",           luab_timer_getoverrun),
+    LUAB_FUNC("timer_settime",              luab_timer_settime),
 #endif /* __POSIX_VISIBLE >= 200112 */
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
