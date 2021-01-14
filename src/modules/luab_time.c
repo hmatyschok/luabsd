@@ -307,16 +307,11 @@ luab_strftime(lua_State *L)
  *
  * @function strftime
  *
- * @param buf               Buffer for formatted time information by
- *                          an instance of (LUA_TUSERDATA(IOVEC)).
- * @param maxsize           Specifies constraint for buffer.
- * @param format            Specifies format string for conversion.
- * @param timeptr           Specifies broken down time by an
- *                          instance of (LUA_TUSERDATA(TM)).
+ * @param tloc              Result argument, tnstance of (LUA_TUSERDATA(TIME)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = bsd.time.strftime(buf, maxsize, format, timeptr)
+ * @usage ret [, err, msg ] = bsd.time.time(tloc)
  */
 static int
 luab_time(lua_State *L)
@@ -1031,6 +1026,52 @@ luab_timezone(lua_State *L)
 }
 
 /***
+ * tzsetwall(3) - initialize time conversion information
+ *
+ * @function tzsetwall
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.tzsetwall()
+ */
+static int
+luab_tzsetwall(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
+    tzsetwall();
+    return (luab_pushxinteger(L, luab_env_success));
+}
+
+/***
+ * timelocal(3) - transform binary data and time
+ *
+ * @function timelocal
+ *
+ * @param tm                Specifies broken down time by an
+ *                          instance of (LUA_TUSERDATA(TM)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.timelocal(tm)
+ */
+static int
+luab_timelocal(lua_State *L)
+{
+    luab_module_t *m;
+    struct tm *tm;
+    time_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TM, TYPE, __func__);
+    tm = luab_udata(L, 1, m, struct tm *);
+
+    x = timelocal(tm);
+
+    return (luab_pushxinteger(L, x));
+}
+
+/***
  * timegm(3) - transform binary data and time
  *
  * @function timegm
@@ -1057,25 +1098,6 @@ luab_timegm(lua_State *L)
     x = timegm(tm);
 
     return (luab_pushxinteger(L, x));
-}
-#endif /* __BSD_VISIBLE */
-
-#if __BSD_VISIBLE
-/***
- * tzsetwall(3) - initialize time conversion information
- *
- * @function tzsetwall
- *
- * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage ret [, err, msg ] = bsd.time.tzsetwall()
- */
-static int
-luab_tzsetwall(lua_State *L)
-{
-    (void)luab_core_checkmaxargs(L, 0);
-    tzsetwall();
-    return (luab_pushxinteger(L, luab_env_success));
 }
 #endif /* __BSD_VISIBLE */
 
@@ -1290,13 +1312,12 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
 #endif
 #if __BSD_VISIBLE
     LUAB_FUNC("timezone",                   luab_timezone),
+    LUAB_FUNC("tzsetwall",                  luab_tzsetwall),
+    LUAB_FUNC("timelocal",                  luab_timelocal),
     LUAB_FUNC("timegm",                     luab_timegm),
 #endif /* __BSD_VISIBLE */
 
 
-#if __BSD_VISIBLE
-    LUAB_FUNC("tzsetwall",                  luab_tzsetwall),
-#endif /* __BSD_VISIBLE */
     LUAB_FUNC("clock_create",               luab_type_clock_create),
     LUAB_FUNC("create_time",                luab_type_create_time),
 #if __POSIX_VISIBLE >= 199309
