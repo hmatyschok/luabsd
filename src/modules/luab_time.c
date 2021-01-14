@@ -688,9 +688,9 @@ luab_nanosleep(lua_State *L)
 
 #if __POSIX_VISIBLE >= 200112
 /***
- * clock_nanosleep(2) - high resoloution sleep
+ * clock_getcpuclockid(2) - access a process CPU-time clock
  *
- * @function nanosleep
+ * @function clock_getcpuclockid
  *
  * @param clock_id          Specifies the location of per-process used timer.
  * @param flags             Specifies type of per-process utilized clock.
@@ -700,7 +700,7 @@ luab_nanosleep(lua_State *L)
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = bsd.time.clock_nanosleep(clock_id, tp)
+ * @usage ret [, err, msg ] = bsd.time.clock_getcpuclockid(clock_id, tp)
  */
 static int
 luab_clock_getcpuclockid(lua_State *L)
@@ -725,7 +725,7 @@ luab_clock_getcpuclockid(lua_State *L)
 /***
  * clock_nanosleep(2) - high resoloution sleep
  *
- * @function nanosleep
+ * @function clock_nanosleep
  *
  * @param clock_id          Specifies the location of per-process used timer.
  * @param flags             Specifies type of per-process utilized clock.
@@ -943,6 +943,62 @@ luab_localtime_r(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE >= 199506 */
 
+#if __XSI_VISIBLE
+/***
+ * strptime(3) - parse data and time string
+ *
+ * @function strptime
+ *
+ * @param buf               String buffer, instance of (LUA_TUSERDATA(TIME)).
+ * @param format            Format string, (LUA_TSTRING).
+ * @param timeptr           Result argument, instance of (LUA_TUSERDATA(TM)).
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage tm [, err, msg ] = bsd.time.strptime(clock, result)
+ */
+static int
+luab_strptime(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    luab_iovec_t *buf;
+    const char *format;
+    struct tm *timeptr;
+    caddr_t bp, dp;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(IOVEC, TYPE, __func__);
+    m1 = luab_xmod(TM, TYPE, __func__);
+
+    buf = luab_udata(L, 1, m0, luab_iovec_t *);
+    format = luab_checklstring(L, 2, luab_env_buf_max, NULL);
+    timeptr = luab_udata(L, 3, m1, struct tm *);
+
+    if (((bp = buf->iov.iov_base) != NULL) &&
+        (buf->iov_max_len <= luab_env_buf_max) &&
+        (buf->iov.iov_len <= buf->iov_max_len) &&
+        ((buf->iov_flags & IOV_BUFF) != 0)) {
+
+        if ((buf->iov_flags & IOV_LOCK) == 0) {
+            buf->iov_flags |= IOV_LOCK;
+
+            if ((dp = strptime(bp, format, timeptr)) != NULL)
+                buf->iov.iov_len = strnlen(dp, luab_env_buf_max);
+
+            buf->iov_flags &= ~IOV_LOCK;
+        } else {
+            errno = EBUSY;
+            dp = NULL;
+        }
+    } else {
+        errno = ERANGE;
+        dp = NULL;
+    }
+    return (luab_pushstring(L, dp));
+}
+#endif /* __XSI_VISIBLE */
+
 #if __BSD_VISIBLE
 /***
  * timegm(3) - transform binary data and time
@@ -1087,7 +1143,7 @@ luab_type_create_clockid(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage time [, err, msg ] = bsd.xtimer.timer.create_timer(arg)
+ * @usage time [, err, msg ] = bsd.time.create_timer(arg)
  */
 static int
 luab_type_create_timer(lua_State *L)
@@ -1193,13 +1249,18 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("clock_getcpuclockid",        luab_clock_getcpuclockid),
     LUAB_FUNC("clock_nanosleep",            luab_clock_nanosleep),
 #endif /* __POSIX_VISIBLE */
-
 #if __POSIX_VISIBLE >= 199506
     LUAB_FUNC("asctime_r",                  luab_asctime_r),
     LUAB_FUNC("ctime_r",                    luab_ctime_r),
     LUAB_FUNC("gmtime_r",                   luab_gmtime_r),
     LUAB_FUNC("localtime_r",                luab_localtime_r),
 #endif  /* __POSIX_VISIBLE >= 199506 */
+#if __XSI_VISIBLE
+    LUAB_FUNC("strptime",                   luab_strptime),
+#endif
+
+
+
 #if __BSD_VISIBLE
     LUAB_FUNC("timegm",                     luab_timegm),
 #endif /* __BSD_VISIBLE */
