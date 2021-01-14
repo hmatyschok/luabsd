@@ -1143,6 +1143,60 @@ luab_timer_oshandle_np(lua_State *L)
     }
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * time2posix(3) - convert seconds since the Epoch
+ *
+ * @function time2posix
+ *
+ * @param t                 Specifies time value by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(TIMER))}.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.time2posix(t)
+ */
+static int
+luab_time2posix(lua_State *L)
+{
+    luab_module_t *m;
+    time_t t, x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIME, TYPE, __func__);
+    t = luab_checklxinteger(L, 1, m, 0);
+    x = time2posix(t);
+
+    return (luab_pushxinteger(L, x));
+}
+
+/***
+ * posix2time(3) - convert seconds since the Epoch
+ *
+ * @function posix2time
+ *
+ * @param t                 Specifies time value by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(TIMER))}.
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.time.posix2time(t)
+ */
+static int
+luab_posix2time(lua_State *L)
+{
+    luab_module_t *m;
+    time_t t, x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TIME, TYPE, __func__);
+    t = luab_checklxinteger(L, 1, m, 0);
+    x = posix2time(t);
+
+    return (luab_pushxinteger(L, x));
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -1360,9 +1414,9 @@ static luab_module_table_t luab_time_vec[] = { /* time.h */
     LUAB_FUNC("timelocal",                  luab_timelocal),
     LUAB_FUNC("timegm",                     luab_timegm),
     LUAB_FUNC("timer_oshandle_np",          luab_timer_oshandle_np),
+    LUAB_FUNC("time2posix",                 luab_time2posix),
+    LUAB_FUNC("posix2time",                 luab_posix2time),
 #endif /* __BSD_VISIBLE */
-
-
     LUAB_FUNC("clock_create",               luab_type_clock_create),
     LUAB_FUNC("create_time",                luab_type_create_time),
 #if __POSIX_VISIBLE >= 199309
