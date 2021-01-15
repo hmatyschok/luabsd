@@ -68,9 +68,9 @@ sigaction_fillxtable(lua_State *L, int narg, void *arg)
     m = luab_xmod(SIGSET, TYPE, __func__);
 
     if ((sa = (struct sigaction *)arg) != NULL) {
-        luab_setfstring(L, narg, "sa_handler", "(%s)",    sa->sa_handler);
+        luab_setfstring(L, narg, "sa_handler", "(%p)",    sa->sa_handler);
 #if __XSI_VISIBLE
-        luab_setfstring(L, narg, "sa_sigaction", "(%s)",  sa->sa_sigaction);
+        luab_setfstring(L, narg, "sa_sigaction", "(%p)",  sa->sa_sigaction);
 #endif
         luab_setinteger(L, narg, "sa_flags",              sa->sa_flags);
         luab_setxdata(L, narg, m, "sa_mask",              &sa->sa_mask);
@@ -158,7 +158,7 @@ SIGACTION_sa_handler(lua_State *L)
     sa = luab_todata(L, 1, m, struct sigaction *);
     x = sa->sa_handler;
 
-    return (luab_pushfstring(L, "(%s)", x));
+    return (luab_pushfstring(L, "(%p)", x));
 }
 
 #if __XSI_VISIBLE
@@ -185,7 +185,7 @@ SIGACTION_sa_sigaction(lua_State *L)
     sa = luab_todata(L, 1, m, struct sigaction *);
     x = sa->sa_sigaction;
 
-    return (luab_pushfstring(L, "(%s)", x));
+    return (luab_pushfstring(L, "(%p)", x));
 }
 #endif /* __XSI_VISIBLE */
 

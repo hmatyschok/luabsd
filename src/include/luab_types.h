@@ -226,6 +226,9 @@ typedef enum luab_type {
      * Reference data types
      */
 
+    /* <luab_core_atomic> */
+    LUAB_CADDR_IDX,
+
     /* <sys/signal.h> */
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     LUAB_SIGSET_IDX,

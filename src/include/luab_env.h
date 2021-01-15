@@ -155,6 +155,11 @@ extern const lua_Integer luab_env_word_bit;
 extern const lua_Integer luab_env_sig_words;
 extern const lua_Integer luab_env_sig_maxsig;
 
+/* <luab_sys_signal_lib> */
+#if __BSD_VISIBLE
+extern const lua_Integer luab_env_sys_nsig;
+#endif
+
 #define LUAB_SC_NOTSUPP                         (-1)
 
 typedef struct luab_sysconf_vec {
@@ -716,6 +721,9 @@ extern u_long luab_env_phys_pages;
 #endif
 #endif
 
+#define LUAB_CADDR_TYPE_ID                      1610728624
+#define LUAB_CADDR_TYPE                         "CADDR*"
+
 /*
  * Subset of composite data types.
  */
@@ -867,7 +875,7 @@ extern u_long luab_env_phys_pages;
 #if __POSIX_VISIBLE >= 199309
 #define LUAB_SIGEVENT_TYPE_ID                   1610459044
 #define LUAB_SIGEVENT_TYPE                      "SIGEVENT*"
-#endif     
+#endif
 
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE
 #define LUAB__SIGINFO_TYPE_ID                   1610570807

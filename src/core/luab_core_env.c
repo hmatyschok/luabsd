@@ -978,6 +978,12 @@ luab_module_vec_t luab_typevec[] = {
      * Reference data types.
      */
 
+    {
+        .mv_mod = &luab_caddr_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_CADDR_IDX,
+    },
+
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     { /* <sys/signal.h> */
         .mv_mod = &luab_sigset_type,

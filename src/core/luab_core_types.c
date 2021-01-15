@@ -356,7 +356,7 @@ luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_env_buf_max)) {
+        (len < (luab_env_buf_max + 1))) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -419,7 +419,7 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_env_buf_max)) {
+        (len < (luab_env_buf_max + 1))) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 
@@ -530,7 +530,7 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 
     if ((v != NULL) &&
         (len > 1) &&
-        (len < luab_env_buf_max)) {
+        (len < (luab_env_buf_max + 1))) {
         luaL_buffinit(L, &b);
         dp = luaL_prepbuffsize(&b, len);
 

@@ -29,5 +29,8 @@ SRCS+=  luab_vm_offset_type.c
 SRCS+=  luab_lual_integer_type.c
 SRCS+=  luab_lual_number_type.c
 
+# reference data types
+SRCS+=  luab_caddr_type.c
+
 # composite data types
 SRCS+=  luab_integer_type.c

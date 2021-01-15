@@ -38,6 +38,10 @@
 
 extern luab_module_t luab_sys_signal_lib;
 
+#if __BSD_VISIBLE
+const lua_Integer luab_env_sys_nsig = NSIG;
+#endif
+
 /*
  * Generator functions
  */

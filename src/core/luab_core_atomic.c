@@ -536,6 +536,37 @@ luab_type_create_lual_number(lua_State *L)
 }
 
 /*
+ * Reference data types.
+ */
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CADDR)).
+ *
+ * @function create_caddr
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,STRING).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage caddr [, err, msg ] = bsd.core.atomic.create_caddr(arg)
+ */
+static int
+luab_type_create_caddr(lua_State *L)
+{
+    luab_module_t *m;
+    caddr_t dp;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CADDR, TYPE, __func__);
+    dp = luab_checklstringalloc(L, 1, luab_env_buf_max);
+
+    return (luab_pushxdata(L, m, dp));
+}
+
+/*
  * Internal interface.
  */
 
@@ -566,6 +597,9 @@ static luab_module_table_t luab_core_atomic_vec[] = {
     LUAB_FUNC("create_vm_offset",       luab_type_create_vm_offset),
     LUAB_FUNC("create_lua_integer",     luab_type_create_lual_integer),
     LUAB_FUNC("create_lua_number",      luab_type_create_lual_number),
+
+    /* reference data types */
+    LUAB_FUNC("create_caddr",           luab_type_create_caddr),
     LUAB_MOD_TBL_SENTINEL
 };
 

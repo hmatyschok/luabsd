@@ -98,7 +98,7 @@ siginfo_fillxtable(lua_State *L, int narg, void *arg)
         luab_setinteger(L, narg, "si_pid",          si->si_pid);
         luab_setinteger(L, narg, "si_uid",          si->si_uid);
         luab_setinteger(L, narg, "si_status",       si->si_status);
-        luab_setfstring(L, narg, "si_addr", "(%s)", si->si_addr);
+        luab_setfstring(L, narg, "si_addr", "(%p)", si->si_addr);
         luab_setxdata(L, narg, m, "si_value",       &si->si_value);
         luab_setinteger(L, narg, "si_trapno",       si->si_trapno);
         luab_setinteger(L, narg, "si_timerid",      si->si_timerid);

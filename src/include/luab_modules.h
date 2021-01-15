@@ -116,6 +116,9 @@ extern luab_module_t luab_useconds_type;
  * Subset of reference data types.
  */
 
+/* <luab_core_atomic> */
+extern luab_module_t luab_caddr_type;
+
 /* <sys/signal.h> */
 #if __POSIX_VISIBLE || __XSI_VISIBLE
 extern luab_module_t luab_sigset_type;
@@ -239,6 +242,7 @@ extern luab_module_t luab_langinfo_lib;
 extern luab_module_t luab_locale_lib;
 extern luab_module_t luab_pwd_lib;
 extern luab_module_t luab_regex_lib;
+extern luab_module_t luab_signal_lib;
 extern luab_module_t luab_stdio_lib;
 extern luab_module_t luab_stdlib_lib;
 extern luab_module_t luab_time_lib;

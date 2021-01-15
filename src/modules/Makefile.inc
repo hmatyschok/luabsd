@@ -37,6 +37,7 @@ SRCS+=  luab_langinfo.c
 SRCS+=  luab_locale.c
 SRCS+=  luab_pwd.c
 SRCS+=  luab_regex.c
+SRCS+=  luab_signal.c
 SRCS+=  luab_stdio.c
 SRCS+=  luab_stdlib.c
 SRCS+=  luab_time.c
