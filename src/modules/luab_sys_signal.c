@@ -42,6 +42,29 @@ extern luab_module_t luab_sys_signal_lib;
  * Generator functions
  */
 
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SIGSET)).
+ *
+ * @function create_sigset
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SIGSET)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage sigset [, err, msg ] = bsd.sys.signal.create_sigset(arg)
+ */
+static int
+luab_type_create_sigset(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(SIGSET, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+#endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
+
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SIGVAL)).
@@ -110,8 +133,6 @@ luab_type_create_siginfo(lua_State *L)
     return (luab_core_create(L, 1, m, NULL));
 }
 #endif /* __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE */
-
-
 
 /*
  * Interface against <sys/signal.h>
@@ -278,6 +299,9 @@ static luab_module_table_t luab_sys_signal_vec[] = {
     LUAB_INT("SIG_BLOCK",               SIG_BLOCK),
     LUAB_INT("SIG_UNBLOCK",             SIG_UNBLOCK),
     LUAB_INT("SIG_SETMASK",             SIG_SETMASK),
+#endif
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+    LUAB_FUNC("create_sigset",          luab_type_create_sigset),
 #endif
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
     LUAB_FUNC("create_sigval",          luab_type_create_sigval),

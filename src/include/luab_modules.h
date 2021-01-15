@@ -117,6 +117,10 @@ extern luab_module_t luab_useconds_type;
  */
 
 /* <sys/signal.h> */
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+extern luab_module_t luab_sigset_type;
+#endif
+
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
 extern luab_module_t luab_sigval_type;
 #endif

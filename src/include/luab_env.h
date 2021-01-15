@@ -151,6 +151,10 @@ extern const lua_Integer luab_env_quad_min;
 extern const lua_Integer luab_env_long_bit;
 extern const lua_Integer luab_env_word_bit;
 
+/* <luab_sigset_type> */
+extern const lua_Integer luab_env_sig_words;
+extern const lua_Integer luab_env_sig_maxsig;
+
 #define LUAB_SC_NOTSUPP                         (-1)
 
 typedef struct luab_sysconf_vec {
@@ -702,9 +706,14 @@ extern u_long luab_env_phys_pages;
 #define LUAB_TIMER_TYPE                         "TIMER*"
 #endif
 
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+#define LUAB_SIGSET_TYPE_ID                     1610664236
+#define LUAB_SIGSET_TYPE                        "SIGSET*"
+
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE >= 500
 #define LUAB_SIGVAL_TYPE_ID                     1610402059
 #define LUAB_SIGVAL_TYPE                        "SIGVAL*"
+#endif
 #endif
 
 /*

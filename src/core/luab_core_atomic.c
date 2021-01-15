@@ -43,7 +43,7 @@
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UCHAR)).
  *
- * @function uchar_create
+ * @function create_uchar
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -51,10 +51,10 @@
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uchar [, err, msg ] = bsd.core.atomic.uchar_create(arg)
+ * @usage uchar [, err, msg ] = bsd.core.atomic.create_uchar(arg)
  */
 static int
-luab_uchar_create(lua_State *L)
+luab_type_create_uchar(lua_State *L)
 {
     luab_module_t *m;
     u_char x;
@@ -69,7 +69,7 @@ luab_uchar_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(USHRT)).
  *
- * @function ushrt_create
+ * @function create_ushrt
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -77,10 +77,10 @@ luab_uchar_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ushrt [, err, msg ] = bsd.core.atomic.ushrt_create(arg)
+ * @usage ushrt [, err, msg ] = bsd.core.atomic.create_ushrt(arg)
  */
 static int
-luab_ushrt_create(lua_State *L)
+luab_type_create_ushrt(lua_State *L)
 {
     luab_module_t *m;
     u_short x;
@@ -95,7 +95,7 @@ luab_ushrt_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UINT)).
  *
- * @function uint_create
+ * @function create_uint
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -103,10 +103,10 @@ luab_ushrt_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uint [, err, msg ] = bsd.core.atomic.uint_create(arg)
+ * @usage uint [, err, msg ] = bsd.core.atomic.create_uint(arg)
  */
 static int
-luab_uint_create(lua_State *L)
+luab_type_create_uint(lua_State *L)
 {
     luab_module_t *m;
     u_int x;
@@ -121,7 +121,7 @@ luab_uint_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(ULONG)).
  *
- * @function ulong_create
+ * @function create_ulong
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -129,10 +129,10 @@ luab_uint_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ulong [, err, msg ] = bsd.core.atomic.ulong_create(arg)
+ * @usage ulong [, err, msg ] = bsd.core.atomic.create_ulong(arg)
  */
 static int
-luab_ulong_create(lua_State *L)
+luab_type_create_ulong(lua_State *L)
 {
     luab_module_t *m;
     u_long x;
@@ -148,7 +148,7 @@ luab_ulong_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(CHAR)).
  *
- * @function char_create
+ * @function create_char
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -156,10 +156,10 @@ luab_ulong_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage char [, err, msg ] = bsd.core.atomic.char_create(arg)
+ * @usage char [, err, msg ] = bsd.core.atomic.create_char(arg)
  */
 static int
-luab_char_create(lua_State *L)
+luab_type_create_char(lua_State *L)
 {
     luab_module_t *m;
     char x;
@@ -174,7 +174,7 @@ luab_char_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SHORT)).
  *
- * @function short_create
+ * @function create_short
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -182,10 +182,10 @@ luab_char_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage short [, err, msg ] = bsd.core.atomic.short_create(arg)
+ * @usage short [, err, msg ] = bsd.core.atomic.create_short(arg)
  */
 static int
-luab_short_create(lua_State *L)
+luab_type_create_short(lua_State *L)
 {
     luab_module_t *m;
     short x;
@@ -200,7 +200,7 @@ luab_short_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(INT)).
  *
- * @function int_create
+ * @function create_int
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -208,10 +208,10 @@ luab_short_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage int [, err, msg ] = bsd.core.atomic.int_create(arg)
+ * @usage int [, err, msg ] = bsd.core.atomic.create_int(arg)
  */
 static int
-luab_int_create(lua_State *L)
+luab_type_create_int(lua_State *L)
 {
     luab_module_t *m;
     int x;
@@ -226,7 +226,7 @@ luab_int_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(LONG)).
  *
- * @function long_create
+ * @function create_long
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -234,10 +234,10 @@ luab_int_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage long [, err, msg ] = bsd.core.atomic.long_create(arg)
+ * @usage long [, err, msg ] = bsd.core.atomic.create_long(arg)
  */
 static int
-luab_long_create(lua_State *L)
+luab_type_create_long(lua_State *L)
 {
     luab_module_t *m;
     long x;
@@ -252,7 +252,7 @@ luab_long_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(DOUBLE)).
  *
- * @function double_create
+ * @function create_double
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -260,10 +260,10 @@ luab_long_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage double [, err, msg ] = bsd.core.atomic.double_create(arg)
+ * @usage double [, err, msg ] = bsd.core.atomic.create_double(arg)
  */
 static int
-luab_double_create(lua_State *L)
+luab_type_create_double(lua_State *L)
 {
     luab_module_t *m;
     double x;
@@ -278,7 +278,7 @@ luab_double_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(FLOAT)).
  *
- * @function float_create
+ * @function create_float
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -286,10 +286,10 @@ luab_double_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage float [, err, msg ] = bsd.core.atomic.float_create(arg)
+ * @usage float [, err, msg ] = bsd.core.atomic.create_float(arg)
  */
 static int
-luab_float_create(lua_State *L)
+luab_type_create_float(lua_State *L)
 {
     luab_module_t *m;
     float x;
@@ -304,7 +304,7 @@ luab_float_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(OFF)).
  *
- * @function off_create
+ * @function create_off
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -312,10 +312,10 @@ luab_float_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage off [, err, msg ] = bsd.core.atomic.off_create(arg)
+ * @usage off [, err, msg ] = bsd.core.atomic.create_off(arg)
  */
 static int
-luab_off_create(lua_State *L)
+luab_type_create_off(lua_State *L)
 {
     luab_module_t *m;
     off_t x;
@@ -330,7 +330,7 @@ luab_off_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SIZE)).
  *
- * @function size_create
+ * @function create_size
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -338,10 +338,10 @@ luab_off_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage size [, err, msg ] = bsd.core.atomic.size_create(arg)
+ * @usage size [, err, msg ] = bsd.core.atomic.create_size(arg)
  */
 static int
-luab_size_create(lua_State *L)
+luab_type_create_size(lua_State *L)
 {
     luab_module_t *m;
     size_t x;
@@ -356,7 +356,7 @@ luab_size_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SOCKLEN)).
  *
- * @function socklen_create
+ * @function create_socklen
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -364,10 +364,10 @@ luab_size_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage socklen [, err, msg ] = bsd.core.atomic.socklen_create(arg)
+ * @usage socklen [, err, msg ] = bsd.core.atomic.create_socklen(arg)
  */
 static int
-luab_socklen_create(lua_State *L)
+luab_type_create_socklen(lua_State *L)
 {
     luab_module_t *m;
     socklen_t x;
@@ -382,7 +382,7 @@ luab_socklen_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(SSIZE)).
  *
- * @function ssize_create
+ * @function create_ssize
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -390,10 +390,10 @@ luab_socklen_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ssize [, err, msg ] = bsd.core.atomic.ssize_create(arg)
+ * @usage ssize [, err, msg ] = bsd.core.atomic.create_ssize(arg)
  */
 static int
-luab_ssize_create(lua_State *L)
+luab_type_create_ssize(lua_State *L)
 {
     luab_module_t *m;
     ssize_t x;
@@ -408,7 +408,7 @@ luab_ssize_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(UID)).
  *
- * @function uid_create
+ * @function create_uid
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -416,10 +416,10 @@ luab_ssize_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage uid [, err, msg ] = bsd.core.atomic.uid_create(arg)
+ * @usage uid [, err, msg ] = bsd.core.atomic.create_uid(arg)
  */
 static int
-luab_uid_create(lua_State *L)
+luab_type_create_uid(lua_State *L)
 {
     luab_module_t *m;
     uid_t x;
@@ -434,7 +434,7 @@ luab_uid_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(WCHAR)).
  *
- * @function wchar_create
+ * @function create_wchar
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -442,10 +442,10 @@ luab_uid_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage wchar [, err, msg ] = bsd.core.atomic.wchar_create(arg)
+ * @usage wchar [, err, msg ] = bsd.core.atomic.create_wchar(arg)
  */
 static int
-luab_wchar_create(lua_State *L)
+luab_type_create_wchar(lua_State *L)
 {
     luab_module_t *m;
     wchar_t x;
@@ -460,7 +460,7 @@ luab_wchar_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(VM_OFFSET)).
  *
- * @function vm_offset_create
+ * @function create_vm_offset
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -468,10 +468,10 @@ luab_wchar_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage vm_offset [, err, msg ] = bsd.core.atomic.vm_offset_create(arg)
+ * @usage vm_offset [, err, msg ] = bsd.core.atomic.create_vm_offset(arg)
  */
 static int
-luab_vm_offset_create(lua_State *L)
+luab_type_create_vm_offset(lua_State *L)
 {
     luab_module_t *m;
     vm_offset_t x;
@@ -497,7 +497,7 @@ luab_vm_offset_create(lua_State *L)
  * @usage lual_integer [, err, msg ] = bsd.core.atomic.lual_integer_create(arg)
  */
 static int
-luab_lual_integer_create(lua_State *L)
+luab_type_create_lual_integer(lua_State *L)
 {
     luab_module_t *m;
     lua_Integer x;
@@ -512,7 +512,7 @@ luab_lual_integer_create(lua_State *L)
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(LUAL_NUMBER)).
  *
- * @function lual_number_create
+ * @function create_lual_number
  *
  * @param arg               Specifies initial value by an instance of
  *
@@ -520,10 +520,10 @@ luab_lual_integer_create(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage lual_number [, err, msg ] = bsd.core.atomic.lual_number_create(arg)
+ * @usage lual_number [, err, msg ] = bsd.core.atomic.create_lual_number(arg)
  */
 static int
-luab_lual_number_create(lua_State *L)
+luab_type_create_lual_number(lua_State *L)
 {
     luab_module_t *m;
     lua_Number x;
@@ -542,30 +542,30 @@ luab_lual_number_create(lua_State *L)
 static luab_module_table_t luab_core_atomic_vec[] = {
     /* integer types */
 #if __BSD_VISIBLE
-    LUAB_FUNC("uchar_create",           luab_uchar_create),
-    LUAB_FUNC("ushrt_create",           luab_ushrt_create),
-    LUAB_FUNC("uint_create",            luab_uint_create),
-    LUAB_FUNC("ulong_create",           luab_ulong_create),
+    LUAB_FUNC("create_uchar",           luab_type_create_uchar),
+    LUAB_FUNC("create_ushrt",           luab_type_create_ushrt),
+    LUAB_FUNC("create_uint",            luab_type_create_uint),
+    LUAB_FUNC("create_ulong",           luab_type_create_ulong),
 #endif /* __BSD_VISIBLE */
-    LUAB_FUNC("char_create",            luab_char_create),
-    LUAB_FUNC("short_create",           luab_short_create),
-    LUAB_FUNC("int_create",             luab_int_create),
-    LUAB_FUNC("long_create",            luab_long_create),
+    LUAB_FUNC("create_char",            luab_type_create_char),
+    LUAB_FUNC("create_short",           luab_type_create_short),
+    LUAB_FUNC("create_int",             luab_type_create_int),
+    LUAB_FUNC("create_long",            luab_type_create_long),
 
     /* floating point number types */
-    LUAB_FUNC("double_create",          luab_double_create),
-    LUAB_FUNC("float_create",           luab_float_create),
+    LUAB_FUNC("create_double",          luab_type_create_double),
+    LUAB_FUNC("create_float",           luab_type_create_float),
 
     /* stadard types */
-    LUAB_FUNC("off_create",             luab_off_create),
-    LUAB_FUNC("size_create",            luab_size_create),
-    LUAB_FUNC("socklen_create",         luab_socklen_create),
-    LUAB_FUNC("ssize_create",           luab_ssize_create),
-    LUAB_FUNC("uid_create",             luab_uid_create),
-    LUAB_FUNC("wchar_create",           luab_wchar_create),
-    LUAB_FUNC("vm_offset_create",       luab_vm_offset_create),
-    LUAB_FUNC("lua_integer_create",     luab_lual_integer_create),
-    LUAB_FUNC("lua_number_create",      luab_lual_number_create),
+    LUAB_FUNC("create_off",             luab_type_create_off),
+    LUAB_FUNC("create_size",            luab_type_create_size),
+    LUAB_FUNC("create_socklen",         luab_type_create_socklen),
+    LUAB_FUNC("create_ssize",           luab_type_create_ssize),
+    LUAB_FUNC("create_uid",             luab_type_create_uid),
+    LUAB_FUNC("create_wchar",           luab_type_create_wchar),
+    LUAB_FUNC("create_vm_offset",       luab_type_create_vm_offset),
+    LUAB_FUNC("create_lua_integer",     luab_type_create_lual_integer),
+    LUAB_FUNC("create_lua_number",      luab_type_create_lual_number),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -474,6 +474,8 @@ luab_table_pushxvector(lua_State *L, int narg, luab_module_t *m,
 
             if ((tbl = (*m->m_alloc_tbl)(vec, card)) != NULL)
                 luab_table_pushxdata(L, narg, m, tbl, new, clr);
+
+            errno = 0;
         } else
             errno = ENXIO;
     } else
@@ -504,6 +506,7 @@ luab_table_setxvector(lua_State *L, int narg, luab_module_t *m,
                         lua_pushvalue(L, narg);
                 }
             }
+            errno = 0;
         } else
             errno = ENXIO;
     } else
