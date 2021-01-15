@@ -874,6 +874,11 @@ extern u_long luab_env_phys_pages;
 #define LUAB__SIGINFO_TYPE                      "SIGINFO*"
 #endif
 
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+#define LUAB_SIGACTION_TYPE_ID                  1610718477
+#define LUAB_SIGACTION_TYPE                  "  SIGACTION*"
+#endif
+
 
 /*
  * Service primitives / subr.

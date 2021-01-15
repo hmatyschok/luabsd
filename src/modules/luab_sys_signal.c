@@ -134,6 +134,29 @@ luab_type_create_siginfo(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE */
 
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SIGACTION)).
+ *
+ * @function create_sigaction
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SIGACTION)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage sigevent [, err, msg ] = bsd.sys.signal.create_sigaction(arg)
+ */
+static int
+luab_type_create_sigaction(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(SIGACTION, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+#endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
+
 /*
  * Interface against <sys/signal.h>
  */
@@ -311,6 +334,9 @@ static luab_module_table_t luab_sys_signal_vec[] = {
 #endif
 #if __POSIX_VISIBLE >= 199309 || __XSI_VISIBLE
     LUAB_FUNC("create_siginfo",         luab_type_create_siginfo),
+#endif
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+    LUAB_FUNC("create_sigaction",       luab_type_create_sigaction),
 #endif
     LUAB_MOD_TBL_SENTINEL
 };
