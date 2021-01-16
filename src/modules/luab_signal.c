@@ -314,7 +314,7 @@ luab_sigprocmask(lua_State *L)
     sigset_t *oset;
     int status;
 
-    (void)luab_core_checkmaxargs(L, 1);
+    (void)luab_core_checkmaxargs(L, 3);
 
     m0 = luab_xmod(INT, TYPE, __func__);
     m1 = luab_xmod(SIGSET, TYPE, __func__);
@@ -327,10 +327,36 @@ luab_sigprocmask(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * sigwait(2) - select a set of signals
+ *
+ * @function sigwait
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ * @param sig               Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigwait(set, signo)
+ */
+static int
+luab_sigwait(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    sigset_t *set;
+    int *sig, status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(SIGSET, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
 
+    set = luab_udata(L, 1, m0, sigset_t *);
+    sig = luab_udata(L, 2, m1, int *);
 
+    status = sigwait(set, sig);
+    return (luab_pushxinteger(L, status));
+}
 
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 
@@ -426,6 +452,7 @@ static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("sigismember",        luab_sigismember),
     LUAB_FUNC("sigpending",         luab_sigpending),
     LUAB_FUNC("sigprocmask",        luab_sigprocmask),
+    LUAB_FUNC("sigwait",            luab_sigwait),
 
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 #if __BSD_VISIBLE
