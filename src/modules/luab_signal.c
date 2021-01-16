@@ -257,6 +257,35 @@ luab_sigismember(lua_State *L)
     status = sigismember(set, signo);
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * sigpending(2) - get pending signals
+ *
+ * @function sigpending
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigpending(set)
+ */
+static int
+luab_sigpending(lua_State *L)
+{
+    luab_module_t *m;
+    sigset_t *set;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SIGSET, TYPE, __func__);
+    set = luab_udata(L, 1, m, sigset_t *);
+
+    status = sigpending(set);
+    return (luab_pushxinteger(L, status));
+}
+
+
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 
 /*
@@ -349,6 +378,7 @@ static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("sigemptyset",        luab_sigemptyset),
     LUAB_FUNC("sigfillset",         luab_sigfillset),
     LUAB_FUNC("sigismember",        luab_sigismember),
+    LUAB_FUNC("sigpending",         luab_sigpending),
 
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 #if __BSD_VISIBLE
