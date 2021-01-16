@@ -89,6 +89,48 @@ luab_type_create_pthread_attr(lua_State *L)
     return (luab_core_create(L, 1, m, NULL));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ *
+ * @function create_pthread_mutex
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_MUTEX)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage pthread_mutex [, err, msg ] = bsd.pthread.create_pthread_mutex(arg)
+ */
+static int
+luab_type_create_pthread_mutex(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_MUTEX_ATTR)).
+ *
+ * @function create_pthread_mutex_attr
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_MUTEX_ATTR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage pthread_mutex_attr [, err, msg ] = bsd.pthread.create_pthread_mutex_attr(arg)
+ */
+static int
+luab_type_create_pthread_mutex_attr(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(PTHREAD_MUTEX_ATTR, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
 /*
  * Interface against <pthread.h>
  */
@@ -128,6 +170,8 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_INT("PTHREAD_MUTEX_ROBUST",            PTHREAD_MUTEX_ROBUST),
     LUAB_FUNC("create_pthread",                 luab_type_create_pthread),
     LUAB_FUNC("create_pthread_attr",            luab_type_create_pthread_attr),
+    LUAB_FUNC("create_pthread_mutex",           luab_type_create_pthread_mutex),
+    LUAB_FUNC("create_pthread_mutex_attr",      luab_type_create_pthread_mutex_attr),
     LUAB_MOD_TBL_SENTINEL
 };
 

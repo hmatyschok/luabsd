@@ -730,6 +730,12 @@ extern u_long luab_env_phys_pages;
 #define LUAB_PTHREAD_ATTR_TYPE_ID               1610823607
 #define LUAB_PTHREAD_ATTR_TYPE                  "PTHREAD_ATTR*"
 
+#define LUAB_PTHREAD_MUTEX_TYPE_ID              1610827312
+#define LUAB_PTHREAD_MUTEX_TYPE                 "PTHREAD_MUTEX*"
+
+#define LUAB_PTHREAD_MUTEX_ATTR_TYPE_ID         1610828567
+#define LUAB_PTHREAD_MUTEX_ATTR_TYPE            "PTHREAD_MUTEX_ATTR*"
+
 /*
  * Subset of composite data types.
  */

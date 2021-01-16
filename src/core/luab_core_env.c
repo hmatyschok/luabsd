@@ -1045,6 +1045,14 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_pthread_attr_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PTHREAD_ATTR_IDX,
+    },{
+        .mv_mod = &luab_pthread_mutex_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_PTHREAD_MUTEX_IDX,
+    },{
+        .mv_mod = &luab_pthread_mutex_attr_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_PTHREAD_MUTEX_ATTR_IDX,
     },
 
     /* <time.h> */
