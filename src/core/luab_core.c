@@ -173,6 +173,9 @@ static luab_module_vec_t luab_vec[] = {
         .mv_mod = &luab_pwd_lib,
         .mv_init = luab_core_newtable,
     },{
+        .mv_mod = &luab_pthread_lib,
+        .mv_init = luab_core_newtable,
+    },{
         .mv_mod = &luab_regex_lib,
         .mv_init = luab_core_newtable,
     },{

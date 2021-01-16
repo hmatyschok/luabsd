@@ -852,11 +852,17 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_lual_number_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LUAL_NUMBER_IDX,
-    },{ /* <arpa/inet.h> */
+    },
+
+    /* <arpa/inet.h> */
+    {
         .mv_mod = &luab_in_port_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_IN_PORT_IDX,
-    },{ /* <sys/stat.h> */
+    },
+
+    /* <sys/stat.h> */
+    {
         .mv_mod = &luab_blkcnt_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_BLKCNT_IDX,
@@ -876,7 +882,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_nlink_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_NLINK_IDX,
-    },{ /* <sys/stdint.h>, POSIX sized integrals */
+    },
+
+    /* <sys/stdint.h>, POSIX sized integrals */
+    {
         .mv_mod = &luab_int8_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_INT8_IDX,
@@ -924,23 +933,38 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_uintmax_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_UINTMAX_IDX,
-    },{ /* <ctype.h> */
+    },
+
+    /* <ctype.h> */
+    {
         .mv_mod = &luab_ct_rune_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CT_RUNE_IDX,
-    },{ /* <fcntl.h> */
+    },
+
+    /* <fcntl.h> */
+    {
         .mv_mod = &luab_mode_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_MODE_IDX,
-    },{ /* <grp.h> */
+    },
+
+    /* <grp.h> */
+    {
         .mv_mod = &luab_gid_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_GID_IDX,
-    },{ /* <langinfo.h> */
+    },
+
+    /* <langinfo.h> */
+    {
         .mv_mod = &luab_nl_item_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_NL_ITEM_IDX,
-    },{ /* <stdio.h> */
+    },
+
+    /* <stdio.h> */
+    {
         .mv_mod = &luab_fpos_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_FPOS_IDX,
@@ -948,7 +972,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_rsize_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_RSIZE_IDX,
-    },{ /* <time.h> */
+    },
+
+    /* <time.h> */
+    {
         .mv_mod = &luab_clock_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CLOCK_IDX,
@@ -964,7 +991,9 @@ luab_module_vec_t luab_typevec[] = {
         .mv_idx = LUAB_CLOCKID_IDX,
     },
 #endif
-    { /* <unistd.h> */
+
+    /* <unistd.h> */
+    {
         .mv_mod = &luab_pid_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PID_IDX,
@@ -984,8 +1013,9 @@ luab_module_vec_t luab_typevec[] = {
         .mv_idx = LUAB_CADDR_IDX,
     },
 
+     /* <sys/signal.h> */
 #if __POSIX_VISIBLE || __XSI_VISIBLE
-    { /* <sys/signal.h> */
+    {
         .mv_mod = &luab_sigset_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_SIGSET_IDX,
@@ -998,13 +1028,24 @@ luab_module_vec_t luab_typevec[] = {
         .mv_idx = LUAB_SIGVAL_IDX,
     },
 #endif
-    { /* <xlocale/_locale.h> */
+
+    /* <xlocale/_locale.h> */
+    {
         .mv_mod = &luab_locale_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_LOCALE_IDX,
     },
+
+    /* <pthread.h> */
+    {
+        .mv_mod = &luab_pthread_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_PTHREAD_IDX,
+    },
+
+    /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
-    { /* <time.h> */
+    {
         .mv_mod = &luab_timer_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_TIMER_IDX,

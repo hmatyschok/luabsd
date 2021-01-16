@@ -93,7 +93,7 @@ void     luab_table_pushxdata(lua_State *, int, luab_module_t *,
 int  luab_table_pushxtable(lua_State *, int, luab_xtable_param_t *);
 int  luab_table_pushxvector(lua_State *, int, luab_module_t *, void *,
     size_t, int, int);
-int
-luab_table_setxvector(lua_State *L, int narg, luab_module_t *m,
-    const char *k, void *vec, size_t card, int new, int clr);
+int  luab_pushxvector(lua_State *, luab_module_t *, void *, size_t);
+int  luab_table_setxvector(lua_State *, int, luab_module_t *,
+    const char *, void *, size_t, int, int);
 #endif /* _LUAB_TABLE_H_ */

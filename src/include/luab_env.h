@@ -724,6 +724,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_CADDR_TYPE_ID                      1610728624
 #define LUAB_CADDR_TYPE                         "CADDR*"
 
+#define LUAB_PTHREAD_TYPE_ID                    1610773919
+#define LUAB_PTHREAD_TYPE                       "PTHREAD*"
+
 /*
  * Subset of composite data types.
  */

@@ -131,6 +131,9 @@ extern luab_module_t luab_sigval_type;
 /* <xlocale/_locale.h> */
 extern luab_module_t luab_locale_type;
 
+/* <pthread.h> */
+extern luab_module_t luab_pthread_type;
+
 /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
 extern luab_module_t luab_timer_type;
@@ -241,6 +244,7 @@ extern luab_module_t luab_grp_lib;
 extern luab_module_t luab_langinfo_lib;
 extern luab_module_t luab_locale_lib;
 extern luab_module_t luab_pwd_lib;
+extern luab_module_t luab_pthread_lib;
 extern luab_module_t luab_regex_lib;
 extern luab_module_t luab_signal_lib;
 extern luab_module_t luab_stdio_lib;

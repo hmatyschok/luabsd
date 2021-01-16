@@ -109,4 +109,8 @@ void     luab_setxdata(lua_State *, int, luab_module_t *, const char *, void *);
 #include "luab_locale.h"
 #include "luab_time.h"
 
+struct pthread {
+    int pthread_id;
+};
+
 #endif /* _LUAB_UDATA_H_ */

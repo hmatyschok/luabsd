@@ -28,6 +28,7 @@
 .include "${LUAB_SRCTOP}/types/langinfo/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/locale/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/pwd/Makefile.inc"
+.include "${LUAB_SRCTOP}/types/pthread/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/regex/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/stdio/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/stdlib/Makefile.inc"

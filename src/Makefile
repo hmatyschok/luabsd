@@ -13,6 +13,8 @@ SHLIB_MAJOR= 0
 .include "${LUAB_SRCTOP}/modules/Makefile.inc"
 .include "${LUAB_SRCTOP}/core/Makefile.inc"
 
+LIBADD+= crypt pthread rt
+
 MAN=
 
 CFLAGS+= -I${LUAB_SRCTOP}/include -I/usr/local/include/lua52

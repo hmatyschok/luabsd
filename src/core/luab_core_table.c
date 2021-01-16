@@ -39,6 +39,8 @@
  *      to the Lua stacksize shall implemented.
  *
  *  (b) Reimplementation of the luab_table_xsentinel() functor.
+ *
+ *  (c) We should refactor luab_table_toxargp(3).
  */
 
 #if 0
@@ -482,6 +484,12 @@ luab_table_pushxvector(lua_State *L, int narg, luab_module_t *m,
         errno = ENOSYS;
 
     return (luab_table_pusherr(L, errno, 1));
+}
+
+int
+luab_pushxvector(lua_State *L, luab_module_t *m, void *vec, size_t card)
+{
+    return (luab_table_pushxvector(L, -2, m, vec, card, 1, 1));
 }
 
 int

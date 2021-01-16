@@ -35,6 +35,7 @@ SRCS+=  luab_fstab.c
 SRCS+=  luab_grp.c
 SRCS+=  luab_langinfo.c
 SRCS+=  luab_locale.c
+SRCS+=  luab_pthread.c
 SRCS+=  luab_pwd.c
 SRCS+=  luab_regex.c
 SRCS+=  luab_signal.c
@@ -45,5 +46,3 @@ SRCS+=  luab_ttyent.c
 SRCS+=  luab_unistd.c
 SRCS+=  luab_uuid.c
 SRCS+=  luab_xlocale.c
-
-LIBADD+= crypt rt
