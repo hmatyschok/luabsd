@@ -742,6 +742,8 @@ extern u_long luab_env_phys_pages;
 #define LUAB_PTHREAD_CONDATTR_TYPE_ID           1610832422
 #define LUAB_PTHREAD_CONDATTR_TYPE              "PTHREAD_CONDATTR*"
 
+#define LUAB_PTHREAD_KEY_TYPE_ID                1610833224
+#define LUAB_PTHREAD_KEY_TYPE                   "PTHREAD_KEY*"
 
 /*
  * Subset of composite data types.
