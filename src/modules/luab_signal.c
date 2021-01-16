@@ -40,6 +40,35 @@
 extern luab_module_t luab_signal_lib;
 
 /*
+ * Service primitives
+ */
+
+/***
+ * raise(3) - send a signal to a current thread
+ *
+ * @function raise
+ *
+ * @param sig               Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.raise(sig)
+ */
+static int
+luab_raise(lua_State *L)
+{
+    luab_module_t *m;
+    int sig, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    sig = luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = raise(sig);
+    return (luab_pushinteger(L, status));
+}
+
+/*
  * Access functions [C -> stack]
  */
 
@@ -111,6 +140,7 @@ luab_signal_sys_nsig(lua_State *L)
  */
 
 static luab_module_table_t luab_signal_vec[] = {
+    LUAB_FUNC("raise",              luab_raise),
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
     LUAB_FUNC("sys_siglist",        luab_signal_sys_siglist),
