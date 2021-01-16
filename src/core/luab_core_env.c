@@ -1050,9 +1050,13 @@ luab_module_vec_t luab_typevec[] = {
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PTHREAD_MUTEX_IDX,
     },{
-        .mv_mod = &luab_pthread_mutex_attr_type,
+        .mv_mod = &luab_pthread_mutexattr_type,
         .mv_init = luab_core_newmetatable,
-        .mv_idx = LUAB_PTHREAD_MUTEX_ATTR_IDX,
+        .mv_idx = LUAB_PTHREAD_MUTEXATTR_IDX,
+    },{
+        .mv_mod = &luab_pthread_cond_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_PTHREAD_COND_IDX,
     },
 
     /* <time.h> */

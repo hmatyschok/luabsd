@@ -111,23 +111,44 @@ luab_type_create_pthread_mutex(lua_State *L)
 }
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_MUTEX_ATTR)).
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
  *
- * @function create_pthread_mutex_attr
+ * @function create_pthread_mutexattr
  *
  * @param arg               Specifies initial value by an instance of
  *
- *                              (LUA_T{NIL,USERDATA(PTHREAD_MUTEX_ATTR)).
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_MUTEXATTR)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage pthread_mutex_attr [, err, msg ] = bsd.pthread.create_pthread_mutex_attr(arg)
+ * @usage pthread_mutexattr [, err, msg ] = bsd.pthread.create_pthread_mutexattr(arg)
  */
 static int
-luab_type_create_pthread_mutex_attr(lua_State *L)
+luab_type_create_pthread_mutexattr(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_MUTEX_ATTR, TYPE, __func__);
+    m = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_COND)).
+ *
+ * @function create_pthread_cond
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_COND)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage pthread_cond [, err, msg ] = bsd.pthread.create_pthread_cond(arg)
+ */
+static int
+luab_type_create_pthread_cond(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(PTHREAD_COND, TYPE, __func__);
     return (luab_core_create(L, 1, m, NULL));
 }
 
@@ -171,7 +192,8 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("create_pthread",                 luab_type_create_pthread),
     LUAB_FUNC("create_pthread_attr",            luab_type_create_pthread_attr),
     LUAB_FUNC("create_pthread_mutex",           luab_type_create_pthread_mutex),
-    LUAB_FUNC("create_pthread_mutex_attr",      luab_type_create_pthread_mutex_attr),
+    LUAB_FUNC("create_pthread_mutexattr",       luab_type_create_pthread_mutexattr),
+    LUAB_FUNC("create_pthread_cond",            luab_type_create_pthread_cond),
     LUAB_MOD_TBL_SENTINEL
 };
 

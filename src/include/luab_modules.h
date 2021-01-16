@@ -135,7 +135,8 @@ extern luab_module_t luab_locale_type;
 extern luab_module_t luab_pthread_type;
 extern luab_module_t luab_pthread_attr_type;
 extern luab_module_t luab_pthread_mutex_type;
-extern luab_module_t luab_pthread_mutex_attr_type;
+extern luab_module_t luab_pthread_mutexattr_type;
+extern luab_module_t luab_pthread_cond_type;
 
 /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
