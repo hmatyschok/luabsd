@@ -285,6 +285,52 @@ luab_sigpending(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * sigprocmask(2) - manipulate current signal mask
+ *
+ * @function sigprocmask
+ *
+ * @param how               Specifies function by values from:
+ *
+ *                              SIG_{
+ *                                  BLOCK,
+ *                                  UNBLOCK,
+ *                                  SETMASK
+ *                              }
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ * @param oset              Specifies previos signal set, (LUA_TUSERDATA(SIGSET)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigprocmask(how, set, oset)
+ */
+static int
+luab_sigprocmask(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    int how;
+    sigset_t *set;
+    sigset_t *oset;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(SIGSET, TYPE, __func__);
+
+    how = (int)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    set = luab_udataisnil(L, 2, m1, sigset_t *);
+    oset = luab_udataisnil(L, 3, m1, sigset_t *);
+
+    status = sigprocmask(how, set, oset);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
 
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 
@@ -379,6 +425,7 @@ static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("sigfillset",         luab_sigfillset),
     LUAB_FUNC("sigismember",        luab_sigismember),
     LUAB_FUNC("sigpending",         luab_sigpending),
+    LUAB_FUNC("sigprocmask",        luab_sigprocmask),
 
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 #if __BSD_VISIBLE
