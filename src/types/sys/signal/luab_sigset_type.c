@@ -47,7 +47,7 @@ extern luab_module_t luab_sigset_type;
 
 typedef struct luab_sigset {
     luab_udata_t    ud_softc;
-    sigset_t         ud_sdu;
+    sigset_t        ud_s_mask;
 } luab_sigset_t;
 
 /*
@@ -64,7 +64,7 @@ sigset_fillxtable(lua_State *L, int narg, void *arg)
     m = luab_xmod(UINT32, TYPE, __func__);
 
     if ((self = (luab_sigset_t *)arg) != NULL) {
-        x = (uint32_t *)(self->ud_sdu.__bits);
+        x = (uint32_t *)(self->ud_s_mask.__bits);
         luab_table_setxvector(L, narg, m, "bits", x, luab_env_sig_words, 1, 1);
    } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -146,7 +146,7 @@ SIGSET_bits(lua_State *L)
     m1 = luab_xmod(UINT32, TYPE, __func__);
 
     self = luab_todata(L, 1, m0, luab_sigset_t *);
-    x = (uint32_t *)(self->ud_sdu.__bits);
+    x = (uint32_t *)(self->ud_s_mask.__bits);
 
     return (luab_table_pushxvector(L, -2, m1, x, luab_env_sig_words, 1, 1));
 }
@@ -217,7 +217,7 @@ sigset_udata(lua_State *L, int narg)
 
     m = luab_xmod(SIGSET, TYPE, __func__);
     self = luab_todata(L, narg, m, luab_sigset_t *);
-    return ((void *)&(self->ud_sdu));
+    return ((void *)&(self->ud_s_mask));
 }
 
 static luab_table_t *

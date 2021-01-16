@@ -102,6 +102,161 @@ luab_kill(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/*
+ * XXX
+ *  int pthread_kill(__pthread_t, int);
+ *  int pthread_sigmask(int, const __sigset_t * __restrict,
+ *      __sigset_t * __restrict);
+ *  int sigaction(int, const struct sigaction * __restrict,
+ *      struct sigaction * __restrict);
+ */
+
+/***
+ * sigaddset(3) - manipulate signal set
+ *
+ * @function sigaddset
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ * @param signo             Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigaddset(set, signo)
+ */
+static int
+luab_sigaddset(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    sigset_t *set;
+    int signo, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(SIGSET, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    set = luab_udata(L, 1, m0, sigset_t *);
+    signo = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = sigaddset(set, signo);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigdelset(3) - manipulate signal set
+ *
+ * @function sigdelset
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ * @param signo             Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sidelset(set, signo)
+ */
+static int
+luab_sigdelset(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    sigset_t *set;
+    int signo, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(SIGSET, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    set = luab_udata(L, 1, m0, sigset_t *);
+    signo = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = sigdelset(set, signo);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigemptyset(3) - manipulate signal set
+ *
+ * @function sigemptyset
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigemptyset(set)
+ */
+static int
+luab_sigemptyset(lua_State *L)
+{
+    luab_module_t *m;
+    sigset_t *set;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SIGSET, TYPE, __func__);
+    set = luab_udata(L, 1, m, sigset_t *);
+
+    status = sigemptyset(set);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigfillset(3) - manipulate signal set
+ *
+ * @function sigfillset
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigfillset(set)
+ */
+static int
+luab_sigfillset(lua_State *L)
+{
+    luab_module_t *m;
+    sigset_t *set;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SIGSET, TYPE, __func__);
+    set = luab_udata(L, 1, m, sigset_t *);
+
+    status = sigfillset(set);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigismember(3) - manipulate signal set
+ *
+ * @function sigismember
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ * @param signo             Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigismember(set, signo)
+ */
+static int
+luab_sigismember(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    sigset_t *set;
+    int signo, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(SIGSET, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    set = luab_udata(L, 1, m0, sigset_t *);
+    signo = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = sigismember(set, signo);
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 
 /*
@@ -179,6 +334,22 @@ static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("raise",              luab_raise),
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     LUAB_FUNC("kill",               luab_kill),
+
+/*
+ * XXX
+ *  int pthread_kill(__pthread_t, int);
+ *  int pthread_sigmask(int, const __sigset_t * __restrict,
+ *      __sigset_t * __restrict);
+ *  int sigaction(int, const struct sigaction * __restrict,
+ *      struct sigaction * __restrict);
+ */
+
+    LUAB_FUNC("sigaddset",          luab_sigaddset),
+    LUAB_FUNC("sigdelset",          luab_sigdelset),
+    LUAB_FUNC("sigemptyset",        luab_sigemptyset),
+    LUAB_FUNC("sigfillset",         luab_sigfillset),
+    LUAB_FUNC("sigismember",        luab_sigismember),
+
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
