@@ -63,10 +63,46 @@ luab_raise(lua_State *L)
     (void)luab_core_checkmaxargs(L, 1);
 
     m = luab_xmod(INT, TYPE, __func__);
-    sig = luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    sig = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
     status = raise(sig);
     return (luab_pushinteger(L, status));
 }
+
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+/***
+ * kill(2) - send a signal to a process
+ *
+ * @function kill
+ *
+ * @param pid               Specifies process or group of processes, by an
+ *                          instance of (LUA_T{NUMBER,USERDATA(PID)}).
+ * @param sig               Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.kill(pid, sig)
+ */
+static int
+luab_kill(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pid_t pid;
+    int sig;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PID, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    pid = (pid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    sig = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = kill(pid, sig);
+    return (luab_pushxinteger(L, status));
+}
+
+#endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 
 /*
  * Access functions [C -> stack]
@@ -141,6 +177,9 @@ luab_signal_sys_nsig(lua_State *L)
 
 static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("raise",              luab_raise),
+#if __POSIX_VISIBLE || __XSI_VISIBLE
+    LUAB_FUNC("kill",               luab_kill),
+#endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
     LUAB_FUNC("sys_siglist",        luab_signal_sys_siglist),
