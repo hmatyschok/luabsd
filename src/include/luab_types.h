@@ -241,6 +241,7 @@ typedef enum luab_type {
 
     /* <pthread.h> */
     LUAB_PTHREAD_IDX,
+    LUAB_PTHREAD_ATTR_IDX,
 
     /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
