@@ -1057,6 +1057,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_pthread_cond_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PTHREAD_COND_IDX,
+    },{
+        .mv_mod = &luab_pthread_condattr_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_PTHREAD_CONDATTR_IDX,
     },
 
     /* <time.h> */

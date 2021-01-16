@@ -152,6 +152,27 @@ luab_type_create_pthread_cond(lua_State *L)
     return (luab_core_create(L, 1, m, NULL));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_CONDATTR)).
+ *
+ * @function create_pthread_condattr
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_CONDATTR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage pthread_condattr [, err, msg ] = bsd.pthread.create_pthread_condattr(arg)
+ */
+static int
+luab_type_create_pthread_condattr(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
 /*
  * Interface against <pthread.h>
  */
@@ -194,6 +215,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("create_pthread_mutex",           luab_type_create_pthread_mutex),
     LUAB_FUNC("create_pthread_mutexattr",       luab_type_create_pthread_mutexattr),
     LUAB_FUNC("create_pthread_cond",            luab_type_create_pthread_cond),
+    LUAB_FUNC("create_pthread_condattr",        luab_type_create_pthread_condattr),
     LUAB_MOD_TBL_SENTINEL
 };
 
