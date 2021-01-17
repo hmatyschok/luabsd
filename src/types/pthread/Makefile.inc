@@ -14,6 +14,7 @@ SRCS+=  luab_pthread_condattr_type.c
 SRCS+=  luab_pthread_rwlock_type.c
 SRCS+=  luab_pthread_rwlockattr_type.c
 SRCS+=  luab_pthread_barrier_type.c
+SRCS+=  luab_pthread_barrierattr_type.c
 
 # composite data types
 SRCS+=  luab_pthread_once_type.c
