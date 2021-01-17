@@ -254,6 +254,7 @@ typedef enum luab_type {
     LUAB_PTHREAD_BARRIER_IDX,
     LUAB_PTHREAD_BARRIERATTR_IDX,
     LUAB_PTHREAD_SPINLOCK_IDX,
+    LUAB_PTHREAD_ADDR_IDX,
 
     /* <time.h> */
 #if __POSIX_VISIBLE >= 199309

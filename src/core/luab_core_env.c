@@ -1088,7 +1088,12 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_pthread_spinlock_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PTHREAD_SPINLOCK_IDX,
+    },{
+        .mv_mod = &luab_pthread_addr_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_PTHREAD_ADDR_IDX,
     },
+
 
     /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
