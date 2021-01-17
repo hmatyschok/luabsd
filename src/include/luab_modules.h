@@ -141,7 +141,7 @@ extern luab_module_t luab_pthread_mutex_type;
 extern luab_module_t luab_pthread_mutexattr_type;
 extern luab_module_t luab_pthread_cond_type;
 extern luab_module_t luab_pthread_condattr_type;
-extern luab_module_t luab_pthread_once_type;
+extern luab_module_t luab_pthread_rwlock_type;
 
 /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
@@ -190,6 +190,7 @@ extern luab_module_t luab_sfile_type;
 extern luab_module_t luab_jail_type;
 extern luab_module_t luab_lconv_type;
 extern luab_module_t luab_itimerspec_type;
+extern luab_module_t luab_pthread_once_type;
 #if __POSIX_VISIBLE >= 199309
 extern luab_module_t luab_sigevent_type;
 #endif

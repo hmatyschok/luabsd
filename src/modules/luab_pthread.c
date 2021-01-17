@@ -47,6 +47,7 @@ extern luab_module_t luab_pthread_lib;
  * Generator functions
  */
 
+/* atomic data types */
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_KEY)).
  *
@@ -73,6 +74,7 @@ luab_type_create_pthread_key(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/* reference data types */
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD)).
  *
@@ -200,6 +202,28 @@ luab_type_create_pthread_condattr(lua_State *L)
 }
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_RWLOCK)).
+ *
+ * @function create_pthread_rwlock
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_RWLOCK)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage pthread_rwlock [, err, msg ] = bsd.pthread.create_pthread_rwlock(arg)
+ */
+static int
+luab_type_create_pthread_rwlock(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(PTHREAD_RWLOCK, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
+/* composite data types */
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_ONCE)).
  *
  * @function create_pthread_once
@@ -264,6 +288,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("create_pthread_mutexattr",       luab_type_create_pthread_mutexattr),
     LUAB_FUNC("create_pthread_cond",            luab_type_create_pthread_cond),
     LUAB_FUNC("create_pthread_condattr",        luab_type_create_pthread_condattr),
+    LUAB_FUNC("create_pthread_rwlock",          luab_type_create_pthread_rwlock),
     LUAB_FUNC("create_pthread_once",            luab_type_create_pthread_once),
     LUAB_MOD_TBL_SENTINEL
 };

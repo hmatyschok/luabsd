@@ -745,6 +745,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_PTHREAD_KEY_TYPE_ID                1610833224
 #define LUAB_PTHREAD_KEY_TYPE                   "PTHREAD_KEY*"
 
+#define LUAB_PTHREAD_RWLOCK_TYPE_ID             1610842866
+#define LUAB_PTHREAD_RWLOCK_TYPE                "PTHREAD_RWLOCK*"
+
 /*
  * Subset of composite data types.
  */
@@ -908,8 +911,9 @@ extern u_long luab_env_phys_pages;
 
 #if __POSIX_VISIBLE || __XSI_VISIBLE
 #define LUAB_SIGACTION_TYPE_ID                  1610718477
-#define LUAB_SIGACTION_TYPE                  "  SIGACTION*"
+#define LUAB_SIGACTION_TYPE                     "SIGACTION*"
 #endif
+
 
 
 /*
