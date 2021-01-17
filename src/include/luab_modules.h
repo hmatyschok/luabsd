@@ -143,6 +143,7 @@ extern luab_module_t luab_pthread_cond_type;
 extern luab_module_t luab_pthread_condattr_type;
 extern luab_module_t luab_pthread_rwlock_type;
 extern luab_module_t luab_pthread_rwlockattr_type;
+extern luab_module_t luab_pthread_barrier_type;
 
 /* <time.h> */
 #if __POSIX_VISIBLE >= 199309

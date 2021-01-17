@@ -751,6 +751,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_PTHREAD_RWLOCKATTR_TYPE_ID         1610843988
 #define LUAB_PTHREAD_RWLOCKATTR_TYPE            "PTHREAD_RWLOCKATTR*"
 
+#define LUAB_PTHREAD_BARRIER_TYPE_ID            1610844627
+#define LUAB_PTHREAD_BARRIER_TYPE               "PTHREAD_BARRIER*"
+
 /*
  * Subset of composite data types.
  */

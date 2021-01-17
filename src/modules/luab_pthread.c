@@ -243,6 +243,27 @@ luab_type_create_pthread_rwlockattr(lua_State *L)
     return (luab_core_create(L, 1, m, NULL));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_BARRIER)).
+ *
+ * @function create_pthread_barrier
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_BARRIER)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage pthread_barrier [, err, msg ] = bsd.pthread.create_pthread_barrier(arg)
+ */
+static int
+luab_type_create_pthread_barrier(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(PTHREAD_BARRIER, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
 /* composite data types */
 /***
  * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_ONCE)).
@@ -311,6 +332,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("create_pthread_condattr",        luab_type_create_pthread_condattr),
     LUAB_FUNC("create_pthread_rwlock",          luab_type_create_pthread_rwlock),
     LUAB_FUNC("create_pthread_rwlockattr",      luab_type_create_pthread_rwlockattr),
+    LUAB_FUNC("create_pthread_barrier",         luab_type_create_pthread_barrier),
     LUAB_FUNC("create_pthread_once",            luab_type_create_pthread_once),
     LUAB_MOD_TBL_SENTINEL
 };
