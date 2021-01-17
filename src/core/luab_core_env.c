@@ -1084,6 +1084,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_pthread_barrierattr_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PTHREAD_BARRIERATTR_IDX,
+    },{
+        .mv_mod = &luab_pthread_spinlock_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_PTHREAD_SPINLOCK_IDX,
     },
 
     /* <time.h> */
