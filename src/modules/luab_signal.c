@@ -366,9 +366,9 @@ luab_sigwait(lua_State *L)
  *
  * @function sigqueue
  *
- * @param pid               Specifies process, by (LUA_T{NUMBER,USERDATA(PID)}).
- * @param signo             Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
- * @param value             Specifies value, (LUA_TUSERDATA(SIGVAL)).
+ * @param set               Specifies process, by (LUA_TUSERDATA(SIGSET)).
+ * @param info              Specifies signal, (LUA_TUSERDATA(SIGINFO)).
+ * @param timeout           Specifies value, (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -401,7 +401,73 @@ luab_sigqueue(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * sigtimedwait(2) - wait for queued signals (REALTIME)
+ *
+ * @function sigtimedwait
+ *
+ * @param set               Specifies process, by (LUA_TUSERDATA(SIGSET)).
+ * @param info              Specifies signal, (LUA_TUSERDATA(SIGINFO)).
+ * @param timeout           Specifies value, (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigtimedwait(set, info, timeout)
+ */
+static int
+luab_sigtimedwait(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    sigset_t *set;
+    siginfo_t *info;
+    struct timespec *timeout;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(SIGSET, TYPE, __func__);
+    m1 = luab_xmod(_SIGINFO, TYPE, __func__);
+    m2 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    set = luab_udata(L, 1, m0, sigset_t *);
+    info = luab_udata(L, 2, m1, siginfo_t *);
+    timeout = luab_udataisnil(L, 3, m2, struct timespec *);
+
+    status = sigtimedwait(set, info, timeout);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigwaitinfo(2) - wait for queued signals (REALTIME)
+ *
+ * @function sigwaitinfo
+ *
+ * @param set               Specifies process, by (LUA_TUSERDATA(SIGSET)).
+ * @param info              Specifies signal, (LUA_TUSERDATA(SIGINFO)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigwaitinfo(set, info)
+ */
+static int
+luab_sigwaitinfo(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    sigset_t *set;
+    siginfo_t *info;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(SIGSET, TYPE, __func__);
+    m1 = luab_xmod(_SIGINFO, TYPE, __func__);
+
+    set = luab_udata(L, 1, m0, sigset_t *);
+    info = luab_udata(L, 2, m1, siginfo_t *);
+
+    status = sigwaitinfo(set, info);
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600 */
 
 /*
@@ -500,6 +566,8 @@ static luab_module_table_t luab_signal_vec[] = {
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 #if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600
     LUAB_FUNC("sigqueue",           luab_sigqueue),
+    LUAB_FUNC("sigtimedwait",       luab_sigtimedwait),
+    LUAB_FUNC("sigwaitinfo",        luab_sigwaitinfo),
 #endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600 */
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
