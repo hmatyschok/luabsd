@@ -360,6 +360,50 @@ luab_sigwait(lua_State *L)
 
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
 
+#if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600
+/***
+ * sigqueue(2) - queue a signal to a process (REALTIME)
+ *
+ * @function sigqueue
+ *
+ * @param pid               Specifies process, by (LUA_T{NUMBER,USERDATA(PID)}).
+ * @param signo             Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param value             Specifies value, (LUA_TUSERDATA(SIGVAL)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigqueue(pid, signo, sigval)
+ */
+static int
+luab_sigqueue(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    pid_t pid;
+    int signo;
+    union sigval *value;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(PID, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(SIGVAL, TYPE, __func__);
+
+    pid = (pid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    signo = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    if ((value = luab_udata(L, 3, m2, union sigval *)) != NULL)
+        status = sigqueue(pid, signo, *value);
+    else {
+        errno = ENOENT;
+        status = luab_env_error;
+    }
+    return (luab_pushxinteger(L, status));
+}
+
+
+#endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600 */
+
 /*
  * Access functions [C -> stack]
  */
@@ -453,8 +497,10 @@ static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("sigpending",         luab_sigpending),
     LUAB_FUNC("sigprocmask",        luab_sigprocmask),
     LUAB_FUNC("sigwait",            luab_sigwait),
-
 #endif /* __POSIX_VISIBLE || __XSI_VISIBLE */
+#if __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600
+    LUAB_FUNC("sigqueue",           luab_sigqueue),
+#endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600 */
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
     LUAB_FUNC("sys_siglist",        luab_signal_sys_siglist),
