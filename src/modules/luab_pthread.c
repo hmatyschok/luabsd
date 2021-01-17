@@ -48,6 +48,32 @@ extern luab_module_t luab_pthread_lib;
  */
 
 /***
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_KEY)).
+ *
+ * @function create_pthread_key
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(PTHREAD_KEY)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage pthread_key [, err, msg ] = bsd.pthread.create_pthread_key(arg)
+ */
+static int
+luab_type_create_pthread_key(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_key_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    x = (pthread_key_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
  * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD)).
  *
  * @function create_pthread
@@ -174,23 +200,23 @@ luab_type_create_pthread_condattr(lua_State *L)
 }
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_KEY)).
+ * Generator function, creates an instance of (LUA_TUSERDATA(PTHREAD_ONCE)).
  *
- * @function create_pthread_key
+ * @function create_pthread_once
  *
  * @param arg               Specifies initial value by an instance of
  *
- *                              (LUA_T{NIL,USERDATA(PTHREAD_KEY)).
+ *                              (LUA_T{NIL,USERDATA(PTHREAD_ONCE)).
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage pthread_key [, err, msg ] = bsd.pthread.create_pthread_key(arg)
+ * @usage pthread_once [, err, msg ] = bsd.pthread.create_pthread_once(arg)
  */
 static int
-luab_type_create_pthread_key(lua_State *L)
+luab_type_create_pthread_once(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
     return (luab_core_create(L, 1, m, NULL));
 }
 
@@ -231,13 +257,14 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_INT("PTHREAD_MUTEX_DEFAULT",           PTHREAD_MUTEX_DEFAULT),
     LUAB_INT("PTHREAD_MUTEX_STALLED",           PTHREAD_MUTEX_STALLED),
     LUAB_INT("PTHREAD_MUTEX_ROBUST",            PTHREAD_MUTEX_ROBUST),
+    LUAB_FUNC("create_pthread_key",             luab_type_create_pthread_key),
     LUAB_FUNC("create_pthread",                 luab_type_create_pthread),
     LUAB_FUNC("create_pthread_attr",            luab_type_create_pthread_attr),
     LUAB_FUNC("create_pthread_mutex",           luab_type_create_pthread_mutex),
     LUAB_FUNC("create_pthread_mutexattr",       luab_type_create_pthread_mutexattr),
     LUAB_FUNC("create_pthread_cond",            luab_type_create_pthread_cond),
     LUAB_FUNC("create_pthread_condattr",        luab_type_create_pthread_condattr),
-    LUAB_FUNC("create_pthread_key",             luab_type_create_pthread_key),
+    LUAB_FUNC("create_pthread_once",            luab_type_create_pthread_once),
     LUAB_MOD_TBL_SENTINEL
 };
 

@@ -97,6 +97,9 @@ extern luab_module_t luab_mode_type;
 /* <langinfo.h> */
 extern luab_module_t luab_nl_item_type;
 
+/* <pthread.h> */
+extern luab_module_t luab_pthread_key_type;
+
 /* <stdio.h> */
 extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_rsize_type;
@@ -138,7 +141,7 @@ extern luab_module_t luab_pthread_mutex_type;
 extern luab_module_t luab_pthread_mutexattr_type;
 extern luab_module_t luab_pthread_cond_type;
 extern luab_module_t luab_pthread_condattr_type;
-extern luab_module_t luab_pthread_key_type;
+extern luab_module_t luab_pthread_once_type;
 
 /* <time.h> */
 #if __POSIX_VISIBLE >= 199309

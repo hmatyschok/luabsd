@@ -207,6 +207,9 @@ typedef enum luab_type {
     /* <langinfo.h> */
     LUAB_NL_ITEM_IDX,
 
+    /* <pthread.h> */
+    LUAB_PTHREAD_KEY_IDX,
+
     /* <stdio.h> */
     LUAB_FPOS_IDX,
     LUAB_RSIZE_IDX,
@@ -246,7 +249,6 @@ typedef enum luab_type {
     LUAB_PTHREAD_MUTEXATTR_IDX,
     LUAB_PTHREAD_COND_IDX,
     LUAB_PTHREAD_CONDATTR_IDX,
-    LUAB_PTHREAD_KEY_IDX,
 
     /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
@@ -295,6 +297,7 @@ typedef enum luab_type {
     LUAB_JAIL_IDX,
     LUAB_LCONV_IDX,
     LUAB_ITIMERSPEC_IDX,
+    LUAB_PTHREAD_ONCE_IDX,
 #if __POSIX_VISIBLE >= 199309
     LUAB_SIGEVENT_IDX,
 #endif

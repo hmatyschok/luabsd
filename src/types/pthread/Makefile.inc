@@ -9,3 +9,5 @@ SRCS+=  luab_pthread_mutexattr_type.c
 SRCS+=  luab_pthread_cond_type.c
 SRCS+=  luab_pthread_condattr_type.c
 SRCS+=  luab_pthread_key_type.c
+SRCS+=  luab_pthread_once_type.c
+

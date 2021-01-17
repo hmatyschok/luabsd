@@ -893,6 +893,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_ITIMERSPEC_TYPE_ID                 1610498425
 #define LUAB_ITIMERSPEC_TYPE                    "ITIMERSPEC*"
 
+#define LUAB_PTHREAD_ONCE_TYPE_ID               1610834094
+#define LUAB_PTHREAD_ONCE_TYPE                  "PTHREAD_ONCE*"
+
 #if __POSIX_VISIBLE >= 199309
 #define LUAB_SIGEVENT_TYPE_ID                   1610459044
 #define LUAB_SIGEVENT_TYPE                      "SIGEVENT*"

@@ -1,4 +1,4 @@
-/*-
+/*
  * Copyright (c) 2020, 2021 Henning Matyschok
  * All rights reserved.
  *
@@ -32,31 +32,38 @@
 #include "luab_udata.h"
 #include "luab_table.h"
 
-extern luab_module_t luab_pthread_key_type;
+extern luab_module_t luab_pthread_once_type;
 
 /*
  * Interface against
  *
- *  pthread_key_t
+ *  struct pthread_once {
+ *      int     state;
+ *      pthread_mutex_t mutex;
+ *  };
  *
  */
 
-typedef struct luab_pthread_key {
+typedef struct luab_pthread_once {
     luab_udata_t        ud_softc;
-    pthread_key_t       ud_x;
-} luab_pthread_key_t;
+    pthread_once_t      ud_x;
+} luab_pthread_once_t;
 
 /*
  * Subr.
  */
 
 static void
-pthread_key_fillxtable(lua_State *L, int narg, void *arg)
+pthread_once_fillxtable(lua_State *L, int narg, void *arg)
 {
-    luab_pthread_key_t *self;
+    luab_module_t *m;
+    pthread_once_t *x;
 
-    if ((self = (luab_pthread_key_t *)arg) != NULL) {
-        luab_setinteger(L, narg, "value", self->ud_x);
+    m = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+
+    if ((x = (pthread_once_t *)arg) != NULL) {
+        luab_setinteger(L, narg, "state", x->state);
+        luab_setxdata(L, narg, m, "mutex", x->mutex);
 
    } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -67,30 +74,30 @@ pthread_key_fillxtable(lua_State *L, int narg, void *arg)
  */
 
 /***
- * Generator function - translate (LUA_TUSERDATA(PTHREAD_KEY)) into (LUA_TTABLE).
+ * Generator function - translate (LUA_TUSERDATA(PTHREAD_ONCE)) into (LUA_TTABLE).
  *
  * @function get_table
  *
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              value = (LUA_TNUMBER),
+ *              value = (LUA_T{NIL,STRING}),
  *          }
  *
- * @usage t [, err, msg ] = pthread_key:get_table()
+ * @usage t [, err, msg ] = pthread_once:get_table()
  */
 static int
-PTHREAD_KEY_get_table(lua_State *L)
+PTHREAD_ONCE_get_table(lua_State *L)
 {
     luab_module_t *m;
     luab_xtable_param_t xtp;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
 
-    xtp.xtp_fill = pthread_key_fillxtable;
-    xtp.xtp_arg = luab_todata(L, 1, m, void *);
+    xtp.xtp_fill = pthread_once_fillxtable;
+    xtp.xtp_arg = luab_xdata(L, 1, m);
     xtp.xtp_new = 1;
     xtp.xtp_k = NULL;
 
@@ -104,10 +111,10 @@ PTHREAD_KEY_get_table(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage iovec [, err, msg ] = pthread_key:dump()
+ * @usage iovec [, err, msg ] = pthread_once:dump()
  */
 static int
-PTHREAD_KEY_dump(lua_State *L)
+PTHREAD_ONCE_dump(lua_State *L)
 {
     return (luab_core_dump(L, 1, NULL, 0));
 }
@@ -117,56 +124,57 @@ PTHREAD_KEY_dump(lua_State *L)
  */
 
 /***
- * Set value over (pthread_key_t).
+ * Set reference value.
  *
  * @function set_value
  *
- * @param arg               Self-explanatory.
+ * @param arg               Reffered object, (LUA_T{NIL,USERDATA(PTHREAD_ONCE)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage x [, err, msg ] = pthread_key:set_value(arg)
+ * @usage x [, err, msg ] = pthread_once:set_value(arg)
  */
 static int
-PTHREAD_KEY_set_value(lua_State *L)
+PTHREAD_ONCE_set_value(lua_State *L)
 {
     luab_module_t *m;
-    luab_pthread_key_t *self;
-    pthread_key_t x;
+    luab_pthread_once_t *self;
+    pthread_once_t *x;
 
     (void)luab_core_checkmaxargs(L, 2);
 
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
-    self = luab_todata(L, 1, m, luab_pthread_key_t *);
-    x = (pthread_key_t)luab_checkxinteger(L, 2, m, luab_env_uint_max);
-    self->ud_x = x;
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
+    self = luab_todata(L, 1, m, luab_pthread_once_t *);
 
-    return (luab_pushxinteger(L, x));
+    if ((x = luab_udataisnil(L, 2, m, pthread_once_t *)) != NULL)
+        (void)memmove(&self->ud_x, x, m->m_sz);
+    else
+        (void)memset_s(&self->ud_x, m->m_sz, 0, m->m_sz);
+
+    return (luab_pushxdata(L, m, x));
 }
 
 /***
- * Get value over (pthread_key_t).
+ * Get reference value.
  *
  * @function get_value
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage x [, err, msg ] = pthread_key:get_value()
+ * @usage x [, err, msg ] = pthread_once:get_value()
  */
 static int
-PTHREAD_KEY_get_value(lua_State *L)
+PTHREAD_ONCE_get_value(lua_State *L)
 {
     luab_module_t *m;
-    luab_pthread_key_t *self;
-    pthread_key_t x;
+    pthread_once_t *x;
 
     (void)luab_core_checkmaxargs(L, 1);
 
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
-    self = luab_todata(L, 1, m, luab_pthread_key_t *);
-    x = self->ud_x;
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
+    x = luab_udata(L, 1, m, pthread_once_t *);
 
-    return (luab_pushxinteger(L, x));
+    return (luab_pushxdata(L, m, x));
 }
 
 /*
@@ -174,26 +182,26 @@ PTHREAD_KEY_get_value(lua_State *L)
  */
 
 static int
-PTHREAD_KEY_gc(lua_State *L)
+PTHREAD_ONCE_gc(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
     return (luab_core_gc(L, 1, m));
 }
 
 static int
-PTHREAD_KEY_len(lua_State *L)
+PTHREAD_ONCE_len(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
     return (luab_core_len(L, 2, m));
 }
 
 static int
-PTHREAD_KEY_tostring(lua_State *L)
+PTHREAD_ONCE_tostring(lua_State *L)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
     return (luab_core_tostring(L, 1, m));
 }
 
@@ -201,57 +209,57 @@ PTHREAD_KEY_tostring(lua_State *L)
  * Internal interface.
  */
 
-static luab_module_table_t pthread_key_methods[] = {
-    LUAB_FUNC("set_value",      PTHREAD_KEY_set_value),
-    LUAB_FUNC("get_table",      PTHREAD_KEY_get_table),
-    LUAB_FUNC("get_value",      PTHREAD_KEY_get_value),
-    LUAB_FUNC("dump",           PTHREAD_KEY_dump),
-    LUAB_FUNC("__gc",           PTHREAD_KEY_gc),
-    LUAB_FUNC("__len",          PTHREAD_KEY_len),
-    LUAB_FUNC("__tostring",     PTHREAD_KEY_tostring),
+static luab_module_table_t pthread_once_methods[] = {
+    LUAB_FUNC("set_value",      PTHREAD_ONCE_set_value),
+    LUAB_FUNC("get_table",      PTHREAD_ONCE_get_table),
+    LUAB_FUNC("get_value",      PTHREAD_ONCE_get_value),
+    LUAB_FUNC("dump",           PTHREAD_ONCE_dump),
+    LUAB_FUNC("__gc",           PTHREAD_ONCE_gc),
+    LUAB_FUNC("__len",          PTHREAD_ONCE_len),
+    LUAB_FUNC("__tostring",     PTHREAD_ONCE_tostring),
     LUAB_MOD_TBL_SENTINEL
 };
 
 static void *
-pthread_key_create(lua_State *L, void *arg)
+pthread_once_create(lua_State *L, void *arg)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
     return (luab_newuserdata(L, m, arg));
 }
 
 static void
-pthread_key_init(void *ud, void *arg)
+pthread_once_init(void *ud, void *arg)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
     luab_udata_init(m, ud, arg);
 }
 
 static void *
-pthread_key_udata(lua_State *L, int narg)
+pthread_once_udata(lua_State *L, int narg)
 {
     luab_module_t *m;
-    luab_pthread_key_t *self;
+    luab_pthread_once_t *self;
 
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
-    self = luab_todata(L, narg, m, luab_pthread_key_t *);
-    return ((void *)&(self->ud_x));
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
+    self = luab_todata(L, narg, m, luab_pthread_once_t *);
+    return ((void *)&self->ud_x);
 }
 
 static luab_table_t *
-pthread_key_checktable(lua_State *L, int narg)
+pthread_once_checktable(lua_State *L, int narg)
 {
     luab_module_t *m;
     luab_table_t *tbl;
-    pthread_key_t *x, y;
+    pthread_once_t *x, *y;
     size_t i, j;
 
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
 
     if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
 
-        if (((x = (pthread_key_t *)tbl->tbl_vec) != NULL) &&
+        if (((x = (pthread_once_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, 0);
 
@@ -260,9 +268,9 @@ pthread_key_checktable(lua_State *L, int narg)
                 if (lua_next(L, narg) != 0) {
 
                     if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isnumber(L, -1) != 0)) {
-                        y = (pthread_key_t)luab_toxinteger(L, -1, m, luab_env_uint_max);
-                        x[i] = (pthread_key_t)y;
+                        (lua_isuserdata(L, -1) != 0)) {
+                        y = luab_udata(L, -1, m, pthread_once_t *);
+                        (void)memmove(&(x[i]), y, m->m_sz);
                     } else
                         luab_core_err(EX_DATAERR, __func__, EINVAL);
                 } else {
@@ -278,19 +286,22 @@ pthread_key_checktable(lua_State *L, int narg)
 }
 
 static void
-pthread_key_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
+pthread_once_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
 {
-    pthread_key_t *x;
+    luab_module_t *m;
+    pthread_once_t *x;
     size_t i, j, k;
+
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
 
     if (tbl != NULL) {
 
-        if (((x = (pthread_key_t *)tbl->tbl_vec) != NULL) &&
+        if (((x = (pthread_once_t *)tbl->tbl_vec) != NULL) &&
             (tbl->tbl_card > 0)) {
             luab_table_init(L, new);
 
             for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetinteger(L, narg, k, x[i]);
+                luab_rawsetxdata(L, narg, m, k, &(x[i]));
 
             errno = ENOENT;
         } else
@@ -303,23 +314,23 @@ pthread_key_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int cl
 }
 
 static luab_table_t *
-pthread_key_alloctable(void *vec, size_t card)
+pthread_once_alloctable(void *vec, size_t card)
 {
     luab_module_t *m;
-    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
     return (luab_table_create(m, vec, card));
 }
 
-luab_module_t luab_pthread_key_type = {
-    .m_id           = LUAB_PTHREAD_KEY_TYPE_ID,
-    .m_name         = LUAB_PTHREAD_KEY_TYPE,
-    .m_vec          = pthread_key_methods,
-    .m_create       = pthread_key_create,
-    .m_init         = pthread_key_init,
-    .m_get          = pthread_key_udata,
-    .m_get_tbl      = pthread_key_checktable,
-    .m_set_tbl      = pthread_key_pushtable,
-    .m_alloc_tbl    = pthread_key_alloctable,
-    .m_len          = sizeof(luab_pthread_key_t),
-    .m_sz           = sizeof(pthread_key_t),
+luab_module_t luab_pthread_once_type = {
+    .m_id           = LUAB_PTHREAD_ONCE_TYPE_ID,
+    .m_name         = LUAB_PTHREAD_ONCE_TYPE,
+    .m_vec          = pthread_once_methods,
+    .m_create       = pthread_once_create,
+    .m_init         = pthread_once_init,
+    .m_get          = pthread_once_udata,
+    .m_get_tbl      = pthread_once_checktable,
+    .m_set_tbl      = pthread_once_pushtable,
+    .m_alloc_tbl    = pthread_once_alloctable,
+    .m_len          = sizeof(luab_pthread_once_t),
+    .m_sz           = sizeof(pthread_once_t),
 };
