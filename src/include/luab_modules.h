@@ -205,6 +205,9 @@ extern luab_module_t luab_siginfo_type;
 #if __POSIX_VISIBLE || __XSI_VISIBLE
 extern luab_module_t luab_sigaction_type;
 #endif
+#if __XSI_VISIBLE
+extern luab_module_t luab_stack_type;
+#endif
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;
 extern luab_module_t luab_db_type;
@@ -215,7 +218,7 @@ extern luab_module_t luab_accept_filter_arg_type;
 extern luab_module_t luab_sockproto_type;
 extern luab_module_t luab_cmsgcred_type;
 extern luab_module_t luab_sf_hdtr_type;
-#endif
+#endif /* __BSD_VISIBLE */
 
 /*
  * Subset of interfaces.

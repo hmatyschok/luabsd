@@ -1286,6 +1286,13 @@ luab_module_vec_t luab_typevec[] = {
         .mv_idx = LUAB_SIGACTION_IDX,
     },
 #endif
+#if __XSI_VISIBLE
+    {
+        .mv_mod = &luab_stack_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_STACK_IDX,
+    },
+#endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
     {
         .mv_mod = &luab_dbt_type,

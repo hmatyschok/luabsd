@@ -159,6 +159,9 @@ extern const lua_Integer luab_env_sig_maxsig;
 #if __BSD_VISIBLE
 extern const lua_Integer luab_env_sys_nsig;
 #endif
+#if __XSI_VISIBLE
+extern const lua_Integer luab_env_sigstksz;
+#endif
 
 #define LUAB_SC_NOTSUPP                         (-1)
 
@@ -929,7 +932,10 @@ extern u_long luab_env_phys_pages;
 #define LUAB_SIGACTION_TYPE                     "SIGACTION*"
 #endif
 
-
+#if __XSI_VISIBLE
+#define LUAB_STACK_TYPE_ID                      1610993188
+#define LUAB_STACK_TYPE                         "STACK*"
+#endif
 
 /*
  * Service primitives / subr.

@@ -313,6 +313,9 @@ typedef enum luab_type {
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     LUAB_SIGACTION_IDX,
 #endif
+#if __XSI_VISIBLE
+    LUAB_STACK_IDX,
+#endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUAB_DBT_IDX,
     LUAB_DB_IDX,

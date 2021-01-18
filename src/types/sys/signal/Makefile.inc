@@ -9,3 +9,4 @@ SRCS+=  luab_sigset_type.c
 SRCS+=  luab_sigevent_type.c
 SRCS+=  luab_siginfo_type.c
 SRCS+=  luab_sigaction_type.c
+SRCS+=  luab_stack_type.c
