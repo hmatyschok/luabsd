@@ -662,7 +662,7 @@ luab_xsi_sigpause(lua_State *L)
 
 #if __XSI_VISIBLE >= 600
 /***
- * siginterrupt(2) - legacy interface for signal management
+ * siginterrupt(3) - allow signal to interrupt system calls
  *
  * @function siginterrupt
  *
@@ -691,6 +691,38 @@ luab_siginterrupt(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 #endif /* __XSI_VISIBLE >= 600 */
+
+#if __POSIX_VISIBLE >= 200809
+/***
+ * psignal(3) - system signal messages
+ *
+ * @function psignal
+ *
+ * @param sig            Signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param s              Specifies message by (LUA_TSTRING).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.psignal(sig, s)
+ */
+static int
+luab_psignal(lua_State *L)
+{
+    luab_module_t *m;
+    int sig;
+    const char *s;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m = luab_xmod(INT, TYPE, __func__);
+
+    sig = luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    s = luab_checklstring(L, 2, luab_env_buf_max, NULL);
+
+    psignal(sig, s);
+    return (luab_pushxinteger(L, luab_env_success));
+}
+#endif /* __POSIX_VISIBLE >= 200809 */
 
 /*
  * Access functions [C -> stack]
@@ -803,8 +835,9 @@ static luab_module_table_t luab_signal_vec[] = {
 #if __XSI_VISIBLE >= 600
     LUAB_FUNC("siginterrupt",       luab_siginterrupt),
 #endif
-
-
+#if __POSIX_VISIBLE >= 200809
+    LUAB_FUNC("psignal",            luab_psignal),
+#endif
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
     LUAB_FUNC("sys_siglist",        luab_signal_sys_siglist),
