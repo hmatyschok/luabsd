@@ -724,6 +724,63 @@ luab_psignal(lua_State *L)
 }
 #endif /* __POSIX_VISIBLE >= 200809 */
 
+#if __BSD_VISIBLE
+/***
+ * sigblock(3) - smanipulate current signal mask
+ *
+ * @function sigblock
+ *
+ * @param mask           Signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigblock(mask)
+ */
+static int
+luab_sigblock(lua_State *L)
+{
+    luab_module_t *m;
+    int mask, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    mask = luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = sigblock(mask);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+/***
+ * sigsetmask(3) - smanipulate current signal mask
+ *
+ * @function mask
+ *
+ * @param mask           Signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigsetmask(mask)
+ */
+static int
+luab_sigsetmask(lua_State *L)
+{
+    luab_module_t *m;
+    int mask, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    mask = luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = sigsetmask(mask);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+#endif /* __BSD_VISIBLE */
+
 /*
  * Access functions [C -> stack]
  */
@@ -837,6 +894,10 @@ static luab_module_table_t luab_signal_vec[] = {
 #endif
 #if __POSIX_VISIBLE >= 200809
     LUAB_FUNC("psignal",            luab_psignal),
+#endif
+#if __BSD_VISIBLE
+    LUAB_FUNC("sigblock",           luab_sigblock),
+    LUAB_FUNC("sigsetmask",         luab_sigsetmask),
 #endif
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
