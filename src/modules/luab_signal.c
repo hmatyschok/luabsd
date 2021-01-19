@@ -524,7 +524,7 @@ luab_sigaltstack(lua_State *L)
     int status;
 
     (void)luab_core_checkmaxargs(L, 2);
-    
+
     m = luab_xmod(STACK, TYPE, __func__);
 
     ss = luab_udata(L, 1, m, stack_t *);
@@ -534,9 +534,130 @@ luab_sigaltstack(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * sighold(2) - legacy interface for signal management
+ *
+ * @function sighold
+ *
+ * @param sig               Signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sighold(sig)
+ */
+static int
+luab_sighold(lua_State *L)
+{
+    luab_module_t *m;
+    int sig, status;
 
+    (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(INT, TYPE, __func__);
+    sig = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = sighold(sig);
+    return (luab_pushxinteger(L, status));
+}
 
+/***
+ * sigignore(2) - legacy interface for signal management
+ *
+ * @function sigignore
+ *
+ * @param sig               Signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigignore(sig)
+ */
+static int
+luab_sigignore(lua_State *L)
+{
+    luab_module_t *m;
+    int sig, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    sig = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = sigignore(sig);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigpause(2) - legacy interface for signal management
+ *
+ * @function sigpause
+ *
+ * @param sigmask           Signalmask, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigpause(sigmask)
+ */
+static int
+luab_sigpause(lua_State *L)
+{
+    luab_module_t *m;
+    int sigmask, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    sigmask = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = sigpause(sigmask);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigrelse(2) - legacy interface for signal management
+ *
+ * @function sigrelse
+ *
+ * @param sig               Signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigrelse(sig)
+ */
+static int
+luab_sigrelse(lua_State *L)
+{
+    luab_module_t *m;
+    int sig, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    sig = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = sigrelse(sig);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * xsi_sigpause(2) - legacy interface for signal management
+ *
+ * @function sigpause
+ *
+ * @param sigmask           Signalmask, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.xsi_sigpause(sigmask)
+ */
+static int
+luab_xsi_sigpause(lua_State *L)
+{
+    luab_module_t *m;
+    int sigmask, status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    sigmask = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = xsi_sigpause(sigmask);
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __XSI_VISIBLE */
 
 /*
@@ -641,6 +762,11 @@ static luab_module_table_t luab_signal_vec[] = {
 #if __XSI_VISIBLE
     LUAB_FUNC("killpg",             luab_killpg),
     LUAB_FUNC("sigaltstack",        luab_sigaltstack),
+    LUAB_FUNC("sighold",            luab_sighold),
+    LUAB_FUNC("sigignore",          luab_sigignore),
+    LUAB_FUNC("sigpause",           luab_sigpause),
+    LUAB_FUNC("sigrelse",           luab_sigrelse),
+    LUAB_FUNC("xsi_sigpause",       luab_xsi_sigpause),
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),

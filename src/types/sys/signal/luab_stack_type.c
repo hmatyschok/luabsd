@@ -293,7 +293,13 @@ static int
 STACK_gc(lua_State *L)
 {
     luab_module_t *m;
+    stack_t *stk;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
     m = luab_xmod(STACK, TYPE, __func__);
+    stk = luab_udata(L, 1, m, stack_t *);
+    (void)luab_core_free(stk->ss_sp, stk->ss_size);
     return (luab_core_gc(L, 1, m));
 }
 
