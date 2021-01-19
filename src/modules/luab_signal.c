@@ -504,6 +504,38 @@ luab_killpg(lua_State *L)
     return (luab_pushinteger(L, status));
 }
 
+/***
+ * sigaltstack(2) - send and/or get signal stack context
+ *
+ * @function sigaltstack
+ *
+ * @param ss                Current signal stack, (LUA_TUSERDATA(STACK)).
+ * @param oss               Old signal stack, (LUA_TUSERDATA(STACK)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigaltstack(ss, oss)
+ */
+static int
+luab_sigaltstack(lua_State *L)
+{
+    luab_module_t *m;
+    stack_t *ss, *oss;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+    
+    m = luab_xmod(STACK, TYPE, __func__);
+
+    ss = luab_udata(L, 1, m, stack_t *);
+    oss = luab_udataisnil(L, 2, m, stack_t *);
+
+    status = sigaltstack(ss, oss);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
 
 #endif /* __XSI_VISIBLE */
 
@@ -607,7 +639,8 @@ static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("sigwaitinfo",        luab_sigwaitinfo),
 #endif /* __POSIX_VISIBLE >= 199506 || __XSI_VISIBLE >= 600 */
 #if __XSI_VISIBLE
-    LUAB_FUNC("luab_killpg",        luab_killpg),
+    LUAB_FUNC("killpg",             luab_killpg),
+    LUAB_FUNC("sigaltstack",        luab_sigaltstack),
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
