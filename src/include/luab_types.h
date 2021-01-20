@@ -315,6 +315,7 @@ typedef enum luab_type {
 #endif
 #if __XSI_VISIBLE
     LUAB_STACK_IDX,
+    LUAB_SIGSTACK_IDX,
 #endif /* __XSI_VISIBLE */
 #if __BSD_VISIBLE
     LUAB_DBT_IDX,

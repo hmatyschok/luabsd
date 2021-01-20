@@ -40,6 +40,26 @@
 extern luab_module_t luab_signal_lib;
 
 /*
+ * Subr.
+ */
+
+static void
+luab_signal_initstack(luab_module_t *m, stack_t *dst, struct sigstack *src)
+{
+    if (m != NULL && dst != NULL) {
+        (void)memset_s(dst, m->m_sz, 0, m->m_sz);
+
+        if (src != NULL) {
+            dst->ss_sp = src->ss_sp;
+            dst->ss_size = LUAB_SIGSTKSZ;
+            dst->ss_flags = (src->ss_onstack != 0) ? SS_ONSTACK : SS_DISABLE;
+        } else
+            errno = ENOENT;
+    } else
+        errno = EINVAL;
+}
+
+/*
  * Service primitives
  */
 
@@ -726,7 +746,7 @@ luab_psignal(lua_State *L)
 
 #if __BSD_VISIBLE
 /***
- * sigblock(3) - smanipulate current signal mask
+ * sigblock(3) - manipulate current signal mask
  *
  * @function sigblock
  *
@@ -750,7 +770,10 @@ luab_sigblock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-
+/*
+ * XXX
+ *  int sigreturn(const struct __ucontext *);
+ */
 
 /***
  * sigsetmask(3) - smanipulate current signal mask
@@ -777,8 +800,42 @@ luab_sigsetmask(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * sigstack(2) - set and/or get signal stack context
+ *
+ * @function sigstack
+ *
+ * @param ss                Current signal stack, (LUA_TUSERDATA(SIGSTACK)).
+ * @param oss               Old signal stack, (LUA_TUSERDATA(SIGSTACK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigstack(ss, oss)
+ */
+static int
+luab_sigstack(lua_State *L)
+{
+    luab_module_t *m;
+    struct sigstack *ss;
+    struct sigstack *oss;
+    stack_t stk, ostk, *sp;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(SIGSTACK, TYPE, __func__);
+
+    ss = luab_udata(L, 1, m, struct sigstack *);
+    oss = luab_udataisnil(L, 2, m, struct sigstack *);
+
+    luab_signal_initstack(m, &stk, ss);
+    luab_signal_initstack(m, &ostk, oss);
+
+    sp = (oss != NULL) ? &ostk : NULL;
+
+    status = sigaltstack(&stk, sp);
+    return (luab_pushxinteger(L, status));
+}
 #endif /* __BSD_VISIBLE */
 
 /*
@@ -897,7 +954,12 @@ static luab_module_table_t luab_signal_vec[] = {
 #endif
 #if __BSD_VISIBLE
     LUAB_FUNC("sigblock",           luab_sigblock),
+/*
+ * XXX
+ *  int sigreturn(const struct __ucontext *);
+ */
     LUAB_FUNC("sigsetmask",         luab_sigsetmask),
+    LUAB_FUNC("sigstack",           luab_sigstack),
 #endif
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),

@@ -207,6 +207,7 @@ extern luab_module_t luab_sigaction_type;
 #endif
 #if __XSI_VISIBLE
 extern luab_module_t luab_stack_type;
+extern luab_module_t luab_sigstack_type;
 #endif
 #if __BSD_VISIBLE
 extern luab_module_t luab_dbt_type;

@@ -35,7 +35,7 @@
 #if  __XSI_VISIBLE
 extern luab_module_t luab_stack_type;
 
-const lua_Integer luab_env_sigstksz = SIGSTKSZ;
+const lua_Integer luab_env_sigstksz = LUAB_SIGSTKSZ;
 
 /*
  * Interface against

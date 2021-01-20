@@ -109,6 +109,8 @@
 #define LUAB_MQ_PRIO_MAX                        0
 #endif
 
+#define LUAB_SIGSTKSZ                           SIGSTKSZ
+
 extern const lua_Integer luab_env_error;
 extern const lua_Integer luab_env_success;
 
@@ -933,9 +935,12 @@ extern u_long luab_env_phys_pages;
 #endif
 
 #if __XSI_VISIBLE
-#define LUAB_STACK_TYPE_ID                      1610993188
+#define LUAB_STACK_TYPE_ID                      1611099614
 #define LUAB_STACK_TYPE                         "STACK*"
-#endif
+
+#define LUAB_SIGSTACK_TYPE_ID                   1611098632
+#define LUAB_SIGSTACK_TYPE                      "SIGSTACK*"
+#endif /* __XSI_VISIBLE */
 
 /*
  * Service primitives / subr.
