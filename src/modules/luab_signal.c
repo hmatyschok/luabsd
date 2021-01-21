@@ -122,9 +122,39 @@ luab_kill(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_kill(3) - send a signal to a specific threadS
+ *
+ * @function pthread_kill
+ *
+ * @param pid               Specifies POSIX thread, by (LUA_TUSERDATA(THREAD)).
+ * @param sig               Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.pthread_kill(thread, sig)
+ */
+static int
+luab_pthread_kill(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_t thread;
+    int sig, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    thread = luab_udata(L, 1, m0, pthread_t);
+    sig = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_kill(thread, sig);
+    return (luab_pushxinteger(L, status));
+}
+
 /*
  * XXX
- *  int pthread_kill(__pthread_t, int);
  *  int pthread_sigmask(int, const __sigset_t * __restrict,
  *      __sigset_t * __restrict);
  *  int sigaction(int, const struct sigaction * __restrict,
@@ -948,10 +978,10 @@ static luab_module_table_t luab_signal_vec[] = {
     LUAB_FUNC("raise",              luab_raise),
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     LUAB_FUNC("kill",               luab_kill),
+    LUAB_FUNC("pthread_kill",       luab_pthread_kill),
 
 /*
  * XXX
- *  int pthread_kill(__pthread_t, int);
  *  int pthread_sigmask(int, const __sigset_t * __restrict,
  *      __sigset_t * __restrict);
  *  int sigaction(int, const struct sigaction * __restrict,
