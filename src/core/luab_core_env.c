@@ -1334,6 +1334,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_sf_hdtr_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_SF_HDTR_IDX,
+    },{
+        .mv_mod = &luab_sigvec_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_SIGVEC_IDX,
     },
 #endif  /* __BSD_VISIBLE */
     LUAB_MOD_VEC_SENTINEL

@@ -327,6 +327,7 @@ typedef enum luab_type {
     LUAB_SOCKPROTO_IDX,
     LUAB_CMSGCRED_IDX,
     LUAB_SF_HDTR_IDX,
+    LUAB_SIGVEC_IDX,
 #endif /* __BSD_VISIBLE */
     LUAB_TYPE_SENTINEL
 } luab_type_t;

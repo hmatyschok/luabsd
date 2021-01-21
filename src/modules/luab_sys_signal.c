@@ -184,7 +184,7 @@ luab_type_create_stack(lua_State *L)
  *
  * @function create_sigstack
  *
- * @return (LUA_T{NIL,USERDATA(STACK)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ * @return (LUA_T{NIL,USERDATA(SIGSTACK)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  * @usage sigstack [, err, msg ] = bsd.sys.signal.create_sigstack()
  */
@@ -196,6 +196,25 @@ luab_type_create_sigstack(lua_State *L)
     return (luab_core_create(L, 0, m, NULL));
 }
 #endif /* __XSI_VISIBLE */
+
+#if __BSD_VISIBLE
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SIGVEC)).
+ *
+ * @function create_sigvec
+ *
+ * @return (LUA_T{NIL,USERDATA(SIGVEC)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage sigstack [, err, msg ] = bsd.sys.signal.create_sigvec()
+ */
+static int
+luab_type_create_sigvec(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(SIGVEC, TYPE, __func__);
+    return (luab_core_create(L, 0, m, NULL));
+}
+#endif /* __BSD_VISIBLE */
 
 /*
  * Interface against <sys/signal.h>
@@ -381,6 +400,9 @@ static luab_module_table_t luab_sys_signal_vec[] = {
 #if __XSI_VISIBLE
     LUAB_FUNC("create_stack",           luab_type_create_stack),
     LUAB_FUNC("create_sigstack",        luab_type_create_sigstack),
+#endif
+#if __BSD_VISIBLE
+    LUAB_FUNC("create_sigvec",          luab_type_create_sigvec),
 #endif
     LUAB_MOD_TBL_SENTINEL
 };

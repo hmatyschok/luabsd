@@ -219,6 +219,7 @@ extern luab_module_t luab_accept_filter_arg_type;
 extern luab_module_t luab_sockproto_type;
 extern luab_module_t luab_cmsgcred_type;
 extern luab_module_t luab_sf_hdtr_type;
+extern luab_module_t luab_sigvec_type;
 #endif /* __BSD_VISIBLE */
 
 /*

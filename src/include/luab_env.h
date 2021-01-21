@@ -942,6 +942,11 @@ extern u_long luab_env_phys_pages;
 #define LUAB_SIGSTACK_TYPE                      "SIGSTACK*"
 #endif /* __XSI_VISIBLE */
 
+#if __BSD_VISIBLE
+#define LUAB_SIGVEC_TYPE_ID                     1611262452
+#define LUAB_SIGVEC_TYPE                        "SIGVEC*"
+#endif
+
 /*
  * Service primitives / subr.
  */
