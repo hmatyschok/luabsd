@@ -806,7 +806,7 @@ luab_sigsetmask(lua_State *L)
  * @function sigstack
  *
  * @param ss                Current signal stack, (LUA_TUSERDATA(SIGSTACK)).
- * @param oss               Old signal stack, (LUA_TUSERDATA(SIGSTACK)).
+ * @param oss               Old signal stack, (LUA_T{NIL,USERDATA(SIGSTACK)}).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -834,6 +834,41 @@ luab_sigstack(lua_State *L)
     sp = (oss != NULL) ? &ostk : NULL;
 
     status = sigaltstack(&stk, sp);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigvec(2) - software signal facilities
+ *
+ * @function sigvec
+ *
+ * @param sig               Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param vec               Current signal vector, (LUA_TUSERDATA(SIGVEC)).
+ * @param ovec              Predecessor, by (LUA_T{NIL,USERDATA(SIGVEC)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigvec(sig, vec, ovec)
+ */
+static int
+luab_sigvec(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    int sig;
+    struct sigvec *vec;
+    struct sigvec *ovec;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(SIGVEC, TYPE, __func__);
+
+    sig = (int)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    vec = luab_udata(L, 2, m1, struct sigvec *);
+    ovec = luab_udataisnil(L, 3, m1, struct sigvec *);
+
+    status = sigvec(sig, vec, ovec);
     return (luab_pushxinteger(L, status));
 }
 #endif /* __BSD_VISIBLE */
@@ -960,6 +995,7 @@ static luab_module_table_t luab_signal_vec[] = {
  */
     LUAB_FUNC("sigsetmask",         luab_sigsetmask),
     LUAB_FUNC("sigstack",           luab_sigstack),
+    LUAB_FUNC("sigvec",             luab_sigvec),
 #endif
 #if __BSD_VISIBLE
     LUAB_FUNC("sys_signame",        luab_signal_sys_signame),
