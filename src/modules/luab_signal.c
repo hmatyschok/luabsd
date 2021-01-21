@@ -153,6 +153,64 @@ luab_pthread_kill(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_sigmask(3) - examine and/or change a thread's signal mask
+ *
+ * @function pthread_sigmask
+ *
+ * @param how               Specifies funtion by values from:
+ *
+ *                              SIG_{
+ *                                  BLOCK,
+ *                                  UNBLOCK,
+ *                                  SETMASK
+ *                              }
+ *
+ * @param set               Specifies signal mask by value/result argument
+ *                          over (LUA_T{NIL,USERDATA(SIGSET)}).
+ * @param oset              Specifies resulT argument for predecessor
+ *                          OVER (LUA_T{NIL,USERDATA(SIGSET)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.pthread_sigmask(how, set, oset)
+ */
+static int
+luab_pthread_sigmask(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    int how;
+    sigset_t *set;
+    sigset_t *oset;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(SIGSET, TYPE, __func__);
+
+    how = (int)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    set = luab_udataisnil(L, 1, m1, sigset_t *);
+    oset = luab_udataisnil(L, 2, m1, sigset_t *);
+
+    status = pthread_sigmask(how, set, oset);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * sigaddset(3) - manipulate signal set
+ *
+ * @function sigaddset
+ *
+ * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
+ * @param signo             Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.signal.sigaction(set, signo)
+ */
+
+
 /*
  * XXX
  *  int pthread_sigmask(int, const __sigset_t * __restrict,
@@ -979,15 +1037,8 @@ static luab_module_table_t luab_signal_vec[] = {
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     LUAB_FUNC("kill",               luab_kill),
     LUAB_FUNC("pthread_kill",       luab_pthread_kill),
-
-/*
- * XXX
- *  int pthread_sigmask(int, const __sigset_t * __restrict,
- *      __sigset_t * __restrict);
- *  int sigaction(int, const struct sigaction * __restrict,
- *      struct sigaction * __restrict);
- */
-
+    LUAB_FUNC("pthread_sigmask",    luab_pthread_sigmask),
+    LUAB_FUNC("sigaction",          luab_sigaction),
     LUAB_FUNC("sigaddset",          luab_sigaddset),
     LUAB_FUNC("sigdelset",          luab_sigdelset),
     LUAB_FUNC("sigemptyset",        luab_sigemptyset),
