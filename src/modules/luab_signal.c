@@ -158,7 +158,7 @@ luab_pthread_kill(lua_State *L)
  *
  * @function pthread_sigmask
  *
- * @param how               Specifies funtion by values from:
+ * @param how               Specifies function by values from:
  *
  *                              SIG_{
  *                                  BLOCK,
@@ -169,7 +169,7 @@ luab_pthread_kill(lua_State *L)
  * @param set               Specifies signal mask by value/result argument
  *                          over (LUA_T{NIL,USERDATA(SIGSET)}).
  * @param oset              Specifies resulT argument for predecessor
- *                          OVER (LUA_T{NIL,USERDATA(SIGSET)}).
+ *                          over (LUA_T{NIL,USERDATA(SIGSET)}).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -198,19 +198,45 @@ luab_pthread_sigmask(lua_State *L)
 }
 
 /***
- * sigaddset(3) - manipulate signal set
+ * sigaction(2) - software signal facilities
  *
- * @function sigaddset
+ * @function sigaction
  *
- * @param set               Specifies signal set, by (LUA_TUSERDATA(SIGSET)).
- * @param signo             Specifies signal, (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param sig               Specifies signal by (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param act               Specifies signal action by value/result argument
+ *                          over (LUA_T{NIL,USERDATA(SIGSET)}).
+ * @param oact              Specifies resulT argument for predecessor
+ *                          over (LUA_T{NIL,USERDATA(SIGSET)}).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = bsd.signal.sigaction(set, signo)
+ * @usage ret [, err, msg ] = bsd.signal.sigaction(sig, act, oact)
  */
+static int
+luab_sigaction(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    int sig;
+    struct sigaction *act;
+    struct sigaction *oact;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(SIGACTION, TYPE, __func__);
+
+    sig = (int)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    act = luab_udata(L, 2, m1, struct sigaction *);
+    oact = luab_udataisnil(L, 3, m1, struct sigaction *);
+    
+    status = sigaction(sig, act, oact);
+    return (luab_pushxinteger(L, status));
+}
 
 
+
+        
 /*
  * XXX
  *  int pthread_sigmask(int, const __sigset_t * __restrict,
