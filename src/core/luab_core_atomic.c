@@ -544,26 +544,16 @@ luab_type_create_lual_number(lua_State *L)
  *
  * @function create_caddr
  *
- * @param arg               Specifies initial value by an instance of
- *
- *                              (LUA_T{NIL,STRING).
- *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage caddr [, err, msg ] = bsd.core.atomic.create_caddr(arg)
+ * @usage caddr [, err, msg ] = bsd.core.atomic.create_caddr()
  */
 static int
 luab_type_create_caddr(lua_State *L)
 {
     luab_module_t *m;
-    caddr_t dp;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
     m = luab_xmod(CADDR, TYPE, __func__);
-    dp = luab_checklstringalloc(L, 1, luab_env_buf_max);
-
-    return (luab_pushxdata(L, m, dp));
+    return (luab_core_create(L, 0, m, NULL));
 }
 
 /*

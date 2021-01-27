@@ -291,7 +291,7 @@ luab_checklstringisnil(lua_State *L, int narg, size_t nmax, size_t *np)
 }
 
 char *
-luab_checklstringalloc(lua_State *L, int narg, size_t nmax)
+luab_checklstringalloc(lua_State *L, int narg, size_t nmax, size_t *np)
 {
     const char *dp;
     size_t len;
@@ -305,6 +305,9 @@ luab_checklstringalloc(lua_State *L, int narg, size_t nmax)
             luab_core_argerror(L, narg, NULL, 0, 0, errno);
     } else
         bp = NULL;
+
+    if (np != NULL)
+        *np = len;
 
     return (bp);
 }

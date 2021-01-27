@@ -384,7 +384,7 @@ JAIL_set_path(lua_State *L)
 
     m = luab_xmod(JAIL, TYPE, __func__);
     jp = luab_udata(L, 1, m, struct jail *);
-    dp = luab_checklstringalloc(L, 2, luab_env_path_max);
+    dp = luab_checklstringalloc(L, 2, luab_env_path_max, NULL);
 
     luab_core_freestr(jp->path);
     jp->path = dp;
@@ -439,7 +439,7 @@ JAIL_set_hostname(lua_State *L)
 
     m = luab_xmod(JAIL, TYPE, __func__);
     jp = luab_udata(L, 1, m, struct jail *);
-    dp = luab_checklstringalloc(L, 2, luab_env_host_name_max);
+    dp = luab_checklstringalloc(L, 2, luab_env_host_name_max, NULL);
 
     luab_core_freestr(jp->hostname);
     jp->hostname = dp;
@@ -494,7 +494,7 @@ JAIL_set_jailname(lua_State *L)
 
     m = luab_xmod(JAIL, TYPE, __func__);
     jp = luab_udata(L, 1, m, struct jail *);
-    dp = luab_checklstringalloc(L, 2, luab_env_host_name_max);
+    dp = luab_checklstringalloc(L, 2, luab_env_host_name_max, NULL);
 
     luab_core_freestr(jp->jailname);
     jp->jailname = dp;

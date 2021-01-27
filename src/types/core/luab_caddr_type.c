@@ -43,7 +43,7 @@ extern luab_module_t luab_caddr_type;
 
 typedef struct luab_caddr {
     luab_udata_t    ud_softc;
-    caddr_t         ud_sdu;
+    caddr_t         ud_addr;
 } luab_caddr_t;
 
 /*
@@ -56,7 +56,7 @@ caddr_fillxtable(lua_State *L, int narg, void *arg)
     luab_caddr_t *self;
 
     if ((self = (luab_caddr_t *)arg) != NULL) {
-        luab_setstring(L, narg, "value", self->ud_sdu);
+        luab_setfstring(L, narg, "addr", "(%p)", self->ud_addr);
 
    } else
         luab_core_err(EX_DATAERR, __func__, EINVAL);
@@ -117,46 +117,16 @@ CADDR_dump(lua_State *L)
  */
 
 /***
- * Set value over (caddr_t).
+ * Get core address.
  *
- * @function set_value
- *
- * @param arg               Self-explanatory.
+ * @function addr
  *
  * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage x [, err, msg ] = caddr:set_value(arg)
+ * @usage x [, err, msg ] = caddr:addr()
  */
 static int
-CADDR_set_value(lua_State *L)
-{
-    luab_module_t *m;
-    luab_caddr_t *self;
-    caddr_t dp;
-
-    (void)luab_core_checkmaxargs(L, 2);
-
-    m = luab_xmod(CADDR, TYPE, __func__);
-
-    self = luab_todata(L, 1, m, luab_caddr_t *);
-    dp = (caddr_t)luab_checklstringalloc(L, 2, luab_env_buf_max);
-
-    self->ud_sdu = dp;
-
-    return (luab_pushstring(L, dp));
-}
-
-/***
- * Get value over (caddr_t).
- *
- * @function get_value
- *
- * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage x [, err, msg ] = caddr:get_value()
- */
-static int
-CADDR_get_value(lua_State *L)
+CADDR_addr(lua_State *L)
 {
     luab_module_t *m;
     luab_caddr_t *self;
@@ -166,9 +136,9 @@ CADDR_get_value(lua_State *L)
 
     m = luab_xmod(CADDR, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_caddr_t *);
-    x = self->ud_sdu;
+    x = self->ud_addr;
 
-    return (luab_pushstring(L, x));
+    return (luab_pushfstring(L, "(%p)", x));
 }
 
 /*
@@ -185,8 +155,6 @@ CADDR_gc(lua_State *L)
 
     m = luab_xmod(CADDR, TYPE, __func__);
     self = luab_todata(L, 1, m, luab_caddr_t *);
-
-    luab_core_freestr(self->ud_sdu);
 
     return (luab_core_gc(L, 1, m));
 }
@@ -212,9 +180,8 @@ CADDR_tostring(lua_State *L)
  */
 
 static luab_module_table_t caddr_methods[] = {
-    LUAB_FUNC("set_value",      CADDR_set_value),
+    LUAB_FUNC("addr",           CADDR_addr),
     LUAB_FUNC("get_table",      CADDR_get_table),
-    LUAB_FUNC("get_value",      CADDR_get_value),
     LUAB_FUNC("dump",           CADDR_dump),
     LUAB_FUNC("__gc",           CADDR_gc),
     LUAB_FUNC("__len",          CADDR_len),
@@ -223,7 +190,7 @@ static luab_module_table_t caddr_methods[] = {
 };
 
 static void *
-caddr_create(lua_State *L, void *arg)
+caddr_create(lua_State *L, void *arg __unused)
 {
     luab_module_t *m;
     m = luab_xmod(CADDR, TYPE, __func__);
@@ -231,19 +198,9 @@ caddr_create(lua_State *L, void *arg)
 }
 
 static void
-caddr_init(void *ud, void *arg)
+caddr_init(void *ud __unused, void *arg __unused)
 {
-    luab_module_t *m;
-    luab_caddr_t *self;
-    caddr_t dp;
 
-    m = luab_xmod(CADDR, TYPE, __func__);
-
-    if (((self = (luab_caddr_t *)ud) != NULL) &&
-        ((dp = (caddr_t)arg) != NULL))
-        self->ud_sdu = dp;
-    else
-        errno = EINVAL;
 }
 
 static void *
@@ -254,78 +211,7 @@ caddr_udata(lua_State *L, int narg)
 
     m = luab_xmod(CADDR, TYPE, __func__);
     self = luab_todata(L, narg, m, luab_caddr_t *);
-    return ((void *)self->ud_sdu);
-}
-
-static luab_table_t *
-caddr_checktable(lua_State *L, int narg)
-{
-    luab_module_t *m;
-    luab_table_t *tbl;
-    caddr_t *x, y;
-    size_t i, j;
-
-    m = luab_xmod(CADDR, TYPE, __func__);
-
-    if ((tbl = luab_table_newvectornil(L, narg, m)) != NULL) {
-
-        if (((x = (caddr_t *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 0)) {
-            luab_table_init(L, 0);
-
-            for (i = 0, j = tbl->tbl_card; i < j; i++) {
-
-                if (lua_next(L, narg) != 0) {
-
-                    if ((lua_isnumber(L, -2) != 0) &&
-                        (lua_isstring(L, -1) != 0)) {
-                        y = (caddr_t)luab_checklstringalloc(L, -1, luab_env_buf_max);
-                        x[i] =(caddr_t)y;
-                    } else
-                        luab_core_err(EX_DATAERR, __func__, EINVAL);
-                } else {
-                    errno = ENOENT;
-                    break;
-                }
-                lua_pop(L, 1);
-            }
-        } else
-            errno = ERANGE;
-    }
-    return (tbl);
-}
-
-static void
-caddr_pushtable(lua_State *L, int narg, luab_table_t *tbl, int new, int clr)
-{
-    caddr_t *x;
-    size_t i, j, k;
-
-    if (tbl != NULL) {
-
-        if (((x = (caddr_t *)tbl->tbl_vec) != NULL) &&
-            (tbl->tbl_card > 0)) {
-            luab_table_init(L, new);
-
-            for (i = 0, j = tbl->tbl_card, k = 1; i < j; i++, k++)
-                luab_rawsetstring(L, narg, k, x[i]);
-
-            errno = ENOENT;
-        } else
-            errno = ERANGE;
-
-        if (clr != 0)
-            luab_table_free(tbl);
-    } else
-        errno = EINVAL;
-}
-
-static luab_table_t *
-caddr_alloctable(void *vec, size_t card)
-{
-    luab_module_t *m;
-    m = luab_xmod(CADDR, TYPE, __func__);
-    return (luab_table_create(m, vec, card));
+    return ((void *)self->ud_addr);
 }
 
 luab_module_t luab_caddr_type = {
@@ -335,9 +221,6 @@ luab_module_t luab_caddr_type = {
     .m_create       = caddr_create,
     .m_init         = caddr_init,
     .m_get          = caddr_udata,
-    .m_get_tbl      = caddr_checktable,
-    .m_set_tbl      = caddr_pushtable,
-    .m_alloc_tbl    = caddr_alloctable,
     .m_len          = sizeof(luab_caddr_t),
     .m_sz           = sizeof(caddr_t),
 };

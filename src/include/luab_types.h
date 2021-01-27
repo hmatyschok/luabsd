@@ -408,7 +408,7 @@ const char   *luab_tolstring(lua_State *, int, size_t);
 const char   *luab_checklstring(lua_State *, int, size_t, size_t *);
 const char   *luab_checklstringisnil(lua_State *, int, size_t, size_t *);
 
-char     *luab_checklstringalloc(lua_State *, int, size_t);
+char     *luab_checklstringalloc(lua_State *, int, size_t, size_t *);
 
 /*
  * Access functions, [C -> stack].
