@@ -913,7 +913,43 @@ luab_pthread_cond_destroy(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_cond_init(3) - create a condition variable
+ *
+ * @function pthread_cond_init
+ *
+ * @param cond              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_COND)).
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_T{NIL,USERDATA(PTHREAD_CONDATTR)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_cond_init(cond, attr)
+ */
+static int
+luab_pthread_cond_init(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_cond_t cond;
+    pthread_condattr_t attr;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m0 = luab_xmod(PTHREAD_COND, TYPE, __func__);
+    m1 = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    
+    cond = luab_udata(L, 1, m0, pthread_cond_t);
+    attr = luab_udataisnil(L, 2, m1, pthread_condattr_t);
+
+    if (attr != NULL)
+        status = pthread_cond_init(&cond, &attr);
+    else
+        status = pthread_cond_init(&cond, NULL);
+
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1548,6 +1584,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_condattr_setpshared",    luab_pthread_condattr_setpshared),
     LUAB_FUNC("pthread_cond_broadcast",         luab_pthread_cond_broadcast),
     LUAB_FUNC("pthread_cond_destroy",           luab_pthread_cond_destroy),
+    LUAB_FUNC("pthread_cond_init",              luab_pthread_cond_init),
 
 
 
