@@ -669,6 +669,204 @@ luab_pthread_barrierattr_setpshared(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_condattr_destroy(3) - condition attribute operations
+ *
+ * @function pthread_condattr_destroy
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_CONDATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_condattr_destroy(attr)
+ */
+static int
+luab_pthread_condattr_destroy(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_condattr_t attr;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_condattr_t);
+    status = pthread_condattr_destroy(&attr);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_condattr_getclock(3) - condition attribute operations
+ *
+ * @function pthread_condattr_getclock
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_CONDATTR)).
+ * @param clock_id          Result argument, specified by an
+ *                          instance of (LUA_TUSERDATA(CLOCK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_condattr_getclock(attr, clock_id)
+ */
+static int
+luab_pthread_condattr_getclock(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_condattr_t attr;
+    clock_t *clock_id;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    m1 = luab_xmod(CLOCK, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_condattr_t);
+    clock_id = luab_udata(L, 2, m1, clock_t *);
+
+    status = pthread_condattr_getclock(&attr, clock_id);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_condattr_getpshared(3) - condition attribute operations
+ *
+ * @function pthread_condattr_getpshared
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_CONDATTR)).
+ * @param pshared           Result argument, specified by an
+ *                          instance of (LUA_TUSERDATA(INT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_condattr_getpshared(attr, pshared)
+ */
+static int
+luab_pthread_condattr_getpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_condattr_t attr;
+    int *pshared, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_condattr_t);
+    pshared = luab_udata(L, 2, m1, int *);
+
+    status = pthread_condattr_getpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_condattr_init(3) - condition attribute operations
+ *
+ * @function pthread_condattr_init
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_CONDATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_condattr_init(attr)
+ */
+static int
+luab_pthread_condattr_init(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_condattr_t attr;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_condattr_t);
+    status = pthread_condattr_init(&attr);
+
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_condattr_setclock(3) - condition attribute operations
+ *
+ * @function pthread_condattr_setclock
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_CONDATTR)).
+ * @param clock_id          Result argument, specified by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(CLOCK)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_condattr_setclock(attr, clock_id)
+ */
+static int
+luab_pthread_condattr_setclock(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_condattr_t attr;
+    clock_t clock_id;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    m1 = luab_xmod(CLOCK, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_condattr_t);
+    clock_id = luab_checklxinteger(L, 2, m1, 0);
+
+    status = pthread_condattr_setclock(&attr, clock_id);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_condattr_setpshared(3) - condition attribute operations
+ *
+ * @function pthread_condattr_setpshared
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_CONDATTR)).
+ * @param pshared           Value argument, specified by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_condattr_setpshared(attr, pshared)
+ */
+static int
+luab_pthread_condattr_setpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_condattr_t attr;
+    int pshared, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_condattr_t);
+    pshared = luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_condattr_setpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1292,6 +1490,12 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_barrierattr_getpshared", luab_pthread_barrierattr_getpshared),
     LUAB_FUNC("pthread_barrierattr_init",       luab_pthread_barrierattr_init),
     LUAB_FUNC("pthread_barrierattr_setpshared", luab_pthread_barrierattr_setpshared),
+    LUAB_FUNC("pthread_condattr_destroy",       luab_pthread_condattr_destroy),
+    LUAB_FUNC("pthread_condattr_getclock",      luab_pthread_condattr_getclock),
+    LUAB_FUNC("pthread_condattr_getpshared",    luab_pthread_condattr_getpshared),
+    LUAB_FUNC("pthread_condattr_init",          luab_pthread_condattr_init),
+    LUAB_FUNC("pthread_condattr_setclock",      luab_pthread_condattr_setclock),
+    LUAB_FUNC("pthread_condattr_setpshared",    luab_pthread_condattr_setpshared),
 
 
     LUAB_FUNC("pthread_attr_getinheritsched",   luab_pthread_attr_getinheritsched),
@@ -1303,6 +1507,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_attr_setschedpolicy",    luab_pthread_attr_setschedpolicy),
     LUAB_FUNC("pthread_attr_setscope",          luab_pthread_attr_setscope),
 
+    /* generator functions */
     LUAB_FUNC("create_pthread_key",             luab_type_create_pthread_key),
     LUAB_FUNC("create_pthread",                 luab_type_create_pthread),
     LUAB_FUNC("create_pthread_attr",            luab_type_create_pthread_attr),
