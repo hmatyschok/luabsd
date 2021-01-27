@@ -95,6 +95,42 @@ luab_sched_get_priority_min(lua_State *L)
 }
 
 /***
+ * sched_getparam(2) - set/get schedeuling parameters
+ *
+ * @function sched_getparam
+ *
+ * @param pid               Specifies process ID by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(PID)}).
+ * @param param             Result argument by an instance of
+ *                          (LUA_TUSERDATA(SCHED_PARAM)),
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.sched.sched_getparam(pid, param)
+ */
+static int
+luab_sched_getparam(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pid_t pid;
+    struct sched_param *param;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PID, TYPE, __func__);
+    m1 = luab_xmod(SCHED_PARAM, TYPE, __func__);
+
+    pid = (pid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    param = luab_udata(L, 2, m1, struct sched_param *);
+    status = sched_getparam(pid, param);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+/***
  * sched_rr_get_interval(2) - get schedeuling parameter limits
  *
  * @function sched_rr_get_interval
@@ -128,6 +164,38 @@ luab_sched_rr_get_interval(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * sched_setparam(2) - set/get schedeuling parameters
+ *
+ * @function sched_setparam
+ *
+ * @param pid               Specifies process ID by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(PID)}).
+ * @param param             Value argument by an instance of
+ *                          (LUA_TUSERDATA(SCHED_PARAM)),
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.sched.sched_setparam(pid, param)
+ */
+static int
+luab_sched_setparam(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pid_t pid;
+    struct sched_param *param;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PID, TYPE, __func__);
+    m1 = luab_xmod(SCHED_PARAM, TYPE, __func__);
+
+    pid = (pid_t)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+    param = luab_udata(L, 2, m1, struct sched_param *);
+    status = sched_setparam(pid, param);
+    return (luab_pushxinteger(L, status));
+}
 
 /*
  * Generator functions
@@ -164,7 +232,9 @@ static luab_module_table_t luab_sys_sched_vec[] = {
     LUAB_INT("SCHED_RR",                    SCHED_RR),
     LUAB_FUNC("sched_get_priority_max",     luab_sched_get_priority_max),
     LUAB_FUNC("sched_get_priority_min",     luab_sched_get_priority_min),
+    LUAB_FUNC("sched_getparam",             luab_sched_getparam),
     LUAB_FUNC("sched_rr_get_interval",      luab_sched_rr_get_interval),
+    LUAB_FUNC("sched_setparam",             luab_sched_setparam),
     LUAB_FUNC("create_sched_param",         luab_type_create_sched_param),
     LUAB_MOD_TBL_SENTINEL
 };
