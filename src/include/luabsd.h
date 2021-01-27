@@ -46,6 +46,7 @@ void     luab_core_free(void *, size_t);
 void     luab_core_freestr(caddr_t);
 
 void     *luab_core_alloc(size_t, size_t);
+char     *luab_core_allocstring(const char *, size_t *);
 
 void     luab_core_err(int, const char *, int);
 void     luab_core_errx(int, const char *, ...);

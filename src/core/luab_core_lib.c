@@ -94,6 +94,31 @@ luab_core_alloc(size_t n, size_t sz)
     return (dp);
 }
 
+char *
+luab_core_allocstring(const char *dp, size_t *np)
+{
+    size_t len;
+    caddr_t bp;
+
+    if (dp != NULL) {
+        len = strnlen(dp, luab_env_buf_max);
+
+        if ((bp = luab_core_alloc(len, sizeof(char))) != NULL)
+            (void)memmove(bp, dp, len);
+        else
+            len = 0;
+    } else {
+        errno = ENOENT;
+        bp = NULL;
+        len = 0;
+    }
+
+    if (np != NULL)
+        *np = len;
+
+    return (bp);
+}
+
 void
 luab_core_errx(int eval, const char *fmt, ...)
 {

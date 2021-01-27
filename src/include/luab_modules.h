@@ -121,6 +121,7 @@ extern luab_module_t luab_useconds_type;
 
 /* <luab_core_atomic> */
 extern luab_module_t luab_caddr_type;
+extern luab_module_t luab_string_type;
 
 /* <sys/signal.h> */
 #if __POSIX_VISIBLE || __XSI_VISIBLE

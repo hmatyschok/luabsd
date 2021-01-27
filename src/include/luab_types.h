@@ -231,6 +231,7 @@ typedef enum luab_type {
 
     /* <luab_core_atomic> */
     LUAB_CADDR_IDX,
+    LUAB_STRING_IDX,
 
     /* <sys/signal.h> */
 #if __POSIX_VISIBLE || __XSI_VISIBLE
@@ -409,6 +410,7 @@ const char   *luab_checklstring(lua_State *, int, size_t, size_t *);
 const char   *luab_checklstringisnil(lua_State *, int, size_t, size_t *);
 
 char     *luab_checklstringalloc(lua_State *, int, size_t, size_t *);
+char     *luab_checklxstring(lua_State *, int, size_t, size_t *);
 
 /*
  * Access functions, [C -> stack].

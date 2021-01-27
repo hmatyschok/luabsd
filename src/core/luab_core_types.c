@@ -299,9 +299,7 @@ luab_checklstringalloc(lua_State *L, int narg, size_t nmax, size_t *np)
 
     if ((dp = luab_checklstringisnil(L, narg, nmax, &len)) != NULL) {
 
-        if ((bp = luab_core_alloc(len, sizeof(char))) != NULL)
-            (void)memmove(bp, dp, len);
-        else
+        if ((bp = luab_core_allocstring(dp, &len)) == NULL)
             luab_core_argerror(L, narg, NULL, 0, 0, errno);
     } else
         bp = NULL;
@@ -310,6 +308,22 @@ luab_checklstringalloc(lua_State *L, int narg, size_t nmax, size_t *np)
         *np = len;
 
     return (bp);
+}
+
+char *
+luab_checklxstring(lua_State *L, int narg, size_t nmax, size_t *np)
+{
+    luab_module_t *m;
+    const char *dp;
+
+    m = luab_xmod(STRING, TYPE, __func__);
+
+    if (lua_isuserdata(L, narg) != 0)
+        dp = luab_udata(L, narg, m, const char *);
+    else
+        dp = luab_checklstringisnil(L, narg, nmax, NULL);
+
+    return (luab_core_allocstring(dp, np));
 }
 
 /*

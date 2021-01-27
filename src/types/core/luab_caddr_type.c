@@ -74,7 +74,7 @@ caddr_fillxtable(lua_State *L, int narg, void *arg)
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              value = (LUA_T{NIL,STRING}),
+ *              addr = (LUA_T{NIL,STRING}),
  *          }
  *
  * @usage t [, err, msg ] = caddr:get_table()

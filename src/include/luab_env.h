@@ -765,8 +765,11 @@ extern u_long luab_env_phys_pages;
 #define LUAB_PTHREAD_SPINLOCK_TYPE_ID           1610846141
 #define LUAB_PTHREAD_SPINLOCK_TYPE              "PTHREAD_SPINLOCK*"
 
-#define LUAB_PTHREAD_ADDR_TYPE_ID             1610848721
-#define LUAB_PTHREAD_ADDR_TYPE                "PTHREAD_ADDR*"
+#define LUAB_PTHREAD_ADDR_TYPE_ID               1610848721
+#define LUAB_PTHREAD_ADDR_TYPE                  "PTHREAD_ADDR*"
+
+#define LUAB_STRING_TYPE_ID                     1611685185
+#define LUAB_STRING_TYPE                        "STRING*"
 
 /*
  * Subset of composite data types.

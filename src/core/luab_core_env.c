@@ -1018,6 +1018,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_caddr_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_CADDR_IDX,
+    },{
+        .mv_mod = &luab_string_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_STRING_IDX,
     },
 
      /* <sys/signal.h> */

@@ -31,6 +31,7 @@ SRCS+=  luab_lual_number_type.c
 
 # reference data types
 SRCS+=  luab_caddr_type.c
+SRCS+=  luab_string_type.c
 
 # composite data types
 SRCS+=  luab_integer_type.c
