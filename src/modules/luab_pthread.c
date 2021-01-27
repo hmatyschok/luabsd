@@ -453,7 +453,7 @@ luab_pthread_attr_setdetachstate(lua_State *L)
 }
 
 /***
- * pthread_barrier_destroy(3) - POSIX threads library
+ * pthread_barrier_destroy(3) - destroy, initialize or wait on a barrier object
  *
  * @function pthread_barrier_destroy
  *
@@ -481,7 +481,7 @@ luab_pthread_barrier_destroy(lua_State *L)
 }
 
 /***
- * pthread_barrier_init(3) - POSIX threads library
+ * pthread_barrier_init(3) - destroy, initialize or wait on a barrier object
  *
  * @function pthread_barrier_init
  *
@@ -520,7 +520,7 @@ luab_pthread_barrier_init(lua_State *L)
 }
 
 /***
- * pthread_barrier_wait(3) - POSIX threads library
+ * pthread_barrier_wait(3) - destroy, initialize or wait on a barrier object
  *
  * @function pthread_barrier_wait
  *
@@ -547,11 +547,127 @@ luab_pthread_barrier_wait(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_barrierattr_destroy(3) - manipulate a barrier attribute object
+ *
+ * @function pthread_barrierattr_destroy
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_BARRIERATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_barrierattr_destroy(attr)
+ */
+static int
+luab_pthread_barrierattr_destroy(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_barrierattr_t attr;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(PTHREAD_BARRIERATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_barrierattr_t);
+    status = pthread_barrierattr_destroy(&attr);
+    return (luab_pushxinteger(L, status));
+}
 
+/***
+ * pthread_barrierattr_getpshared(3) - manipulate a barrier attribute object
+ *
+ * @function pthread_barrierattr_getpshared
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_BARRIERATTR)).
+ * @param pshared           Result argument, specified by an
+ *                          instance of (LUA_TUSERDATA(INT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_barrierattr_getpshared(attr)
+ */
+static int
+luab_pthread_barrierattr_getpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_barrierattr_t attr;
+    int *pshared;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(PTHREAD_BARRIERATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_barrierattr_t);
+    pshared = luab_udata(L, 2, m1, int *);
+
+    status = pthread_barrierattr_getpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_barrierattr_init(3) - manipulate a barrier attribute object
+ *
+ * @function pthread_barrierattr_init
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_BARRIERATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_barrierattr_init(attr)
+ */
+static int
+luab_pthread_barrierattr_init(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_barrierattr_t attr;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_BARRIERATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_barrierattr_t);
+    status = pthread_barrierattr_init(&attr);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_barrierattr_setpshared(3) - manipulate a barrier attribute object
+ *
+ * @function pthread_barrierattr_setpshared
+ *
+ * @param attr              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_BARRIERATTR)).
+ * @param pshared           Result argument, by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_barrierattr_setpshared(attr)
+ */
+static int
+luab_pthread_barrierattr_setpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_barrierattr_t attr;
+    int pshared;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_BARRIERATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_barrierattr_t);
+    pshared = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_barrierattr_setpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1172,6 +1288,11 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_barrier_destroy",        luab_pthread_barrier_destroy),
     LUAB_FUNC("pthread_barrier_init",           luab_pthread_barrier_init),
     LUAB_FUNC("pthread_barrier_wait",           luab_pthread_barrier_wait),
+    LUAB_FUNC("pthread_barrierattr_destroy",    luab_pthread_barrierattr_destroy),
+    LUAB_FUNC("pthread_barrierattr_getpshared", luab_pthread_barrierattr_getpshared),
+    LUAB_FUNC("pthread_barrierattr_init",       luab_pthread_barrierattr_init),
+    LUAB_FUNC("pthread_barrierattr_setpshared", luab_pthread_barrierattr_setpshared),
+
 
     LUAB_FUNC("pthread_attr_getinheritsched",   luab_pthread_attr_getinheritsched),
     LUAB_FUNC("pthread_attr_getschedparam",     luab_pthread_attr_getschedparam),
