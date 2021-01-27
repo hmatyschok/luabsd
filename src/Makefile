@@ -13,6 +13,8 @@ SHLIB_MAJOR= 0
 .include "${LUAB_SRCTOP}/modules/Makefile.inc"
 .include "${LUAB_SRCTOP}/core/Makefile.inc"
 
+WARNS?=	5
+
 LIBADD+= crypt pthread rt
 
 MAN=

@@ -939,7 +939,7 @@ luab_pthread_cond_init(lua_State *L)
 
     m0 = luab_xmod(PTHREAD_COND, TYPE, __func__);
     m1 = luab_xmod(PTHREAD_CONDATTR, TYPE, __func__);
-    
+
     cond = luab_udata(L, 1, m0, pthread_cond_t);
     attr = luab_udataisnil(L, 2, m1, pthread_condattr_t);
 
@@ -977,6 +977,44 @@ luab_pthread_cond_signal(lua_State *L)
     status = pthread_cond_signal(&cond);
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * pthread_cond_timedwait(3) - wait on condition variable for a specific amount of time
+ *
+ * @function pthread_cond_timedwait
+ *
+ * @param cond              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_COND)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_cond_timedwait(cond)
+ */
+static int
+luab_pthread_cond_timedwait(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    pthread_cond_t cond;
+    pthread_mutex_t mutex;
+    struct timespec *abstime;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(PTHREAD_COND, TYPE, __func__);
+    m1 = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    m2 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    cond = luab_udata(L, 1, m0, pthread_cond_t);
+    mutex = luab_udata(L, 2, m1, pthread_mutex_t);
+    abstime = luab_udata(L, 3, m2, struct timespec *);
+
+    status = pthread_cond_timedwait(&cond, &mutex, abstime);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
 
 
 
@@ -1614,6 +1652,9 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_cond_destroy",           luab_pthread_cond_destroy),
     LUAB_FUNC("pthread_cond_init",              luab_pthread_cond_init),
     LUAB_FUNC("pthread_cond_signal",            luab_pthread_cond_signal),
+    LUAB_FUNC("pthread_cond_timedwait",         luab_pthread_cond_timedwait),
+
+
 
 
 
