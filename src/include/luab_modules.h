@@ -197,6 +197,7 @@ extern luab_module_t luab_jail_type;
 extern luab_module_t luab_lconv_type;
 extern luab_module_t luab_itimerspec_type;
 extern luab_module_t luab_pthread_once_type;
+extern luab_module_t luab_sched_param_type;
 #if __POSIX_VISIBLE >= 199309
 extern luab_module_t luab_sigevent_type;
 #endif
@@ -246,6 +247,7 @@ extern luab_module_t luab_sys_uio_lib;
 extern luab_module_t luab_sys_un_lib;
 extern luab_module_t luab_sys_unistd_lib;
 extern luab_module_t luab_sys_reboot_lib;
+extern luab_module_t luab_sys_sched_lib;
 extern luab_module_t luab_sys_signal_lib;
 extern luab_module_t luab_sys_socket_lib;
 extern luab_module_t luab_sys_stdint_lib;

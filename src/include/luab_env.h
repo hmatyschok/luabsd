@@ -922,6 +922,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_PTHREAD_ONCE_TYPE_ID               1610834094
 #define LUAB_PTHREAD_ONCE_TYPE                  "PTHREAD_ONCE*"
 
+#define LUAB_SCHED_PARAM_TYPE_ID                1611724636
+#define LUAB_SCHED_PARAM_TYPE                   "SCHED_PARAM*"
+
 #if __POSIX_VISIBLE >= 199309
 #define LUAB_SIGEVENT_TYPE_ID                   1610459044
 #define LUAB_SIGEVENT_TYPE                      "SIGEVENT*"

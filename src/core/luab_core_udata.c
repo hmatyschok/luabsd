@@ -73,12 +73,11 @@ luab_newuserdata(lua_State *L, luab_module_t *m, void *arg)
 void
 luab_udata_init(luab_module_t *m, luab_udata_t *ud, void *arg)
 {
-    if (m != NULL) {
-
-        if (ud != NULL && arg != NULL)
-            (void)memmove(ud + 1, arg, m->m_sz);
-        else
-            errno = EINVAL;
+    caddr_t dp;
+    
+    if (m != NULL && ud != NULL && arg != NULL) {
+        dp = (caddr_t)(ud + 1);
+        (void)memmove(dp, arg, m->m_sz);
     } else
         errno = ENOENT;
 }

@@ -305,6 +305,7 @@ typedef enum luab_type {
     LUAB_LCONV_IDX,
     LUAB_ITIMERSPEC_IDX,
     LUAB_PTHREAD_ONCE_IDX,
+    LUAB_SCHED_PARAM_IDX,
 #if __POSIX_VISIBLE >= 199309
     LUAB_SIGEVENT_IDX,
 #endif

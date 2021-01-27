@@ -77,6 +77,9 @@ static luab_module_vec_t luab_sys_vec[] = {
         .mv_mod = &luab_sys_reboot_lib,
         .mv_init = luab_core_newtable,
     },{
+        .mv_mod = &luab_sys_sched_lib,
+        .mv_init = luab_core_newtable,
+    },{
         .mv_mod = &luab_sys_signal_lib,
         .mv_init = luab_core_newtable,
     },{

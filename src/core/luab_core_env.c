@@ -1268,6 +1268,10 @@ luab_module_vec_t luab_typevec[] = {
         .mv_mod = &luab_pthread_once_type,
         .mv_init = luab_core_newmetatable,
         .mv_idx = LUAB_PTHREAD_ONCE_IDX,
+    },{
+        .mv_mod = &luab_sched_param_type,
+        .mv_init = luab_core_newmetatable,
+        .mv_idx = LUAB_SCHED_PARAM_IDX,
     },
 #if __POSIX_VISIBLE >= 199309
     {
