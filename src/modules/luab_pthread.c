@@ -951,6 +951,34 @@ luab_pthread_cond_init(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_cond_destroy(3) - unblock a thread waiting for a condition variable
+ *
+ * @function pthread_cond_signal
+ *
+ * @param cond              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_COND)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_cond_signal(cond)
+ */
+static int
+luab_pthread_cond_signal(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_cond_t cond;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_COND, TYPE, __func__);
+    cond = luab_udata(L, 1, m, pthread_cond_t);
+    status = pthread_cond_signal(&cond);
+    return (luab_pushxinteger(L, status));
+}
+
+
 
 
 
@@ -1585,6 +1613,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_cond_broadcast",         luab_pthread_cond_broadcast),
     LUAB_FUNC("pthread_cond_destroy",           luab_pthread_cond_destroy),
     LUAB_FUNC("pthread_cond_init",              luab_pthread_cond_init),
+    LUAB_FUNC("pthread_cond_signal",            luab_pthread_cond_signal),
 
 
 
