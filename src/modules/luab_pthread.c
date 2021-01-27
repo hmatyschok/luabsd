@@ -886,7 +886,32 @@ luab_pthread_cond_broadcast(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_cond_destroy(3) - destroy a condition variable
+ *
+ * @function pthread_cond_destroy
+ *
+ * @param cond              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_COND)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_cond_destroy(cond)
+ */
+static int
+luab_pthread_cond_destroy(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_cond_t cond;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_COND, TYPE, __func__);
+    cond = luab_udata(L, 1, m, pthread_cond_t);
+    status = pthread_cond_destroy(&cond);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1522,6 +1547,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_condattr_setclock",      luab_pthread_condattr_setclock),
     LUAB_FUNC("pthread_condattr_setpshared",    luab_pthread_condattr_setpshared),
     LUAB_FUNC("pthread_cond_broadcast",         luab_pthread_cond_broadcast),
+    LUAB_FUNC("pthread_cond_destroy",           luab_pthread_cond_destroy),
 
 
 
