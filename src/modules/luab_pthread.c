@@ -985,10 +985,14 @@ luab_pthread_cond_signal(lua_State *L)
  *
  * @param cond              Value argument, specified by an instance
  *                          of (LUA_TUSERDATA(PTHREAD_COND)).
+ * @param mutex             Mutual exclusive lock, specified by an
+ *                          instance (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ * @param abstime           Specifies time, by an instance
+ *                          of (LUA_TUSERDATA(TIMESPEC)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = bsd.pthread.pthread_cond_timedwait(cond)
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_cond_timedwait(cond, mutex, abstime)
  */
 static int
 luab_pthread_cond_timedwait(lua_State *L)
@@ -1013,9 +1017,39 @@ luab_pthread_cond_timedwait(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_cond_wait(3) - wait on condition variable
+ *
+ * @function pthread_cond_wait
+ *
+ * @param cond              Value argument, specified by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_COND)).
+ * @param mutex             Mutual exclusive lock, specified by an
+ *                          instance (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_cond_wait(cond, mutex)
+ */
+static int
+luab_pthread_cond_wait(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_cond_t cond;
+    pthread_mutex_t mutex;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(PTHREAD_COND, TYPE, __func__);
+    m1 = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
 
+    cond = luab_udata(L, 1, m0, pthread_cond_t);
+    mutex = luab_udata(L, 2, m1, pthread_mutex_t);
+
+    status = pthread_cond_wait(&cond, &mutex);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1653,6 +1687,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_cond_init",              luab_pthread_cond_init),
     LUAB_FUNC("pthread_cond_signal",            luab_pthread_cond_signal),
     LUAB_FUNC("pthread_cond_timedwait",         luab_pthread_cond_timedwait),
+    LUAB_FUNC("pthread_cond_wait",              luab_pthread_cond_wait),
 
 
 
