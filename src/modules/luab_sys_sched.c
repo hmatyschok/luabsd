@@ -260,6 +260,26 @@ luab_sched_setscheduler(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * sched_yield(2) - yield processor
+ *
+ * @function sched_yield
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.sched.sched_yield()
+ */
+static int
+luab_sched_yield(lua_State *L)
+{
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    status = sched_yield();
+    return (luab_pushxinteger(L, status));
+}
+
 /*
  * Generator functions
  */
@@ -300,6 +320,7 @@ static luab_module_table_t luab_sys_sched_vec[] = {
     LUAB_FUNC("sched_rr_get_interval",      luab_sched_rr_get_interval),
     LUAB_FUNC("sched_setparam",             luab_sched_setparam),
     LUAB_FUNC("sched_setscheduler",         luab_sched_setscheduler),
+    LUAB_FUNC("sched_yield",                luab_sched_yield),
     LUAB_FUNC("create_sched_param",         luab_type_create_sched_param),
     LUAB_MOD_TBL_SENTINEL
 };
