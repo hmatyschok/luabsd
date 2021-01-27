@@ -486,11 +486,38 @@ luab_pthread_attr_getinheritsched(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-/*
- * XXX
- *  int     pthread_attr_getschedparam(const pthread_attr_t *,
- *              struct sched_param *);
+/***
+ * pthread_attr_getschedparam(3) - POSIX threads library
+ *
+ * @function pthread_attr_getschedparam
+ *
+ * @param attr              Value argument by an instance of
+ *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
+ * @param param             Result argument by an instance
+ *                          of (LUA_TUSERDATA(SCHED_PARAM)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_attr_getschedparam(attr, param)
  */
+static int
+luab_pthread_attr_getschedparam(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_attr_t attr;
+    struct sched_param *param;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_ATTR, TYPE, __func__);
+    m1 = luab_xmod(SCHED_PARAM, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_attr_t);
+    param = luab_udata(L, 2, m1, struct sched_param *);
+    status = pthread_attr_getschedparam(&attr, param);
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * pthread_attr_getschedpolicy(3) - POSIX threads library
@@ -594,11 +621,38 @@ luab_pthread_attr_setinheritsched(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-/*
- * XXX
- *  int     pthread_attr_setschedparam(pthread_attr_t *,
- *              const struct sched_param *);
+/***
+ * pthread_attr_setschedparam(3) - POSIX threads library
+ *
+ * @function pthread_attr_setschedparam
+ *
+ * @param attr              Value argument by an instance of
+ *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
+ * @param param             Value argument by an instance
+ *                          of (LUA_TUSERDATA(SCHED_PARAM)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_attr_setschedparam(attr, param)
  */
+static int
+luab_pthread_attr_setschedparam(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_attr_t attr;
+    struct sched_param *param;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_ATTR, TYPE, __func__);
+    m1 = luab_xmod(SCHED_PARAM, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_attr_t);
+    param = luab_udata(L, 2, m1, struct sched_param *);
+    status = pthread_attr_setschedparam(&attr, param);
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * pthread_attr_setschedpolicy(3) - POSIX threads library
@@ -1007,23 +1061,14 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_attr_setstackaddr",      luab_pthread_attr_setstackaddr),
     LUAB_FUNC("pthread_attr_setdetachstate",    luab_pthread_attr_setdetachstate),
 
-
     LUAB_FUNC("pthread_attr_getinheritsched",   luab_pthread_attr_getinheritsched),
-/*
- * XXX
- *  LUAB_FUNC("pthread_attr_getschedparam",     luab_pthread_attr_getschedparam),
- */
+    LUAB_FUNC("pthread_attr_getschedparam",     luab_pthread_attr_getschedparam),
     LUAB_FUNC("pthread_attr_getschedpolicy",    luab_pthread_attr_getschedpolicy),
     LUAB_FUNC("pthread_attr_getscope",          luab_pthread_attr_getscope),
     LUAB_FUNC("pthread_attr_setinheritsched",   luab_pthread_attr_setinheritsched),
-/*
- * XXX
- *  LUAB_FUNC("pthread_attr_setschedparam",     luab_pthread_attr_setschedparam),
- */
+    LUAB_FUNC("pthread_attr_setschedparam",     luab_pthread_attr_setschedparam),
     LUAB_FUNC("pthread_attr_setschedpolicy",    luab_pthread_attr_setschedpolicy),
     LUAB_FUNC("pthread_attr_setscope",          luab_pthread_attr_setscope),
-
-
 
     LUAB_FUNC("create_pthread_key",             luab_type_create_pthread_key),
     LUAB_FUNC("create_pthread",                 luab_type_create_pthread),
