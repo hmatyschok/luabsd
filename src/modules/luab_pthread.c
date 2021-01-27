@@ -53,7 +53,7 @@ extern luab_module_t luab_pthread_lib;
  *
  * @function pthread_attr_destroy
  *
- * @param attr              Result argument by an instace of
+ * @param attr              Result argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -80,7 +80,7 @@ luab_pthread_attr_destroy(lua_State *L)
  *
  * @function pthread_attr_getstack
  *
- * @param attr              Result argument by an instace of
+ * @param attr              Result argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param stackaddr         Result argument by an instance
  *                          of (LUA_TUSERDATA(CADDR)).
@@ -119,7 +119,7 @@ luab_pthread_attr_getstack(lua_State *L)
  *
  * @function pthread_attr_getstacksize
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param stacksize         Result argument by an instance of
  *                          (LUA_TUSERDATA(SIZE)).
@@ -153,7 +153,7 @@ luab_pthread_attr_getstacksize(lua_State *L)
  *
  * @function pthread_attr_getguardsize
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param guardsize         Result argument by an instance of
  *                          (LUA_TUSERDATA(SIZE)).
@@ -187,7 +187,7 @@ luab_pthread_attr_getguardsize(lua_State *L)
  *
  * @function pthread_attr_getstackaddr
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param stackaddr         Result argument by an instance
  *                          of (LUA_TUSERDATA(CADDR)).
@@ -221,7 +221,7 @@ luab_pthread_attr_getstackaddr(lua_State *L)
  *
  * @function pthread_attr_getdetachstate
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param detachstate       Result argument by an instance of
  *                          (LUA_TUSERDATA(INT)).
@@ -255,7 +255,7 @@ luab_pthread_attr_getdetachstate(lua_State *L)
  *
  * @function pthread_attr_init
  *
- * @param attr              Result argument by an instace of
+ * @param attr              Result argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
@@ -282,7 +282,7 @@ luab_pthread_attr_init(lua_State *L)
  *
  * @function pthread_attr_setstacksize
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param stacksize         Value argument by an instance of
  *                          (LUA_T{NUMBER,USERDATA(SIZE)}).
@@ -316,7 +316,7 @@ luab_pthread_attr_setstacksize(lua_State *L)
  *
  * @function pthread_attr_setguardsize
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param guardsize         Value argument by an instance of
  *                          (LUA_T{NUMBER,USERDATA(SIZE)}).
@@ -350,7 +350,7 @@ luab_pthread_attr_setguardsize(lua_State *L)
  *
  * @function pthread_attr_setstack
  *
- * @param attr              Result argument by an instace of
+ * @param attr              Result argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param stackaddr         Result argument by an instance
  *                          of (LUA_TUSERDATA(CADDR)).
@@ -389,7 +389,7 @@ luab_pthread_attr_setstack(lua_State *L)
  *
  * @function pthread_attr_setstackaddr
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param stackaddr         Value argument by an instance
  *                          of (LUA_TUSERDATA(CADDR)).
@@ -423,7 +423,7 @@ luab_pthread_attr_setstackaddr(lua_State *L)
  *
  * @function pthread_attr_setdetachstate
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param detachstate       Value argument by an instance of
  *                          (LUA_T{NUMBER,USERDATA(INT)}).
@@ -457,7 +457,7 @@ luab_pthread_attr_setdetachstate(lua_State *L)
  *
  * @function pthread_attr_getinheritsched
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param inheritsched      Result argument by an instance of
  *                          (LUA_TUSERDATA(INT)).
@@ -497,7 +497,7 @@ luab_pthread_attr_getinheritsched(lua_State *L)
  *
  * @function pthread_attr_getschedpolicy
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param policy            Result argument by an instance of
  *                          (LUA_TUSERDATA(INT)).
@@ -531,7 +531,7 @@ luab_pthread_attr_getschedpolicy(lua_State *L)
  *
  * @function pthread_attr_getscope
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param contentionscope   Result argument by an instance of
  *                          (LUA_TUSERDATA(INT)).
@@ -565,7 +565,7 @@ luab_pthread_attr_getscope(lua_State *L)
  *
  * @function pthread_attr_setinheritsched
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param inheritsched      Result argument by an instance of
  *                          (LUA_T{NUMBER,USERDATA(INT)}).
@@ -605,7 +605,7 @@ luab_pthread_attr_setinheritsched(lua_State *L)
  *
  * @function pthread_attr_setschedpolicy
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param policy            Value argument by an instance of
  *                          (LUA_T{NUMBER,USERDATA(INT)}).
@@ -639,7 +639,7 @@ luab_pthread_attr_setschedpolicy(lua_State *L)
  *
  * @function pthread_attr_setscope
  *
- * @param attr              Value argument by an instace of
+ * @param attr              Value argument by an instance of
  *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
  * @param contentionscope   Value argument by an instance of
  *                          (LUA_T{NUMBER,USERDATA(INT)}).
