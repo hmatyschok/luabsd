@@ -24,6 +24,16 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/*
+ * The implementation of the interface against pthread_create(3) is derived from:
+ *
+ * lalarm.c
+ * an alarm library for Lua based on signal
+ * Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>
+ * 28 Jul 2018 12:47:52
+ * This code is hereby placed in the public domain and also under the MIT license
+ */
+
 #include <pthread.h>
 
 #include <lua.h>
@@ -985,8 +995,8 @@ luab_pthread_cond_signal(lua_State *L)
  *
  * @param cond              Value argument, specified by an instance
  *                          of (LUA_TUSERDATA(PTHREAD_COND)).
- * @param mutex             Mutual exclusive lock, specified by an
- *                          instance (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ * @param mutex             Mutual exclusive lock, by an instance
+ *                          of (LUA_TUSERDATA(PTHREAD_MUTEX)).
  * @param abstime           Specifies time, by an instance
  *                          of (LUA_TUSERDATA(TIMESPEC)).
  *
@@ -1022,10 +1032,10 @@ luab_pthread_cond_timedwait(lua_State *L)
  *
  * @function pthread_cond_wait
  *
- * @param cond              Value argument, specified by an instance
- *                          of (LUA_TUSERDATA(PTHREAD_COND)).
- * @param mutex             Mutual exclusive lock, specified by an
- *                          instance (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ * @param cond              Value argument, instance of
+ *                          (LUA_TUSERDATA(PTHREAD_COND)).
+ * @param mutex             Mutual exclusive lock, instance
+ *                          of (LUA_TUSERDATA(PTHREAD_MUTEX)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1050,6 +1060,14 @@ luab_pthread_cond_wait(lua_State *L)
     status = pthread_cond_wait(&cond, &mutex);
     return (luab_pushxinteger(L, status));
 }
+
+
+
+
+
+
+
+
 
 
 

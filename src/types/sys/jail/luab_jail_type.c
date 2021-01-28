@@ -143,7 +143,7 @@ jail_checkxaddrtable(lua_State *L, int narg, luab_jail_t *self, luab_xaddr_t n)
 
     if (self != NULL) {
         xav = &(luab_xdomain(n % LUAB_XADDR_MAX));
-        m = luab_core_checkmodule(xav->xav_type, xav->xav_cookie, __func__);
+        m = luab_env_checkmodule(xav->xav_type, xav->xav_cookie, __func__);
 
         if ((tbl = luab_table_checkxdata(L, narg, m)) != NULL) {
 
@@ -172,7 +172,7 @@ jail_pushxaddrtable(lua_State *L, int narg, const char *k, luab_jail_t *self,
     luab_table_t *tbl;
 
     xav = &(luab_xdomain(n % LUAB_XADDR_MAX));
-    m = luab_core_checkmodule(xav->xav_type, xav->xav_cookie, __func__);
+    m = luab_env_checkmodule(xav->xav_type, xav->xav_cookie, __func__);
 
     if ((tbl = self->ud_cache[xav->xav_idx]) != NULL) {
         luab_table_pushxdata(L, narg, m, tbl, 1, 0);

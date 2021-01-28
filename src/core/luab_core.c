@@ -32,201 +32,26 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
-LUAMOD_API int  luaopen_bsd(lua_State *);
+extern luab_sysconf_vec_t luab_env_param[];
 
-/*
- * Vector-table set, provides meta-information for Lua bindings.
- */
-
-/* Interface against <arpa/xxx.h>. */
-static luab_module_vec_t luab_arpa_vec[] = {
-    {
-        .mv_mod = &luab_arpa_inet_lib,
-        .mv_init = luab_core_newtable,
-    },
-    LUAB_MOD_VEC_SENTINEL
-};
-
-/* Interface against <net/xxx.h>. */
-static luab_module_vec_t luab_net_vec[] = {
-    {
-        .mv_mod = &luab_net_if_dl_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_net_if_lib,
-        .mv_init = luab_core_populate,
-    },
-    LUAB_MOD_VEC_SENTINEL
-};
-
-/* Interface against <sys/xxx.h>. */
-static luab_module_vec_t luab_sys_vec[] = {
-    {
-        .mv_mod = &luab_sys_dirent_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_file_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_jail_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_mount_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_reboot_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_sched_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_signal_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_socket_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_stat_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_stdint_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_time_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_timespec_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_uio_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_un_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_sys_unistd_lib,
-        .mv_init = luab_core_newtable,
-    },
-    LUAB_MOD_VEC_SENTINEL
-};
-
-/* Interface against <xlocale/xxx.h>. */
-static luab_module_vec_t luab_xlocale_vec[] = {
-    {
-        .mv_mod = &luab_xlocale_inttypes_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_xlocale_langinfo_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_xlocale_locale_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_xlocale_time_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_xlocale_lib,
-        .mv_init = luab_core_populate,
-    },
-    LUAB_MOD_VEC_SENTINEL
-};
-
-/* Interface against <core/xxx> */
-static luab_module_vec_t luab_core_vec[] = {
-    {
-        .mv_mod = &luab_core_atomic_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_core_lib,
-        .mv_init = luab_core_populate,
-    },
-    LUAB_MOD_VEC_SENTINEL
-};
-
-/* Interface against <xxx.h> */
-static luab_module_vec_t luab_vec[] = {
-    {
-        .mv_mod = &luab_cpio_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_ctype_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_db_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_dirent_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_fcntl_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_fstab_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_grp_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_langinfo_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_locale_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_pwd_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_pthread_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_regex_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_signal_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_stdio_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_stdlib_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_time_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_ttyent_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_unistd_lib,
-        .mv_init = luab_core_newtable,
-    },{
-        .mv_mod = &luab_uuid_lib,
-        .mv_init = luab_core_newtable,
-    },
-    LUAB_MOD_VEC_SENTINEL
-};
-
-/*
- * Reflects and maps interface against API over </include/>.
- */
-
-static void
-luab_core_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
-{
-    luab_core_initmodule(L, narg, vec, name, 1);
-}
-
-static void
-luab_core_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
-{
-    luab_core_initmodule(L, narg, vec, NULL, 0);
-}
+extern luab_module_vec_t luab_env_typevec[];
+extern luab_module_vec_t luab_env_arpa_vec[];
+extern luab_module_vec_t luab_env_net_vec[];
+extern luab_module_vec_t luab_env_sys_vec[];
+extern luab_module_vec_t luab_env_xlocale_vec[];
+extern luab_module_vec_t luab_env_core_vec[];
+extern luab_module_vec_t luab_env_vec[];
 
 static const char *copyright =
     " Copyright (c) 2020, 2021 Henning Matyschok\n"
     " All rights reserved.\n"
     "\n"
-    "  The implementation of the interface against alarm(3) and setitimer(2)\n"
+    "  The implementation of the interface against\n"
+    "\n"
+    "    #1: alarm(3),\n"
+    "    #2: pthread_create(3),\n"
+    "    #3: setitimer(2)\n"
+    "\n"
     "  is derived from:\n"
     "\n"
     "   lalarm.c\n"
@@ -235,16 +60,59 @@ static const char *copyright =
     "   28 Jul 2018 12:47:52\n\n"
     "\n";
 
+LUAMOD_API int  luaopen_bsd(lua_State *);
+
 /*
- * Initializes Lua-module.
+ * Initializer.
  */
+
+static void
+luab_core_initparam(luab_sysconf_vec_t *vec)
+{
+    luab_sysconf_vec_t *tok;
+    long scx;
+
+    if ((tok = vec) != NULL) {
+
+        do {
+            if (tok->scv_val != NULL) {
+
+                if ((scx = sysconf(tok->scv_key)) < 0)
+                    *(tok->scv_val) = tok->scv_dflt;
+                else
+                    *(tok->scv_val) = (u_long)scx;
+            } else
+                errno = ENOENT;
+
+            tok++;
+        } while (tok->scv_val != NULL);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENXIO);
+}
+
+static void
+luab_core_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
+{
+    luab_env_initmodule(L, narg, vec, name, 1);
+}
+
+static void
+luab_core_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
+{
+    luab_env_initmodule(L, narg, vec, NULL, 0);
+}
+
+/*
+ * Main entry point for loadlib(3).
+ */
+
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
     (void)printf("%s", copyright);
 
     /* initialize constraints */
-    luab_core_initenv();
+    luab_core_initparam(luab_env_param);
 
     /*
      * register modules
@@ -254,17 +122,18 @@ luaopen_bsd(lua_State *L)
      */
     lua_newtable(L);
 
-    luab_core_registerlib(L, -2, luab_arpa_vec,     "arpa");
-    luab_core_registerlib(L, -2, luab_core_vec,     "core");
-    luab_core_registerlib(L, -2, luab_net_vec,      "net");
-    luab_core_registerlib(L, -2, luab_sys_vec,      "sys");
-    luab_core_registerlib(L, -2, luab_xlocale_vec,  "xlocale");
-    luab_core_registerlib(L, -2, luab_vec,          NULL);
+    luab_core_registerlib(L, -2, luab_env_arpa_vec,     "arpa");
+    luab_core_registerlib(L, -2, luab_env_core_vec,     "core");
+    luab_core_registerlib(L, -2, luab_env_net_vec,      "net");
+    luab_core_registerlib(L, -2, luab_env_sys_vec,      "sys");
+    luab_core_registerlib(L, -2, luab_env_xlocale_vec,  "xlocale");
+    luab_core_registerlib(L, -2, luab_env_vec,          NULL);
 
     lua_pushvalue(L, -1);
 
     /* register complex data-types. */
-    luab_core_registertype(L, -2, luab_typevec);
+    luab_core_registertype(L, -2, luab_env_typevec);
 
     return (1);
 }
+

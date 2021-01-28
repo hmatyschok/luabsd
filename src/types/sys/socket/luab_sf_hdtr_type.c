@@ -137,7 +137,7 @@ sf_hdtr_checkxiovec(lua_State *L, int narg, luab_sf_hdtr_t *self, luab_xiovec_t 
 
     if (self != NULL) {
         xiv = &(luab_xdomain(n % LUAB_XIOVEC_MAX));
-        m = luab_core_checkmodule(xiv->xiv_type, xiv->xiv_cookie, __func__);
+        m = luab_env_checkmodule(xiv->xiv_type, xiv->xiv_cookie, __func__);
 
         if ((tbl = luab_table_checkxdata(L, narg, m)) != NULL) {
 
@@ -166,7 +166,7 @@ sf_hdtr_pushxiovec(lua_State *L, int narg, const char *k, luab_sf_hdtr_t *self,
     luab_table_t *tbl;
 
     xiv = &(luab_xdomain(n % LUAB_XIOVEC_MAX));
-    m = luab_core_checkmodule(xiv->xiv_type, xiv->xiv_cookie, __func__);
+    m = luab_env_checkmodule(xiv->xiv_type, xiv->xiv_cookie, __func__);
 
     if ((tbl = self->ud_cache[xiv->xiv_idx]) != NULL) {
         luab_table_pushxdata(L, narg, m, tbl, 1, 0);

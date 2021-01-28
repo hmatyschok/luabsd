@@ -218,7 +218,7 @@ luab_isxdata(lua_State *L, int narg, luab_xarg_t *pci)
     luab_udata_t *ud = NULL;
     luab_module_vec_t *vec;
 
-    if ((vec = luab_typevec) != NULL) {
+    if ((vec = luab_env_typevec) != NULL) {
 
         while (vec->mv_mod != NULL) {
 
