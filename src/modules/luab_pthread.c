@@ -50,6 +50,26 @@
 extern luab_module_t luab_pthread_lib;
 
 /*
+ * Subr.
+ */
+
+static void *
+luab_thread(void *arg)
+{
+    lua_State *L;
+
+    if ((L = (lua_State *)arg) != NULL) {
+        lua_getfield(L, LUA_REGISTRYINDEX, "luab_thread");
+
+        if (lua_pcall(L, 0, 0, 0) != 0)
+            lua_error(L);
+    } else
+        luab_core_err(EX_OSERR, __func__, ENXIO);
+
+    return (L);
+}
+
+/*
  * Service primitives
  */
 
@@ -1061,7 +1081,54 @@ luab_pthread_cond_wait(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_create(3) - create a new thread
+ *
+ * @function pthread_create
+ *
+ * @param thread            Result argument, instance of
+ *                          (LUA_TUSERDATA(PTHREAD)).
+ * @param attr              Value argument, instance of
+ *                          (LUA_TUSERDATA(PTHREAD_ATTR)).
+ * @param start_routine     Callback, instance of (LUA_TFUNCTION).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_create(thread, attr, start_routine)
+ */
+static int
+luab_pthread_create(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_t thread;
+    pthread_attr_t attr;
+    lua_State *L1;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(PTHREAD, TYPE, __func__);
+    m1 = luab_xmod(PTHREAD_ATTR, TYPE, __func__);
+
+    thread = luab_udata(L, 1, m0, pthread_t);
+    attr = luab_udataisnil(L, 2, m1, pthread_attr_t);
+
+    L1 = luab_core_newstate();
+
+    if (lua_type(L, 3) == LUA_TFUNCTION) {
+        lua_settop(L, 3);
+        lua_xmove(L, L1, 3);
+        lua_setfield(L1, LUA_REGISTRYINDEX, "luab_thread");
+    } else
+        luab_core_argerror(L, 3, NULL, 0, 0, ENOSYS);
+
+    if (attr != NULL)
+        status = pthread_create(&thread, &attr, luab_thread, L);
+    else
+        status = pthread_create(&thread, NULL, luab_thread, L);
+
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1706,6 +1773,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_cond_signal",            luab_pthread_cond_signal),
     LUAB_FUNC("pthread_cond_timedwait",         luab_pthread_cond_timedwait),
     LUAB_FUNC("pthread_cond_wait",              luab_pthread_cond_wait),
+    LUAB_FUNC("pthread_create",                 luab_pthread_create),
 
 
 

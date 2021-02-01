@@ -137,3 +137,22 @@ luaopen_bsd(lua_State *L)
     return (1);
 }
 
+/*
+ * Service primitives.
+ */
+
+lua_State *
+luab_core_newstate(void)
+{
+    lua_State *L;
+
+    if ((L = luaL_newstate()) != NULL) {
+
+        luaL_openlibs(L);
+        luaL_requiref(L, "bsd", luaopen_bsd, 1);
+        lua_pop(L, 1);
+    } else
+        luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
+
+    return (L);
+}

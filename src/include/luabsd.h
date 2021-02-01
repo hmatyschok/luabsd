@@ -59,6 +59,8 @@ int  luab_core_gc(lua_State *, int, luab_module_t *);
 int  luab_core_len(lua_State *, int, luab_module_t *);
 int  luab_core_tostring(lua_State *, int, luab_module_t *);
 
+lua_State   *luab_core_newstate(void);
+
 int  luab_core_checkmaxargs(lua_State *, int);
 
 /*
