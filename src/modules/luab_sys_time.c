@@ -24,16 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * The implementation of the interface against setitimer(2) is derived from:
- *
- * lalarm.c
- * an alarm library for Lua based on signal
- * Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>
- * 28 Jul 2018 12:47:52
- * This code is hereby placed in the public domain and also under the MIT license
- */
-
 #include <sys/limits.h>
 #include <sys/time.h>
 
@@ -56,35 +46,17 @@ extern luab_module_t luab_sys_time_lib;
  * Subr.
  */
 
-static sigset_t nsigset;
-static pthread_t tid;
-
-static lua_State *saved_L;
-static lua_Hook h;
-
-static int h_msk;
-static int h_cnt;
-
-static void
-h_callout(lua_State *L, lua_Debug *arg __unused)
-{
-    L = saved_L;
-
-    lua_sethook(L, h, h_msk, h_cnt);
-    lua_getfield(L, LUA_REGISTRYINDEX, "l_callout");
-
-    if (lua_pcall(L, 0, 0, 0) != 0)
-        lua_error(L);
-}
-
 static void *
-h_signal(void *arg __unused)
+h_signal(void *arg)
 {
-    int l_msk = (LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT);
+    luab_thread_t *thr;
     int sig;
 
+    if ((thr = (luab_thread_t *)arg) == NULL)
+        goto out;
+
     for (;;) {
-        if (sigwait(&nsigset, &sig) != 0)
+        if (sigwait(&thr->thr_nsigset, &sig) != 0)
             goto out;   /* XXX up-call */
 
         switch (sig) {
@@ -92,11 +64,7 @@ h_signal(void *arg __unused)
         case SIGVTALRM:
         case SIGPROF:
 
-            h = lua_gethook(saved_L);
-            h_msk = lua_gethookmask(saved_L);
-            h_cnt = lua_gethookcount(saved_L);
-
-            lua_sethook(saved_L, h_callout, l_msk, 1);
+            (void)luab_core_pcall(arg);
             goto out;
         default:
             break;
@@ -117,6 +85,8 @@ luab_setitimer(lua_State *L)
     int narg, which;
     struct itimerval *value;
     struct itimerval *ovalue;
+    luab_thread_t *thr;
+    pthread_t tid;
     int status;
 
     narg = luab_core_checkmaxargs(L, 4);
@@ -128,27 +98,26 @@ luab_setitimer(lua_State *L)
     value = luab_udataisnil(L, 2, m1, struct itimerval *);
     ovalue = luab_udataisnil(L, 3, m1, struct itimerval *);
 
-    if (lua_type(L, narg) != LUA_TFUNCTION)
-        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
+    thr = luab_checkfunction(L, narg, "l_callout");
 
-    lua_settop(L, narg);
-    lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
+    if ((status = sigfillset(&thr->thr_nsigset)) != 0)
+        goto bad;
 
-    saved_L = L;    /* XXX race condition */
+    if ((status = pthread_sigmask(SIG_BLOCK, &thr->thr_nsigset, NULL)) != 0)
+        goto bad;
 
-    if ((status = sigfillset(&nsigset)) != 0)
-        goto out;
+    if ((status = pthread_create(&tid, NULL, h_signal, thr)) != 0)
+        goto bad;
 
-    if ((status = pthread_sigmask(SIG_BLOCK, &nsigset, NULL)) != 0)
-        goto out;
-
-    if ((status = pthread_create(&tid, NULL, h_signal, NULL)) != 0)
-        goto out;
-
-    if ((status = setitimer(which, value, ovalue)) != 0)
+    if ((status = setitimer(which, value, ovalue)) != 0) {
         pthread_cancel(tid);
+        goto bad;
+    }
 out:
     return (luab_pushxinteger(L, status));
+bad:
+    luab_core_closethread(thr);
+    goto out;
 }
 
 #if __XSI_VISIBLE

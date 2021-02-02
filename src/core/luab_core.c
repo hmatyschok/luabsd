@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <signal.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -49,7 +51,6 @@ static const char *copyright =
     "  The implementation of the interface against\n"
     "\n"
     "    #1: alarm(3),\n"
-    "    #3: setitimer(2)\n"
     "\n"
     "  is derived from:\n"
     "\n"
@@ -68,10 +69,9 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
 void
 luab_core_closethread(luab_thread_t *thr)
 {
-    if (thr != NULL) {
-        lua_close(thr->thr_child);
+    if (thr != NULL)
         luab_core_free(thr, sizeof(*thr));
-    } else
+    else
         luab_core_err(EX_DATAERR, __func__, ENOENT);
 }
 
