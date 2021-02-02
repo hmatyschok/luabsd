@@ -86,7 +86,6 @@ luab_setitimer(lua_State *L)
     struct itimerval *value;
     struct itimerval *ovalue;
     luab_thread_t *thr;
-    pthread_t tid;
     int status;
 
     narg = luab_core_checkmaxargs(L, 4);
@@ -106,11 +105,11 @@ luab_setitimer(lua_State *L)
     if ((status = pthread_sigmask(SIG_BLOCK, &thr->thr_nsigset, NULL)) != 0)
         goto bad;
 
-    if ((status = pthread_create(&tid, NULL, h_signal, thr)) != 0)
+    if ((status = pthread_create(&thr->thr_id, NULL, h_signal, thr)) != 0)
         goto bad;
 
     if ((status = setitimer(which, value, ovalue)) != 0) {
-        pthread_cancel(tid);
+        pthread_cancel(thr->thr_id);
         goto bad;
     }
 out:

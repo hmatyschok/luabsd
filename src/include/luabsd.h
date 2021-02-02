@@ -58,9 +58,12 @@ void     luab_core_argerror(lua_State *, int, void *, size_t, size_t, int);
  */
 
 typedef struct luab_thread {
-    lua_State   *thr_child;
-    lua_State   *thr_parent;
-    sigset_t    thr_nsigset;
+    pthread_t           thr_id;
+    pthread_mutex_t     thr_mtx;
+    pthread_cond_t      thr_cv;
+    sigset_t            thr_nsigset;
+    lua_State           *thr_child;
+    lua_State           *thr_parent;
     char        thr_fname[LUAB_NAME_MAX+1];
 } luab_thread_t;
 

@@ -24,6 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <pthread.h>
 #include <signal.h>
 
 #include <lua.h>
@@ -81,6 +82,8 @@ luab_core_newthread(lua_State *L, const char *fname)
     luab_thread_t *thr;
 
     if ((thr = luab_core_alloc(1, sizeof(luab_thread_t))) != NULL) {
+        thr->thr_mtx = PTHREAD_MUTEX_INITIALIZER;
+        thr->thr_cv = PTHREAD_COND_INITIALIZER;
 
         if ((thr->thr_child = lua_newthread(L)) != NULL) {
             thr->thr_parent = L;
