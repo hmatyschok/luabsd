@@ -49,7 +49,6 @@ static const char *copyright =
     "  The implementation of the interface against\n"
     "\n"
     "    #1: alarm(3),\n"
-    "    #2: pthread_create(3),\n"
     "    #3: setitimer(2)\n"
     "\n"
     "  is derived from:\n"
@@ -61,6 +60,64 @@ static const char *copyright =
     "\n";
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
+
+/*
+ * Primitives for threading operations.
+ */
+
+void
+luab_core_closethread(luab_thread_t *thr)
+{
+    if (thr != NULL) {
+        lua_close(thr->thr_child);
+        luab_core_free(thr, sizeof(*thr));
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENOENT);
+}
+
+luab_thread_t *
+luab_core_newthread(lua_State *L, const char *fname)
+{
+    luab_thread_t *thr;
+
+    if ((thr = luab_core_alloc(1, sizeof(luab_thread_t))) != NULL) {
+
+        if ((thr->thr_child = lua_newthread(L)) != NULL) {
+            thr->thr_parent = L;
+
+            if (fname != NULL)
+                (void)snprintf(thr->thr_fname, luab_env_name_max, "%s", fname);
+
+            return (thr);
+        } else
+            luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
+    } else
+        luab_core_err(EX_UNAVAILABLE, __func__, errno);
+
+    return (NULL);
+}
+
+void *
+luab_core_pcall(void *arg)
+{
+    luab_thread_t *thr;
+
+    if ((thr = (luab_thread_t *)arg) != NULL) {
+
+        if (thr->thr_child != NULL) {
+            lua_getfield(thr->thr_child, LUA_REGISTRYINDEX, thr->thr_fname);
+
+            if (lua_pcall(thr->thr_child, 0, 0, 0) != 0)
+                luab_core_err(EX_DATAERR, thr->thr_fname, ENXIO);
+
+            luab_core_closethread(thr);
+        } else
+            luab_core_err(EX_DATAERR, __func__, ENXIO);
+    } else
+        luab_core_err(EX_OSERR, __func__, ENOENT);
+
+    return (NULL);
+}
 
 /*
  * Initializer.
@@ -135,24 +192,4 @@ luaopen_bsd(lua_State *L)
     luab_core_registertype(L, -2, luab_env_typevec);
 
     return (1);
-}
-
-/*
- * Service primitives.
- */
-
-lua_State *
-luab_core_newstate(void)
-{
-    lua_State *L;
-
-    if ((L = luaL_newstate()) != NULL) {
-
-        luaL_openlibs(L);
-        luaL_requiref(L, "bsd", luaopen_bsd, 1);
-        lua_pop(L, 1);
-    } else
-        luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
-
-    return (L);
 }

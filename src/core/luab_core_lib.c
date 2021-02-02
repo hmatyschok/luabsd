@@ -40,16 +40,11 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
-/*
- * XXX
- *  upcalls..
- */
-
 #define LUAB_CORE_LIB_ID    1595987973
 #define LUAB_CORE_LIB_KEY   "core"
 
 /*
- * Generic service primitives, subset of <core>.
+ * Generic operations.
  */
 
 void

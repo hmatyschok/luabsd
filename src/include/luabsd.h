@@ -53,13 +53,28 @@ void     luab_core_errx(int, const char *, ...);
 void     luab_core_warn(const char *, ...);
 void     luab_core_argerror(lua_State *, int, void *, size_t, size_t, int);
 
+/*
+ * Primitives for threading operations.
+ */
+
+typedef struct luab_thread {
+    lua_State   *thr_child, *thr_parent;
+    char        thr_fname[LUAB_NAME_MAX+1];
+} luab_thread_t;
+
+void     luab_core_closethread(luab_thread_t *);
+luab_thread_t    *luab_core_newthread(lua_State *, const char *);
+void     *luab_core_pcall(void *);
+
+/*
+ * Primitives for operations over (LUA_TUSERDATA).
+ */
+
 int  luab_core_create(lua_State *, int, luab_module_t *, luab_module_t *);
 int  luab_core_dump(lua_State *, int, luab_module_t *, size_t);
 int  luab_core_gc(lua_State *, int, luab_module_t *);
 int  luab_core_len(lua_State *, int, luab_module_t *);
 int  luab_core_tostring(lua_State *, int, luab_module_t *);
-
-lua_State   *luab_core_newstate(void);
 
 int  luab_core_checkmaxargs(lua_State *, int);
 
@@ -93,6 +108,8 @@ const char   *luab_checklstringisnil(lua_State *, int, size_t, size_t *);
 
 char     *luab_checklstringalloc(lua_State *, int, size_t, size_t *);
 char     *luab_checklxstring(lua_State *, int, size_t, size_t *);
+
+luab_thread_t    *luab_checkfunction(lua_State *, int, const char *);
 
 /*
  * Access functions, [C -> stack].

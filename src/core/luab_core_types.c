@@ -326,6 +326,24 @@ luab_checklxstring(lua_State *L, int narg, size_t nmax, size_t *np)
     return (luab_core_allocstring(dp, np));
 }
 
+luab_thread_t *
+luab_checkfunction(lua_State *L, int narg, const char *fname)
+{
+    luab_thread_t *thr;
+
+    if ((thr = luab_core_newthread(L, fname)) != NULL) {
+
+        if (lua_type(thr->thr_child, narg) == LUA_TFUNCTION) {
+            lua_settop(thr->thr_child, narg);
+            lua_setfield(thr->thr_child, LUA_REGISTRYINDEX, thr->thr_fname);
+        } else
+            luab_core_argerror(thr->thr_parent, narg, thr, 1, sizeof(*thr), ENOSYS);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
+
+    return (thr);
+}
+
 /*
  * Access functions, [C -> stack].
  */

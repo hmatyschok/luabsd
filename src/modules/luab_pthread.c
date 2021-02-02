@@ -50,26 +50,6 @@
 extern luab_module_t luab_pthread_lib;
 
 /*
- * Subr.
- */
-
-static void *
-luab_thread(void *arg)
-{
-    lua_State *L;
-
-    if ((L = (lua_State *)arg) != NULL) {
-        lua_getfield(L, LUA_REGISTRYINDEX, "luab_thread");
-
-        if (lua_pcall(L, 0, 0, 0) != 0)
-            lua_error(L);
-    } else
-        luab_core_err(EX_OSERR, __func__, ENXIO);
-
-    return (L);
-}
-
-/*
  * Service primitives
  */
 
@@ -1102,7 +1082,7 @@ luab_pthread_create(lua_State *L)
     luab_module_t *m0, *m1;
     pthread_t thread;
     pthread_attr_t attr;
-    lua_State *L1;
+    luab_thread_t *thr;
     int status;
 
     (void)luab_core_checkmaxargs(L, 3);
@@ -1113,19 +1093,12 @@ luab_pthread_create(lua_State *L)
     thread = luab_udata(L, 1, m0, pthread_t);
     attr = luab_udataisnil(L, 2, m1, pthread_attr_t);
 
-    L1 = luab_core_newstate();
-
-    if (lua_type(L, 3) == LUA_TFUNCTION) {
-        lua_settop(L, 3);
-        lua_xmove(L, L1, 3);
-        lua_setfield(L1, LUA_REGISTRYINDEX, "luab_thread");
-    } else
-        luab_core_argerror(L, 3, NULL, 0, 0, ENOSYS);
+    thr = luab_checkfunction(L, 3, "luab_pthread_fn");
 
     if (attr != NULL)
-        status = pthread_create(&thread, &attr, luab_thread, L);
+        status = pthread_create(&thread, &attr, luab_core_pcall, thr);
     else
-        status = pthread_create(&thread, NULL, luab_thread, L);
+        status = pthread_create(&thread, NULL, luab_core_pcall, thr);
 
     return (luab_pushxinteger(L, status));
 }
