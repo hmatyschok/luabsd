@@ -1106,7 +1106,7 @@ luab_pthread_create(lua_State *L)
 /***
  * pthread_detach(3) - detach a thread
  *
- * @function pthread_create
+ * @function pthread_detach
  *
  * @param thread            Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
  *
@@ -1129,9 +1129,35 @@ luab_pthread_detach(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_equal(3) - compare thread IDs
+ *
+ * @function pthread_equal
+ *
+ * @param t1            Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
+ * @param t2            Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_equal(t1, t2)
+ */
+static int
+luab_pthread_equal(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_t t1, t2;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(PTHREAD, TYPE, __func__);
 
+    t1 = luab_udata(L, 1, m, pthread_t);
+    t2 = luab_udata(L, 2, m, pthread_t);
+
+    status = pthread_equal(t1, t2);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1776,6 +1802,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_cond_wait",              luab_pthread_cond_wait),
     LUAB_FUNC("pthread_create",                 luab_pthread_create),
     LUAB_FUNC("pthread_detach",                 luab_pthread_detach),
+    LUAB_FUNC("pthread_equal",                  luab_pthread_equal),
 
 
 
