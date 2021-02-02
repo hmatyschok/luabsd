@@ -1130,6 +1130,34 @@ luab_pthread_create(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_detach(3) - detach a thread
+ *
+ * @function pthread_create
+ *
+ * @param thread            Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_detach(thread)
+ */
+static int
+luab_pthread_detach(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_t thread;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD, TYPE, __func__);
+    thread = luab_udata(L, 1, m, pthread_t);
+    status = pthread_detach(thread);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
 
 
 
@@ -1774,6 +1802,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_cond_timedwait",         luab_pthread_cond_timedwait),
     LUAB_FUNC("pthread_cond_wait",              luab_pthread_cond_wait),
     LUAB_FUNC("pthread_create",                 luab_pthread_create),
+    LUAB_FUNC("pthread_detach",                 luab_pthread_detach),
 
 
 
