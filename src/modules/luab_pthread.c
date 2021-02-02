@@ -1159,6 +1159,29 @@ luab_pthread_equal(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_exit(3) - compare thread IDs
+ *
+ * @function pthread_exit
+ *
+ * @param value_ptr     Instance of (LUA_TNIL).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_exit(value_ptr)
+ */
+static int
+luab_pthread_exit(lua_State *L)
+{
+    void *value_ptr;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    value_ptr = luab_checknil(L, 1);
+    pthread_exit(value_ptr);
+        /* NOTREACHED */
+    return (luab_pushxinteger(L, luab_env_success));
+}
 
 
 
@@ -1803,6 +1826,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_create",                 luab_pthread_create),
     LUAB_FUNC("pthread_detach",                 luab_pthread_detach),
     LUAB_FUNC("pthread_equal",                  luab_pthread_equal),
+    LUAB_FUNC("pthread_exit",                   luab_pthread_exit),
 
 
 
