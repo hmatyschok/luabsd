@@ -455,7 +455,7 @@ luab_table_pushxtable(lua_State *L, int narg, luab_xtable_param_t *xtp)
                 if (narg < 0)
                     lua_pushvalue(L, narg + 1);
                 else
-                    lua_pushvalue(L, narg);
+                    lua_pushvalue(L, narg - 1);
             }
             errno = 0;
         } else
@@ -513,7 +513,7 @@ luab_table_setxvector(lua_State *L, int narg, luab_module_t *m,
                     if (narg < 0)
                         lua_pushvalue(L, narg + 1);
                     else
-                        lua_pushvalue(L, narg);
+                        lua_pushvalue(L, narg - 1);
                 }
             }
             errno = 0;

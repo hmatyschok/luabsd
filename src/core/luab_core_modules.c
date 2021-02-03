@@ -56,7 +56,7 @@
  *      its type, realm and/or domain, etc.
  */
 
-luab_module_vec_t luab_env_typevec[] = {
+luab_module_vec_t luab_env_type_vec[] = {
 
     /*
      * Atomic data types.
@@ -645,7 +645,7 @@ luab_module_vec_t luab_env_typevec[] = {
  */
 
 /* Interface against <arpa/xxx.h>. */
-luab_module_vec_t luab_env_arpa_vec[] = {
+static luab_module_vec_t luab_env_arpa_vec[] = {
     {
         .mv_mod = &luab_arpa_inet_lib,
         .mv_init = luab_env_newtable,
@@ -654,7 +654,7 @@ luab_module_vec_t luab_env_arpa_vec[] = {
 };
 
 /* Interface against <net/xxx.h>. */
-luab_module_vec_t luab_env_net_vec[] = {
+static luab_module_vec_t luab_env_net_vec[] = {
     {
         .mv_mod = &luab_net_if_dl_lib,
         .mv_init = luab_env_newtable,
@@ -666,7 +666,7 @@ luab_module_vec_t luab_env_net_vec[] = {
 };
 
 /* Interface against <sys/xxx.h>. */
-luab_module_vec_t luab_env_sys_vec[] = {
+static luab_module_vec_t luab_env_sys_vec[] = {
     {
         .mv_mod = &luab_sys_dirent_lib,
         .mv_init = luab_env_newtable,
@@ -717,7 +717,7 @@ luab_module_vec_t luab_env_sys_vec[] = {
 };
 
 /* Interface against <xlocale/xxx.h>. */
-luab_module_vec_t luab_env_xlocale_vec[] = {
+static luab_module_vec_t luab_env_xlocale_vec[] = {
     {
         .mv_mod = &luab_xlocale_inttypes_lib,
         .mv_init = luab_env_newtable,
@@ -738,7 +738,7 @@ luab_module_vec_t luab_env_xlocale_vec[] = {
 };
 
 /* Interface against <core/xxx> */
-luab_module_vec_t luab_env_core_vec[] = {
+static luab_module_vec_t luab_env_core_vec[] = {
     {
         .mv_mod = &luab_core_atomic_lib,
         .mv_init = luab_env_newtable,
@@ -750,7 +750,7 @@ luab_module_vec_t luab_env_core_vec[] = {
 };
 
 /* Interface against <xxx.h> */
-luab_module_vec_t luab_env_vec[] = {
+static luab_module_vec_t luab_env_vec[] = {
     {
         .mv_mod = &luab_cpio_lib,
         .mv_init = luab_env_newtable,
@@ -810,4 +810,27 @@ luab_module_vec_t luab_env_vec[] = {
         .mv_init = luab_env_newtable,
     },
     LUAB_MOD_VEC_SENTINEL
+};
+
+luab_libdata_t luab_env_libdata_vec[] = {
+    {
+        .lib_vec = luab_env_arpa_vec,
+        .lib_name = "arpa",
+    },{
+        .lib_vec = luab_env_core_vec,
+        .lib_name = "core",
+    },{
+        .lib_vec = luab_env_net_vec,
+        .lib_name = "net",
+    },{
+        .lib_vec = luab_env_sys_vec,
+        .lib_name = "sys",
+    },{
+        .lib_vec = luab_env_xlocale_vec,
+        .lib_name = "xlocale",
+    },{
+        .lib_vec = luab_env_vec,
+        .lib_name = NULL,
+    },
+    LUAB_LIBDATA_VEC_SENTINEL
 };

@@ -27,6 +27,14 @@
 #ifndef _LUAB_MODULES_H_
 #define _LUAB_MODULES_H_
 
+typedef struct luab_libdata {
+    luab_module_vec_t   *lib_vec;
+    const char          *lib_name;
+} luab_libdata_t;
+
+#define LUAB_LIBDATA_VEC_SENTINEL \
+    { .lib_vec = NULL, .lib_name = NULL, }
+
 /*
  * Subset of atomic data types.
  */
@@ -283,13 +291,17 @@ extern luab_module_t luab_xlocale_lib;
  */
 
 extern luab_sysconf_vec_t luab_env_param[];
+extern luab_libdata_t luab_env_libdata_vec[];
 
-extern luab_module_vec_t luab_env_typevec[];
-extern luab_module_vec_t luab_env_arpa_vec[];
-extern luab_module_vec_t luab_env_net_vec[];
-extern luab_module_vec_t luab_env_sys_vec[];
-extern luab_module_vec_t luab_env_xlocale_vec[];
-extern luab_module_vec_t luab_env_core_vec[];
-extern luab_module_vec_t luab_env_vec[];
+
+/*
+ * Service primitives.
+ */
+
+void     luab_env_initparam(luab_sysconf_vec_t *);
+
+void     luab_env_registerlib(lua_State *, int, luab_module_vec_t *, const char *);
+void     luab_env_registertype(lua_State *, int, luab_module_vec_t *);
+void     luab_env_initlib(lua_State *, int, luab_libdata_t *);
 
 #endif /* _LUAB_MODULES_H_ */

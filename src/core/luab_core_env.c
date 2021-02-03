@@ -748,6 +748,30 @@ luab_sysconf_vec_t luab_env_param[] = {
     LUAB_SC_VEC_SENTINEL
 };
 
+void
+luab_env_initparam(luab_sysconf_vec_t *vec)
+{
+    luab_sysconf_vec_t *tok;
+    long scx;
+
+    if ((tok = vec) != NULL) {
+
+        do {
+            if (tok->scv_val != NULL) {
+
+                if ((scx = sysconf(tok->scv_key)) < 0)
+                    *(tok->scv_val) = tok->scv_dflt;
+                else
+                    *(tok->scv_val) = (u_long)scx;
+            } else
+                errno = ENOENT;
+
+            tok++;
+        } while (tok->scv_val != NULL);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENXIO);
+}
+
 /*
  * Selector over module/type vector-table set.
  */
@@ -851,26 +875,39 @@ luab_env_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
 }
 
 void
-luab_env_initparam(luab_sysconf_vec_t *vec)
+luab_env_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
 {
-    luab_sysconf_vec_t *tok;
-    long scx;
+    luab_env_initmodule(L, narg, vec, name, 1);
+}
+
+void
+luab_env_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
+{
+    luab_env_initmodule(L, narg, vec, NULL, 0);
+}
+
+void
+luab_env_initlib(lua_State *L, int narg, luab_libdata_t *vec)
+{
+    luab_libdata_t *tok;
 
     if ((tok = vec) != NULL) {
+        luab_table_init(L, 1);
 
         do {
-            if (tok->scv_val != NULL) {
 
-                if ((scx = sysconf(tok->scv_key)) < 0)
-                    *(tok->scv_val) = tok->scv_dflt;
-                else
-                    *(tok->scv_val) = (u_long)scx;
-            } else
+            if (tok->lib_vec != NULL)
+                luab_env_registerlib(L, narg, tok->lib_vec, tok->lib_name);
+            else
                 errno = ENOENT;
 
             tok++;
-        } while (tok->scv_val != NULL);
+        } while (tok->lib_vec != NULL);
+
+        if (narg < 0)
+            lua_pushvalue(L, narg + 1);
+        else
+            lua_pushvalue(L, narg - 1);
     } else
         luab_core_err(EX_DATAERR, __func__, ENXIO);
 }
-

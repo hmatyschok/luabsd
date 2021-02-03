@@ -50,22 +50,6 @@ static const char *copyright =
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
- * Initializer.
- */
-
-static void
-luab_core_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
-{
-    luab_env_initmodule(L, narg, vec, name, 1);
-}
-
-static void
-luab_core_registertype(lua_State *L, int narg, luab_module_vec_t *vec)
-{
-    luab_env_initmodule(L, narg, vec, NULL, 0);
-}
-
-/*
  * Main entry point for loadlib(3).
  */
 
@@ -79,23 +63,11 @@ luaopen_bsd(lua_State *L)
 
     /*
      * register modules
-     *
-     * XXX
-     *  We shall externalize this.
      */
-    lua_newtable(L);
-
-    luab_core_registerlib(L, -2, luab_env_arpa_vec,     "arpa");
-    luab_core_registerlib(L, -2, luab_env_core_vec,     "core");
-    luab_core_registerlib(L, -2, luab_env_net_vec,      "net");
-    luab_core_registerlib(L, -2, luab_env_sys_vec,      "sys");
-    luab_core_registerlib(L, -2, luab_env_xlocale_vec,  "xlocale");
-    luab_core_registerlib(L, -2, luab_env_vec,          NULL);
-
-    lua_pushvalue(L, -1);
+    luab_env_initlib(L, -2, luab_env_libdata_vec);
 
     /* register complex data-types. */
-    luab_core_registertype(L, -2, luab_env_typevec);
+    luab_env_registertype(L, -2, luab_env_type_vec);
 
     return (1);
 }

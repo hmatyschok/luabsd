@@ -1266,7 +1266,7 @@ typedef enum luab_type {
 #define luab_xcookie(name, type) \
     ((LUAB_##name##_##type##_ID))
 #define luab_xmv(idx) \
-    (luab_env_typevec[((idx) % (LUAB_TYPE_SENTINEL))])
+    (luab_env_type_vec[((idx) % (LUAB_TYPE_SENTINEL))])
 
 typedef struct luab_module_vec {
     luab_module_t       *mv_mod;
@@ -1277,7 +1277,7 @@ typedef struct luab_module_vec {
 #define LUAB_MOD_VEC_SENTINEL \
     { .mv_mod = NULL, .mv_init = NULL, .mv_idx = LUAB_TYPE_SENTINEL, }
 
-extern luab_module_vec_t luab_env_typevec[];
+extern luab_module_vec_t luab_env_type_vec[];
 
 /*
  * Primitives for module-vector operations.
@@ -1295,7 +1295,5 @@ luab_module_t    *luab_env_checkmodule(luab_type_t, uint32_t, const char *);
 #define luab_xmod(name, type, fname)                                \
     (luab_env_checkmodule(luab_xid(name),                          \
         luab_xcookie(name, type), (fname)))
-
-void    luab_env_initparam(luab_sysconf_vec_t *);
 
 #endif /* _LUAB_ENV_H_ */

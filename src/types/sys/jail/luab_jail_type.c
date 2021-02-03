@@ -190,7 +190,7 @@ jail_pushxaddrtable(lua_State *L, int narg, const char *k, luab_jail_t *self,
             if (narg < 0)
                 lua_pushvalue(L, narg + 1);
             else
-                lua_pushvalue(L, narg);
+                lua_pushvalue(L, narg - 1);
         }
         errno = 0;
     } else
