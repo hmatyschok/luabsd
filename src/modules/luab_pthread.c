@@ -24,16 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * The implementation of the interface against pthread_create(3) is derived from:
- *
- * lalarm.c
- * an alarm library for Lua based on signal
- * Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>
- * 28 Jul 2018 12:47:52
- * This code is hereby placed in the public domain and also under the MIT license
- */
-
 #include <pthread.h>
 
 #include <lua.h>
@@ -1134,8 +1124,8 @@ luab_pthread_detach(lua_State *L)
  *
  * @function pthread_equal
  *
- * @param t1            Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
- * @param t2            Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
+ * @param t1                Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
+ * @param t2                Value argument, instance of (LUA_TUSERDATA(PTHREAD)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1164,7 +1154,7 @@ luab_pthread_equal(lua_State *L)
  *
  * @function pthread_exit
  *
- * @param value_ptr     Instance of (LUA_TNIL).
+ * @param value_ptr         Instance of (LUA_TNIL).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1183,8 +1173,35 @@ luab_pthread_exit(lua_State *L)
     return (luab_pushxinteger(L, luab_env_success));
 }
 
+/***
+ * pthread_getspecific(3) - get a thread-specific data value
+ *
+ * @function pthread_getspecific
+ *
+ * @param key               Specifies key by an instance of
+ *                          (LUA_TUSERDATA(PTHREAD_KEY)).
+ *
+ * @return (LUA_T{NIL,USERDATA(CADDR)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_getspecific(key)
+ */
+static int
+luab_pthread_getspecific(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_key_t key;
+    void *dp;
 
+    (void)luab_core_checkmaxargs(L, 1);
 
+    m0 = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m1 = luab_xmod(CADDR, TYPE, __func__);
+
+    key = luab_udata(L, 1, m0, pthread_key_t);
+    dp = pthread_getspecific(key);
+
+    return (luab_pushxdata(L, m1, dp));
+}
 
 
 
@@ -1827,6 +1844,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_detach",                 luab_pthread_detach),
     LUAB_FUNC("pthread_equal",                  luab_pthread_equal),
     LUAB_FUNC("pthread_exit",                   luab_pthread_exit),
+    LUAB_FUNC("pthread_getspecific",            luab_pthread_getspecific),
 
 
 

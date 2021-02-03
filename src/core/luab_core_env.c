@@ -81,8 +81,7 @@ const lua_Integer luab_env_long_bit = LUAB_LONG_BIT;
 const lua_Integer luab_env_word_bit = LUAB_WORD_BIT;
 
 /*
- * XXX
- *  Constraints shall set by sysconf(3), if any.
+ * Constraints are initialized by sysconf(3), if any.
  */
 
 u_long luab_env_buf_max;
