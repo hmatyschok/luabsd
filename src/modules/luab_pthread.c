@@ -1178,8 +1178,7 @@ luab_pthread_exit(lua_State *L)
  *
  * @function pthread_getspecific
  *
- * @param key               Specifies key by an instance of
- *                          (LUA_TUSERDATA(PTHREAD_KEY)).
+ * @param key               Value argument, by (LUA_TUSERDATA(PTHREAD_KEY)).
  *
  * @return (LUA_T{NIL,USERDATA(CADDR)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1202,6 +1201,41 @@ luab_pthread_getspecific(lua_State *L)
 
     return (luab_pushxdata(L, m1, dp));
 }
+
+/***
+ * pthread_getcpuclockid(3) - access a thread CPU-time clock
+ *
+ * @function pthread_getcpuclockid
+ *
+ * @param pthread_id        Value argument, by (LUA_TUSERDATA(PTHREAD)).
+ * @param clock_id          Result argument, by (LUA_TUSERDATA(CLOCKID)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_getcpuclockid(pthread_id, clock_id)
+ */
+static int
+luab_pthread_getcpuclockid(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_t thread_id;
+    clockid_t *clock_id;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD, TYPE, __func__);
+    m1 = luab_xmod(CLOCKID, TYPE, __func__);
+
+    thread_id = luab_udata(L, 1, m0, pthread_t);
+    clock_id = luab_udata(L, 2, m1, clockid_t *);
+
+    status = pthread_getcpuclockid(thread_id, clock_id);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
 
 
 
@@ -1845,6 +1879,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_equal",                  luab_pthread_equal),
     LUAB_FUNC("pthread_exit",                   luab_pthread_exit),
     LUAB_FUNC("pthread_getspecific",            luab_pthread_getspecific),
+    LUAB_FUNC("pthread_getcpuclockid",          luab_pthread_getcpuclockid),
 
 
 
