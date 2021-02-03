@@ -42,7 +42,6 @@
  * Subr.
  */
 
-
 static caddr_t
 luab_iov_base(struct iovec *iov, size_t *len)
 {
