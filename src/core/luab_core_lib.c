@@ -26,11 +26,11 @@
 
 #include <err.h>
 #include <errno.h>
+#include <pthread.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <unistd.h>
-#include <uuid.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -158,6 +158,65 @@ luab_core_checkmaxargs(lua_State *L, int nmax)
         luaL_error(L, "#%d args, but #%d expected", narg, nmax);
 
     return (narg);
+}
+
+/*
+ * Primitives for threading operations.
+ */
+
+void
+luab_core_closethread(luab_thread_t *thr)
+{
+    if (thr != NULL)
+        luab_core_free(thr, sizeof(*thr));
+    else
+        luab_core_err(EX_DATAERR, __func__, ENOENT);
+}
+
+luab_thread_t *
+luab_core_newthread(lua_State *L, const char *fname)
+{
+    luab_thread_t *thr;
+
+    if ((thr = luab_core_alloc(1, sizeof(luab_thread_t))) != NULL) {
+        thr->thr_mtx = PTHREAD_MUTEX_INITIALIZER;
+        thr->thr_cv = PTHREAD_COND_INITIALIZER;
+
+        if ((thr->thr_child = lua_newthread(L)) != NULL) {
+            thr->thr_parent = L;
+
+            if (fname != NULL)
+                (void)snprintf(thr->thr_fname, luab_env_name_max, "%s", fname);
+
+            return (thr);
+        } else
+            luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
+    } else
+        luab_core_err(EX_UNAVAILABLE, __func__, errno);
+
+    return (NULL);
+}
+
+void *
+luab_core_pcall(void *arg)
+{
+    luab_thread_t *thr;
+
+    if ((thr = (luab_thread_t *)arg) != NULL) {
+
+        if (thr->thr_child != NULL) {
+            lua_getfield(thr->thr_child, LUA_REGISTRYINDEX, thr->thr_fname);
+
+            if (lua_pcall(thr->thr_child, 0, 0, 0) != 0)
+                luab_core_err(EX_DATAERR, thr->thr_fname, ENXIO);
+
+            luab_core_closethread(thr);
+        } else
+            luab_core_err(EX_DATAERR, __func__, ENXIO);
+    } else
+        luab_core_err(EX_OSERR, __func__, ENOENT);
+
+    return (NULL);
 }
 
 /*
