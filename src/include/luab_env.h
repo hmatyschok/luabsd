@@ -1296,4 +1296,6 @@ luab_module_t    *luab_env_checkmodule(luab_type_t, uint32_t, const char *);
     (luab_env_checkmodule(luab_xid(name),                          \
         luab_xcookie(name, type), (fname)))
 
+void    luab_env_initparam(luab_sysconf_vec_t *);
+
 #endif /* _LUAB_ENV_H_ */

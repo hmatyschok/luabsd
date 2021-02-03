@@ -40,7 +40,6 @@
 #include "luab_modules.h"
 #include "luab_udata.h"
 
-
 /*
  * Generic operations.
  */
@@ -191,14 +190,12 @@ luab_core_newthread(lua_State *L, const char *fname)
 
             if (fname != NULL)
                 (void)snprintf(thr->thr_fname, luab_env_name_max, "%s", fname);
-
-            return (thr);
         } else
             luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
     } else
         luab_core_err(EX_UNAVAILABLE, __func__, errno);
 
-    return (NULL);
+    return (thr);
 }
 
 void *
@@ -608,6 +605,7 @@ luab_checklxstring(lua_State *L, int narg, size_t nmax, size_t *np)
 luab_thread_t *
 luab_checkfunction(lua_State *L, int narg, const char *fname)
 {
+
     if (lua_type(L, narg) == LUA_TFUNCTION && fname != NULL) {
         lua_settop(L, narg);
         lua_setfield(L, LUA_REGISTRYINDEX, fname);

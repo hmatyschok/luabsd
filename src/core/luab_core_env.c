@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <unistd.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -847,6 +849,27 @@ luab_env_initmodule(lua_State *L, int narg, luab_module_vec_t *vec,
         lua_setfield(L, narg, name);
 }
 
+void
+luab_env_initparam(luab_sysconf_vec_t *vec)
+{
+    luab_sysconf_vec_t *tok;
+    long scx;
 
+    if ((tok = vec) != NULL) {
 
+        do {
+            if (tok->scv_val != NULL) {
+
+                if ((scx = sysconf(tok->scv_key)) < 0)
+                    *(tok->scv_val) = tok->scv_dflt;
+                else
+                    *(tok->scv_val) = (u_long)scx;
+            } else
+                errno = ENOENT;
+
+            tok++;
+        } while (tok->scv_val != NULL);
+    } else
+        luab_core_err(EX_DATAERR, __func__, ENXIO);
+}
 

@@ -2,7 +2,6 @@
 .PATH:  ${LUAB_SRCTOP}/core
 
 SRCS+=  luab_core.c
-SRCS+=  luab_core_buf.c
 
 SRCS+=  luab_core_env.c
 SRCS+=  luab_core_lib.c

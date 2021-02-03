@@ -103,7 +103,6 @@ int  luab_pushxdata(lua_State *, luab_module_t *, void *);
 void     luab_rawsetxdata(lua_State *, int, luab_module_t *, lua_Integer, void *);
 void     luab_setxdata(lua_State *, int, luab_module_t *, const char *, void *);
 
-#include "luab_buf.h"
 #include "luab_iovec.h"
 #include "luab_db.h"
 #include "luab_locale.h"

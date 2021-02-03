@@ -38,7 +38,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sysexits.h>
-#include <unistd.h> /* XXX */
 
 #include "luab_env.h"
 

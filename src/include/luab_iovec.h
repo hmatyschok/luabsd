@@ -27,8 +27,6 @@
 #ifndef _LUAB_IOVEC_H_
 #define _LUAB_IOVEC_H_
 
-#include "luab_buf.h"
-
 typedef struct luab_iovec_param {
     struct iovec    iop_iov;    /* maps-to allocated memory region, iov_base */
     struct iovec    iop_data;   /* maps-to supplied data */
@@ -52,6 +50,40 @@ typedef struct luab_iovec {
 #define IOV_BUFF    0x0004
 #define IOV_DUMP    0x0008
 #endif
+
+/*
+ * Generic service primitives.
+ */
+
+int  luab_iov_clear(struct iovec *);
+int  luab_iov_free(struct iovec *);
+
+int  luab_iov_alloc(struct iovec *, size_t);
+int  luab_iov_realloc(struct iovec *, size_t);
+
+int  luab_iov_copyin(struct iovec *, const void *, ssize_t);
+int  luab_iov_copyout(struct iovec *, void *, ssize_t);
+
+ssize_t  luab_iov_readv(struct iovec *, int, size_t);
+ssize_t  luab_iov_writev(struct iovec *, int, size_t);
+#if __BSD_VISIBLE
+ssize_t  luab_iov_preadv(struct iovec *, int, size_t, off_t);
+ssize_t  luab_iov_pwritev(struct iovec *, int, size_t, off_t);
+#endif
+
+/*
+ * Access functions, [C -> stack].
+ */
+
+int  luab_iov_pushlen(lua_State *, struct iovec *);
+int  luab_iov_pushdata(lua_State *, struct iovec *);
+int  luab_iov_pushxdata(lua_State *, struct iovec *);
+
+void     luab_iov_rawsetdata(lua_State *, int, lua_Integer, struct iovec *);
+void     luab_iov_rawsetxdata(lua_State *, int, lua_Integer, struct iovec *);
+
+void     luab_iov_setdata(lua_State *, int, const char *, struct iovec *);
+void     luab_iov_setxdata(lua_State *, int, const char *, struct iovec *);
 
 /*
  * Generic service primitives.

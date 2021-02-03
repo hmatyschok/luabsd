@@ -24,10 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/socket.h>
+#include <sys/uio.h>
 
-#include <errno.h>
-#include <string.h>
 #include <unistd.h>
 
 #include <lua.h>
@@ -41,6 +39,24 @@
 /*
  * Subr.
  */
+
+
+static caddr_t
+luab_iov_base(struct iovec *iov, size_t *len)
+{
+    caddr_t dp;
+
+    if (iov != NULL && len != NULL) {
+
+        if ((dp = iov->iov_base) != NULL)
+            *len = iov->iov_len;
+        else
+            *len = 0;
+    } else
+        dp = NULL;
+
+    return (dp);
+}
 
 static void
 luab_iovec_init(lua_State *L, int narg, struct iovec *iov)
@@ -59,6 +75,330 @@ luab_iovec_init(lua_State *L, int narg, struct iovec *iov)
                 /* XXX */
         buf->iov_flags &= ~IOV_LOCK;
     }
+}
+
+/*
+ * Generic service primitives for handling iovec{}s.
+ *
+ *   #1 bp refers iov->iov_base.
+ *
+ *   #2 dp or v refers external data.
+ */
+
+int
+luab_iov_clear(struct iovec *iov)
+{
+    caddr_t bp;
+    size_t len;
+    int status;
+
+    if (iov != NULL) {
+        if (((bp = iov->iov_base) != NULL) &&
+            ((len = iov->iov_len) > 1)) {
+            (void)memset_s(bp, len, 0, len);
+            status = luab_env_success;
+        } else {
+            errno = ERANGE;
+            status = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        status = luab_env_error;
+    }
+    return (status);
+}
+
+int
+luab_iov_alloc(struct iovec *iov, size_t len)
+{
+    int status;
+
+    if (iov != NULL && len > 1) {
+
+        if ((iov->iov_base = luab_core_alloc(len, sizeof(char))) != NULL) {
+            iov->iov_len = len;
+            status = luab_env_success;
+        } else {
+            iov->iov_len = 0;
+            status = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        status = luab_env_error;
+    }
+    return (status);
+}
+
+int
+luab_iov_realloc(struct iovec *iov, size_t len)
+{
+    caddr_t bp;
+    int status;
+
+    if (iov != NULL && len > 1) {
+
+        if ((bp = realloc(iov->iov_base, len)) != NULL) {
+            iov->iov_base = bp;
+            iov->iov_len = len;
+            status = luab_env_success;
+        } else
+            status = luab_env_error;
+    } else {
+        errno = EINVAL;
+        status = luab_env_error;
+    }
+    return (status);
+}
+
+int
+luab_iov_copyin(struct iovec *iov, const void *v, ssize_t len)
+{
+    caddr_t bp;
+    int status;
+
+    if (iov != NULL && v != NULL && len > 0) {
+
+        if (((bp = iov->iov_base) != NULL) &&
+            (len == (ssize_t)iov->iov_len)) {
+            (void)memmove(bp, v, len);
+
+            status = luab_env_success;
+        } else {
+            errno = ERANGE;
+            status = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        status = luab_env_error;
+    }
+    return (status);
+}
+
+int
+luab_iov_copyout(struct iovec *iov, void *v, ssize_t len)
+{
+    caddr_t bp;
+    int status;
+
+    if (iov != NULL && v != NULL && len > 0) {
+
+        if (((bp = iov->iov_base) != NULL) &&
+            (len == (ssize_t)iov->iov_len)) {
+            (void)memmove(v, bp, len);
+
+            status = luab_env_success;
+        } else {
+            errno = ERANGE;
+            status = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        status = luab_env_error;
+    }
+    return (status);
+}
+
+int
+luab_iov_free(struct iovec *iov)
+{
+    int status;
+
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
+            free(iov->iov_base);
+            iov->iov_base = NULL;
+        }
+        iov->iov_len = 0;
+        status = luab_env_success;
+    } else {
+        errno = EINVAL;
+        status = luab_env_error;
+    }
+    return (status);
+}
+
+/*
+ * I/O.
+ */
+
+ssize_t
+luab_iov_readv(struct iovec *iov, int fd, size_t n)
+{
+    ssize_t count;
+
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
+
+            if (n <= iov->iov_len)
+                count = readv(fd, iov, n);
+            else {
+                errno = ERANGE;
+                count = luab_env_error;
+            }
+        } else {
+            errno = ERANGE;
+            count = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        count = luab_env_error;
+    }
+    return (count);
+}
+
+ssize_t
+luab_iov_writev(struct iovec *iov, int fd, size_t n)
+{
+    ssize_t count;
+
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
+
+            if (n <= iov->iov_len)
+                count = writev(fd, iov, n);
+            else {
+                errno = ERANGE;
+                count = luab_env_error;
+            }
+        } else {
+            errno = ERANGE;
+            count = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        count = luab_env_error;
+    }
+    return (count);
+}
+
+#if __BSD_VISIBLE
+ssize_t
+luab_iov_preadv(struct iovec *iov, int fd, size_t n, off_t off)
+{
+    ssize_t count;
+
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
+
+            if (n <= iov->iov_len && (size_t)off < n)
+                count = preadv(fd, iov, n, off);
+            else {
+                errno = ERANGE;
+                count = luab_env_error;
+            }
+        } else {
+            errno = ERANGE;
+            count = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        count = luab_env_error;
+    }
+    return (count);
+}
+
+ssize_t
+luab_iov_pwritev(struct iovec *iov, int fd, size_t n, off_t off)
+{
+    ssize_t count;
+
+    if (iov != NULL) {
+        if (iov->iov_base != NULL) {
+
+            if (n <= iov->iov_len && (size_t)off < n)
+                count = pwritev(fd, iov, n, off);
+            else {
+                errno = ERANGE;
+                count = luab_env_error;
+            }
+        } else {
+            errno = ERANGE;
+            count = luab_env_error;
+        }
+    } else {
+        errno = EINVAL;
+        count = luab_env_error;
+    }
+    return (count);
+}
+#endif
+
+/*
+ * Access functions, [C -> stack].
+ */
+
+int
+luab_iov_pushlen(lua_State *L, struct iovec *iov)
+{
+    ssize_t len;
+
+    if (iov != NULL)
+        len = iov->iov_len;
+    else {
+        errno = EINVAL;
+        len = luab_env_error;
+    }
+    return (luab_pushxinteger(L, len));
+}
+
+int
+luab_iov_pushdata(lua_State *L, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    return (luab_pushldata(L, dp, len));
+}
+
+int
+luab_iov_pushxdata(lua_State *L, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    return (luab_iovec_pushxdata(L, dp, len, len));
+}
+
+void
+luab_iov_rawsetdata(lua_State *L, int narg, lua_Integer k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_rawsetldata(L, narg, k, dp, len);
+}
+
+void
+luab_iov_rawsetxdata(lua_State *L, int narg, lua_Integer k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_iovec_rawsetldata(L, narg, k, dp, len);
+}
+
+void
+luab_iov_setdata(lua_State *L, int narg, const char *k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_setldata(L, narg, k, dp, len);
+}
+
+void
+luab_iov_setxdata(lua_State *L, int narg, const char *k, struct iovec *iov)
+{
+    caddr_t dp;
+    size_t len;
+
+    dp = luab_iov_base(iov, &len);
+    luab_iovec_setldata(L, narg, k, dp, len);
 }
 
 /*

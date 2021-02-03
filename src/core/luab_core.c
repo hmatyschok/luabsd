@@ -65,30 +65,6 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
  */
 
 static void
-luab_core_initparam(luab_sysconf_vec_t *vec)
-{
-    luab_sysconf_vec_t *tok;
-    long scx;
-
-    if ((tok = vec) != NULL) {
-
-        do {
-            if (tok->scv_val != NULL) {
-
-                if ((scx = sysconf(tok->scv_key)) < 0)
-                    *(tok->scv_val) = tok->scv_dflt;
-                else
-                    *(tok->scv_val) = (u_long)scx;
-            } else
-                errno = ENOENT;
-
-            tok++;
-        } while (tok->scv_val != NULL);
-    } else
-        luab_core_err(EX_DATAERR, __func__, ENXIO);
-}
-
-static void
 luab_core_registerlib(lua_State *L, int narg, luab_module_vec_t *vec, const char *name)
 {
     luab_env_initmodule(L, narg, vec, name, 1);
@@ -110,7 +86,7 @@ luaopen_bsd(lua_State *L)
     (void)printf("%s", copyright);
 
     /* initialize constraints */
-    luab_core_initparam(luab_env_param);
+    luab_env_initparam(luab_env_param);
 
     /*
      * register modules
