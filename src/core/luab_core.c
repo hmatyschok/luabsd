@@ -30,17 +30,6 @@
 
 #include "luabsd.h"
 #include "luab_modules.h"
-#include "luab_udata.h"
-
-extern luab_sysconf_vec_t luab_env_param[];
-
-extern luab_module_vec_t luab_env_typevec[];
-extern luab_module_vec_t luab_env_arpa_vec[];
-extern luab_module_vec_t luab_env_net_vec[];
-extern luab_module_vec_t luab_env_sys_vec[];
-extern luab_module_vec_t luab_env_xlocale_vec[];
-extern luab_module_vec_t luab_env_core_vec[];
-extern luab_module_vec_t luab_env_vec[];
 
 static const char *copyright =
     " Copyright (c) 2020, 2021 Henning Matyschok\n"

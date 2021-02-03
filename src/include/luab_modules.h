@@ -278,4 +278,18 @@ extern luab_module_t luab_unistd_lib;
 extern luab_module_t luab_uuid_lib;
 extern luab_module_t luab_xlocale_lib;
 
+/*
+ * Vector-table set.
+ */
+
+extern luab_sysconf_vec_t luab_env_param[];
+
+extern luab_module_vec_t luab_env_typevec[];
+extern luab_module_vec_t luab_env_arpa_vec[];
+extern luab_module_vec_t luab_env_net_vec[];
+extern luab_module_vec_t luab_env_sys_vec[];
+extern luab_module_vec_t luab_env_xlocale_vec[];
+extern luab_module_vec_t luab_env_core_vec[];
+extern luab_module_vec_t luab_env_vec[];
+
 #endif /* _LUAB_MODULES_H_ */
