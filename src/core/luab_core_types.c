@@ -49,7 +49,7 @@ luab_core_Integer_promotion_msk(int s)
 #else
     luab_env_uint_max
 #endif
-    ) : (
+    ) : (lua_Integer)(
 #if defined(__LP64__) || defined(__mips_n64)
     luab_env_long_max
 #else
