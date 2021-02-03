@@ -27,6 +27,8 @@
 #include <net/if.h>
 #include <net/if_dl.h>
 
+#include <string.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>

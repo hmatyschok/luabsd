@@ -27,6 +27,8 @@
 #include <sys/uio.h>
 
 #include <unistd.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

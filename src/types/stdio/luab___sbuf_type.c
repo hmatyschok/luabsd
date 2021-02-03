@@ -24,7 +24,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/mount.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

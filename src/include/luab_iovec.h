@@ -27,6 +27,8 @@
 #ifndef _LUAB_IOVEC_H_
 #define _LUAB_IOVEC_H_
 
+#include <sys/socket.h>
+
 typedef struct luab_iovec_param {
     struct iovec    iop_iov;    /* maps-to allocated memory region, iov_base */
     struct iovec    iop_data;   /* maps-to supplied data */

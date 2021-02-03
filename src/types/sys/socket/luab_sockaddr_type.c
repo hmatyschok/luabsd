@@ -30,6 +30,8 @@
 #include <net/if_dl.h>
 #include <netinet/in.h>
 
+#include <string.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>

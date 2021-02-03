@@ -28,15 +28,10 @@
 #define _LUABSD_H_
 
 #include <sys/param.h>
-#include <sys/mbuf.h>   /* XXX */
-#include <sys/socket.h>
 #include <sys/queue.h>
-
-#include <net/if.h> /* XXX */
+#include <sys/socket.h>
 
 #include <errno.h>
-#include <stdlib.h>
-#include <string.h>
 #include <sysexits.h>
 
 #include "luab_env.h"

@@ -26,6 +26,8 @@
 
 #include <sys/mount.h>
 
+#include <string.h>
+
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>

@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <net/if.h>
+
 #include <unistd.h>
 
 #include <lua.h>

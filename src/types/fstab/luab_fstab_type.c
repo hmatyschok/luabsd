@@ -26,6 +26,7 @@
 
 #include <fstab.h>
 #undef FSTAB    /* XXX */
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

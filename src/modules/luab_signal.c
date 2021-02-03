@@ -25,6 +25,7 @@
  */
 
 #include <signal.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

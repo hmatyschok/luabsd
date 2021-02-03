@@ -38,6 +38,8 @@
 #include <pwd.h>
 #include <unistd.h>
 #include <signal.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <lua.h>
 #include <lauxlib.h>

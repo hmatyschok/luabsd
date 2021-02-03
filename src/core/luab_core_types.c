@@ -24,6 +24,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <stdlib.h>
+#include <string.h>
 #include <uuid.h>
 
 #include <lua.h>
