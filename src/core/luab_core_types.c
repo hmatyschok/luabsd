@@ -24,555 +24,686 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <net/if.h> /* XXX */
-#include <unistd.h>
+#include <uuid.h>
 
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
 
 #include "luabsd.h"
+#include "luab_modules.h"
 #include "luab_udata.h"
 
+#define LUAB_CORE_ATOMIC_LIB_ID    1607258006
+#define LUAB_CORE_ATOMIC_LIB_KEY   "atomic"
+
 /*
- * Service primitives.
+ * Interface of <core_atomic>, atomic data types.
  */
 
-lua_Integer
-luab_core_Integer_promotion_msk(int s)
-{
-    lua_Integer b_msk;
-
-    b_msk = (s != 0) ? (lua_Integer)(
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_ulong_max
-#else
-    luab_env_uint_max
-#endif
-    ) : (lua_Integer)(
-#if defined(__LP64__) || defined(__mips_n64)
-    luab_env_long_max
-#else
-    luab_env_int_max
-#endif
-    );
-    return (b_msk);
-}
-
-/*
- * Access functions, n-th arg over argv, [stack -> C].
+#if __BSD_VISIBLE
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UCHAR)).
  *
- * luab_check{l}xxx(3) accessor evaluates, if n-th arg exists, otherwise
- * lua_error will be thrown. Finally luab_{is,to}{l}xxx(3) does the same
- * thing without throwing an error, but return NULL, if n-th arg does
- * not exist.
+ * @function create_uchar
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UCHAR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uchar [, err, msg ] = bsd.core.atomic.create_uchar(arg)
  */
-
-void *
-luab_checknil(lua_State *L, int narg)
-{
-    if (lua_isnil(L, narg) == 0)
-        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
-
-    return (NULL);
-}
-
-lua_Integer
-luab_tointeger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((lua_tointeger(L, narg)) & (b_msk));
-}
-
-lua_Integer
-luab_tolinteger(lua_State *L, int narg, int s)
-{
-    lua_Integer b_msk;
-
-    b_msk = luab_core_Integer_promotion_msk(s);
-    return (luab_tointeger(L, narg, b_msk));
-}
-
-lua_Integer
-luab_toxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
-{
-    lua_Integer *xp;
-
-    if (m != NULL) {
-
-        if (lua_isnumber(L, narg) != 0)
-            return (luab_tointeger(L, narg, b_msk));
-
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL)
-            return (*xp & b_msk);
-    } else
-        errno = ENOSYS;
-
-    return (0);
-}
-
-lua_Integer
-luab_tolxinteger(lua_State *L, int narg, luab_module_t *m, int s)
-{
-    lua_Integer *xp, b_msk;
-
-    if (m != NULL) {
-
-        if (lua_isnumber(L, narg) != 0)
-            return (luab_tolinteger(L, narg, s));
-
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL) {
-            b_msk = luab_core_Integer_promotion_msk(s);
-            return (*xp & b_msk);
-        }
-    } else
-        errno = ENOSYS;
-
-    return (0);
-}
-
-lua_Integer
-luab_checkinteger(lua_State *L, int narg, lua_Integer b_msk)
-{
-    return ((luaL_checkinteger(L, narg)) & (b_msk));
-}
-
-lua_Integer
-luab_checklinteger(lua_State *L, int narg, int s)
-{
-    lua_Integer b_msk;
-
-    b_msk = luab_core_Integer_promotion_msk(s);
-    return (luab_checkinteger(L, narg, b_msk));
-}
-
-lua_Integer
-luab_checkxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
-{
-    lua_Integer *xp;
-
-    if (m != NULL) {
-
-        if (lua_isnumber(L, narg) != 0)
-            return (luab_checkinteger(L, narg, b_msk));
-
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL)
-            return (*xp & b_msk);
-    } else
-        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
-
-    return (0);
-}
-
-lua_Integer
-luab_checklxinteger(lua_State *L, int narg, luab_module_t *m, int s)
-{
-    lua_Integer *xp, b_msk;
-
-    if (m != NULL) {
-
-        if (lua_isnumber(L, narg) != 0)
-            return (luab_checklinteger(L, narg, s));
-
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL) {
-            b_msk = luab_core_Integer_promotion_msk(s);
-            return (*xp & b_msk);
-        }
-    } else
-        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
-
-    return (0);
-}
-
-lua_Number
-luab_toxnumber(lua_State *L, int narg, luab_module_t *m)
-{
-    lua_Number *xp;
-
-    if (m != NULL) {
-
-        if (lua_isnumber(L, narg) != 0)
-            return (lua_tonumber(L, narg));
-
-        xp = luab_udataisnil(L, 1, m, lua_Number *);
-
-        if (xp != NULL)
-            return (*xp);
-    } else
-        errno = ENOSYS;
-
-    return (0.0);
-}
-
-lua_Number
-luab_checkxnumber(lua_State *L, int narg, luab_module_t *m)
-{
-    lua_Number *xp;
-
-    if (m != NULL) {
-
-        if (lua_isnumber(L, narg) != 0)
-            return (luaL_checknumber(L, narg));
-
-        xp = luab_udataisnil(L, 1, m, lua_Number *);
-
-        if (xp != NULL)
-            return (*xp);
-    } else
-        luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
-
-    return (0.0);
-}
-
-const char *
-luab_islstring(lua_State *L, int narg, size_t nmax)
-{
-    const char *dp;
-    size_t n;
-
-    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n <= nmax && nmax <= luab_env_buf_max)
-            return (dp);
-    }
-    return (NULL);
-}
-
-const char *
-luab_tolstring(lua_State *L, int narg, size_t nmax)
-{
-    const char *dp;
-    size_t n;
-
-    if ((dp = luaL_tolstring(L, narg, &n)) != NULL) {
-        if (n == nmax && nmax <= luab_env_buf_max)
-            return (dp);
-    }
-    return (NULL);
-}
-
-const char *
-luab_checklstring(lua_State *L, int narg, size_t nmax, size_t *np)
-{
-    const char *dp;
-    size_t n;
-
-    dp = luaL_checklstring(L, narg, &n);
-
-    if (n <= nmax && nmax <= luab_env_buf_max) {
-
-        if (np != NULL)
-            *np = n;
-
-        return (dp);
-    } else
-        luab_core_argerror(L, narg, NULL, 0, 0, ERANGE);
-
-    return (NULL);
-}
-
-const char *
-luab_checklstringisnil(lua_State *L, int narg, size_t nmax, size_t *np)
-{
-    if (lua_isnil(L, narg) != 0) {
-
-        if (np != NULL)
-            *np = 0;
-
-        return (NULL);
-    }
-    return (luab_checklstring(L, narg, nmax, np));
-}
-
-char *
-luab_checklstringalloc(lua_State *L, int narg, size_t nmax, size_t *np)
-{
-    const char *dp;
-    size_t len;
-    caddr_t bp;
-
-    if ((dp = luab_checklstringisnil(L, narg, nmax, &len)) != NULL) {
-
-        if ((bp = luab_core_allocstring(dp, &len)) == NULL)
-            luab_core_argerror(L, narg, NULL, 0, 0, errno);
-    } else
-        bp = NULL;
-
-    if (np != NULL)
-        *np = len;
-
-    return (bp);
-}
-
-char *
-luab_checklxstring(lua_State *L, int narg, size_t nmax, size_t *np)
+static int
+luab_type_create_uchar(lua_State *L)
 {
     luab_module_t *m;
-    const char *dp;
+    u_char x;
 
-    m = luab_xmod(STRING, TYPE, __func__);
+    (void)luab_core_checkmaxargs(L, 1);
 
-    if (lua_isuserdata(L, narg) != 0)
-        dp = luab_udata(L, narg, m, const char *);
-    else
-        dp = luab_checklstringisnil(L, narg, nmax, NULL);
-
-    return (luab_core_allocstring(dp, np));
+    m = luab_xmod(UCHAR, TYPE, __func__);
+    x = (u_char)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
+    return (luab_pushxdata(L, m, &x));
 }
 
-luab_thread_t *
-luab_checkfunction(lua_State *L, int narg, const char *fname)
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(USHRT)).
+ *
+ * @function create_ushrt
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(USHRT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ushrt [, err, msg ] = bsd.core.atomic.create_ushrt(arg)
+ */
+static int
+luab_type_create_ushrt(lua_State *L)
 {
-    if (lua_type(L, narg) == LUA_TFUNCTION && fname != NULL) {
-        lua_settop(L, narg);
-        lua_setfield(L, LUA_REGISTRYINDEX, fname);
-        return (luab_core_newthread(L, fname));
-    } else
-        luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
+    luab_module_t *m;
+    u_short x;
 
-    return (NULL);
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(USHRT, TYPE, __func__);
+    x = (u_short)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UINT)).
+ *
+ * @function create_uint
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UINT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uint [, err, msg ] = bsd.core.atomic.create_uint(arg)
+ */
+static int
+luab_type_create_uint(lua_State *L)
+{
+    luab_module_t *m;
+    u_int x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UINT, TYPE, __func__);
+    x = (u_int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(ULONG)).
+ *
+ * @function create_ulong
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(ULONG)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ulong [, err, msg ] = bsd.core.atomic.create_ulong(arg)
+ */
+static int
+luab_type_create_ulong(lua_State *L)
+{
+    luab_module_t *m;
+    u_long x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(ULONG, TYPE, __func__);
+    x = (u_long)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
+    return (luab_pushxdata(L, m, &x));
+}
+#endif /* __BSD_VISIBLE */
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CHAR)).
+ *
+ * @function create_char
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(CHAR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage char [, err, msg ] = bsd.core.atomic.create_char(arg)
+ */
+static int
+luab_type_create_char(lua_State *L)
+{
+    luab_module_t *m;
+    char x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CHAR, TYPE, __func__);
+    x = (char)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SHORT)).
+ *
+ * @function create_short
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SHORT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage short [, err, msg ] = bsd.core.atomic.create_short(arg)
+ */
+static int
+luab_type_create_short(lua_State *L)
+{
+    luab_module_t *m;
+    short x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SHORT, TYPE, __func__);
+    x = (short)luab_checkxinteger(L, 1, m, luab_env_ushrt_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(INT)).
+ *
+ * @function create_int
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(INT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage int [, err, msg ] = bsd.core.atomic.create_int(arg)
+ */
+static int
+luab_type_create_int(lua_State *L)
+{
+    luab_module_t *m;
+    int x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    x = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(LONG)).
+ *
+ * @function create_long
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(LONG)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage long [, err, msg ] = bsd.core.atomic.create_long(arg)
+ */
+static int
+luab_type_create_long(lua_State *L)
+{
+    luab_module_t *m;
+    long x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(LONG, TYPE, __func__);
+    x = (long)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(DOUBLE)).
+ *
+ * @function create_double
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(DOUBLE)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage double [, err, msg ] = bsd.core.atomic.create_double(arg)
+ */
+static int
+luab_type_create_double(lua_State *L)
+{
+    luab_module_t *m;
+    double x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(DOUBLE, TYPE, __func__);
+    x = (double)luab_checkxnumber(L, 1, m);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(FLOAT)).
+ *
+ * @function create_float
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(FLOAT)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage float [, err, msg ] = bsd.core.atomic.create_float(arg)
+ */
+static int
+luab_type_create_float(lua_State *L)
+{
+    luab_module_t *m;
+    float x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(FLOAT, TYPE, __func__);
+    x = (float)luab_checkxnumber(L, 1, m);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(OFF)).
+ *
+ * @function create_off
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(OFF)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage off [, err, msg ] = bsd.core.atomic.create_off(arg)
+ */
+static int
+luab_type_create_off(lua_State *L)
+{
+    luab_module_t *m;
+    off_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(OFF, TYPE, __func__);
+    x = (off_t)luab_checkxinteger(L, 1, m, luab_env_ulong_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SIZE)).
+ *
+ * @function create_size
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SIZE)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage size [, err, msg ] = bsd.core.atomic.create_size(arg)
+ */
+static int
+luab_type_create_size(lua_State *L)
+{
+    luab_module_t *m;
+    size_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SIZE, TYPE, __func__);
+    x = (size_t)luab_checklxinteger(L, 1, m, 0);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SOCKLEN)).
+ *
+ * @function create_socklen
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SOCKLEN)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage socklen [, err, msg ] = bsd.core.atomic.create_socklen(arg)
+ */
+static int
+luab_type_create_socklen(lua_State *L)
+{
+    luab_module_t *m;
+    socklen_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SOCKLEN, TYPE, __func__);
+    x = (socklen_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SSIZE)).
+ *
+ * @function create_ssize
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SSIZE)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ssize [, err, msg ] = bsd.core.atomic.create_ssize(arg)
+ */
+static int
+luab_type_create_ssize(lua_State *L)
+{
+    luab_module_t *m;
+    ssize_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SSIZE, TYPE, __func__);
+    x = (ssize_t)luab_checklxinteger(L, 1, m, 0);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(UID)).
+ *
+ * @function create_uid
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(UID)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage uid [, err, msg ] = bsd.core.atomic.create_uid(arg)
+ */
+static int
+luab_type_create_uid(lua_State *L)
+{
+    luab_module_t *m;
+    uid_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(UID, TYPE, __func__);
+    x = (uid_t)luab_checkxinteger(L, 1, m, luab_env_uid_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(WCHAR)).
+ *
+ * @function create_wchar
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(WCHAR)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage wchar [, err, msg ] = bsd.core.atomic.create_wchar(arg)
+ */
+static int
+luab_type_create_wchar(lua_State *L)
+{
+    luab_module_t *m;
+    wchar_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(WCHAR, TYPE, __func__);
+    x = (wchar_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(VM_OFFSET)).
+ *
+ * @function create_vm_offset
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(VM_OFFSET)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage vm_offset [, err, msg ] = bsd.core.atomic.create_vm_offset(arg)
+ */
+static int
+luab_type_create_vm_offset(lua_State *L)
+{
+    luab_module_t *m;
+    vm_offset_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(VM_OFFSET, TYPE, __func__);
+    x = (vm_offset_t)luab_checklxinteger(L, 1, m, 0);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(LUAL_INTEGER)).
+ *
+ * @function lual_integer_create
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(LUAL_INTEGER)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage lual_integer [, err, msg ] = bsd.core.atomic.lual_integer_create(arg)
+ */
+static int
+luab_type_create_lual_integer(lua_State *L)
+{
+    luab_module_t *m;
+    lua_Integer x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(LUAL_INTEGER, TYPE, __func__);
+    x = (lua_Integer)luab_checklxinteger(L, 1, m, 0);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(LUAL_NUMBER)).
+ *
+ * @function create_lual_number
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(LUAL_NUMBER)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage lual_number [, err, msg ] = bsd.core.atomic.create_lual_number(arg)
+ */
+static int
+luab_type_create_lual_number(lua_State *L)
+{
+    luab_module_t *m;
+    lua_Number x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(LUAL_NUMBER, TYPE, __func__);
+    x = (lua_Number)luab_checklxinteger(L, 1, m, 0);
+    return (luab_pushxdata(L, m, &x));
 }
 
 /*
- * Access functions, [C -> stack].
+ * Reference data types.
  */
 
-void
-luab_rawsetinteger(lua_State *L, int narg, lua_Integer k, lua_Integer v)
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CADDR)).
+ *
+ * @function create_caddr
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage caddr [, err, msg ] = bsd.core.atomic.create_caddr()
+ */
+static int
+luab_type_create_caddr(lua_State *L)
 {
-    lua_pushinteger(L, v);
-    lua_rawseti(L, narg, k);
+    luab_module_t *m;
+    m = luab_xmod(CADDR, TYPE, __func__);
+    return (luab_core_create(L, 0, m, NULL));
 }
 
-void
-luab_rawsetnumber(lua_State *L, int narg, lua_Integer k, lua_Number v)
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(STRING)).
+ *
+ * @function create_string
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,STRING,USERDATA(STRING)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage string [, err, msg ] = bsd.core.atomic.create_string(arg)
+ */
+static int
+luab_type_create_string(lua_State *L)
 {
-    lua_pushnumber(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-void
-luab_rawsetstring(lua_State *L, int narg, lua_Integer k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_rawseti(L, narg, k);
-}
-
-void
-luab_rawsetfstring(lua_State *L, int narg, lua_Integer k, const char *fmt, ...)
-{
-    va_list ap;
-    char buf[luab_env_buf_max];
-
-    va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_env_buf_max, fmt, ap);
-    va_end(ap);
-
-    lua_pushstring(L, buf);
-    lua_rawseti(L, narg, k);
-}
-
-void
-luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
-{
-    luaL_Buffer b;
+    luab_module_t *m;
     caddr_t dp;
 
-    if ((v != NULL) &&
-        (len > 1) &&
-        (len < (luab_env_buf_max + 1))) {
-        luaL_buffinit(L, &b);
-        dp = luaL_prepbuffsize(&b, len);
+    (void)luab_core_checkmaxargs(L, 1);
 
-        (void)memmove(dp, v, len);
+    m = luab_xmod(STRING, TYPE, __func__);
+    dp = luab_checklxstring(L, 1, luab_env_buf_max, NULL);
 
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_rawseti(L, narg, k);
-    }
+    return (luab_pushxdata(L, m, dp));
 }
 
-void
-luab_setcfunction(lua_State *L, int narg, const char* k, lua_CFunction v)
+/*
+ * Internal interface.
+ */
+
+static luab_module_table_t luab_core_atomic_vec[] = {
+    /* integer types */
+#if __BSD_VISIBLE
+    LUAB_FUNC("create_uchar",           luab_type_create_uchar),
+    LUAB_FUNC("create_ushrt",           luab_type_create_ushrt),
+    LUAB_FUNC("create_uint",            luab_type_create_uint),
+    LUAB_FUNC("create_ulong",           luab_type_create_ulong),
+#endif /* __BSD_VISIBLE */
+    LUAB_FUNC("create_char",            luab_type_create_char),
+    LUAB_FUNC("create_short",           luab_type_create_short),
+    LUAB_FUNC("create_int",             luab_type_create_int),
+    LUAB_FUNC("create_long",            luab_type_create_long),
+
+    /* floating point number types */
+    LUAB_FUNC("create_double",          luab_type_create_double),
+    LUAB_FUNC("create_float",           luab_type_create_float),
+
+    /* stadard types */
+    LUAB_FUNC("create_off",             luab_type_create_off),
+    LUAB_FUNC("create_size",            luab_type_create_size),
+    LUAB_FUNC("create_socklen",         luab_type_create_socklen),
+    LUAB_FUNC("create_ssize",           luab_type_create_ssize),
+    LUAB_FUNC("create_uid",             luab_type_create_uid),
+    LUAB_FUNC("create_wchar",           luab_type_create_wchar),
+    LUAB_FUNC("create_vm_offset",       luab_type_create_vm_offset),
+    LUAB_FUNC("create_lua_integer",     luab_type_create_lual_integer),
+    LUAB_FUNC("create_lua_number",      luab_type_create_lual_number),
+
+    /* reference data types */
+    LUAB_FUNC("create_caddr",           luab_type_create_caddr),
+    LUAB_FUNC("create_string",          luab_type_create_string),
+    LUAB_MOD_TBL_SENTINEL
+};
+
+luab_module_t luab_core_atomic_lib = {
+    .m_id       = LUAB_CORE_ATOMIC_LIB_ID,
+    .m_name     = LUAB_CORE_ATOMIC_LIB_KEY,
+    .m_vec      = luab_core_atomic_vec,
+};
+
+/*
+ * Interface of <core>.
+ */
+
+#define LUAB_CORE_LIB_ID    1595987973
+#define LUAB_CORE_LIB_KEY   "core"
+
+/***
+ * Interface against uuidgen(2), derived from implementation of uuidgen(1).
+ *
+ * @function uuid
+ *
+ * @return (LUA_T{NIL,STRING} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ *          (uuid [, nil, nil]) on success or
+ *          (nil, (errno, strerror(errno)))
+ *
+ * @usage uuid [, err, msg ] = bsd.core.uuid()
+ */
+static int
+luab_uuid(lua_State *L)
 {
-    lua_pushcfunction(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setinteger(lua_State *L, int narg, const char *k, lua_Integer v)
-{
-    lua_pushinteger(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setnumber(lua_State *L, int narg, const char *k, lua_Number v)
-{
-    lua_pushnumber(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setstring(lua_State *L, int narg, const char *k, const char *v)
-{
-    lua_pushstring(L, v);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setfstring(lua_State *L, int narg, const char *k, const char *fmt, ...)
-{
-    va_list ap;
-    char buf[luab_env_buf_max];
-
-    va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_env_buf_max, fmt, ap);
-    va_end(ap);
-
-    lua_pushstring(L, buf);
-    lua_setfield(L, narg, k);
-}
-
-void
-luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
-{
-    luaL_Buffer b;
-    caddr_t dp;
-
-    if ((v != NULL) &&
-        (len > 1) &&
-        (len < (luab_env_buf_max + 1))) {
-        luaL_buffinit(L, &b);
-        dp = luaL_prepbuffsize(&b, len);
-
-        (void)memmove(dp, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        lua_setfield(L, narg, k);
-    }
-}
-
-int
-luab_pusherr(lua_State *L, int up_call, int ret)
-{
-    caddr_t msg;
+    uuid_t uuid;
+    caddr_t buf;
     int status;
 
-    if (up_call != 0) {
-        lua_pushinteger(L, up_call);
-        msg = strerror(up_call);
-        lua_pushstring(L, msg);
-        status = 2 + ret;
-    } else
-        status = ret;
+    (void)luab_core_checkmaxargs(L, 0);
 
-    return (status);
-}
-
-int
-luab_pushinteger(lua_State *L, lua_Integer x)
-{
-    int up_call;
-
-    up_call = errno;
-    lua_pushinteger(L, x);
-
-    return (luab_pusherr(L, up_call, 1));
-}
-
-int
-luab_pushnumber(lua_State *L, lua_Number x, int err)
-{
-    int up_call;
-
-    if ((up_call = errno) != 0 && err != 0)
-        lua_pushinteger(L, luab_env_error);
-    else
-        lua_pushnumber(L, x);
-
-    return (luab_pusherr(L, up_call, 1));
-}
-
-int
-luab_pushnil(lua_State *L)
-{
-    int up_call;
-
-    up_call = errno;
-    lua_pushnil(L);
-
-    return (luab_pusherr(L, up_call, 1));
-}
-
-int
-luab_pushstring(lua_State *L, const char *dp)
-{
-    int up_call;
-    size_t n;
-    int status;
-
-    up_call = errno;
-
-    if (dp != NULL) {
-        n = strnlen(dp, luab_env_buf_max);
-        lua_pushlstring(L, dp, n);
-
-        status = luab_pusherr(L, up_call, 1);
-    } else {
-        errno = (up_call != 0) ? up_call : ENOENT;
+    if ((status = uuidgen(&uuid, 1)) != 0)
         status = luab_pushnil(L);
+    else {
+        uuid_to_string(&uuid, &buf, &status);
+
+        if (status == (int)uuid_s_ok) {
+            status = luab_pushldata(L, buf, strlen(buf));
+            free(buf);
+        } else {
+            errno = ENOMEM;
+            status = luab_pushnil(L);
+        }
     }
     return (status);
 }
 
-int
-luab_pushfstring(lua_State *L, const char *fmt, ...)
+/* composite data types */
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(INTEGER)).
+ *
+ * @function integer_create
+ *
+ * @param integer           Instance of (LUA_TUSERDATA(INTEGER)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage integer [, err, msg ] = bsd.core.integer_create([ integer ])
+ */
+static int
+luab_integer_create(lua_State *L)
 {
-    char buf[luab_env_buf_max];
-    va_list ap;
-
-    va_start(ap, fmt);
-    (void)vsnprintf(buf, luab_env_buf_max, fmt, ap);
-    va_end(ap);
-
-    return (luab_pushstring(L, buf));
+    luab_module_t *m;
+    m = luab_xmod(INTEGER, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
 }
 
-int
-luab_pushldata(lua_State *L, void *v, size_t len)
-{
-    int up_call;
-    luaL_Buffer b;
-    caddr_t dp;
-    int status;
+static luab_module_table_t luab_core_vec[] = {
+    LUAB_FUNC("uuid",               luab_uuid),
 
-    up_call = errno;
+    /* composite data types */
+    LUAB_FUNC("integer_create",     luab_integer_create),
+    LUAB_MOD_TBL_SENTINEL
+};
 
-    if ((v != NULL) &&
-        (len > 1) &&
-        (len < (luab_env_buf_max + 1))) {
-        luaL_buffinit(L, &b);
-        dp = luaL_prepbuffsize(&b, len);
+luab_module_t luab_core_lib = {
+    .m_id       = LUAB_CORE_LIB_ID,
+    .m_name     = LUAB_CORE_LIB_KEY,
+    .m_vec      = luab_core_vec,
+};
 
-        (void)memmove(dp, v, len);
-
-        luaL_addsize(&b, len);
-        luaL_pushresult(&b);
-
-        status = luab_pusherr(L, up_call, 1);
-    } else {
-        errno = (up_call != 0) ? up_call : EINVAL;
-        status = luab_pushnil(L);
-    }
-    return (status);
-}
