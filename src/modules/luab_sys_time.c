@@ -115,7 +115,7 @@ luab_setitimer(lua_State *L)
 out:
     return (luab_pushxinteger(L, status));
 bad:
-    luab_core_closethread(thr);
+    luab_core_closethread(thr, 1);
     goto out;
 }
 

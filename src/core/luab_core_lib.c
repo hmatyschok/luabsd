@@ -165,11 +165,15 @@ luab_core_checkmaxargs(lua_State *L, int nmax)
  */
 
 void
-luab_core_closethread(luab_thread_t *thr)
+luab_core_closethread(luab_thread_t *thr, int narg)
 {
-    if (thr != NULL)
+    if (thr != NULL) {
+
+        if (thr->thr_child != NULL && narg > 0)
+            lua_pop(thr->thr_child, narg);
+
         luab_core_free(thr, sizeof(*thr));
-    else
+    } else
         luab_core_err(EX_DATAERR, __func__, ENOENT);
 }
 
@@ -210,7 +214,7 @@ luab_core_pcall(void *arg)
             if (lua_pcall(thr->thr_child, 0, 0, 0) != 0)
                 luab_core_err(EX_DATAERR, thr->thr_fname, ENXIO);
 
-            luab_core_closethread(thr);
+            luab_core_closethread(thr, 1);
         } else
             luab_core_err(EX_DATAERR, __func__, ENXIO);
     } else

@@ -67,7 +67,7 @@ typedef struct luab_thread {
     char        thr_fname[LUAB_NAME_MAX+1];
 } luab_thread_t;
 
-void     luab_core_closethread(luab_thread_t *);
+void     luab_core_closethread(luab_thread_t *, int);
 luab_thread_t    *luab_core_newthread(lua_State *, const char *);
 void     *luab_core_pcall(void *);
 
