@@ -177,7 +177,7 @@ luab_core_closethread(luab_thread_t *thr, int narg)
 }
 
 luab_thread_t *
-luab_core_newthread(lua_State *L, const char *fname)
+luab_core_newthread(lua_State *L, int narg, const char *fname)
 {
     luab_thread_t *thr;
 
@@ -185,13 +185,17 @@ luab_core_newthread(lua_State *L, const char *fname)
         thr->thr_mtx = PTHREAD_MUTEX_INITIALIZER;
         thr->thr_cv = PTHREAD_COND_INITIALIZER;
 
-        if ((thr->thr_child = lua_newthread(L)) != NULL) {
-            thr->thr_parent = L;
+        if ((thr->thr_parent = L) != NULL) {
 
-            if (fname != NULL)
-                (void)snprintf(thr->thr_fname, luab_env_name_max, "%s", fname);
+            if ((thr->thr_child = lua_newthread(L)) != NULL) {            
+                lua_pop(thr->thr_parent, narg);
+
+                if (fname != NULL)
+                    (void)snprintf(thr->thr_fname, luab_env_name_max, "%s", fname);
+            } else
+                luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
         } else
-            luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
+            luab_core_err(EX_UNAVAILABLE, __func__, ENXIO);
     } else
         luab_core_err(EX_UNAVAILABLE, __func__, errno);
 
@@ -221,8 +225,7 @@ luab_core_pcall(void *arg)
 }
 
 /*
- * XXX
- *  Generic service primitives, we should move those to <luab_core_udata>
+ *  Generic service primitives, <luab_core_udata>
  */
 
 int
@@ -398,9 +401,7 @@ luab_tolxinteger(lua_State *L, int narg, luab_module_t *m, int s)
         if (lua_isnumber(L, narg) != 0)
             return (luab_tolinteger(L, narg, s));
 
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL) {
+        if ((xp = luab_udataisnil(L, 1, m, lua_Integer *)) != NULL) {
             b_msk = luab_core_Integer_promotion_msk(s);
             return (*xp & b_msk);
         }
@@ -435,9 +436,7 @@ luab_checkxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
         if (lua_isnumber(L, narg) != 0)
             return (luab_checkinteger(L, narg, b_msk));
 
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL)
+        if ((xp = luab_udataisnil(L, 1, m, lua_Integer *)) != NULL)
             return (*xp & b_msk);
     } else
         luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
@@ -455,9 +454,7 @@ luab_checklxinteger(lua_State *L, int narg, luab_module_t *m, int s)
         if (lua_isnumber(L, narg) != 0)
             return (luab_checklinteger(L, narg, s));
 
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL) {
+        if ((xp = luab_udataisnil(L, 1, m, lua_Integer *)) != NULL) {
             b_msk = luab_core_Integer_promotion_msk(s);
             return (*xp & b_msk);
         }
@@ -477,9 +474,7 @@ luab_toxnumber(lua_State *L, int narg, luab_module_t *m)
         if (lua_isnumber(L, narg) != 0)
             return (lua_tonumber(L, narg));
 
-        xp = luab_udataisnil(L, 1, m, lua_Number *);
-
-        if (xp != NULL)
+        if ((xp = luab_udataisnil(L, 1, m, lua_Number *)) != NULL)
             return (*xp);
     } else
         errno = ENOSYS;
@@ -497,9 +492,7 @@ luab_checkxnumber(lua_State *L, int narg, luab_module_t *m)
         if (lua_isnumber(L, narg) != 0)
             return (luaL_checknumber(L, narg));
 
-        xp = luab_udataisnil(L, 1, m, lua_Number *);
-
-        if (xp != NULL)
+        if ((xp = luab_udataisnil(L, 1, m, lua_Number *)) != NULL)
             return (*xp);
     } else
         luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
@@ -605,11 +598,10 @@ luab_checklxstring(lua_State *L, int narg, size_t nmax, size_t *np)
 luab_thread_t *
 luab_checkfunction(lua_State *L, int narg, const char *fname)
 {
-
     if (lua_type(L, narg) == LUA_TFUNCTION && fname != NULL) {
         lua_settop(L, narg);
         lua_setfield(L, LUA_REGISTRYINDEX, fname);
-        return (luab_core_newthread(L, fname));
+        return (luab_core_newthread(L, 1, fname));
     } else
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
@@ -673,7 +665,8 @@ luab_rawsetldata(lua_State *L, int narg, lua_Integer k, void *v, size_t len)
         luaL_pushresult(&b);
 
         lua_rawseti(L, narg, k);
-    }
+    } else
+        errno = ERANGE;
 }
 
 void
@@ -736,7 +729,8 @@ luab_setldata(lua_State *L, int narg, const char *k, void *v, size_t len)
         luaL_pushresult(&b);
 
         lua_setfield(L, narg, k);
-    }
+    } else
+        errno = ERANGE;
 }
 
 int
@@ -848,7 +842,7 @@ luab_pushldata(lua_State *L, void *v, size_t len)
 
         status = luab_pusherr(L, up_call, 1);
     } else {
-        errno = (up_call != 0) ? up_call : EINVAL;
+        errno = (up_call != 0) ? up_call : ERANGE;
         status = luab_pushnil(L);
     }
     return (status);
