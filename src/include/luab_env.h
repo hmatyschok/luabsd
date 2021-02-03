@@ -166,6 +166,7 @@ extern const lua_Integer luab_env_sigstksz;
 #endif
 
 #define LUAB_SC_NOTSUPP                         (-1)
+#define LUAB_SC_DFLT                            (0)
 
 typedef struct luab_sysconf_vec {
     int             scv_key;
