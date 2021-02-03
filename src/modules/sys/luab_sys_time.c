@@ -97,7 +97,7 @@ luab_setitimer(lua_State *L)
     value = luab_udataisnil(L, 2, m1, struct itimerval *);
     ovalue = luab_udataisnil(L, 3, m1, struct itimerval *);
 
-    thr = luab_checkfunction(L, narg, "l_callout");
+    thr = luab_checkfunction(L, narg, "h_callout");
 
     if ((status = sigfillset(&thr->thr_nsigset)) != 0)
         goto bad;

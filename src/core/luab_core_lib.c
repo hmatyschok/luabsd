@@ -168,7 +168,7 @@ luab_core_closethread(luab_thread_t *thr, int narg)
 {
     if (thr != NULL) {
 
-        if (thr->thr_child != NULL && narg > 0)
+        if (thr->thr_child != NULL)
             lua_pop(thr->thr_child, narg);
 
         luab_core_free(thr, sizeof(*thr));
@@ -192,6 +192,8 @@ luab_core_newthread(lua_State *L, int narg, const char *fname)
 
                 if (fname != NULL)
                     (void)snprintf(thr->thr_fname, luab_env_name_max, "%s", fname);
+
+                return (thr);
             } else
                 luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
         } else
@@ -199,7 +201,7 @@ luab_core_newthread(lua_State *L, int narg, const char *fname)
     } else
         luab_core_err(EX_UNAVAILABLE, __func__, errno);
 
-    return (thr);
+    return (NULL);
 }
 
 void *
@@ -381,9 +383,7 @@ luab_toxinteger(lua_State *L, int narg, luab_module_t *m, lua_Integer b_msk)
         if (lua_isnumber(L, narg) != 0)
             return (luab_tointeger(L, narg, b_msk));
 
-        xp = luab_udataisnil(L, 1, m, lua_Integer *);
-
-        if (xp != NULL)
+        if ((xp = luab_udataisnil(L, 1, m, lua_Integer *)) != NULL)
             return (*xp & b_msk);
     } else
         errno = ENOSYS;

@@ -68,7 +68,7 @@
 #if __POSIX_VISIBLE || __XSI_VISIBLE
 #define LUAB_SSIZE_MAX                          SSIZE_MAX
 #else
-#define LUAB_SSIZE_MAX                          0
+#define LUAB_SSIZE_MAX                          (0)
 #endif
 
 #if __POSIX_VISIBLE >= 200112 || __XSI_VISIBLE
@@ -76,9 +76,9 @@
 #define LUAB_OFF_MAX                            OFF_MAX
 #define LUAB_OFF_MIN                            OFF_MIN
 #else
-#define LUAB_SIZE_T_MAX                         0
-#define LUAB_OFF_MAX                            0
-#define LUAB_OFF_MIN                            0
+#define LUAB_SIZE_T_MAX                         (0)
+#define LUAB_OFF_MAX                            (0)
+#define LUAB_OFF_MIN                            (0)
 #endif
 
 #if __BSD_VISIBLE
@@ -88,25 +88,25 @@
 #define LUAB_QUAD_MAX                           QUAD_MAX
 #define LUAB_QUAD_MIN                           QUAD_MIN
 #else
-#define LUAB_GID_MAX                            0
-#define LUAB_UID_MAX                            0
-#define LUAB_UQUAD_MAX                          0
-#define LUAB_QUAD_MAX                           0
-#define LUAB_QUAD_MIN                           0
+#define LUAB_GID_MAX                            (0)
+#define LUAB_UID_MAX                            (0)
+#define LUAB_UQUAD_MAX                          (0)
+#define LUAB_QUAD_MAX                           (0)
+#define LUAB_QUAD_MIN                           (0)
 #endif
 
 #if __XSI_VISIBLE || __POSIX_VISIBLE >= 200809
 #define LUAB_LONG_BIT                           LONG_BIT
 #define LUAB_WORD_BIT                           WORD_BIT
 #else
-#define LUAB_LONG_BIT                           0
-#define LUAB_WORD_BIT                           0
+#define LUAB_LONG_BIT                           (0)
+#define LUAB_WORD_BIT                           (0)
 #endif
 
 #if __POSIX_VISIBLE
 #define LUAB_MQ_PRIO_MAX                        MQ_PRIO_MAX
 #else
-#define LUAB_MQ_PRIO_MAX                        0
+#define LUAB_MQ_PRIO_MAX                        (0)
 #endif
 
 #define LUAB_SIGSTKSZ                           SIGSTKSZ
@@ -166,7 +166,7 @@ extern const lua_Integer luab_env_sigstksz;
 #endif
 
 #define LUAB_SC_NOTSUPP                         (-1)
-#define LUAB_SC_DFLT                            (0)
+#define LUAB_SCX_DFLT                           (0)
 
 typedef struct luab_sysconf_vec {
     int             scv_key;

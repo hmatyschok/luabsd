@@ -64,34 +64,12 @@ extern char **environ;
  * Subr.
  */
 
-static lua_State *saved_L;
-static lua_Hook h;
-
-static int h_msk;
-static int h_cnt;
-
-static void
-h_callout(lua_State *L, lua_Debug *arg __unused)
-{
-    L = saved_L;
-
-    lua_sethook(L, h, h_msk, h_cnt);
-    lua_getfield(L, LUA_REGISTRYINDEX, "l_callout");
-
-    if (lua_pcall(L, 0, 0, 0) != 0)
-        lua_error(L);
-}
+static luab_thread_t *h_thr = NULL;
 
 static void
 h_signal(int arg __unused)
 {
-    int l_msk = (LUA_MASKCALL|LUA_MASKRET|LUA_MASKCOUNT);
-
-    h = lua_gethook(saved_L);
-    h_msk = lua_gethookmask(saved_L);
-    h_cnt = lua_gethookcount(saved_L);
-
-    lua_sethook(saved_L, h_callout, l_msk, 1);
+    h_thr = luab_core_pcall(h_thr);
 }
 
 /***
@@ -101,38 +79,26 @@ h_signal(int arg __unused)
  *
  * @param seconds           For timeout specified number of seconds.
  * @param callout           Callout routine implements an event.
- * @param group             Group ID.
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  * @usage sec [, err, msg ] = bsd.unistd.alarm(seconds, callout)
  */
 static int
-luab_alarm(lua_State *L)    /* XXX */
+luab_alarm(lua_State *L)
 {
     luab_module_t *m;
-    int narg;
     u_int seconds;
     u_int status;
 
-    narg = luab_core_checkmaxargs(L, 2);
+    (void)luab_core_checkmaxargs(L, 2);
 
     m = luab_xmod(UINT, TYPE, __func__);
 
-    if ((seconds = (u_int)luab_checkxinteger(L, 1, m, luab_env_int_max)) > 0) {
+    seconds = (u_int)luab_checkxinteger(L, 1, m, luab_env_int_max);
 
-        /*
-         * XXX
-         *  We shall externalize this.
-         */
-
-        if (lua_type(L, narg) != LUA_TFUNCTION)
-            luab_core_argerror(L, narg, NULL, 0, 0, ENOSYS);
-
-        lua_settop(L, narg);
-        lua_setfield(L, LUA_REGISTRYINDEX, "l_callout");
-
-        saved_L = L;    /* XXX race condition */
+    if (seconds != 0) {
+        h_thr = luab_checkfunction(L, 2, "h_SIGALARM");
 
         if (signal(SIGALRM, h_signal) == SIG_ERR)
             return (luab_pushxinteger(L, luab_env_error));
