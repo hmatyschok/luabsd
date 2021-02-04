@@ -1234,6 +1234,38 @@ luab_pthread_getcpuclockid(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/*
+ * XXX
+ *  int		pthread_join(pthread_t, void **);
+ *  int		pthread_key_create(pthread_key_t *, void (*) (void *));
+ */
+
+/***
+ * pthread_key_delete(3) - delete a thread-specific data key
+ *
+ * @function pthread_key_delete
+ *
+ * @param key               Value argument, by (LUA_TUSERDATA(KEY)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_key_delete(key)
+ */
+static int
+luab_pthread_key_delete(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_key_t key;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    key = luab_udata(L, 1, m, pthread_key_t);
+    status = pthread_key_delete(key);
+    return (luab_pushxinteger(L, status));
+}
+
 
 
 
@@ -1880,11 +1912,12 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_exit",                   luab_pthread_exit),
     LUAB_FUNC("pthread_getspecific",            luab_pthread_getspecific),
     LUAB_FUNC("pthread_getcpuclockid",          luab_pthread_getcpuclockid),
-
-
-
-
-
+/*
+ * XXX
+ *  LUAB_FUNC("pthread_join",                   luab_pthread_join),
+ *  LUAB_FUNC("pthread_key_create",             luab_pthread_key_create),
+ */
+    LUAB_FUNC("pthread_key_delete",             luab_pthread_key_delete),
 
 
     LUAB_FUNC("pthread_attr_getinheritsched",   luab_pthread_attr_getinheritsched),
