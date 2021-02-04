@@ -1266,6 +1266,124 @@ luab_pthread_key_delete(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_mutexattr_init(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_init
+ *
+ * @param attr              Result argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_init(attr)
+ */
+static int
+luab_pthread_mutexattr_init(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_mutexattr_t attr;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_mutexattr_t);
+    status = pthread_mutexattr_init(&attr);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutexattr_destroy(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_destroy
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_destroy(attr)
+ */
+static int
+luab_pthread_mutexattr_destroy(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_mutexattr_t attr;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_mutexattr_t);
+    status = pthread_mutexattr_destroy(&attr);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
+/***
+ * pthread_mutexattr_gettype(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_gettype
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param type              Result argument, by (LUA_TUSERDATA(INT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_gettype(attr, type)
+ */
+static int
+luab_pthread_mutexattr_gettype(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int *type, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    type = luab_udata(L, 2, m1, int *);
+
+    status = pthread_mutexattr_gettype(&attr, type);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutexattr_settype(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_settype
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param type              Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_settype(attr, type)
+ */
+static int
+luab_pthread_mutexattr_settype(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int type, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    type = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_mutexattr_settype(&attr, type);
+    return (luab_pushxinteger(L, status));
+}
+ 
 
 
 
@@ -1277,7 +1395,196 @@ luab_pthread_key_delete(lua_State *L)
 
 
 
+/***
+ * pthread_mutexattr_getprioceiling(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_getprioceiling
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param prioceiling       Result argument, by (LUA_TUSERDATA(INT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_getprioceiling(attr, prioceiling)
+ */
+static int
+luab_pthread_mutexattr_getprioceiling(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int *prioceiling, status;
 
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    prioceiling = luab_udata(L, 2, m1, int *);
+
+    status = pthread_mutexattr_getprioceiling(&attr, prioceiling);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutexattr_setprioceiling(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_setprioceiling
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param prioceiling       Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_setprioceiling(attr, prioceiling)
+ */
+static int
+luab_pthread_mutexattr_setprioceiling(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int prioceiling, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    prioceiling = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_mutexattr_setprioceiling(&attr, prioceiling);
+    return (luab_pushxinteger(L, status));
+}
+ 
+
+
+
+
+
+/***
+ * pthread_mutexattr_getprotocol(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_getprotocol
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param protocol          Result argument, by (LUA_TUSERDATA(INT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_getprotocol(attr, protocol)
+ */
+static int
+luab_pthread_mutexattr_getprotocol(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int *protocol, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    protocol = luab_udata(L, 2, m1, int *);
+
+    status = pthread_mutexattr_getprotocol(&attr, protocol);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutexattr_setprotocol(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_setprotocol
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param protocol          Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_setprotocol(attr, protocol)
+ */
+static int
+luab_pthread_mutexattr_setprotocol(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int protocol, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    protocol = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_mutexattr_setprotocol(&attr, protocol);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutexattr_getrobust(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_getrobust
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param robust            Result argument, by (LUA_TUSERDATA(INT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_getrobust(attr, robust)
+ */
+static int
+luab_pthread_mutexattr_getrobust(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int *robust, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    robust = luab_udata(L, 2, m1, int *);
+
+    status = pthread_mutexattr_getrobust(&attr, robust);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutexattr_setrobust(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_setrobust
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param robust            Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_setrobust(attr, robust)
+ */
+static int
+luab_pthread_mutexattr_setrobust(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int robust, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    robust = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_mutexattr_setrobust(&attr, robust);
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * pthread_attr_getinheritsched(3) - POSIX threads library
@@ -1839,110 +2146,126 @@ luab_type_create_pthread_once(lua_State *L)
  */
 
 static luab_module_table_t luab_pthread_vec[] = {
-    LUAB_INT("PTHREAD_DESTRUCTOR_ITERATIONS",   PTHREAD_DESTRUCTOR_ITERATIONS),
-    LUAB_INT("PTHREAD_KEYS_MAX",                PTHREAD_KEYS_MAX),
-    LUAB_INT("PTHREAD_STACK_MIN",               PTHREAD_STACK_MIN),
-    LUAB_INT("PTHREAD_THREADS_MAX",             PTHREAD_THREADS_MAX),
-    LUAB_INT("PTHREAD_BARRIER_SERIAL_THREAD",   PTHREAD_BARRIER_SERIAL_THREAD),
-    LUAB_INT("PTHREAD_DETACHED",                PTHREAD_DETACHED),
-    LUAB_INT("PTHREAD_SCOPE_SYSTEM",            PTHREAD_SCOPE_SYSTEM),
-    LUAB_INT("PTHREAD_INHERIT_SCHED",           PTHREAD_INHERIT_SCHED),
-    LUAB_INT("PTHREAD_NOFLOAT",                 PTHREAD_NOFLOAT),
-    LUAB_INT("PTHREAD_CREATE_DETACHED",         PTHREAD_CREATE_DETACHED),
-    LUAB_INT("PTHREAD_CREATE_JOINABLE",         PTHREAD_CREATE_JOINABLE),
-    LUAB_INT("PTHREAD_SCOPE_PROCESS",           PTHREAD_SCOPE_PROCESS),
-    LUAB_INT("PTHREAD_EXPLICIT_SCHED",          PTHREAD_EXPLICIT_SCHED),
-    LUAB_INT("PTHREAD_PROCESS_PRIVATE",         PTHREAD_PROCESS_PRIVATE),
-    LUAB_INT("PTHREAD_PROCESS_SHARED",          PTHREAD_PROCESS_SHARED),
-    LUAB_INT("PTHREAD_CANCEL_ENABLE",           PTHREAD_CANCEL_ENABLE),
-    LUAB_INT("PTHREAD_CANCEL_DISABLE",          PTHREAD_CANCEL_DISABLE),
-    LUAB_INT("PTHREAD_CANCEL_DEFERRED",         PTHREAD_CANCEL_DEFERRED),
-    LUAB_INT("PTHREAD_CANCEL_ASYNCHRONOUS",     PTHREAD_CANCEL_ASYNCHRONOUS),
-    LUAB_INT("PTHREAD_NEEDS_INIT",              PTHREAD_NEEDS_INIT),
-    LUAB_INT("PTHREAD_DONE_INIT",               PTHREAD_DONE_INIT),
-    LUAB_INT("PTHREAD_PRIO_NONE",               PTHREAD_PRIO_NONE),
-    LUAB_INT("PTHREAD_PRIO_INHERIT",            PTHREAD_PRIO_INHERIT),
-    LUAB_INT("PTHREAD_PRIO_PROTECT",            PTHREAD_PRIO_PROTECT),
-    LUAB_INT("PTHREAD_MUTEX_ERRORCHECK",        PTHREAD_MUTEX_ERRORCHECK),
-    LUAB_INT("PTHREAD_MUTEX_RECURSIVE",         PTHREAD_MUTEX_RECURSIVE),
-    LUAB_INT("PTHREAD_MUTEX_NORMAL",            PTHREAD_MUTEX_NORMAL),
-    LUAB_INT("PTHREAD_MUTEX_ADAPTIVE_NP",       PTHREAD_MUTEX_ADAPTIVE_NP),
-    LUAB_INT("PTHREAD_MUTEX_TYPE_MAX",          PTHREAD_MUTEX_TYPE_MAX),
-    LUAB_INT("PTHREAD_MUTEX_DEFAULT",           PTHREAD_MUTEX_DEFAULT),
-    LUAB_INT("PTHREAD_MUTEX_STALLED",           PTHREAD_MUTEX_STALLED),
-    LUAB_INT("PTHREAD_MUTEX_ROBUST",            PTHREAD_MUTEX_ROBUST),
+    LUAB_INT("PTHREAD_DESTRUCTOR_ITERATIONS",       PTHREAD_DESTRUCTOR_ITERATIONS),
+    LUAB_INT("PTHREAD_KEYS_MAX",                    PTHREAD_KEYS_MAX),
+    LUAB_INT("PTHREAD_STACK_MIN",                   PTHREAD_STACK_MIN),
+    LUAB_INT("PTHREAD_THREADS_MAX",                 PTHREAD_THREADS_MAX),
+    LUAB_INT("PTHREAD_BARRIER_SERIAL_THREAD",       PTHREAD_BARRIER_SERIAL_THREAD),
+    LUAB_INT("PTHREAD_DETACHED",                    PTHREAD_DETACHED),
+    LUAB_INT("PTHREAD_SCOPE_SYSTEM",                PTHREAD_SCOPE_SYSTEM),
+    LUAB_INT("PTHREAD_INHERIT_SCHED",               PTHREAD_INHERIT_SCHED),
+    LUAB_INT("PTHREAD_NOFLOAT",                     PTHREAD_NOFLOAT),
+    LUAB_INT("PTHREAD_CREATE_DETACHED",             PTHREAD_CREATE_DETACHED),
+    LUAB_INT("PTHREAD_CREATE_JOINABLE",             PTHREAD_CREATE_JOINABLE),
+    LUAB_INT("PTHREAD_SCOPE_PROCESS",               PTHREAD_SCOPE_PROCESS),
+    LUAB_INT("PTHREAD_EXPLICIT_SCHED",              PTHREAD_EXPLICIT_SCHED),
+    LUAB_INT("PTHREAD_PROCESS_PRIVATE",             PTHREAD_PROCESS_PRIVATE),
+    LUAB_INT("PTHREAD_PROCESS_SHARED",              PTHREAD_PROCESS_SHARED),
+    LUAB_INT("PTHREAD_CANCEL_ENABLE",               PTHREAD_CANCEL_ENABLE),
+    LUAB_INT("PTHREAD_CANCEL_DISABLE",              PTHREAD_CANCEL_DISABLE),
+    LUAB_INT("PTHREAD_CANCEL_DEFERRED",             PTHREAD_CANCEL_DEFERRED),
+    LUAB_INT("PTHREAD_CANCEL_ASYNCHRONOUS",         PTHREAD_CANCEL_ASYNCHRONOUS),
+    LUAB_INT("PTHREAD_NEEDS_INIT",                  PTHREAD_NEEDS_INIT),
+    LUAB_INT("PTHREAD_DONE_INIT",                   PTHREAD_DONE_INIT),
+    LUAB_INT("PTHREAD_PRIO_NONE",                   PTHREAD_PRIO_NONE),
+    LUAB_INT("PTHREAD_PRIO_INHERIT",                PTHREAD_PRIO_INHERIT),
+    LUAB_INT("PTHREAD_PRIO_PROTECT",                PTHREAD_PRIO_PROTECT),
+    LUAB_INT("PTHREAD_MUTEX_ERRORCHECK",            PTHREAD_MUTEX_ERRORCHECK),
+    LUAB_INT("PTHREAD_MUTEX_RECURSIVE",             PTHREAD_MUTEX_RECURSIVE),
+    LUAB_INT("PTHREAD_MUTEX_NORMAL",                PTHREAD_MUTEX_NORMAL),
+    LUAB_INT("PTHREAD_MUTEX_ADAPTIVE_NP",           PTHREAD_MUTEX_ADAPTIVE_NP),
+    LUAB_INT("PTHREAD_MUTEX_TYPE_MAX",              PTHREAD_MUTEX_TYPE_MAX),
+    LUAB_INT("PTHREAD_MUTEX_DEFAULT",               PTHREAD_MUTEX_DEFAULT),
+    LUAB_INT("PTHREAD_MUTEX_STALLED",               PTHREAD_MUTEX_STALLED),
+    LUAB_INT("PTHREAD_MUTEX_ROBUST",                PTHREAD_MUTEX_ROBUST),
 /*
  * XXX
- *  LUAB_FUNC("pthread_atfork",                 luab_pthread_atfork),
+ *  LUAB_FUNC("pthread_atfork",                     luab_pthread_atfork),
  */
-    LUAB_FUNC("pthread_attr_destroy",           luab_pthread_attr_destroy),
-    LUAB_FUNC("pthread_attr_getstack",          luab_pthread_attr_getstack),
-    LUAB_FUNC("pthread_attr_getstacksize",      luab_pthread_attr_getstacksize),
-    LUAB_FUNC("pthread_attr_getguardsize",      luab_pthread_attr_getguardsize),
-    LUAB_FUNC("pthread_attr_getstackaddr",      luab_pthread_attr_getstackaddr),
-    LUAB_FUNC("pthread_attr_getdetachstate",    luab_pthread_attr_getdetachstate),
-    LUAB_FUNC("pthread_attr_init",              luab_pthread_attr_init),
-    LUAB_FUNC("pthread_attr_setstacksize",      luab_pthread_attr_setstacksize),
-    LUAB_FUNC("pthread_attr_setguardsize",      luab_pthread_attr_setguardsize),
-    LUAB_FUNC("pthread_attr_setstack",          luab_pthread_attr_setstack),
-    LUAB_FUNC("pthread_attr_setstackaddr",      luab_pthread_attr_setstackaddr),
-    LUAB_FUNC("pthread_attr_setdetachstate",    luab_pthread_attr_setdetachstate),
-    LUAB_FUNC("pthread_barrier_destroy",        luab_pthread_barrier_destroy),
-    LUAB_FUNC("pthread_barrier_init",           luab_pthread_barrier_init),
-    LUAB_FUNC("pthread_barrier_wait",           luab_pthread_barrier_wait),
-    LUAB_FUNC("pthread_barrierattr_destroy",    luab_pthread_barrierattr_destroy),
-    LUAB_FUNC("pthread_barrierattr_getpshared", luab_pthread_barrierattr_getpshared),
-    LUAB_FUNC("pthread_barrierattr_init",       luab_pthread_barrierattr_init),
-    LUAB_FUNC("pthread_barrierattr_setpshared", luab_pthread_barrierattr_setpshared),
-    LUAB_FUNC("pthread_condattr_destroy",       luab_pthread_condattr_destroy),
-    LUAB_FUNC("pthread_condattr_getclock",      luab_pthread_condattr_getclock),
-    LUAB_FUNC("pthread_condattr_getpshared",    luab_pthread_condattr_getpshared),
-    LUAB_FUNC("pthread_condattr_init",          luab_pthread_condattr_init),
-    LUAB_FUNC("pthread_condattr_setclock",      luab_pthread_condattr_setclock),
-    LUAB_FUNC("pthread_condattr_setpshared",    luab_pthread_condattr_setpshared),
-    LUAB_FUNC("pthread_cond_broadcast",         luab_pthread_cond_broadcast),
-    LUAB_FUNC("pthread_cond_destroy",           luab_pthread_cond_destroy),
-    LUAB_FUNC("pthread_cond_init",              luab_pthread_cond_init),
-    LUAB_FUNC("pthread_cond_signal",            luab_pthread_cond_signal),
-    LUAB_FUNC("pthread_cond_timedwait",         luab_pthread_cond_timedwait),
-    LUAB_FUNC("pthread_cond_wait",              luab_pthread_cond_wait),
-    LUAB_FUNC("pthread_create",                 luab_pthread_create),
-    LUAB_FUNC("pthread_detach",                 luab_pthread_detach),
-    LUAB_FUNC("pthread_equal",                  luab_pthread_equal),
-    LUAB_FUNC("pthread_exit",                   luab_pthread_exit),
-    LUAB_FUNC("pthread_getspecific",            luab_pthread_getspecific),
-    LUAB_FUNC("pthread_getcpuclockid",          luab_pthread_getcpuclockid),
+    LUAB_FUNC("pthread_attr_destroy",               luab_pthread_attr_destroy),
+    LUAB_FUNC("pthread_attr_getstack",              luab_pthread_attr_getstack),
+    LUAB_FUNC("pthread_attr_getstacksize",          luab_pthread_attr_getstacksize),
+    LUAB_FUNC("pthread_attr_getguardsize",          luab_pthread_attr_getguardsize),
+    LUAB_FUNC("pthread_attr_getstackaddr",          luab_pthread_attr_getstackaddr),
+    LUAB_FUNC("pthread_attr_getdetachstate",        luab_pthread_attr_getdetachstate),
+    LUAB_FUNC("pthread_attr_init",                  luab_pthread_attr_init),
+    LUAB_FUNC("pthread_attr_setstacksize",          luab_pthread_attr_setstacksize),
+    LUAB_FUNC("pthread_attr_setguardsize",          luab_pthread_attr_setguardsize),
+    LUAB_FUNC("pthread_attr_setstack",              luab_pthread_attr_setstack),
+    LUAB_FUNC("pthread_attr_setstackaddr",          luab_pthread_attr_setstackaddr),
+    LUAB_FUNC("pthread_attr_setdetachstate",        luab_pthread_attr_setdetachstate),
+    LUAB_FUNC("pthread_barrier_destroy",            luab_pthread_barrier_destroy),
+    LUAB_FUNC("pthread_barrier_init",               luab_pthread_barrier_init),
+    LUAB_FUNC("pthread_barrier_wait",               luab_pthread_barrier_wait),
+    LUAB_FUNC("pthread_barrierattr_destroy",        luab_pthread_barrierattr_destroy),
+    LUAB_FUNC("pthread_barrierattr_getpshared",     luab_pthread_barrierattr_getpshared),
+    LUAB_FUNC("pthread_barrierattr_init",           luab_pthread_barrierattr_init),
+    LUAB_FUNC("pthread_barrierattr_setpshared",     luab_pthread_barrierattr_setpshared),
+    LUAB_FUNC("pthread_condattr_destroy",           luab_pthread_condattr_destroy),
+    LUAB_FUNC("pthread_condattr_getclock",          luab_pthread_condattr_getclock),
+    LUAB_FUNC("pthread_condattr_getpshared",        luab_pthread_condattr_getpshared),
+    LUAB_FUNC("pthread_condattr_init",              luab_pthread_condattr_init),
+    LUAB_FUNC("pthread_condattr_setclock",          luab_pthread_condattr_setclock),
+    LUAB_FUNC("pthread_condattr_setpshared",        luab_pthread_condattr_setpshared),
+    LUAB_FUNC("pthread_cond_broadcast",             luab_pthread_cond_broadcast),
+    LUAB_FUNC("pthread_cond_destroy",               luab_pthread_cond_destroy),
+    LUAB_FUNC("pthread_cond_init",                  luab_pthread_cond_init),
+    LUAB_FUNC("pthread_cond_signal",                luab_pthread_cond_signal),
+    LUAB_FUNC("pthread_cond_timedwait",             luab_pthread_cond_timedwait),
+    LUAB_FUNC("pthread_cond_wait",                  luab_pthread_cond_wait),
+    LUAB_FUNC("pthread_create",                     luab_pthread_create),
+    LUAB_FUNC("pthread_detach",                     luab_pthread_detach),
+    LUAB_FUNC("pthread_equal",                      luab_pthread_equal),
+    LUAB_FUNC("pthread_exit",                       luab_pthread_exit),
+    LUAB_FUNC("pthread_getspecific",                luab_pthread_getspecific),
+    LUAB_FUNC("pthread_getcpuclockid",              luab_pthread_getcpuclockid),
 /*
  * XXX
- *  LUAB_FUNC("pthread_join",                   luab_pthread_join),
- *  LUAB_FUNC("pthread_key_create",             luab_pthread_key_create),
+ *  LUAB_FUNC("pthread_join",                       luab_pthread_join),
+ *  LUAB_FUNC("pthread_key_create",                 luab_pthread_key_create),
  */
-    LUAB_FUNC("pthread_key_delete",             luab_pthread_key_delete),
+    LUAB_FUNC("pthread_key_delete",                 luab_pthread_key_delete),
 
 
-    LUAB_FUNC("pthread_attr_getinheritsched",   luab_pthread_attr_getinheritsched),
-    LUAB_FUNC("pthread_attr_getschedparam",     luab_pthread_attr_getschedparam),
-    LUAB_FUNC("pthread_attr_getschedpolicy",    luab_pthread_attr_getschedpolicy),
-    LUAB_FUNC("pthread_attr_getscope",          luab_pthread_attr_getscope),
-    LUAB_FUNC("pthread_attr_setinheritsched",   luab_pthread_attr_setinheritsched),
-    LUAB_FUNC("pthread_attr_setschedparam",     luab_pthread_attr_setschedparam),
-    LUAB_FUNC("pthread_attr_setschedpolicy",    luab_pthread_attr_setschedpolicy),
-    LUAB_FUNC("pthread_attr_setscope",          luab_pthread_attr_setscope),
+    LUAB_FUNC("pthread_mutexattr_init",             luab_pthread_mutexattr_init),
+    LUAB_FUNC("pthread_mutexattr_destroy",          luab_pthread_mutexattr_destroy),
+
+
+    LUAB_FUNC("pthread_mutexattr_gettype",          luab_pthread_mutexattr_gettype),
+    LUAB_FUNC("pthread_mutexattr_settype",          luab_pthread_mutexattr_settype),
+
+
+    LUAB_FUNC("pthread_mutexattr_getprioceiling",   luab_pthread_mutexattr_getprioceiling),
+    LUAB_FUNC("pthread_mutexattr_setprioceiling",   luab_pthread_mutexattr_setprioceiling),
+
+
+    LUAB_FUNC("pthread_mutexattr_getprotocol",      luab_pthread_mutexattr_getprotocol),
+    LUAB_FUNC("pthread_mutexattr_setprotocol",      luab_pthread_mutexattr_setprotocol),
+    LUAB_FUNC("pthread_mutexattr_getrobust",        luab_pthread_mutexattr_getrobust),
+    LUAB_FUNC("pthread_mutexattr_setrobust",        luab_pthread_mutexattr_setrobust),
+    LUAB_FUNC("pthread_attr_getinheritsched",       luab_pthread_attr_getinheritsched),
+    LUAB_FUNC("pthread_attr_getschedparam",         luab_pthread_attr_getschedparam),
+    LUAB_FUNC("pthread_attr_getschedpolicy",        luab_pthread_attr_getschedpolicy),
+    LUAB_FUNC("pthread_attr_getscope",              luab_pthread_attr_getscope),
+    LUAB_FUNC("pthread_attr_setinheritsched",       luab_pthread_attr_setinheritsched),
+    LUAB_FUNC("pthread_attr_setschedparam",         luab_pthread_attr_setschedparam),
+    LUAB_FUNC("pthread_attr_setschedpolicy",        luab_pthread_attr_setschedpolicy),
+    LUAB_FUNC("pthread_attr_setscope",              luab_pthread_attr_setscope),
 
     /* generator functions */
-    LUAB_FUNC("create_pthread_key",             luab_type_create_pthread_key),
-    LUAB_FUNC("create_pthread",                 luab_type_create_pthread),
-    LUAB_FUNC("create_pthread_attr",            luab_type_create_pthread_attr),
-    LUAB_FUNC("create_pthread_mutex",           luab_type_create_pthread_mutex),
-    LUAB_FUNC("create_pthread_mutexattr",       luab_type_create_pthread_mutexattr),
-    LUAB_FUNC("create_pthread_cond",            luab_type_create_pthread_cond),
-    LUAB_FUNC("create_pthread_condattr",        luab_type_create_pthread_condattr),
-    LUAB_FUNC("create_pthread_rwlock",          luab_type_create_pthread_rwlock),
-    LUAB_FUNC("create_pthread_rwlockattr",      luab_type_create_pthread_rwlockattr),
-    LUAB_FUNC("create_pthread_barrier",         luab_type_create_pthread_barrier),
-    LUAB_FUNC("create_pthread_barrierattr",     luab_type_create_pthread_barrierattr),
-    LUAB_FUNC("create_pthread_addr",            luab_type_create_pthread_addr),
-    LUAB_FUNC("create_pthread_once",            luab_type_create_pthread_once),
+    LUAB_FUNC("create_pthread_key",                 luab_type_create_pthread_key),
+    LUAB_FUNC("create_pthread",                     luab_type_create_pthread),
+    LUAB_FUNC("create_pthread_attr",                luab_type_create_pthread_attr),
+    LUAB_FUNC("create_pthread_mutex",               luab_type_create_pthread_mutex),
+    LUAB_FUNC("create_pthread_mutexattr",           luab_type_create_pthread_mutexattr),
+    LUAB_FUNC("create_pthread_cond",                luab_type_create_pthread_cond),
+    LUAB_FUNC("create_pthread_condattr",            luab_type_create_pthread_condattr),
+    LUAB_FUNC("create_pthread_rwlock",              luab_type_create_pthread_rwlock),
+    LUAB_FUNC("create_pthread_rwlockattr",          luab_type_create_pthread_rwlockattr),
+    LUAB_FUNC("create_pthread_barrier",             luab_type_create_pthread_barrier),
+    LUAB_FUNC("create_pthread_barrierattr",         luab_type_create_pthread_barrierattr),
+    LUAB_FUNC("create_pthread_addr",                luab_type_create_pthread_addr),
+    LUAB_FUNC("create_pthread_once",                luab_type_create_pthread_once),
     LUAB_MOD_TBL_SENTINEL
 };
 
