@@ -1236,8 +1236,8 @@ luab_pthread_getcpuclockid(lua_State *L)
 
 /*
  * XXX
- *  int		pthread_join(pthread_t, void **);
- *  int		pthread_key_create(pthread_key_t *, void (*) (void *));
+ *  int     pthread_join(pthread_t, void **);
+ *  int     pthread_key_create(pthread_key_t *, void (*) (void *));
  */
 
 /***
@@ -1318,9 +1318,36 @@ luab_pthread_mutexattr_destroy(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_mutexattr_getpshared(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_getpshared
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param pshared           Result argument, by (LUA_TUSERDATA(INT)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_getpshared(attr, pshared)
+ */
+static int
+luab_pthread_mutexattr_getpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int *pshared, status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
 
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    pshared = luab_udata(L, 2, m1, int *);
+
+    status = pthread_mutexattr_getpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * pthread_mutexattr_gettype(3) - mutex attribute operations
@@ -1383,8 +1410,37 @@ luab_pthread_mutexattr_settype(lua_State *L)
     status = pthread_mutexattr_settype(&attr, type);
     return (luab_pushxinteger(L, status));
 }
- 
 
+/***
+ * pthread_mutexattr_setpshared(3) - mutex attribute operations
+ *
+ * @function pthread_mutexattr_setpshared
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
+ * @param pshared           Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_setpshared(attr, pshared)
+ */
+static int
+luab_pthread_mutexattr_setpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutexattr_t attr;
+    int pshared, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
+    pshared = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_mutexattr_setpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1456,7 +1512,7 @@ luab_pthread_mutexattr_setprioceiling(lua_State *L)
     status = pthread_mutexattr_setprioceiling(&attr, prioceiling);
     return (luab_pushxinteger(L, status));
 }
- 
+
 
 
 
@@ -2229,12 +2285,10 @@ static luab_module_table_t luab_pthread_vec[] = {
 
     LUAB_FUNC("pthread_mutexattr_init",             luab_pthread_mutexattr_init),
     LUAB_FUNC("pthread_mutexattr_destroy",          luab_pthread_mutexattr_destroy),
-
-
+    LUAB_FUNC("pthread_mutexattr_getpshared",       luab_pthread_mutexattr_getpshared),
     LUAB_FUNC("pthread_mutexattr_gettype",          luab_pthread_mutexattr_gettype),
     LUAB_FUNC("pthread_mutexattr_settype",          luab_pthread_mutexattr_settype),
-
-
+    LUAB_FUNC("pthread_mutexattr_setpshared",       luab_pthread_mutexattr_setpshared),
     LUAB_FUNC("pthread_mutexattr_getprioceiling",   luab_pthread_mutexattr_getprioceiling),
     LUAB_FUNC("pthread_mutexattr_setprioceiling",   luab_pthread_mutexattr_setprioceiling),
 
