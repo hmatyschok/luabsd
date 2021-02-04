@@ -33,6 +33,12 @@
 #include "luabsd.h"
 #include "luab_udata.h"
 
+typedef struct luab_sigent {
+    int             se_signo;
+    const char      *se_func;
+    luab_thread_t   *se_thr;
+} luab_sigent_t;
+
 #define LUAB_SYS_SIGNAL_LIB_ID    1610381740
 #define LUAB_SYS_SIGNAL_LIB_KEY   "signal"
 
@@ -42,9 +48,116 @@ extern luab_module_t luab_sys_signal_lib;
 const lua_Integer luab_env_sys_nsig = NSIG;
 #endif
 
+static luab_sigent_t luab_sigent_vec[NSIG] = {
+    [SIGHUP] =      { SIGHUP,	    "h_SIGHUP",	    NULL	},
+	[SIGINT] =      { SIGINT,	    "h_SIGINT",	    NULL	},
+	[SIGQUIT] =     { SIGQUIT,	    "h_SIGQUIT",	NULL	},
+	[SIGILL] =      { SIGILL,	    "h_SIGILL",	    NULL	},
+	[SIGTRAP] =     { SIGTRAP,	    "h_SIGTRAP",	NULL	},
+	[SIGABRT] =     { SIGABRT,	    "h_SIGABRT",	NULL	},
+	[SIGEMT] =      { SIGEMT,	    "h_SIGEMT",	    NULL	},
+	[SIGFPE] =      { SIGFPE,	    "h_SIGFPE",	    NULL	},
+	[SIGKILL] =     { SIGKILL,	    "h_SIGKILL",	NULL	},
+	[SIGBUS] =      { SIGBUS,	    "h_SIGBUS",	    NULL	},
+	[SIGSEGV] =     { SIGSEGV,	    "h_SIGSEGV",	NULL	},
+	[SIGSYS] =      { SIGSYS,	    "h_SIGSYS", 	NULL	},
+	[SIGPIPE] =     { SIGPIPE,	    "h_SIGPIPE",	NULL	},
+	[SIGALRM] =     { SIGALRM,	    "h_SIGALRM",	NULL	},
+	[SIGTERM] =     { SIGTERM,	    "h_SIGTERM",	NULL	},
+	[SIGURG] =      { SIGURG,	    "h_SIGURG",	    NULL	},
+	[SIGSTOP] =     { SIGSTOP,	    "h_SIGSTOP",	NULL	},
+	[SIGTSTP] =     { SIGTSTP,	    "h_SIGTSTP",	NULL	},
+	[SIGCONT] =     { SIGCONT,	    "h_SIGCONT",	NULL	},
+	[SIGCHLD] =     { SIGCHLD,	    "h_SIGCHLD",	NULL	},
+	[SIGTTIN] =     { SIGTTIN,	    "h_SIGTTIN",	NULL	},
+	[SIGTTOU] =     { SIGTTOU,	    "h_SIGTTOU",	NULL	},
+	[SIGIO] =       { SIGIO,	    "h_SIGIO",	    NULL	},
+	[SIGXCPU] =     { SIGXCPU,	    "h_SIGXCPU",	NULL	},
+	[SIGXFSZ] =     { SIGXFSZ,	    "h_SIGXFSZ",	NULL	},
+	[SIGVTALRM] =   { SIGVTALRM,    "h_SIGVTALRM",	NULL	},
+	[SIGPROF] =     { SIGPROF,	    "h_SIGPROF",	NULL	},
+	[SIGWINCH] =    { SIGWINCH,	    "h_SIGWINCH",	NULL	},
+	[SIGINFO] =     { SIGINFO,	    "h_SIGINFO",	NULL	},
+	[SIGUSR1] =     { SIGUSR1,	    "h_SIGUSR1",	NULL	},
+	[SIGUSR2] =     { SIGUSR2,	    "h_SIGUSR2",	NULL	},
+};
+
+static void
+luab_h_signal(int sig_num)
+{
+    luab_sigent_t *tok;
+
+    if ((tok = &luab_sigent_vec[sig_num]) != NULL)
+        tok->se_thr = luab_core_pcall(tok->se_thr);
+    else
+        luab_core_err(EX_DATAERR, __func__, ENOENT);
+}
+
 /*
- * Generator functions
+ * Service primitives.
  */
+
+/***
+ * signal(3) - simplified software signal facilities
+ *
+ * @function signal
+ *
+ * @param sig               Specifies signal by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param func              Signal handler by (LUA_TFUNCTION).
+ *
+ * @return (LUA_T{NIL,USERDATA(SIG)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.signal.signal(sig, func)
+ */
+static int
+luab_signal(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    int sig;
+    luab_sigent_t *tok;
+    sig_t status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(INT, TYPE, __func__);
+    m1 = luab_xmod(SIG, TYPE, __func__);
+
+    sig = (int)luab_checkxinteger(L, 1, m0, luab_env_uint_max);
+
+    if ((tok = &luab_sigent_vec[sig]) != NULL)
+        tok->se_thr = luab_checkfunction(L, 2, tok->se_func);
+    else
+        luab_core_err(EX_DATAERR, __func__, ENOENT);
+
+    status = signal(sig, luab_h_signal);
+    return (luab_pushxdata(L, m1, status));
+}
+
+/*
+ * Generator functions.
+ */
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SIG)).
+ *
+ * @function create_sig
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,USERDATA(SIG)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage sig [, err, msg ] = bsd.sys.signal.create_sig(arg)
+ */
+static int
+luab_type_create_sig(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(SIG, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
 
 #if __POSIX_VISIBLE || __XSI_VISIBLE
 /***
@@ -382,6 +495,8 @@ static luab_module_table_t luab_sys_signal_vec[] = {
     LUAB_INT("SIG_UNBLOCK",             SIG_UNBLOCK),
     LUAB_INT("SIG_SETMASK",             SIG_SETMASK),
 #endif
+    LUAB_FUNC("signal",                 luab_signal),
+    LUAB_FUNC("create_sig",             luab_type_create_sig),
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     LUAB_FUNC("create_sigset",          luab_type_create_sigset),
 #endif

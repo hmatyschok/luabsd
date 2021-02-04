@@ -235,17 +235,6 @@ luab_sigaction(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-
-
-        
-/*
- * XXX
- *  int pthread_sigmask(int, const __sigset_t * __restrict,
- *      __sigset_t * __restrict);
- *  int sigaction(int, const struct sigaction * __restrict,
- *      struct sigaction * __restrict);
- */
-
 /***
  * sigaddset(3) - manipulate signal set
  *

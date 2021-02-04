@@ -314,6 +314,11 @@ luab_module_vec_t luab_env_type_vec[] = {
     },
 
      /* <sys/signal.h> */
+     {
+        .mv_mod = &luab_sig_type,
+        .mv_init = luab_env_newmetatable,
+        .mv_idx = LUAB_SIG_IDX,
+    },
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     {
         .mv_mod = &luab_sigset_type,

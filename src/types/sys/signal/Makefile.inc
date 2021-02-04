@@ -2,6 +2,7 @@
 .PATH: ${LUAB_SRCTOP}/types/sys/signal
 
 # reference data types
+SRCS+=  luab_sig_type.c
 SRCS+=  luab_sigval_type.c
 SRCS+=  luab_sigset_type.c
 

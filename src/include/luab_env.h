@@ -772,6 +772,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_STRING_TYPE_ID                     1611685185
 #define LUAB_STRING_TYPE                        "STRING*"
 
+#define LUAB_SIG_TYPE_ID                        1612398710
+#define LUAB_SIG_TYPE                           "SIG*"
+
 /*
  * Subset of composite data types.
  */
@@ -1161,6 +1164,7 @@ typedef enum luab_type {
     LUAB_STRING_IDX,
 
     /* <sys/signal.h> */
+    LUAB_SIG_IDX,
 #if __POSIX_VISIBLE || __XSI_VISIBLE
     LUAB_SIGSET_IDX,
 #endif

@@ -132,6 +132,7 @@ extern luab_module_t luab_caddr_type;
 extern luab_module_t luab_string_type;
 
 /* <sys/signal.h> */
+extern luab_module_t luab_sig_type;
 #if __POSIX_VISIBLE || __XSI_VISIBLE
 extern luab_module_t luab_sigset_type;
 #endif
