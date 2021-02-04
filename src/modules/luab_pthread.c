@@ -1447,12 +1447,11 @@ luab_pthread_mutexattr_setpshared(lua_State *L)
  *
  * @function pthread_mutex_consistent
  *
- * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR)).
- * @param pshared           Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param mutex             Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage ret [, err, msg ] = bsd.pthread.pthread_mutexattr_setpshared(attr, pshared)
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_setconsistent(mutex)
  */
 static int
 luab_pthread_mutex_consistent(lua_State *L)
@@ -1468,6 +1467,34 @@ luab_pthread_mutex_consistent(lua_State *L)
     status = pthread_mutex_consistent(&mutex);
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * pthread_mutex_destroy(3) - free resources allocated for a mutex
+ *
+ * @function pthread_mutex_destroy
+ *
+ * @param mutex             Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_destroy(mutex)
+ */
+static int
+luab_pthread_mutex_destroy(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_mutex_t mutex;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    mutex = luab_udata(L, 1, m, pthread_mutex_t);
+    status = pthread_mutex_destroy(&mutex);
+    return (luab_pushxinteger(L, status));
+}
+
+
 
 
 
@@ -2323,6 +2350,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutexattr_settype",          luab_pthread_mutexattr_settype),
     LUAB_FUNC("pthread_mutexattr_setpshared",       luab_pthread_mutexattr_setpshared),
     LUAB_FUNC("pthread_mutex_consistent",           luab_pthread_mutex_consistent),
+    LUAB_FUNC("pthread_mutex_destroy",              luab_pthread_mutex_destroy),
 
 
 
