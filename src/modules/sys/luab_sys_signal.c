@@ -102,7 +102,7 @@ luab_h_signal(int sig_num)
  *
  * @function signal
  *
- * @param sig               Specifies signal by an instance
+ * @param sig               Specifies signal, by an instance
  *                          of (LUA_T{NUMBER,USERDATA(INT)}).
  * @param func              Signal handler by (LUA_TFUNCTION).
  *

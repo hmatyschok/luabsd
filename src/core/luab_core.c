@@ -31,7 +31,7 @@
 #include "luabsd.h"
 #include "luab_modules.h"
 
-static const char *copyright =
+static const char *luab_core_copyright =
     " Copyright (c) 2020, 2021 Henning Matyschok\n"
     " All rights reserved.\n"
     "\n"
@@ -47,6 +47,7 @@ static const char *copyright =
     "   28 Jul 2018 12:47:52\n\n"
     "\n";
 
+
 LUAMOD_API int  luaopen_bsd(lua_State *);
 
 /*
@@ -56,7 +57,7 @@ LUAMOD_API int  luaopen_bsd(lua_State *);
 LUAMOD_API int
 luaopen_bsd(lua_State *L)
 {
-    (void)printf("%s", copyright);
+    (void)printf("%s", luab_core_copyright);
 
     /* initialize constraints */
     luab_env_initparam(luab_env_param);

@@ -1636,13 +1636,50 @@ luab_pthread_mutex_unlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/*
+ * XXX
+ *  pthread_once(3)
+ */
 
+static luab_thread_t *luab_h_thr;
 
+static void
+luab_h_callback(void)
+{
+    luab_h_thr = luab_core_pcall(luab_h_thr);
+}
 
+/***
+ * pthread_once(3) - dynamic package initialization
+ *
+ * @function pthread_once
+ *
+ * @param once_control      Value argument, by (LUA_TUSERDATA(PTHREAD_ONCE)).
+ * @param init_routine      Callback function, by (LUA_TFUNCTION).
+ * 
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_once(once_control, init_routine)
+ */
+static int
+luab_pthread_once(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_once_t *once_control;
+    luab_thread_t *thr;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
 
+    once_control = luab_udata(L, 1, m, pthread_once_t *);
+    thr = luab_core_newthread(L, 2, "h_callback");
 
+    status = pthread_once(once_control, luab_h_callback);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -2498,6 +2535,11 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutex_trylock",              luab_pthread_mutex_trylock),
     LUAB_FUNC("pthread_mutex_timedlock",            luab_pthread_mutex_timedlock),
     LUAB_FUNC("pthread_mutex_unlock",               luab_pthread_mutex_unlock),
+    LUAB_FUNC("pthread_once",                       luab_pthread_once),
+
+
+
+    
 
 
 

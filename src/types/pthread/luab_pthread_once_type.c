@@ -83,7 +83,8 @@ pthread_once_fillxtable(lua_State *L, int narg, void *arg)
  * @return (LUA_T{NIL,TABLE} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  *          t = {
- *              value = (LUA_T{NIL,STRING}),
+ *              state = (LUA_TNUMBER),
+ *              mutex = (LUA_T{NIL,USERDATA(PTHREAD_MUTEX)}),
  *          }
  *
  * @usage t [, err, msg ] = pthread_once:get_table()
