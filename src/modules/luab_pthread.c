@@ -1766,7 +1766,7 @@ luab_pthread_rwlock_rdlock(lua_State *L)
 }
 
 /***
- * pthread_rwlock_timedrdlock(3) - acquire a read-write lock for reading indefinitely
+ * pthread_rwlock_timedrdlock(3) - acquire a read-write lock without reading indefinitely
  *
  * @function pthread_rwlock_timedrdlock
  *
@@ -1796,6 +1796,41 @@ luab_pthread_rwlock_timedrdlock(lua_State *L)
     status = pthread_rwlock_timedrdlock(&lock, abs_timeout);
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * pthread_rwlock_timedwrlock(3) - acquire a read-write lock without writing indefinitely
+ *
+ * @function pthread_rwlock_timedwrlock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCK)).
+ * @param abs_timeout       Value argument, by (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlock_timedwrlock(lock)
+ */
+static int
+luab_pthread_rwlock_timedwrlock(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_rwlock_t lock;
+    struct timespec *abs_timeout;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m0 = luab_xmod(PTHREAD_RWLOCK, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    lock = luab_udata(L, 1, m0, pthread_rwlock_t);
+    abs_timeout = luab_udata(L, 1, m1, struct timespec *);
+
+    status = pthread_rwlock_timedwrlock(&lock, abs_timeout);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
 
 
 
@@ -2689,6 +2724,9 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_rwlock_destroy",             luab_pthread_rwlock_destroy),
     LUAB_FUNC("pthread_rwlock_init",                luab_pthread_rwlock_init),
     LUAB_FUNC("pthread_rwlock_rdlock",              luab_pthread_rwlock_rdlock),
+    LUAB_FUNC("pthread_rwlock_timedrdlock",         luab_pthread_rwlock_timedrdlock),
+    LUAB_FUNC("pthread_rwlock_timedwrlock",         luab_pthread_rwlock_timedwrlock),
+    
     LUAB_FUNC("pthread_rwlock_tryrdlock",           luab_pthread_rwlock_tryrdlock),
 
 
