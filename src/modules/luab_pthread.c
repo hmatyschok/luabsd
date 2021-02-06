@@ -2057,6 +2057,30 @@ luab_pthread_rwlockattr_setpshared(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_self(3) - get the calling thread's ID
+ *
+ * @function pthread_self
+ *
+ * @return (LUA_T{NIL,USERDATA(PTHREAD)} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_self()
+ */
+static int
+luab_pthread_self(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_t tid;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    m = luab_xmod(PTHREAD, TYPE, __func__);
+
+    if ((tid = pthread_self()) == NULL)
+        m = NULL;
+
+    return (luab_pushxdata(L, m, tid));
+}
 
 
 
@@ -2937,6 +2961,10 @@ static luab_module_table_t luab_pthread_vec[] = {
  *  LUAB_FUNC("pthread_rwlockattr_setkind_np",      luab_pthread_rwlockattr_setkind_np),
  */
     LUAB_FUNC("pthread_rwlockattr_setpshared",      luab_pthread_rwlockattr_setpshared),
+    LUAB_FUNC("pthread_self",                       luab_pthread_self),
+
+
+
 
 
 
