@@ -1740,7 +1740,7 @@ luab_pthread_rwlock_init(lua_State *L)
 }
 
 /***
- * pthread_rwlock_rdlock(3) - acquire a read/write lock
+ * pthread_rwlock_rdlock(3) - acquire a read/write lock for reading
  *
  * @function pthread_rwlock_rdlock
  *
@@ -1829,19 +1829,8 @@ luab_pthread_rwlock_timedwrlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-
-
-
-
-
-
-
-
-
-
-
 /***
- * pthread_rwlock_tryrdlock(3) - acquire a read/write lock
+ * pthread_rwlock_tryrdlock(3) - acquire a read/write lock for reading
  *
  * @function pthread_rwlock_tryrdlock
  *
@@ -1865,6 +1854,73 @@ luab_pthread_rwlock_tryrdlock(lua_State *L)
     status = pthread_rwlock_tryrdlock(&lock);
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * pthread_rwlock_trywrlock(3) - acquire a read/write lock for writing
+ *
+ * @function pthread_rwlock_trywrlock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlock_trywrlock(lock)
+ */
+static int
+luab_pthread_rwlock_trywrlock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_rwlock_t lock;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_RWLOCK, TYPE, __func__);
+    lock = luab_udata(L, 1, m, pthread_rwlock_t);
+    status = pthread_rwlock_trywrlock(&lock);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
+
+
+
+
+
+
+/***
+ * pthread_rwlock_wrlock(3) - acquire a read/write lock for writing
+ *
+ * @function pthread_rwlock_wrlock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlock_wrlock(lock)
+ */
+static int
+luab_pthread_rwlock_wrlock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_rwlock_t lock;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_RWLOCK, TYPE, __func__);
+    lock = luab_udata(L, 1, m, pthread_rwlock_t);
+    status = pthread_rwlock_wrlock(&lock);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
 
 
 
@@ -2726,12 +2782,16 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_rwlock_rdlock",              luab_pthread_rwlock_rdlock),
     LUAB_FUNC("pthread_rwlock_timedrdlock",         luab_pthread_rwlock_timedrdlock),
     LUAB_FUNC("pthread_rwlock_timedwrlock",         luab_pthread_rwlock_timedwrlock),
-    
     LUAB_FUNC("pthread_rwlock_tryrdlock",           luab_pthread_rwlock_tryrdlock),
+    LUAB_FUNC("pthread_rwlock_trywrlock",           luab_pthread_rwlock_trywrlock),
+
+
+    LUAB_FUNC("pthread_rwlock_wrlock",              luab_pthread_rwlock_wrlock),
 
 
 
-
+     
+     
 
 
 
