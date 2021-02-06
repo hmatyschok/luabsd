@@ -2249,6 +2249,36 @@ luab_pthread_spin_unlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_cancel(3) - cancel execution of a thread
+ *
+ * @function pthread_cancel
+ *
+ * @param thread            Value argument, by (LUA_TUSERDATA(PTHREAD)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_cancel(thread)
+ */
+static int
+luab_pthread_cancel(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_t thread;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD, TYPE, __func__);
+    thread = luab_udata(L, 1, m, pthread_t);
+    status = pthread_cancel(thread);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
 
 
 
@@ -3135,7 +3165,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_spin_lock",                  luab_pthread_spin_lock),
     LUAB_FUNC("pthread_spin_trylock",               luab_pthread_spin_trylock),
     LUAB_FUNC("pthread_spin_unlock",                luab_pthread_spin_unlock),
-
+    LUAB_FUNC("pthread_cancel",                     luab_pthread_cancel),
 
 
 
