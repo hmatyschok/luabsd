@@ -1531,7 +1531,7 @@ luab_pthread_mutex_init(lua_State *L)
  *
  * @function pthread_mutex_lock
  *
- * @param mutex             Result argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ * @param mutex             Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1551,6 +1551,71 @@ luab_pthread_mutex_lock(lua_State *L)
     status = pthread_mutex_lock(&mutex);
     return (luab_pushxinteger(L, status));
 }
+
+/***
+ * pthread_mutex_trylock(3) - lock a mutex without blocking
+ *
+ * @function pthread_mutex_trylock
+ *
+ * @param mutex             Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_trylock(mutex)
+ */
+static int
+luab_pthread_mutex_trylock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_mutex_t mutex;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    mutex = luab_udata(L, 1, m, pthread_mutex_t);
+    status = pthread_mutex_trylock(&mutex);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutex_timedlock(3) - lock a mutex without blocking indefinitely
+ *
+ * @function pthread_mutex_timedlock
+ *
+ * @param mutex             Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ * @param abs_timedout      Value argument, by (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_timedlock(mutex, abs_timeout)
+ */
+static int
+luab_pthread_mutex_timedlock(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutex_t mutex;
+    struct timespec *abs_timeout;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    mutex = luab_udata(L, 1, m0, pthread_mutex_t);
+    abs_timeout = luab_udata(L, 2, m1, struct timespec *);
+
+    status = pthread_mutex_timedlock(&mutex, abs_timeout);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
+
+
 
 
 
@@ -2406,6 +2471,8 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutex_destroy",              luab_pthread_mutex_destroy),
     LUAB_FUNC("pthread_mutex_init",                 luab_pthread_mutex_init),
     LUAB_FUNC("pthread_mutex_lock",                 luab_pthread_mutex_lock),
+    LUAB_FUNC("pthread_mutex_trylock",              luab_pthread_mutex_trylock),
+    LUAB_FUNC("pthread_mutex_timedlock",            luab_pthread_mutex_timedlock),
 
 
 
