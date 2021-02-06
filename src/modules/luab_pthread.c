@@ -2354,12 +2354,39 @@ luab_pthread_testcancel(lua_State *L)
      return (luab_pushxinteger(L, luab_env_success));
 }
 
+#if __BSD_VISIBLE
+/***
+ * pthread_getprio(3) - get thread's priority level
+ *
+ * @function pthread_getprio
+ *
+ * @param thread            Value argument, by (LUA_TUSERDATA(PTHREAD)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_getprio(thread)
+ */
+static int
+luab_pthread_getprio(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_t thread;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD, TYPE, __func__);
+    thread = luab_udata(L, 1, m, pthread_t);
+    status = pthread_getprio(thread);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
 
 
 
+#endif /* __BSD_VISIBLE */
 
 
 /***
@@ -3240,7 +3267,10 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_setcancelstate",             luab_pthread_setcancelstate),
     LUAB_FUNC("pthread_setcanceltype",              luab_pthread_setcanceltype),
     LUAB_FUNC("pthread_testcancel",                 luab_pthread_testcancel),
+#if __BSD_VISIBLE
+    LUAB_FUNC("pthread_getprio",                    luab_pthread_getprio),
 
+#endif
 
 
 
