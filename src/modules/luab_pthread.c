@@ -2082,6 +2082,43 @@ luab_pthread_self(lua_State *L)
     return (luab_pushxdata(L, m, tid));
 }
 
+/***
+ * pthread_setspcific(3) - sat a thread-specific data value
+ *
+ * @function pthread_setspcific
+ *
+ * @param key               Value argument, by (LUA_TUSERDATA(PTHREAD_KEY)).
+ * @param value             Value argumeny, by (LUA_TUSERDATA(CADDR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_setspcific(key, value)
+ */
+static int
+luab_pthread_setspecific(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_key_t key;
+    const void *value;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_KEY, TYPE, __func__);
+    m1 = luab_xmod(CADDR, TYPE, __func__);
+
+    key = luab_udata(L, 1, m0, pthread_key_t);
+    value = luab_udata(L, 2, m1, const void *);
+
+    status = pthread_setspecific(key, value);
+    return (luab_pushxinteger(L, status));
+}
+
+
+ 
+
+
+
 
 
 
@@ -2962,6 +2999,7 @@ static luab_module_table_t luab_pthread_vec[] = {
  */
     LUAB_FUNC("pthread_rwlockattr_setpshared",      luab_pthread_rwlockattr_setpshared),
     LUAB_FUNC("pthread_self",                       luab_pthread_self),
+    LUAB_FUNC("pthread_setspecific",                luab_pthread_setspecific),
 
 
 
