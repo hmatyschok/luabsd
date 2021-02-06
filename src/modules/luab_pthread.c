@@ -1494,10 +1494,63 @@ luab_pthread_mutex_destroy(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_mutex_init(3) - create a mutex
+ *
+ * @function pthread_mutex_init
+ *
+ * @param mutex             Result argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEXATTR))
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_init(mutex, attr)
+ */
+static int
+luab_pthread_mutex_init(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutex_t mutex;
+    pthread_mutexattr_t attr;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    m1 = luab_xmod(PTHREAD_MUTEXATTR, TYPE, __func__);
 
+    mutex = luab_udata(L, 1, m0, pthread_mutex_t);
+    attr = luab_udata(L, 2, m1, pthread_mutexattr_t);
 
+    status = pthread_mutex_init(&mutex, &attr);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_mutex_lock(3) - lock a mutex
+ *
+ * @function pthread_mutex_lock
+ *
+ * @param mutex             Result argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_lock(mutex)
+ */
+static int
+luab_pthread_mutex_lock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_mutex_t mutex;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    mutex = luab_udata(L, 1, m, pthread_mutex_t);
+    status = pthread_mutex_lock(&mutex);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -1973,7 +2026,7 @@ luab_pthread_attr_setscope(lua_State *L)
 }
 
 /*
- * Generator functions
+ * Generator functions.
  */
 
 /* atomic data types */
@@ -2351,6 +2404,8 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutexattr_setpshared",       luab_pthread_mutexattr_setpshared),
     LUAB_FUNC("pthread_mutex_consistent",           luab_pthread_mutex_consistent),
     LUAB_FUNC("pthread_mutex_destroy",              luab_pthread_mutex_destroy),
+    LUAB_FUNC("pthread_mutex_init",                 luab_pthread_mutex_init),
+    LUAB_FUNC("pthread_mutex_lock",                 luab_pthread_mutex_lock),
 
 
 
