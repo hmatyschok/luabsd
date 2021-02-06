@@ -1765,6 +1765,43 @@ luab_pthread_rwlock_rdlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_rwlock_timedrdlock(3) - acquire a read-write lock for reading indefinitely
+ *
+ * @function pthread_rwlock_timedrdlock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCK)).
+ * @param abs_timeout       Value argument, by (LUA_TUSERDATA(TIMESPEC)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlock_timedrdlock(lock)
+ */
+static int
+luab_pthread_rwlock_timedrdlock(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_rwlock_t lock;
+    struct timespec *abs_timeout;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m0 = luab_xmod(PTHREAD_RWLOCK, TYPE, __func__);
+    m1 = luab_xmod(TIMESPEC, TYPE, __func__);
+
+    lock = luab_udata(L, 1, m0, pthread_rwlock_t);
+    abs_timeout = luab_udata(L, 1, m1, struct timespec *);
+
+    status = pthread_rwlock_timedrdlock(&lock, abs_timeout);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
+
 
 
 
