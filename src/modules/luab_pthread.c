@@ -1881,15 +1881,31 @@ luab_pthread_rwlock_trywrlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_rwlock_unlock(3) - release a read/write lock
+ *
+ * @function pthread_rwlock_unlock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlock_unlock(lock)
+ */
+static int
+luab_pthread_rwlock_unlock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_rwlock_t lock;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
 
-
-
-
-
-
-
-
+    m = luab_xmod(PTHREAD_RWLOCK, TYPE, __func__);
+    lock = luab_udata(L, 1, m, pthread_rwlock_t);
+    status = pthread_rwlock_unlock(&lock);
+    return (luab_pushxinteger(L, status));
+}
 
 /***
  * pthread_rwlock_wrlock(3) - acquire a read/write lock for writing
@@ -2784,14 +2800,13 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_rwlock_timedwrlock",         luab_pthread_rwlock_timedwrlock),
     LUAB_FUNC("pthread_rwlock_tryrdlock",           luab_pthread_rwlock_tryrdlock),
     LUAB_FUNC("pthread_rwlock_trywrlock",           luab_pthread_rwlock_trywrlock),
-
-
+    LUAB_FUNC("pthread_rwlock_unlock",              luab_pthread_rwlock_unlock),
     LUAB_FUNC("pthread_rwlock_wrlock",              luab_pthread_rwlock_wrlock),
 
 
 
-     
-     
+
+
 
 
 
