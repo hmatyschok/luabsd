@@ -1994,7 +1994,33 @@ luab_pthread_rwlockattr_getpshared(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_rwlockattr_init(3) - initialize a reader/writer lock attribute
+ *
+ * @function pthread_rwlockattr_init
+ *
+ * @param attr              Result argument, by (LUA_TUSERDATA(PTHREAD_RWLOCKATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlockattr_init(attr)
+ */
+static int
+luab_pthread_rwlockattr_init(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_rwlockattr_t attr;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_RWLOCKATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_rwlockattr_t);
+    status = pthread_rwlockattr_init(&attr);
+    return (luab_pushxinteger(L, status));
+}
+
+ 
 
 
 
@@ -2870,7 +2896,7 @@ static luab_module_table_t luab_pthread_vec[] = {
  *  LUAB_FUNC("pthread_rwlockattr_getkind_np",      luab_pthread_rwlockattr_getkind_np),
  */
     LUAB_FUNC("pthread_rwlockattr_getpshared",      luab_pthread_rwlockattr_getpshared),
-
+    LUAB_FUNC("pthread_rwlockattr_init",       luab_pthread_rwlockattr_init),
 
 
 
