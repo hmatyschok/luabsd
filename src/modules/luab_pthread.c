@@ -1961,7 +1961,7 @@ luab_pthread_rwlockattr_destroy(lua_State *L)
 
 /*
  * XXX
- *  int		pthread_rwlockattr_getkind_np(const pthread_rwlockattr_t *, int *);
+ *  int     pthread_rwlockattr_getkind_np(const pthread_rwlockattr_t *, int *);
  */
 
 /***
@@ -1970,6 +1970,7 @@ luab_pthread_rwlockattr_destroy(lua_State *L)
  * @function pthread_rwlockattr_getpshared
  *
  * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCKATTR)).
+ * @param pshared           Result argument, by (LUA_TUSERDATA(INT)).
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -2020,7 +2021,41 @@ luab_pthread_rwlockattr_init(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
- 
+/*
+ * XXX
+ *  int     pthread_rwlockattr_setkind_np(const pthread_rwlockattr_t *, int *);
+ */
+
+/***
+ * pthread_rwlockattr_setpshared(3) - set the process shared attribute
+ *
+ * @function pthread_rwlockattr_setpshared
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCKATTR)).
+ * @param pshared           Value argumeny, by (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlockattr_setpshared(attr, pshared)
+ */
+static int
+luab_pthread_rwlockattr_setpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_rwlockattr_t attr;
+    int pshared, status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_ATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_rwlockattr_t);
+    pshared = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+
+    status = pthread_rwlockattr_setpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -2896,9 +2931,12 @@ static luab_module_table_t luab_pthread_vec[] = {
  *  LUAB_FUNC("pthread_rwlockattr_getkind_np",      luab_pthread_rwlockattr_getkind_np),
  */
     LUAB_FUNC("pthread_rwlockattr_getpshared",      luab_pthread_rwlockattr_getpshared),
-    LUAB_FUNC("pthread_rwlockattr_init",       luab_pthread_rwlockattr_init),
-
-
+    LUAB_FUNC("pthread_rwlockattr_init",            luab_pthread_rwlockattr_init),
+/*
+ * XXX
+ *  LUAB_FUNC("pthread_rwlockattr_setkind_np",      luab_pthread_rwlockattr_setkind_np),
+ */
+    LUAB_FUNC("pthread_rwlockattr_setpshared",      luab_pthread_rwlockattr_setpshared),
 
 
 
