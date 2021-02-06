@@ -2171,12 +2171,83 @@ luab_pthread_spin_destroy(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_spin_lock(3) - lock a spin lock
+ *
+ * @function pthread_spin_lock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_SPINLOCK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_spin_lock(lock)
+ */
+static int
+luab_pthread_spin_lock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_spinlock_t lock;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(PTHREAD_SPINLOCK, TYPE, __func__);
+    lock = luab_udata(L, 1, m, pthread_spinlock_t);
+    status = pthread_spin_lock(&lock);
+    return (luab_pushxinteger(L, status));
+}
 
+/***
+ * pthread_spin_trylock(3) - lock a spin lock
+ *
+ * @function pthread_spin_trylock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_SPINLOCK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_spin_trylock(lock)
+ */
+static int
+luab_pthread_spin_trylock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_spinlock_t lock;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
 
+    m = luab_xmod(PTHREAD_SPINLOCK, TYPE, __func__);
+    lock = luab_udata(L, 1, m, pthread_spinlock_t);
+    status = pthread_spin_trylock(&lock);
+    return (luab_pushxinteger(L, status));
+}
 
+/***
+ * pthread_spin_unlock(3) - release a spin lock
+ *
+ * @function pthread_spin_unlock
+ *
+ * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_SPINLOCK)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_spin_unlock(lock)
+ */
+static int
+luab_pthread_spin_unlock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_spinlock_t lock;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_SPINLOCK, TYPE, __func__);
+    lock = luab_udata(L, 1, m, pthread_spinlock_t);
+    status = pthread_spin_unlock(&lock);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -3061,6 +3132,9 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_setspecific",                luab_pthread_setspecific),
     LUAB_FUNC("pthread_spin_init",                  luab_pthread_spin_init),
     LUAB_FUNC("pthread_spin_destroy",               luab_pthread_spin_destroy),
+    LUAB_FUNC("pthread_spin_lock",                  luab_pthread_spin_lock),
+    LUAB_FUNC("pthread_spin_trylock",               luab_pthread_spin_trylock),
+    LUAB_FUNC("pthread_spin_unlock",                luab_pthread_spin_unlock),
 
 
 
