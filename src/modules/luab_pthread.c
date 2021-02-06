@@ -1933,6 +1933,37 @@ luab_pthread_rwlock_wrlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_rwlockattr_destroy(3) - destroy a read/write lock attribute
+ *
+ * @function pthread_rwlockattr_destroy
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCKATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlockattr_destroy(attr)
+ */
+static int
+luab_pthread_rwlockattr_destroy(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_rwlockattr_t attr;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_RWLOCKATTR, TYPE, __func__);
+    attr = luab_udata(L, 1, m, pthread_rwlockattr_t);
+    status = pthread_rwlockattr_destroy(&attr);
+    return (luab_pushxinteger(L, status));
+}
+
+
+
+
+
+
 
 
 
@@ -2802,10 +2833,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_rwlock_trywrlock",           luab_pthread_rwlock_trywrlock),
     LUAB_FUNC("pthread_rwlock_unlock",              luab_pthread_rwlock_unlock),
     LUAB_FUNC("pthread_rwlock_wrlock",              luab_pthread_rwlock_wrlock),
-
-
-
-
+    LUAB_FUNC("pthread_rwlockattr_destroy",         luab_pthread_rwlockattr_destroy),
 
 
 
