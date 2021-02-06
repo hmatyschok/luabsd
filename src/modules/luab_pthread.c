@@ -2275,13 +2275,84 @@ luab_pthread_cancel(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_setcancelstate(3) - set cancelability state
+ *
+ * @function pthread_setcancelstate
+ *
+ * @param state             Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param oldstate          Result argument, by (LUA_T{NIL,USERDATA(INT)})
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_setcancelstate(state, oldstate)
+ */
+static int
+luab_pthread_setcancelstate(lua_State *L)
+{
+    luab_module_t *m;
+    int state, *oldstate;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m = luab_xmod(INT, TYPE, __func__);
+
+    state = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    oldstate = luab_udataisnil(L, 2, m, int *);
+
+    status = pthread_setcancelstate(state, oldstate);
+    return (luab_pushxinteger(L, status));
+}
 
 
+/***
+ * pthread_setcanceltype(3) - set cancelability state
+ *
+ * @function pthread_setcanceltype
+ *
+ * @param type              Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param oldtype           Result argument, by (LUA_T{NIL,USERDATA(INT)})
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_setcanceltype(type, oldtype)
+ */
+static int
+luab_pthread_setcanceltype(lua_State *L)
+{
+    luab_module_t *m;
+    int type, *oldtype;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m = luab_xmod(INT, TYPE, __func__);
 
+    type = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    oldtype = luab_udataisnil(L, 2, m, int *);
 
+    status = pthread_setcanceltype(type, oldtype);
+    return (luab_pushxinteger(L, status));
+}
 
+/***
+ * pthread_testcancel(3) - test cancelability state
+ *
+ * @function pthread_testcancel
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_testcancel()
+ */
+static int
+luab_pthread_testcancel(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
+
+     pthread_testcancel();
+     return (luab_pushxinteger(L, luab_env_success));
+}
 
 
 
@@ -3166,6 +3237,9 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_spin_trylock",               luab_pthread_spin_trylock),
     LUAB_FUNC("pthread_spin_unlock",                luab_pthread_spin_unlock),
     LUAB_FUNC("pthread_cancel",                     luab_pthread_cancel),
+    LUAB_FUNC("pthread_setcancelstate",             luab_pthread_setcancelstate),
+    LUAB_FUNC("pthread_setcanceltype",              luab_pthread_setcanceltype),
+    LUAB_FUNC("pthread_testcancel",                 luab_pthread_testcancel),
 
 
 
