@@ -1959,9 +1959,40 @@ luab_pthread_rwlockattr_destroy(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/*
+ * XXX
+ *  int		pthread_rwlockattr_getkind_np(const pthread_rwlockattr_t *, int *);
+ */
 
+/***
+ * pthread_rwlockattr_getpshared(3) - get the process shared attribute
+ *
+ * @function pthread_rwlockattr_getpshared
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCKATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlockattr_getpshared(attr, pshared)
+ */
+static int
+luab_pthread_rwlockattr_getpshared(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_rwlockattr_t attr;
+    int *pshared, status;
 
+    (void)luab_core_checkmaxargs(L, 2);
 
+    m0 = luab_xmod(PTHREAD_ATTR, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+
+    attr = luab_udata(L, 1, m0, pthread_rwlockattr_t);
+    pshared = luab_udata(L, 2, m1, int *);
+
+    status = pthread_rwlockattr_getpshared(&attr, pshared);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -2834,6 +2865,11 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_rwlock_unlock",              luab_pthread_rwlock_unlock),
     LUAB_FUNC("pthread_rwlock_wrlock",              luab_pthread_rwlock_wrlock),
     LUAB_FUNC("pthread_rwlockattr_destroy",         luab_pthread_rwlockattr_destroy),
+/*
+ * XXX
+ *  LUAB_FUNC("pthread_rwlockattr_getkind_np",      luab_pthread_rwlockattr_getkind_np),
+ */
+    LUAB_FUNC("pthread_rwlockattr_getpshared",      luab_pthread_rwlockattr_getpshared),
 
 
 
