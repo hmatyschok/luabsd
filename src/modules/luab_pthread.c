@@ -1656,7 +1656,7 @@ luab_h_callback(void)
  *
  * @param once_control      Value argument, by (LUA_TUSERDATA(PTHREAD_ONCE)).
  * @param init_routine      Callback function, by (LUA_TFUNCTION).
- * 
+ *
  *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
@@ -1687,7 +1687,7 @@ luab_pthread_once(lua_State *L)
  * @function pthread_rwlock_destroy
  *
  * @param lock              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCK)).
- * 
+ *
  * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
  * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlock_destroy(lock)
@@ -1707,6 +1707,37 @@ luab_pthread_rwlock_destroy(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_rwlock_init(3) - initialize a read/write lock
+ *
+ * @function pthread_rwlock_init
+ *
+ * @param lock              Result argument, by (LUA_TUSERDATA(PTHREAD_RWLOCK)).
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD_RWLOCKATTR)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_rwlock_init(lock, attr)
+ */
+static int
+luab_pthread_rwlock_init(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_rwlock_t lock;
+    pthread_rwlockattr_t attr;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m0 = luab_xmod(PTHREAD_RWLOCK, TYPE, __func__);
+    m1 = luab_xmod(PTHREAD_RWLOCKATTR, TYPE, __func__);
+
+    lock = luab_udata(L, 1, m0, pthread_rwlock_t);
+    attr = luab_udata(L, 2, m1, pthread_rwlockattr_t);
+
+    status = pthread_rwlock_init(&lock, &attr);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -2567,14 +2598,15 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutex_unlock",               luab_pthread_mutex_unlock),
     LUAB_FUNC("pthread_once",                       luab_pthread_once),
     LUAB_FUNC("pthread_rwlock_destroy",             luab_pthread_rwlock_destroy),
+    LUAB_FUNC("pthread_rwlock_init",                luab_pthread_rwlock_init),
 
 
 
-    
 
 
 
-    
+
+
     LUAB_FUNC("pthread_mutexattr_getprioceiling",   luab_pthread_mutexattr_getprioceiling),
     LUAB_FUNC("pthread_mutexattr_setprioceiling",   luab_pthread_mutexattr_setprioceiling),
 
