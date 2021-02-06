@@ -1610,7 +1610,31 @@ luab_pthread_mutex_timedlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_mutex_unlock(3) - unlock a mutex
+ *
+ * @function pthread_mutex_unlock
+ *
+ * @param mutex             Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_unlock(mutex)
+ */
+static int
+luab_pthread_mutex_unlock(lua_State *L)
+{
+    luab_module_t *m;
+    pthread_mutex_t mutex;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    mutex = luab_udata(L, 1, m, pthread_mutex_t);
+    status = pthread_mutex_unlock(&mutex);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -2473,6 +2497,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutex_lock",                 luab_pthread_mutex_lock),
     LUAB_FUNC("pthread_mutex_trylock",              luab_pthread_mutex_trylock),
     LUAB_FUNC("pthread_mutex_timedlock",            luab_pthread_mutex_timedlock),
+    LUAB_FUNC("pthread_mutex_unlock",               luab_pthread_mutex_unlock),
 
 
 
