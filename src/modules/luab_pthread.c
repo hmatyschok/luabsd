@@ -2488,7 +2488,7 @@ luab_pthread_mutexattr_setprioceiling(lua_State *L)
 
     attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
     prioceiling = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
-    
+
     status = pthread_mutexattr_setprioceiling(&attr, prioceiling);
     return (luab_pushxinteger(L, status));
 }
@@ -2524,7 +2524,6 @@ luab_pthread_mutex_getprioceiling(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-
 /***
  * pthread_mutex_setprioceiling(3) - mutex operations
  *
@@ -2558,16 +2557,6 @@ luab_pthread_mutex_setprioceiling(lua_State *L)
     status = pthread_mutex_setprioceiling(&mutex, ceiling, oldceiling);
     return (luab_pushxinteger(L, status));
 }
-
-
-
-
-
-
-
-
-
-
 
 /***
  * pthread_mutexattr_getprotocol(3) - mutex attribute operations
@@ -2960,6 +2949,78 @@ luab_pthread_attr_setscope(lua_State *L)
     contentionscope = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
 
     status = pthread_attr_setscope(&attr, contentionscope);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_setschedparam(3) - thread schedeuling parameter manipulation
+ *
+ * @function pthread_setschedparam
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD)).
+ * @param policy            Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param param             Value argument, by (LUA_TUSERDATA(SCHED_PARAM)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_setschedparam(thread, policy, param)
+ */
+static int
+luab_pthread_setschedparam(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    pthread_t thread;
+    int policy;
+    struct sched_param *param;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(PTHREAD, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(SCHED_PARAM, TYPE, __func__);
+
+    thread = luab_udata(L, 1, m0, pthread_t);
+    policy = luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+    param = luab_udata(L, 3, m2, struct sched_param *);
+
+    status = pthread_setschedparam(thread, policy, param);
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_getschedparam(3) - thread schedeuling parameter manipulation
+ *
+ * @function pthread_getschedparam
+ *
+ * @param attr              Value argument, by (LUA_TUSERDATA(PTHREAD)).
+ * @param policy            Result argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ * @param param             Result argument, by (LUA_TUSERDATA(SCHED_PARAM)).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_getschedparam(thread, policy, param)
+ */
+static int
+luab_pthread_getschedparam(lua_State *L)
+{
+    luab_module_t *m0, *m1, *m2;
+    pthread_t thread;
+    int *policy;
+    struct sched_param *param;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    m0 = luab_xmod(PTHREAD, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
+    m2 = luab_xmod(SCHED_PARAM, TYPE, __func__);
+
+    thread = luab_udata(L, 1, m0, pthread_t);
+    policy = luab_udata(L, 2, m1, int *);
+    param = luab_udata(L, 3, m2, struct sched_param *);
+
+    status = pthread_getschedparam(thread, policy, param);
     return (luab_pushxinteger(L, status));
 }
 
@@ -3390,11 +3451,6 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutex_getprioceiling",       luab_pthread_mutex_getprioceiling),
     LUAB_FUNC("pthread_mutex_setprioceiling",       luab_pthread_mutex_setprioceiling),
 
-     
-
-
-
-
     LUAB_FUNC("pthread_mutexattr_getprotocol",      luab_pthread_mutexattr_getprotocol),
     LUAB_FUNC("pthread_mutexattr_setprotocol",      luab_pthread_mutexattr_setprotocol),
     LUAB_FUNC("pthread_mutexattr_getrobust",        luab_pthread_mutexattr_getrobust),
@@ -3407,6 +3463,11 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_attr_setschedparam",         luab_pthread_attr_setschedparam),
     LUAB_FUNC("pthread_attr_setschedpolicy",        luab_pthread_attr_setschedpolicy),
     LUAB_FUNC("pthread_attr_setscope",              luab_pthread_attr_setscope),
+    LUAB_FUNC("pthread_setschedparam",              luab_pthread_setschedparam),
+    LUAB_FUNC("pthread_getschedparam",              luab_pthread_getschedparam),
+
+
+
 
     /* generator functions */
     LUAB_FUNC("create_pthread_key",                 luab_type_create_pthread_key),
