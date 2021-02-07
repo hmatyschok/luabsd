@@ -2488,13 +2488,13 @@ luab_pthread_mutexattr_setprioceiling(lua_State *L)
 
     attr = luab_udata(L, 1, m0, pthread_mutexattr_t);
     prioceiling = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
-
+    
     status = pthread_mutexattr_setprioceiling(&attr, prioceiling);
     return (luab_pushxinteger(L, status));
 }
 
 /***
- * pthread_mute_getprioceiling(3) - mutex operations
+ * pthread_mutex_getprioceiling(3) - mutex operations
  *
  * @function pthread_mutex_getprioceiling
  *
@@ -2525,11 +2525,39 @@ luab_pthread_mutex_getprioceiling(lua_State *L)
 }
 
 
+/***
+ * pthread_mutex_setprioceiling(3) - mutex operations
+ *
+ * @function pthread_mutex_setprioceiling
+ *
+ * @param mutex             Value argument, by (LUA_TUSERDATA(PTHREAD_MUTEX)).
+ * @param ceiling           Value argument, by (LUA_T{NIL,USERDATA(INT)})
+ * @param oldceiling        Result argument, by (LUA_T{NIL,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_mutex_setprioceiling(mutex, ceiling oldceiling)
+ */
+static int
+luab_pthread_mutex_setprioceiling(lua_State *L)
+{
+    luab_module_t *m0, *m1;
+    pthread_mutex_t mutex;
+    int ceiling, *oldceiling;
+    int status;
 
+    (void)luab_core_checkmaxargs(L, 3);
 
+    m0 = luab_xmod(PTHREAD_MUTEX, TYPE, __func__);
+    m1 = luab_xmod(INT, TYPE, __func__);
 
+    mutex = luab_udata(L, 1, m0, pthread_mutex_t);
+    ceiling = (int)luab_checkxinteger(L, 2, m1, luab_env_uint_max);
+    oldceiling = luab_udataisnil(L, 3, m1, int *);
 
-
+    status = pthread_mutex_setprioceiling(&mutex, ceiling, oldceiling);
+    return (luab_pushxinteger(L, status));
+}
 
 
 
@@ -3360,6 +3388,7 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_mutexattr_getprioceiling",   luab_pthread_mutexattr_getprioceiling),
     LUAB_FUNC("pthread_mutexattr_setprioceiling",   luab_pthread_mutexattr_setprioceiling),
     LUAB_FUNC("pthread_mutex_getprioceiling",       luab_pthread_mutex_getprioceiling),
+    LUAB_FUNC("pthread_mutex_setprioceiling",       luab_pthread_mutex_setprioceiling),
 
      
 
