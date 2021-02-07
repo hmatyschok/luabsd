@@ -2412,9 +2412,23 @@ luab_pthread_setprio(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+/***
+ * pthread_yield(3) - yield control of the current thread
+ *
+ * @function pthread_yield
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_yield()
+ */
+static int
+luab_pthread_yield(lua_State *L)
+{
+    (void)luab_core_checkmaxargs(L, 0);
 
-
-
+     pthread_yield();
+     return (luab_pushxinteger(L, luab_env_success));
+}
 #endif /* __BSD_VISIBLE */
 
 
@@ -3312,6 +3326,7 @@ static luab_module_table_t luab_pthread_vec[] = {
 #if __BSD_VISIBLE
     LUAB_FUNC("pthread_getprio",                    luab_pthread_getprio),
     LUAB_FUNC("pthread_setprio",                    luab_pthread_setprio),
+    LUAB_FUNC("pthread_yield",                      luab_pthread_yield),
 #endif
 
 
