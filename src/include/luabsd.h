@@ -52,6 +52,7 @@ void     luab_core_argerror(lua_State *, int, void *, size_t, size_t, int);
  */
 
 typedef struct luab_thread {
+    LIST_ENTRY(luab_thread)  thr_next;
     pthread_t           thr_id;
     pthread_mutex_t     thr_mtx;
     pthread_cond_t      thr_cv;
