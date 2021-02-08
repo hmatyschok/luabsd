@@ -63,7 +63,7 @@ typedef struct luab_thread {
 } luab_thread_t;
 
 void     luab_core_closethread(luab_thread_t *, int);
-luab_thread_t    *luab_core_newthread(lua_State *, int, const char *);
+luab_thread_t    *luab_core_allocthread(lua_State *, int, const char *);
 void     *luab_core_pcall(void *);
 void     *luab_core_sigwait(void *);
 

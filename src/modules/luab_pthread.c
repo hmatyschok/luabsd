@@ -1675,7 +1675,7 @@ luab_pthread_once(lua_State *L)
     m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
 
     once_control = luab_udata(L, 1, m, pthread_once_t *);
-    thr = luab_core_newthread(L, 2, "h_callback");
+    thr = luab_core_allocthread(L, 2, "h_callback");
 
     status = pthread_once(once_control, luab_h_callback);
     return (luab_pushxinteger(L, status));

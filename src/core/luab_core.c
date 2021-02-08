@@ -74,7 +74,7 @@ luab_core_closethread(luab_thread_t *thr, int narg)
 }
 
 luab_thread_t *
-luab_core_newthread(lua_State *L, int narg, const char *fname)
+luab_core_allocthread(lua_State *L, int narg, const char *fname)
 {
     luab_thread_t *thr;
 
