@@ -3024,6 +3024,54 @@ luab_pthread_getschedparam(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
+#if __XSI_VISIBLE
+/***
+ * pthread_getconcurrency(3) - get level of concurrency
+ *
+ * @function pthread_getconcurrency
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_getconcurrency()
+ */
+static int
+luab_pthread_getconcurrency(lua_State *L)
+{
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 0);
+
+    status = pthread_getconcurrency();
+    return (luab_pushxinteger(L, status));
+}
+
+/***
+ * pthread_setconcurrency(3) - set level of concurrency
+ *
+ * @function pthread_setconcurrency
+ *
+ * @param new_level         Value argument, by (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_setconcurrency()
+ */
+static int
+luab_pthread_setconcurrency(lua_State *L)
+{
+    luab_module_t *m;
+    int new_level;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(INT, TYPE, __func__);
+    new_level = (int)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    status = pthread_setconcurrency(new_level);
+    return (luab_pushxinteger(L, status));
+}
+#endif /* __XSI_VISIBLE */
+
 /*
  * Generator functions.
  */
@@ -3465,8 +3513,10 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_FUNC("pthread_attr_setscope",              luab_pthread_attr_setscope),
     LUAB_FUNC("pthread_setschedparam",              luab_pthread_setschedparam),
     LUAB_FUNC("pthread_getschedparam",              luab_pthread_getschedparam),
-
-
+#if __XSI_VISIBLE
+    LUAB_FUNC("pthread_getconcurrency",             luab_pthread_getconcurrency),
+    LUAB_FUNC("pthread_setconcurrency",             luab_pthread_setconcurrency),
+#endif
 
 
     /* generator functions */
