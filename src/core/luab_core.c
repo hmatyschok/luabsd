@@ -124,6 +124,35 @@ luab_core_pcall(void *arg)
     return (NULL);
 }
 
+void *
+luab_core_sigwait(void *arg)
+{
+    luab_thread_t *thr;
+    int sig, cv;
+
+    if ((thr = (luab_thread_t *)arg) != NULL) {
+
+        cv = 1;
+
+        while (cv != 0) {
+
+            if (sigwait(&thr->thr_nsigset, &sig) == 0) {
+
+                switch (sig) {
+                case SIGUSR1:
+                case SIGUSR2:
+
+                    (void)luab_core_pcall(arg);
+                default:
+                    cv = 0;
+                    break;
+                }
+            }
+        }
+    }
+    pthread_exit(NULL);
+}
+
 /*
  * Main entry point for loadlib(3).
  */

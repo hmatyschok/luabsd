@@ -50,27 +50,29 @@ static void *
 h_signal(void *arg)
 {
     luab_thread_t *thr;
-    int sig;
+    int sig, cv;
 
-    if ((thr = (luab_thread_t *)arg) == NULL)
-        goto out;
+    if ((thr = (luab_thread_t *)arg) != NULL) {
 
-    for (;;) {
-        if (sigwait(&thr->thr_nsigset, &sig) != 0)
-            goto out;   /* XXX up-call */
+        cv = 1;
 
-        switch (sig) {
-        case SIGALRM:
-        case SIGVTALRM:
-        case SIGPROF:
+        while (cv != 0) {
 
-            (void)luab_core_pcall(arg);
-            goto out;
-        default:
-            break;
+            if (sigwait(&thr->thr_nsigset, &sig) == 0) {
+
+                switch (sig) {
+                case SIGALRM:
+                case SIGVTALRM:
+                case SIGPROF:
+
+                    (void)luab_core_pcall(arg);
+                default:
+                    cv = 0;
+                    break;
+                }
+            }
         }
     }
-out:
     pthread_exit(NULL);
 }
 
