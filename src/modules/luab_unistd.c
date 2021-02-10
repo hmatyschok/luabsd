@@ -69,7 +69,7 @@ static luab_thread_t *h_thr = NULL;
 static void
 h_signal(int arg __unused)
 {
-    h_thr = luab_core_pcall(h_thr);
+    h_thr = luab_thread_pcall(h_thr);
 }
 
 /***

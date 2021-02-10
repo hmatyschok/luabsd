@@ -299,7 +299,7 @@ extern luab_libdata_t luab_env_libdata_vec[];
  * Service primitives.
  */
 
-void     luab_env_initparam(luab_sysconf_vec_t *);
+void     luab_env_init(lua_State *, luab_sysconf_vec_t *);
 
 void     luab_env_registerlib(lua_State *, int, luab_module_vec_t *, const char *);
 void     luab_env_registertype(lua_State *, int, luab_module_vec_t *);

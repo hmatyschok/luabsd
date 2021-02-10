@@ -24,9 +24,6 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <pthread.h>
-#include <signal.h>
-
 #include <lua.h>
 #include <lauxlib.h>
 #include <lualib.h>
@@ -50,108 +47,8 @@ static const char *luab_core_copyright =
     "   28 Jul 2018 12:47:52\n\n"
     "\n";
 
-static LIST_HEAD(, luab_thread) luab_core_threads =
-        LIST_HEAD_INITIALIZER(luab_core_threads);
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
-
-/*
- * Primitives for threading operations.
- */
-
-void
-luab_core_closethread(luab_thread_t *thr, int narg)
-{
-    if (thr != NULL) {
-
-        if (thr->thr_child != NULL)
-            lua_pop(thr->thr_child, narg);
-
-        LIST_REMOVE(thr, thr_next);
-        luab_core_free(thr, sizeof(*thr));
-    } else
-        luab_core_err(EX_DATAERR, __func__, ENOENT);
-}
-
-luab_thread_t *
-luab_core_allocthread(lua_State *L, int narg, const char *fname)
-{
-    luab_thread_t *thr;
-
-    if ((thr = luab_core_alloc(1, sizeof(luab_thread_t))) != NULL) {
-        thr->thr_mtx = PTHREAD_MUTEX_INITIALIZER;
-        thr->thr_cv = PTHREAD_COND_INITIALIZER;
-
-        if ((thr->thr_parent = L) != NULL) {
-
-            if ((thr->thr_child = lua_newthread(L)) != NULL) {
-                lua_pop(thr->thr_parent, narg);
-
-                if (fname != NULL)
-                    (void)snprintf(thr->thr_fname, luab_env_name_max, "%s", fname);
-
-                LIST_INSERT_HEAD(&luab_core_threads, thr, thr_next);
-                return (thr);
-            } else
-                luab_core_err(EX_UNAVAILABLE, __func__, ENOMEM);
-        } else
-            luab_core_err(EX_UNAVAILABLE, __func__, ENXIO);
-    } else
-        luab_core_err(EX_UNAVAILABLE, __func__, errno);
-
-    return (NULL);
-}
-
-void *
-luab_core_pcall(void *arg)
-{
-    luab_thread_t *thr;
-
-    if ((thr = (luab_thread_t *)arg) != NULL) {
-
-        if (thr->thr_child != NULL) {
-            lua_getfield(thr->thr_child, LUA_REGISTRYINDEX, thr->thr_fname);
-
-            if (lua_pcall(thr->thr_child, 0, 0, 0) != 0)
-                luab_core_err(EX_DATAERR, thr->thr_fname, ENXIO);
-
-            luab_core_closethread(thr, 1);
-        } else
-            luab_core_err(EX_DATAERR, __func__, ENXIO);
-    } else
-        luab_core_err(EX_OSERR, __func__, ENOENT);
-
-    return (NULL);
-}
-
-void *
-luab_core_sigwait(void *arg)
-{
-    luab_thread_t *thr;
-    int sig, cv;
-
-    if ((thr = (luab_thread_t *)arg) != NULL) {
-
-        cv = 1;
-
-        while (cv != 0) {
-
-            if (sigwait(&thr->thr_nsigset, &sig) == 0) {
-
-                switch (sig) {
-                case SIGUSR1:
-                case SIGUSR2:
-
-                    (void)luab_core_pcall(arg);
-                default:
-                    cv = 0;
-                    break;
-                }
-            }
-        }
-    }
-    pthread_exit(NULL);
-}
 
 /*
  * Main entry point for loadlib(3).
@@ -163,7 +60,7 @@ luaopen_bsd(lua_State *L)
     (void)printf("%s", luab_core_copyright);
 
     /* initialize constraints */
-    luab_env_initparam(luab_env_param);
+    luab_env_init(L, luab_env_param);
 
     /*
      * register modules
@@ -175,8 +72,7 @@ luaopen_bsd(lua_State *L)
 
 
     /* initialize threading pool */
-    LIST_INIT(&luab_core_threads);
-
+    luab_thread_init(L);
 
     return (1);
 }

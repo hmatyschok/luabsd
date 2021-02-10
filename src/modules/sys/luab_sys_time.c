@@ -65,7 +65,7 @@ h_signal(void *arg)
                 case SIGVTALRM:
                 case SIGPROF:
 
-                    (void)luab_core_pcall(arg);
+                    (void)luab_thread_pcall(arg);
                 default:
                     cv = 0;
                     break;
@@ -117,7 +117,7 @@ luab_setitimer(lua_State *L)
 out:
     return (luab_pushxinteger(L, status));
 bad:
-    luab_core_closethread(thr, 1);
+    luab_thread_close(thr, 1);
     goto out;
 }
 

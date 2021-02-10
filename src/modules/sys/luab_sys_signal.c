@@ -88,7 +88,7 @@ luab_h_signal(int sig_num)
     luab_sigent_t *tok;
 
     if ((tok = &luab_sigent_vec[sig_num]) != NULL)
-        tok->se_thr = luab_core_pcall(tok->se_thr);
+        tok->se_thr = luab_thread_pcall(tok->se_thr);
     else
         luab_core_err(EX_DATAERR, __func__, ENOENT);
 }

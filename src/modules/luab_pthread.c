@@ -1086,9 +1086,9 @@ luab_pthread_create(lua_State *L)
     thr = luab_checkfunction(L, 3, "luab_pthread_fn");
 
     if (attr != NULL)
-        status = pthread_create(&thread, &attr, luab_core_pcall, thr);
+        status = pthread_create(&thread, &attr, luab_thread_pcall, thr);
     else
-        status = pthread_create(&thread, NULL, luab_core_pcall, thr);
+        status = pthread_create(&thread, NULL, luab_thread_pcall, thr);
 
     return (luab_pushxinteger(L, status));
 }
@@ -1646,7 +1646,7 @@ static luab_thread_t *luab_h_thr;
 static void
 luab_h_callback(void)
 {
-    luab_h_thr = luab_core_pcall(luab_h_thr);
+    luab_h_thr = luab_thread_pcall(luab_h_thr);
 }
 
 /***
@@ -1675,7 +1675,7 @@ luab_pthread_once(lua_State *L)
     m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
 
     once_control = luab_udata(L, 1, m, pthread_once_t *);
-    thr = luab_core_allocthread(L, 2, "h_callback");
+    thr = luab_thread_alloc(L, 2, "h_callback");
 
     status = pthread_once(once_control, luab_h_callback);
     return (luab_pushxinteger(L, status));

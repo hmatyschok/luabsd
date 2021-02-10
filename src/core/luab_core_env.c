@@ -754,7 +754,7 @@ luab_sysconf_vec_t luab_env_param[] = {
  */
 
 void
-luab_env_initparam(luab_sysconf_vec_t *vec)
+luab_env_init(lua_State *L __unused, luab_sysconf_vec_t *vec)
 {
     luab_sysconf_vec_t *tok;
 

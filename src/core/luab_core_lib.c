@@ -158,7 +158,7 @@ luab_core_checkmaxargs(lua_State *L, int nmax)
 }
 
 /*
- *  Generic service primitives, <luab_core_udata>
+ *  Generic service primitives, <luab_core_udata>.
  */
 
 int
@@ -532,7 +532,7 @@ luab_checkfunction(lua_State *L, int narg, const char *fname)
     if (lua_type(L, narg) == LUA_TFUNCTION && fname != NULL) {
         lua_settop(L, narg);
         lua_setfield(L, LUA_REGISTRYINDEX, fname);
-        return (luab_core_allocthread(L, 1, fname));
+        return (luab_thread_alloc(L, 1, fname));
     } else
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
 
