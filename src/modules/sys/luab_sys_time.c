@@ -101,10 +101,8 @@ luab_setitimer(lua_State *L)
 
     if ((thr = luab_newthread(L, narg, "h_callout", luab_h_itimer)) != NULL) {
 
-        if ((status = setitimer(which, value, ovalue)) != 0) {
-            pthread_cancel(thr->thr_id);
+        if ((status = setitimer(which, value, ovalue)) != 0)
             luab_thread_close(thr, 1);
-        }
     } else
         status = luab_env_error;
 

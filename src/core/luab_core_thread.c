@@ -44,6 +44,7 @@ void
 luab_thread_close(luab_thread_t *thr, int narg)
 {
     if (thr != NULL) {
+        (void)pthread_cancel(thr->thr_id);
 
         if (thr->thr_child != NULL)
             lua_pop(thr->thr_child, narg);
@@ -81,6 +82,16 @@ luab_thread_alloc(lua_State *L, int narg, const char *fname)
         luab_core_err(EX_UNAVAILABLE, __func__, errno);
 
     return (NULL);
+}
+
+/*
+ * Callback functions.
+ */
+
+void
+luab_thread_once(void)
+{
+    (void)raise(SIGUSR1);
 }
 
 void *
@@ -131,7 +142,7 @@ luab_thread_sigwait(void *arg)
             }
         }
     }
-    pthread_exit(NULL);
+    return (NULL);
 }
 
 /*

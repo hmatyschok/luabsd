@@ -1636,19 +1636,6 @@ luab_pthread_mutex_unlock(lua_State *L)
     return (luab_pushxinteger(L, status));
 }
 
-/*
- * XXX
- *  pthread_once(3)
- */
-
-static luab_thread_t *luab_h_thr;
-
-static void
-luab_h_callback(void)
-{
-    luab_h_thr = luab_thread_pcall(luab_h_thr);
-}
-
 /***
  * pthread_once(3) - dynamic package initialization
  *
@@ -1675,9 +1662,14 @@ luab_pthread_once(lua_State *L)
     m = luab_xmod(PTHREAD_ONCE, TYPE, __func__);
 
     once_control = luab_udata(L, 1, m, pthread_once_t *);
-    thr = luab_thread_alloc(L, 2, "h_callback");
 
-    status = pthread_once(once_control, luab_h_callback);
+    if ((thr = luab_newthread(L, 2, "h_once", luab_thread_sigwait)) != NULL) {
+
+        if ((status = pthread_once(once_control, luab_thread_once)) != 0)
+            luab_thread_close(thr, 1);
+    } else
+        status = luab_env_error;
+
     return (luab_pushxinteger(L, status));
 }
 
