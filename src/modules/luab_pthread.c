@@ -48,6 +48,45 @@ extern luab_module_t luab_pthread_lib;
  *  int     pthread_atfork(void (*)(void), void (*)(void), void (*)(void));
  */
 
+
+/***
+ * pthread_atfork(3) - register fork handlers
+ *
+ * @function pthread_atfork
+ *
+ * @param prepare           Callback, instance of (LUA_TFUNCTION).
+ * @param parent            Callback, instance of (LUA_TFUNCTION).
+ * @param child             Callback, instance of (LUA_TFUNCTION).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.pthread.pthread_atfork(prepare, parent, child)
+ */
+static int
+luab_pthread_atfork(lua_State *L)
+{
+    luab_thread_t *prepare;
+    luab_thread_t *parent;
+    luab_thread_t *child;
+    int status;
+
+    (void)luab_core_checkmaxargs(L, 3);
+
+    prepare = luab_newthread(L, 1, "h_prepare", luab_thread_sigwait);
+    parent = luab_newthread(L, 1, "h_parent", luab_thread_sigwait);
+    child = luab_newthread(L, 1, "h_child", luab_thread_sigwait);
+
+    status = pthread_atfork(luab_thread_atfork, luab_thread_atfork,
+        luab_thread_atfork);
+
+    if (status != 0) {
+        luab_thread_close(prepare, 1);
+        luab_thread_close(parent, 1);
+        luab_thread_close(child, 1);
+    }
+    return (luab_pushxinteger(L, status));
+}
+
 /***
  * pthread_attr_destroy(3) - POSIX threads library
  *
@@ -3388,8 +3427,9 @@ static luab_module_table_t luab_pthread_vec[] = {
     LUAB_INT("PTHREAD_MUTEX_ROBUST",                PTHREAD_MUTEX_ROBUST),
 /*
  * XXX
- *  LUAB_FUNC("pthread_atfork",                     luab_pthread_atfork),
  */
+    LUAB_FUNC("pthread_atfork",                     luab_pthread_atfork),
+
     LUAB_FUNC("pthread_attr_destroy",               luab_pthread_attr_destroy),
     LUAB_FUNC("pthread_attr_getstack",              luab_pthread_attr_getstack),
     LUAB_FUNC("pthread_attr_getstacksize",          luab_pthread_attr_getstacksize),
