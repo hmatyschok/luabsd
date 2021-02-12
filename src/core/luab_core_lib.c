@@ -26,6 +26,8 @@
 
 #include <err.h>
 #include <errno.h>
+#include <pthread.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -535,6 +537,33 @@ luab_checkfunction(lua_State *L, int narg, const char *fname)
         return (luab_thread_alloc(L, 1, fname));
     } else
         luab_core_argerror(L, narg, NULL, 0, 0, EINVAL);
+
+    return (NULL);
+}
+
+luab_thread_t *
+luab_newthread(lua_State *L, int narg, const char *fname, void *(*f)(void *))
+{
+    sigset_t thr_sigset;
+    luab_thread_t *thr;
+
+    if (sigfillset(&thr_sigset) == 0) {
+
+        if (pthread_sigmask(SIG_BLOCK, &thr_sigset, NULL) == 0) {
+
+            if ((thr = luab_checkfunction(L, narg, fname)) != NULL) {
+                thr->thr_sigset = thr_sigset;
+
+                if (pthread_create(&thr->thr_id, NULL, f, thr) != 0) {
+                    luab_thread_close(thr, 1);
+                    thr = NULL;
+                }
+            }
+            return (thr);
+        } else
+            luab_core_argerror(L, narg, NULL, 0, 0, ENOEXEC);
+    } else
+        luab_core_argerror(L, narg, NULL, 0, 0, ESRCH);
 
     return (NULL);
 }

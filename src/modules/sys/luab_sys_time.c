@@ -47,7 +47,7 @@ extern luab_module_t luab_sys_time_lib;
  */
 
 static void *
-h_signal(void *arg)
+luab_h_itimer(void *arg)
 {
     luab_thread_t *thr;
     int sig, cv;
@@ -58,7 +58,7 @@ h_signal(void *arg)
 
         while (cv != 0) {
 
-            if (sigwait(&thr->thr_nsigset, &sig) == 0) {
+            if (sigwait(&thr->thr_sigset, &sig) == 0) {
 
                 switch (sig) {
                 case SIGALRM:
@@ -99,26 +99,16 @@ luab_setitimer(lua_State *L)
     value = luab_udataisnil(L, 2, m1, struct itimerval *);
     ovalue = luab_udataisnil(L, 3, m1, struct itimerval *);
 
-    thr = luab_checkfunction(L, narg, "h_callout");
+    if ((thr = luab_newthread(L, narg, "h_callout", luab_h_itimer)) != NULL) {
 
-    if ((status = sigfillset(&thr->thr_nsigset)) != 0)
-        goto bad;
+        if ((status = setitimer(which, value, ovalue)) != 0) {
+            pthread_cancel(thr->thr_id);
+            luab_thread_close(thr, 1);
+        }
+    } else
+        status = luab_env_error;
 
-    if ((status = pthread_sigmask(SIG_BLOCK, &thr->thr_nsigset, NULL)) != 0)
-        goto bad;
-
-    if ((status = pthread_create(&thr->thr_id, NULL, h_signal, thr)) != 0)
-        goto bad;
-
-    if ((status = setitimer(which, value, ovalue)) != 0) {
-        pthread_cancel(thr->thr_id);
-        goto bad;
-    }
-out:
     return (luab_pushxinteger(L, status));
-bad:
-    luab_thread_close(thr, 1);
-    goto out;
 }
 
 #if __XSI_VISIBLE

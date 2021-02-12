@@ -56,7 +56,7 @@ typedef struct luab_thread {
     pthread_t           thr_id;
     pthread_mutex_t     thr_mtx;
     pthread_cond_t      thr_cv;
-    sigset_t            thr_nsigset;
+    sigset_t            thr_sigset;
     lua_State           *thr_child;
     lua_State           *thr_parent;
     char        thr_fname[LUAB_NAME_MAX+1];
@@ -113,6 +113,7 @@ char     *luab_checklstringalloc(lua_State *, int, size_t, size_t *);
 char     *luab_checklxstring(lua_State *, int, size_t, size_t *);
 
 luab_thread_t    *luab_checkfunction(lua_State *, int, const char *);
+luab_thread_t    *luab_newthread(lua_State *, int, const char *, void *(*)(void *));
 
 /*
  * Access functions, [C -> stack].

@@ -117,7 +117,7 @@ luab_thread_sigwait(void *arg)
 
         while (cv != 0) {
 
-            if (sigwait(&thr->thr_nsigset, &sig) == 0) {
+            if (sigwait(&thr->thr_sigset, &sig) == 0) {
 
                 switch (sig) {
                 case SIGUSR1:
