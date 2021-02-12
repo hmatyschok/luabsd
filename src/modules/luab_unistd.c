@@ -23,15 +23,6 @@
  * ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-/*
- * The implementation of the interface against alarm(3) is derived from:
- *
- * lalarm.c
- * an alarm library for Lua based on signal
- * Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>
- * 28 Jul 2018 12:47:52
- * This code is hereby placed in the public domain and also under the MIT license
- */
 
 #include <arpa/inet.h>
 
@@ -61,16 +52,8 @@ extern char **environ;
 #define LUAB_SETMAXLEN      LUAB_SET_LEN
 
 /*
- * Subr.
+ * Service primitives.
  */
-
-static luab_thread_t *h_thr = NULL;
-
-static void
-h_signal(int arg __unused)
-{
-    h_thr = luab_thread_pcall(h_thr);
-}
 
 /***
  * alarm(3) - set signal timer alarm
@@ -89,6 +72,7 @@ luab_alarm(lua_State *L)
 {
     luab_module_t *m;
     u_int seconds;
+    luab_thread_t *thr;
     u_int status;
 
     (void)luab_core_checkmaxargs(L, 2);
@@ -98,19 +82,20 @@ luab_alarm(lua_State *L)
     seconds = (u_int)luab_checkxinteger(L, 1, m, luab_env_int_max);
 
     if (seconds != 0) {
-        h_thr = luab_checkfunction(L, 2, "h_SIGALARM");
 
-        if (signal(SIGALRM, h_signal) == SIG_ERR)
-            return (luab_pushxinteger(L, luab_env_error));
+        thr = luab_newthread(L, 2, "h_sigalarm", luab_thread_sigwait);
+        if (thr != NULL) {
+
+            if (signal(SIGALRM, luab_thread_signal) == SIG_ERR) {
+                luab_thread_close(thr, 1);
+                return (luab_pushxinteger(L, luab_env_error));
+            }
+        }
     }
-    status = alarm(seconds);
+    status = alarm(seconds);    /* XXX */
 
     return (luab_pushxinteger(L, status));
 }
-
-/*
- * Service primitives.
- */
 
 /***
  * access(2) - check availability of a file

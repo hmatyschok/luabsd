@@ -34,19 +34,7 @@
 static const char *luab_core_copyright =
     " Copyright (c) 2020, 2021 Henning Matyschok\n"
     " All rights reserved.\n"
-    "\n"
-    "  The implementation of the interface against\n"
-    "\n"
-    "    #1: alarm(3),\n"
-    "\n"
-    "  is derived from:\n"
-    "\n"
-    "   lalarm.c\n"
-    "   an alarm library for Lua based on signal(3)\n"
-    "   Luiz Henrique de Figueiredo <lhf@tecgraf.puc-rio.br>\n"
-    "   28 Jul 2018 12:47:52\n\n"
     "\n";
-
 
 LUAMOD_API int  luaopen_bsd(lua_State *);
 

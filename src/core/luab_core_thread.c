@@ -94,6 +94,12 @@ luab_thread_once(void)
     (void)raise(SIGUSR1);
 }
 
+void
+luab_thread_signal(int arg __unused)
+{
+    (void)raise(SIGUSR2);
+}
+
 void *
 luab_thread_pcall(void *arg)
 {
