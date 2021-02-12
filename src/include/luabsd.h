@@ -65,6 +65,7 @@ typedef struct luab_thread {
 void     luab_thread_close(luab_thread_t *, int);
 luab_thread_t    *luab_thread_alloc(lua_State *, int, const char *);
 
+void     luab_thread_atfork(void);
 void     luab_thread_once(void);
 void     luab_thread_signal(int);
 

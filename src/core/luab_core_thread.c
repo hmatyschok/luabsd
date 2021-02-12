@@ -89,6 +89,12 @@ luab_thread_alloc(lua_State *L, int narg, const char *fname)
  */
 
 void
+luab_thread_atfork(void)
+{
+    (void)raise(SIGUSR1);
+}
+
+void
 luab_thread_once(void)
 {
     (void)raise(SIGUSR1);
