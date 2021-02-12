@@ -57,6 +57,7 @@ typedef struct luab_thread {
     pthread_mutex_t     thr_mtx;
     pthread_cond_t      thr_cv;
     sigset_t            thr_sigset;
+    int                 thr_sig;
     lua_State           *thr_child;
     lua_State           *thr_parent;
     char        thr_fname[LUAB_NAME_MAX+1];

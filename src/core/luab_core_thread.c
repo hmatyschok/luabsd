@@ -132,26 +132,16 @@ void *
 luab_thread_sigwait(void *arg)
 {
     luab_thread_t *thr;
-    int sig, cv;
+    int sig;
 
     if ((thr = (luab_thread_t *)arg) != NULL) {
 
-        cv = 1;
+        while (1) {
 
-        while (cv != 0) {
-
-            if (sigwait(&thr->thr_sigset, &sig) == 0) {
-
-                switch (sig) {
-                case SIGUSR1:
-                case SIGUSR2:
-
-                    (void)luab_thread_pcall(arg);
-                default:
-                    cv = 0;
-                    break;
-                }
-            }
+            if (sigwait(&thr->thr_sigset, &sig) == 0)
+                (void)luab_thread_pcall(arg);
+            else
+                luab_thread_close(thr, 1);
         }
     }
     return (NULL);
