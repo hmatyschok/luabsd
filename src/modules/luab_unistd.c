@@ -84,12 +84,9 @@ luab_alarm(lua_State *L)
     if (seconds != 0) {
 
         thr = luab_newthread(L, 2, "h_sigalarm", luab_thread_sigwait);
-        if (thr != NULL) {
-
-            if (signal(SIGALRM, luab_thread_signal) == SIG_ERR) {
-                luab_thread_close(thr, 1);
-                return (luab_pushxinteger(L, luab_env_error));
-            }
+        if (thr == NULL) {
+            luab_thread_close(thr, 1);
+            return (luab_pushxinteger(L, luab_env_error));
         }
     }
     status = alarm(seconds);    /* XXX */
