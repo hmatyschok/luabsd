@@ -33,6 +33,8 @@
 
 #include "luabsd.h"
 
+static pthread_mutex_t luab_thread_mtx;
+
 static LIST_HEAD(, luab_thread) luab_thread_pool =
         LIST_HEAD_INITIALIZER(luab_thread_pool);
 
@@ -148,11 +150,40 @@ luab_thread_sigwait(void *arg)
 }
 
 /*
+ * Locking primitives.
+ */
+
+void
+luab_thread_mtx_lock(const char *fname)
+{
+    if (pthread_mutex_lock(&luab_thread_mtx) != 0)
+        luab_core_err(EX_OSERR, fname, errno);
+}
+
+void
+luab_thread_mtx_unlock(const char *fname)
+{
+    if (pthread_mutex_unlock(&luab_thread_mtx) != 0)
+        luab_core_err(EX_OSERR, fname, errno);
+}
+
+/*
  * Main entry point for loadlib(3).
  */
 
 void
 luab_thread_init(lua_State *L __unused)
 {
+    pthread_mutexattr_t attr;
+
+    if (pthread_mutexattr_init(&attr) != 0)
+        luab_core_err(EX_OSERR, __func__, errno);
+
+    if (pthread_mutexattr_settype(&attr, PTHREAD_MUTEX_NORMAL) != 0)
+        luab_core_err(EX_OSERR, __func__, errno);
+
+    if (pthread_mutex_init(&luab_thread_mtx, &attr) != 0)
+        luab_core_err(EX_OSERR, __func__, errno);
+
     LIST_INIT(&luab_thread_pool);
 }

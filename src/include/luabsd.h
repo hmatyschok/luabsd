@@ -75,6 +75,9 @@ void     *luab_thread_sigwait(void *);
 
 void     luab_thread_init(lua_State *);
 
+void  luab_thread_mtx_lock(const char *);
+void  luab_thread_mtx_unlock(const char *);
+
 /*
  * Primitives for operations over (LUA_TUSERDATA).
  */
