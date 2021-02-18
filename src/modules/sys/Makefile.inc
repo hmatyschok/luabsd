@@ -3,6 +3,7 @@
 
 SRCS+=  luab_sys_dirent.c
 SRCS+=  luab_sys_file.c
+SRCS+=  luab_sys_ipc.c
 SRCS+=	luab_sys_jail.c
 SRCS+=  luab_sys_mount.c
 SRCS+=  luab_sys_stat.c

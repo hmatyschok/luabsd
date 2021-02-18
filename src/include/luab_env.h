@@ -700,6 +700,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_UCHAR_TYPE_ID                      1609944412
 #define LUAB_UCHAR_TYPE                         "UCHAR*"
 
+#define LUAB_KEY_TYPE_ID                        1613618084
+#define LUAB_KEY_TYPE                           "KEY*"
+
 #if __POSIX_VISIBLE >= 199309
 #define LUAB_CLOCKID_TYPE_ID                    1610364586
 #define LUAB_CLOCKID_TYPE                       "CLOCKID*"
@@ -1101,6 +1104,9 @@ typedef enum luab_type {
 
     /* <arpa/inet.h> */
     LUAB_IN_PORT_IDX,
+
+    /* <sys/ipc.h> */
+    LUAB_KEY_IDX,
 
     /* <sys/stat.h> */
     LUAB_BLKCNT_IDX,

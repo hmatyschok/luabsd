@@ -150,6 +150,13 @@ luab_module_vec_t luab_env_type_vec[] = {
         .mv_idx = LUAB_IN_PORT_IDX,
     },
 
+    /* <sys/ipc.h> */
+    {
+        .mv_mod = &luab_key_type,
+        .mv_init = luab_env_newmetatable,
+        .mv_idx = LUAB_KEY_IDX,
+    },
+
     /* <sys/stat.h> */
     {
         .mv_mod = &luab_blkcnt_type,
@@ -677,6 +684,9 @@ static luab_module_vec_t luab_env_sys_vec[] = {
         .mv_init = luab_env_newtable,
     },{
         .mv_mod = &luab_sys_file_lib,
+        .mv_init = luab_env_newtable,
+    },{
+        .mv_mod = &luab_sys_ipc_lib,
         .mv_init = luab_env_newtable,
     },{
         .mv_mod = &luab_sys_jail_lib,

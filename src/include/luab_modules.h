@@ -70,6 +70,9 @@ extern luab_module_t luab_lual_number_type;
 /* <arpa/inet.h> */
 extern luab_module_t luab_in_port_type;
 
+/* <sys/ipc.h> */
+extern luab_module_t luab_key_type;
+
 /* <sys/stat.h> */
 extern luab_module_t luab_blkcnt_type;
 extern luab_module_t luab_dev_type;
@@ -247,6 +250,7 @@ extern luab_module_t luab_net_if_dl_lib;
 
 extern luab_module_t luab_sys_dirent_lib;
 extern luab_module_t luab_sys_file_lib;
+extern luab_module_t luab_sys_ipc_lib;
 extern luab_module_t luab_sys_jail_lib;
 extern luab_module_t luab_sys_mount_lib;
 extern luab_module_t luab_sys_stat_lib;

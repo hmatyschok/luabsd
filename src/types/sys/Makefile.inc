@@ -1,5 +1,6 @@
 
 .include "${LUAB_SRCTOP}/types/sys/dirent/Makefile.inc"
+.include "${LUAB_SRCTOP}/types/sys/ipc/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/sys/jail/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/sys/mount/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/sys/sched/Makefile.inc"
