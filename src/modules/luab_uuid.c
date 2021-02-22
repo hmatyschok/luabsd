@@ -258,18 +258,13 @@ luab_uuid_enc_le(lua_State *L)
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            uuid_enc_le(bp, uuid);
-            buf->iov.iov_len = LUAB_UUID_STR_LEN;
-            status = luab_env_success;
+        uuid_enc_le(bp, uuid);
+        buf->iov.iov_len = LUAB_UUID_STR_LEN;
+        status = luab_env_success;
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -313,17 +308,12 @@ luab_uuid_dec_le(lua_State *L)
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            uuid_dec_le(bp, uuid);
-            status = luab_env_success;
+        uuid_dec_le(bp, uuid);
+        status = luab_env_success;
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -366,18 +356,13 @@ luab_uuid_enc_be(lua_State *L)
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            uuid_enc_be(bp, uuid);
-            buf->iov.iov_len = LUAB_UUID_STR_LEN;
-            status = luab_env_success;
+        uuid_enc_be(bp, uuid);
+        buf->iov.iov_len = LUAB_UUID_STR_LEN;   /* XXX */
+        status = luab_env_success;
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -421,17 +406,12 @@ luab_uuid_dec_be(lua_State *L)
         (LUAB_UUID_STR_LEN <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            uuid_dec_be(bp, uuid);
-            status = luab_env_success;
+        uuid_dec_be(bp, uuid);
+        status = luab_env_success;
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;

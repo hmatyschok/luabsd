@@ -225,17 +225,12 @@ luab_regerror(lua_State *L)
         (errbuf_size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((len = regerror(errcode, preg, bp, errbuf_size)) != 0)
-                buf->iov.iov_len = len;
+        if ((len = regerror(errcode, preg, bp, errbuf_size)) != 0)
+            buf->iov.iov_len = len;
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            len = 0;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         len = 0;

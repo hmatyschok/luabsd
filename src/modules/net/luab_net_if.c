@@ -80,20 +80,15 @@ luab_if_indextoname(lua_State *L)
         (IFNAMSIZ <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (if_indextoname(ifindex, bp) != NULL) {
-                buf->iov.iov_len = strnlen(bp, IFNAMSIZ);
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (if_indextoname(ifindex, bp) != NULL) {
+            buf->iov.iov_len = strnlen(bp, IFNAMSIZ);
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;

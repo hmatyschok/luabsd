@@ -138,17 +138,11 @@ IOVEC_clone(lua_State *L)
     m = luab_xmod(IOVEC, TYPE, __func__);
     self = luab_udata(L, 1, m, luab_iovec_t *);
 
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
+    luab_thread_mtx_lock(L, __func__);;
+    status = luab_iovec_pushxdata(L, self->iov.iov_base,
+        self->iov.iov_len, self->iov_max_len);
+    luab_thread_mtx_unlock(L, __func__);;
 
-        status = luab_iovec_pushxdata(L, self->iov.iov_base,
-            self->iov.iov_len, self->iov_max_len);
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = luab_pushnil(L);
-    }
     return (status);
 }
 
@@ -192,16 +186,10 @@ IOVEC_max_len(lua_State *L)
     m = luab_xmod(IOVEC, TYPE, __func__);
     self = luab_udata(L, 1, m, luab_iovec_t *);
 
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
+    luab_thread_mtx_lock(L, __func__);;
+    nbytes = self->iov_max_len;
+    luab_thread_mtx_unlock(L, __func__);;
 
-        nbytes = self->iov_max_len;
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        nbytes = luab_env_error;
-    }
     return (luab_pushxinteger(L, nbytes));
 }
 
@@ -241,17 +229,12 @@ IOVEC_set_len(lua_State *L)
     if ((nbytes <= self->iov_max_len) &&
         (nbytes > 1)) {
 
-        if ((self->iov_flags & IOV_LOCK) == 0) {
-            self->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);;
 
-            iov->iov_len = nbytes;
-            len = nbytes;
+        iov->iov_len = nbytes;
+        len = nbytes;
 
-            self->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            len = luab_env_error;
-        }
+        luab_thread_mtx_unlock(L, __func__);;
     } else {
         errno = ERANGE;
         len = luab_env_error;
@@ -282,16 +265,9 @@ IOVEC_get_len(lua_State *L)
     self = luab_udata(L, 1, m, luab_iovec_t *);
     iov = &(self->iov);
 
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        status = luab_iov_pushlen(L, iov);
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = luab_pushxinteger(L, luab_env_error);
-    }
+    luab_thread_mtx_lock(L, __func__);;
+    status = luab_iov_pushlen(L, iov);
+    luab_thread_mtx_unlock(L, __func__);;
     return (status);
 }
 
@@ -322,20 +298,15 @@ IOVEC_clear(lua_State *L)
     self = luab_udata(L, 1, m, luab_iovec_t *);
     iov = &(self->iov);
 
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
+    luab_thread_mtx_lock(L, __func__);;
 
-        if (self->iov_flags & IOV_BUFF)
-            status = luab_iov_clear(iov);
-        else {
-            errno = ERANGE;
-            status = luab_env_error;
-        }
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
+    if (self->iov_flags & IOV_BUFF)
+        status = luab_iov_clear(iov);
+    else {
+        errno = ERANGE;
         status = luab_env_error;
     }
+    luab_thread_mtx_unlock(L, __func__);;
     return (luab_pushxinteger(L, status));
 }
 
@@ -393,16 +364,9 @@ IOVEC_copy_out(lua_State *L)
     self = luab_udata(L, 1, m, luab_iovec_t *);
     iov = &(self->iov);
 
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
-
-        status = luab_iov_pushdata(L, iov);
-
-        self->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
-        status = luab_pushnil(L);
-    }
+    luab_thread_mtx_lock(L, __func__);;
+    status = luab_iov_pushdata(L, iov);
+    luab_thread_mtx_unlock(L, __func__);;
     return (status);
 }
 
@@ -436,25 +400,21 @@ IOVEC_resize(lua_State *L)
 
     len = (size_t)luab_checklxinteger(L, 2, m1, 0);
 
-    if ((self->iov_flags & IOV_LOCK) == 0) {
-        self->iov_flags |= IOV_LOCK;
+    luab_thread_mtx_lock(L, __func__);;
 
-        if (self->iov_flags & IOV_BUFF) {
+    if (self->iov_flags & IOV_BUFF) {
 
-            if ((status = luab_iov_realloc(iov, len)) == 0) {
+        if ((status = luab_iov_realloc(iov, len)) == 0) {
 
-                if (len < self->iov_max_len)
-                    self->iov_max_len = len;
-            }
-        } else {
-            errno = ERANGE;
-            status = luab_env_error;
+            if (len < self->iov_max_len)
+                self->iov_max_len = len;
         }
-        self->iov_flags &= ~IOV_LOCK;
     } else {
-        errno = EBUSY;
+        errno = ERANGE;
         status = luab_env_error;
     }
+    luab_thread_mtx_unlock(L, __func__);;
+
     return (luab_pushxinteger(L, status));
 }
 

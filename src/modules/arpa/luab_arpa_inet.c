@@ -182,20 +182,15 @@ luab_inet_ntop(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (inet_ntop(af, src, dst, size) != NULL) {
-                buf->iov.iov_len = size;
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (inet_ntop(af, src, dst, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -245,16 +240,9 @@ luab_inet_pton(lua_State *L)
         (size <= buf->iov.iov_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
-
-            status = inet_pton(af, src, dst);
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_lock(L, __func__);
+        status = inet_pton(af, src, dst);
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -396,20 +384,15 @@ luab_inet_neta(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (inet_neta(src->s_addr, dst, size) != NULL) {
-                buf->iov.iov_len = size;
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (inet_neta(src->s_addr, dst, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -520,20 +503,15 @@ luab_inet_net_ntop(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (inet_net_ntop(af, src, bits, dst, size) != NULL) {
-                buf->iov.iov_len = size;
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (inet_net_ntop(af, src, bits, dst, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -585,16 +563,9 @@ luab_inet_net_pton(lua_State *L)
         (size <= buf->iov.iov_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
-
-            status = inet_net_pton(af, src, dst, size);
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_lock(L, __func__);
+        status = inet_net_pton(af, src, dst, size);
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -641,20 +612,15 @@ luab_inet_ntoa_r(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (inet_ntoa_r(*in, bp, size) != NULL) {
-                buf->iov.iov_len = size;
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (inet_ntoa_r(*in, bp, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -710,20 +676,15 @@ luab_inet_cidr_ntop(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (inet_cidr_ntop(af, src, bits, dst, size) != NULL) {
-                buf->iov.iov_len = size;
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (inet_cidr_ntop(af, src, bits, dst, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -777,16 +738,9 @@ luab_inet_cidr_pton(lua_State *L)
         (size <= buf->iov.iov_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
-
-            status = inet_cidr_pton(af, src, dst, bits);
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_lock(L, __func__);
+        status = inet_cidr_pton(af, src, dst, bits);
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;

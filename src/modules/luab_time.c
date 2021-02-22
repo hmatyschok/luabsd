@@ -284,19 +284,14 @@ luab_strftime(lua_State *L)
         (maxsize <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((status = strftime(bp, maxsize, format, timeptr)) > 0)
-                buf->iov.iov_len = status;
-            else
-                buf->iov.iov_len = maxsize;
+        if ((status = strftime(bp, maxsize, format, timeptr)) > 0)
+            buf->iov.iov_len = status;
+        else
+            buf->iov.iov_len = maxsize;
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -806,17 +801,12 @@ luab_asctime_r(lua_State *L)
         (buf->iov_max_len >= luab_env_ts_min) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((dp = asctime_r(tm, bp)) != NULL)
-                buf->iov.iov_len = strlen(bp);
+        if ((dp = asctime_r(tm, bp)) != NULL)
+            buf->iov.iov_len = strlen(bp);
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            dp = NULL;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         dp = NULL;
@@ -860,17 +850,12 @@ luab_ctime_r(lua_State *L)
         (buf->iov_max_len >= luab_env_ts_min) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((dp = ctime_r(clock, bp)) != NULL)
-                buf->iov.iov_len = strlen(bp);
+        if ((dp = ctime_r(clock, bp)) != NULL)
+            buf->iov.iov_len = strlen(bp);
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            dp = NULL;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         dp = NULL;
@@ -986,17 +971,12 @@ luab_strptime(lua_State *L)
         (buf->iov.iov_len <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((dp = strptime(bp, format, timeptr)) != NULL)
-                buf->iov.iov_len = strnlen(dp, luab_env_buf_max);
+        if ((dp = strptime(bp, format, timeptr)) != NULL)
+            buf->iov.iov_len = strnlen(dp, luab_env_buf_max);
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            dp = NULL;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         dp = NULL;

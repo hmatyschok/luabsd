@@ -199,17 +199,12 @@ luab_fhreadlink(lua_State *L)
         (bufsize <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((count = fhreadlink(fhp, bp, bufsize)) > 0)
-                buf->iov.iov_len = count;
+        if ((count = fhreadlink(fhp, bp, bufsize)) > 0)
+            buf->iov.iov_len = count;
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            count = luab_env_error;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         count = luab_env_error;

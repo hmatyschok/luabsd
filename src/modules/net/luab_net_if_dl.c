@@ -110,23 +110,18 @@ luab_link_ntoa(lua_State *L)
         (LUAB_SDL_MAXDATALEN <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((src = link_ntoa(sdl)) != NULL) {   /* XXX static buffer */
-                len = strnlen(src, LUAB_SDL_MAXDATALEN);
-                (void)memmove(dst, src, len);
-                buf->iov.iov_len = len;
-                status = luab_env_success;
-            } else {
-                errno = EINVAL;
-                status = luab_env_error;
-            }
-            buf->iov_flags &= ~IOV_LOCK;
+        if ((src = link_ntoa(sdl)) != NULL) {   /* XXX static buffer */
+            len = strnlen(src, LUAB_SDL_MAXDATALEN);
+            (void)memmove(dst, src, len);
+            buf->iov.iov_len = len;
+            status = luab_env_success;
         } else {
-            errno = EBUSY;
+            errno = EINVAL;
             status = luab_env_error;
         }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;

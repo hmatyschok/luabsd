@@ -154,14 +154,14 @@ luab_thread_sigwait(void *arg)
  */
 
 void
-luab_thread_mtx_lock(const char *fname)
+luab_thread_mtx_lock(lua_State *L __unused, const char *fname)
 {
     if (pthread_mutex_lock(&luab_thread_mtx) != 0)
         luab_core_err(EX_OSERR, fname, errno);
 }
 
 void
-luab_thread_mtx_unlock(const char *fname)
+luab_thread_mtx_unlock(lua_State *L __unused, const char *fname)
 {
     if (pthread_mutex_unlock(&luab_thread_mtx) != 0)
         luab_core_err(EX_OSERR, fname, errno);

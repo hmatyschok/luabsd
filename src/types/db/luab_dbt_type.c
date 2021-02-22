@@ -170,24 +170,19 @@ DBT_set_data(lua_State *L)
     dbt = luab_udata(L, 1, m0, DBT *);
     buf = luab_udata(L, 2, m1, luab_iovec_t *);
 
-    if ((buf->iov_flags & IOV_LOCK) == 0) {
-        buf->iov_flags |= IOV_LOCK;
+    luab_thread_mtx_lock(L, __func__);
 
     /* XXX race-condition with lua-gc */
 
-        if (((dbt->data = buf->iov.iov_base) != NULL) &&
-            ((dbt->size = buf->iov.iov_len) > 0) &&
-            (buf->iov_flags & (IOV_BUFF|IOV_PROXY)))
-            status = luab_env_success;
-        else {
-            errno = EINVAL;
-            status = luab_env_error;
-        }
-        buf->iov_flags &= ~IOV_LOCK;
-    } else {
-        errno = EBUSY;
+    if (((dbt->data = buf->iov.iov_base) != NULL) &&
+        ((dbt->size = buf->iov.iov_len) > 0) &&
+        (buf->iov_flags & (IOV_BUFF|IOV_PROXY)))
+        status = luab_env_success;
+    else {
+        errno = EINVAL;
         status = luab_env_error;
     }
+    luab_thread_mtx_unlock(L, __func__);
     return (luab_pushxinteger(L, status));
 }
 
@@ -282,17 +277,16 @@ dbt_init(void *ud, void *arg)
     if (((self = (luab_dbt_t *)ud) != NULL) &&
         ((buf = (luab_iovec_t *)arg) != NULL)) {
 
-        if (((buf->iov_flags & IOV_LOCK) == 0) &&
-            (buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
+        luab_thread_mtx_lock(NULL, __func__);
+
+        if ((buf->iov_flags & (IOV_BUFF|IOV_PROXY)) &&
             (buf->iov.iov_base != NULL) &&
             (buf->iov.iov_len > 0)) {
-            buf->iov_flags |= IOV_LOCK;
 
             self->ud_dbt.data = buf->iov.iov_base;
             self->ud_dbt.size = buf->iov.iov_len;
-
-            buf->iov_flags &= ~IOV_LOCK;
         }
+        luab_thread_mtx_unlock(NULL, __func__);
     }
 }
 

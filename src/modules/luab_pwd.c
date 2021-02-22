@@ -226,17 +226,12 @@ luab_getpwnam_r(lua_State *L)
         (bufsize <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((status = getpwnam_r(name, pwd, bp, bufsize, &result)) != 0)
-                (void)memmove(ret, result, sizeof(struct passwd));
+        if ((status = getpwnam_r(name, pwd, bp, bufsize, &result)) != 0)
+            (void)memmove(ret, result, sizeof(struct passwd));
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_success;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_success;
@@ -293,17 +288,12 @@ luab_getpwuid_r(lua_State *L)
         (bufsize <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((status = getpwuid_r(uid, pwd, bp, bufsize, &result)) != 0)
-                (void)memmove(ret, result, sizeof(struct passwd));
+        if ((status = getpwuid_r(uid, pwd, bp, bufsize, &result)) != 0)
+            (void)memmove(ret, result, sizeof(struct passwd));
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_success;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_success;
@@ -386,17 +376,12 @@ luab_getpwent_r(lua_State *L)
         (bufsize <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((status = getpwent_r(pwd, bp, bufsize, &result)) != 0)
-                (void)memmove(ret, result, sizeof(struct passwd));
+        if ((status = getpwent_r(pwd, bp, bufsize, &result)) != 0)
+            (void)memmove(ret, result, sizeof(struct passwd));
 
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_success;
-        }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_success;

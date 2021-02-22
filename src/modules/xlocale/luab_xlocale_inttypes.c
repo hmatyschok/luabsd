@@ -85,16 +85,9 @@ luab_strtoimax_l(lua_State *L)
         (nptr->iov_max_len <= luab_env_buf_max) &&
         ((nptr->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((nptr->iov_flags & IOV_LOCK) == 0) {
-            nptr->iov_flags |= IOV_LOCK;
-
-            status = strtoimax_l(bp, endptr, base, locale);
-
-            nptr->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_lock(L, __func__);
+        status = strtoimax_l(bp, endptr, base, locale);
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -147,16 +140,9 @@ luab_strtoumax_l(lua_State *L)
         (nptr->iov_max_len <= luab_env_buf_max) &&
         ((nptr->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((nptr->iov_flags & IOV_LOCK) == 0) {
-            nptr->iov_flags |= IOV_LOCK;
-
-            status = strtoumax_l(bp, endptr, base, locale);
-
-            nptr->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_lock(L, __func__);
+        status = strtoumax_l(bp, endptr, base, locale);
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -193,7 +179,7 @@ luab_wcstoimax_l(lua_State *L)
     intmax_t status;
 
     (void)luab_core_checkmaxargs(L, 4);
-    
+
     m0 = luab_xmod(IOVEC, TYPE, __func__);
     m1 = luab_xmod(INT, TYPE, __func__);
     m2 = luab_xmod(LOCALE, TYPE, __func__);
@@ -209,16 +195,9 @@ luab_wcstoimax_l(lua_State *L)
         (nptr->iov_max_len <= luab_env_buf_max) &&
         ((nptr->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((nptr->iov_flags & IOV_LOCK) == 0) {
-            nptr->iov_flags |= IOV_LOCK;
-
-            status = wcstoimax_l(bp, endptr, base, locale);
-
-            nptr->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_lock(L, __func__);
+        status = wcstoimax_l(bp, endptr, base, locale);
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -271,16 +250,9 @@ luab_wcstoumax_l(lua_State *L)
         (nptr->iov_max_len <= luab_env_buf_max) &&
         ((nptr->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((nptr->iov_flags & IOV_LOCK) == 0) {
-            nptr->iov_flags |= IOV_LOCK;
-
-            status = wcstoumax_l(bp, endptr, base, locale);
-
-            nptr->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            status = luab_env_error;
-        }
+        luab_thread_mtx_lock(L, __func__);
+        status = wcstoumax_l(bp, endptr, base, locale);
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;

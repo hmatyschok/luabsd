@@ -332,26 +332,21 @@ luab_fgets(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (stream != NULL) {
+        if (stream != NULL) {
 
-                if (fgets(bp, size, stream) != NULL) {
-                    buf->iov.iov_len = size;
-                    status = luab_env_success;
-                } else
-                    status = luab_env_error;
-
-            } else {
-                errno = ENOENT;
+            if (fgets(bp, size, stream) != NULL) {
+                buf->iov.iov_len = size;
+                status = luab_env_success;
+            } else
                 status = luab_env_error;
-            }
-            buf->iov_flags &= ~IOV_LOCK;
+
         } else {
-            errno = EBUSY;
-            status = luab_env_success;
+            errno = ENOENT;
+            status = luab_env_error;
         }
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_success;
@@ -706,20 +701,15 @@ luab_gets(lua_State *L)
         (buf->iov_max_len <= luab_env_buf_max) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (gets(bp) != NULL) {
-                buf->iov.iov_len = strnlen(bp, luab_env_buf_max);
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (gets(bp) != NULL) {
+            buf->iov.iov_len = strnlen(bp, luab_env_buf_max);
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -761,20 +751,15 @@ luab_gets_s(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if (gets_s(bp, size) != NULL) {
-                buf->iov.iov_len = size;
-                status = luab_env_success;
-            } else
-                status = luab_env_error;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
+        if (gets_s(bp, size) != NULL) {
+            buf->iov.iov_len = size;
+            status = luab_env_success;
+        } else
             status = luab_env_error;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         status = luab_env_error;
@@ -1435,20 +1420,14 @@ luab_fmemopen(lua_State *L)
         (size <= buf->iov_max_len) &&
         ((buf->iov_flags & IOV_BUFF) != 0)) {
 
-        if ((buf->iov_flags & IOV_LOCK) == 0) {
-            buf->iov_flags |= IOV_LOCK;
+        luab_thread_mtx_lock(L, __func__);
 
-            if ((stream = fmemopen(bp, size, mode)) != NULL)
-                buf->iov.iov_len = size;
-            else
-                m2 = NULL;
-
-            buf->iov_flags &= ~IOV_LOCK;
-        } else {
-            errno = EBUSY;
-            stream = NULL;
+        if ((stream = fmemopen(bp, size, mode)) != NULL)
+            buf->iov.iov_len = size;
+        else
             m2 = NULL;
-        }
+
+        luab_thread_mtx_unlock(L, __func__);
     } else {
         errno = ERANGE;
         stream = NULL;

@@ -38,19 +38,17 @@ typedef struct luab_iovec_param {
 typedef struct luab_iovec {
     luab_udata_t    ud_softc;
     struct iovec    iov;
-    size_t  iov_max_len;
-    u_int   iov_flags;
+    size_t          iov_max_len;
+    u_int           iov_flags;
 } luab_iovec_t;
 #if luab_env_uint_max > 65535
-#define IOV_LOCK    0x00000001
-#define IOV_PROXY   0x00000002
-#define IOV_BUFF    0x00000004
-#define IOV_DUMP    0x00000008
+#define IOV_PROXY   0x00000001
+#define IOV_BUFF    0x00000002
+#define IOV_DUMP    0x00000004
 #else
-#define IOV_LOCK    0x0001
-#define IOV_PROXY   0x0002
-#define IOV_BUFF    0x0004
-#define IOV_DUMP    0x0008
+#define IOV_PROXY   0x0001
+#define IOV_BUFF    0x0002
+#define IOV_DUMP    0x0004
 #endif
 
 /*
