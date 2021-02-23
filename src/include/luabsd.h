@@ -73,7 +73,7 @@ void     luab_thread_signal(int);
 void     *luab_thread_pcall(void *);
 void     *luab_thread_sigwait(void *);
 
-void     luab_thread_init(lua_State *);
+void     luab_thread_initpool(lua_State *);
 
 void  luab_thread_mtx_lock(lua_State *, const char *);
 void  luab_thread_mtx_unlock(lua_State *, const char *);

@@ -66,14 +66,10 @@ luab_iovec_init(lua_State *L, int narg, struct iovec *iov)
     struct iovec *src;
 
     if ((buf = luab_isiovec(L, narg)) != NULL) {
-        luab_thread_mtx_lock(L, __func__);
-
         src = &(buf->iov);
 
         if ((luab_iov_alloc(iov, src->iov_len)) == 0)
             (void)luab_iov_copyin(iov, src->iov_base, src->iov_len);
-                /* XXX */
-        luab_thread_mtx_unlock(L, __func__);
     }
 }
 

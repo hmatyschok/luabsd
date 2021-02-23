@@ -172,7 +172,7 @@ luab_thread_mtx_unlock(lua_State *L __unused, const char *fname)
  */
 
 void
-luab_thread_init(lua_State *L __unused)
+luab_thread_initpool(lua_State *L __unused)
 {
     pthread_mutexattr_t attr;
 

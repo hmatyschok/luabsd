@@ -33,6 +33,11 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
+/*
+ * XXX
+ *  luab_isxdata(3).
+ */
+
 #include "luabsd.h"
 #include "luab_udata.h"
 
@@ -102,11 +107,14 @@ luab_udata_find(luab_udata_t *udx, void **x)
     luab_udata_t *ud, *ud_tmp;
 
     if (udx != NULL && x != NULL) {
+        luab_thread_mtx_lock(NULL, __func__);
+
         LIST_FOREACH_SAFE(ud, &udx->ud_list, ud_next, ud_tmp) {
 
             if (*(ud->ud_x) == *x)
                 break;
         }
+        luab_thread_mtx_unlock(NULL, __func__);
     } else
         ud = NULL;
 
@@ -124,6 +132,8 @@ luab_udata_insert(luab_udata_t *udx, luab_udata_t *ud, void **x)
     if (udx != NULL) {
 
         if (ud != NULL && x != NULL) {
+            luab_thread_mtx_lock(NULL, __func__);
+
             LIST_INSERT_HEAD(&udx->ud_list, ud, ud_next);
 
             *(void **)x = (void *)(ud + 1);
@@ -132,6 +142,8 @@ luab_udata_insert(luab_udata_t *udx, luab_udata_t *ud, void **x)
             ud->ud_xhd = &udx->ud_list;
 
             dp = *x;
+
+            luab_thread_mtx_unlock(NULL, __func__);
         } else {
             errno = EINVAL;
             dp = NULL;
@@ -218,6 +230,7 @@ luab_isxdata(lua_State *L, int narg, luab_xarg_t *pci)
     luab_module_vec_t *vec;
 
     if ((vec = luab_env_type_vec) != NULL) {
+        luab_thread_mtx_lock(L, __func__);
 
         while (vec->mv_mod != NULL) {
 
@@ -238,6 +251,7 @@ luab_isxdata(lua_State *L, int narg, luab_xarg_t *pci)
                 pci->xarg_len = 0;
             }
         }
+        luab_thread_mtx_unlock(L, __func__);
     } else
         luab_core_argerror(L, narg, NULL, 0, 0, ENXIO);
 

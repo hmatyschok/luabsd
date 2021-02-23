@@ -60,7 +60,7 @@ luaopen_bsd(lua_State *L)
 
 
     /* initialize threading pool */
-    luab_thread_init(L);
+    luab_thread_initpool(L);
 
     return (1);
 }
