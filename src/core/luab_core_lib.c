@@ -187,11 +187,18 @@ luab_core_dump(lua_State *L, int narg, luab_module_t *m, size_t len)
 
     (void)luab_core_checkmaxargs(L, narg);
 
-    if (m != NULL && m->m_get != NULL)
-        dp = (caddr_t)(*m->m_get)(L, narg);
-    else
-        dp = NULL;
+    if (m != NULL) {
 
+        if (m->m_get != NULL)
+            dp = (caddr_t)(*m->m_get)(L, narg);
+        else {
+            errno = ENXIO;
+            dp = NULL;
+        }
+    } else {
+        errno = ENOENT;
+        dp = NULL;
+    }
     return (luab_iovec_pushxdata(L, dp, len, len));
 }
 
