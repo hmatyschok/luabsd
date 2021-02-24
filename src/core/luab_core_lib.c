@@ -209,16 +209,16 @@ luab_core_gc(lua_State *L, int narg, luab_module_t *m)
 
     (void)luab_core_checkmaxargs(L, narg);
 
-    self = luab_todata(L, narg, m, luab_udata_t *);
+    if ((self = luab_todata(L, narg, m, luab_udata_t *)) != NULL) {
 
-    LIST_FOREACH_SAFE(ud, &self->ud_list, ud_next, ud_tmp)
-        luab_udata_remove(ud);
+        LIST_FOREACH_SAFE(ud, &self->ud_list, ud_next, ud_tmp)
+            luab_udata_remove(ud);
 
-    if (self->ud_xhd != NULL)
-        luab_udata_remove(self);
+        if (self->ud_xhd != NULL)
+            luab_udata_remove(self);
 
-    (void)memset_s(self, m->m_len, 0, m->m_len);
-
+        (void)memset_s(self, m->m_len, 0, m->m_len);
+    }
     return (0);
 }
 
