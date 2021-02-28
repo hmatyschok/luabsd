@@ -42,6 +42,37 @@ extern luab_module_t luab_sys_ipc_lib;
  * Service primitives.
  */
 
+/***
+ * ftok(3) - create IPC identifier from path name
+ *
+ * @function ftok
+ *
+ * @param path              Specifies existing file, by (LUA_TSTRING).
+ * @param id                Specifies user-selectable ID, by an instance
+ *                          of (LUA_T{NUMBER,USERDATA(INT)}).
+ *
+ * @return (LUA_TNUMBER [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ret [, err, msg ] = bsd.sys.ipc.ftok(path, id)
+ */
+static int
+luab_ftok(lua_State *L)
+{
+    luab_module_t *m;
+    const char *path;
+    int id;
+    key_t status;
+
+    (void)luab_core_checkmaxargs(L, 2);
+
+    m = luab_xmod(INT, TYPE, __func__);
+
+    path = luab_checklstring(L, 1, luab_env_path_max, NULL);
+    id = luab_checkxinteger(L, 2, m, luab_env_uint_max);
+
+    status = ftok(path, id);
+    return (luab_pushxinteger(L, status));
+}
 
 /*
  * Generator functions.
@@ -114,6 +145,7 @@ static luab_module_table_t luab_sys_ipc_vec[] = {
     LUAB_INT("IPC_INFO",            IPC_INFO),
 #endif
     /* service primitives */
+    LUAB_FUNC("ftok",               luab_ftok),
 
     /* generator functions */
     LUAB_FUNC("create_key",         luab_type_create_key),
