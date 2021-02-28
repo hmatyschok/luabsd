@@ -73,30 +73,51 @@ luab_type_create_key(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/***
+ * Generator function - create an instance of (LUA_TUSERDATA(IPC_PERM)).
+ *
+ * @function create_ipc_perm
+ *
+ * @param arg           Instance of (LUA_TUSERDATA(IPC_PERM)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage ipc_perm [, err, msg ] = bsd.sys.ipc.create_ipc_perm([ arg ])
+ */
+static int
+luab_type_create_ipc_perm(lua_State *L)
+{
+    luab_module_t *m;
+    m = luab_xmod(IPC_PERM, TYPE, __func__);
+    return (luab_core_create(L, 1, m, NULL));
+}
+
+
 /*
  * Interface against <sys/ipc.h>.
  */
 
 static luab_module_table_t luab_sys_ipc_vec[] = {
 #if __BSD_VISIBLE
-    LUAB_INT("IPC_R",           IPC_R),
-    LUAB_INT("IPC_W",           IPC_W),
-    LUAB_INT("IPC_M",           IPC_M),
+    LUAB_INT("IPC_R",               IPC_R),
+    LUAB_INT("IPC_W",               IPC_W),
+    LUAB_INT("IPC_M",               IPC_M),
 #endif /* __BSD_VISIBLE */
-    LUAB_INT("IPC_CREAT",       IPC_CREAT),
-    LUAB_INT("IPC_EXCL",        IPC_EXCL),
-    LUAB_INT("IPC_NOWAIT",      IPC_NOWAIT),
-    LUAB_INT("IPC_PRIVATE",     IPC_PRIVATE),
-    LUAB_INT("IPC_RMID",        IPC_RMID),
-    LUAB_INT("IPC_SET",         IPC_SET),
-    LUAB_INT("IPC_STAT",        IPC_STAT),
+    LUAB_INT("IPC_CREAT",           IPC_CREAT),
+    LUAB_INT("IPC_EXCL",            IPC_EXCL),
+    LUAB_INT("IPC_NOWAIT",          IPC_NOWAIT),
+    LUAB_INT("IPC_PRIVATE",         IPC_PRIVATE),
+    LUAB_INT("IPC_RMID",            IPC_RMID),
+    LUAB_INT("IPC_SET",             IPC_SET),
+    LUAB_INT("IPC_STAT",            IPC_STAT),
 #if __BSD_VISIBLE
-    LUAB_INT("IPC_INFO",        IPC_INFO),
+    LUAB_INT("IPC_INFO",            IPC_INFO),
 #endif
     /* service primitives */
 
     /* generator functions */
-    LUAB_FUNC("create_key",     luab_type_create_key),
+    LUAB_FUNC("create_key",         luab_type_create_key),
+    LUAB_FUNC("create_ipc_perm",    luab_type_create_ipc_perm),
     LUAB_MOD_TBL_SENTINEL
 };
 

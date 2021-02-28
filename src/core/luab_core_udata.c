@@ -90,13 +90,15 @@ void
 luab_udata_remove(luab_udata_t *ud)
 {
     if (ud != NULL) {
-
+        luab_thread_mtx_lock(NULL, __func__);
+    
         if (ud->ud_x != NULL) {
             *(ud->ud_x) = NULL;
             ud->ud_x = NULL;
             ud->ud_xhd = NULL;
         }
         LIST_REMOVE(ud, ud_next);
+        luab_thread_mtx_unlock(NULL, __func__);
     } else
         errno = ENOENT;
 }
@@ -224,7 +226,7 @@ luab_checkxdataisnil(lua_State *L, int narg, luab_module_t *m)
 }
 
 void *
-luab_isxdata(lua_State *L, int narg, luab_xarg_t *pci)
+luab_isxdata(lua_State *L, int narg, luab_xarg_t *xarg)
 {
     luab_udata_t *ud = NULL;
     luab_module_vec_t *vec;
@@ -241,14 +243,14 @@ luab_isxdata(lua_State *L, int narg, luab_xarg_t *pci)
             vec++;
         }
 
-        if (pci != NULL) {
+        if (xarg != NULL) {
 
             if (ud != NULL) {
-                pci->xarg_mod = vec->mv_mod;
-                pci->xarg_len = vec->mv_mod->m_sz;
+                xarg->xarg_mod = vec->mv_mod;
+                xarg->xarg_len = vec->mv_mod->m_sz;
             } else {
-                pci->xarg_mod = NULL;
-                pci->xarg_len = 0;
+                xarg->xarg_mod = NULL;
+                xarg->xarg_len = 0;
             }
         }
         luab_thread_mtx_unlock(L, __func__);

@@ -210,6 +210,7 @@ extern luab_module_t luab_lconv_type;
 extern luab_module_t luab_itimerspec_type;
 extern luab_module_t luab_pthread_once_type;
 extern luab_module_t luab_sched_param_type;
+extern luab_module_t luab_ipc_perm_type;
 #if __POSIX_VISIBLE >= 199309
 extern luab_module_t luab_sigevent_type;
 #endif

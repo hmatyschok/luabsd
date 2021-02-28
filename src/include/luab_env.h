@@ -932,6 +932,9 @@ extern u_long luab_env_phys_pages;
 #define LUAB_SCHED_PARAM_TYPE_ID                1611724636
 #define LUAB_SCHED_PARAM_TYPE                   "SCHED_PARAM*"
 
+#define LUAB_IPC_PERM_TYPE_ID                   1614475372
+#define LUAB_IPC_PERM_TYPE                      "IPC_PERM*"
+
 #if __POSIX_VISIBLE >= 199309
 #define LUAB_SIGEVENT_TYPE_ID                   1610459044
 #define LUAB_SIGEVENT_TYPE                      "SIGEVENT*"
@@ -1243,6 +1246,7 @@ typedef enum luab_type {
     LUAB_ITIMERSPEC_IDX,
     LUAB_PTHREAD_ONCE_IDX,
     LUAB_SCHED_PARAM_IDX,
+    LUAB_IPC_PERM_IDX,
 #if __POSIX_VISIBLE >= 199309
     LUAB_SIGEVENT_IDX,
 #endif

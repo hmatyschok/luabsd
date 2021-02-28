@@ -399,7 +399,6 @@ luab_module_vec_t luab_env_type_vec[] = {
         .mv_idx = LUAB_PTHREAD_ADDR_IDX,
     },
 
-
     /* <time.h> */
 #if __POSIX_VISIBLE >= 199309
     {
@@ -573,7 +572,12 @@ luab_module_vec_t luab_env_type_vec[] = {
         .mv_mod = &luab_sched_param_type,
         .mv_init = luab_env_newmetatable,
         .mv_idx = LUAB_SCHED_PARAM_IDX,
+    },{
+        .mv_mod = &luab_ipc_perm_type,
+        .mv_init = luab_env_newmetatable,
+        .mv_idx = LUAB_IPC_PERM_IDX,
     },
+    
 #if __POSIX_VISIBLE >= 199309
     {
         .mv_mod = &luab_sigevent_type,
