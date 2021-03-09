@@ -51,6 +51,23 @@ extern luab_module_t luab_termios_lib;
  */
 
 static luab_module_table_t luab_termios_vec[] = { /* termios.h */
+#if __BSD_VISIBLE
+    LUAB_INT("OXTABS",				OXTABS),
+    LUAB_INT("MDMBUF",				MDMBUF),
+#endif
+    LUAB_INT("TCSANOW",				TCSANOW),
+    LUAB_INT("TCSADRAIN",			TCSADRAIN),
+    LUAB_INT("TCSAFLUSH",			TCSAFLUSH),
+#if __BSD_VISIBLE
+    LUAB_INT("TCSASOFT",			TCSASOFT),
+#endif
+    LUAB_INT("TCIFLUSH",			TCIFLUSH),
+    LUAB_INT("TCOFLUSH",			TCOFLUSH),
+    LUAB_INT("TCIOFLUSH",			TCIOFLUSH),
+    LUAB_INT("TCOOFF",				TCOOFF),
+    LUAB_INT("TCOON",				TCOON),
+    LUAB_INT("TCIOFF",				TCIOFF),
+    LUAB_INT("TCION",				TCION),
     LUAB_MOD_TBL_SENTINEL
 };
 
