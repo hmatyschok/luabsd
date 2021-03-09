@@ -286,6 +286,7 @@ extern luab_module_t luab_regex_lib;
 extern luab_module_t luab_signal_lib;
 extern luab_module_t luab_stdio_lib;
 extern luab_module_t luab_stdlib_lib;
+extern luab_module_t luab_termios_lib;
 extern luab_module_t luab_time_lib;
 extern luab_module_t luab_ttyent_lib;
 extern luab_module_t luab_unistd_lib;
@@ -304,10 +305,7 @@ extern luab_libdata_t luab_env_libdata_vec[];
  * Service primitives.
  */
 
-void     luab_env_init(lua_State *, luab_sysconf_vec_t *);
-
 void     luab_env_registerlib(lua_State *, int, luab_module_vec_t *, const char *);
 void     luab_env_registertype(lua_State *, int, luab_module_vec_t *);
-void     luab_env_initlib(lua_State *, int, luab_libdata_t *);
 
 #endif /* _LUAB_MODULES_H_ */

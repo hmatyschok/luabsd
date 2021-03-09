@@ -21,6 +21,7 @@ SRCS+=  luab_regex.c
 SRCS+=  luab_signal.c
 SRCS+=  luab_stdio.c
 SRCS+=  luab_stdlib.c
+SRCS+=  luab_termios.c
 SRCS+=  luab_time.c
 SRCS+=  luab_ttyent.c
 SRCS+=  luab_unistd.c

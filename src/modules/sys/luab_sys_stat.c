@@ -1176,7 +1176,7 @@ luab_type_create_nlink(lua_State *L)
  *
  * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
  *
- * @usage hook [, err, msg ] = bsd.sys.stat.create_stat([ arg ])
+ * @usage stat [, err, msg ] = bsd.sys.stat.create_stat([ arg ])
  */
 static int
 luab_type_create_stat(lua_State *L)
