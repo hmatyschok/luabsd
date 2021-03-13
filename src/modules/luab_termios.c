@@ -77,7 +77,146 @@ luab_type_create_speed(lua_State *L)
  */
 
 static luab_module_table_t luab_termios_vec[] = { /* termios.h */
+    LUAB_INT("VEOF",                    VEOF),
+    LUAB_INT("VEOL",                    VEOL),
 #if __BSD_VISIBLE
+    LUAB_INT("VEOL2",                   VEOL2),
+#endif
+    LUAB_INT("VERASE",                  VERASE),
+#if __BSD_VISIBLE
+    LUAB_INT("VWERASE",                 VWERASE),
+#endif
+    LUAB_INT("VKILL",                   VKILL),
+#if __BSD_VISIBLE
+    LUAB_INT("VREPRINT",                VREPRINT),
+    LUAB_INT("VERASE2",                 VERASE2),
+#endif
+    LUAB_INT("VINTR",                   VINTR),
+    LUAB_INT("VQUIT",                   VQUIT),
+    LUAB_INT("VSUSP",                   VSUSP),
+#if __BSD_VISIBLE
+    LUAB_INT("VDSUSP",                  VDSUSP),
+#endif
+    LUAB_INT("VSTART",                  VSTART),
+    LUAB_INT("VSTOP",                   VSTOP),
+#if __BSD_VISIBLE
+    LUAB_INT("VLNEXT",                  VLNEXT),
+    LUAB_INT("VDISCARD",                VDISCARD),
+#endif
+    LUAB_INT("VMIN",                    VMIN),
+    LUAB_INT("VTIME",                   VTIME),
+#if __BSD_VISIBLE
+    LUAB_INT("VSTATUS",                 VSTATUS),
+#endif
+    LUAB_INT("NCCS",                    NCCS),
+    LUAB_INT("_POSIX_VDISABLE",         _POSIX_VDISABLE),
+    LUAB_INT("IGNBRK",                  IGNBRK),
+    LUAB_INT("BRKINT",                  BRKINT),
+    LUAB_INT("IGNPAR",                  IGNPAR),
+    LUAB_INT("PARMRK",                  PARMRK),
+    LUAB_INT("INPCK",                   INPCK),
+    LUAB_INT("ISTRIP",                  ISTRIP),
+    LUAB_INT("INLCR",                   INLCR),
+    LUAB_INT("IGNCR",                   IGNCR),
+    LUAB_INT("ICRNL",                   ICRNL),
+    LUAB_INT("IXON",                    IXON),
+    LUAB_INT("IXOFF",                   IXOFF),
+#if __XSI_VISIBLE || __POSIX_VISIBLE >= 200809
+    LUAB_INT("IXANY",                   IXANY),
+#endif
+#if __BSD_VISIBLE
+    LUAB_INT("IMAXBEL",                 IMAXBEL),
+#endif
+    LUAB_INT("OPOST",                   OPOST),
+#if __XSI_VISIBLE
+    LUAB_INT("ONLCR",                   ONLCR),
+#endif
+#if __BSD_VISIBLE
+    LUAB_INT("TABDLY",                  TABDLY),
+    LUAB_INT("TAB0",                    TAB0),
+    LUAB_INT("TAB3",                    TAB3),
+    LUAB_INT("ONOEOT",                  ONOEOT),
+#endif
+#if __XSI_VISIBLE
+    LUAB_INT("OCRNL",                   OCRNL),
+    LUAB_INT("ONOCR",                   ONOCR),
+    LUAB_INT("ONLRET",                  ONLRET),
+#endif
+#if __BSD_VISIBLE
+    LUAB_INT("CIGNORE",                 CIGNORE),
+#endif
+    LUAB_INT("CSIZE",                   CSIZE),
+    LUAB_INT("CS5",                     CS5),
+    LUAB_INT("CS6",                     CS6),
+    LUAB_INT("CS7",                     CS7),
+    LUAB_INT("CS8",                     CS8),
+    LUAB_INT("CSTOPB",                  CSTOPB),
+    LUAB_INT("CREAD",                   CREAD),
+    LUAB_INT("PARENB",                  PARENB),
+    LUAB_INT("PARODD",                  PARODD),
+    LUAB_INT("HUPCL",                   HUPCL),
+    LUAB_INT("CLOCAL",                  CLOCAL),
+#if __BSD_VISIBLE
+    LUAB_INT("CCTS_OFLOW",              CCTS_OFLOW),
+    LUAB_INT("CRTSCTS",                 CRTSCTS),
+    LUAB_INT("CRTS_IFLOW",              CRTS_IFLOW),
+    LUAB_INT("CDTR_IFLOW",              CDTR_IFLOW),
+    LUAB_INT("CDSR_OFLOW",              CDSR_OFLOW),
+    LUAB_INT("CCAR_OFLOW",              CCAR_OFLOW),
+#endif
+#if __BSD_VISIBLE
+    LUAB_INT("ECHOKE",                  ECHOKE),
+#endif
+    LUAB_INT("ECHOE",                   ECHOE),
+    LUAB_INT("ECHOK",                   ECHOK),
+    LUAB_INT("ECHO",                    ECHO),
+    LUAB_INT("ECHONL",                  ECHONL),
+#if __BSD_VISIBLE
+    LUAB_INT("ECHOPRT",                 ECHOPRT),
+    LUAB_INT("ECHOCTL",                 ECHOCTL),
+#endif
+    LUAB_INT("ISIG",                    ISIG),
+    LUAB_INT("ICANON",                  ICANON),
+#if __BSD_VISIBLE
+    LUAB_INT("ALTWERASE",               ALTWERASE),
+#endif
+    LUAB_INT("IEXTEN",                  IEXTEN),
+    LUAB_INT("EXTPROC",                 EXTPROC),
+    LUAB_INT("TOSTOP",                  TOSTOP),
+#if __BSD_VISIBLE
+    LUAB_INT("FLUSHO",                  FLUSHO),
+    LUAB_INT("NOKERNINFO",              NOKERNINFO),
+    LUAB_INT("PENDIN",                  PENDIN),
+#endif
+    LUAB_INT("NOFLSH",                  NOFLSH),
+    LUAB_INT("B0",                      B0),
+    LUAB_INT("B50",                     B50),
+    LUAB_INT("B75",                     B75),
+    LUAB_INT("B110",                    B110),
+    LUAB_INT("B134",                    B134),
+    LUAB_INT("B150",                    B150),
+    LUAB_INT("B200",                    B200),
+    LUAB_INT("B300",                    B300),
+    LUAB_INT("B600",                    B600),
+    LUAB_INT("B1200",                   B1200),
+    LUAB_INT("B1800",                   B1800),
+    LUAB_INT("B2400",                   B2400),
+    LUAB_INT("B4800",                   B4800),
+    LUAB_INT("B9600",                   B9600),
+    LUAB_INT("B19200",                  B19200),
+    LUAB_INT("B38400",                  B38400),
+#if __BSD_VISIBLE
+    LUAB_INT("B7200",                   B7200),
+    LUAB_INT("B14400",                  B14400),
+    LUAB_INT("B28800",                  B28800),
+    LUAB_INT("B57600",                  B57600),
+    LUAB_INT("B76800",                  B76800),
+    LUAB_INT("B115200",                 B115200),
+    LUAB_INT("B230400",                 B230400),
+    LUAB_INT("B460800",                 B460800),
+    LUAB_INT("B921600",                 B921600),
+    LUAB_INT("EXTA",                    EXTA),
+    LUAB_INT("EXTB",                    EXTB),
     LUAB_INT("OXTABS",                  OXTABS),
     LUAB_INT("MDMBUF",                  MDMBUF),
 #endif
