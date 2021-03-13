@@ -277,6 +277,13 @@ luab_module_vec_t luab_env_type_vec[] = {
         .mv_idx = LUAB_RSIZE_IDX,
     },
 
+    /* <termios.h> */
+    {
+        .mv_mod = &luab_speed_type,
+        .mv_init = luab_env_newmetatable,
+        .mv_idx = LUAB_SPEED_IDX,
+    },
+
     /* <time.h> */
     {
         .mv_mod = &luab_clock_type,
@@ -577,7 +584,7 @@ luab_module_vec_t luab_env_type_vec[] = {
         .mv_init = luab_env_newmetatable,
         .mv_idx = LUAB_IPC_PERM_IDX,
     },
-    
+
 #if __POSIX_VISIBLE >= 199309
     {
         .mv_mod = &luab_sigevent_type,
@@ -814,6 +821,9 @@ static luab_module_vec_t luab_env_vec[] = {
         .mv_init = luab_env_newtable,
     },{
         .mv_mod = &luab_stdlib_lib,
+        .mv_init = luab_env_newtable,
+    },{
+        .mv_mod = &luab_termios_lib,
         .mv_init = luab_env_newtable,
     },{
         .mv_mod = &luab_time_lib,

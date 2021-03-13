@@ -32,6 +32,7 @@
 .include "${LUAB_SRCTOP}/types/regex/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/stdio/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/stdlib/Makefile.inc"
+.include "${LUAB_SRCTOP}/types/termios/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/time/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/ttyent/Makefile.inc"
 .include "${LUAB_SRCTOP}/types/unistd/Makefile.inc"

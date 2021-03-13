@@ -115,6 +115,9 @@ extern luab_module_t luab_pthread_key_type;
 extern luab_module_t luab_fpos_type;
 extern luab_module_t luab_rsize_type;
 
+/* <termios.h> */
+extern luab_module_t luab_speed_type;
+
 /* <time.h> */
 extern luab_module_t luab_clock_type;
 extern luab_module_t luab_time_type;
