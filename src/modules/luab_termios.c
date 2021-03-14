@@ -47,32 +47,6 @@ extern luab_module_t luab_termios_lib;
  */
 
 /***
- * Generator function, creates an instance of (LUA_TUSERDATA(SPEED)).
- *
- * @function create_speed
- *
- * @param arg               Specifies initial value by an instance of
- *
- *                              (LUA_T{NIL,NUMBER,USERDATA(SPEED)).
- *
- * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
- *
- * @usage speed [, err, msg ] = bsd.termios.create_speed(arg)
- */
-static int
-luab_type_create_speed(lua_State *L)
-{
-    luab_module_t *m;
-    speed_t x;
-
-    (void)luab_core_checkmaxargs(L, 1);
-
-    m = luab_xmod(SPEED, TYPE, __func__);
-    x = (speed_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
-    return (luab_pushxdata(L, m, &x));
-}
-
-/***
  * Generator function, creates an instance of (LUA_TUSERDATA(TCFLAG)).
  *
  * @function create_tcflag
@@ -95,6 +69,58 @@ luab_type_create_tcflag(lua_State *L)
 
     m = luab_xmod(TCFLAG, TYPE, __func__);
     x = (tcflag_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(CC)).
+ *
+ * @function create_cc
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(CC)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage cc [, err, msg ] = bsd.termios.create_cc(arg)
+ */
+static int
+luab_type_create_cc(lua_State *L)
+{
+    luab_module_t *m;
+    cc_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(CC, TYPE, __func__);
+    x = (cc_t)luab_checkxinteger(L, 1, m, luab_env_uchar_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(SPEED)).
+ *
+ * @function create_speed
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(SPEED)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage speed [, err, msg ] = bsd.termios.create_speed(arg)
+ */
+static int
+luab_type_create_speed(lua_State *L)
+{
+    luab_module_t *m;
+    speed_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(SPEED, TYPE, __func__);
+    x = (speed_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
     return (luab_pushxdata(L, m, &x));
 }
 
@@ -259,8 +285,9 @@ static luab_module_table_t luab_termios_vec[] = { /* termios.h */
     LUAB_INT("TCOON",                   TCOON),
     LUAB_INT("TCIOFF",                  TCIOFF),
     LUAB_INT("TCION",                   TCION),
-    LUAB_FUNC("create_speed",           luab_type_create_speed),
     LUAB_FUNC("create_tcflag",          luab_type_create_tcflag),
+    LUAB_FUNC("create_cc",              luab_type_create_cc),
+    LUAB_FUNC("create_speed",           luab_type_create_speed),
     LUAB_MOD_TBL_SENTINEL
 };
 

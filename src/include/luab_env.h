@@ -703,11 +703,14 @@ extern u_long luab_env_phys_pages;
 #define LUAB_KEY_TYPE_ID                        1613618084
 #define LUAB_KEY_TYPE                           "KEY*"
 
-#define LUAB_SPEED_TYPE_ID                      1615600985
-#define LUAB_SPEED_TYPE                         "SPEED*"
-
 #define LUAB_TCFLAG_TYPE_ID                     1615636502
 #define LUAB_TCFLAG_TYPE                        "TCFLAG*"
+
+#define LUAB_CC_TYPE_ID                         1615697526
+#define LUAB_CC_TYPE                            "CC*"
+
+#define LUAB_SPEED_TYPE_ID                      1615600985
+#define LUAB_SPEED_TYPE                         "SPEED*"
 
 #if __POSIX_VISIBLE >= 199309
 #define LUAB_CLOCKID_TYPE_ID                    1610364586
@@ -1162,6 +1165,7 @@ typedef enum luab_type {
     /* <termios.h> */
     LUAB_SPEED_IDX,
     LUAB_TCFLAG_IDX,
+    LUAB_CC_IDX,
 
     /* <time.h> */
     LUAB_CLOCK_IDX,
