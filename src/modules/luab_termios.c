@@ -72,6 +72,32 @@ luab_type_create_speed(lua_State *L)
     return (luab_pushxdata(L, m, &x));
 }
 
+/***
+ * Generator function, creates an instance of (LUA_TUSERDATA(TCFLAG)).
+ *
+ * @function create_tcflag
+ *
+ * @param arg               Specifies initial value by an instance of
+ *
+ *                              (LUA_T{NIL,NUMBER,USERDATA(TCFLAG)).
+ *
+ * @return (LUA_T{NIL,USERDATA} [, LUA_T{NIL,NUMBER}, LUA_T{NIL,STRING} ])
+ *
+ * @usage tcflag [, err, msg ] = bsd.termios.create_tcflag(arg)
+ */
+static int
+luab_type_create_tcflag(lua_State *L)
+{
+    luab_module_t *m;
+    tcflag_t x;
+
+    (void)luab_core_checkmaxargs(L, 1);
+
+    m = luab_xmod(TCFLAG, TYPE, __func__);
+    x = (tcflag_t)luab_checkxinteger(L, 1, m, luab_env_uint_max);
+    return (luab_pushxdata(L, m, &x));
+}
+
 /*
  * Interface against <termios.h>.
  */
@@ -234,6 +260,7 @@ static luab_module_table_t luab_termios_vec[] = { /* termios.h */
     LUAB_INT("TCIOFF",                  TCIOFF),
     LUAB_INT("TCION",                   TCION),
     LUAB_FUNC("create_speed",           luab_type_create_speed),
+    LUAB_FUNC("create_tcflag",          luab_type_create_tcflag),
     LUAB_MOD_TBL_SENTINEL
 };
 

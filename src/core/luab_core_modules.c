@@ -282,6 +282,10 @@ luab_module_vec_t luab_env_type_vec[] = {
         .mv_mod = &luab_speed_type,
         .mv_init = luab_env_newmetatable,
         .mv_idx = LUAB_SPEED_IDX,
+    },{
+        .mv_mod = &luab_tcflag_type,
+        .mv_init = luab_env_newmetatable,
+        .mv_idx = LUAB_TCFLAG_IDX,
     },
 
     /* <time.h> */
